@@ -1,0 +1,36 @@
+name: WAMO 자동갱신
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 8 * * 1-5'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 파일 가져오기
+        uses: actions/checkout@v6
+
+      - name: Python 준비
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 필요한 도구 설치
+        run: pip install pandas openpyxl xlrd lxml html5lib beautifulsoup4
+
+      - name: 주식 데이터 갱신
+        run: python wamo_update.py
+
+      - name: 새 결과 저장
+        run: |
+          git config user.name "wamo-dashboard-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "auto update dashboard"
+          git push
