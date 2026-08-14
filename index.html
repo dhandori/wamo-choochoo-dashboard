@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>WAMO 투자 대시보드 V8</title>
+<style>
+:root{
+  --bg:#07101d;--panel:#0e192b;--panel2:#121f34;--line:#253651;--text:#f4f7ff;--muted:#91a1bb;
+  --good:#48d6a0;--blue:#63a9ff;--warn:#f0c86a;--bad:#ff7c83;--violet:#aa92ff;--shadow:0 18px 50px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 90% -10%,#18396d 0,transparent 32%),linear-gradient(180deg,#07101d,#08111f 45%,#060c16);color:var(--text);font-family:Inter,system-ui,-apple-system,"Noto Sans KR","Apple SD Gothic Neo",sans-serif}
+button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24px}.topbar{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:18px}.eyebrow,.section-kicker{font-size:11px;font-weight:900;letter-spacing:.15em;color:var(--blue)}.brand h1{margin:7px 0 0;font-size:31px;letter-spacing:-.03em}.brand .sub{margin-top:8px;color:var(--muted);font-size:13px}.statusbox{text-align:right}.mode-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #675a28;border-radius:999px;color:var(--warn);background:#221f15;font-size:12px;font-weight:900}.mode-badge.live{border-color:#245a47;color:var(--good);background:#10281f}.dot{width:8px;height:8px;border-radius:50%;background:currentColor}.meta{font-size:11px;color:var(--muted);line-height:1.6;margin-top:7px}.demo-banner{display:none;padding:11px 13px;border:1px solid #685925;background:#282313;color:#f1d986;border-radius:12px;margin-bottom:15px;font-size:12px;line-height:1.55}.demo-banner.show{display:block}
+.hero-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:14px;margin-bottom:15px}.hero-main,.hero-side{border:1px solid var(--line);border-radius:18px;background:linear-gradient(160deg,rgba(21,38,66,.96),rgba(10,21,38,.96));box-shadow:var(--shadow)}.hero-main{padding:20px;min-height:174px}.hero-title{font-size:25px;font-weight:900;letter-spacing:-.03em;margin-top:9px}.hero-desc{color:#afbdd3;font-size:13px;line-height:1.65;max-width:780px;margin-top:9px}.hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.hero-chip{border:1px solid #38547e;background:#142843;color:white;border-radius:11px;padding:8px 10px;text-align:left;cursor:pointer}.hero-chip span{display:block;color:#92a6c5;font-size:10px;margin-top:3px}.hero-side{display:grid;grid-template-columns:1fr 1fr;padding:10px}.mini-stat{padding:14px;border:1px solid rgba(37,54,81,.7);border-radius:13px;margin:4px;background:rgba(7,16,29,.35)}.mini-stat span{display:block;color:var(--muted);font-size:11px}.mini-stat b{display:block;font-size:25px;margin-top:5px}
+.tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 5px;margin-bottom:15px}.tab{border:1px solid var(--line);background:#0c1728;color:#a9b7ce;padding:9px 13px;border-radius:10px;cursor:pointer;white-space:nowrap}.tab.active{background:#23436d;color:white;border-color:#4773ad}.section{background:rgba(11,21,38,.88);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:15px;box-shadow:var(--shadow);backdrop-filter:blur(9px)}.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:13px}.section h2{font-size:18px;margin:5px 0 0;letter-spacing:-.02em}.section-note{font-size:11px;color:var(--muted);line-height:1.5}.sector-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.sector{border:1px solid var(--line);border-radius:13px;padding:12px;background:#0d1829;color:var(--text);text-align:left;cursor:pointer;transition:.15s}.sector:hover,.sector.selected{transform:translateY(-1px);border-color:#5278b1;background:#10213a}.sector-top{display:flex;justify-content:space-between;align-items:center}.rank{color:var(--muted);font-size:10px}.action{font-size:10px;font-weight:900;color:var(--good);background:#102a23;border-radius:999px;padding:4px 7px}.sector .name{font-weight:850;margin-top:8px}.sector-score{display:flex;align-items:baseline;gap:3px;margin-top:6px}.sector-score b{font-size:26px}.sector-score span{font-size:10px;color:var(--muted)}.progress{height:5px;background:#21314b;border-radius:999px;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:linear-gradient(90deg,#5eabff,#a68cff)}.mini{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:7px}.leaders{font-size:10px;color:#bdc9da;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stock-head{align-items:flex-end}.controls{display:flex;gap:8px;flex-wrap:wrap}.search{min-width:220px;flex:1;background:#081320;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px}.select{background:#081320;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 10px}.pill{padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:#0d1828;color:#aebbd0;cursor:pointer;font-size:11px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.table{width:100%;border-collapse:collapse;min-width:1080px}.table th{position:sticky;top:0;background:#132139;color:#91a0bc;font-size:10px;text-align:left;padding:10px;border-bottom:1px solid var(--line);z-index:1}.table td{padding:10px;border-bottom:1px solid #1d2c44;font-size:12px}.table tbody tr{cursor:pointer}.table tbody tr:hover{background:#102038}.namecell b{font-size:13px}.ticker{color:var(--muted);font-size:10px;margin-top:3px}.scorebadge{font-weight:900;font-size:16px}.signal{display:inline-flex;align-items:center;font-weight:850;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap}.sig-BUY{color:#74e8b8;background:#0f3027}.sig-HOLD{color:#82bbff;background:#10294a}.sig-WATCH{color:#f2ce77;background:#302815}.sig-EXIT{color:#ff9297;background:#361a20}.sig-NEUTRAL{color:#aebbd3;background:#1b2433}.pos{color:var(--good)}.neg{color:var(--bad)}.muted{color:var(--muted)}.yes{color:var(--good);font-weight:850}.no{color:#748198}.star{border:0;background:transparent;color:#7e8ba2;font-size:19px;cursor:pointer;padding:0 3px}.star.on{color:#f1ce69}.empty{padding:34px!important;text-align:center;color:var(--muted)}
+.mobile-list{display:none}.stock-card{border:1px solid var(--line);border-radius:14px;background:#0d192b;padding:13px;cursor:pointer}.stock-card-top,.stock-card-signal{display:flex;justify-content:space-between;align-items:center;gap:8px}.stock-name{font-size:15px;font-weight:900}.stock-card-signal{margin-top:12px}.stock-card-signal>b{font-size:20px}.stock-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:11px}.stock-metrics div{background:#0a1424;border-radius:9px;padding:8px}.stock-metrics span{display:block;color:var(--muted);font-size:9px}.stock-metrics b{display:block;margin-top:3px;font-size:13px}.stock-reason{margin-top:9px;color:#aebbd0;font-size:10px}.empty-card{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.explain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:13px}.explain{border:1px solid var(--line);background:#0c1728;border-radius:12px;padding:12px}.explain b{display:block;font-size:13px}.explain span{display:block;color:var(--muted);font-size:10px;line-height:1.6;margin-top:6px}.footer{color:var(--muted);font-size:10px;line-height:1.65;padding:2px 3px 26px}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(720px,96vw);background:#091321;border-left:1px solid var(--line);z-index:30;transform:translateX(100%);transition:.22s;box-shadow:-22px 0 55px rgba(0,0,0,.48);overflow:auto}.drawer.open{transform:translateX(0)}.drawer-head{position:sticky;top:0;z-index:3;background:rgba(9,19,33,.96);display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line);backdrop-filter:blur(9px)}.detail-title h3{margin:0;font-size:22px}.detail-title div{color:var(--muted);font-size:11px;margin-top:4px}.close{background:#122139;border:1px solid var(--line);color:white;border-radius:10px;width:36px;height:36px;cursor:pointer}.drawer-body{padding:18px}.detail-topline{display:flex;justify-content:space-between;align-items:center}.watch-btn{border:1px solid var(--line);background:#102036;color:#b6c2d5;border-radius:10px;padding:7px 10px;cursor:pointer}.watch-btn.on{color:#f1ce69;border-color:#6b5b26}.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}.dcard{background:#0f1c30;border:1px solid var(--line);border-radius:11px;padding:11px}.dcard .k,.whybox .k{color:var(--muted);font-size:9px}.dcard .v{font-size:17px;font-weight:850;margin-top:4px}.whybox{background:#10203a;border:1px solid #2b4569;border-radius:12px;padding:12px}.whybox>div:last-child{font-size:13px;font-weight:750;margin-top:5px}.chartbox{height:330px;background:#07101d;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}.detail-section-title{font-size:14px!important;margin:16px 0 9px!important}.condition-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}.condition-row{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;border:1px solid var(--line);background:#0d192b;border-radius:10px;font-size:11px}
+@media(max-width:1100px){.sector-grid{grid-template-columns:repeat(3,1fr)}.explain-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.app{padding:12px}.topbar{display:block}.brand h1{font-size:25px}.statusbox{text-align:left;margin-top:12px}.hero-grid{grid-template-columns:1fr}.hero-main{min-height:auto}.hero-title{font-size:21px}.hero-side{grid-template-columns:1fr 1fr}.sector-grid{grid-template-columns:repeat(2,1fr)}.section{padding:12px}.section-head{align-items:flex-start;display:block}.section-note{margin-top:6px}.stock-head .controls{margin-top:11px}.controls{display:grid;grid-template-columns:1fr 1fr}.search{min-width:0;grid-column:1/-1}.desktop-table{display:none}.mobile-list{display:grid;gap:9px}.stock-metrics{grid-template-columns:repeat(4,1fr)}.explain-grid{grid-template-columns:1fr}.detail-grid{grid-template-columns:repeat(2,1fr)}.condition-list{grid-template-columns:1fr}.drawer{width:100vw}.tabs{margin-left:-1px}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-chip{width:100%}}
+@media(max-width:430px){.sector-grid{grid-template-columns:1fr 1fr;gap:7px}.sector{padding:10px}.sector-score b{font-size:22px}.stock-metrics{grid-template-columns:1fr 1fr}.hero-actions{grid-template-columns:1fr}.brand .sub{font-size:12px}}
+
+/* V3 · CAN SLIM */
+.notice-card{display:flex;gap:12px;align-items:flex-start;border:1px solid #315279;background:linear-gradient(135deg,#10233d,#0c192b);border-radius:15px;padding:13px 15px;margin-bottom:15px}.notice-icon{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#254b7c;font-weight:900;font-size:18px}.notice-card b{display:block;font-size:13px}.notice-card span{display:block;color:#a7b6cc;font-size:11px;line-height:1.65;margin-top:4px}.roomy{margin-top:6px;max-width:960px}.canslim-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.cs-card{display:flex;gap:12px;border:1px solid var(--line);background:#0d192b;border-radius:14px;padding:14px}.cs-letter,.cs-mini-letter{flex:0 0 40px;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#315e93,#654ea3);font-size:20px;font-weight:950}.cs-card h3{margin:0;color:#8dbdff;font-size:11px;letter-spacing:.02em}.cs-card b{display:block;font-size:13px;margin-top:4px}.cs-card p{color:#a9b7cb;font-size:11px;line-height:1.72;margin:8px 0}.cs-card p strong{color:#eaf1ff}.rule{font-size:10px;line-height:1.55;color:#d8e5f7;border-top:1px solid #263958;padding-top:8px}.cs-badge{display:inline-flex;white-space:nowrap;border-radius:999px;padding:5px 7px;font-size:9px;font-weight:900;border:1px solid transparent}.cs-badge.full{background:#123326;color:#79e7b4;border-color:#245c46}.cs-badge.strong{background:#102d42;color:#82c9ff;border-color:#25577a}.cs-badge.prelim{background:#2c2717;color:#f0ce78;border-color:#66582a}.cs-badge.weak{background:#1b2433;color:#98a7bc;border-color:#313f53}.cs-mobile{margin-top:9px}.glossary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:13px}.glossary-grid details{border:1px solid var(--line);background:#0c1728;border-radius:12px;padding:11px 12px}.glossary-grid summary{cursor:pointer;font-size:12px;font-weight:850;color:#e5edfa}.glossary-grid p{color:#a7b6ca;font-size:10.5px;line-height:1.7;margin:9px 0 1px}.cs-summary{display:grid;gap:3px;background:#0f2037;border:1px solid #2b466d;border-radius:12px;padding:12px;margin-bottom:9px}.cs-summary b{font-size:14px}.cs-summary span{font-size:10px;color:#b7c5d8}.cs-summary small{font-size:9px;color:#7f90a9}.canslim-detail{display:grid;gap:8px}.cs-detail-row{display:flex;gap:10px;padding:11px;border:1px solid var(--line);background:#0d192b;border-radius:12px}.cs-mini-letter{flex-basis:34px;width:34px;height:34px;font-size:16px;border-radius:9px}.cs-detail-main{min-width:0;flex:1}.cs-detail-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.cs-detail-head b{font-size:11px}.cs-status{font-size:9px;font-weight:900;padding:4px 7px;border-radius:999px;white-space:nowrap}.cs-status.pass{color:#79e7b4;background:#123326}.cs-status.fail{color:#ff9aa0;background:#351c22}.cs-status.unknown{color:#f1cd77;background:#332b18}.cs-value{font-size:11px;margin-top:7px;color:#dfe9f7}.cs-criterion{font-size:9.5px;color:#8ea0ba;margin-top:4px}.cs-detail-row p{font-size:10px;color:#a8b6ca;line-height:1.6;margin:5px 0 0}.table{min-width:1240px}
+@media(max-width:1100px){.canslim-grid{grid-template-columns:1fr}.glossary-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.glossary-grid{grid-template-columns:1fr}.cs-card{padding:12px}.cs-letter{flex-basis:34px;width:34px;height:34px;font-size:17px}.notice-card{padding:12px}.cs-detail-head{align-items:flex-start}.hero-side{grid-template-columns:1fr 1fr}}
+
+
+/* V4 · full screening framework */
+.framework-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:15px}
+.framework-card{display:flex;gap:12px;border:1px solid var(--line);background:#0d192b;border-radius:15px;padding:14px}
+.framework-num{flex:0 0 38px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#1a365c;color:#a9d0ff;font-size:17px;font-weight:950}
+.framework-card h3{font-size:14px;margin:1px 0 5px;color:#8fc0ff}
+.framework-card>b,.framework-card>div>b{font-size:12px}
+.framework-card p{color:#a9b7cb;font-size:10.7px;line-height:1.72;margin:8px 0}
+.framework-card details{border-top:1px solid #293a55;margin-top:9px;padding-top:9px}
+.framework-card summary{cursor:pointer;font-size:10.5px;font-weight:850;color:#dce8f8}
+.criteria-list{display:grid;gap:7px;margin-top:9px}
+.criteria-list>div{background:#091526;border:1px solid #223550;border-radius:9px;padding:8px 9px}
+.criteria-list strong{display:block;color:#e6eefb;font-size:10.5px}
+.criteria-list span{display:block;color:#94a6bf;font-size:9.8px;line-height:1.6;margin-top:3px}
+.framework-card .rule{margin-top:10px}
+@media(max-width:900px){.framework-grid{grid-template-columns:1fr}}
+
+/* V5 data-health */
+.health-banner{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 13px;border:1px solid #27445f;background:#0e1c2c;border-radius:12px;margin-bottom:15px}
+.health-main{display:flex;flex-direction:column;gap:3px}.health-main b{font-size:12px}.health-main span{font-size:10.5px;color:var(--muted);line-height:1.55}
+.health-pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.health-pill{padding:5px 8px;border-radius:999px;border:1px solid #314766;background:#111f31;color:#b9c8dd;font-size:9.5px;font-weight:850}
+.health-banner.good{border-color:#245a47;background:#0f241d}.health-banner.warn{border-color:#675a28;background:#282313}.health-banner.bad{border-color:#77373a;background:#2a1719}
+.health-pill.good{color:#86e0bb;border-color:#245a47}.health-pill.warn{color:#f1d986;border-color:#675a28}.health-pill.bad{color:#ff9e9e;border-color:#77373a}
+.data-tag{display:inline-flex;align-items:center;padding:2px 5px;margin-left:5px;border-radius:999px;font-size:8px;font-weight:900;border:1px solid #354a68;color:#a8bad3}
+.data-tag.live{color:#83dfb8;border-color:#245a47}.data-tag.cached{color:#f1d986;border-color:#675a28}.data-tag.stale{color:#ff9e9e;border-color:#77373a}
+@media(max-width:760px){.health-banner{display:block}.health-pills{justify-content:flex-start;margin-top:8px}}
+
+/* V6 full-market funnel */
+.funnel-section{border:1px solid var(--line);background:#0b1627;border-radius:16px;padding:16px;margin-bottom:16px}
+.funnel-section h2{font-size:16px;margin:4px 0 13px}
+.funnel-grid{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:7px;align-items:center}
+.funnel-card{min-width:0;background:#0d1c30;border:1px solid #233a58;border-radius:12px;padding:10px 9px;text-align:center}
+.funnel-card span{display:block;color:#9fb0c8;font-size:9.5px}.funnel-card b{display:block;font-size:19px;margin:4px 0;color:#e7effc}
+.funnel-card small{display:block;color:#687d9b;font-size:8px;line-height:1.4}.funnel-card.emphasis{border-color:#2c674f;background:#10271f}.funnel-card.emphasis b{color:#87e0b8}
+.funnel-arrow{color:#4e6888;font-weight:900}.funnel-note{margin-top:10px;padding:8px 10px;border-radius:9px;background:#091321;color:#91a4bf;font-size:9.5px;line-height:1.6}
+@media(max-width:1000px){.funnel-grid{grid-template-columns:repeat(3,1fr)}.funnel-arrow{display:none}}
+@media(max-width:620px){.funnel-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* V8 catalysts / revisions */
+.catalyst-list{display:grid;gap:7px;margin-bottom:17px}
+.catalyst-item{display:grid;grid-template-columns:68px 82px 1fr;gap:8px;align-items:center;border:1px solid #243650;background:#0b1728;border-radius:10px;padding:8px 9px;font-size:10px}
+.catalyst-date{color:#7f93af}.catalyst-cat{font-weight:850;color:#b7c8de}.catalyst-item.POSITIVE .catalyst-cat{color:#82ddb5}.catalyst-item.DILUTION .catalyst-cat,.catalyst-item.RISK .catalyst-cat{color:#ff9b9b}
+.catalyst-report{color:#d8e3f3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.catalyst-empty{padding:12px;border:1px dashed #2b3c56;border-radius:10px;color:#8194b0;font-size:10px}
+@media(max-width:600px){.catalyst-item{grid-template-columns:60px 70px 1fr}.catalyst-report{white-space:normal}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="eyebrow">WAMO MARKET RADAR · V8</div>
+      <h1>오늘 뭐가 강해지고 있나</h1>
+      <div class="sub">코스피·코스닥 전 종목 · 세부섹터 · 성장주 6조건 · Stage 2 · CAN SLIM · 실제 데이터 상태를 한 화면에서 확인</div>
+    </div>
+    <div class="statusbox">
+      <div class="mode-badge"><span class="dot"></span><span id="mode">—</span></div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </header>
+
+  <div id="healthBanner" class="health-banner">
+      <div class="health-main">
+        <b id="healthTitle">데이터 상태 확인 중</b>
+        <span id="healthText">—</span>
+      </div>
+      <div class="health-pills" id="healthPills"></div>
+    </div>
+
+  <div id="demoBanner" class="demo-banner">
+    <b>지금은 화면 확인용 데모입니다.</b> 실제 투자 판단용 데이터가 아닙니다. 특히 CAN SLIM의 C·A·I는 재무/기관 데이터 연결 전에는 억지로 판정하지 않고 <b>확인 필요</b>로 표시합니다.
+  </div>
+
+  <section class="funnel-section">
+    <div class="section-kicker">FULL-MARKET FUNNEL · 전 종목 자동 압축</div>
+    <h2>코스피·코스닥 전체에서 후보가 어떻게 줄어드는지</h2>
+    <div class="funnel-grid">
+      <div class="funnel-card"><span>① 전체 상장사</span><b id="fListed">—</b><small>KRX KIND 기준</small></div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-card"><span>② 유동성 통과</span><b id="fLiquid">—</b><small>50일 평균 거래대금</small></div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-card"><span>③ 시총 통과</span><b id="fMarketCap">—</b><small>1조원 이상</small></div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-card"><span>④ 정밀 계산</span><b id="fScanned">—</b><small>4년 가격·거래량</small></div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-card"><span>⑤ 6조건 4개+</span><b id="fGrowth">—</b><small>성장주 후보군</small></div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-card"><span>⑥ Stage 2</span><b id="fStage2">—</b><small>본격 상승추세</small></div>
+      <div class="funnel-arrow">→</div>
+      <div class="funnel-card emphasis"><span>⑦ 주도 후보</span><b id="fBuy">—</b><small>최종 우선검토</small></div>
+    </div>
+    <div class="funnel-note" id="funnelNote">실제 자동 갱신 후 전체 시장 압축 결과가 표시됩니다.</div>
+  </section>
+
+  <section class="hero-grid">
+    <div class="hero-main">
+      <div class="section-kicker">오늘 먼저 볼 것</div>
+      <div class="hero-title" id="heroTitle">—</div>
+      <div class="hero-desc" id="heroDesc">—</div>
+      <div class="hero-actions" id="heroActions"></div>
+    </div>
+    <div class="hero-side">
+      <div class="mini-stat"><span>신규 주도 후보</span><b id="statBuy">—</b></div>
+      <div class="mini-stat"><span>6조건 완전충족</span><b id="statSix">—</b></div>
+      <div class="mini-stat"><span>CAN SLIM 강한 후보</span><b id="statCanSlim">—</b></div>
+      <div class="mini-stat"><span>Stage 2</span><b id="statStage2">—</b></div>
+    </div>
+  </section>
+
+  <section class="notice-card">
+    <div class="notice-icon">7</div>
+    <div>
+      <b>CAN SLIM은 “7개 체크박스”만 보는 전략이 아닙니다.</b>
+      <span>C·A는 이익 성장, N은 새로운 변화, S는 수요·공급, L은 주도주 여부, I는 기관의 후원, M은 전체 시장 방향을 뜻합니다. V8는 CAN SLIM뿐 아니라 성장주 6조건·Stage 2·RS·섹터 액션·종합점수까지 원래 의미와 자동계산 기준을 구분해서 보여줍니다.</span>
+    </div>
+  </section>
+
+  <nav class="tabs" aria-label="스크리너 보기 방식">
+    <button class="tab active" data-tab="all">전체</button>
+    <button class="tab" data-tab="buy">신규 후보</button>
+    <button class="tab" data-tab="canslim">CAN SLIM 후보</button>
+    <button class="tab" data-tab="six">6조건 4개+</button>
+    <button class="tab" data-tab="stage2">Stage 2</button>
+    <button class="tab" data-tab="newhigh">52주 신고가권</button>
+    <button class="tab" data-tab="revision">리비전 상향</button>
+    <button class="tab" data-tab="watchlist">내 관심</button>
+  </nav>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">SECTOR ACTION</div>
+        <h2>강해지는 세부 섹터</h2>
+      </div>
+      <div class="section-note">점수가 높을수록 소속 종목들의 상대강도·추세·신고가 움직임이 함께 강하다는 뜻입니다.</div>
+    </div>
+    <div class="sector-grid" id="sectorGrid"></div>
+  </section>
+
+  <section class="section" id="stocks">
+    <div class="section-head stock-head">
+      <div>
+        <div class="section-kicker">STOCK SCREENER</div>
+        <h2>종목 후보</h2>
+        <div class="section-note" id="count"></div>
+      </div>
+      <div class="controls">
+        <input id="search" class="search" placeholder="종목명 또는 섹터 검색"/>
+        <select id="signal" class="select">
+          <option value="">판정 전체</option>
+          <option value="BUY">신규 주도 후보</option>
+          <option value="HOLD">홀딩</option>
+          <option value="WATCH">관망</option>
+          <option value="EXIT">청산·회피</option>
+          <option value="NEUTRAL">비주도</option>
+        </select>
+        <button id="clear" class="pill">초기화</button>
+      </div>
+    </div>
+
+    <div class="mobile-list" id="mobileList"></div>
+
+    <div class="table-wrap desktop-table">
+      <table class="table">
+        <thead><tr>
+          <th></th><th>#</th><th>종목</th><th>판정</th><th>점수</th><th>RS</th><th>CAN SLIM</th><th>1일</th><th>52주 고점比</th><th>거래량</th><th>6조건</th><th>Stage 2</th><th>왜 잡혔나</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+
+  <section class="section framework-section">
+    <div class="section-kicker">SCREENING FRAMEWORK · 전체 기준 설명</div>
+    <h2>이 대시보드가 종목을 고르는 기준 — 전부 쉽게 풀어서</h2>
+    <div class="section-note roomy">
+      아래 기준들은 서로 대체하는 것이 아니라 역할이 다릅니다. <b>6조건</b>은 “차트가 성장주답게 강한가”,
+      <b>Stage 2</b>는 “본격 상승추세에 들어왔는가”, <b>RS</b>는 “다른 종목보다 강한가”,
+      <b>섹터 액션</b>은 “혼자 오르는가, 업종 전체가 같이 강한가”, <b>CAN SLIM</b>은 “실적·수급·시장까지 받쳐주는가”를 봅니다.
+    </div>
+
+    <div class="framework-grid">
+      <article class="framework-card">
+        <div class="framework-num">①</div>
+        <div>
+          <h3>성장주 6조건</h3>
+          <b>“차트 모양 자체가 강한 성장주인가?”</b>
+          <p>주가가 장기 상승추세를 유지하면서 최근 고점 부근에 있고, 단기·중기·장기 이동평균선이 순서대로 올라와 있는지를 봅니다.
+          6/6이면 매우 강한 차트 구조, 5/6이면 한 조건만 부족, 4/6이면 후보군으로 두고 추가 확인하는 식으로 사용합니다.</p>
+          <details open><summary>6개 조건을 하나씩 보면</summary>
+            <div class="criteria-list">
+              <div><strong>1. 장기 우상향</strong><span>현재가가 200일선 위에 있고 200일선 자체도 상승하며, 최근 1년 수익률도 양수인지 봅니다. 장기 추세가 이미 꺾인 종목을 거르기 위한 조건입니다.</span></div>
+              <div><strong>2. 최근 1년 내 장기 신고가</strong><span>최근 약 3년 고점을 만든 시점이 1년 안쪽인지 봅니다. 아주 오랫동안 시장의 관심에서 멀어진 종목보다 최근 실제로 강했던 종목을 선호합니다.</span></div>
+              <div><strong>3. 고점 대비 -30% 이내</strong><span>52주 최고가에서 현재가가 30% 넘게 무너지지 않았는지 봅니다. -10%면 고점 대비 10% 조정, -35%면 이미 추세 훼손 가능성을 크게 봅니다.</span></div>
+              <div><strong>4. 52주 신고가권 3% 이내</strong><span>현재가가 52주 최고가의 97% 이상인지 봅니다. 예: 최고가 100,000원인데 현재가 98,000원이면 98%로 통과합니다.</span></div>
+              <div><strong>5. 월봉 20개월선 위</strong><span>약 20개월 평균 주가보다 현재 월봉 종가가 위인지 봅니다. 일봉은 좋아 보여도 장기 월봉 추세가 나쁜 종목을 거르는 장치입니다.</span></div>
+              <div><strong>6. 일봉 정배열</strong><span>현재가 &gt; 20일선 &gt; 60일선 &gt; 120일선 &gt; 200일선 순서인지 봅니다. 단기부터 장기까지 매수세가 층층이 받쳐주는 전형적인 상승추세 배열입니다.</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">②</div>
+        <div>
+          <h3>Stage 2 · Minervini Trend Template</h3>
+          <b>“본격적인 상승 국면에 진입했는가?”</b>
+          <p>단순히 하루 급등한 종목이 아니라 장기 이동평균선들이 상승 방향으로 정렬되고, 주가가 장기 저점에서 충분히 벗어나며,
+          동시에 52주 고점에서도 너무 멀지 않은 종목을 찾습니다.</p>
+          <details><summary>V8에서 확인하는 7개 항목</summary>
+            <div class="criteria-list">
+              <div><strong>주가 &gt; 150·200일선</strong><span>현재 가격이 장기 평균 매입단가보다 위에 있어야 합니다.</span></div>
+              <div><strong>150일선 &gt; 200일선</strong><span>중장기 추세가 장기 추세보다 강해야 합니다.</span></div>
+              <div><strong>200일선 상승</strong><span>200일선이 단순히 아래에 있는 것만으로 부족하고, 방향 자체가 위로 기울어야 합니다.</span></div>
+              <div><strong>50일선 &gt; 150·200일선</strong><span>최근 약 2개월의 주가 흐름이 장기 흐름보다 강한지를 봅니다.</span></div>
+              <div><strong>주가 &gt; 50일선</strong><span>현재 가격이 중기 추세선 위에 있어야 합니다.</span></div>
+              <div><strong>52주 저점 대비 +30% 이상</strong><span>바닥 부근의 약한 종목이 아니라 저점에서 충분히 상승한 종목을 고릅니다.</span></div>
+              <div><strong>52주 고점에서 25% 이내</strong><span>최고가 대비 너무 멀리 밀린 종목을 제외합니다. V4는 고점의 75% 이상을 요구합니다.</span></div>
+            </div>
+          </details>
+          <div class="rule">대시보드 표시: 위 7개 전부 + 일반 RS 70 이상이면 Stage 2 YES</div>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">③</div>
+        <div>
+          <h3>RS · Relative Strength</h3>
+          <b>“시장 안에서 누가 더 세게 오르고 있는가?”</b>
+          <p>RS는 회사의 질이 아니라 <strong>주가의 상대적 힘</strong>을 봅니다. RS 90이라면 비교 대상 종목의 약 90%보다 강했다는 뜻입니다.
+          시장이 -10%인데 어떤 종목이 -1%만 빠져도 상대강도는 강할 수 있습니다.</p>
+          <details><summary>일반 RS와 오닐식 RS의 차이</summary>
+            <div class="criteria-list">
+              <div><strong>일반 RS</strong><span>5일·20일·60일 시장 대비 초과수익을 섞어 단기~중기 리더를 빠르게 찾습니다. V8 가중치는 20%·40%·40%입니다.</span></div>
+              <div><strong>오닐식 RS</strong><span>최근 약 12개월을 네 구간으로 나누고 최근 3개월을 더 중요하게 반영합니다. CAN SLIM의 L(Leader) 판정에 사용합니다.</span></div>
+            </div>
+          </details>
+          <div class="rule">해석 예: RS 95 = 매우 강함 · RS 70 = 상위권 · RS 50 = 중간 · RS 30 = 시장보다 약한 편</div>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">④</div>
+        <div>
+          <h3>섹터 액션</h3>
+          <b>“이 종목만 오르는가, 같은 산업이 함께 움직이는가?”</b>
+          <p>진짜 주도주는 강한 산업군에서 여러 종목이 함께 움직이는 경우가 많습니다. 그래서 한 종목의 급등만으로 섹터가 강하다고 하지 않고
+          같은 세부섹터의 폭(Breadth, 상승 참여 종목의 넓이)을 같이 봅니다.</p>
+          <details><summary>섹터 점수 100점은 어떻게 계산하나</summary>
+            <div class="criteria-list">
+              <div><strong>평균 RS 35%</strong><span>소속 종목들의 상대강도가 전반적으로 높은지를 가장 크게 반영합니다.</span></div>
+              <div><strong>60일선 위 종목 비율 20%</strong><span>업종 구성 종목 다수가 중기 상승추세인지 봅니다.</span></div>
+              <div><strong>52주 신고가권 비율 20%</strong><span>업종 내 여러 종목이 실제 신고가 부근까지 올라왔는지 봅니다.</span></div>
+              <div><strong>거래량 열기 15%</strong><span>평소보다 거래가 활발해졌는지 봅니다.</span></div>
+              <div><strong>Stage 2 종목 비율 10%</strong><span>업종 내 본격 상승추세 종목이 얼마나 많은지 봅니다.</span></div>
+            </div>
+          </details>
+          <div class="rule">V8 판정: 72점↑ 강화 · 58~71 상승 · 45~57 중립 · 45 미만 약화</div>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">⑤</div>
+        <div>
+          <h3>거래량 · Volume</h3>
+          <b>“가격 움직임 뒤에 실제 돈이 얼마나 붙었는가?”</b>
+          <p>주가 +8%라도 거래량이 평소의 절반이면 신뢰도가 낮을 수 있습니다. 반대로 신고가 돌파 때 거래량이 평소 2~3배면
+          기관 등 큰 자금이 참여했을 가능성을 확인하는 단서가 됩니다.</p>
+          <details><summary>화면의 1.0x, 2.0x가 뜻하는 것</summary>
+            <div class="criteria-list">
+              <div><strong>1.0x</strong><span>오늘 거래량이 최근 20거래일 평균과 비슷합니다.</span></div>
+              <div><strong>1.5x</strong><span>평균보다 50% 많습니다. 의미 있는 관심 증가로 볼 수 있습니다.</span></div>
+              <div><strong>2.0x</strong><span>평균의 두 배입니다. 돌파와 함께 나오면 강한 확인 신호로 봅니다.</span></div>
+              <div><strong>주의</strong><span>악재 급락에도 거래량은 폭증하므로 “거래량이 많다=좋다”가 아닙니다. 반드시 가격 방향과 함께 봅니다.</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">⑥</div>
+        <div>
+          <h3>WAMO 종합점수</h3>
+          <b>“여러 기준을 한 숫자로 요약하되, 원자료도 반드시 같이 본다”</b>
+          <p>종합점수는 정답이 아니라 우선순위를 정하는 도구입니다. 점수가 높을수록 상대강도·고점 위치·거래량·Stage 2·섹터가 동시에 우호적이라는 뜻입니다.</p>
+          <details><summary>현재 점수 가중치</summary>
+            <div class="criteria-list">
+              <div><strong>종목 자체 점수</strong><span>RS 30% + 성장주 6조건 25% + 52주 고점 위치 15% + 거래량 10% + Stage 2 20%.</span></div>
+              <div><strong>최종 결합</strong><span>종목 자체 점수 85% + 세부섹터 액션 점수 15%로 최종 점수를 만듭니다.</span></div>
+              <div><strong>왜 섹터를 15% 넣나</strong><span>좋은 차트라도 업종 전체가 약하면 후속 매수세가 약할 수 있기 때문입니다.</span></div>
+              <div><strong>주의</strong><span>CAN SLIM의 C·A·I처럼 아직 데이터가 없는 항목을 임의로 점수에 넣지 않습니다.</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section canslim-section">
+    <div class="section-kicker">WILLIAM O'NEIL · CAN SLIM</div>
+    <h2>CAN SLIM 7개 항목 — 뜻과 실제로 무엇을 보는지</h2>
+    <div class="section-note roomy">아래의 숫자 기준은 “오닐의 핵심 취지를 자동 스크리닝으로 구현하기 위한 V3 계산 기준”입니다. 질적 판단이 필요한 N·I·M은 원래 개념을 함께 적어 두었습니다.</div>
+    <div class="canslim-grid">
+      <article class="cs-card"><div class="cs-letter">C</div><div><h3>Current Quarterly Earnings</h3><b>최근 분기 이익이 강하게 증가하는가?</b><p><strong>EPS</strong>(주당순이익: 회사가 벌어들인 이익을 주식 1주당으로 나눈 값)의 최근 분기 전년동기 대비 성장률을 봅니다. V3 핵심 통과 기준은 <strong>최근 분기 EPS YoY +25% 이상</strong>입니다. 매출도 함께 증가하는지 확인해 “회계상 이익만 늘어난 것인지”를 걸러냅니다.</p><div class="rule">V3 기준: 최근 분기 EPS YoY ≥ +25% · 매출 성장률은 보조 확인</div></div></article>
+      <article class="cs-card"><div class="cs-letter">A</div><div><h3>Annual Earnings Growth</h3><b>몇 년에 걸쳐 이익이 지속적으로 성장했는가?</b><p>한 분기의 깜짝 실적만으로는 부족합니다. <strong>CAGR</strong>(연평균복합성장률: 여러 해의 성장을 1년 평균 성장률로 환산한 값)을 이용해 최근 3년 EPS 성장 추세를 봅니다. <strong>ROE</strong>(자기자본이익률: 주주가 맡긴 자본으로 얼마나 효율적으로 이익을 냈는지)도 보조지표로 확인합니다.</p><div class="rule">V3 기준: 최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%</div></div></article>
+      <article class="cs-card"><div class="cs-letter">N</div><div><h3>New</h3><b>주가를 새 단계로 끌어올릴 “새로운 것”이 있는가?</b><p>신제품·신서비스·새 경영진·산업 구조 변화·신규 수주·새로운 가격대 등이 해당합니다. 오닐은 <strong>새로운 주가 고점</strong> 자체도 중요한 N의 신호로 봤습니다. 자동화 단계에서는 뉴스 촉매가 확인되거나 주가가 52주 신고가에 매우 가까우면 N 후보로 분류합니다.</p><div class="rule">V3 기준: 확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%</div></div></article>
+      <article class="cs-card"><div class="cs-letter">S</div><div><h3>Supply & Demand</h3><b>팔려는 주식보다 사려는 자금이 더 강한가?</b><p>주가는 결국 수요와 공급으로 움직입니다. 상승일 거래량이 하락일 거래량보다 강한지, 돌파 때 거래량이 평소보다 증가하는지, 신주 발행으로 주식 수가 급증하는지 등을 봅니다. <strong>거래량 2.0x</strong>는 평소 20일 평균의 2배가 거래됐다는 뜻입니다.</p><div class="rule">V3 기준: 최근 가격·거래량에서 매집 우위 + 과도한 희석이 없으면 우호적</div></div></article>
+      <article class="cs-card"><div class="cs-letter">L</div><div><h3>Leader or Laggard</h3><b>같은 시장·업종에서 진짜 대장주인가?</b><p><strong>RS Rating</strong>(Relative Strength Rating, 상대강도 순위)은 주가 성과를 다른 종목과 비교한 순위입니다. 90이면 비교 대상의 약 90%보다 강했다는 뜻입니다. 단순히 싸 보이는 낙폭과대주보다 강한 업종의 강한 종목을 찾습니다.</p><div class="rule">V3 기준: 오닐식 12개월 가중 RS 백분위 ≥ 80 + 세부섹터 상승 이상</div></div></article>
+      <article class="cs-card"><div class="cs-letter">I</div><div><h3>Institutional Sponsorship</h3><b>기관 자금이 실제로 들어오고 있는가?</b><p>연기금·펀드·자산운용사 같은 큰 자금이 보유를 늘리는지 봅니다. 단순 “기관 하루 순매수”보다 <strong>기관 보유 주체 수가 증가하는지, 우수한 기관이 참여하는지</strong>가 원래 개념에 가깝습니다. 한국판 V3에서는 기관 순매수와 보유 변화 데이터를 함께 붙일 예정입니다.</p><div class="rule">V3 기준: 기관 보유/기관 순매수 추세가 개선될 때 통과 · 데이터 없으면 확인 필요</div></div></article>
+      <article class="cs-card"><div class="cs-letter">M</div><div><h3>Market Direction</h3><b>좋은 종목보다 먼저 “지금 시장이 살 만한 시장인가?”를 본다</b><p>개별 종목이 아무리 좋아도 전체 시장이 하락 추세면 성공 확률이 떨어집니다. 오닐 방법론에서는 <strong>Follow-Through Day</strong>(추세확인일: 하락 뒤 반등 시도 중 주요 지수가 강한 상승과 거래량 증가를 동반해 새 상승장의 가능성을 확인하는 날)를 중요하게 봅니다.</p><div class="rule">V3 현재 기준: 지수 50일선·200일선 및 장기 상승 여부로 보수적 대체 → 추후 추세확인일 엔진 추가</div></div></article>
+    </div>
+  </section>
+
+  <section class="section explain-section">
+    <div class="section-kicker">GLOSSARY · 용어 사전</div>
+    <h2>화면에 나오는 용어를 쉽게 풀면 — 숫자를 어떻게 해석해야 하는지까지</h2>
+    <div class="glossary-grid">
+      <details open><summary>RS · 상대강도</summary><p>“이 종목이 시장보다 얼마나 강한가”를 보는 지표입니다. 예를 들어 코스피가 3개월 동안 +5% 올랐는데 A종목이 +25% 올랐다면 A종목의 상대강도가 강합니다. V3의 일반 RS와 CAN SLIM의 오닐식 RS는 계산 기간이 다르므로 별도로 표시합니다.</p></details>
+      <details><summary>YoY · 전년동기 대비</summary><p><strong>Year over Year</strong>의 약자입니다. 2026년 2분기 매출을 2025년 2분기와 비교합니다. 계절성이 있는 기업을 전분기와 비교할 때 생기는 왜곡을 줄이는 데 유용합니다.</p></details>
+      <details><summary>EPS · 주당순이익</summary><p><strong>Earnings Per Share</strong>. 순이익을 주식 수로 나눈 값입니다. EPS가 1,000원에서 1,300원으로 증가했다면 EPS 성장률은 +30%입니다. CAN SLIM의 C와 A에서 핵심적으로 사용합니다.</p></details>
+      <details><summary>CAGR · 연평균복합성장률</summary><p>여러 해 동안의 성장률을 “매년 같은 속도로 성장했다고 가정했을 때의 평균 성장률”로 바꾼 값입니다. 예를 들어 EPS가 3년 동안 100→200으로 늘었다면 단순 평균이 아니라 복리 기준 성장 속도를 계산합니다.</p></details>
+      <details><summary>ROE · 자기자본이익률</summary><p><strong>Return on Equity</strong>. 주주가 넣어둔 자기자본 100원으로 몇 원의 순이익을 냈는지 봅니다. ROE 20%라면 자기자본 100원당 약 20원의 이익을 냈다는 뜻입니다.</p></details>
+      <details><summary>52주 고점比</summary><p>현재 주가가 최근 52주 최고가의 몇 % 수준인지 나타냅니다. 98%라면 최고가보다 약 2% 아래입니다. “52주 고점比 100%”는 현재가가 사실상 52주 최고가라는 뜻입니다.</p></details>
+      <details><summary>고점 낙폭 · Drawdown</summary><p>최근 고점에서 현재가까지 얼마나 떨어졌는지입니다. -20%라면 고점 대비 현재 주가가 20% 낮습니다. 상승 추세 주도주인지, 큰 조정에 들어갔는지를 볼 때 사용합니다.</p></details>
+      <details><summary>이동평균선 · MA</summary><p>최근 일정 기간의 평균 주가를 선으로 표시한 것입니다. MA20은 최근 20거래일 평균, MA200은 최근 200거래일 평균입니다. 짧은 평균선이 긴 평균선 위에 차례로 놓이면 상승 추세가 강하다고 해석합니다.</p></details>
+      <details><summary>정배열</summary><p>현재가 &gt; 단기 이동평균선 &gt; 중기 이동평균선 &gt; 장기 이동평균선 순서로 위에서 아래로 배열된 상태입니다. V3의 일봉 정배열은 현재가 &gt; MA20 &gt; MA60 &gt; MA120 &gt; MA200입니다.</p></details>
+      <details><summary>Stage 2</summary><p>스탠 와인스타인·미너비니 계열에서 말하는 본격적인 상승 추세 구간입니다. 주가가 장기 이동평균선 위에 있고 장기 평균선도 상승하며, 52주 고점에 비교적 가까운지를 함께 봅니다.</p></details>
+      <details><summary>거래량 배수</summary><p>오늘 거래량을 최근 20일 평균 거래량으로 나눈 값입니다. 1.0x는 평소 수준, 2.0x는 평소의 2배입니다. 주가 상승과 함께 거래량이 급증하면 큰 자금의 매수 가능성을 확인하는 단서가 됩니다.</p></details>
+      <details><summary>섹터 액션</summary><p>개별 종목 한두 개가 아니라 같은 세부 업종의 여러 종목이 함께 강해지는지를 점수화한 것입니다. 평균 RS, 60일선 위 종목 비율, 신고가 종목 비율, 거래량, Stage 2 비율을 함께 봅니다.</p></details>
+      <details><summary>기관 후원 · Sponsorship</summary><p>뮤추얼펀드·연기금·자산운용사 등 전문 투자기관이 해당 종목을 보유하거나 보유량을 늘리는 현상입니다. CAN SLIM의 I는 단순 하루 순매수보다 “좋은 기관들이 지속해서 참여하는가”를 중시합니다.</p></details>
+      <details><summary>희석 · Dilution</summary><p>유상증자·전환사채 전환·스톡옵션 등으로 주식 수가 늘어나 기존 주주의 1주당 몫이 줄어드는 현상입니다. 사업가치가 그대로인데 주식 수가 100주에서 120주로 늘면 기존 1주의 경제적 몫은 작아집니다.</p></details>
+      <details><summary>돌파 · Breakout</summary><p>주가가 일정 기간의 박스권·베이스 상단을 거래량과 함께 넘어서는 움직임입니다. CAN SLIM에서는 좋은 기업을 아무 가격에 사는 것이 아니라 적절한 차트 패턴의 매수 지점을 중요하게 봅니다.</p></details>
+
+      <details><summary>신규 주도 후보 · BUY</summary><p>현재 엔진에서는 <strong>Stage 2 + 성장주 6조건 5개 이상 + RS 70 이상</strong>을 동시에 만족할 때 붙습니다. “무조건 매수”라는 뜻이 아니라, 다른 종목보다 먼저 상세 분석할 가치가 있는 우선 검토 후보라는 뜻입니다.</p></details>
+      <details><summary>홀딩 · HOLD</summary><p>직전 갱신에서 이미 신규 주도 후보였고 이번에도 같은 핵심 조건을 유지할 때 표시합니다. 신규 진입 신호와 기존 강세 유지 신호를 구분하기 위해 BUY를 계속 반복 표시하지 않습니다.</p></details>
+      <details><summary>관망 · WATCH</summary><p>성장주 6조건 중 4개 이상, RS 60 이상처럼 상당수 조건은 맞지만 아직 Stage 2나 상대강도가 충분하지 않은 종목입니다. “나쁜 종목”이 아니라 다음 변화를 기다리는 후보군입니다.</p></details>
+      <details><summary>청산·회피 · EXIT</summary><p>현재 엔진에서는 주가가 60일 이동평균선 아래로 내려간 경우 추세 훼손 신호로 표시합니다. 실제 매도 여부는 보유단가·실적·시장 상황까지 함께 판단해야 합니다.</p></details>
+      <details><summary>Breadth · 상승 폭의 넓이</summary><p>업종이나 시장에서 몇 개의 대장주만 오르는지, 아니면 많은 종목이 함께 상승하는지를 뜻합니다. 예를 들어 10종목 중 8종목이 60일선 위라면 Breadth 80%입니다. 넓은 상승은 섹터 추세의 신뢰도를 높입니다.</p></details>
+      <details><summary>20개월선</summary><p>월봉 종가 기준 최근 20개월 평균입니다. 대략 1년 8개월의 장기 평균 가격입니다. 주가가 이 선 위에서 움직이면 장기 상승 추세가 살아 있을 가능성을 높게 봅니다.</p></details>
+      <details><summary>50·60·120·150·200일선은 왜 여러 개 보나</summary><p>각 선은 서로 다른 투자자의 평균 매입단가를 대략적으로 보여줍니다. 50~60일선은 중기, 120~150일선은 중장기, 200일선은 장기 추세 확인용으로 씁니다. 여러 선이 모두 상승하며 정배열될수록 서로 다른 기간의 투자자들이 수익구간에 있을 가능성이 커집니다.</p></details>
+      <details><summary>52주 신고가가 왜 좋은가</summary><p>“비싸 보인다”와 “강하다”는 다릅니다. 신고가 부근에는 위쪽에 과거 매수자의 본전 매물이 상대적으로 적고, 시장이 기업의 새 정보를 가격에 반영하고 있을 가능성이 있습니다. 다만 과열·클라이맥스 가능성은 거래량과 상승 속도를 함께 봐야 합니다.</p></details>
+
+      <details><summary>LIVE · CACHED · STALE</summary><p><strong>LIVE</strong>는 이번 갱신에서 새 데이터를 정상적으로 받았다는 뜻입니다. <strong>CACHED</strong>는 데이터 공급처가 잠시 실패해 마지막 정상 데이터를 대신 사용했다는 뜻입니다. <strong>STALE</strong>은 마지막 데이터가 오래되어 투자 판단에 바로 쓰면 안 된다는 경고입니다.</p></details>
+      <details><summary>데이터 캐시(Cache)</summary><p>마지막으로 정상 수집한 주가·거래량을 파일로 보관해두는 장치입니다. 데이터 제공처가 하루 장애를 일으켜도 대시보드가 통째로 비어버리지 않게 합니다. 단, 오래된 값은 반드시 STALE 경고를 붙입니다.</p></details>
+      <details><summary>데이터 소스(Source)</summary><p>가격·거래량은 여러 공급처를 순서대로 시도하고, 한국기업 실적은 OpenDART를 공식 공시 원천으로 사용하도록 설계했습니다. 화면에는 실제로 어떤 경로에서 값을 가져왔는지를 표시합니다.</p></details>
+          <details><summary>시가총액 1조원 필터</summary><p>시가총액은 <strong>주가 × 상장주식수</strong>입니다. 기본값은 1조원 이상으로 설정했습니다. 작은 종목의 낮은 유동성·가격 왜곡을 줄이려는 1차 안전장치입니다. 데이터가 충분히 검증되지 않은 날에는 이 필터를 자동으로 끄고 화면에 표시합니다.</p></details>
+      <details><summary>외국인·기관 20일 순매수</summary><p>최근 약 20거래일 동안 매수금액에서 매도금액을 뺀 누적값입니다. +500억원이면 해당 투자자군이 20일 동안 500억원을 순매수했다는 뜻입니다. 하루 수급보다 지속성을 보기 위해 20일 누적을 주로 사용합니다.</p></details>
+      <details><summary>연기금·사모 수급</summary><p>기관합계 안에서도 성격이 다릅니다. 연기금은 장기 자금, 사모는 보다 적극적인 운용자금 성격이 강합니다. 특정 투자자 하나의 매수만으로 좋은 종목이라고 판정하지 않고 가격·실적·RS와 같이 봅니다.</p></details>
+          <details><summary>실적 리비전 · Revision</summary><p>증권사들이 예상하는 미래 EPS·영업이익이 시간이 지나며 올라가는지 내려가는지 보는 지표입니다. 예를 들어 4주 전 내년 EPS 예상치가 10,000원이었는데 현재 11,000원이면 +10% 리비전입니다. 주가가 강한데 실적 추정치도 같이 올라가는 종목을 더 신뢰할 수 있습니다.</p></details>
+      <details><summary>공시 촉매 · Catalyst</summary><p>주가와 이익 전망을 바꿀 수 있는 새로운 사건입니다. 대규모 공급계약, 신규 시설투자, 인수, 기술이전 등이 대표적입니다. 반대로 유상증자·전환사채처럼 주식 수를 늘릴 수 있는 공시는 희석 리스크로 별도 표시합니다.</p></details>
+    </div>
+  </section>
+
+  <footer class="footer">V8는 DART 최근 공시 촉매와 FnGuide 컨센서스 일일 스냅샷을 추가했습니다. 4주 누적 데이터가 쌓이면 EPS·영업이익 리비전 상향/하향을 자동 판정합니다.</footer>
+</div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="detail-title"><h3 id="detailName">—</h3><div id="detailSub">—</div></div>
+    <button class="close" id="close" aria-label="닫기">×</button>
+  </div>
+  <div class="drawer-body">
+    <div class="detail-topline"><div id="detailSignal"></div><button id="detailWatch" class="watch-btn">☆ 관심종목</button></div>
+    <div class="detail-grid">
+      <div class="dcard"><div class="k">종합점수</div><div class="v" id="dScore">—</div></div>
+      <div class="dcard"><div class="k">일반 RS</div><div class="v" id="dRS">—</div></div>
+      <div class="dcard"><div class="k">CAN SLIM</div><div class="v" id="dCanSlim">—</div></div>
+      <div class="dcard"><div class="k">오닐식 RS</div><div class="v" id="dOneilRS">—</div></div>
+      <div class="dcard"><div class="k">52주 고점比</div><div class="v" id="dHigh">—</div></div>
+      <div class="dcard"><div class="k">거래량</div><div class="v" id="dVol">—</div></div>
+      <div class="dcard"><div class="k">6조건</div><div class="v" id="dCond">—</div></div>
+      <div class="dcard"><div class="k">Stage 2</div><div class="v" id="dStage">—</div></div>
+      <div class="dcard"><div class="k">당일 등락</div><div class="v" id="dDay">—</div></div>
+      <div class="dcard"><div class="k">고점 낙폭</div><div class="v" id="dDD">—</div></div>
+      <div class="dcard"><div class="k">시가총액</div><div class="v" id="dMcap">—</div></div>
+      <div class="dcard"><div class="k">외국인 20일</div><div class="v" id="dForeign">—</div></div>
+      <div class="dcard"><div class="k">기관 20일</div><div class="v" id="dInst">—</div></div>
+      <div class="dcard"><div class="k">연기금 20일</div><div class="v" id="dPension">—</div></div>
+      <div class="dcard"><div class="k">EPS 리비전 4주</div><div class="v" id="dEpsRev">—</div></div>
+      <div class="dcard"><div class="k">영업익 리비전 4주</div><div class="v" id="dOpRev">—</div></div>
+    </div>
+    <div class="whybox"><div class="k">왜 이 판정이 나왔나</div><div id="detailWhy">—</div></div>
+    <div class="chartbox"><canvas id="chart"></canvas></div>
+    <h2 class="detail-section-title">최근 공시 촉매 · DART</h2>
+    <div id="catalystList" class="catalyst-list"></div>
+
+    <h2 class="detail-section-title">CAN SLIM 7항목 상세</h2>
+    <div id="canSlimSummary" class="cs-summary"></div>
+    <div class="canslim-detail" id="canSlimDetail"></div>
+
+    <h2 class="detail-section-title">성장주 6조건 상세</h2>
+    <div class="condition-list" id="conditions"></div>
+  </div>
+</aside>
+
+<script>
+window.WAMO_DATA = {"meta": {"title": "WAMO MARKET RADAR V8", "mode": "DEMO", "asOf": "2026-08-14", "updatedAt": "2026-08-14T22:00+09:00", "source": "UI-only demo; CAN SLIM C/A/I/M real datasets intentionally not fabricated", "universeCount": 13, "successCount": 13, "errorCount": 0, "note": "화면 검수용 DEMO입니다. 실제 업데이트에서는 가격·거래량과 CAN SLIM 기술항목을 계산하고, 재무/기관 데이터가 없는 항목은 UNKNOWN으로 남깁니다.", "dataHealth": {"liveCount": 0, "cachedCount": 0, "staleCount": 0, "failedCount": 0, "dartConnected": false, "message": "데모 화면입니다."}, "universeFunnel": {"listed": 13, "liquidityPass": 13, "deepScanned": 13, "growth4plus": 12, "stage2": 6, "buy": 6, "liquidityThresholdKRW": 10000000000, "marketCapThresholdKRW": 1000000000000, "marketCapEnforced": false, "marketCapPass": 13}, "marketContextMeta": {"status": "DEMO", "source": "not connected", "message": "실제 자동 실행 후 수급/시총이 표시됩니다."}, "consensusMeta": {"status": "DEMO"}, "catalystMeta": {"status": "DEMO"}}, "sectors": [{"name": "전자부품", "score": 87, "rsPercentile": 99.0, "breadth60": null, "newHighPct": 0.0, "volumeHeat": null, "stage2Pct": 0.0, "action": "강화", "leaders": ["삼성전기"], "memberCount": 1}, {"name": "전자제품", "score": 82, "rsPercentile": 79.0, "breadth60": null, "newHighPct": 0.0, "volumeHeat": null, "stage2Pct": 100.0, "action": "강화", "leaders": ["LG전자"], "memberCount": 1}, {"name": "통신", "score": 71, "rsPercentile": 57.0, "breadth60": null, "newHighPct": 0.0, "volumeHeat": null, "stage2Pct": 0.0, "action": "상승", "leaders": ["SK텔레콤"], "memberCount": 1}, {"name": "자동차부품", "score": 68, "rsPercentile": 71.0, "breadth60": null, "newHighPct": 100.0, "volumeHeat": null, "stage2Pct": 50.0, "action": "상승", "leaders": ["DN오토모티브", "금호타이어"], "memberCount": 2}, {"name": "에너지", "score": 67, "rsPercentile": 81.0, "breadth60": null, "newHighPct": 100.0, "volumeHeat": null, "stage2Pct": 100.0, "action": "상승", "leaders": ["GS"], "memberCount": 1}, {"name": "반도체", "score": 67, "rsPercentile": 85.0, "breadth60": null, "newHighPct": 0.0, "volumeHeat": null, "stage2Pct": 0.0, "action": "상승", "leaders": ["SK하이닉스", "삼성전자"], "memberCount": 2}, {"name": "화장품", "score": 64, "rsPercentile": 71.0, "breadth60": null, "newHighPct": 100.0, "volumeHeat": null, "stage2Pct": 100.0, "action": "상승", "leaders": ["한국콜마"], "memberCount": 1}, {"name": "로봇·자동화", "score": 63, "rsPercentile": 76.5, "breadth60": null, "newHighPct": 0.0, "volumeHeat": null, "stage2Pct": 50.0, "action": "상승", "leaders": ["현대무벡스", "에스피지"], "memberCount": 2}, {"name": "전기장비", "score": 62, "rsPercentile": 70.0, "breadth60": null, "newHighPct": 100.0, "volumeHeat": null, "stage2Pct": 100.0, "action": "상승", "leaders": ["지엔씨에너지"], "memberCount": 1}, {"name": "2차전지", "score": 59, "rsPercentile": 60.0, "breadth60": null, "newHighPct": 0.0, "volumeHeat": null, "stage2Pct": 0.0, "action": "상승", "leaders": ["삼성SDI"], "memberCount": 1}], "stocks": [{"ticker": "009150.KS", "name": "삼성전기", "market": "KOREA", "sector": "전자부품", "date": "2026-08-14", "close": null, "chg1d": 4.0, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 99, "oneilRsRaw": null, "oneilRsPercentile": 99, "demandRatio": 1.85, "volumeRatio": 2.8, "high52Ratio": 69, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": false, "일봉 정배열": false}, "conditionCount": 4, "stage2Checks": {}, "stage2Core": false, "trendTemplate": false, "score": 75, "signal": "EXIT", "signalReason": "60일선 이탈", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 69.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 1.85x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "PASS", "value": "오닐식 RS 예시 99 · 섹터 87점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 2, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": true}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "066570.KS", "name": "LG전자", "market": "KOREA", "sector": "전자제품", "date": "2026-08-14", "close": null, "chg1d": 3.6, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 79, "oneilRsRaw": null, "oneilRsPercentile": 79, "demandRatio": 2.04, "volumeRatio": 3.1, "high52Ratio": 55, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": true, "일봉 정배열": true}, "conditionCount": 6, "stage2Checks": {}, "stage2Core": true, "trendTemplate": true, "score": 72, "signal": "BUY", "signalReason": "신규 주도 후보", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 55.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 2.04x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 79 · 섹터 82점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 1, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "078930.KS", "name": "GS", "market": "KOREA", "sector": "에너지", "date": "2026-08-14", "close": null, "chg1d": 8.6, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 81, "oneilRsRaw": null, "oneilRsPercentile": 81, "demandRatio": 1.35, "volumeRatio": 2.0, "high52Ratio": 100, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": true, "일봉 정배열": true}, "conditionCount": 6, "stage2Checks": {}, "stage2Core": true, "trendTemplate": true, "score": 65, "signal": "HOLD", "signalReason": "기존 신호 유지", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "PASS", "value": "52주 고점比 100.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 1.35x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "PASS", "value": "오닐식 RS 예시 81 · 섹터 67점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 3, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": true}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "005930.KS", "name": "삼성전자", "market": "KOREA", "sector": "반도체", "date": "2026-08-14", "close": null, "chg1d": 2.0, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 80, "oneilRsRaw": null, "oneilRsPercentile": 80, "demandRatio": 0.97, "volumeRatio": 1.4, "high52Ratio": 76, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": false, "일봉 정배열": false}, "conditionCount": 4, "stage2Checks": {}, "stage2Core": false, "trendTemplate": false, "score": 65, "signal": "EXIT", "signalReason": "60일선 이탈", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 76.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "FAIL", "value": "가격·거래량 수요 proxy 0.97x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "PASS", "value": "오닐식 RS 예시 80 · 섹터 67점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 1, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "007340.KS", "name": "DN오토모티브", "market": "KOREA", "sector": "자동차부품", "date": "2026-08-14", "close": null, "chg1d": 16.9, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 75, "oneilRsRaw": null, "oneilRsPercentile": 75, "demandRatio": 3.0, "volumeRatio": 8.4, "high52Ratio": 100, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": true, "일봉 정배열": true}, "conditionCount": 6, "stage2Checks": {}, "stage2Core": true, "trendTemplate": true, "score": 64, "signal": "BUY", "signalReason": "신규 주도 후보", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "PASS", "value": "52주 고점比 100.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 3.00x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 75 · 섹터 68점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 2, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "073240.KS", "name": "금호타이어", "market": "KOREA", "sector": "자동차부품", "date": "2026-08-14", "close": null, "chg1d": -0.2, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 67, "oneilRsRaw": null, "oneilRsPercentile": 67, "demandRatio": 2.52, "volumeRatio": 4.2, "high52Ratio": 100, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": true, "일봉 정배열": false}, "conditionCount": 5, "stage2Checks": {}, "stage2Core": true, "trendTemplate": false, "score": 64, "signal": "WATCH", "signalReason": "게이트 일부 미충족", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "PASS", "value": "52주 고점比 100.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 2.52x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 67 · 섹터 68점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 2, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "000660.KS", "name": "SK하이닉스", "market": "KOREA", "sector": "반도체", "date": "2026-08-14", "close": null, "chg1d": 4.0, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 90, "oneilRsRaw": null, "oneilRsPercentile": 90, "demandRatio": 0.91, "volumeRatio": 1.3, "high52Ratio": 56, "drawdown": -14.3, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": false, "월봉 20개월선 위": false, "일봉 정배열": false}, "conditionCount": 3, "stage2Checks": {}, "stage2Core": false, "trendTemplate": false, "score": 62, "signal": "EXIT", "signalReason": "60일선 이탈", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 56.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "FAIL", "value": "가격·거래량 수요 proxy 0.91x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "PASS", "value": "오닐식 RS 예시 90 · 섹터 67점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 1, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "058610.KQ", "name": "에스피지", "market": "KOREA", "sector": "로봇·자동화", "date": "2026-08-14", "close": null, "chg1d": 5.6, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 76, "oneilRsRaw": null, "oneilRsPercentile": 76, "demandRatio": 2.35, "volumeRatio": 3.6, "high52Ratio": 75, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": true, "일봉 정배열": false}, "conditionCount": 5, "stage2Checks": {}, "stage2Core": true, "trendTemplate": true, "score": 61, "signal": "BUY", "signalReason": "신규 주도 후보", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 75.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 2.35x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 76 · 섹터 63점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 1, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "161890.KQ", "name": "한국콜마", "market": "KOREA", "sector": "화장품", "date": "2026-08-14", "close": null, "chg1d": 0.5, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 71, "oneilRsRaw": null, "oneilRsPercentile": 71, "demandRatio": 1.66, "volumeRatio": 2.5, "high52Ratio": 100, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": true, "일봉 정배열": true}, "conditionCount": 6, "stage2Checks": {}, "stage2Core": true, "trendTemplate": true, "score": 61, "signal": "HOLD", "signalReason": "기존 신호 유지", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "PASS", "value": "52주 고점比 100.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 1.66x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 71 · 섹터 64점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 2, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "017670.KS", "name": "SK텔레콤", "market": "KOREA", "sector": "통신", "date": "2026-08-14", "close": null, "chg1d": 10.2, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 57, "oneilRsRaw": null, "oneilRsPercentile": 57, "demandRatio": 1.98, "volumeRatio": 3.0, "high52Ratio": 80, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": false, "일봉 정배열": false}, "conditionCount": 4, "stage2Checks": {}, "stage2Core": true, "trendTemplate": false, "score": 60, "signal": "WATCH", "signalReason": "게이트 일부 미충족", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 80.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 1.98x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 57 · 섹터 71점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 1, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "006400.KS", "name": "삼성SDI", "market": "KOREA", "sector": "2차전지", "date": "2026-08-14", "close": null, "chg1d": 5.8, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 60, "oneilRsRaw": null, "oneilRsPercentile": 60, "demandRatio": 1.48, "volumeRatio": 2.2, "high52Ratio": 72, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": false, "일봉 정배열": false}, "conditionCount": 4, "stage2Checks": {}, "stage2Core": true, "trendTemplate": false, "score": 59, "signal": "WATCH", "signalReason": "게이트 일부 미충족", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 72.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 1.48x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 60 · 섹터 59점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 1, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "119850.KQ", "name": "지엔씨에너지", "market": "KOREA", "sector": "전기장비", "date": "2026-08-14", "close": null, "chg1d": -3.4, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 70, "oneilRsRaw": null, "oneilRsPercentile": 70, "demandRatio": 1.4, "volumeRatio": 2.4, "high52Ratio": 99, "drawdown": -0.9, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": true, "일봉 정배열": false}, "conditionCount": 5, "stage2Checks": {}, "stage2Core": true, "trendTemplate": true, "score": 55, "signal": "BUY", "signalReason": "신규 주도 후보", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "PASS", "value": "52주 고점比 99.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 1.40x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 70 · 섹터 62점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 2, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}, {"ticker": "329180.KQ", "name": "현대무벡스", "market": "KOREA", "sector": "로봇·자동화", "date": "2026-08-14", "close": null, "chg1d": 10.7, "ret252": null, "rs5": null, "rs20": null, "rs60": null, "rsBlend": null, "rsPercentile": 77, "oneilRsRaw": null, "oneilRsPercentile": 77, "demandRatio": 2.79, "volumeRatio": 4.3, "high52Ratio": 60, "drawdown": 0.0, "ma20": null, "ma50": null, "ma60": null, "ma120": null, "ma150": null, "ma200": null, "ma20m": null, "conditions": {"장기 우상향": true, "최근 1년 내 장기 신고가": true, "고점 대비 -30% 이내": true, "52주 신고가권(3% 이내)": true, "월봉 20개월선 위": false, "일봉 정배열": false}, "conditionCount": 4, "stage2Checks": {}, "stage2Core": true, "trendTemplate": false, "score": 55, "signal": "WATCH", "signalReason": "게이트 일부 미충족", "canSlim": {"items": {"C": {"status": "UNKNOWN", "value": "EPS 데이터 미연결", "criterion": "최근 분기 EPS YoY ≥ +25%", "why": "데모에서는 실제 분기 재무 데이터를 만들지 않습니다."}, "A": {"status": "UNKNOWN", "value": "연간 EPS 데이터 미연결", "criterion": "최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%", "why": "데모에서는 실제 연간 재무 데이터를 만들지 않습니다."}, "N": {"status": "FAIL", "value": "52주 고점比 60.0%", "criterion": "확인된 신규 촉매 OR 현재가 ≥ 52주 고점의 95%", "why": "데모에서는 뉴스 촉매 대신 52주 고점 근접 여부만 기술적으로 표시합니다."}, "S": {"status": "PASS", "value": "가격·거래량 수요 proxy 2.79x", "criterion": "상승일/하락일 거래량 우위 + 과도한 희석 없음", "why": "데모용 가격·거래량 예시값입니다. 실제 주식수 희석 데이터는 연결하지 않았습니다."}, "L": {"status": "FAIL", "value": "오닐식 RS 예시 77 · 섹터 63점", "criterion": "오닐식 12개월 가중 RS ≥ 80 + 섹터 점수 ≥ 58", "why": "V3 UI 확인을 위해 데모 RS를 사용합니다. 실제 버전은 12개월 가중 RS를 별도로 계산합니다."}, "I": {"status": "UNKNOWN", "value": "기관 데이터 미연결", "criterion": "기관 보유/기관 순매수 추세 개선", "why": "데모에서는 기관 데이터를 임의 생성하지 않습니다."}, "M": {"status": "UNKNOWN", "value": "시장 방향 데이터 미연결", "criterion": "시장 상승 추세 확인", "why": "데모에는 코스피 벤치마크 시계열을 넣지 않았습니다. 실제 업데이트에서는 지수 추세를 자동 계산합니다."}}, "passCount": 1, "measuredCount": 3, "unknownCount": 4, "fullMatch": false, "strongCandidate": false, "preliminary": false}, "entered": null, "actionAge": null, "history": [], "dataSource": "DEMO", "dataStatus": "DEMO", "staleDays": 0, "market_cap_krw": null, "foreign_netbuy_20d": null, "institution_netbuy_20d": null, "pension_netbuy_20d": null, "revision_signal": "UNKNOWN", "eps_revision_4w": null, "op_revision_4w": null, "catalysts": []}], "errors": []};
+
+</script>
+<script>
+(() => {
+  const data = window.WAMO_DATA || {meta:{}, sectors:[], stocks:[]};
+  let activeTab = 'all', sectorFilter = '', signalFilter = '', query='', detailStock=null;
+  const watch = new Set(JSON.parse(localStorage.getItem('wamoWatchlist') || '[]'));
+  const $ = s => document.querySelector(s);
+  const fmt = (v,d=1) => v===null || v===undefined || Number.isNaN(Number(v)) ? '—' : Number(v).toFixed(d);
+  const signed = (v,d=1,suffix='%') => v===null || v===undefined || Number.isNaN(Number(v)) ? '—' : `${v>=0?'+':''}${Number(v).toFixed(d)}${suffix}`;
+  const cls = v => (v||0)>=0 ? 'pos' : 'neg';
+  const signalLabel = {BUY:'신규 주도 후보',HOLD:'홀딩',WATCH:'관망',EXIT:'청산·회피',NEUTRAL:'비주도'};
+  const csLetters = ['C','A','N','S','L','I','M'];
+  const csNames = {
+    C:'Current Quarterly Earnings · 최근 분기 이익',
+    A:'Annual Earnings Growth · 연간 이익 성장',
+    N:'New · 새로운 변화',
+    S:'Supply & Demand · 수요와 공급',
+    L:'Leader or Laggard · 주도주 여부',
+    I:'Institutional Sponsorship · 기관 후원',
+    M:'Market Direction · 시장 방향'
+  };
+
+  function statusLabel(status){
+    if(status==='PASS') return '충족';
+    if(status==='FAIL') return '미충족';
+    return '확인 필요';
+  }
+  function statusClass(status){ return status==='PASS'?'pass':status==='FAIL'?'fail':'unknown'; }
+  function csSummaryText(x){
+    const c=x.canSlim||{};
+    const pass=c.passCount||0, measured=c.measuredCount||0;
+    if(c.fullMatch) return `7/7 완전충족`;
+    if(c.strongCandidate) return `${pass}/${measured} 강한 후보`;
+    if(c.preliminary) return `${pass}/${measured} 예비후보`;
+    return `${pass}/${measured} 측정`;
+  }
+  function csBadge(x){
+    const c=x.canSlim||{};
+    const klass=c.fullMatch?'full':c.strongCandidate?'strong':c.preliminary?'prelim':'weak';
+    return `<span class="cs-badge ${klass}">${csSummaryText(x)}</span>`;
+  }
+
+  function setMeta(){
+    $('#mode').textContent = data.meta.mode || '—';
+    $('#mode').parentElement.classList.toggle('live', data.meta.mode==='LIVE');
+    $('#meta').innerHTML = `기준일 <b>${data.meta.asOf||'—'}</b><br>${data.meta.successCount||0}/${data.meta.universeCount||0}종목 계산`;
+    if(data.meta.mode==='DEMO') $('#demoBanner').classList.add('show');
+
+    const h=data.meta.dataHealth||{};
+    const fresh=h.liveCount||0, cached=h.cachedCount||0, stale=h.staleCount||0, failed=h.failedCount||0;
+    const hb=$('#healthBanner');
+    hb.classList.remove('good','warn','bad');
+    const level=stale>0||failed>0?'bad':cached>0?'warn':'good';
+    hb.classList.add(level);
+    $('#healthTitle').textContent = data.meta.mode==='DEMO' ? '데모 데이터 · 실제 투자용 아님' : (level==='good'?'데이터 정상':'일부 데이터 주의 필요');
+    $('#healthText').textContent = data.meta.mode==='DEMO'
+      ? '실제 자동갱신이 시작되면 여기에서 최신성·대체 데이터 사용 여부·DART 연결 상태를 바로 확인할 수 있습니다.'
+      : (h.message||`새 데이터 ${fresh}종목 · 마지막 정상값 사용 ${cached}종목 · 오래된 데이터 ${stale}종목 · 실패 ${failed}종목`);
+    $('#healthPills').innerHTML = [
+      `<span class="health-pill good">LIVE ${fresh}</span>`,
+      `<span class="health-pill ${cached?'warn':''}">CACHED ${cached}</span>`,
+      `<span class="health-pill ${stale?'bad':''}">STALE ${stale}</span>`,
+      `<span class="health-pill ${h.dartConnected?'good':'warn'}">DART ${h.dartConnected?'연결':'미연결'}</span>`
+    ].join('');
+  }
+
+  const krwBig=v=>{
+    if(v==null || !isFinite(Number(v))) return '—';
+    v=Number(v);
+    if(Math.abs(v)>=1e12) return `${(v/1e12).toFixed(1)}조`;
+    if(Math.abs(v)>=1e8) return `${(v/1e8).toFixed(0)}억`;
+    return Math.round(v).toLocaleString('ko-KR');
+  };
+  function setFunnel(){
+    const f=data.meta.universeFunnel||{};
+    const n=x=>x===null||x===undefined?'—':Number(x).toLocaleString('ko-KR');
+    $('#fListed').textContent=n(f.listed); $('#fLiquid').textContent=n(f.liquidityPass);
+    $('#fMarketCap').textContent=n(f.marketCapPass); $('#fScanned').textContent=n(f.deepScanned); $('#fGrowth').textContent=n(f.growth4plus);
+    $('#fStage2').textContent=n(f.stage2); $('#fBuy').textContent=n(f.buy);
+    let note='';
+    if(f.liquidityThresholdKRW) note+=`1차 기준: 50일 평균 거래대금 ${(f.liquidityThresholdKRW/100000000).toFixed(0)}억원 이상. `;
+    if(f.marketCapThresholdKRW) note+=f.marketCapEnforced
+      ? `시가총액 ${(f.marketCapThresholdKRW/1000000000000).toFixed(1)}조원 이상 기준도 적용 중입니다.`
+      : `시가총액 ${(f.marketCapThresholdKRW/1000000000000).toFixed(1)}조원 기준은 설정되어 있지만 검증된 KRX 시가총액 데이터 연결 전이라 아직 강제하지 않습니다.`;
+    $('#funnelNote').textContent=data.meta.mode==='DEMO'
+      ? '현재 데모는 기존 예시 종목만 보여줍니다. 실제 배포 후에는 KRX KIND에서 코스피·코스닥 전체 상장사를 자동으로 가져옵니다.'
+      : (note||'전체 시장 자동 스캔 결과입니다.');
+  }
+
+  function setStats(){
+    const s=data.stocks;
+    const buy=s.filter(x=>x.signal==='BUY').length;
+    const six=s.filter(x=>x.conditionCount===6).length;
+    const cs=s.filter(x=>x.canSlim && (x.canSlim.fullMatch || x.canSlim.strongCandidate)).length;
+    const st2=s.filter(x=>x.trendTemplate).length;
+    $('#statBuy').textContent=buy; $('#statSix').textContent=six; $('#statCanSlim').textContent=cs; $('#statStage2').textContent=st2;
+
+    const topBuys=s.filter(x=>x.signal==='BUY').sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,3);
+    const leader=data.sectors[0];
+    if(topBuys.length){
+      $('#heroTitle').textContent=`신규 주도 후보 ${buy}종목 포착`;
+      $('#heroDesc').textContent=`우선 ${topBuys.map(x=>x.name).join(' · ')} 순으로 확인할 만합니다.${leader?` 가장 강한 세부섹터는 ${leader.name}입니다.`:''} CAN SLIM은 재무·기관 데이터가 확인된 항목만 판정합니다.`;
+      $('#heroActions').innerHTML=topBuys.map(x=>`<button class="hero-chip" data-ticker="${x.ticker}">${x.name}<span>${x.conditionCount}/6 · RS ${fmt(x.rsPercentile,0)} · CAN ${csSummaryText(x)}</span></button>`).join('');
+      document.querySelectorAll('.hero-chip').forEach(b=>b.onclick=()=>openDetail(s.find(x=>x.ticker===b.dataset.ticker)));
+    } else {
+      $('#heroTitle').textContent='오늘 신규 주도 후보 없음';
+      $('#heroDesc').textContent=leader?`${leader.name} 섹터가 상대적으로 가장 강하지만 신규 후보 조건을 모두 통과한 종목은 없습니다.`:'조건을 통과한 종목이 없습니다.';
+    }
+  }
+
+  function renderSectors(){
+    const box=$('#sectorGrid'); box.innerHTML='';
+    data.sectors.slice(0,10).forEach((s,i)=>{
+      const d=document.createElement('button'); d.className=`sector ${sectorFilter===s.name?'selected':''}`;
+      d.innerHTML=`<div class="sector-top"><span class="rank">#${i+1}</span><span class="action">${s.action}</span></div><div class="name">${s.name}</div><div class="sector-score"><b>${fmt(s.score,0)}</b><span>/100</span></div><div class="progress"><span style="width:${Math.min(100,s.score||0)}%"></span></div><div class="mini"><span>RS ${fmt(s.rsPercentile,0)}</span><span>Stage2 ${fmt(s.stage2Pct,0)}%</span></div><div class="leaders">${(s.leaders||[]).slice(0,3).join(' · ')||'—'}</div>`;
+      d.onclick=()=>{sectorFilter = sectorFilter===s.name?'':s.name; renderSectors(); renderStocks(); document.getElementById('stocks').scrollIntoView({behavior:'smooth',block:'start'});};
+      box.appendChild(d);
+    });
+  }
+
+  function passesTab(x){
+    if(activeTab==='buy') return x.signal==='BUY';
+    if(activeTab==='canslim') return !!(x.canSlim && (x.canSlim.fullMatch || x.canSlim.strongCandidate || x.canSlim.preliminary));
+    if(activeTab==='six') return x.conditionCount>=4;
+    if(activeTab==='stage2') return x.trendTemplate;
+    if(activeTab==='newhigh') return (x.high52Ratio||0)>=97;
+    if(activeTab==='revision') return x.revision_signal==='UP';
+    if(activeTab==='watchlist') return watch.has(x.ticker);
+    return true;
+  }
+
+  function visibleStocks(){
+    return data.stocks.filter(x=>passesTab(x))
+      .filter(x=>!sectorFilter || x.sector===sectorFilter)
+      .filter(x=>!signalFilter || x.signal===signalFilter)
+      .filter(x=>!query || `${x.name} ${x.ticker} ${x.sector}`.toLowerCase().includes(query.toLowerCase()))
+      .sort((a,b)=>{
+        if(activeTab==='revision'){
+          const ar=Math.max(a.eps_revision_4w??-999,a.op_revision_4w??-999), br=Math.max(b.eps_revision_4w??-999,b.op_revision_4w??-999);
+          if(br!==ar) return br-ar;
+        }
+        if(activeTab==='canslim'){
+          const ap=(a.canSlim&&a.canSlim.passCount)||0, bp=(b.canSlim&&b.canSlim.passCount)||0;
+          if(bp!==ap) return bp-ap;
+        }
+        return (b.score||0)-(a.score||0);
+      });
+  }
+
+  function watchButton(x){ return `<button class="star ${watch.has(x.ticker)?'on':''}" data-watch="${x.ticker}" title="관심종목">${watch.has(x.ticker)?'★':'☆'}</button>`; }
+
+  function renderStocks(){
+    const rows=visibleStocks(); $('#count').textContent=`현재 ${rows.length}종목${sectorFilter?` · ${sectorFilter}만 보는 중`:''}`;
+    const body=$('#tbody'); body.innerHTML='';
+    const mobile=$('#mobileList'); mobile.innerHTML='';
+    if(!rows.length){
+      body.innerHTML='<tr><td colspan="13" class="empty">조건에 맞는 종목이 없습니다. CAN SLIM의 경우 C·A·I 데이터가 아직 연결되지 않았다면 완전충족 종목이 0개일 수 있습니다.</td></tr>';
+      mobile.innerHTML='<div class="empty-card">조건에 맞는 종목이 없습니다.</div>';
+      return;
+    }
+    rows.forEach((x,idx)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${watchButton(x)}</td><td>${idx+1}</td><td class="namecell"><b>${x.name}</b><div class="ticker">${x.ticker} · ${x.sector}<span class="data-tag ${(x.dataStatus||'').toLowerCase()}">${x.dataStatus||'DEMO'}</span></div></td><td><span class="signal sig-${x.signal}">${signalLabel[x.signal]||x.signal}</span></td><td><span class="scorebadge">${fmt(x.score,0)}</span></td><td>${fmt(x.rsPercentile,0)}</td><td>${csBadge(x)}</td><td class="${cls(x.chg1d)}">${signed(x.chg1d)}</td><td>${fmt(x.high52Ratio,0)}%</td><td>${fmt(x.volumeRatio,1)}x</td><td><b>${x.conditionCount}/6</b></td><td>${x.trendTemplate?'<span class="yes">YES</span>':'<span class="no">—</span>'}</td><td class="muted">${x.signalReason||''}</td>`;
+      tr.onclick=e=>{if(e.target.closest('.star')) return; openDetail(x)};
+      body.appendChild(tr);
+
+      const card=document.createElement('div'); card.className='stock-card';
+      card.innerHTML=`<div class="stock-card-top"><div><div class="stock-name">${x.name}</div><div class="ticker">${x.ticker} · ${x.sector}<span class="data-tag ${(x.dataStatus||'').toLowerCase()}">${x.dataStatus||'DEMO'}</span></div></div>${watchButton(x)}</div><div class="stock-card-signal"><span class="signal sig-${x.signal}">${signalLabel[x.signal]||x.signal}</span><b>${fmt(x.score,0)}점</b></div><div class="cs-mobile">${csBadge(x)}</div><div class="stock-metrics"><div><span>일반 RS</span><b>${fmt(x.rsPercentile,0)}</b></div><div><span>오닐식 RS</span><b>${fmt(x.oneilRsPercentile,0)}</b></div><div><span>6조건</span><b>${x.conditionCount}/6</b></div><div><span>거래량</span><b>${fmt(x.volumeRatio,1)}x</b></div><div><span>시총</span><b>${krwBig(x.market_cap_krw)}</b></div><div><span>기관20일</span><b>${krwBig(x.institution_netbuy_20d)}</b></div></div><div class="stock-reason">${x.signalReason||'—'}</div>`;
+      card.onclick=e=>{if(e.target.closest('.star')) return; openDetail(x)};
+      mobile.appendChild(card);
+    });
+    bindWatchButtons();
+  }
+
+  function bindWatchButtons(){
+    document.querySelectorAll('[data-watch]').forEach(b=>{
+      b.onclick=e=>{
+        e.stopPropagation(); const t=b.dataset.watch;
+        watch.has(t)?watch.delete(t):watch.add(t);
+        localStorage.setItem('wamoWatchlist',JSON.stringify([...watch]));
+        renderStocks();
+        if(detailStock && detailStock.ticker===t) updateDetailWatch();
+      };
+    });
+  }
+
+  function updateDetailWatch(){
+    if(!detailStock) return;
+    const on=watch.has(detailStock.ticker); $('#detailWatch').textContent=on?'★ 관심종목 저장됨':'☆ 관심종목'; $('#detailWatch').classList.toggle('on',on);
+  }
+
+  function renderCanSlimDetail(x){
+    const c=x.canSlim||{items:{},passCount:0,measuredCount:0,unknownCount:7};
+    $('#canSlimSummary').innerHTML=`<b>${csSummaryText(x)}</b><span>충족 ${c.passCount||0}개 · 판정 완료 ${c.measuredCount||0}개 · 확인 필요 ${c.unknownCount==null?7-(c.measuredCount||0):c.unknownCount}개</span><small>확인 필요는 “탈락”이 아니라 데이터가 아직 없어서 판정을 보류했다는 뜻입니다.</small>`;
+    const box=$('#canSlimDetail'); box.innerHTML='';
+    csLetters.forEach(letter=>{
+      const item=(c.items||{})[letter]||{status:'UNKNOWN',value:'—',criterion:'데이터 연결 후 판정',why:'아직 필요한 데이터가 없습니다.'};
+      const row=document.createElement('div'); row.className='cs-detail-row';
+      row.innerHTML=`<div class="cs-mini-letter">${letter}</div><div class="cs-detail-main"><div class="cs-detail-head"><b>${csNames[letter]}</b><span class="cs-status ${statusClass(item.status)}">${statusLabel(item.status)}</span></div><div class="cs-value">현재값: <strong>${item.value??'—'}</strong></div><div class="cs-criterion">판정기준: ${item.criterion||'—'}</div><p>${item.why||''}</p></div>`;
+      box.appendChild(row);
+    });
+  }
+
+
+  function renderCatalysts(x){
+    const box=$('#catalystList'); const rows=x.catalysts||[];
+    if(!rows.length){box.innerHTML='<div class="catalyst-empty">최근 45일 중요 공시가 없거나 DART 데이터가 아직 연결되지 않았습니다.</div>';return;}
+    box.innerHTML=rows.slice(0,8).map(r=>`<div class="catalyst-item ${r.polarity||''}"><span class="catalyst-date">${r.date||'—'}</span><span class="catalyst-cat">${r.category||'공시'}</span><span class="catalyst-report">${r.report||'—'}</span></div>`).join('');
+  }
+
+  function openDetail(x){
+    if(!x) return; detailStock=x;
+    $('#detailName').textContent=x.name; $('#detailSub').textContent=`${x.ticker} · ${x.sector} · ${x.date||data.meta.asOf} · ${x.dataSource||'데이터소스 확인 필요'} · ${x.dataStatus||'—'}`;
+    $('#detailSignal').innerHTML=`<span class="signal sig-${x.signal}">${signalLabel[x.signal]||x.signal}</span>`;
+    $('#dScore').textContent=fmt(x.score,0); $('#dRS').textContent=fmt(x.rsPercentile,0); $('#dCanSlim').textContent=csSummaryText(x); $('#dOneilRS').textContent=fmt(x.oneilRsPercentile,0);
+    $('#dHigh').textContent=`${fmt(x.high52Ratio,1)}%`; $('#dVol').textContent=`${fmt(x.volumeRatio,1)}x`;
+    $('#dCond').textContent=`${x.conditionCount}/6`; $('#dStage').textContent=x.trendTemplate?'YES':'NO'; $('#dDay').textContent=signed(x.chg1d); $('#dDD').textContent=signed(x.drawdown);
+    $('#dMcap').textContent=krwBig(x.market_cap_krw); $('#dForeign').textContent=krwBig(x.foreign_netbuy_20d); $('#dInst').textContent=krwBig(x.institution_netbuy_20d); $('#dPension').textContent=krwBig(x.pension_netbuy_20d);
+    $('#dEpsRev').textContent=signed(x.eps_revision_4w,1); $('#dOpRev').textContent=signed(x.op_revision_4w,1);
+    renderCatalysts(x);
+    $('#detailWhy').textContent=x.signalReason||'—'; updateDetailWatch();
+    const list=$('#conditions'); list.innerHTML=''; Object.entries(x.conditions||{}).forEach(([k,v])=>{list.innerHTML+=`<div class="condition-row"><span>${k}</span><span class="${v?'yes':'no'}">${v?'충족':'미충족'}</span></div>`});
+    renderCanSlimDetail(x); drawChart(x); $('#drawer').classList.add('open');
+  }
+
+  function drawChart(x){
+    const c=$('#chart'), ctx=c.getContext('2d'); const wrap=c.parentElement; const ratio=window.devicePixelRatio||1; c.width=wrap.clientWidth*ratio; c.height=330*ratio; c.style.width='100%'; c.style.height='330px'; ctx.setTransform(ratio,0,0,ratio,0,0);
+    const w=wrap.clientWidth,h=330; ctx.clearRect(0,0,w,h); ctx.fillStyle='#0a1120';ctx.fillRect(0,0,w,h);
+    const hist=x.history||[]; if(hist.length<20){ctx.fillStyle='#91a0bc';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('실제 주가 데이터 연결 후 차트가 이곳에 표시됩니다.',w/2,h/2);return;}
+    const closes=hist.map(r=>r.close), vols=hist.map(r=>r.volume||0); const ma=n=>closes.map((_,i)=>i<n-1?null:closes.slice(i-n+1,i+1).reduce((a,b)=>a+b,0)/n);
+    const lines=[{arr:closes,width:2},{arr:ma(20),width:1},{arr:ma(60),width:1},{arr:ma(120),width:1}];
+    const colors=['#eef3ff','#5da7ff','#f3c969','#9b8cff']; const vals=lines.flatMap(l=>l.arr.filter(v=>v!=null)); const min=Math.min(...vals),max=Math.max(...vals), pad=(max-min)*.08||1; const lo=min-pad,hi=max+pad;
+    const top=18,bottom=245,left=12,right=w-12; const X=i=>left+(right-left)*i/(closes.length-1); const Y=v=>top+(hi-v)*(bottom-top)/(hi-lo);
+    ctx.strokeStyle='#202b44';ctx.lineWidth=1;for(let j=0;j<5;j++){let y=top+(bottom-top)*j/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke()}
+    lines.forEach((l,li)=>{ctx.strokeStyle=colors[li];ctx.lineWidth=l.width;ctx.beginPath();let started=false;l.arr.forEach((v,i)=>{if(v==null)return;const x0=X(i),y0=Y(v);if(!started){ctx.moveTo(x0,y0);started=true}else ctx.lineTo(x0,y0)});ctx.stroke()});
+    const vmax=Math.max(...vols)||1; ctx.fillStyle='rgba(93,167,255,.28)'; vols.forEach((v,i)=>{const bh=(v/vmax)*58;ctx.fillRect(X(i)-1.2,h-18-bh,2.4,bh)});
+    ctx.fillStyle='#91a0bc';ctx.font='10px sans-serif';ctx.textAlign='left';ctx.fillText('가격 + 이동평균선 20/60/120일',12,13);ctx.textAlign='right';ctx.fillText(hist[hist.length-1].date,w-12,h-4);
+  }
+
+  function bind(){
+    document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(z=>z.classList.remove('active'));b.classList.add('active');activeTab=b.dataset.tab;renderStocks()});
+    $('#search').oninput=e=>{query=e.target.value;renderStocks()}; $('#signal').onchange=e=>{signalFilter=e.target.value;renderStocks()};
+    $('#clear').onclick=()=>{query='';sectorFilter='';signalFilter='';$('#search').value='';$('#signal').value='';renderSectors();renderStocks()};
+    $('#close').onclick=()=>$('#drawer').classList.remove('open');
+    $('#detailWatch').onclick=()=>{if(!detailStock)return;watch.has(detailStock.ticker)?watch.delete(detailStock.ticker):watch.add(detailStock.ticker);localStorage.setItem('wamoWatchlist',JSON.stringify([...watch]));updateDetailWatch();renderStocks()};
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#drawer').classList.remove('open')});
+    window.addEventListener('resize',()=>{if($('#drawer').classList.contains('open')&&detailStock)drawChart(detailStock)});
+  }
+
+  setMeta(); setFunnel(); setStats(); renderSectors(); bind(); renderStocks();
+})();
+
+</script>
+</body>
+</html>
