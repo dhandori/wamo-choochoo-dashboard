@@ -11,7 +11,6 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-
     steps:
       - name: 파일 가져오기
         uses: actions/checkout@v6
@@ -25,10 +24,10 @@ jobs:
         run: pip install pandas openpyxl xlrd lxml html5lib beautifulsoup4
 
       - name: 주식 데이터 갱신
-       env:
-       OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
+        env:
+          OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
         run: python wamo_update_v3.py
-        
+
       - name: 새 결과 저장
         run: |
           git config user.name "wamo-dashboard-bot"
