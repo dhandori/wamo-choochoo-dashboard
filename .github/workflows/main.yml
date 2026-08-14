@@ -26,7 +26,7 @@ jobs:
       - name: 주식 데이터 갱신
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
-        run: python wamo_update_v3.py
+        run: python wamo_update_v4.py
 
       - name: 새 결과 저장
         run: |
