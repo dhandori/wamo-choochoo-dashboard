@@ -11,6 +11,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: 파일 가져오기
         uses: actions/checkout@v6
@@ -21,17 +22,17 @@ jobs:
           python-version: '3.12'
 
       - name: 필요한 도구 설치
-        run: pip install pandas openpyxl xlrd lxml html5lib beautifulsoup4
+        run: pip install pandas openpyxl xlrd lxml html5lib beautifulsoup4 requests pykrx
 
-      - name: 주식 데이터 갱신
+      - name: 전체 투자 데이터 갱신
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
-        run: python wamo_update_v7.py
+        run: python wamo_update_final.py
 
       - name: 새 결과 저장
         run: |
           git config user.name "wamo-dashboard-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add index.html
+          git add index.html wamo_consensus_history.json
           git diff --cached --quiet || git commit -m "auto update dashboard"
           git push
