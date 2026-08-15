@@ -45,8 +45,9 @@ PROFILE_PRIORITY_MAX = 10
 PROFILE_BACKFILL_PER_RUN = 8
 PROFILE_RETRY_DAYS = 3
 CONSENSUS_HISTORY = ROOT / "wamo_consensus_history.json"
-CONSENSUS_TARGET_MAX = 100
-CONSENSUS_WORKERS = 6
+CONSENSUS_TARGET_MAX = 20
+CONSENSUS_WORKERS = 2
+CONSENSUS_CACHE_DAYS = 3
 
 FUND_PREFIXES = (
     "KODEX", "TIGER", "ACE", "RISE", "SOL", "PLUS", "HANARO",
@@ -581,7 +582,7 @@ def market_direction():
             "close": c[-1],
             "ma50": ma50,
             "ma200": ma200,
-            "note": "주가·거래량·6조건·Stage 2·RS·OpenDART 재무/공시 + 섹터 대장주/주요기업 + OpenDART 사업보고서 원문만 사용해 핵심사업·제품·고객·수익구조를 투자용으로 구조화해 자동갱신합니다. 수급·컨센서스는 사용자 설정에 따라 사용하지 않습니다.",
+            "note": "주가·거래량·6조건·Stage 2·RS·OpenDART 공식 재무/공시 + 섹터 대장주/주요기업을 사용합니다. FnGuide 컨센서스는 후보 종목의 보조 확인으로만 분리하며 시장방향 판정에는 넣지 않습니다.",
         }
     except Exception as e:
         print("Market direction unavailable:", e)
@@ -1765,10 +1766,30 @@ def fetch_fnguide_consensus(code):
     tables = pd.read_html(io.StringIO(html))
     this_year = datetime.now(KST).year
     candidates = []
+    target_price = None
 
     for raw_df in tables:
         df = _flatten_df_columns(raw_df.copy())
-        if len(df.columns) < 4 or len(df) == 0:
+        if len(df) == 0 or len(df.columns) == 0:
+            continue
+
+        # 네이버 기업정보 안의 FnGuide 컨센서스 표에서 목표주가를 찾되,
+        # 표 구조가 바뀌어도 값이 확실한 경우에만 보조정보로 사용한다.
+        if target_price is None:
+            first_col = df.columns[0]
+            for _, row in df.iterrows():
+                label = str(row.get(first_col, "")).strip()
+                if "목표주가" not in label:
+                    continue
+                for col in df.columns[1:]:
+                    value = _consensus_clean(row.get(col))
+                    if value is not None and value >= 100:
+                        target_price = value
+                        break
+                if target_price is not None:
+                    break
+
+        if len(df.columns) < 4:
             continue
 
         # Locate the period column and estimate rows such as 2026(E).
@@ -1816,6 +1837,7 @@ def fetch_fnguide_consensus(code):
         "forecast_sales": sales,
         "forecast_op": op,
         "forecast_eps": eps,
+        "target_price": target_price,
         "consensus_source": "FnGuide via NAVER CompanyInfo/WiseReport",
         "consensus_url": url,
     }
@@ -1855,41 +1877,88 @@ def _previous_consensus_snapshot(hist, ticker, today):
     eligible.sort(key=lambda z: z[0], reverse=True)
     return eligible[0][1]
 
+def _latest_consensus_snapshot(hist, ticker, today, max_age_days=CONSENSUS_CACHE_DAYS):
+    latest = None
+    for x in hist.get(ticker) or []:
+        try:
+            d = date.fromisoformat(str(x.get("snapshot_date")))
+        except Exception:
+            continue
+        age = (today - d).days
+        if 0 <= age <= max_age_days and (latest is None or d > latest[0]):
+            latest = (d, x)
+    return latest
+
 def consensus_enrich(raw):
-    """Current consensus now; 4-week revisions after 28 days of self-built daily history."""
+    """후보 종목만 제한 조회하고 3일 캐시를 우선 사용하는 보조 컨센서스."""
     hist = _load_consensus_history()
     today = datetime.now(KST).date()
     today_s = today.isoformat()
 
-    # Priority: stronger technical candidates first, while still covering a broad universe.
+    # 이세무사 4/6+, 미너비니 Stage 2, 신고가권 중 하나라도 해당하는 종목만 대상이다.
+    candidate_pool = [
+        x for x in raw
+        if (x.get("conditionCount", 0) >= 4)
+        or bool(x.get("trendTemplate"))
+        or (x.get("high52Ratio") or 0) >= 93
+        or (x.get("historicalHighRatio") or 0) >= 93
+    ]
     target = sorted(
-        raw,
+        candidate_pool,
         key=lambda x: (
+            sum((
+                x.get("conditionCount", 0) >= 4,
+                bool(x.get("trendTemplate")),
+                (x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93,
+            )),
             x.get("conditionCount", 0),
             1 if x.get("trendTemplate") else 0,
             x.get("rsPercentile", 0),
             x.get("score", 0),
         ),
         reverse=True,
-    )[: min(CONSENSUS_TARGET_MAX, len(raw))]
+    )[: min(CONSENSUS_TARGET_MAX, len(candidate_pool))]
+
+    for x in raw:
+        x["consensus_check_status"] = "NOT_TARGET"
+        x["consensus_checked_at"] = None
+        x["forecast_eps"] = None
+        x["forecast_per"] = None
+        x["target_price"] = None
+        x["revision_signal"] = "UNKNOWN"
+        x["eps_revision_4w"] = None
+        x["op_revision_4w"] = None
+        x["sales_revision_4w"] = None
 
     errors = []
     covered = 0
+    live_count = 0
+    cached_count = 0
     mature = 0
 
     def one(x):
+        latest = _latest_consensus_snapshot(hist, x.get("ticker"), today)
+        if latest is not None:
+            cached_date, cached = latest
+            return x, dict(cached), "CACHED", (today - cached_date).days
         code = str(x.get("stock_code") or str(x.get("ticker","")).split(".")[0]).zfill(6)
-        return x, fetch_fnguide_consensus(code)
+        return x, fetch_fnguide_consensus(code), "LIVE", 0
 
     with ThreadPoolExecutor(max_workers=CONSENSUS_WORKERS) as ex:
-        futures = [ex.submit(one, x) for x in target]
+        futures = {ex.submit(one, x): x for x in target}
         for i, fut in enumerate(as_completed(futures), 1):
+            target_x = futures[fut]
             try:
-                x, cur = fut.result()
+                x, cur, check_status, cache_age = fut.result()
                 prev = _previous_consensus_snapshot(hist, x.get("ticker"), today)
                 sr = _revision_pct(cur.get("forecast_sales"), prev.get("forecast_sales") if prev else None)
                 opr = _revision_pct(cur.get("forecast_op"), prev.get("forecast_op") if prev else None)
                 er = _revision_pct(cur.get("forecast_eps"), prev.get("forecast_eps") if prev else None)
+
+                eps = cur.get("forecast_eps")
+                forward_per = None
+                if eps is not None and eps > 0 and x.get("close") is not None:
+                    forward_per = round(float(x["close"]) / float(eps), 2)
 
                 if prev is not None:
                     mature += 1
@@ -1907,23 +1976,36 @@ def consensus_enrich(raw):
                 x.update(cur)
                 x.update({
                     "snapshot_date": today_s,
+                    "forecast_per": forward_per,
+                    "consensus_check_status": check_status,
+                    "consensus_checked_at": cur.get("snapshot_date") or today_s,
+                    "consensus_cache_age_days": cache_age,
                     "sales_revision_4w": sr,
                     "op_revision_4w": opr,
                     "eps_revision_4w": er,
                     "revision_signal": sig,
                 })
                 covered += 1
+                if check_status == "LIVE":
+                    live_count += 1
+                else:
+                    cached_count += 1
 
                 ticker = x.get("ticker")
                 arr = hist.setdefault(ticker, [])
-                arr = [z for z in arr if z.get("snapshot_date") != today_s]
-                arr.append({
-                    "snapshot_date": today_s,
-                    "forecast_period": cur.get("forecast_period"),
-                    "forecast_sales": cur.get("forecast_sales"),
-                    "forecast_op": cur.get("forecast_op"),
-                    "forecast_eps": cur.get("forecast_eps"),
-                })
+                if check_status == "LIVE":
+                    arr = [z for z in arr if z.get("snapshot_date") != today_s]
+                    arr.append({
+                        "snapshot_date": today_s,
+                        "forecast_period": cur.get("forecast_period"),
+                        "forecast_year": cur.get("forecast_year"),
+                        "forecast_sales": cur.get("forecast_sales"),
+                        "forecast_op": cur.get("forecast_op"),
+                        "forecast_eps": cur.get("forecast_eps"),
+                        "target_price": cur.get("target_price"),
+                        "consensus_source": cur.get("consensus_source"),
+                        "consensus_url": cur.get("consensus_url"),
+                    })
                 cutoff = today - timedelta(days=150)
                 clean_arr = []
                 for z in arr:
@@ -1934,17 +2016,10 @@ def consensus_enrich(raw):
                         pass
                 hist[ticker] = clean_arr
             except Exception as e:
-                errors.append(str(e))
-            if i % 25 == 0:
+                target_x["consensus_check_status"] = "FAILED"
+                errors.append(f"{target_x.get('name') or target_x.get('ticker')}: {e}")
+            if i % 10 == 0:
                 print("  consensus", i, "/", len(target))
-
-    # Explicit defaults for uncovered names.
-    for x in raw:
-        if "revision_signal" not in x:
-            x["revision_signal"] = "UNKNOWN"
-            x["eps_revision_4w"] = None
-            x["op_revision_4w"] = None
-            x["sales_revision_4w"] = None
 
     _save_consensus_history(hist)
 
@@ -1953,11 +2028,14 @@ def consensus_enrich(raw):
         "status": status,
         "coveredCount": covered,
         "targetCount": len(target),
+        "candidatePoolCount": len(candidate_pool),
+        "liveCount": live_count,
+        "cachedCount": cached_count,
         "historyMatureCount": mature,
         "errorCount": len(errors),
-        "source": "FnGuide via NAVER CompanyInfo/WiseReport",
-        "message": f"현재 컨센서스 {covered}/{len(target)}종목 · 4주 비교 가능 {mature}종목",
-        "note": "현재 추정치는 즉시 표시됩니다. 4주 리비전은 이 대시보드가 매일 저장한 동일 추정치를 28일 전과 비교하므로 최초 4주 동안 UNKNOWN이 정상입니다.",
+        "source": "FnGuide via NAVER CompanyInfo/WiseReport · 보조정보",
+        "message": f"후보군 {len(candidate_pool)}개 중 우선순위 {len(target)}개만 확인 · 신규 {live_count} · 캐시 {cached_count} · 성공 {covered}",
+        "note": f"DART 공식자료와 분리된 보조정보입니다. 최대 {CONSENSUS_TARGET_MAX}개 후보만 조회하고 {CONSENSUS_CACHE_DAYS}일 캐시를 우선 사용합니다. 추정 PER은 현재가÷FnGuide 추정 EPS로 계산합니다.",
         "errors": errors[:20],
     }
 
@@ -3933,6 +4011,13 @@ def validate_payload_integrity(payload):
         elif overlay.get("status") != _sector_action_overlay(sec).get("status"):
             issues.append(f"{ticker}: 섹터 보조정보 불일치")
 
+        consensus_status = x.get("consensus_check_status") or "NOT_TARGET"
+        checks += 1
+        if consensus_status not in ("NOT_TARGET", "LIVE", "CACHED", "FAILED"):
+            issues.append(f"{ticker}: FnGuide 확인상태 값 오류")
+        if x.get("forecast_eps") is not None and consensus_status not in ("LIVE", "CACHED"):
+            issues.append(f"{ticker}: 보조 컨센서스와 확인상태 불일치")
+
     checks += 3
     if funnel.get("deepScanned") != len(stocks):
         issues.append("정밀계산 종목 수 불일치")
@@ -3943,6 +4028,11 @@ def validate_payload_integrity(payload):
     checks += 1
     if funnel.get("highZone") != sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in stocks):
         issues.append("신고가권 후보 수 불일치")
+
+    checks += 1
+    consensus_targeted = sum((x.get("consensus_check_status") or "NOT_TARGET") != "NOT_TARGET" for x in stocks)
+    if consensus_targeted > CONSENSUS_TARGET_MAX:
+        issues.append("FnGuide 제한조회 종목 수 초과")
 
     health = meta.get("dataHealth") or {}
     attempted = int(health.get("priceAttemptedCount") or 0)
@@ -3971,7 +4061,7 @@ def validate_payload_integrity(payload):
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·지주사 분리·종목별 섹터 보조정보·퍼널 합계를 자동 대조했습니다.",
+        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널 합계를 자동 대조했습니다.",
     }
 
 
@@ -4091,7 +4181,7 @@ def main():
     sectors = _build_sector_stats(raw)
     sector_by_name = {s["name"]: s for s in sectors}
 
-    print("6/9 수급·컨센서스 생략 (사용자 설정)")
+    print("6/10 수급 생략 · 컨센서스는 후보 선별 후 제한 확인")
     flow_meta = {"connected": False, "coverage": 0, "source": "사용 안 함", "message": "수급 미사용"}
 
     print("7/9 점수 / 신호 / CAN SLIM 계산")
@@ -4145,6 +4235,10 @@ def main():
             r["volume"] = int(r["volume"])
 
     raw.sort(key=lambda x: x["score"], reverse=True)
+
+    print("8/10 FnGuide 보조확인 — 3개 후보군 중 상위 20개 / 3일 캐시 우선")
+    consensus_meta = consensus_enrich(raw)
+    print("  ", consensus_meta.get("message"))
 
     # Rebuild sector leadership AFTER WAMO score is finalized.
     for sec in sectors:
@@ -4212,8 +4306,7 @@ def main():
     }
     coverage_pct = round(price_fetched_count / len(cap_pass) * 100, 1) if cap_pass else 0
 
-    print("8/9 섹터 대장주 연결")
-    consensus_meta = {"status": "NOT_USED", "source": "사용 안 함", "message": "컨센서스 미사용"}
+    print("9/10 섹터 대장주 연결")
 
     payload = {
         "meta": {
@@ -4221,7 +4314,7 @@ def main():
             "mode": "LIVE",
             "asOf": asof,
             "updatedAt": datetime.now(KST).isoformat(timespec="minutes"),
-            "source": "Yahoo Finance price + NAVER market-cap/fallback + KRX KIND + OpenDART fundamentals/disclosures + DART business narrative + DART-derived detailed sectors",
+            "source": "Yahoo Finance price + NAVER market-cap/fallback + KRX KIND + OpenDART official fundamentals/disclosures + DART business narrative + FnGuide auxiliary consensus for selected candidates",
             "universeCount": len(listed),
             "eligibleUniverseCount": len(company_universe),
             "successCount": len(raw),
@@ -4241,7 +4334,7 @@ def main():
                 "sourceCounts": source_counts,
                 "dartConnected": bool(dart_meta.get("connected")),
                 "flowConnected": False,
-                "consensusConnected": False,
+                "consensusConnected": consensus_meta.get("status") in ("LIVE", "PARTIAL"),
                 "message": f"상장 {len(listed):,}개 중 ETF·ETN·스팩 {len(excluded_instruments):,}개 분리 → 기업·리츠 {len(company_universe):,}개 → 시총 1조 이상 기업 {len(cap_pass):,}개 중 가격수집 {price_fetched_count:,}개({coverage_pct:.1f}%) → 거래대금 기준 통과 {len(raw):,}개 · 실패 {len(errors):,}개",
             },
             "universeFunnel": {
@@ -4265,7 +4358,7 @@ def main():
             "flowMeta": flow_meta,
             "consensusMeta": consensus_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
-            "note": "후보 스크리닝 대시보드입니다. 검수 기업설명 DB와 OpenDART를 함께 사용하며, 재무·공시는 캐시 우선으로 갱신합니다. 수급·컨센서스·리비전은 사용자 설정에 따라 사용하지 않습니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
+            "note": "후보 스크리닝 대시보드입니다. 과거 실적·재무·공시는 OpenDART 공식자료를 사용합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 후보 상위 20개만 FnGuide 보조정보로 확인하고 3일 캐시하며, 공식자료와 구분해 표시합니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
         },
         "sectors": sectors,
         "stocks": raw,
@@ -4274,7 +4367,7 @@ def main():
 
     payload["meta"]["qa"] = validate_payload_integrity(payload)
 
-    print("9/9 index.html 갱신")
+    print("10/10 index.html 갱신")
     new_html = replace_payload(old_html, payload)
     new_html = patch_index_health_ui(new_html)
     new_html = patch_leader_profile_ui(new_html)
