@@ -28,7 +28,7 @@ jobs:
       - name: 전체 투자 데이터 갱신
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
-        run: python wamo_update_business_fixed.py
+        run: python wamo_update_business_naver.py
 
       - name: 새 결과 저장
         run: |
