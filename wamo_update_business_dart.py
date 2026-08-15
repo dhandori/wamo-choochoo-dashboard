@@ -28,20 +28,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/26.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/29.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
 DART_KEY = os.getenv("OPENDART_API_KEY", "").strip()
 DART_TARGET_MAX = 48
 PROFILE_CACHE = ROOT / "wamo_business_profiles.json"
-PROFILE_TARGET_MAX = 36
+PROFILE_TARGET_MAX = 18
 PROFILE_WORKERS = 4
 DART_WORKERS = 5
-DART_FRESH_CALL_MAX = 24
+DART_FRESH_CALL_MAX = 18
 DART_BACKFILL_PER_RUN = 4
 DART_REFRESH_DAYS = 3
-PROFILE_PRIORITY_MAX = 28
+PROFILE_PRIORITY_MAX = 10
 PROFILE_BACKFILL_PER_RUN = 8
 PROFILE_RETRY_DAYS = 3
 CONSENSUS_HISTORY = ROOT / "wamo_consensus_history.json"
@@ -426,7 +426,7 @@ def calc_raw(meta, rows):
         "장기 우상향": bool(ma200 and ma200_prev and closes[-1] > ma200 > ma200_prev and ret[252] > 0),
         "최근 1년 내 장기 신고가": bool(since3 <= 252),
         "고점 대비 -30% 이내": bool(high_ratio >= 0.70),
-        "52주 신고가권(3% 이내)": bool(high_ratio >= 0.97),
+        "52주 신고가권(7% 이내)": bool(high_ratio >= 0.93),
         "월봉 20개월선 위": bool(ma20m and mcl[-1] > ma20m),
         "일봉 정배열": bool(ma20 and ma60 and ma120 and ma200 and closes[-1] > ma20 > ma60 > ma120 > ma200),
     }
@@ -1167,7 +1167,7 @@ def _dart_priority_key(x, old_by_ticker):
     is_new = 1 if not old else 0
     watch_like = 1 if (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60) else 0
     stage2 = 1 if x.get("trendTemplate") else 0
-    near_high = 1 if x.get("high52Ratio",0) >= 97 else 0
+    near_high = 1 if x.get("high52Ratio",0) >= 93 else 0
     old_live = 1 if old.get("signal") in ("BUY","HOLD","WATCH") else 0
     return (
         is_new,
@@ -1232,7 +1232,7 @@ def dart_enrich(raw, old_by_ticker):
         if (
             (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60)
             or x.get("trendTemplate")
-            or x.get("high52Ratio",0) >= 97
+            or x.get("high52Ratio",0) >= 93
             or old_by_ticker.get(x.get("ticker"), {}).get("signal") in ("BUY","HOLD","WATCH")
             or not old_by_ticker.get(x.get("ticker"))
         )
@@ -2345,7 +2345,7 @@ def _dart_document_text_robust(rcept_no):
         "rcept_no": rcept_no,
     })
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=14) as r:
+    with urllib.request.urlopen(req, timeout=8) as r:
         raw = r.read()
 
     # Normal path: ZIP file.
@@ -2572,9 +2572,44 @@ def _profile_from_dart_report(name, sector, report_text):
 
 
 
+
+def _load_fixed_business_db_from_index():
+    """Read the already-reviewed fixed company DB embedded in index.html.
+    These companies should never consume DART profile calls again.
+    """
+    try:
+        h = INDEX_PATH.read_text(encoding="utf-8")
+        m = re.search(
+            r"const\s+WAMO_BUSINESS_DB\s*=\s*(\{.*?\})\s*;\s*\n\s*function\s+wamoBusinessFor",
+            h,
+            re.S,
+        )
+        if not m:
+            return {}
+        d = json.loads(m.group(1))
+        return d if isinstance(d, dict) else {}
+    except Exception as e:
+        print("  고정 기업설명 DB 읽기 실패:", e)
+        return {}
+
+def _fixed_profile_detail_sector(name, krx_sector, profile):
+    """Classify the reviewed fixed profile with the same taxonomy used for DART text."""
+    if not isinstance(profile, dict):
+        return _normalize_krx_sector(krx_sector), [_normalize_krx_sector(krx_sector)], "LOW"
+    text = " ".join([
+        str(profile.get("summary") or ""),
+        str(profile.get("products") or ""),
+        str(profile.get("customers") or ""),
+        str(profile.get("revenue") or ""),
+        str(profile.get("drivers") or ""),
+        " ".join(str(x) for x in (profile.get("segments") or [])),
+    ])
+    return _detail_sector_from_business(name, krx_sector, text)
+
+
 def _is_etf_name(name):
     n = str(name or "").strip().upper()
-    prefixes = ("KODEX","TIGER","ACE","RISE","SOL ","PLUS ","HANARO","TIMEFOLIO","KOSEF","ARIRANG","KBSTAR")
+    prefixes = ("KODEX","TIGER","ACE","RISE","SOL ","PLUS ","HANARO","TIMEFOLIO","TIME ","KIWOOM","KOSEF","ARIRANG","KBSTAR","FOCUS","WOORI","BNK","1Q ")
     return n.startswith(prefixes)
 
 def _decode_markup_bytes(raw):
@@ -2682,7 +2717,7 @@ def _dart_document_text_v3(rcept_no):
     with zipfile.ZipFile(io.BytesIO(raw)) as z:
         names = [n for n in z.namelist() if not n.endswith("/")]
         names.sort(key=lambda n: z.getinfo(n).file_size, reverse=True)
-        for name in names[:14]:
+        for name in names[:10]:
             try:
                 body = z.read(name)
                 member_debug.append(f"{name}:{len(body)}")
@@ -2754,7 +2789,7 @@ def _dart_public_viewer_text(rcept_no):
     Parse the document tree on the report's official page and fetch the '사업의 내용' section.
     """
     main_url = "https://dart.fss.or.kr/dsaf001/main.do?" + urllib.parse.urlencode({"rcpNo": rcept_no})
-    html = http_text(main_url, timeout=12)
+    html = http_text(main_url, timeout=6)
 
     # DART's document tree calls viewDoc(rcpNo,dcmNo,eleId,offset,length,dtd).
     calls = []
@@ -2788,7 +2823,7 @@ def _dart_public_viewer_text(rcept_no):
             "offset": offset, "length": length, "dtd": dtd,
         })
         try:
-            body = http_bytes(url, timeout=10)
+            body = http_bytes(url, timeout=6)
             t = _markup_to_text(body)
             if len(t) >= 500:
                 return t
@@ -2832,7 +2867,7 @@ def _fetch_best_business_text(corp_code, preferred_rcept=None, preferred_date=No
 
     # Only after the preferred receipt failed, query a very small fallback set.
     try:
-        for r in _periodic_report_candidates(corp_code, 2):
+        for r in _periodic_report_candidates(corp_code, 1):
             if r["rcept_no"] not in seen:
                 candidates.append(r)
                 seen.add(r["rcept_no"])
@@ -2841,7 +2876,7 @@ def _fetch_best_business_text(corp_code, preferred_rcept=None, preferred_date=No
 
     # At most two fallback filings.
     fallback_rows = candidates[1:] if preferred_rcept else candidates
-    for r in fallback_rows[:2]:
+    for r in fallback_rows[:1]:
         try:
             t = _dart_document_text_v3(r["rcept_no"])
             return t, r, "OpenDART 원문 ZIP"
@@ -2984,7 +3019,7 @@ def _build_sector_stats(raw):
     for name, members in groups.items():
         ar = statistics.mean(x["rsPercentile"] for x in members)
         b60 = statistics.mean(1 if x["ma60"] and x["close"] > x["ma60"] else 0 for x in members)
-        nh = statistics.mean(1 if x["high52Ratio"] >= 97 else 0 for x in members)
+        nh = statistics.mean(1 if x["high52Ratio"] >= 93 else 0 for x in members)
         vh = statistics.mean(min(x["volumeRatio"] / 2, 1) for x in members)
         st = statistics.mean(1 if x["trendTemplate"] else 0 for x in members)
         score = 0.35 * ar + 20 * b60 + 20 * nh + 15 * vh + 10 * st
@@ -3010,7 +3045,7 @@ def _profile_is_priority(x, old_by_ticker):
     return bool(
         (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60)
         or x.get("trendTemplate")
-        or x.get("high52Ratio",0) >= 97
+        or x.get("high52Ratio",0) >= 93
         or old.get("signal") in ("BUY","HOLD","WATCH")
     )
 
@@ -3020,7 +3055,7 @@ def _profile_priority_key(x, old_by_ticker):
         1 if not old else 0,  # truly new stock on dashboard first
         1 if (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60) else 0,
         1 if x.get("trendTemplate") else 0,
-        1 if x.get("high52Ratio",0) >= 97 else 0,
+        1 if x.get("high52Ratio",0) >= 93 else 0,
         x.get("conditionCount",0),
         x.get("rsPercentile",0),
         x.get("high52Ratio",0),
@@ -3030,6 +3065,7 @@ def _profile_priority_key(x, old_by_ticker):
 def profile_enrich(raw, old_by_ticker=None):
     old_by_ticker = old_by_ticker or {}
     cache = _load_profile_cache()
+    fixed_db = _load_fixed_business_db_from_index()
     today = datetime.now(KST).date()
 
     if not DART_KEY:
@@ -3106,6 +3142,23 @@ def profile_enrich(raw, old_by_ticker=None):
             x["sector"] = x["detailSector"]
             covered += 1
             cached_count += 1
+            continue
+
+        # Reviewed fixed DB is an immediate, zero-network source.
+        # It also feeds the same detailed-sector taxonomy, so sector action stays granular.
+        fixed = fixed_db.get(str(code))
+        if isinstance(fixed, dict) and fixed.get("summary"):
+            detail, tags, confidence = _fixed_profile_detail_sector(
+                x.get("name"), original_sector, fixed
+            )
+            x["businessProfile"] = fixed
+            x["businessModelEasy"] = fixed.get("summary") or ""
+            x["businessModelSource"] = "WAMO 검수 고정 DB"
+            x["detailSector"] = detail
+            x["sectorTags"] = tags
+            x["sectorConfidence"] = confidence
+            x["sector"] = detail
+            covered += 1
             continue
 
         # Failed records get a cooldown so one problematic filing cannot consume minutes every day.
@@ -3268,10 +3321,13 @@ def profile_enrich(raw, old_by_ticker=None):
         x.get("businessModelSource") in ("DART 백로그","DART 재시도 대기","DART 추출 실패")
         for x in raw
     )
+    fixed_count = sum(x.get("businessModelSource") == "WAMO 검수 고정 DB" for x in raw)
     print(
-        f"  회사별 DART 비즈니스모델 {actual}/{target_count}개 연결"
-        f" · 캐시 {cached_count} · 이번 조회 {len(selected)} · 신규연결 {fetched} · 백로그/대기 {pending}"
+        f"  회사별 사업모델: DART {actual}개 · 고정DB {fixed_count}개"
+        f" · DART이번조회 {len(selected)} · DART신규연결 {fetched} · 백로그/대기 {pending}"
     )
+    if selected:
+        print("  이번 DART 자동처리 종목:", ", ".join(x.get("name","") for x in selected[:20]))
 
     return {
         "status": "LIVE" if target_count and actual / target_count >= 0.70 else "PARTIAL",
@@ -3283,7 +3339,7 @@ def profile_enrich(raw, old_by_ticker=None):
         "pendingCount": pending,
         "retryWaitCount": retry_wait,
         "source": "OpenDART 정기보고서 원문 + DART 공시뷰어 fallback",
-        "message": f"DART 사업모델 {actual}/{target_count} · 이번 조회 {len(selected)} · 백로그 {pending}",
+        "message": f"DART {actual}개 · 고정DB {fixed_count}개 · 이번 DART조회 {len(selected)} · 백로그 {pending}",
         "errors": errors[:20],
     }
 
@@ -3409,68 +3465,45 @@ def add_can_slim(x, sector, mkt):
     ss = sector["score"]
     items["L"] = cs_item("PASS" if ors >= 80 and ss >= 58 else "FAIL", f"오닐식 RS {ors:.0f} · 섹터 {ss:.0f}", "RS ≥80 + 강한 섹터", "시장 내 주도주인지 봅니다.")
 
-    # I — Institutional Sponsorship (Korea-market flow proxy)
-    f20 = x.get("foreign_netbuy_20d")
-    i20 = x.get("institution_netbuy_20d")
-    f60 = x.get("foreign_netbuy_60d")
-    i60 = x.get("institution_netbuy_60d")
-
-    flow_unit_suspect = (
-        f20 is not None and i20 is not None and
-        abs(f20) + abs(i20) < 1_000_000
+    # I — Institutional Sponsorship
+    # 사용자 설정: 외국인/기관 수급을 사용하지 않음.
+    # 오닐의 I를 억지 대체하지 않고 명시적으로 '사용 안 함' 처리한다.
+    items["I"] = cs_item(
+        "DISABLED",
+        "사용 안 함",
+        "기관 보유·후원 데이터",
+        "사용자 설정에 따라 외국인·기관 수급을 사용하지 않습니다. CAN SLIM 자동판정에서는 I를 제외하고 C·A·N·S·L·M 6개만 별도로 집계합니다."
     )
-
-    if f20 is None or i20 is None or flow_unit_suspect:
-        reason = "외국인·기관 수급 데이터 확인 필요"
-        if flow_unit_suspect:
-            reason = "수급 금액 단위 검증 필요"
-        items["I"] = cs_item(
-            "UNKNOWN",
-            reason,
-            "외국인+기관 20일 순매수 > 0 + 중기 수급 확인",
-            "오닐의 원래 I는 기관 보유·후원을 뜻합니다. 이 대시보드는 한국시장 자동화를 위해 투자자별 순매수를 대체지표로 사용하며, 데이터가 없으면 임의 판정하지 않습니다."
-        )
-    else:
-        combined20 = f20 + i20
-        combined60 = (f60 + i60) if f60 is not None and i60 is not None else None
-        core_positive = combined20 > 0
-        breadth20 = int(f20 > 0) + int(i20 > 0)
-        medium_positive = combined60 is None or combined60 > 0
-        # PASS requires positive combined 20d demand plus breadth or positive 60d persistence.
-        i_pass = core_positive and (breadth20 == 2 or medium_positive)
-
-        val = f"외인20 {_flow_uk(f20)} · 기관20 {_flow_uk(i20)}"
-        if combined60 is not None:
-            val += f" · 외인+기관60 {_flow_uk(combined60)}"
-
-        items["I"] = cs_item(
-            "PASS" if i_pass else "FAIL",
-            val,
-            "외국인+기관 20일 추정 순매수 > 0 + 60일 지속성 확인",
-            "오닐의 I(기관 후원)를 한국시장 수급으로 근사합니다. 외국인·기관의 일별 순매수수량×종가 추정금액을 사용해 20일을 중심으로 60일 지속성을 확인합니다. 공식 KRX 순매수거래대금과는 차이가 날 수 있습니다."
-        )
 
     if mkt.get("pass") is None:
         items["M"] = cs_item("UNKNOWN", "시장 데이터 확인 불가", "시장 상승추세", mkt.get("note", ""))
     else:
         items["M"] = cs_item("PASS" if mkt["pass"] else "FAIL", "시장 상승" if mkt["pass"] else "시장 비우호", "KOSPI >50일선 >200일선 + 200일선 상승", mkt.get("note", ""))
 
-    sts = [items[k]["status"] for k in "CANSLIM"]
-    pass_count = sts.count("PASS")
-    measured = sum(s != "UNKNOWN" for s in sts)
-    full = pass_count == 7
-    key = all(items[k]["status"] == "PASS" for k in ("C","A","L","M"))
-    strong = (not full) and pass_count >= 5 and measured >= 6 and key
-    preliminary = (not full) and (not strong) and items["L"]["status"] == "PASS" and pass_count >= 2
+    # Original CAN SLIM has 7 letters, but I is intentionally disabled.
+    # Automated dashboard score therefore uses C/A/N/S/L/M only and labels it clearly.
+    auto_keys = ("C","A","N","S","L","M")
+    auto_sts = [items[k]["status"] for k in auto_keys]
+    auto_pass = auto_sts.count("PASS")
+    auto_measured = sum(s in ("PASS","FAIL") for s in auto_sts)
+    auto_unknown = auto_sts.count("UNKNOWN")
+
+    auto_full = (auto_measured == 6 and auto_pass == 6)
+    auto_key = all(items[k]["status"] == "PASS" for k in ("C","A","L","M"))
+    auto_strong = (not auto_full) and auto_pass >= 5 and auto_measured >= 5 and auto_key
+    auto_preliminary = (not auto_full) and (not auto_strong) and items["L"]["status"] == "PASS" and auto_pass >= 3
 
     x["canSlim"] = {
         "items": items,
-        "passCount": pass_count,
-        "measuredCount": measured,
-        "unknownCount": sts.count("UNKNOWN"),
-        "fullMatch": full,
-        "strongCandidate": strong,
-        "preliminary": preliminary,
+        "passCount": auto_pass,
+        "measuredCount": auto_measured,
+        "unknownCount": auto_unknown,
+        "autoKeys": list(auto_keys),
+        "institutionalDisabled": True,
+        "fullMatch": auto_full,
+        "strongCandidate": auto_strong,
+        "preliminary": auto_preliminary,
+        "label": "CAN SLIM 자동판정(I 제외)",
     }
 
 
@@ -3634,11 +3667,11 @@ def main():
 
     mkt = market_direction()
 
-    print("4/9 OpenDART 재무·공시 — 캐시 우선 / 강한 후보만 갱신")
+    print("4/9 OpenDART 재무·공시 — 캐시 우선 / 신규조회 최대 18개")
     dart_meta = dart_enrich(raw, old_by_ticker)
     print("  ", dart_meta.get("message"))
 
-    print("5/9 OpenDART 사업내용 + 세부섹터 — 신규/강한 후보 우선")
+    print("5/9 OpenDART 사업내용 + 세부섹터 — 신규·강한 10개 우선 + 백로그 8개")
     profile_meta = profile_enrich(raw, old_by_ticker)
     print("  ", profile_meta.get("message"))
 
@@ -3662,9 +3695,9 @@ def main():
         if x["ma60"] and x["close"] < x["ma60"]:
             sig, reason = "EXIT", "60일선 아래 — 추세 훼손"
         elif x["trendTemplate"] and x["conditionCount"] >= 5 and x["rsPercentile"] >= 70:
-            sig, reason = "BUY", "Stage 2 + 성장주 6조건 5개↑ + RS 70↑"
+            sig, reason = "BUY", "미너비니 Stage 2 + 이세무사 성장주 기준 5/6↑ + RS 70↑"
         elif x["conditionCount"] >= 4 and x["rsPercentile"] >= 60:
-            sig, reason = "WATCH", "성장주 6조건 4개↑ — 추가 확인"
+            sig, reason = "WATCH", "이세무사 성장주 기준 4/6↑ — 추가 확인"
         else:
             sig, reason = "NEUTRAL", "주도 조건 부족"
 
@@ -3781,7 +3814,7 @@ def main():
             "flowMeta": flow_meta,
             "consensusMeta": consensus_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
-            "note": "V26: 새 BUY/WATCH/Stage2 후보는 DART 사업내용을 우선 처리하고, 기존 회사는 캐시를 재사용합니다. 나머지 회사는 매일 백로그를 소량 채워 장시간 실행을 방지합니다. 수급·컨센서스는 사용하지 않습니다.",
+            "note": "V29 BALANCED: 검수 고정DB 종목은 즉시 사용하고, DART는 고정DB 밖 신규·강한 후보 10개를 최우선 처리한 뒤 백로그 8개를 추가 구축합니다. 재무·공시는 캐시 우선, 신규조회 최대 18개입니다. 수급·컨센서스·리비전은 사용하지 않습니다.",
         },
         "sectors": sectors,
         "stocks": raw,
