@@ -51,6 +51,9 @@ CONSENSUS_WORKERS = 6
 FUND_PREFIXES = (
     "KODEX", "TIGER", "ACE", "RISE", "SOL", "PLUS", "HANARO",
     "KBSTAR", "KOSEF", "ARIRANG", "TIMEFOLIO", "WOORI", "1Q",
+    "KINDEX", "KIWOOM", "FOCUS", "BNK ", "KOACT", "TIME ",
+    "히어로즈 ", "마이티 ", "에셋플러스 ", "파워 ", "TREX",
+    "UNICORN", "TRUSTON", "MASTER", "WON ", "KCGI ", "VITA ", "HK ",
 )
 
 def classify_instrument(name):
@@ -301,7 +304,20 @@ def fetch_yahoo_history(ticker: str, years=None):
 def fetch_naver_history(code: str, count=10000):
     url = f"https://fchart.stock.naver.com/sise.nhn?symbol={code}&timeframe=day&count={count}&requestType=0"
     raw = http_bytes(url)
-    root = ET.fromstring(raw)
+    # 네이버 fchart는 XML 선언에 EUC-KR/CP949를 명시하는 경우가 있다.
+    # ElementTree에 원시 바이트를 바로 넘기면 GitHub Actions에서
+    # "multi-byte encodings are not supported"가 발생할 수 있으므로 먼저 해석한다.
+    text = None
+    for enc in ("euc-kr", "cp949", "utf-8"):
+        try:
+            text = raw.decode(enc)
+            break
+        except UnicodeDecodeError:
+            continue
+    if text is None:
+        text = raw.decode("euc-kr", errors="replace")
+    text = re.sub(r"^\s*<\?xml[^>]*\?>", "", text, count=1, flags=re.I)
+    root = ET.fromstring(text)
     rows = []
     for item in root.findall(".//item"):
         p = (item.attrib.get("data") or "").split("|")
@@ -2675,6 +2691,10 @@ def _profile_from_dart_report(name, sector, report_text):
         "회사 본부" in ksec or nlow.endswith("홀딩스")
         or ("지주회사로서" in head and "자회사" in head)
         or ("순수지주회사" in head and "자회사" in head)
+        or (
+            "지주회사" in head
+            and any(w in head for w in ("자회사", "계열사", "지분", "배당", "보유"))
+        )
     ):
         return {
             "summary": f"{name}는 여러 자회사의 지분을 보유·관리하는 지주회사입니다. 투자 판단에서는 지주회사 자체 매출보다 핵심 자회사들의 사업가치와 실적을 봐야 합니다.",
@@ -2798,9 +2818,7 @@ def _fixed_profile_detail_sector(name, krx_sector, profile):
 
 
 def _is_etf_name(name):
-    n = str(name or "").strip().upper()
-    prefixes = ("KODEX","TIGER","ACE","RISE","SOL ","PLUS ","HANARO","TIMEFOLIO","TIME ","KIWOOM","KOSEF","ARIRANG","KBSTAR","FOCUS","WOORI","BNK","1Q ")
-    return n.startswith(prefixes)
+    return classify_instrument(name) == "ETF_ETN"
 
 def _decode_markup_bytes(raw):
     """Respect XML/HTML encoding declaration before trying common Korean encodings."""
@@ -3129,6 +3147,10 @@ def _detail_sector_from_business(name, krx_sector, report_text):
         "회사 본부" in k or n.endswith("홀딩스")
         or ("지주회사로서" in head and "자회사" in head)
         or ("순수지주회사" in head and "자회사" in head)
+        or (
+            "지주회사" in head
+            and any(w in head for w in ("자회사", "계열사", "지분", "배당", "보유"))
+        )
     ):
         return "지주회사", ["지주회사"], "HIGH"
 
@@ -3831,6 +3853,9 @@ def validate_payload_integrity(payload):
 
     for x in stocks:
         ticker = x.get("ticker") or x.get("name") or "알 수 없음"
+        checks += 1
+        if x.get("instrumentType") in ("ETF_ETN", "SPAC"):
+            issues.append(f"{ticker}: 기업 후보에 ETF·ETN·스팩 혼입")
         cond = x.get("conditions") or {}
         checks += 1
         if x.get("conditionCount") != sum(bool(v) for v in cond.values()):
@@ -3870,6 +3895,16 @@ def validate_payload_integrity(payload):
     if funnel.get("stage2") != sum(bool(x.get("trendTemplate")) for x in stocks):
         issues.append("Stage 2 후보 수 불일치")
 
+    health = meta.get("dataHealth") or {}
+    attempted = int(health.get("priceAttemptedCount") or 0)
+    fetched = int(health.get("priceFetchedCount") or 0)
+    failed = int(health.get("failedCount") or 0)
+    checks += 2
+    if attempted and attempted != fetched + failed:
+        issues.append("기업 가격수집 시도·성공·실패 합계 불일치")
+    if failed != len(payload.get("errors") or []):
+        issues.append("가격수집 실패 건수 불일치")
+
     sector_counts = {}
     for x in stocks:
         sector_counts[x.get("sector") or "기타"] = sector_counts.get(x.get("sector") or "기타", 0) + 1
@@ -3907,13 +3942,22 @@ def main():
         r["sector"] = sector_map.get(r["stock_code"], "KRX 업종 미분류")
         r["instrumentType"] = classify_instrument(r.get("name"))
 
-    cap_pass = [r for r in listed if r["market_cap_krw"] >= MIN_MARKET_CAP]
+    # ETF·ETN과 스팩은 기업의 재무·사업·Stage 2 기준으로 평가하면 왜곡된다.
+    # REIT는 실제 영업기업과 구분 표시하되 별도 필터로 확인할 수 있도록 남긴다.
+    company_universe = [r for r in listed if r.get("instrumentType") in ("COMPANY", "REIT")]
+    excluded_instruments = [r for r in listed if r.get("instrumentType") in ("ETF_ETN", "SPAC")]
+    cap_pass = [r for r in company_universe if r["market_cap_krw"] >= MIN_MARKET_CAP]
     if len(cap_pass) < 80:
         raise RuntimeError(f"시가총액 1조원 통과 종목이 비정상적으로 적습니다: {len(cap_pass)}")
 
-    print("2/9 시총 1조 이상 종목 가격 이력 수집:", len(cap_pass))
+    print(
+        "2/9 시총 1조 이상 기업 가격 이력 수집:", len(cap_pass),
+        "(ETF·ETN·스팩 사전 제외", len(excluded_instruments), ")"
+    )
     raw = []
     errors = []
+    price_fetched_count = 0
+    liquidity_rejected_count = 0
     def task(meta):
         errors_local = []
         # 1순위: Yahoo Finance. GitHub Actions 서버에서 네이버 fchart가 막히는 경우를 피함.
@@ -3936,6 +3980,24 @@ def main():
         except Exception as e:
             errors_local.append("Naver: " + str(e))
 
+        # 두 실시간 공급자가 모두 실패하면 직전 정상 갱신값을 사용한다.
+        # 후보 자체를 조용히 삭제하지 않고 CACHED로 명확히 표시한다.
+        old = old_by_ticker.get(meta.get("ticker"), {}) if old_mode == "LIVE" else {}
+        old_rows = old.get("history") or []
+        if len(old_rows) >= 60:
+            try:
+                x = calc_raw(meta, old_rows)
+                for key in ("historicalHighRatio", "historicalHighDate", "historyStartDate"):
+                    if old.get(key) is not None:
+                        x[key] = old.get(key)
+                x["dataSource"] = "이전 정상값"
+                x["priceProvider"] = "previous-successful-run"
+                x["dataStatus"] = "CACHED"
+                x["fallbackReason"] = " || ".join(errors_local)
+                return x
+            except Exception as e:
+                errors_local.append("이전 정상값: " + str(e))
+
         raise RuntimeError(" || ".join(errors_local))
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
@@ -3944,8 +4006,11 @@ def main():
             meta = futures[fut]
             try:
                 x = fut.result()
+                price_fetched_count += 1
                 if x["avgTradingValue50d"] >= MIN_AVG_VALUE_50D:
                     raw.append(x)
+                else:
+                    liquidity_rejected_count += 1
             except Exception as e:
                 errors.append({"ticker": meta["ticker"], "name": meta["name"], "error": str(e)})
             if i % 30 == 0:
@@ -4084,12 +4149,15 @@ def main():
         if x["isStale"]:
             x["dataStatus"] = "STALE"
     stale_count = sum(bool(x.get("isStale")) for x in raw)
-    live_count = len(raw) - stale_count
+    live_count = sum(x.get("dataStatus") == "LIVE" and not x.get("isStale") for x in raw)
+    cached_count = sum(x.get("dataStatus") == "CACHED" and not x.get("isStale") for x in raw)
     short_history_count = sum((x.get("historyTradingDays") or 0) < 260 for x in raw)
     source_counts = {
         "Yahoo Finance": sum(x.get("dataSource") == "Yahoo Finance" for x in raw),
         "NAVER Finance": sum(x.get("dataSource") == "NAVER Finance" for x in raw),
+        "이전 정상값": sum(x.get("dataSource") == "이전 정상값" for x in raw),
     }
+    coverage_pct = round(price_fetched_count / len(cap_pass) * 100, 1) if cap_pass else 0
 
     print("8/9 섹터 대장주 연결")
     consensus_meta = {"status": "NOT_USED", "source": "사용 안 함", "message": "컨센서스 미사용"}
@@ -4102,23 +4170,31 @@ def main():
             "updatedAt": datetime.now(KST).isoformat(timespec="minutes"),
             "source": "Yahoo Finance price + NAVER market-cap/fallback + KRX KIND + OpenDART fundamentals/disclosures + DART business narrative + DART-derived detailed sectors",
             "universeCount": len(listed),
+            "eligibleUniverseCount": len(company_universe),
             "successCount": len(raw),
             "errorCount": len(errors),
             "marketDirection": {"KOREA": mkt},
             "dataHealth": {
                 "liveCount": live_count,
-                "cachedCount": 0,
+                "cachedCount": cached_count,
                 "staleCount": stale_count,
                 "failedCount": len(errors),
+                "priceAttemptedCount": len(cap_pass),
+                "priceFetchedCount": price_fetched_count,
+                "priceCoveragePct": coverage_pct,
+                "liquidityRejectedCount": liquidity_rejected_count,
+                "excludedInstrumentCount": len(excluded_instruments),
                 "shortHistoryCount": short_history_count,
                 "sourceCounts": source_counts,
                 "dartConnected": bool(dart_meta.get("connected")),
                 "flowConnected": False,
                 "consensusConnected": False,
-                "message": f"전체 {len(listed):,}개 → 시총 1조 이상 {len(cap_pass):,}개 → 거래대금 100억원 이상 정밀계산 {len(raw):,}개 · 짧은 이력 {short_history_count:,}개 · 가격수집 실패 {len(errors):,}개",
+                "message": f"상장 {len(listed):,}개 중 ETF·ETN·스팩 {len(excluded_instruments):,}개 분리 → 기업·리츠 {len(company_universe):,}개 → 시총 1조 이상 기업 {len(cap_pass):,}개 중 가격수집 {price_fetched_count:,}개({coverage_pct:.1f}%) → 거래대금 기준 통과 {len(raw):,}개 · 실패 {len(errors):,}개",
             },
             "universeFunnel": {
                 "listed": len(listed),
+                "companyUniverse": len(company_universe),
+                "excludedInstruments": len(excluded_instruments),
                 "liquidityPass": len(raw),
                 "marketCapPass": len(cap_pass),
                 "deepScanned": len(raw),
@@ -4139,7 +4215,7 @@ def main():
         },
         "sectors": sectors,
         "stocks": raw,
-        "errors": errors[:100],
+        "errors": errors,
     }
 
     payload["meta"]["qa"] = validate_payload_integrity(payload)
