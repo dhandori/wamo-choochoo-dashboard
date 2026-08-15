@@ -19,6 +19,8 @@ import importlib
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
+from bs4 import BeautifulSoup
+import html as html_lib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta, date
 from pathlib import Path
@@ -26,14 +28,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/23.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/25.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
 DART_KEY = os.getenv("OPENDART_API_KEY", "").strip()
 DART_TARGET_MAX = 120
 PROFILE_CACHE = ROOT / "wamo_business_profiles.json"
-PROFILE_TARGET_MAX = 100
+PROFILE_TARGET_MAX = 400
 PROFILE_WORKERS = 4
 DART_WORKERS = 6
 CONSENSUS_HISTORY = ROOT / "wamo_consensus_history.json"
@@ -2020,7 +2022,7 @@ def _make_business_profile(section, sector):
 
 
 
-PROFILE_SCHEMA_VERSION = 7
+PROFILE_SCHEMA_VERSION = 9
 
 def _fetch_naver_company_overview(code):
     """Company-specific overview from NAVER Finance.
@@ -2358,6 +2360,38 @@ def _profile_from_dart_report(name, sector, report_text):
     segs = _detected_segments(whole)
 
     # High-confidence business-model special cases.
+    head = whole[:25000].lower()
+    nlow = str(name or "").lower()
+    ksec = str(sector or "").lower()
+
+    if (
+        nlow.endswith("금융지주") or nlow.endswith("지주")
+        or "금융지주회사로서" in head
+        or ("금융지주회사" in head and any(w in head for w in ("은행","증권","카드")))
+    ):
+        return {
+            "summary": f"{name}는 은행·증권·카드·보험 등 금융계열사를 보유·관리하는 금융지주회사입니다.",
+            "products": "은행·증권·카드·보험·자산관리 등 자회사 금융서비스",
+            "customers": "직접 영업보다 자회사들이 개인·기업·기관 고객에게 금융서비스를 제공합니다.",
+            "revenue": "자회사 이익이 연결 실적에 반영되고, 지주회사는 배당·브랜드·용역 등에서도 수익을 얻습니다.",
+            "drivers": "핵심 자회사 순이자마진·대손비용·비이자이익, 자본비율, 자회사 배당과 주주환원이 중요합니다.",
+            "segments": segs or ["금융지주"],
+        }
+
+    if (
+        "회사 본부" in ksec or nlow.endswith("홀딩스")
+        or ("지주회사로서" in head and "자회사" in head)
+        or ("순수지주회사" in head and "자회사" in head)
+    ):
+        return {
+            "summary": f"{name}는 여러 자회사의 지분을 보유·관리하는 지주회사입니다. 투자 판단에서는 지주회사 자체 매출보다 핵심 자회사들의 사업가치와 실적을 봐야 합니다.",
+            "products": "핵심 자회사 지분 보유·관리, 브랜드·경영지원 등 지주회사 기능",
+            "customers": "일반 제조업처럼 최종 고객에게 단일 제품을 파는 구조가 아니라 자회사 사업을 통해 최종 시장에 노출됩니다.",
+            "revenue": "자회사 배당, 상표권·용역·임대수익과 연결·지분법 실적이 핵심입니다.",
+            "drivers": "핵심 자회사 이익과 배당, 자산가치(NAV), 지주회사 할인율, 자본배분·주주환원이 중요합니다.",
+            "segments": segs or ["지주회사"],
+        }
+
     if "화장품" in whole and _contains_any(whole, ["odm", "oem"]):
         extras = []
         if _contains_any(whole, ["전문의약품", "제약"]):
@@ -2434,44 +2468,465 @@ def _profile_from_dart_report(name, sector, report_text):
     }
 
 
+
+def _is_etf_name(name):
+    n = str(name or "").strip().upper()
+    prefixes = ("KODEX","TIGER","ACE","RISE","SOL ","PLUS ","HANARO","TIMEFOLIO","KOSEF","ARIRANG","KBSTAR")
+    return n.startswith(prefixes)
+
+def _decode_markup_bytes(raw):
+    """Respect XML/HTML encoding declaration before trying common Korean encodings."""
+    head = raw[:500].decode("ascii", errors="ignore")
+    m = re.search(r'encoding=["\']([^"\']+)["\']', head, re.I)
+    encs = []
+    if m:
+        encs.append(m.group(1))
+    encs += ["utf-8", "euc-kr", "cp949"]
+    seen = set()
+    for enc in encs:
+        if enc.lower() in seen:
+            continue
+        seen.add(enc.lower())
+        try:
+            return raw.decode(enc)
+        except Exception:
+            pass
+    return raw.decode("utf-8", errors="replace")
+
+def _markup_to_text(raw):
+    """DART XML can vary by filing generation.
+    Try several independent strategies and keep the longest readable result.
+    """
+    markup = _decode_markup_bytes(raw)
+    candidates = []
+
+    # Strategy A: BeautifulSoup with multiple parsers.
+    for parser in ("lxml", "html.parser", "xml"):
+        try:
+            soup = BeautifulSoup(markup, parser)
+            for tag in soup(["script", "style"]):
+                tag.decompose()
+            t = soup.get_text("\n", strip=True)
+            if t:
+                candidates.append(t)
+        except Exception:
+            pass
+
+    # Strategy B: raw tag stripping. This also survives malformed legacy DART markup.
+    try:
+        x = re.sub(r"(?is)<(script|style).*?>.*?</\1>", " ", markup)
+        x = re.sub(r"(?i)<(?:br|p|div|tr|td|th|li|section|title|h[1-6])\b[^>]*>", "\n", x)
+        x = re.sub(r"(?s)<[^>]+>", " ", x)
+        x = html_lib.unescape(x)
+        if x:
+            candidates.append(x)
+    except Exception:
+        pass
+
+    # Strategy C: some legacy documents store visible strings in attributes/CDATA.
+    try:
+        attrs = re.findall(
+            r'(?i)(?:content|contents|value|title|text)\s*=\s*["\']([^"\']{2,500})["\']',
+            markup
+        )
+        cdata = re.findall(r"(?s)<!\[CDATA\[(.*?)\]\]>", markup)
+        extra = "\n".join(attrs + cdata)
+        extra = re.sub(r"(?s)<[^>]+>", " ", html_lib.unescape(extra))
+        if extra:
+            candidates.append(extra)
+    except Exception:
+        pass
+
+    if not candidates:
+        return ""
+
+    best = max(candidates, key=len)
+    best = best.replace("\x00", " ")
+    best = re.sub(r"[ \t]+", " ", best)
+    best = re.sub(r"\n\s*\n\s*\n+", "\n\n", best)
+    return best.strip()
+
+def _dart_document_text_v3(rcept_no):
+    """Official OpenDART original document ZIP -> readable filing text."""
+    if not DART_KEY:
+        raise RuntimeError("DART API KEY 없음")
+    if not rcept_no:
+        raise RuntimeError("접수번호 없음")
+
+    url = "https://opendart.fss.or.kr/api/document.xml?" + urllib.parse.urlencode({
+        "crtfc_key": DART_KEY,
+        "rcept_no": rcept_no,
+    })
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+    with urllib.request.urlopen(req, timeout=45) as r:
+        raw = r.read()
+
+    if not zipfile.is_zipfile(io.BytesIO(raw)):
+        err = _decode_markup_bytes(raw)
+        status = message = ""
+        try:
+            root = ET.fromstring(err)
+            status = (root.findtext("status") or "").strip()
+            message = (root.findtext("message") or "").strip()
+        except Exception:
+            pass
+        if status or message:
+            raise RuntimeError(f"원문 API 오류 {status} {message}")
+        raise RuntimeError("원문 응답이 ZIP이 아님")
+
+    parts = []
+    member_debug = []
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
+        names = [n for n in z.namelist() if not n.endswith("/")]
+        names.sort(key=lambda n: z.getinfo(n).file_size, reverse=True)
+        for name in names[:30]:
+            try:
+                body = z.read(name)
+                member_debug.append(f"{name}:{len(body)}")
+                # Skip obvious images/fonts/binaries.
+                if name.lower().endswith((".jpg",".jpeg",".png",".gif",".bmp",".pdf",".woff",".ttf",".zip")):
+                    continue
+                t = _markup_to_text(body)
+                if len(t) >= 50:
+                    parts.append(t)
+            except Exception:
+                pass
+
+    joined = "\n".join(parts)
+    joined = re.sub(r"\n{3,}", "\n\n", joined).strip()
+    if len(joined) < 500:
+        raise RuntimeError(
+            f"사업보고서 원문 텍스트 너무 짧음({len(joined)})"
+            + (f" / ZIP:{' | '.join(member_debug[:6])}" if member_debug else "")
+        )
+    return joined
+
+def _periodic_report_candidates(corp_code, max_count=12):
+    """Use the latest periodic filing, not only the annual report.
+    Business descriptions are often updated in quarterly/semiannual filings.
+    """
+    end = datetime.now(KST).date()
+    begin = end - timedelta(days=1000)
+    d = dart_json("list.json", {
+        "corp_code": corp_code,
+        "bgn_de": begin.strftime("%Y%m%d"),
+        "end_de": end.strftime("%Y%m%d"),
+        "pblntf_ty": "A",
+        "sort": "date",
+        "sort_mth": "desc",
+        "page_count": "100",
+    })
+    if str(d.get("status","000")) != "000":
+        raise RuntimeError(f"정기공시 검색 실패 {d.get('status')} {d.get('message','')}")
+    rows = []
+    for r in d.get("list") or []:
+        nm = str(r.get("report_nm") or "").strip()
+        if not any(k in nm for k in ("사업보고서","반기보고서","분기보고서")):
+            continue
+        # Avoid amendment wrappers first; keep them as last-resort candidates.
+        penalty = 1 if ("정정" in nm or "첨부정정" in nm) else 0
+        rows.append({
+            "rcept_no": str(r.get("rcept_no") or ""),
+            "date": str(r.get("rcept_dt") or ""),
+            "report": nm,
+            "_penalty": penalty,
+        })
+    # Latest original first, then corrections / older filings as fallback.
+    rows.sort(key=lambda r: (r["_penalty"], -int(r["date"] or 0)))
+    out = []
+    seen = set()
+    for r in rows:
+        if not r["rcept_no"] or r["rcept_no"] in seen:
+            continue
+        seen.add(r["rcept_no"])
+        out.append(r)
+        if len(out) >= max_count:
+            break
+    if not out:
+        raise RuntimeError("최근 정기보고서 없음")
+    return out
+
+def _dart_public_viewer_text(rcept_no):
+    """Free official DART viewer fallback.
+    Parse the document tree on the report's official page and fetch the '사업의 내용' section.
+    """
+    main_url = "https://dart.fss.or.kr/dsaf001/main.do?" + urllib.parse.urlencode({"rcpNo": rcept_no})
+    html = http_text(main_url, timeout=35)
+
+    # DART's document tree calls viewDoc(rcpNo,dcmNo,eleId,offset,length,dtd).
+    calls = []
+    for m in re.finditer(
+        r"viewDoc\s*\(\s*['\"]?(\d+)['\"]?\s*,\s*['\"]?(\d+)['\"]?\s*,\s*['\"]?(\d+)['\"]?\s*,\s*['\"]?(\d+)['\"]?\s*,\s*['\"]?(\d+)['\"]?\s*,\s*['\"]([^'\"]+)['\"]\s*\)",
+        html, re.I
+    ):
+        before = html[max(0, m.start()-1800):m.start()]
+        label = re.sub(r"<[^>]+>", " ", html_lib.unescape(before))
+        label = re.sub(r"\s+", " ", label)[-500:]
+        calls.append((label, m.groups()))
+
+    ranked = []
+    for label, args in calls:
+        score = 0
+        if "사업의 내용" in label:
+            score += 100
+        if "사업" in label:
+            score += 20
+        if "재무에 관한 사항" in label:
+            score -= 30
+        ranked.append((score, label, args))
+    ranked.sort(key=lambda z: z[0], reverse=True)
+
+    for score, label, args in ranked[:8]:
+        if score <= 0:
+            continue
+        rcp, dcm, ele, offset, length, dtd = args
+        url = "https://dart.fss.or.kr/report/viewer.do?" + urllib.parse.urlencode({
+            "rcpNo": rcp, "dcmNo": dcm, "eleId": ele,
+            "offset": offset, "length": length, "dtd": dtd,
+        })
+        try:
+            body = http_bytes(url, timeout=35)
+            t = _markup_to_text(body)
+            if len(t) >= 500:
+                return t
+        except Exception:
+            pass
+    raise RuntimeError("DART 공시뷰어 사업의 내용 추출 실패")
+
+def _fetch_best_business_text(corp_code, preferred_rcept=None, preferred_date=None):
+    attempts = []
+    candidates = []
+    if preferred_rcept:
+        candidates.append({
+            "rcept_no": str(preferred_rcept),
+            "date": str(preferred_date or ""),
+            "report": "정기보고서",
+        })
+    try:
+        for r in _periodic_report_candidates(corp_code, 12):
+            if r["rcept_no"] not in {x["rcept_no"] for x in candidates}:
+                candidates.append(r)
+    except Exception as e:
+        attempts.append("목록:" + str(e))
+
+    for r in candidates:
+        try:
+            t = _dart_document_text_v3(r["rcept_no"])
+            return t, r, "OpenDART 원문 ZIP"
+        except Exception as e:
+            attempts.append(f"{r.get('date','')} {r['rcept_no']} ZIP:{e}")
+
+        # If original-file API says file missing/malformed, fall back to official DART viewer.
+        try:
+            t = _dart_public_viewer_text(r["rcept_no"])
+            return t, r, "DART 공시뷰어"
+        except Exception as e:
+            attempts.append(f"{r.get('date','')} {r['rcept_no']} VIEW:{e}")
+
+    raise RuntimeError(" / ".join(attempts[-6:]) or "정기보고서 본문 확보 실패")
+
+def _normalize_krx_sector(s):
+    s = str(s or "")
+    # Last-resort categories only. DART business text takes priority.
+    rules = [
+        (["보험"], "보험"),
+        (["은행","금융"], "금융"),
+        (["증권"], "증권"),
+        (["화장품"], "화장품"),
+        (["반도체"], "반도체"),
+        (["의약","제약","바이오"], "제약·바이오"),
+        (["자동차"], "자동차·부품"),
+        (["건설"], "건설"),
+        (["조선"], "조선"),
+        (["통신"], "통신"),
+        (["소프트웨어","IT","정보"], "IT서비스·소프트웨어"),
+        (["화학"], "화학"),
+        (["식품","음료"], "식품"),
+        (["운송","해운","항공"], "운송"),
+        (["전기","전력"], "전력·전기장비"),
+        (["유통","소매","도매"], "유통"),
+    ]
+    for keys, label in rules:
+        if any(k in s for k in keys):
+            return label
+    return s if s and s != "KRX 업종 미분류" else "기타"
+
+def _detail_sector_from_business(name, krx_sector, report_text):
+    """Primary business-sector taxonomy from DART narrative.
+    Order matters: narrow sectors before broad sectors.
+    """
+    n = str(name or "")
+    t = re.sub(r"\s+", " ", str(report_text or "")).lower()
+    k = str(krx_sector or "").lower()
+
+    if _is_etf_name(n):
+        return "ETF", ["ETF"], "HIGH"
+
+    # Holding companies must not be mistaken for operating subsidiaries.
+    head = t[:25000]
+    if (
+        n.endswith("금융지주") or n.endswith("지주")
+        or "금융지주회사로서" in head
+        or ("금융지주회사" in head and any(w in head for w in ("은행","증권","카드")))
+    ):
+        return "금융지주", ["금융지주"], "HIGH"
+    if (
+        "회사 본부" in k or n.endswith("홀딩스")
+        or ("지주회사로서" in head and "자회사" in head)
+        or ("순수지주회사" in head and "자회사" in head)
+    ):
+        return "지주회사", ["지주회사"], "HIGH"
+
+    narrow = [
+        ("화장품 ODM/OEM", ["화장품"], ["odm","oem"]),
+        ("K-뷰티 유통", ["화장품"], ["유통","플랫폼","수출"]),
+        ("손해보험", ["손해보험"], []),
+        ("생명보험", ["생명보험"], []),
+        ("증권", ["증권"], ["위탁매매","ib","브로커리지","자산관리"]),
+        ("메모리 반도체", ["반도체"], ["dram","nand","hbm"]),
+        ("반도체 검사·테스트", ["반도체"], ["검사","테스트","프로브","소켓"]),
+        ("반도체 장비", ["반도체"], ["장비","식각","증착","세정"]),
+        ("반도체 소재·부품", ["반도체"], ["소재","부품","sic","쿼츠","세라믹"]),
+        ("타이어", ["타이어"], []),
+        ("자동차 부품", ["자동차"], ["부품","제동","조향","현가","adas"]),
+        ("방산", ["방산"], ["유도무기","감시정찰","군수","방위"]),
+        ("조선", ["선박"], ["건조","조선"]),
+        ("해운", ["해운"], ["선박","운송","벌크"]),
+        ("항공", ["항공"], ["여객","화물"]),
+        ("정유", ["정유"], ["휘발유","경유","항공유","정제"]),
+        ("석유화학", ["석유화학"], ["합성고무","합성수지","화학"]),
+        ("이차전지 소재", ["이차전지"], ["양극재","음극재","전구체","분리막","전해액"]),
+        ("이차전지", ["이차전지"], ["배터리","전지"]),
+        ("전력기기·전선", ["전력"], ["전선","케이블","변압기","차단기"]),
+        ("신재생에너지", ["태양광","풍력","신재생"], ["발전","ess"]),
+        ("플랜트 EPC", ["플랜트"], ["설계","조달","시공","epc"]),
+        ("건설·주택", ["건설"], ["주택","건축","토목","시공"]),
+        ("미용의료·의료기기", ["의료기기"], ["미용","피부","시술","재생"]),
+        ("제약·바이오", ["의약품"], ["제약","바이오","신약","임상"]),
+        ("게임", ["게임"], []),
+        ("인터넷 플랫폼", ["플랫폼"], ["광고","커머스","검색","핀테크"]),
+        ("AI·클라우드·IT서비스", ["클라우드"], ["it","ai","시스템","데이터센터"]),
+        ("통신", ["통신"], ["이동통신","5g","lte","인터넷"]),
+        ("로봇·모션", ["로봇"], ["감속기","모터","자동화"]),
+        ("건설기계", ["건설기계"], ["굴착기","로더"]),
+        ("물류", ["물류"], ["운송","창고","완성차"]),
+        ("편의점·리테일", ["편의점"], ["소매","가맹"]),
+        ("식품", ["식품"], ["제과","음료","스낵"]),
+        ("화장품 브랜드", ["화장품"], ["브랜드","소비자","온라인"]),
+    ]
+
+    tags = []
+    for label, must_any, support_any in narrow:
+        if must_any and not any(w in t for w in must_any):
+            continue
+        if support_any and not any(w in t for w in support_any):
+            continue
+        tags.append(label)
+    if tags:
+        return tags[0], tags[:4], "HIGH"
+
+    broad = [
+        ("반도체", ["반도체"]),
+        ("자동차·부품", ["자동차"]),
+        ("제약·바이오", ["제약","바이오","의약"]),
+        ("화장품", ["화장품"]),
+        ("금융", ["은행","대출","예금"]),
+        ("보험", ["보험"]),
+        ("IT서비스·소프트웨어", ["소프트웨어","정보기술","it서비스"]),
+        ("유통", ["유통","소매"]),
+        ("화학", ["화학"]),
+        ("에너지", ["에너지","발전","가스"]),
+        ("기계·장비", ["기계","장비"]),
+    ]
+    for label, words in broad:
+        if any(w in t for w in words):
+            return label, [label], "MEDIUM"
+
+    fallback = _normalize_krx_sector(krx_sector)
+    return fallback, [fallback], "LOW"
+
+def _build_sector_stats(raw):
+    groups = {}
+    for x in raw:
+        groups.setdefault(x.get("sector") or "기타", []).append(x)
+
+    sectors = []
+    for name, members in groups.items():
+        ar = statistics.mean(x["rsPercentile"] for x in members)
+        b60 = statistics.mean(1 if x["ma60"] and x["close"] > x["ma60"] else 0 for x in members)
+        nh = statistics.mean(1 if x["high52Ratio"] >= 97 else 0 for x in members)
+        vh = statistics.mean(min(x["volumeRatio"] / 2, 1) for x in members)
+        st = statistics.mean(1 if x["trendTemplate"] else 0 for x in members)
+        score = 0.35 * ar + 20 * b60 + 20 * nh + 15 * vh + 10 * st
+        action = "강화" if score >= 72 else "상승" if score >= 58 else "중립" if score >= 45 else "약화"
+        sectors.append({
+            "name": name,
+            "score": round(score, 1),
+            "rsPercentile": round(ar, 1),
+            "breadth60": round(b60 * 100, 1),
+            "newHighPct": round(nh * 100, 1),
+            "volumeHeat": round(vh * 100, 1),
+            "stage2Pct": round(st * 100, 1),
+            "action": action,
+            "leaders": [m["name"] for m in sorted(members, key=lambda z: z["rsPercentile"], reverse=True)[:3]],
+            "memberCount": len(members),
+        })
+    sectors.sort(key=lambda s: s["score"], reverse=True)
+    return sectors
+
+
 def profile_enrich(raw):
     cache = _load_profile_cache()
     today = datetime.now(KST).date()
 
-    candidates = sorted(
-        raw,
-        key=lambda x: (
-            1 if x.get("conditionCount",0) >= 4 else 0,
-            1 if x.get("trendTemplate") else 0,
-            x.get("score",0),
-            x.get("rsPercentile",0),
-        ),
-        reverse=True,
-    )
-    target = [
-        x for x in candidates
-        if x.get("conditionCount",0) >= 4
-        or x.get("trendTemplate")
-        or x.get("signal") in ("BUY","HOLD","WATCH")
-    ][:PROFILE_TARGET_MAX]
-
-    # Always have a readable fallback, but clearly label it.
-    for x in raw:
-        tpl = _sector_profile_template(x.get("sector"))
-        x["businessProfile"] = {
-            "summary": tpl["summary"],
-            "products": "회사별 사업보고서 상세 연결 대기",
-            "customers": tpl["customers"],
-            "revenue": tpl["revenue"],
-            "drivers": tpl["drivers"],
-            "segments": [],
+    if not DART_KEY:
+        for x in raw:
+            x["krxSector"] = x.get("sector")
+            x["detailSector"] = _normalize_krx_sector(x.get("sector"))
+            x["sector"] = x["detailSector"]
+        return {
+            "status":"NO_KEY","targetCount":0,"coveredCount":0,"fetchedCount":0,
+            "source":"OpenDART","message":"DART API KEY 없음","errors":[]
         }
-        x["businessModelEasy"] = tpl["summary"]
-        x["businessModelSource"] = "업종 템플릿"
 
+    try:
+        cmap = dart_corp_map()
+    except Exception as e:
+        raise RuntimeError("기업설명용 DART 고유번호 목록 실패: " + str(e))
+
+    errors = []
     jobs = []
-    for x in target:
-        old = cache.get(x.get("ticker")) or {}
+    covered = 0
+    cached_count = 0
+
+    for x in raw:
+        original_sector = x.get("sector")
+        x["krxSector"] = original_sector
+
+        if _is_etf_name(x.get("name")):
+            x["detailSector"] = "ETF"
+            x["sectorTags"] = ["ETF"]
+            x["sectorConfidence"] = "HIGH"
+            x["sector"] = "ETF"
+            x["businessProfile"] = {
+                "summary": f"{x.get('name')}은 개별 기업이 아니라 여러 자산을 묶어 운용하는 ETF입니다.",
+                "products":"기초지수 또는 정해진 운용전략을 추종하는 상장지수펀드",
+                "customers":"증권시장에서 ETF를 매매하는 투자자",
+                "revenue":"기업 매출이 아니라 보유자산 가격변동과 분배금이 투자수익을 결정합니다.",
+                "drivers":"기초지수 수익률, 환율(해외형), 운용보수, 추적오차와 분배정책",
+                "segments":["ETF"],
+            }
+            x["businessModelEasy"] = x["businessProfile"]["summary"]
+            x["businessModelSource"] = "ETF 자동분류"
+            covered += 1
+            continue
+
+        code = x.get("stock_code") or str(x.get("ticker","")).split(".")[0]
+        corp = x.get("dartCorpCode") or cmap.get(code)
+        if corp:
+            x["dartCorpCode"] = corp
+
+        old = cache.get(code) or cache.get(x.get("ticker")) or {}
         fresh = False
         try:
             d = date.fromisoformat(str(old.get("updatedAt")))
@@ -2479,88 +2934,123 @@ def profile_enrich(raw):
                 (today - d).days <= 180
                 and old.get("schemaVersion") == PROFILE_SCHEMA_VERSION
                 and isinstance(old.get("businessProfile"), dict)
-                and old.get("businessModelSource") == "OpenDART 사업보고서 구조화"
+                and old.get("detailSector")
             )
         except Exception:
             fresh = False
 
         if fresh:
             x["businessProfile"] = old["businessProfile"]
-            x["businessModelEasy"] = old["businessProfile"].get("summary") or x["businessModelEasy"]
-            x["businessModelSource"] = old["businessModelSource"]
+            x["businessModelEasy"] = old["businessProfile"].get("summary") or ""
+            x["businessModelSource"] = old.get("businessModelSource") or "OpenDART 사업보고서 직접추출"
             x["businessModelReportDate"] = old.get("businessModelReportDate")
-        else:
+            x["businessModelUrl"] = old.get("businessModelUrl")
+            x["detailSector"] = old.get("detailSector") or _normalize_krx_sector(original_sector)
+            x["sectorTags"] = old.get("sectorTags") or [x["detailSector"]]
+            x["sectorConfidence"] = old.get("sectorConfidence") or "MEDIUM"
+            x["sector"] = x["detailSector"]
+            covered += 1
+            cached_count += 1
+        elif corp:
             jobs.append(x)
+        else:
+            x["detailSector"] = _normalize_krx_sector(original_sector)
+            x["sectorTags"] = [x["detailSector"]]
+            x["sectorConfidence"] = "LOW"
+            x["sector"] = x["detailSector"]
+            x["businessProfile"] = {
+                "summary":"DART 고유번호를 확인할 수 없어 회사별 사업설명을 자동 생성하지 않았습니다.",
+                "products":"—","customers":"—","revenue":"—","drivers":"—","segments":[]
+            }
+            x["businessModelEasy"] = x["businessProfile"]["summary"]
+            x["businessModelSource"] = "DART 연결 불가"
 
     def one(x):
-        corp = x.get("dartCorpCode")
-        if not corp:
-            raise RuntimeError("dartCorpCode 없음")
-
-        # Reuse receipt number from the already-successful DART enrichment if present.
-        report = None
-        rcept = x.get("businessReportRceptNo")
-        if rcept:
-            report = {
-                "rcept_no": rcept,
-                "date": x.get("businessReportDate"),
-                "report": "사업보고서",
-            }
-        else:
-            report = _latest_business_report_plain(corp)
-
-        report_text = _dart_document_text_robust(report["rcept_no"])
-        profile = _profile_from_dart_report(
-            x.get("name"), x.get("sector"), report_text
+        report_text, report, route = _fetch_best_business_text(
+            x.get("dartCorpCode"),
+            x.get("businessReportRceptNo"),
+            x.get("businessReportDate"),
         )
-        return x, report, profile
+        section = _business_section_robust(report_text)
+        if len(section) < 400:
+            section = report_text[:90000]
 
-    errors = []
+        profile = _profile_from_dart_report(
+            x.get("name"), x.get("krxSector") or x.get("sector"), report_text
+        )
+        detail, tags, confidence = _detail_sector_from_business(
+            x.get("name"), x.get("krxSector"), section
+        )
+        return x, report, route, profile, detail, tags, confidence
+
     fetched = 0
-    with ThreadPoolExecutor(max_workers=3) as ex:
+    with ThreadPoolExecutor(max_workers=PROFILE_WORKERS) as ex:
         fut_map = {ex.submit(one, x): x for x in jobs}
         for i, fut in enumerate(as_completed(fut_map), 1):
             x0 = fut_map[fut]
             try:
-                x, report, prof = fut.result()
+                x, report, route, prof, detail, tags, confidence = fut.result()
                 x["businessProfile"] = prof
-                x["businessModelEasy"] = prof.get("summary") or x.get("businessModelEasy")
-                x["businessModelSource"] = "OpenDART 사업보고서 구조화"
+                x["businessModelEasy"] = prof.get("summary") or ""
+                x["businessModelSource"] = f"OpenDART 정기보고서 직접추출 · {route}"
                 x["businessModelReportDate"] = report.get("date")
-                cache[x.get("ticker")] = {
+                x["businessModelUrl"] = "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=" + report.get("rcept_no","")
+                x["detailSector"] = detail
+                x["sectorTags"] = tags
+                x["sectorConfidence"] = confidence
+                x["sector"] = detail
+
+                code = x.get("stock_code") or str(x.get("ticker","")).split(".")[0]
+                cache[code] = {
                     "schemaVersion": PROFILE_SCHEMA_VERSION,
                     "businessProfile": prof,
-                    "businessModelSource": "OpenDART 사업보고서 구조화",
+                    "businessModelSource": x["businessModelSource"],
                     "businessModelReportDate": report.get("date"),
+                    "businessModelUrl": x["businessModelUrl"],
+                    "detailSector": detail,
+                    "sectorTags": tags,
+                    "sectorConfidence": confidence,
                     "updatedAt": today.isoformat(),
                 }
                 fetched += 1
+                covered += 1
             except Exception as e:
+                # Never replace a company with a fabricated sector description.
+                x0["detailSector"] = _normalize_krx_sector(x0.get("krxSector"))
+                x0["sectorTags"] = [x0["detailSector"]]
+                x0["sectorConfidence"] = "LOW"
+                x0["sector"] = x0["detailSector"]
+                x0["businessProfile"] = {
+                    "summary":"이번 자동갱신에서 DART 사업내용 추출에 실패했습니다. 업종명만 보고 사업모델을 임의 생성하지 않습니다.",
+                    "products":"—","customers":"—","revenue":"—","drivers":"—","segments":[]
+                }
+                x0["businessModelEasy"] = x0["businessProfile"]["summary"]
+                x0["businessModelSource"] = "DART 추출 실패"
                 msg = f"{x0.get('name')}({x0.get('stock_code')}): {e}"
                 errors.append(msg)
-                # Print exact failures into GitHub Actions log.
-                if len(errors) <= 20:
+                if len(errors) <= 30:
                     print("  기업설명 실패:", msg)
-            if i % 10 == 0:
-                print("  기업설명 진행", i, "/", len(jobs))
+
+            if i % 10 == 0 or i == len(jobs):
+                print("  DART 기업설명", i, "/", len(jobs), "신규/갱신 완료", fetched)
 
     _save_profile_cache(cache)
-    covered = sum(
-        x.get("businessModelSource") == "OpenDART 사업보고서 구조화"
-        for x in target
+    target_count = sum(not _is_etf_name(x.get("name")) for x in raw)
+    actual = sum(
+        str(x.get("businessModelSource","")).startswith("OpenDART")
+        for x in raw if not _is_etf_name(x.get("name"))
     )
-    print(f"  회사별 투자용 비즈니스모델 {covered}/{len(target)}개 후보 연결")
-    if errors:
-        print("  기업설명 실패 총", len(errors), "개 / 첫 오류:", errors[0])
+    print(f"  회사별 DART 비즈니스모델 {actual}/{target_count}개 연결 · 캐시 {cached_count} · 이번 신규/갱신 {fetched}")
 
     return {
-        "status": "LIVE" if covered >= max(10, int(len(target)*0.60)) else "PARTIAL",
-        "targetCount": len(target),
-        "coveredCount": covered,
+        "status": "LIVE" if target_count and actual / target_count >= 0.70 else "PARTIAL",
+        "targetCount": target_count,
+        "coveredCount": actual,
+        "cachedCount": cached_count,
         "fetchedCount": fetched,
-        "source": "OpenDART 사업보고서 원문",
-        "message": f"회사별 투자용 비즈니스모델 {covered}/{len(target)}개 후보 연결",
-        "errors": errors[:20],
+        "source": "OpenDART 정기보고서 원문 + DART 공시뷰어 fallback",
+        "message": f"회사별 DART 비즈니스모델 {actual}/{target_count}개 연결",
+        "errors": errors[:30],
     }
 
 
@@ -2847,7 +3337,7 @@ def main():
     old_mode = (old_payload.get("meta") or {}).get("mode")
     old_by_ticker = {x.get("ticker"): x for x in old_payload.get("stocks", []) if x.get("ticker")}
 
-    print("1/8 코스피·코스닥 시가총액 목록 수집")
+    print("1/9 코스피·코스닥 시가총액 목록 수집")
     listed = fetch_market_summary(0, ".KS", "KOSPI") + fetch_market_summary(1, ".KQ", "KOSDAQ")
     sector_map = kind_sector_map()
     for r in listed:
@@ -2857,7 +3347,7 @@ def main():
     if len(cap_pass) < 80:
         raise RuntimeError(f"시가총액 1조원 통과 종목이 비정상적으로 적습니다: {len(cap_pass)}")
 
-    print("2/8 시총 1조 이상 종목 가격 이력 수집:", len(cap_pass))
+    print("2/9 시총 1조 이상 종목 가격 이력 수집:", len(cap_pass))
     raw = []
     errors = []
     def task(meta):
@@ -2900,7 +3390,7 @@ def main():
     if len(raw) < 50:
         raise RuntimeError(f"정상 계산 종목이 너무 적어 기존 사이트를 덮어쓰지 않습니다: {len(raw)} / 가격수집 오류 {len(errors)}개. 첫 오류: {(errors[0].get('error') if errors else '없음')}")
 
-    print("3/8 RS / Stage 2 / 세부섹터 계산")
+    print("3/9 RS / Stage 2 계산")
     rsvals = [x["rsBlend"] for x in raw]
     ovals = [x["oneilRsRaw"] for x in raw]
     for x in raw:
@@ -2908,45 +3398,25 @@ def main():
         x["oneilRsPercentile"] = round(percentile(ovals, x["oneilRsRaw"]), 1)
         x["trendTemplate"] = bool(x["stage2Core"] and x["rsPercentile"] >= 70)
 
-    groups = {}
-    for x in raw:
-        groups.setdefault(x["sector"], []).append(x)
-
-    sectors = []
-    for name, members in groups.items():
-        ar = statistics.mean(x["rsPercentile"] for x in members)
-        b60 = statistics.mean(1 if x["ma60"] and x["close"] > x["ma60"] else 0 for x in members)
-        nh = statistics.mean(1 if x["high52Ratio"] >= 97 else 0 for x in members)
-        vh = statistics.mean(min(x["volumeRatio"] / 2, 1) for x in members)
-        st = statistics.mean(1 if x["trendTemplate"] else 0 for x in members)
-        score = 0.35 * ar + 20 * b60 + 20 * nh + 15 * vh + 10 * st
-        action = "강화" if score >= 72 else "상승" if score >= 58 else "중립" if score >= 45 else "약화"
-        sectors.append(
-            {
-                "name": name,
-                "score": round(score, 1),
-                "rsPercentile": round(ar, 1),
-                "breadth60": round(b60 * 100, 1),
-                "newHighPct": round(nh * 100, 1),
-                "volumeHeat": round(vh * 100, 1),
-                "stage2Pct": round(st * 100, 1),
-                "action": action,
-                "leaders": [m["name"] for m in sorted(members, key=lambda z: z["rsPercentile"], reverse=True)[:3]],
-                "memberCount": len(members),
-            }
-        )
-    sectors.sort(key=lambda s: s["score"], reverse=True)
-    sector_by_name = {s["name"]: s for s in sectors}
     mkt = market_direction()
 
-    print("4/8 OpenDART 공식 실적·공시 연결")
+    print("4/9 OpenDART 공식 실적·공시 연결")
     dart_meta = dart_enrich(raw, old_by_ticker)
     print("  ", dart_meta.get("message"))
 
-    print("5/8 수급·컨센서스 생략 (사용자 설정)")
+    print("5/9 OpenDART 사업내용 + 세부섹터 자동분류")
+    profile_meta = profile_enrich(raw)
+    print("  ", profile_meta.get("message"))
+
+    # IMPORTANT: sector action is now calculated on DART-derived business sectors,
+    # not only the broad KRX industry label.
+    sectors = _build_sector_stats(raw)
+    sector_by_name = {s["name"]: s for s in sectors}
+
+    print("6/9 수급·컨센서스 생략 (사용자 설정)")
     flow_meta = {"connected": False, "coverage": 0, "source": "사용 안 함", "message": "수급 미사용"}
 
-    print("6/8 점수 / 신호 / CAN SLIM 계산")
+    print("7/9 점수 / 신호 / CAN SLIM 계산")
     today = datetime.now(KST).date().isoformat()
     for x in raw:
         add_can_slim(x, sector_by_name[x["sector"]], mkt)
@@ -3033,12 +3503,9 @@ def main():
         sec["leaders"] = [m.get("name") for m in leader_rank[:4]]
         sec["majorCompanies"] = [m.get("name") for m in major_rank[:5]]
 
-    profile_meta = profile_enrich(raw)
-    print("  ", profile_meta.get("message"))
-
     asof = max(x["date"] for x in raw)
 
-    print("7/8 섹터 대장주 + 기업 비즈니스모델 연결")
+    print("8/9 섹터 대장주 연결")
     consensus_meta = {"status": "NOT_USED", "source": "사용 안 함", "message": "컨센서스 미사용"}
 
     payload = {
@@ -3047,7 +3514,7 @@ def main():
             "mode": "LIVE",
             "asOf": asof,
             "updatedAt": datetime.now(KST).isoformat(timespec="minutes"),
-            "source": "Yahoo Finance price + NAVER market-cap/fallback + KRX KIND industry + OpenDART official fundamentals/disclosures + OpenDART fundamentals/disclosures + sector leadership + OpenDART business-profile summary",
+            "source": "Yahoo Finance price + NAVER market-cap/fallback + KRX KIND + OpenDART fundamentals/disclosures + DART business narrative + DART-derived detailed sectors",
             "universeCount": len(listed),
             "successCount": len(raw),
             "errorCount": len(errors),
@@ -3080,14 +3547,14 @@ def main():
             "flowMeta": flow_meta,
             "consensusMeta": consensus_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
-            "note": "최종 통합 자동갱신: 주가·거래량·시총·6조건·Stage 2·RS·CAN SLIM·OpenDART EPS/매출/ROE/공시/희석·NAVER 외국인/기관 추정수급·시장방향·FnGuide 현재 컨센서스까지 연결합니다. 4주 리비전은 매일 저장한 컨센서스 스냅샷이 28일 쌓인 뒤 자동 계산됩니다.",
+            "note": "주가·거래량·6조건·Stage 2·RS·OpenDART 재무/공시와 함께 DART 정기보고서의 사업내용을 직접 추출해 회사별 사업모델과 세부섹터를 자동 생성합니다. 수급·컨센서스는 사용하지 않습니다.",
         },
         "sectors": sectors,
         "stocks": raw,
         "errors": errors[:100],
     }
 
-    print("8/8 index.html 갱신")
+    print("9/9 index.html 갱신")
     new_html = replace_payload(old_html, payload)
     new_html = patch_index_health_ui(new_html)
     new_html = patch_leader_profile_ui(new_html)
