@@ -48,6 +48,22 @@ CONSENSUS_HISTORY = ROOT / "wamo_consensus_history.json"
 CONSENSUS_TARGET_MAX = 100
 CONSENSUS_WORKERS = 6
 
+FUND_PREFIXES = (
+    "KODEX", "TIGER", "ACE", "RISE", "SOL", "PLUS", "HANARO",
+    "KBSTAR", "KOSEF", "ARIRANG", "TIMEFOLIO", "WOORI", "1Q",
+)
+
+def classify_instrument(name):
+    """기업 스크리닝과 ETF/ETN을 같은 기준으로 섞지 않도록 증권 유형을 구분합니다."""
+    n = str(name or "").strip().upper()
+    if n.startswith(FUND_PREFIXES) or " ETF" in n or " ETN" in n or n.endswith("ETN"):
+        return "ETF_ETN"
+    if "스팩" in n or "SPAC" in n:
+        return "SPAC"
+    if "리츠" in n or "REIT" in n:
+        return "REIT"
+    return "COMPANY"
+
 def http_bytes(url: str, timeout=25) -> bytes:
     req = urllib.request.Request(
         url,
@@ -195,13 +211,14 @@ def kind_sector_map():
         print("KIND sector mapping skipped:", e)
         return {}
 
-def fetch_yahoo_history(ticker: str, years=5):
+def fetch_yahoo_history(ticker: str, years=None):
     """GitHub Actions에서 사용할 1순위 가격 경로.
     query1/query2를 순차 시도하고, 수정주가 비율로 OHLC를 보정합니다.
     """
     errors = []
     now = int(time.time())
-    start = now - years * 370 * 86400
+    # years=None이면 Yahoo가 보유한 상장 이후 전체 수정주가 이력을 사용합니다.
+    start = 0 if years is None else now - years * 370 * 86400
     qs = urllib.parse.urlencode({
         "period1": start,
         "period2": now + 86400,
@@ -269,7 +286,9 @@ def fetch_yahoo_history(ticker: str, years=5):
                 # Duplicate date 제거 후 정렬.
                 dedup = {r["date"]: r for r in rows}
                 rows = [dedup[k] for k in sorted(dedup)]
-                if len(rows) < 260:
+                # 신규 상장주도 후보에서 통째로 빠지지 않게 60거래일부터 허용합니다.
+                # 200일선·Stage 2·정배열은 calc_raw에서 이력 부족으로 별도 표시합니다.
+                if len(rows) < 60:
                     raise RuntimeError(f"Yahoo 가격 이력 부족: {len(rows)}일")
                 return rows, host
 
@@ -279,7 +298,7 @@ def fetch_yahoo_history(ticker: str, years=5):
 
     raise RuntimeError(" / ".join(errors[-6:]))
 
-def fetch_naver_history(code: str, count=900):
+def fetch_naver_history(code: str, count=10000):
     url = f"https://fchart.stock.naver.com/sise.nhn?symbol={code}&timeframe=day&count={count}&requestType=0"
     raw = http_bytes(url)
     root = ET.fromstring(raw)
@@ -296,7 +315,7 @@ def fetch_naver_history(code: str, count=900):
         if c > 0:
             rows.append({"date": dt, "close": c, "high": h, "low": l, "volume": v})
     rows.sort(key=lambda r: r["date"])
-    if len(rows) < 260:
+    if len(rows) < 60:
         raise RuntimeError(f"가격 이력 부족: {len(rows)}일")
     return rows
 
@@ -375,6 +394,164 @@ def oneil_rs_raw(closes):
         + 0.20 * (range_return(closes, 252, 189) or 0)
     )
 
+def alignment_history(rows):
+    """현재가 > MA20 > MA60 > MA120 > MA200 정배열의 연속 구간을 계산합니다.
+
+    과거 최초 1회가 아니라, 중간 이탈을 반영한 '현재 연속 구간 시작일'을 우선합니다.
+    현재 정배열이 아니면 가장 최근 정배열 구간을 반환합니다.
+    """
+    closes = [float(r["close"]) for r in rows]
+    n = len(closes)
+    cumulative = [0.0]
+    for value in closes:
+        cumulative.append(cumulative[-1] + value)
+
+    def rolling_mean(i, window):
+        if i + 1 < window:
+            return None
+        return (cumulative[i + 1] - cumulative[i + 1 - window]) / window
+
+    aligned = [False] * n
+    ma20_series = [None] * n
+    ma60_series = [None] * n
+    ma120_series = [None] * n
+    ma200_series = [None] * n
+    for i in range(199, n):
+        ma20_i = rolling_mean(i, 20)
+        ma60_i = rolling_mean(i, 60)
+        ma120_i = rolling_mean(i, 120)
+        ma200_i = rolling_mean(i, 200)
+        ma20_series[i] = ma20_i
+        ma60_series[i] = ma60_i
+        ma120_series[i] = ma120_i
+        ma200_series[i] = ma200_i
+        aligned[i] = bool(closes[i] > ma20_i > ma60_i > ma120_i > ma200_i)
+
+    def break_reason(i):
+        ma20_i, ma60_i = ma20_series[i], ma60_series[i]
+        ma120_i, ma200_i = ma120_series[i], ma200_series[i]
+        if ma200_i is None:
+            return "200일 이력 부족"
+        if closes[i] <= ma20_i:
+            return "현재가가 20일선 이하로 이탈"
+        if ma20_i <= ma60_i:
+            return "20일선이 60일선 이하로 하락"
+        if ma60_i <= ma120_i:
+            return "60일선이 120일선 이하로 하락"
+        if ma120_i <= ma200_i:
+            return "120일선이 200일선 이하로 하락"
+        return "정배열 순서 이탈"
+
+    def run_bounds(end_idx):
+        if end_idx is None or end_idx < 0 or not aligned[end_idx]:
+            return None
+        start_idx = end_idx
+        while start_idx > 0 and aligned[start_idx - 1]:
+            start_idx -= 1
+        return start_idx, end_idx
+
+    asof = date.fromisoformat(rows[-1]["date"])
+    current = bool(aligned[-1])
+    bounds = run_bounds(n - 1) if current else None
+    if not bounds:
+        latest_end = next((i for i in range(n - 1, -1, -1) if aligned[i]), None)
+        bounds = run_bounds(latest_end)
+
+    result = {
+        "isAligned": current,
+        "criterion": "현재가 > MA20 > MA60 > MA120 > MA200",
+        "firstAlignedDate": None,
+        "initialPreparationStartDate": rows[199]["date"] if n >= 200 else None,
+        "initialPreparationTradingDays": 0,
+        "initialPreparationWeeks": 0.0,
+        "activePreparationStartDate": None,
+        "activePreparationTradingDays": 0,
+        "activePreparationWeeks": 0.0,
+        "currentStartDate": None,
+        "currentTradingDays": 0,
+        "currentCalendarDays": 0,
+        "currentWeeks": 0.0,
+        "lastStartDate": None,
+        "lastEndDate": None,
+        "lastTradingDays": 0,
+        "daysSinceLastEnd": None,
+        "events": [],
+    }
+
+    first_idx = next((i for i, value in enumerate(aligned) if value), None)
+    if first_idx is not None:
+        result["firstAlignedDate"] = rows[first_idx]["date"]
+        prep_start_dt = date.fromisoformat(rows[199]["date"])
+        first_dt = date.fromisoformat(rows[first_idx]["date"])
+        result["initialPreparationTradingDays"] = first_idx - 199 + 1
+        result["initialPreparationWeeks"] = round((first_dt - prep_start_dt).days / 7, 1)
+
+    events = []
+    last_break_idx = None
+    previous = False
+    for i in range(199, n):
+        if aligned[i] and not previous:
+            event_type = "FIRST" if not events else "RECOVER"
+            gap_days = (i - last_break_idx) if last_break_idx is not None else None
+            prep_start_idx = 199 if event_type == "FIRST" else last_break_idx
+            prep_calendar_days = None
+            if prep_start_idx is not None:
+                prep_calendar_days = (date.fromisoformat(rows[i]["date"]) - date.fromisoformat(rows[prep_start_idx]["date"])).days
+            events.append({
+                "type": event_type,
+                "date": rows[i]["date"],
+                "label": "최초 정배열 도달" if event_type == "FIRST" else "정배열 회복",
+                "gapTradingDays": gap_days,
+                "preparationStartDate": rows[prep_start_idx]["date"] if prep_start_idx is not None else None,
+                "preparationTradingDays": (i - prep_start_idx + 1) if prep_start_idx is not None else None,
+                "preparationWeeks": round(prep_calendar_days / 7, 1) if prep_calendar_days is not None else None,
+                "shortBreak": bool(gap_days is not None and gap_days <= 5),
+            })
+        elif not aligned[i] and previous:
+            last_break_idx = i
+            events.append({
+                "type": "BREAK",
+                "date": rows[i]["date"],
+                "label": "정배열 이탈",
+                "reason": break_reason(i),
+            })
+        previous = aligned[i]
+    result["events"] = events[-20:]
+    active_prep_idx = None
+    if not current:
+        if last_break_idx is not None:
+            active_prep_idx = last_break_idx
+        elif n >= 200 and first_idx is None:
+            active_prep_idx = 199
+    if active_prep_idx is not None:
+        result["activePreparationStartDate"] = rows[active_prep_idx]["date"]
+        result["activePreparationTradingDays"] = n - active_prep_idx
+        result["activePreparationWeeks"] = round(
+            (asof - date.fromisoformat(rows[active_prep_idx]["date"])).days / 7, 1
+        )
+    if not bounds:
+        return result
+
+    start_idx, end_idx = bounds
+    start_dt = date.fromisoformat(rows[start_idx]["date"])
+    end_dt = date.fromisoformat(rows[end_idx]["date"])
+    trading_days = end_idx - start_idx + 1
+    result.update({
+        "lastStartDate": rows[start_idx]["date"],
+        "lastEndDate": rows[end_idx]["date"],
+        "lastTradingDays": trading_days,
+        "daysSinceLastEnd": (asof - end_dt).days,
+    })
+    if current:
+        calendar_days = (asof - start_dt).days
+        result.update({
+            "currentStartDate": rows[start_idx]["date"],
+            "currentTradingDays": trading_days,
+            "currentCalendarDays": calendar_days,
+            "currentWeeks": round(calendar_days / 7, 1),
+        })
+    return result
+
 def market_direction():
     try:
         rows = fetch_yahoo_index()
@@ -409,10 +586,14 @@ def calc_raw(meta, rows):
 
     high52 = max(highs[-252:])
     low52 = min(lows[-252:])
+    historical_high = max(highs)
+    historical_high_idx = max(i for i, h in enumerate(highs) if h >= historical_high * 0.999999)
     high3 = max(highs[-min(756, len(highs)):])
     idx3 = max(i for i, h in enumerate(highs) if h >= high3 * 0.999999)
     since3 = len(rows) - 1 - idx3
     high_ratio = closes[-1] / high52
+    historical_high_ratio = closes[-1] / historical_high
+    alignment = alignment_history(rows)
     avg_value_50d = sum(r["close"] * r["volume"] for r in rows[-50:]) / min(50, len(rows))
     vol20 = mean_tail(vols, 20) or 1
     vol_ratio = vols[-1] / vol20 if vol20 else 0
@@ -443,6 +624,10 @@ def calc_raw(meta, rows):
     return {
         **meta,
         "date": rows[-1]["date"],
+        "historyTradingDays": len(rows),
+        "historyReady200": len(rows) >= 200,
+        "high52WindowDays": min(252, len(rows)),
+        "technicalCoverage": "FULL" if len(rows) >= 260 else "SHORT_HISTORY",
         "close": closes[-1],
         "chg1d": ret[1] * 100,
         "ret252": ret[252] * 100,
@@ -454,6 +639,10 @@ def calc_raw(meta, rows):
         "demandRatio": demand_ratio(rows),
         "volumeRatio": vol_ratio,
         "high52Ratio": high_ratio * 100,
+        "historicalHighRatio": historical_high_ratio * 100,
+        "historicalHighDate": rows[historical_high_idx]["date"],
+        "historyStartDate": rows[0]["date"],
+        "alignment": alignment,
         "drawdown": (high_ratio - 1) * 100,
         "ma20": ma20, "ma50": ma50, "ma60": ma60, "ma120": ma120,
         "ma150": ma150, "ma200": ma200, "ma20m": ma20m,
@@ -462,7 +651,8 @@ def calc_raw(meta, rows):
         "conditionCount": sum(cond.values()),
         "stage2Checks": st,
         "stage2Core": all(st.values()),
-        "history": rows[-180:],
+        # MA200과 정배열 시작 표시를 위해 최근 260거래일을 차트에 전달합니다.
+        "history": rows[-260:],
         "dataSource": "NAVER Finance",
         "dataStatus": "LIVE",
         "foreign_netbuy_20d": None,
@@ -2578,7 +2768,7 @@ def _load_fixed_business_db_from_index():
     These companies should never consume DART profile calls again.
     """
     try:
-        h = INDEX_PATH.read_text(encoding="utf-8")
+        h = INDEX.read_text(encoding="utf-8")
         m = re.search(
             r"const\s+WAMO_BUSINESS_DB\s*=\s*(\{.*?\})\s*;\s*\n\s*function\s+wamoBusinessFor",
             h,
@@ -2942,6 +3132,17 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     ):
         return "지주회사", ["지주회사"], "HIGH"
 
+    # K-뷰티는 같은 산업 안에서도 돈 버는 방식이 크게 다르므로 우선 분리한다.
+    # 단순히 '유통채널'이라는 단어가 있다는 이유로 자체 브랜드사를 유통사로
+    # 오분류하지 않도록 ODM → 자체 브랜드 → 전문 유통 순서로 판정한다.
+    if "화장품" in t:
+        if any(w in t for w in ("odm", "oem", "제조자개발생산", "주문자상표부착생산")):
+            return "화장품 ODM/OEM", ["화장품 ODM/OEM", "K-뷰티"], "HIGH"
+        if any(w in t for w in ("자체 브랜드", "브랜드 회사", "브랜딩", "최종 소비자", "자체 제품")):
+            return "화장품 브랜드", ["화장품 브랜드", "K-뷰티"], "HIGH"
+        if any(w in t for w in ("유통 플랫폼", "수출 유통", "해외 유통", "유통회사", "브랜드 유통")):
+            return "K-뷰티 유통", ["K-뷰티 유통", "K-뷰티"], "HIGH"
+
     narrow = [
         ("화장품 ODM/OEM", ["화장품"], ["odm","oem"]),
         ("K-뷰티 유통", ["화장품"], ["유통","플랫폼","수출"]),
@@ -3022,8 +3223,19 @@ def _build_sector_stats(raw):
         nh = statistics.mean(1 if x["high52Ratio"] >= 93 else 0 for x in members)
         vh = statistics.mean(min(x["volumeRatio"] / 2, 1) for x in members)
         st = statistics.mean(1 if x["trendTemplate"] else 0 for x in members)
-        score = 0.35 * ar + 20 * b60 + 20 * nh + 15 * vh + 10 * st
-        action = "강화" if score >= 72 else "상승" if score >= 58 else "중립" if score >= 45 else "약화"
+        detail_count = sum(1 for x in members if x.get("sectorConfidence") in ("HIGH", "MEDIUM"))
+        raw_score = 0.35 * ar + 20 * b60 + 20 * nh + 15 * vh + 10 * st
+        member_count = len(members)
+        # 한 종목만 강한 경우를 '섹터 액션'으로 과대평가하지 않는다.
+        # 3개 이상이 함께 움직여야 정식 섹터 액션으로 인정하고,
+        # 1~2개 그룹의 점수는 중립값(50) 쪽으로 축소한다.
+        breadth_confidence = min(member_count / 3, 1.0)
+        score = 50 + (raw_score - 50) * breadth_confidence
+        group_status = "SECTOR_ACTION" if member_count >= 3 else "REFERENCE" if member_count == 2 else "SINGLE"
+        if group_status == "SECTOR_ACTION":
+            action = "강화" if score >= 72 else "상승" if score >= 58 else "중립" if score >= 45 else "약화"
+        else:
+            action = "참고" if group_status == "REFERENCE" else "단일"
         sectors.append({
             "name": name,
             "score": round(score, 1),
@@ -3033,10 +3245,16 @@ def _build_sector_stats(raw):
             "volumeHeat": round(vh * 100, 1),
             "stage2Pct": round(st * 100, 1),
             "action": action,
+            "groupStatus": group_status,
+            "groupStatusLabel": f"{member_count}개 동조" if member_count >= 3 else f"{member_count}개 · 참고용",
+            "detailClassifiedCount": detail_count,
+            "classificationCoveragePct": round(detail_count / member_count * 100, 1) if member_count else 0,
+            "classificationLabel": f"사업내용 세부분류 {detail_count}/{member_count}" if detail_count else "KRX 업종 기준 · 세부분류 대기",
             "leaders": [m["name"] for m in sorted(members, key=lambda z: z["rsPercentile"], reverse=True)[:3]],
-            "memberCount": len(members),
+            "memberCount": member_count,
         })
-    sectors.sort(key=lambda s: s["score"], reverse=True)
+    status_rank = {"SECTOR_ACTION": 2, "REFERENCE": 1, "SINGLE": 0}
+    sectors.sort(key=lambda s: (status_rank.get(s.get("groupStatus"), 0), s["score"]), reverse=True)
     return sectors
 
 
@@ -3130,22 +3348,6 @@ def profile_enrich(raw, old_by_ticker=None):
         except Exception:
             fresh = False
 
-        if fresh:
-            x["businessProfile"] = old["businessProfile"]
-            x["businessModelEasy"] = old["businessProfile"].get("summary") or ""
-            x["businessModelSource"] = old.get("businessModelSource") or "OpenDART 사업보고서 직접추출"
-            x["businessModelReportDate"] = old.get("businessModelReportDate")
-            x["businessModelUrl"] = old.get("businessModelUrl")
-            x["detailSector"] = old.get("detailSector") or _normalize_krx_sector(original_sector)
-            x["sectorTags"] = old.get("sectorTags") or [x["detailSector"]]
-            x["sectorConfidence"] = old.get("sectorConfidence") or "MEDIUM"
-            x["sector"] = x["detailSector"]
-            covered += 1
-            cached_count += 1
-            continue
-
-        # Reviewed fixed DB is an immediate, zero-network source.
-        # It also feeds the same detailed-sector taxonomy, so sector action stays granular.
         fixed = fixed_db.get(str(code))
         if isinstance(fixed, dict) and fixed.get("summary"):
             detail, tags, confidence = _fixed_profile_detail_sector(
@@ -3159,6 +3361,24 @@ def profile_enrich(raw, old_by_ticker=None):
             x["sectorConfidence"] = confidence
             x["sector"] = detail
             covered += 1
+            continue
+
+        if fresh:
+            x["businessProfile"] = old["businessProfile"]
+            x["businessModelEasy"] = old["businessProfile"].get("summary") or ""
+            x["businessModelSource"] = old.get("businessModelSource") or "OpenDART 사업보고서 직접추출"
+            x["businessModelReportDate"] = old.get("businessModelReportDate")
+            x["businessModelUrl"] = old.get("businessModelUrl")
+            # 저장된 사업설명은 재사용하되, 세부섹터는 최신 분류법으로 매번 다시 계산한다.
+            detail, tags, confidence = _fixed_profile_detail_sector(
+                x.get("name"), original_sector, old["businessProfile"]
+            )
+            x["detailSector"] = detail
+            x["sectorTags"] = tags
+            x["sectorConfidence"] = confidence
+            x["sector"] = x["detailSector"]
+            covered += 1
+            cached_count += 1
             continue
 
         # Failed records get a cooldown so one problematic filing cannot consume minutes every day.
@@ -3595,6 +3815,82 @@ def patch_index_health_ui(html):
     return html
 
 
+def validate_payload_integrity(payload):
+    """핵심 카드·필터·표의 숫자가 서로 맞을 때만 사이트를 갱신합니다."""
+    issues = []
+    checks = 0
+    stocks = payload.get("stocks") or []
+    sectors = payload.get("sectors") or []
+    meta = payload.get("meta") or {}
+    funnel = meta.get("universeFunnel") or {}
+
+    tickers = [x.get("ticker") for x in stocks]
+    checks += 1
+    if len(tickers) != len(set(tickers)):
+        issues.append("중복 티커 존재")
+
+    for x in stocks:
+        ticker = x.get("ticker") or x.get("name") or "알 수 없음"
+        cond = x.get("conditions") or {}
+        checks += 1
+        if x.get("conditionCount") != sum(bool(v) for v in cond.values()):
+            issues.append(f"{ticker}: 6조건 합계 불일치")
+
+        stage = x.get("stage2Checks") or {}
+        expected_stage = bool(stage and all(bool(v) for v in stage.values()) and (x.get("rsPercentile") or 0) >= 70)
+        checks += 1
+        if bool(x.get("trendTemplate")) != expected_stage:
+            issues.append(f"{ticker}: Stage 2 불일치")
+
+        hist = x.get("history") or []
+        hist_dates = [r.get("date") for r in hist]
+        checks += 1
+        if not hist or hist_dates != sorted(set(hist_dates)) or hist_dates[-1] != x.get("date"):
+            issues.append(f"{ticker}: 차트 이력 날짜 불일치")
+        if hist:
+            recent = hist[-min(252, len(hist)):]
+            high52 = max(float(r.get("high") or 0) for r in recent)
+            calc_ratio = float(x.get("close") or 0) / high52 * 100 if high52 else 0
+            checks += 1
+            if abs(calc_ratio - float(x.get("high52Ratio") or 0)) > 0.15:
+                issues.append(f"{ticker}: 52주 고점비 불일치")
+
+        a = x.get("alignment") or {}
+        ma_values = [x.get("ma20"), x.get("ma60"), x.get("ma120"), x.get("ma200")]
+        expected_alignment = bool(all(v is not None for v in ma_values) and x.get("close") > ma_values[0] > ma_values[1] > ma_values[2] > ma_values[3])
+        checks += 1
+        if bool(a.get("isAligned")) != expected_alignment:
+            issues.append(f"{ticker}: 현재 정배열 불일치")
+
+    checks += 3
+    if funnel.get("deepScanned") != len(stocks):
+        issues.append("정밀계산 종목 수 불일치")
+    if funnel.get("growth4plus") != sum((x.get("conditionCount") or 0) >= 4 for x in stocks):
+        issues.append("성장주 후보 수 불일치")
+    if funnel.get("stage2") != sum(bool(x.get("trendTemplate")) for x in stocks):
+        issues.append("Stage 2 후보 수 불일치")
+
+    sector_counts = {}
+    for x in stocks:
+        sector_counts[x.get("sector") or "기타"] = sector_counts.get(x.get("sector") or "기타", 0) + 1
+    for sec in sectors:
+        checks += 1
+        if sec.get("memberCount") != sector_counts.get(sec.get("name"), 0):
+            issues.append(f"{sec.get('name')}: 섹터 인원 불일치")
+        leader = sec.get("leaderStock") or {}
+        if leader and leader.get("name") not in [x.get("name") for x in stocks if x.get("sector") == sec.get("name")]:
+            issues.append(f"{sec.get('name')}: 대장주 섹터 불일치")
+
+    if issues:
+        raise RuntimeError("정합성 검사 실패: " + " / ".join(issues[:12]))
+    return {
+        "status": "PASS",
+        "checks": checks,
+        "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
+        "note": "중복·6조건·Stage 2·52주 고점비·정배열·섹터 인원·퍼널 합계를 자동 대조했습니다.",
+    }
+
+
 def main():
     if not INDEX.exists():
         raise SystemExit("index.html을 찾지 못했습니다.")
@@ -3609,6 +3905,7 @@ def main():
     sector_map = kind_sector_map()
     for r in listed:
         r["sector"] = sector_map.get(r["stock_code"], "KRX 업종 미분류")
+        r["instrumentType"] = classify_instrument(r.get("name"))
 
     cap_pass = [r for r in listed if r["market_cap_krw"] >= MIN_MARKET_CAP]
     if len(cap_pass) < 80:
@@ -3621,7 +3918,7 @@ def main():
         errors_local = []
         # 1순위: Yahoo Finance. GitHub Actions 서버에서 네이버 fchart가 막히는 경우를 피함.
         try:
-            rows, host = fetch_yahoo_history(meta["ticker"], 5)
+            rows, host = fetch_yahoo_history(meta["ticker"])
             x = calc_raw(meta, rows)
             x["dataSource"] = "Yahoo Finance"
             x["priceProvider"] = host
@@ -3631,7 +3928,7 @@ def main():
 
         # 2순위: Naver Finance. Yahoo가 개별 종목에서 실패할 때만 사용.
         try:
-            rows = fetch_naver_history(meta["stock_code"], 900)
+            rows = fetch_naver_history(meta["stock_code"])
             x = calc_raw(meta, rows)
             x["dataSource"] = "NAVER Finance"
             x["priceProvider"] = "fchart.stock.naver.com"
@@ -3721,7 +4018,7 @@ def main():
         for k in ("close","ma20","ma50","ma60","ma120","ma150","ma200","ma20m","avgTradingValue50d","market_cap_krw"):
             if x.get(k) is not None:
                 x[k] = round(float(x[k]), 2)
-        for k in ("chg1d","ret252","rs5","rs20","rs60","rsBlend","oneilRsRaw","demandRatio","volumeRatio","high52Ratio","drawdown"):
+        for k in ("chg1d","ret252","rs5","rs20","rs60","rsBlend","oneilRsRaw","demandRatio","volumeRatio","high52Ratio","historicalHighRatio","drawdown"):
             if x.get(k) is not None:
                 x[k] = round(float(x[k]), 2)
         for r in x["history"]:
@@ -3768,9 +4065,31 @@ def main():
             for m in leader_rank[:4]
         ]
         sec["leaders"] = [m.get("name") for m in leader_rank[:4]]
-        sec["majorCompanies"] = [m.get("name") for m in major_rank[:5]]
+        # 같은 세부섹터의 시총 상위기업뿐 아니라 현재 주도주도 반드시 보이게 한다.
+        major_names = []
+        for m in ((leader_rank[:1] if leader_rank else []) + major_rank):
+            name = m.get("name")
+            if name and name not in major_names:
+                major_names.append(name)
+            if len(major_names) >= 6:
+                break
+        sec["majorCompanies"] = major_names
 
     asof = max(x["date"] for x in raw)
+    asof_date = date.fromisoformat(asof)
+    for x in raw:
+        stale_days = max(0, (asof_date - date.fromisoformat(x["date"])).days)
+        x["staleDays"] = stale_days
+        x["isStale"] = stale_days > 4
+        if x["isStale"]:
+            x["dataStatus"] = "STALE"
+    stale_count = sum(bool(x.get("isStale")) for x in raw)
+    live_count = len(raw) - stale_count
+    short_history_count = sum((x.get("historyTradingDays") or 0) < 260 for x in raw)
+    source_counts = {
+        "Yahoo Finance": sum(x.get("dataSource") == "Yahoo Finance" for x in raw),
+        "NAVER Finance": sum(x.get("dataSource") == "NAVER Finance" for x in raw),
+    }
 
     print("8/9 섹터 대장주 연결")
     consensus_meta = {"status": "NOT_USED", "source": "사용 안 함", "message": "컨센서스 미사용"}
@@ -3787,14 +4106,16 @@ def main():
             "errorCount": len(errors),
             "marketDirection": {"KOREA": mkt},
             "dataHealth": {
-                "liveCount": len(raw),
+                "liveCount": live_count,
                 "cachedCount": 0,
-                "staleCount": 0,
+                "staleCount": stale_count,
                 "failedCount": len(errors),
+                "shortHistoryCount": short_history_count,
+                "sourceCounts": source_counts,
                 "dartConnected": bool(dart_meta.get("connected")),
                 "flowConnected": False,
                 "consensusConnected": False,
-                "message": f"전체 {len(listed):,}개 → 시총 1조 이상 {len(cap_pass):,}개 → 거래대금 100억원 이상 정밀계산 {len(raw):,}개 · 수급 {flow_meta.get('coverage',0):,}개",
+                "message": f"전체 {len(listed):,}개 → 시총 1조 이상 {len(cap_pass):,}개 → 거래대금 100억원 이상 정밀계산 {len(raw):,}개 · 짧은 이력 {short_history_count:,}개 · 가격수집 실패 {len(errors):,}개",
             },
             "universeFunnel": {
                 "listed": len(listed),
@@ -3810,16 +4131,18 @@ def main():
             },
             "dartMeta": dart_meta,
             "profileMeta": profile_meta,
-            "marketContextMeta": {"status": "LIVE" if flow_meta.get("connected") else "PARTIAL", "source": flow_meta.get("source"), "message": flow_meta.get("message")},
+            "marketContextMeta": {"status": "NOT_USED", "source": "사용 안 함", "message": "수급 미사용(사용자 설정)"},
             "flowMeta": flow_meta,
             "consensusMeta": consensus_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
-            "note": "V29 BALANCED: 검수 고정DB 종목은 즉시 사용하고, DART는 고정DB 밖 신규·강한 후보 10개를 최우선 처리한 뒤 백로그 8개를 추가 구축합니다. 재무·공시는 캐시 우선, 신규조회 최대 18개입니다. 수급·컨센서스·리비전은 사용하지 않습니다.",
+            "note": "후보 스크리닝 대시보드입니다. 검수 기업설명 DB와 OpenDART를 함께 사용하며, 재무·공시는 캐시 우선으로 갱신합니다. 수급·컨센서스·리비전은 사용자 설정에 따라 사용하지 않습니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
         },
         "sectors": sectors,
         "stocks": raw,
         "errors": errors[:100],
     }
+
+    payload["meta"]["qa"] = validate_payload_integrity(payload)
 
     print("9/9 index.html 갱신")
     new_html = replace_payload(old_html, payload)
