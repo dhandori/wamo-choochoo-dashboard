@@ -28,16 +28,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/25.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/26.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
 DART_KEY = os.getenv("OPENDART_API_KEY", "").strip()
-DART_TARGET_MAX = 120
+DART_TARGET_MAX = 48
 PROFILE_CACHE = ROOT / "wamo_business_profiles.json"
-PROFILE_TARGET_MAX = 400
+PROFILE_TARGET_MAX = 36
 PROFILE_WORKERS = 4
-DART_WORKERS = 6
+DART_WORKERS = 5
+DART_FRESH_CALL_MAX = 24
+DART_BACKFILL_PER_RUN = 4
+DART_REFRESH_DAYS = 3
+PROFILE_PRIORITY_MAX = 28
+PROFILE_BACKFILL_PER_RUN = 8
+PROFILE_RETRY_DAYS = 3
 CONSENSUS_HISTORY = ROOT / "wamo_consensus_history.json"
 CONSENSUS_TARGET_MAX = 100
 CONSENSUS_WORKERS = 6
@@ -1112,12 +1118,76 @@ def enrich_one_dart(x, corp_code, old=None):
     result["dartStatus"] = "LIVE" if latest_rows or series or discs else "NO_DATA"
     return result
 
+def _copy_dart_cache(x, old):
+    """Reuse quarterly/annual DART facts already embedded in yesterday's index.
+    DART statements do not need a full-company refetch on every market-data run.
+    """
+    if not isinstance(old, dict):
+        return False
+    if old.get("dartStatus") not in ("LIVE", "CACHED", "PARTIAL"):
+        return False
+
+    exact = {
+        "dartCorpCode","dartSource","dartReportYear","dartReportCode","dartFsDiv",
+        "eps_cur","eps_prev","eps_yoy","eps_growth_mode",
+        "sales_cur","sales_prev","sales_yoy","sales_growth_mode",
+        "annualEpsSeries","latest_annual_eps_yoy","annual_eps_cagr_3y","annual_growth_mode",
+        "latest_annual_proxy_yoy","annual_proxy_growth_mode","annual_proxy_cagr_3y",
+        "annual_proxy_metric","annual_proxy_series","roe",
+        "issued_shares","share_growth_yoy","share_report_year","share_report_code",
+        "catalysts","new_catalyst","new_catalyst_note",
+        "dilution_events_365d","dilution_filing_365d","dilution_note",
+        "businessReportRceptNo","businessReportDate","dartFetchedAt",
+    }
+    copied = False
+    for k in exact:
+        if k in old:
+            x[k] = old[k]
+            copied = True
+    if copied:
+        x["dartStatus"] = "CACHED"
+        x["dartSource"] = old.get("dartSource") or "OpenDART official"
+    return copied
+
+def _dart_cache_fresh(old, today):
+    if not isinstance(old, dict) or old.get("dartStatus") not in ("LIVE","CACHED","PARTIAL"):
+        return False
+    s = old.get("dartFetchedAt")
+    if not s:
+        # Legacy dashboard data is accepted once, then stamped today by V26.
+        return True
+    try:
+        d = date.fromisoformat(str(s)[:10])
+        return (today - d).days < DART_REFRESH_DAYS
+    except Exception:
+        return False
+
+def _dart_priority_key(x, old_by_ticker):
+    old = old_by_ticker.get(x.get("ticker"), {})
+    is_new = 1 if not old else 0
+    watch_like = 1 if (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60) else 0
+    stage2 = 1 if x.get("trendTemplate") else 0
+    near_high = 1 if x.get("high52Ratio",0) >= 97 else 0
+    old_live = 1 if old.get("signal") in ("BUY","HOLD","WATCH") else 0
+    return (
+        is_new,
+        watch_like,
+        stage2,
+        near_high,
+        old_live,
+        x.get("conditionCount",0),
+        x.get("rsPercentile",0),
+        x.get("high52Ratio",0),
+    )
+
 def dart_enrich(raw, old_by_ticker):
     meta = {
         "connected": False,
         "targetCount": 0,
         "successCount": 0,
         "errorCount": 0,
+        "cachedCount": 0,
+        "fetchedCount": 0,
         "source": "OpenDART official",
         "message": "OpenDART key not connected",
     }
@@ -1131,33 +1201,60 @@ def dart_enrich(raw, old_by_ticker):
         meta["message"] = "OpenDART key validation/corp-code fetch failed: " + str(e)
         return meta
 
-    # Prioritize actual screening candidates; cap calls to keep workflow reliable.
-    candidates = sorted(
-        raw,
-        key=lambda x: (
-            1 if x.get("conditionCount",0) >= 4 else 0,
-            1 if x.get("trendTemplate") else 0,
-            x.get("rsPercentile",0),
-            x.get("score",0),
-        ),
+    today = datetime.now(KST).date()
+    errors = []
+
+    # First reuse all available stock-level DART data from the prior dashboard.
+    cached = []
+    missing_or_stale = []
+    for x in raw:
+        code = x.get("stock_code") or str(x.get("ticker","")).split(".")[0]
+        corp = cmap.get(code)
+        if corp:
+            x["dartCorpCode"] = corp
+        old = old_by_ticker.get(x.get("ticker"), {})
+        if corp and _dart_cache_fresh(old, today) and _copy_dart_cache(x, old):
+            x["dartFetchedAt"] = today.isoformat()
+            cached.append(x)
+        elif corp:
+            # Copy stale values too, so a temporary refresh failure never blanks the UI.
+            _copy_dart_cache(x, old)
+            missing_or_stale.append(x)
+
+    # Candidate-driven priority. New/strong names are refreshed first.
+    ordered = sorted(
+        missing_or_stale,
+        key=lambda x: _dart_priority_key(x, old_by_ticker),
         reverse=True,
     )
-    target = []
-    for x in candidates:
-        if x.get("conditionCount",0) >= 4 or x.get("trendTemplate") or x.get("rsPercentile",0) >= 70:
-            target.append(x)
-        if len(target) >= DART_TARGET_MAX:
-            break
-    # If candidate pool is unexpectedly small, still cover top names.
-    if len(target) < min(50, len(candidates)):
-        target = candidates[:min(DART_TARGET_MAX, len(candidates))]
+    priority = [
+        x for x in ordered
+        if (
+            (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60)
+            or x.get("trendTemplate")
+            or x.get("high52Ratio",0) >= 97
+            or old_by_ticker.get(x.get("ticker"), {}).get("signal") in ("BUY","HOLD","WATCH")
+            or not old_by_ticker.get(x.get("ticker"))
+        )
+    ]
+
+    selected = priority[:DART_FRESH_CALL_MAX]
+    selected_ids = {x.get("ticker") for x in selected}
+
+    # Small background fill only; never refetch the whole universe in one run.
+    if len(selected) < DART_FRESH_CALL_MAX:
+        for x in ordered:
+            if x.get("ticker") in selected_ids:
+                continue
+            selected.append(x)
+            selected_ids.add(x.get("ticker"))
+            if len(selected) >= min(DART_FRESH_CALL_MAX, len(priority) + DART_BACKFILL_PER_RUN):
+                break
 
     tasks = []
-    errors = []
     with ThreadPoolExecutor(max_workers=DART_WORKERS) as ex:
-        for x in target:
-            code = x.get("stock_code") or str(x.get("ticker","")).split(".")[0]
-            corp = cmap.get(code)
+        for x in selected:
+            corp = x.get("dartCorpCode")
             if not corp:
                 continue
             fut = ex.submit(enrich_one_dart, x, corp, old_by_ticker.get(x.get("ticker"), {}))
@@ -1166,16 +1263,19 @@ def dart_enrich(raw, old_by_ticker):
         for i, (fut, x, corp) in enumerate(tasks, 1):
             try:
                 d = fut.result()
+                d["dartFetchedAt"] = today.isoformat()
                 x.update(d)
             except Exception as e:
-                x["dartStatus"] = "ERROR"
+                # Keep copied stale values if present.
+                if x.get("dartStatus") not in ("LIVE","CACHED","PARTIAL"):
+                    x["dartStatus"] = "ERROR"
                 errors.append({"ticker": x.get("ticker"), "error": str(e)})
-            if i % 20 == 0:
-                print("  DART", i, "/", len(tasks))
+            if i % 8 == 0 or i == len(tasks):
+                print("  DART 재무/공시", i, "/", len(tasks))
 
-    # ROE is efficient through the official multi-company endpoint (max 100 per request).
+    # ROE only for the small freshly processed set.
     by_report = {}
-    for x in target:
+    for x in selected:
         corp = x.get("dartCorpCode")
         y = x.get("dartReportYear")
         rc = x.get("dartReportCode")
@@ -1187,17 +1287,20 @@ def dart_enrich(raw, old_by_ticker):
             roe_map.update(fetch_roe_batch(corps, y, rc))
         except Exception as e:
             print("DART ROE batch error:", y, rc, e)
-    for x in target:
+    for x in selected:
         corp = x.get("dartCorpCode")
         if corp in roe_map:
             x["roe"] = roe_map[corp]
 
-    succ = sum(x.get("dartStatus") == "LIVE" for x in target)
+    usable = sum(x.get("dartStatus") in ("LIVE","CACHED","PARTIAL") for x in raw)
+    fresh = sum(x.get("dartStatus") == "LIVE" and x.get("dartFetchedAt") == today.isoformat() for x in selected)
     meta.update({
-        "targetCount": len(target),
-        "successCount": succ,
+        "targetCount": len(selected),
+        "successCount": usable,
+        "cachedCount": len(cached),
+        "fetchedCount": fresh,
         "errorCount": len(errors),
-        "message": f"OpenDART 공식 데이터 {succ}/{len(target)}개 후보 연결",
+        "message": f"OpenDART 사용가능 {usable}/{len(raw)}개 · 캐시 {len(cached)} · 이번 조회 {len(selected)}개",
         "errors": errors[:20],
     })
     return meta
@@ -2242,7 +2345,7 @@ def _dart_document_text_robust(rcept_no):
         "rcept_no": rcept_no,
     })
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=45) as r:
+    with urllib.request.urlopen(req, timeout=14) as r:
         raw = r.read()
 
     # Normal path: ZIP file.
@@ -2579,7 +2682,7 @@ def _dart_document_text_v3(rcept_no):
     with zipfile.ZipFile(io.BytesIO(raw)) as z:
         names = [n for n in z.namelist() if not n.endswith("/")]
         names.sort(key=lambda n: z.getinfo(n).file_size, reverse=True)
-        for name in names[:30]:
+        for name in names[:14]:
             try:
                 body = z.read(name)
                 member_debug.append(f"{name}:{len(body)}")
@@ -2601,7 +2704,7 @@ def _dart_document_text_v3(rcept_no):
         )
     return joined
 
-def _periodic_report_candidates(corp_code, max_count=12):
+def _periodic_report_candidates(corp_code, max_count=3):
     """Use the latest periodic filing, not only the annual report.
     Business descriptions are often updated in quarterly/semiannual filings.
     """
@@ -2651,7 +2754,7 @@ def _dart_public_viewer_text(rcept_no):
     Parse the document tree on the report's official page and fetch the '사업의 내용' section.
     """
     main_url = "https://dart.fss.or.kr/dsaf001/main.do?" + urllib.parse.urlencode({"rcpNo": rcept_no})
-    html = http_text(main_url, timeout=35)
+    html = http_text(main_url, timeout=12)
 
     # DART's document tree calls viewDoc(rcpNo,dcmNo,eleId,offset,length,dtd).
     calls = []
@@ -2685,7 +2788,7 @@ def _dart_public_viewer_text(rcept_no):
             "offset": offset, "length": length, "dtd": dtd,
         })
         try:
-            body = http_bytes(url, timeout=35)
+            body = http_bytes(url, timeout=10)
             t = _markup_to_text(body)
             if len(t) >= 500:
                 return t
@@ -2694,36 +2797,63 @@ def _dart_public_viewer_text(rcept_no):
     raise RuntimeError("DART 공시뷰어 사업의 내용 추출 실패")
 
 def _fetch_best_business_text(corp_code, preferred_rcept=None, preferred_date=None):
+    """Fast path.
+    1) Use the receipt number already obtained by DART financial/disclosure enrichment.
+    2) Only if that fails, search at most the latest 2 periodic filings.
+    3) For each filing, try ZIP first and official DART viewer second.
+    This bounds one company's worst-case network work instead of walking 12 filings.
+    """
     attempts = []
     candidates = []
+    seen = set()
+
     if preferred_rcept:
-        candidates.append({
+        r = {
             "rcept_no": str(preferred_rcept),
             "date": str(preferred_date or ""),
             "report": "정기보고서",
-        })
-    try:
-        for r in _periodic_report_candidates(corp_code, 12):
-            if r["rcept_no"] not in {x["rcept_no"] for x in candidates}:
-                candidates.append(r)
-    except Exception as e:
-        attempts.append("목록:" + str(e))
+        }
+        candidates.append(r)
+        seen.add(r["rcept_no"])
 
-    for r in candidates:
+    # If preferred receipt works, no list.json request is needed at all.
+    if candidates:
+        r = candidates[0]
         try:
             t = _dart_document_text_v3(r["rcept_no"])
             return t, r, "OpenDART 원문 ZIP"
         except Exception as e:
             attempts.append(f"{r.get('date','')} {r['rcept_no']} ZIP:{e}")
-
-        # If original-file API says file missing/malformed, fall back to official DART viewer.
         try:
             t = _dart_public_viewer_text(r["rcept_no"])
             return t, r, "DART 공시뷰어"
         except Exception as e:
             attempts.append(f"{r.get('date','')} {r['rcept_no']} VIEW:{e}")
 
-    raise RuntimeError(" / ".join(attempts[-6:]) or "정기보고서 본문 확보 실패")
+    # Only after the preferred receipt failed, query a very small fallback set.
+    try:
+        for r in _periodic_report_candidates(corp_code, 2):
+            if r["rcept_no"] not in seen:
+                candidates.append(r)
+                seen.add(r["rcept_no"])
+    except Exception as e:
+        attempts.append("목록:" + str(e))
+
+    # At most two fallback filings.
+    fallback_rows = candidates[1:] if preferred_rcept else candidates
+    for r in fallback_rows[:2]:
+        try:
+            t = _dart_document_text_v3(r["rcept_no"])
+            return t, r, "OpenDART 원문 ZIP"
+        except Exception as e:
+            attempts.append(f"{r.get('date','')} {r['rcept_no']} ZIP:{e}")
+        try:
+            t = _dart_public_viewer_text(r["rcept_no"])
+            return t, r, "DART 공시뷰어"
+        except Exception as e:
+            attempts.append(f"{r.get('date','')} {r['rcept_no']} VIEW:{e}")
+
+    raise RuntimeError(" / ".join(attempts[-5:]) or "정기보고서 본문 확보 실패")
 
 def _normalize_krx_sector(s):
     s = str(s or "")
@@ -2875,7 +3005,30 @@ def _build_sector_stats(raw):
     return sectors
 
 
-def profile_enrich(raw):
+def _profile_is_priority(x, old_by_ticker):
+    old = old_by_ticker.get(x.get("ticker"), {})
+    return bool(
+        (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60)
+        or x.get("trendTemplate")
+        or x.get("high52Ratio",0) >= 97
+        or old.get("signal") in ("BUY","HOLD","WATCH")
+    )
+
+def _profile_priority_key(x, old_by_ticker):
+    old = old_by_ticker.get(x.get("ticker"), {})
+    return (
+        1 if not old else 0,  # truly new stock on dashboard first
+        1 if (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60) else 0,
+        1 if x.get("trendTemplate") else 0,
+        1 if x.get("high52Ratio",0) >= 97 else 0,
+        x.get("conditionCount",0),
+        x.get("rsPercentile",0),
+        x.get("high52Ratio",0),
+        x.get("volumeRatio",0),
+    )
+
+def profile_enrich(raw, old_by_ticker=None):
+    old_by_ticker = old_by_ticker or {}
     cache = _load_profile_cache()
     today = datetime.now(KST).date()
 
@@ -2895,9 +3048,10 @@ def profile_enrich(raw):
         raise RuntimeError("기업설명용 DART 고유번호 목록 실패: " + str(e))
 
     errors = []
-    jobs = []
+    missing = []
     covered = 0
     cached_count = 0
+    retry_wait = 0
 
     for x in raw:
         original_sector = x.get("sector")
@@ -2935,6 +3089,7 @@ def profile_enrich(raw):
                 and old.get("schemaVersion") == PROFILE_SCHEMA_VERSION
                 and isinstance(old.get("businessProfile"), dict)
                 and old.get("detailSector")
+                and not old.get("failed")
             )
         except Exception:
             fresh = False
@@ -2951,8 +3106,30 @@ def profile_enrich(raw):
             x["sector"] = x["detailSector"]
             covered += 1
             cached_count += 1
-        elif corp:
-            jobs.append(x)
+            continue
+
+        # Failed records get a cooldown so one problematic filing cannot consume minutes every day.
+        retry_after = old.get("retryAfter")
+        if old.get("failed") and retry_after:
+            try:
+                if today < date.fromisoformat(str(retry_after)):
+                    x["detailSector"] = old.get("detailSector") or _normalize_krx_sector(original_sector)
+                    x["sectorTags"] = old.get("sectorTags") or [x["detailSector"]]
+                    x["sectorConfidence"] = old.get("sectorConfidence") or "LOW"
+                    x["sector"] = x["detailSector"]
+                    x["businessProfile"] = {
+                        "summary":"DART 원문 재시도 대기 중입니다. 업종명만 보고 사업모델을 임의 생성하지 않습니다.",
+                        "products":"—","customers":"—","revenue":"—","drivers":"—","segments":[]
+                    }
+                    x["businessModelEasy"] = x["businessProfile"]["summary"]
+                    x["businessModelSource"] = "DART 재시도 대기"
+                    retry_wait += 1
+                    continue
+            except Exception:
+                pass
+
+        if corp:
+            missing.append(x)
         else:
             x["detailSector"] = _normalize_krx_sector(original_sector)
             x["sectorTags"] = [x["detailSector"]]
@@ -2964,6 +3141,39 @@ def profile_enrich(raw):
             }
             x["businessModelEasy"] = x["businessProfile"]["summary"]
             x["businessModelSource"] = "DART 연결 불가"
+
+    # Strong/new names first.
+    missing.sort(key=lambda x: _profile_priority_key(x, old_by_ticker), reverse=True)
+    priority = [x for x in missing if _profile_is_priority(x, old_by_ticker)]
+    selected = priority[:PROFILE_PRIORITY_MAX]
+    selected_ids = {x.get("ticker") for x in selected}
+
+    # Only a small background batch fills the long-tail company DB each day.
+    for x in missing:
+        if x.get("ticker") in selected_ids:
+            continue
+        selected.append(x)
+        selected_ids.add(x.get("ticker"))
+        if len(selected) >= min(PROFILE_TARGET_MAX, len(priority[:PROFILE_PRIORITY_MAX]) + PROFILE_BACKFILL_PER_RUN):
+            break
+
+    # Everything not selected uses a conservative broad sector until its turn.
+    for x in missing:
+        if x.get("ticker") in selected_ids:
+            continue
+        x["detailSector"] = _normalize_krx_sector(x.get("krxSector"))
+        x["sectorTags"] = [x["detailSector"]]
+        x["sectorConfidence"] = "LOW"
+        x["sector"] = x["detailSector"]
+        x["businessProfile"] = {
+            "summary":"DART 회사별 사업내용 DB가 순차 구축 중입니다.",
+            "products":"—","customers":"—",
+            "revenue":"업종명만 보고 사업모델을 임의 생성하지 않습니다.",
+            "drivers":"신규·강한 후보는 우선 처리하고 나머지는 매일 자동으로 추가합니다.",
+            "segments":[]
+        }
+        x["businessModelEasy"] = x["businessProfile"]["summary"]
+        x["businessModelSource"] = "DART 백로그"
 
     def one(x):
         report_text, report, route = _fetch_best_business_text(
@@ -2985,9 +3195,10 @@ def profile_enrich(raw):
 
     fetched = 0
     with ThreadPoolExecutor(max_workers=PROFILE_WORKERS) as ex:
-        fut_map = {ex.submit(one, x): x for x in jobs}
+        fut_map = {ex.submit(one, x): x for x in selected}
         for i, fut in enumerate(as_completed(fut_map), 1):
             x0 = fut_map[fut]
+            code = x0.get("stock_code") or str(x0.get("ticker","")).split(".")[0]
             try:
                 x, report, route, prof, detail, tags, confidence = fut.result()
                 x["businessProfile"] = prof
@@ -3000,7 +3211,6 @@ def profile_enrich(raw):
                 x["sectorConfidence"] = confidence
                 x["sector"] = detail
 
-                code = x.get("stock_code") or str(x.get("ticker","")).split(".")[0]
                 cache[code] = {
                     "schemaVersion": PROFILE_SCHEMA_VERSION,
                     "businessProfile": prof,
@@ -3011,15 +3221,16 @@ def profile_enrich(raw):
                     "sectorTags": tags,
                     "sectorConfidence": confidence,
                     "updatedAt": today.isoformat(),
+                    "failed": False,
                 }
                 fetched += 1
                 covered += 1
             except Exception as e:
-                # Never replace a company with a fabricated sector description.
-                x0["detailSector"] = _normalize_krx_sector(x0.get("krxSector"))
-                x0["sectorTags"] = [x0["detailSector"]]
+                detail = _normalize_krx_sector(x0.get("krxSector"))
+                x0["detailSector"] = detail
+                x0["sectorTags"] = [detail]
                 x0["sectorConfidence"] = "LOW"
-                x0["sector"] = x0["detailSector"]
+                x0["sector"] = detail
                 x0["businessProfile"] = {
                     "summary":"이번 자동갱신에서 DART 사업내용 추출에 실패했습니다. 업종명만 보고 사업모델을 임의 생성하지 않습니다.",
                     "products":"—","customers":"—","revenue":"—","drivers":"—","segments":[]
@@ -3028,11 +3239,24 @@ def profile_enrich(raw):
                 x0["businessModelSource"] = "DART 추출 실패"
                 msg = f"{x0.get('name')}({x0.get('stock_code')}): {e}"
                 errors.append(msg)
-                if len(errors) <= 30:
+
+                # Persist failure cooldown. Strong candidates retry sooner.
+                retry_days = 1 if _profile_is_priority(x0, old_by_ticker) else PROFILE_RETRY_DAYS
+                cache[code] = {
+                    "schemaVersion": PROFILE_SCHEMA_VERSION,
+                    "failed": True,
+                    "lastError": str(e)[:1000],
+                    "retryAfter": (today + timedelta(days=retry_days)).isoformat(),
+                    "updatedAt": today.isoformat(),
+                    "detailSector": detail,
+                    "sectorTags": [detail],
+                    "sectorConfidence": "LOW",
+                }
+                if len(errors) <= 20:
                     print("  기업설명 실패:", msg)
 
-            if i % 10 == 0 or i == len(jobs):
-                print("  DART 기업설명", i, "/", len(jobs), "신규/갱신 완료", fetched)
+            if i % 8 == 0 or i == len(selected):
+                print("  DART 기업설명", i, "/", len(selected), "이번 연결", fetched)
 
     _save_profile_cache(cache)
     target_count = sum(not _is_etf_name(x.get("name")) for x in raw)
@@ -3040,17 +3264,27 @@ def profile_enrich(raw):
         str(x.get("businessModelSource","")).startswith("OpenDART")
         for x in raw if not _is_etf_name(x.get("name"))
     )
-    print(f"  회사별 DART 비즈니스모델 {actual}/{target_count}개 연결 · 캐시 {cached_count} · 이번 신규/갱신 {fetched}")
+    pending = sum(
+        x.get("businessModelSource") in ("DART 백로그","DART 재시도 대기","DART 추출 실패")
+        for x in raw
+    )
+    print(
+        f"  회사별 DART 비즈니스모델 {actual}/{target_count}개 연결"
+        f" · 캐시 {cached_count} · 이번 조회 {len(selected)} · 신규연결 {fetched} · 백로그/대기 {pending}"
+    )
 
     return {
         "status": "LIVE" if target_count and actual / target_count >= 0.70 else "PARTIAL",
         "targetCount": target_count,
         "coveredCount": actual,
         "cachedCount": cached_count,
+        "selectedCount": len(selected),
         "fetchedCount": fetched,
+        "pendingCount": pending,
+        "retryWaitCount": retry_wait,
         "source": "OpenDART 정기보고서 원문 + DART 공시뷰어 fallback",
-        "message": f"회사별 DART 비즈니스모델 {actual}/{target_count}개 연결",
-        "errors": errors[:30],
+        "message": f"DART 사업모델 {actual}/{target_count} · 이번 조회 {len(selected)} · 백로그 {pending}",
+        "errors": errors[:20],
     }
 
 
@@ -3400,12 +3634,12 @@ def main():
 
     mkt = market_direction()
 
-    print("4/9 OpenDART 공식 실적·공시 연결")
+    print("4/9 OpenDART 재무·공시 — 캐시 우선 / 강한 후보만 갱신")
     dart_meta = dart_enrich(raw, old_by_ticker)
     print("  ", dart_meta.get("message"))
 
-    print("5/9 OpenDART 사업내용 + 세부섹터 자동분류")
-    profile_meta = profile_enrich(raw)
+    print("5/9 OpenDART 사업내용 + 세부섹터 — 신규/강한 후보 우선")
+    profile_meta = profile_enrich(raw, old_by_ticker)
     print("  ", profile_meta.get("message"))
 
     # IMPORTANT: sector action is now calculated on DART-derived business sectors,
@@ -3547,7 +3781,7 @@ def main():
             "flowMeta": flow_meta,
             "consensusMeta": consensus_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
-            "note": "주가·거래량·6조건·Stage 2·RS·OpenDART 재무/공시와 함께 DART 정기보고서의 사업내용을 직접 추출해 회사별 사업모델과 세부섹터를 자동 생성합니다. 수급·컨센서스는 사용하지 않습니다.",
+            "note": "V26: 새 BUY/WATCH/Stage2 후보는 DART 사업내용을 우선 처리하고, 기존 회사는 캐시를 재사용합니다. 나머지 회사는 매일 백로그를 소량 채워 장시간 실행을 방지합니다. 수급·컨센서스는 사용하지 않습니다.",
         },
         "sectors": sectors,
         "stocks": raw,
