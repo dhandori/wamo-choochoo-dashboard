@@ -1039,5 +1039,195 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
     "failed": false
+  },
+  "279570": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "케이뱅크는 보험료를 받고 위험을 인수하는 보험사업이 핵심입니다.",
+      "products": "개인·기업 대상 보험상품과 보험자산 운용",
+      "customers": "개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널 등을 통해 판매합니다.",
+      "revenue": "보험료에서 지급보험금과 사업비를 뺀 보험손익과 보험자산 운용수익으로 돈을 법니다.",
+      "drivers": "손해율, 신계약 판매, 보험계약마진(CSM), 해지율, 금리와 운용수익률이 중요합니다.",
+      "segments": [
+        "소프트웨어·플랫폼",
+        "보험",
+        "은행",
+        "유통·커머스"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260323",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001560",
+    "detailSector": "통신",
+    "sectorTags": [
+      "통신",
+      "편의점·리테일"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-08-15",
+    "failed": false
+  },
+  "001820": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "전자부품 제조업 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
+      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
+      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260319",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260319001054",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-15",
+    "failed": false
+  },
+  "009150": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "전자부품 제조업 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
+      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
+      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260310",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260310003071",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-15",
+    "failed": false
+  },
+  "085620": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "고객에게 보험상품을 판매해 보험료를 받고 위험을 인수하는 금융사업입니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널을 통해 판매합니다.",
+      "revenue": "보험료에서 보험금·사업비를 뺀 보험손익과 채권·주식 등 자산운용 수익으로 돈을 법니다.",
+      "drivers": "손해율 하락, 신계약 증가, 금리·운용수익률 개선, 비용 효율화가 핵심입니다.",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260721",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260721001043",
+    "detailSector": "보험",
+    "sectorTags": [
+      "보험"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-15",
+    "failed": false
+  },
+  "108490": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "주요 사업 부문 중 로봇 전용 부품 사업에서는 로봇의 관절 역할을 하는 핵심 구동 부품인 '다이나믹셀(DYNAMIXEL)'을 주력 제품으로 생산하며, 이는 모터, 감속기, 제어기, 통신 기능이 통합된 모듈형 구조로 로봇 개발의 편의성과 확장성을 높였습니다.",
+      "products": "주1) 액츄에이터의 주요 제품은 다이나믹셀 XM540-W270-T을 기준으로 작성했습니다.주2) 신규 사업 개시 및 구독형 서비스로 제공되는 자율주행로봇의 가격변동은 기재하지 않았습니다.주3) 주요 제품의 가격은 '기간별 매출총액 / 기간별 매출수량' 으로 계산하였습니다.주4) 외화금액은 해당연도/기말 평균환율로 적용하여 환산한 금액입니다.",
+      "customers": "당기 중 매출액의 10% 이상을 차지하는 주요 고객으로부터 매출액 내역은 다음과 같습니다.",
+      "revenue": "또한, 국내외 협력점은 매출대비 할인율을 적용하여 적극적인 판매를 촉진할 수 있도록 관리하고 있습니다.뿐만 아니라 로봇 교육과 관련이 있는 기관과의 후원을 통해 다양한 형태로 로봇 사업을 지원하고, 전국 초등 방과후학교와 중학교의 자유학기제 및 고등학교 CA(특별활동), 동아리 활동 등 폭넓은 교육기관을 대상으로 교육을 하면서 판로 개척을 위해 노력하고 있습니다.",
+      "drivers": "고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다.",
+      "segments": [
+        "소프트웨어·플랫폼",
+        "유통·커머스"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260708",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260708000478",
+    "detailSector": "반도체 검사·테스트",
+    "sectorTags": [
+      "반도체 검사·테스트",
+      "반도체 소재·부품",
+      "통신",
+      "로봇·모션"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-08-15",
+    "failed": false
+  },
+  "196170": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "알테오젠는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260323",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001596",
+    "detailSector": "자연과학 및 공학 연구개발업",
+    "sectorTags": [
+      "자연과학 및 공학 연구개발업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-15",
+    "failed": false
+  },
+  "323280": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "당사는 PCB 정면기 등 자동화기계의 개발, 제조, 판매를 주요 사업으로 영위하고 있으며 사업의 확대를 위하여 신규 장비 연구개발을 진행하고 있습니다.또한 2차전지사업부를 신설하여 특허 취득 및 시설투자를 진행하여 양산준비 중에 있습니다.기타 자세한 사항은 동 보고서의 'Ⅱ.",
+      "products": "주요 제품 서비스\" 를 참조하시기 바랍니다.(2) 시장의 주요 특성ㆍ규모 및 성장성- 2차전지 시장 규모는 전기자동차 보급 확대에 힘입어 급증하고 있으며, 배터리 수요 또한 지속 확대 중입니다.",
+      "customers": "국내 영업조직은 고객사와 기술미팅 및 견적뿐만 아니라 장비의 납품 및 유상 스페어 납품 등의 업무 진행 및 고객사와 당사와의 창구 역할 등을 수행하고 있으며, 지속적인 고객과의 수주 성공을 위해 긴밀한 고객 관리를 수행하고 있습니다.",
+      "revenue": "수주금액 기준 2025년 제품매출로 인식되는 수주 현황 내용이며(설치용역매출 이월분 제외) 수주처 및 세부 품목등은 경쟁사 견적 금액 노출로 기재하지 않았습니다.",
+      "drivers": "고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다.",
+      "segments": [
+        "반도체 장비",
+        "2차전지",
+        "음극재",
+        "유통·커머스"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260323",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323000642",
+    "detailSector": "증권",
+    "sectorTags": [
+      "증권",
+      "반도체 검사·테스트",
+      "반도체 장비",
+      "반도체 소재·부품"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-08-15",
+    "failed": false
+  },
+  "066570": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "산업용 기계·장비·전기제품을 제조해 기업 고객에게 공급하는 B2B 제조업입니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "제조공장, 건설·에너지·반도체 등 설비투자를 하는 기업이 주요 고객입니다.",
+      "revenue": "장비·부품 판매와 설치·유지보수 서비스에서 매출을 올립니다.",
+      "drivers": "고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다.",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260706",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260706000276",
+    "detailSector": "통신",
+    "sectorTags": [
+      "통신"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-15",
+    "failed": false
   }
 }
