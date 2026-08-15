@@ -3233,6 +3233,12 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     fallback = _normalize_krx_sector(krx_sector)
     return fallback, [fallback], "LOW"
 
+def _is_holding_sector_name(name):
+    """지주사 군집은 영업 섹터가 아니라 지배구조·정책 동조로 따로 본다."""
+    s = str(name or "").replace(" ", "")
+    return any(k in s for k in ("지주회사", "금융지주", "지주사"))
+
+
 def _build_sector_stats(raw):
     groups = {}
     for x in raw:
@@ -3253,8 +3259,11 @@ def _build_sector_stats(raw):
         # 1~2개 그룹의 점수는 중립값(50) 쪽으로 축소한다.
         breadth_confidence = min(member_count / 3, 1.0)
         score = 50 + (raw_score - 50) * breadth_confidence
-        group_status = "SECTOR_ACTION" if member_count >= 3 else "REFERENCE" if member_count == 2 else "SINGLE"
-        if group_status == "SECTOR_ACTION":
+        is_holding_theme = _is_holding_sector_name(name)
+        group_status = "HOLDING_THEME" if is_holding_theme else "SECTOR_ACTION" if member_count >= 3 else "REFERENCE" if member_count == 2 else "SINGLE"
+        if group_status == "HOLDING_THEME":
+            action = "동조" if member_count >= 3 and score >= 58 else "참고"
+        elif group_status == "SECTOR_ACTION":
             action = "강화" if score >= 72 else "상승" if score >= 58 else "중립" if score >= 45 else "약화"
         else:
             action = "참고" if group_status == "REFERENCE" else "단일"
@@ -3268,16 +3277,40 @@ def _build_sector_stats(raw):
             "stage2Pct": round(st * 100, 1),
             "action": action,
             "groupStatus": group_status,
-            "groupStatusLabel": f"{member_count}개 동조" if member_count >= 3 else f"{member_count}개 · 참고용",
+            "groupStatusLabel": (f"지주사 {member_count}개 동조 · 참고" if is_holding_theme else f"{member_count}개 동조" if member_count >= 3 else f"{member_count}개 · 참고용"),
             "detailClassifiedCount": detail_count,
             "classificationCoveragePct": round(detail_count / member_count * 100, 1) if member_count else 0,
             "classificationLabel": f"사업내용 세부분류 {detail_count}/{member_count}" if detail_count else "KRX 업종 기준 · 세부분류 대기",
             "leaders": [m["name"] for m in sorted(members, key=lambda z: z["rsPercentile"], reverse=True)[:3]],
             "memberCount": member_count,
         })
-    status_rank = {"SECTOR_ACTION": 2, "REFERENCE": 1, "SINGLE": 0}
+    status_rank = {"SECTOR_ACTION": 3, "HOLDING_THEME": 2, "REFERENCE": 1, "SINGLE": 0}
     sectors.sort(key=lambda s: (status_rank.get(s.get("groupStatus"), 0), s["score"]), reverse=True)
     return sectors
+
+
+def _sector_action_overlay(sector):
+    """종목 선별과 섞지 않는 독립 보조신호. 모든 종목에 동일한 형식으로 붙인다."""
+    group_status = sector.get("groupStatus")
+    action = sector.get("action")
+    if group_status == "HOLDING_THEME":
+        status, label = "HOLDING_THEME", "지주사 동조 · 참고"
+    elif group_status == "SECTOR_ACTION" and action in ("강화", "상승"):
+        status, label = "CONFIRMED", "섹터 동반강세"
+    elif group_status == "SECTOR_ACTION":
+        status, label = "WATCH", "섹터 동반확인 중"
+    else:
+        status, label = "NONE", "섹터 동반신호 없음"
+    return {
+        "status": status,
+        "label": label,
+        "action": action,
+        "score": sector.get("score"),
+        "memberCount": sector.get("memberCount", 0),
+        "breadth60": sector.get("breadth60"),
+        "newHighPct": sector.get("newHighPct"),
+        "stage2Pct": sector.get("stage2Pct"),
+    }
 
 
 def _profile_is_priority(x, old_by_ticker):
@@ -3286,6 +3319,7 @@ def _profile_is_priority(x, old_by_ticker):
         (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60)
         or x.get("trendTemplate")
         or x.get("high52Ratio",0) >= 93
+        or x.get("historicalHighRatio",0) >= 93
         or old.get("signal") in ("BUY","HOLD","WATCH")
     )
 
@@ -3295,7 +3329,7 @@ def _profile_priority_key(x, old_by_ticker):
         1 if not old else 0,  # truly new stock on dashboard first
         1 if (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60) else 0,
         1 if x.get("trendTemplate") else 0,
-        1 if x.get("high52Ratio",0) >= 93 else 0,
+        1 if (x.get("high52Ratio",0) >= 93 or x.get("historicalHighRatio",0) >= 93) else 0,
         x.get("conditionCount",0),
         x.get("rsPercentile",0),
         x.get("high52Ratio",0),
@@ -3705,7 +3739,9 @@ def add_can_slim(x, sector, mkt):
 
     ors = x["oneilRsPercentile"]
     ss = sector["score"]
-    items["L"] = cs_item("PASS" if ors >= 80 and ss >= 58 else "FAIL", f"오닐식 RS {ors:.0f} · 섹터 {ss:.0f}", "RS ≥80 + 강한 섹터", "시장 내 주도주인지 봅니다.")
+    operating_sector_action = sector.get("groupStatus") == "SECTOR_ACTION" and sector.get("action") in ("강화", "상승")
+    sector_value = "지주사 동조 · 참고" if sector.get("groupStatus") == "HOLDING_THEME" else f"섹터 {ss:.0f}"
+    items["L"] = cs_item("PASS" if ors >= 80 and operating_sector_action else "FAIL", f"오닐식 RS {ors:.0f} · {sector_value}", "RS ≥80 + 영업 세부섹터 동반강세", "시장 내 주도주인지 봅니다. 지주사 동조는 서로 다른 자회사 산업을 묶으므로 영업 세부섹터 강세로 인정하지 않습니다.")
 
     # I — Institutional Sponsorship
     # 사용자 설정: 외국인/기관 수급을 사용하지 않음.
@@ -3887,6 +3923,16 @@ def validate_payload_integrity(payload):
         if bool(a.get("isAligned")) != expected_alignment:
             issues.append(f"{ticker}: 현재 정배열 불일치")
 
+        overlay = x.get("sectorAction") or {}
+        sec = next((s for s in sectors if s.get("name") == x.get("sector")), None)
+        checks += 1
+        if not sec:
+            issues.append(f"{ticker}: 섹터 보조정보 원본 없음")
+        elif _is_holding_sector_name(x.get("sector")) and overlay.get("status") == "CONFIRMED":
+            issues.append(f"{ticker}: 지주사를 산업 섹터동반강세로 오분류")
+        elif overlay.get("status") != _sector_action_overlay(sec).get("status"):
+            issues.append(f"{ticker}: 섹터 보조정보 불일치")
+
     checks += 3
     if funnel.get("deepScanned") != len(stocks):
         issues.append("정밀계산 종목 수 불일치")
@@ -3894,6 +3940,9 @@ def validate_payload_integrity(payload):
         issues.append("성장주 후보 수 불일치")
     if funnel.get("stage2") != sum(bool(x.get("trendTemplate")) for x in stocks):
         issues.append("Stage 2 후보 수 불일치")
+    checks += 1
+    if funnel.get("highZone") != sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in stocks):
+        issues.append("신고가권 후보 수 불일치")
 
     health = meta.get("dataHealth") or {}
     attempted = int(health.get("priceAttemptedCount") or 0)
@@ -3922,7 +3971,7 @@ def validate_payload_integrity(payload):
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2·52주 고점비·정배열·섹터 인원·퍼널 합계를 자동 대조했습니다.",
+        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·지주사 분리·종목별 섹터 보조정보·퍼널 합계를 자동 대조했습니다.",
     }
 
 
@@ -4048,11 +4097,15 @@ def main():
     print("7/9 점수 / 신호 / CAN SLIM 계산")
     today = datetime.now(KST).date().isoformat()
     for x in raw:
-        add_can_slim(x, sector_by_name[x["sector"]], mkt)
+        sector = sector_by_name[x["sector"]]
+        x["sectorAction"] = _sector_action_overlay(sector)
+        add_can_slim(x, sector, mkt)
         hc = max(0, min(100, (x["high52Ratio"] - 70) / 30 * 100))
         vc = min(100, x["volumeRatio"] / 2 * 100)
         base = 0.30 * x["rsPercentile"] + 25 * x["conditionCount"] / 6 + 0.15 * hc + 0.10 * vc + 20 * (1 if x["trendTemplate"] else 0)
-        x["score"] = round(0.85 * base + 0.15 * sector_by_name[x["sector"]]["score"], 1)
+        # 종목 자체 점수와 섹터동반액션을 섞지 않는다.
+        # 섹터동반액션은 매우 중요한 별도 보조신호로 화면에 강하게 표시한다.
+        x["score"] = round(base, 1)
 
         if x["ma60"] and x["close"] < x["ma60"]:
             sig, reason = "EXIT", "60일선 아래 — 추세 훼손"
@@ -4200,6 +4253,7 @@ def main():
                 "deepScanned": len(raw),
                 "growth4plus": sum(x["conditionCount"] >= 4 for x in raw),
                 "stage2": sum(bool(x["trendTemplate"]) for x in raw),
+                "highZone": sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in raw),
                 "buy": sum(x["signal"] in ("BUY", "HOLD") for x in raw),
                 "liquidityThresholdKRW": MIN_AVG_VALUE_50D,
                 "marketCapThresholdKRW": MIN_MARKET_CAP,
