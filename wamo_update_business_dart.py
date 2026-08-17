@@ -28,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/40.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/41.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -3512,6 +3512,10 @@ def _build_sector_stats(raw, flow_benchmarks=None):
                 "ret30": round(float(m.get("ret30") or 0), 2),
                 "relative7": round(float(m.get("ret7") or 0) - float(benchmark.get("ret7") or 0), 2),
                 "relative30": round(float(m.get("ret30") or 0) - float(benchmark.get("ret30") or 0), 2),
+                "rs": round(float(m.get("rsPercentile") or 0), 1),
+                "conditions": int(m.get("conditionCount") or 0),
+                "stage2": bool(m.get("trendTemplate")),
+                "highZone": bool((m.get("high52Ratio") or 0) >= 93 or (m.get("historicalHighRatio") or 0) >= 93),
             })
 
         sectors.append({
@@ -3540,7 +3544,7 @@ def _build_sector_stats(raw, flow_benchmarks=None):
             "expanding": expanding,
             "concentrationWarning": concentration_warning,
             "concentrationWindow": "·".join(concentration_windows),
-            "flowMembers": flow_member_rows[:12],
+            "flowMembers": flow_member_rows,
         })
     status_rank = {"SECTOR_ACTION": 3, "HOLDING_THEME": 2, "REFERENCE": 1, "SINGLE": 0}
     sectors.sort(key=lambda s: (status_rank.get(s.get("groupStatus"), 0), s["score"]), reverse=True)
@@ -4330,6 +4334,14 @@ def validate_payload_integrity(payload):
         checks += 1
         if flow_eligible > int(sec.get("memberCount") or 0):
             issues.append(f"{sec.get('name')}: 섹터 흐름 유효종목 수 초과")
+        flow_member_rows = sec.get("flowMembers") or []
+        flow_member_tickers = [m.get("ticker") for m in flow_member_rows]
+        sector_tickers = {x.get("ticker") for x in stocks if x.get("sector") == sec.get("name")}
+        checks += 2
+        if len(flow_member_rows) != flow_eligible or len(flow_member_tickers) != len(set(flow_member_tickers)):
+            issues.append(f"{sec.get('name')}: 상세창 동참 종목 수·중복 불일치")
+        if any(t not in sector_tickers for t in flow_member_tickers):
+            issues.append(f"{sec.get('name')}: 다른 섹터 종목이 상세창 목록에 혼입")
 
         for key in ("flow7", "flow30"):
             flow = sec.get(key) or {}
