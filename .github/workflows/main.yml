@@ -11,7 +11,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - name: 파일 가져오기
@@ -25,17 +25,20 @@ jobs:
       - name: 필요한 도구 설치
         run: pip install pandas openpyxl xlrd lxml html5lib beautifulsoup4 requests
 
-      - name: 전체 투자 데이터 갱신
+      - name: 한국 투자 데이터 갱신
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
           KRX_ID: ${{ secrets.KRX_ID }}
           KRX_PW: ${{ secrets.KRX_PW }}
         run: python wamo_update_business_dart.py
 
+      - name: 미국 투자 데이터 갱신
+        run: python wamo_update_us_sec.py
+
       - name: 새 결과 저장
         run: |
           git config user.name "wamo-dashboard-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add index.html wamo_business_profiles.json
-          git diff --cached --quiet || git commit -m "auto update dashboard"
+          git add index.html us.html wamo_business_profiles.json wamo_us_sec_cache.json
+          git diff --cached --quiet || git commit -m "auto update Korea and US dashboards"
           git push
