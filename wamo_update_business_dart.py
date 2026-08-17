@@ -18,6 +18,7 @@ import sys
 import importlib
 import urllib.parse
 import urllib.request
+import http.cookiejar
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 import html as html_lib
@@ -28,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/41.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/42.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -48,6 +49,9 @@ CONSENSUS_HISTORY = ROOT / "wamo_consensus_history.json"
 CONSENSUS_TARGET_MAX = 20
 CONSENSUS_WORKERS = 2
 CONSENSUS_CACHE_DAYS = 3
+MARKET_ENERGY_EXPECTED = 350
+MARKET_ENERGY_HISTORY_DAYS = 140
+MARKET_ENERGY_MIN_COVERAGE = 90.0
 
 # corpCode.xml is shared by the financial/disclosure and business-profile stages.
 # Download it at most once per workflow run. A failed request is remembered too,
@@ -341,6 +345,211 @@ def fetch_naver_history(code: str, count=10000):
     if len(rows) < 60:
         raise RuntimeError(f"가격 이력 부족: {len(rows)}일")
     return rows
+
+
+def _krx_login_opener():
+    """Return an authenticated KRX opener; exact membership is mandatory."""
+    login_id = os.getenv("KRX_ID", "").strip()
+    login_pw = os.getenv("KRX_PW", "").strip()
+    if not (login_id and login_pw):
+        raise RuntimeError("GitHub Secrets의 KRX_ID 또는 KRX_PW가 실행 환경에 연결되지 않았습니다.")
+    jar = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    page = "https://data.krx.co.kr/contents/MDC/COMS/client/MDCCOMS001.cmd"
+    jsp = "https://data.krx.co.kr/contents/MDC/COMS/client/view/login.jsp?site=mdc"
+    login = "https://data.krx.co.kr/contents/MDC/COMS/client/MDCCOMS001D1.cmd"
+    headers = {"User-Agent": UA, "Referer": page}
+    opener.open(urllib.request.Request(page, headers=headers), timeout=20).read()
+    opener.open(urllib.request.Request(jsp, headers=headers), timeout=20).read()
+    payload = {"mbrNm":"", "telNo":"", "di":"", "certType":"", "mbrId":login_id, "pw":login_pw}
+    req = urllib.request.Request(login, data=urllib.parse.urlencode(payload).encode(), headers=headers)
+    result = json.loads(opener.open(req, timeout=20).read().decode("utf-8"))
+    if result.get("_error_code") == "CD011":
+        payload["skipDup"] = "Y"
+        req = urllib.request.Request(login, data=urllib.parse.urlencode(payload).encode(), headers=headers)
+        result = json.loads(opener.open(req, timeout=20).read().decode("utf-8"))
+    if result.get("_error_code") != "CD001":
+        raise RuntimeError("KRX 로그인 실패: " + str(result.get("_error_message") or result.get("_error_code")))
+    return opener
+
+
+def _fetch_krx_index_members(opener, ticker, target_date):
+    url = "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
+    params = {
+        "bld": "dbms/MDC/STAT/standard/MDCSTAT00601",
+        "indIdx2": ticker[1:], "indIdx": ticker[0],
+        "trdDd": target_date.replace("-", ""),
+    }
+    req = urllib.request.Request(
+        url,
+        data=urllib.parse.urlencode(params).encode(),
+        headers={
+            "User-Agent": UA,
+            "Referer": "https://data.krx.co.kr/contents/MDC/MDI/outerLoader/index.cmd",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    )
+    obj = json.loads(opener.open(req, timeout=25).read().decode("utf-8"))
+    return [str(r.get("ISU_SRT_CD") or "").zfill(6) for r in obj.get("output", []) if r.get("ISU_SRT_CD")]
+
+
+def resolve_market_energy_members(listed, old_market_energy, target_date):
+    """Use only authenticated KRX official 200+150 membership; never approximate."""
+    listed_map = {r["stock_code"]: r for r in listed}
+    opener = _krx_login_opener()
+    k200 = list(dict.fromkeys(_fetch_krx_index_members(opener, "1028", target_date)))
+    kq150 = list(dict.fromkeys(_fetch_krx_index_members(opener, "2203", target_date)))
+    if len(k200) != 200:
+        raise RuntimeError(f"KRX 공식 KOSPI200 구성종목 수 검증 실패: {len(k200)}개")
+    if len(kq150) != 150:
+        raise RuntimeError(f"KRX 공식 KOSDAQ150 구성종목 수 검증 실패: {len(kq150)}개")
+    overlap = set(k200) & set(kq150)
+    if overlap:
+        raise RuntimeError(f"KRX 두 지수 구성종목 중복 검증 실패: {len(overlap)}개")
+
+    constituents = []
+    for index_name, codes in (("KOSPI200", k200), ("KOSDAQ150", kq150)):
+        for code in codes:
+            meta = listed_map.get(code, {})
+            constituents.append({
+                "code": code,
+                "ticker": meta.get("ticker") or (code + (".KS" if index_name == "KOSPI200" else ".KQ")),
+                "name": meta.get("name") or code,
+                "index": index_name,
+            })
+    if len(constituents) != 350:
+        raise RuntimeError(f"공식 시장 에너지 구성종목 합계 검증 실패: {len(constituents)}개")
+    return constituents, {
+        "status": "LIVE",
+        "membershipMode": "OFFICIAL",
+        "approximationUsed": False,
+        "source": "KRX Data Marketplace 공식 KOSPI200·KOSDAQ150 구성종목",
+        "notes": ["공식 구성종목 수 검증 200+150개 통과 · 근사값 미사용"],
+    }
+
+
+def build_market_energy(listed, histories_by_code, old_market_energy, target_date):
+    """Build Bollinger upper-band breadth for KOSPI200 + KOSDAQ150."""
+    constituents, member_meta = resolve_market_energy_members(listed, old_market_energy, target_date)
+    history_errors = []
+
+    def load_one(item):
+        code = item["code"]
+        if len(histories_by_code.get(code) or []) >= 60:
+            return code, histories_by_code[code], "REUSED"
+        try:
+            rows, host = fetch_yahoo_history(item["ticker"], years=2)
+            return code, rows, host
+        except Exception as yahoo_error:
+            try:
+                return code, fetch_naver_history(code, count=360), "fchart.stock.naver.com"
+            except Exception as naver_error:
+                raise RuntimeError(f"Yahoo {yahoo_error} || NAVER {naver_error}")
+
+    missing = [x for x in constituents if len(histories_by_code.get(x["code"]) or []) < 60]
+    if missing:
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
+            futures = {ex.submit(load_one, item): item for item in missing}
+            for fut in as_completed(futures):
+                item = futures[fut]
+                try:
+                    code, rows, _ = fut.result()
+                    histories_by_code[code] = rows
+                except Exception as e:
+                    history_errors.append({"code": item["code"], "name": item["name"], "error": str(e)})
+
+    by_date = {}
+    latest_detail = {}
+    for item in constituents:
+        rows = sorted(histories_by_code.get(item["code"]) or [], key=lambda r: r.get("date", ""))
+        closes = []
+        for row in rows:
+            close = clean_num(row.get("close"))
+            if close is None or close <= 0:
+                continue
+            closes.append(close)
+            if len(closes) < 20:
+                continue
+            window = closes[-20:]
+            mean20 = statistics.fmean(window)
+            upper = mean20 + 2 * statistics.pstdev(window)
+            lower = mean20 - 2 * statistics.pstdev(window)
+            dt = row.get("date")
+            if not dt:
+                continue
+            bucket = by_date.setdefault(dt, {"date": dt, "count": 0, "valid": 0})
+            bucket["valid"] += 1
+            if close > upper:
+                bucket["count"] += 1
+                latest_detail[(item["code"], dt)] = {
+                    "code": item["code"], "ticker": item["ticker"], "name": item["name"], "index": item["index"],
+                    "close": round(close, 2), "upper": round(upper, 2),
+                    "distancePct": round((close / upper - 1) * 100, 2),
+                    "percentB": round((close - lower) / (upper - lower) * 100, 1) if upper > lower else None,
+                }
+
+    series = []
+    for dt in sorted(by_date):
+        row = by_date[dt]
+        coverage = row["valid"] / max(1, len(constituents)) * 100
+        if row["valid"] < 50:
+            continue
+        normalized = row["count"] * MARKET_ENERGY_EXPECTED / row["valid"]
+        series.append({
+            "date": dt, "count": row["count"], "valid": row["valid"],
+            "coveragePct": round(coverage, 1), "normalizedCount": round(normalized, 1),
+        })
+    series = series[-MARKET_ENERGY_HISTORY_DAYS:]
+    for i, row in enumerate(series):
+        window = series[max(0, i-4):i+1]
+        row["ma5"] = round(statistics.fmean(x["normalizedCount"] for x in window), 1) if len(window) == 5 else None
+
+    if not series:
+        raise RuntimeError("볼린저 밴드 확산 시계열을 만들지 못했습니다.")
+    latest = series[-1]
+    latest_ma = latest.get("ma5")
+    comparable = [x for x in series if x.get("ma5") is not None]
+    ma5_change = round(latest_ma - comparable[-6]["ma5"], 1) if latest_ma is not None and len(comparable) >= 6 else None
+    below_streak = 0
+    for row in reversed(comparable):
+        if row["ma5"] < 10:
+            below_streak += 1
+        else:
+            break
+    crossed_above = len(comparable) >= 2 and comparable[-1]["ma5"] >= 10 and any(x["ma5"] < 10 for x in comparable[-6:-1])
+    coverage_ok = latest["coveragePct"] >= MARKET_ENERGY_MIN_COVERAGE
+
+    if not coverage_ok:
+        regime, regime_note = "DATA_CHECK", "커버리지 90% 미만이라 강·약 판정을 보류합니다."
+    elif latest_ma is None:
+        regime, regime_note = "WARMUP", "5거래일 이동평균 계산을 위한 이력이 더 필요합니다."
+    elif latest_ma >= 20 and (ma5_change or 0) > 0:
+        regime, regime_note = "STRONG", "5일 평균이 20 이상이고 최근 5거래일 기울기도 상승입니다."
+    elif crossed_above and (ma5_change or 0) > 0:
+        regime, regime_note = "RECOVERY", "최근 10선을 상향 돌파하고 확산 기울기가 개선됐습니다."
+    elif below_streak >= 40:
+        regime, regime_note = "LONG_WARNING", "5일 평균이 약 2개월(40거래일) 연속 10 미만입니다."
+    elif latest_ma < 10:
+        regime, regime_note = "WEAK", "5일 평균이 10 미만으로 시장 확산이 약합니다."
+    else:
+        regime, regime_note = "NEUTRAL", "10~20 구간이거나 기울기 확인이 더 필요합니다."
+
+    breakers = [latest_detail[k] for k in latest_detail if k[1] == latest["date"]]
+    breakers.sort(key=lambda x: (x.get("distancePct") or 0), reverse=True)
+    member_meta.update({
+        "asOf": latest["date"], "expectedCount": MARKET_ENERGY_EXPECTED,
+        "constituentCount": len(constituents), "validCount": latest["valid"],
+        "coveragePct": latest["coveragePct"], "coverageThresholdPct": MARKET_ENERGY_MIN_COVERAGE,
+        "breakoutCount": latest["count"], "normalizedBreakoutCount": latest["normalizedCount"],
+        "ma5": latest_ma, "ma5Change5d": ma5_change, "below10Streak": below_streak,
+        "regime": regime, "regimeNote": regime_note,
+        "formula": "종가 > 20일 단순이동평균 + 2 × 20일 종가 모집단 표준편차",
+        "series": series, "breakouts": breakers,
+        "constituents": constituents,
+        "historyErrorCount": len(history_errors), "errors": history_errors[:20],
+        "survivorshipBias": "과거 시계열도 현재 구성종목을 소급 적용하므로 시점별 실제 편입종목과 다를 수 있습니다.",
+    })
+    return member_meta
 
 def fetch_yahoo_index(symbol="^KS11", years=2):
     now = int(time.time())
@@ -4398,13 +4607,27 @@ def validate_payload_integrity(payload):
         if flow_meta.get(key) != expected:
             issues.append(f"섹터 흐름 요약 {key} 불일치")
 
+    energy = meta.get("marketEnergy") or {}
+    if energy.get("status") == "LIVE":
+        checks += 5
+        if energy.get("membershipMode") != "OFFICIAL":
+            issues.append("시장 에너지 공식 구성종목 아님")
+        if energy.get("constituentCount") != 350:
+            issues.append("시장 에너지 구성종목 350개 불일치")
+        if len(energy.get("constituents") or []) != 350:
+            issues.append("시장 에너지 구성종목 목록 길이 불일치")
+        if not energy.get("series"):
+            issues.append("시장 에너지 시계열 없음")
+        if energy.get("approximationUsed") is True:
+            issues.append("시장 에너지 근사값 사용 금지 위반")
+
     if issues:
         raise RuntimeError("정합성 검사 실패: " + " / ".join(issues[:12]))
     return {
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·7·30일 섹터 흐름·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널 합계를 자동 대조했습니다.",
+        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·7·30일 섹터 흐름·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
     }
 
 
@@ -4416,6 +4639,7 @@ def main():
     old_payload = extract_old_payload(old_html)
     old_mode = (old_payload.get("meta") or {}).get("mode")
     old_by_ticker = {x.get("ticker"): x for x in old_payload.get("stocks", []) if x.get("ticker")}
+    old_market_energy = (old_payload.get("meta") or {}).get("marketEnergy") or {}
 
     print("1/11 코스피·코스닥 시가총액 목록 수집")
     listed = fetch_market_summary(0, ".KS", "KOSPI") + fetch_market_summary(1, ".KQ", "KOSDAQ")
@@ -4440,6 +4664,7 @@ def main():
     errors = []
     price_fetched_count = 0
     liquidity_rejected_count = 0
+    price_histories_by_code = {}
     def task(meta):
         errors_local = []
         # 1순위: Yahoo Finance. GitHub Actions 서버에서 네이버 fchart가 막히는 경우를 피함.
@@ -4489,6 +4714,8 @@ def main():
             try:
                 x = fut.result()
                 price_fetched_count += 1
+                if x.get("stock_code") and len(x.get("history") or []) >= 60:
+                    price_histories_by_code[x["stock_code"]] = x["history"]
                 if x["avgTradingValue50d"] >= MIN_AVG_VALUE_50D:
                     raw.append(x)
                 else:
@@ -4501,7 +4728,27 @@ def main():
     if len(raw) < 50:
         raise RuntimeError(f"정상 계산 종목이 너무 적어 기존 사이트를 덮어쓰지 않습니다: {len(raw)} / 가격수집 오류 {len(errors)}개. 첫 오류: {(errors[0].get('error') if errors else '없음')}")
 
-    print("3/11 RS / Stage 2 계산")
+    print("3/12 시장 에너지 — KOSPI200·KOSDAQ150 볼린저 상단 확산")
+    try:
+        provisional_asof = max(x["date"] for x in raw)
+        market_energy = build_market_energy(
+            listed, price_histories_by_code, old_market_energy, provisional_asof
+        )
+        print(
+            "  ", market_energy.get("membershipMode"),
+            market_energy.get("breakoutCount"), "개 / MA5", market_energy.get("ma5"),
+            "/ coverage", market_energy.get("coveragePct"), "%"
+        )
+    except Exception as e:
+        print("  시장 에너지 갱신 실패:", e)
+        market_energy = {
+            "status": "FAILED", "membershipMode": "UNAVAILABLE", "source": "KRX 공식 구성 조회 실패",
+            "regime": "DATA_CHECK", "regimeNote": "공식 200+150개 구성을 확보하지 못해 지표 계산을 중단했습니다.",
+            "fallbackReason": str(e), "series": [], "breakouts": [], "constituents": [],
+            "approximationUsed": False,
+        }
+
+    print("4/12 RS / Stage 2 계산")
     rsvals = [x["rsBlend"] for x in raw]
     ovals = [x["oneilRsRaw"] for x in raw]
     for x in raw:
@@ -4511,15 +4758,15 @@ def main():
 
     mkt = market_direction()
 
-    print("4/11 OpenDART 재무·공시 — 캐시 우선 / 신규조회 최대 18개")
+    print("5/12 OpenDART 재무·공시 — 캐시 우선 / 신규조회 최대 18개")
     dart_meta = dart_enrich(raw, old_by_ticker)
     print("  ", dart_meta.get("message"))
 
-    print("5/11 OpenDART 사업내용 + 세부섹터 — 신규·강한 10개 우선 + 백로그 8개")
+    print("6/12 OpenDART 사업내용 + 세부섹터 — 신규·강한 10개 우선 + 백로그 8개")
     profile_meta = profile_enrich(raw, old_by_ticker)
     print("  ", profile_meta.get("message"))
 
-    print("6/11 KOSPI·KOSDAQ 대비 7·30거래일 섹터 흐름 계산")
+    print("7/12 KOSPI·KOSDAQ 대비 7·30거래일 섹터 흐름 계산")
     flow_benchmarks, sector_flow_meta = sector_flow_benchmarks(raw, mkt)
 
     # IMPORTANT: sector action is now calculated on DART-derived business sectors,
@@ -4546,10 +4793,10 @@ def main():
         "strongRule": "각 기간 5조건 중 4개 이상 + 중앙값 수익률·시장대비 모두 플러스",
     })
 
-    print("7/11 수급 생략 · 컨센서스는 후보 선별 후 제한 확인")
+    print("8/12 수급 생략 · 컨센서스는 후보 선별 후 제한 확인")
     flow_meta = {"connected": False, "coverage": 0, "source": "사용 안 함", "message": "수급 미사용"}
 
-    print("8/11 점수 / 신호 / CAN SLIM 계산")
+    print("9/12 점수 / 신호 / CAN SLIM 계산")
     today = datetime.now(KST).date().isoformat()
     for x in raw:
         sector = sector_by_name[x["sector"]]
@@ -4600,7 +4847,7 @@ def main():
 
     raw.sort(key=lambda x: x["score"], reverse=True)
 
-    print("9/11 FnGuide 보조확인 — 4개 후보군 중 상위 20개 / 3일 캐시 우선")
+    print("10/12 FnGuide 보조확인 — 4개 후보군 중 상위 20개 / 3일 캐시 우선")
     consensus_meta = consensus_enrich(raw)
     print("  ", consensus_meta.get("message"))
 
@@ -4670,7 +4917,7 @@ def main():
     }
     coverage_pct = round(price_fetched_count / len(cap_pass) * 100, 1) if cap_pass else 0
 
-    print("10/11 섹터 대장주 연결")
+    print("11/12 섹터 대장주 연결")
 
     payload = {
         "meta": {
@@ -4684,6 +4931,7 @@ def main():
             "successCount": len(raw),
             "errorCount": len(errors),
             "marketDirection": {"KOREA": mkt},
+            "marketEnergy": market_energy,
             "dataHealth": {
                 "liveCount": live_count,
                 "cachedCount": cached_count,
@@ -4724,7 +4972,7 @@ def main():
             "sectorFlowMeta": sector_flow_meta,
             "consensusMeta": consensus_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
-            "note": "후보 스크리닝 대시보드입니다. 과거 실적·재무·공시는 OpenDART 공식자료를 사용합니다. 7·30거래일 섹터 흐름은 신고가 여부와 무관하게 중앙값 수익률·거래소 지수 대비·상승 확산·추세 폭을 별도로 계산합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 후보 상위 20개만 FnGuide 보조정보로 확인하고 3일 캐시하며, 공식자료와 구분해 표시합니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
+            "note": "후보 스크리닝 대시보드입니다. 과거 실적·재무·공시는 OpenDART 공식자료를 사용합니다. 시장 에너지는 20일 볼린저 상단을 종가로 돌파한 KOSPI200·KOSDAQ150 종목수와 5일 평균을 별도 시장 타이밍 참고지표로 계산하며 네 후보축·WAMO 점수에는 섞지 않습니다. 7·30거래일 섹터 흐름은 신고가 여부와 무관하게 중앙값 수익률·거래소 지수 대비·상승 확산·추세 폭을 별도로 계산합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 후보 상위 20개만 FnGuide 보조정보로 확인하고 3일 캐시하며, 공식자료와 구분해 표시합니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
         },
         "sectors": sectors,
         "stocks": raw,
@@ -4733,7 +4981,7 @@ def main():
 
     payload["meta"]["qa"] = validate_payload_integrity(payload)
 
-    print("11/11 index.html 갱신")
+    print("12/12 index.html 갱신")
     new_html = replace_payload(old_html, payload)
     new_html = patch_index_health_ui(new_html)
     new_html = patch_leader_profile_ui(new_html)
