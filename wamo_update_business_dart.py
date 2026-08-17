@@ -29,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/46.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/47.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -4580,6 +4580,14 @@ def validate_payload_integrity(payload):
     if funnel.get("highZone") != sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in stocks):
         issues.append("신고가권 후보 수 불일치")
     checks += 1
+    if funnel.get("tripleAxis") != sum(
+        (x.get("conditionCount") or 0) >= 4
+        and bool(x.get("trendTemplate"))
+        and ((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93)
+        for x in stocks
+    ):
+        issues.append("3축 동시충족 후보 수 불일치")
+    checks += 1
     if funnel.get("sectorAction") != sum((x.get("sectorAction") or {}).get("status") == "CONFIRMED" for x in stocks):
         issues.append("섹터액션 후보 수 불일치")
 
@@ -4706,7 +4714,7 @@ def validate_payload_integrity(payload):
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·7·30일 섹터 흐름·LOW 신뢰도 배제·스피어 사업전환 분류·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
+        "note": "중복·6조건·Stage 2·신고가권·3축 동시충족·정배열·섹터 인원·7·30일 섹터 흐름·LOW 신뢰도 배제·스피어 사업전환 분류·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
     }
 
 
@@ -5038,6 +5046,12 @@ def main():
                 "growth4plus": sum(x["conditionCount"] >= 4 for x in raw),
                 "stage2": sum(bool(x["trendTemplate"]) for x in raw),
                 "highZone": sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in raw),
+                "tripleAxis": sum(
+                    x["conditionCount"] >= 4
+                    and bool(x["trendTemplate"])
+                    and ((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93)
+                    for x in raw
+                ),
                 "sectorAction": sum((x.get("sectorAction") or {}).get("status") == "CONFIRMED" for x in raw),
                 "buy": sum(x["signal"] in ("BUY", "HOLD") for x in raw),
                 "liquidityThresholdKRW": MIN_AVG_VALUE_50D,
