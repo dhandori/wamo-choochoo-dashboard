@@ -628,6 +628,143 @@ def oneil_rs_raw(closes):
         + 0.20 * (range_return(closes, 252, 189) or 0)
     )
 
+
+def _ema(values, period):
+    """지수이동평균. 최신값만 필요하며 가격이 부족하면 None."""
+    if len(values) < period:
+        return None
+    alpha = 2 / (period + 1)
+    value = sum(values[:period]) / period
+    for current in values[period:]:
+        value = alpha * current + (1 - alpha) * value
+    return value
+
+
+def detect_vcp(rows, lookback=150):
+    """VCP의 정량 후보를 보수적으로 탐지한다.
+
+    사람의 차트 판독을 대체하지 않는다. 국지 고점→저점의 조정 깊이가
+    연속 축소되는지, 마지막 10일 변동폭과 거래량이 함께 줄었는지,
+    마지막 수축 상단(피봇)에 근접하거나 거래량을 동반해 돌파했는지만 본다.
+    """
+    recent = rows[-min(lookback, len(rows)):]
+    if len(recent) < 80:
+        return {
+            "status": "INSUFFICIENT", "label": "VCP 이력 부족", "candidate": False,
+            "criterion": "최소 80거래일 가격·거래량 필요", "contractions": [],
+        }
+    closes = [float(r["close"]) for r in recent]
+    highs = [float(r["high"]) for r in recent]
+    lows = [float(r["low"]) for r in recent]
+    volumes = [float(r.get("volume") or 0) for r in recent]
+    radius = 3
+    events = []
+    for i in range(radius, len(recent) - radius):
+        window_h = highs[i - radius:i + radius + 1]
+        window_l = lows[i - radius:i + radius + 1]
+        kind = "P" if highs[i] >= max(window_h) else "T" if lows[i] <= min(window_l) else None
+        if not kind:
+            continue
+        if events and events[-1][0] == kind:
+            old = events[-1]
+            if (kind == "P" and highs[i] > highs[old[1]]) or (kind == "T" and lows[i] < lows[old[1]]):
+                events[-1] = (kind, i)
+        elif not events or i - events[-1][1] >= 3:
+            events.append((kind, i))
+
+    contractions = []
+    for j in range(len(events) - 1):
+        kind, peak_i = events[j]
+        next_kind, trough_i = events[j + 1]
+        if kind != "P" or next_kind != "T" or trough_i <= peak_i:
+            continue
+        peak, trough = highs[peak_i], lows[trough_i]
+        if peak <= 0 or trough <= 0:
+            continue
+        depth = (peak - trough) / peak * 100
+        if 1.0 <= depth <= 45.0:
+            contractions.append({
+                "peakDate": recent[peak_i]["date"], "troughDate": recent[trough_i]["date"],
+                "peak": round(peak, 2), "trough": round(trough, 2), "depthPct": round(depth, 1),
+            })
+    contractions = contractions[-4:]
+    depths = [c["depthPct"] for c in contractions]
+    shrinking = bool(
+        len(depths) >= 2
+        and all(depths[i] <= depths[i - 1] * 0.88 for i in range(1, len(depths)))
+        and depths[-1] <= 15
+    )
+    avg50 = statistics.mean(volumes[-50:]) if len(volumes) >= 50 else statistics.mean(volumes)
+    avg10 = statistics.mean(volumes[-10:])
+    dry_ratio = avg10 / avg50 if avg50 else None
+    volume_dry = bool(dry_ratio is not None and dry_ratio <= 0.80)
+    range10 = (max(highs[-10:]) / min(lows[-10:]) - 1) * 100 if min(lows[-10:]) > 0 else None
+    tight = bool(range10 is not None and range10 <= 12)
+    pivot = contractions[-1]["peak"] if contractions else max(highs[-20:-1])
+    close = closes[-1]
+    distance = (pivot / close - 1) * 100 if close else None
+    breakout_volume = volumes[-1] / avg50 if avg50 else None
+    breakout = bool(pivot and close > pivot and breakout_volume is not None and breakout_volume >= 1.50)
+    near_pivot = bool(distance is not None and -1.5 <= distance <= 5.0)
+    candidate = bool(shrinking and volume_dry and tight)
+    if breakout and candidate:
+        status, label = "BREAKOUT", "VCP 정량 돌파 후보"
+    elif candidate and near_pivot:
+        status, label = "READY", "VCP 피봇 근접 후보"
+    elif shrinking and (volume_dry or tight):
+        status, label = "WATCH", "VCP 수축 관찰"
+    else:
+        status, label = "NONE", "VCP 정량 기준 미충족"
+    return {
+        "status": status, "label": label, "candidate": candidate,
+        "contractions": contractions, "shrinking": shrinking,
+        "volumeDryUp": volume_dry, "volumeDryRatio": round(dry_ratio, 2) if dry_ratio is not None else None,
+        "tightRange": tight, "range10Pct": round(range10, 1) if range10 is not None else None,
+        "pivot": round(pivot, 2) if pivot else None,
+        "distanceToPivotPct": round(distance, 1) if distance is not None else None,
+        "breakout": breakout,
+        "breakoutVolumeRatio": round(breakout_volume, 2) if breakout_volume is not None else None,
+        "criterion": "2개 이상 조정깊이 연속 축소(각 ≤이전의 88%, 마지막 ≤15%) + 최근 10일 거래량 ≤50일의 80% + 10일 가격폭 ≤12%",
+        "caveat": "국지 고저점 기반 정량 후보입니다. 실제 VCP의 형태·베이스 길이·저항선은 차트에서 최종 확인해야 합니다.",
+    }
+
+
+def minervini_risk_overlay(rows, ma50, ma200):
+    """보유 여부와 무관한 추세 경고. 개인별 매매지시가 아니다."""
+    closes = [float(r["close"]) for r in rows]
+    volumes = [float(r.get("volume") or 0) for r in rows]
+    ema21 = _ema(closes, 21)
+    avg50_vol = statistics.mean(volumes[-50:]) if len(volumes) >= 50 else statistics.mean(volumes)
+    volume_ratio50 = volumes[-1] / avg50_vol if avg50_vol else None
+    ma50_prev = sum(closes[-51:-1]) / 50 if len(closes) >= 51 else None
+    broke50 = bool(
+        ma50 and ma50_prev and closes[-1] < ma50 and closes[-2] >= ma50_prev
+        and closes[-1] < closes[-2] and volume_ratio50 is not None and volume_ratio50 >= 1.5
+    )
+    up_streak = 0
+    for i in range(len(closes) - 1, 0, -1):
+        if closes[i] > closes[i - 1]:
+            up_streak += 1
+        else:
+            break
+    distance200 = (closes[-1] / ma200 - 1) * 100 if ma200 else None
+    ret10 = (closes[-1] / closes[-11] - 1) * 100 if len(closes) >= 11 and closes[-11] else None
+    climax = bool(
+        up_streak >= 7 and distance200 is not None and distance200 >= 35
+        and ret10 is not None and ret10 >= 20
+    )
+    return {
+        "ema21": round(ema21, 2) if ema21 is not None else None,
+        "below21Ema": bool(ema21 and closes[-1] < ema21),
+        "heavy50Break": broke50,
+        "volumeRatio50": round(volume_ratio50, 2) if volume_ratio50 is not None else None,
+        "positiveDayStreak": up_streak,
+        "distanceFrom200Pct": round(distance200, 1) if distance200 is not None else None,
+        "ret10": round(ret10, 1) if ret10 is not None else None,
+        "climaxWatch": climax,
+        "caveat": "21일 EMA·50일선·연속 상승·200일선 이격의 정량 경고이며 실제 매도지시가 아닙니다.",
+    }
+
 def alignment_history(rows):
     """현재가 > MA20 > MA60 > MA120 > MA200 정배열의 연속 구간을 계산합니다.
 
@@ -939,6 +1076,8 @@ def calc_raw(meta, rows):
         "52주 저점 대비 +30%": bool(closes[-1] >= low52 * 1.30),
         "52주 고점 25% 이내": bool(high_ratio >= 0.75),
     }
+    vcp = detect_vcp(rows)
+    minervini_risk = minervini_risk_overlay(rows, ma50, ma200)
 
     return {
         **meta,
@@ -973,6 +1112,8 @@ def calc_raw(meta, rows):
         "conditionCount": sum(cond.values()),
         "stage2Checks": st,
         "stage2Core": all(st.values()),
+        "vcp": vcp,
+        "minerviniRisk": minervini_risk,
         # MA200과 정배열 시작 표시를 위해 최근 260거래일을 차트에 전달합니다.
         "history": rows[-260:],
         "dataSource": "NAVER Finance",
@@ -4523,10 +4664,21 @@ def validate_payload_integrity(payload):
             issues.append(f"{ticker}: 6조건 합계 불일치")
 
         stage = x.get("stage2Checks") or {}
+        if len(stage) != 7:
+            issues.append(f"{ticker}: Stage 2 차트조건 7개 아님")
         expected_stage = bool(stage and all(bool(v) for v in stage.values()) and (x.get("rsPercentile") or 0) >= 70)
         checks += 1
         if bool(x.get("trendTemplate")) != expected_stage:
             issues.append(f"{ticker}: Stage 2 불일치")
+
+        vcp = x.get("vcp") or {}
+        checks += 1
+        if vcp.get("status") not in ("BREAKOUT", "READY", "WATCH", "NONE", "INSUFFICIENT"):
+            issues.append(f"{ticker}: VCP 상태값 오류")
+        if vcp.get("candidate") and not (
+            vcp.get("shrinking") and vcp.get("volumeDryUp") and vcp.get("tightRange")
+        ):
+            issues.append(f"{ticker}: VCP 후보 조건 불일치")
 
         hist = x.get("history") or []
         hist_dates = [r.get("date") for r in hist]
@@ -4714,7 +4866,7 @@ def validate_payload_integrity(payload):
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2·신고가권·3축 동시충족·정배열·섹터 인원·7·30일 섹터 흐름·LOW 신뢰도 배제·스피어 사업전환 분류·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
+        "note": "중복·6조건·Stage 2 8조건·VCP 정량 후보·신고가권·3축 동시충족·정배열·섹터 인원·7·30일 섹터 흐름·LOW 신뢰도 배제·스피어 사업전환 분류·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
     }
 
 

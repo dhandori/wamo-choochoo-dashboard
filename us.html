@@ -1,0 +1,1667 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>WAMO 투자 대시보드</title>
+<style>
+:root{
+  --bg:#07101d;--panel:#0e192b;--panel2:#121f34;--line:#253651;--text:#f4f7ff;--muted:#91a1bb;
+  --good:#48d6a0;--blue:#63a9ff;--warn:#f0c86a;--bad:#ff7c83;--violet:#aa92ff;--shadow:0 18px 50px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 90% -10%,#18396d 0,transparent 32%),linear-gradient(180deg,#07101d,#08111f 45%,#060c16);color:var(--text);font-family:Inter,system-ui,-apple-system,"Noto Sans KR","Apple SD Gothic Neo",sans-serif}
+button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24px}.topbar{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:18px}.eyebrow,.section-kicker{font-size:11px;font-weight:900;letter-spacing:.15em;color:var(--blue)}.brand h1{margin:7px 0 0;font-size:31px;letter-spacing:-.03em}.brand .sub{margin-top:8px;color:var(--muted);font-size:13px}.statusbox{text-align:right}.mode-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #675a28;border-radius:999px;color:var(--warn);background:#221f15;font-size:12px;font-weight:900}.mode-badge.live{border-color:#245a47;color:var(--good);background:#10281f}.dot{width:8px;height:8px;border-radius:50%;background:currentColor}.meta{font-size:11px;color:var(--muted);line-height:1.6;margin-top:7px}.demo-banner{display:none;padding:11px 13px;border:1px solid #685925;background:#282313;color:#f1d986;border-radius:12px;margin-bottom:15px;font-size:12px;line-height:1.55}.demo-banner.show{display:block}
+.hero-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:14px;margin-bottom:15px}.hero-main,.hero-side{border:1px solid var(--line);border-radius:18px;background:linear-gradient(160deg,rgba(21,38,66,.96),rgba(10,21,38,.96));box-shadow:var(--shadow)}.hero-main{padding:20px;min-height:174px}.hero-title{font-size:25px;font-weight:900;letter-spacing:-.03em;margin-top:9px}.hero-desc{color:#afbdd3;font-size:13px;line-height:1.65;max-width:780px;margin-top:9px}.hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.hero-chip{border:1px solid #38547e;background:#142843;color:white;border-radius:11px;padding:8px 10px;text-align:left;cursor:pointer}.hero-chip span{display:block;color:#92a6c5;font-size:10px;margin-top:3px}.hero-side{display:grid;grid-template-columns:1fr 1fr;padding:10px}.mini-stat{padding:14px;border:1px solid rgba(37,54,81,.7);border-radius:13px;margin:4px;background:rgba(7,16,29,.35)}.mini-stat span{display:block;color:var(--muted);font-size:11px}.mini-stat b{display:block;font-size:25px;margin-top:5px}
+.tabs{display:flex;gap:8px;overflow:auto;padding:2px 0 5px;margin-bottom:15px}.tab{border:1px solid var(--line);background:#0c1728;color:#a9b7ce;padding:9px 13px;border-radius:10px;cursor:pointer;white-space:nowrap}.tab.active{background:#23436d;color:white;border-color:#4773ad}.section{background:rgba(11,21,38,.88);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:15px;box-shadow:var(--shadow);backdrop-filter:blur(9px)}.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:13px}.section h2{font-size:18px;margin:5px 0 0;letter-spacing:-.02em}.section-note{font-size:11px;color:var(--muted);line-height:1.5}.sector-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.sector{border:1px solid var(--line);border-radius:13px;padding:12px;background:#0d1829;color:var(--text);text-align:left;cursor:pointer;transition:.15s}.sector:hover,.sector.selected{transform:translateY(-1px);border-color:#5278b1;background:#10213a}.sector-top{display:flex;justify-content:space-between;align-items:center}.rank{color:var(--muted);font-size:10px}.action{font-size:10px;font-weight:900;color:var(--good);background:#102a23;border-radius:999px;padding:4px 7px}.sector .name{font-weight:850;margin-top:8px}.sector-score{display:flex;align-items:baseline;gap:3px;margin-top:6px}.sector-score b{font-size:26px}.sector-score span{font-size:10px;color:var(--muted)}.progress{height:5px;background:#21314b;border-radius:999px;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:linear-gradient(90deg,#5eabff,#a68cff)}.mini{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:7px}.leaders{font-size:10px;color:#bdc9da;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stock-head{align-items:flex-end}.controls{display:flex;gap:8px;flex-wrap:wrap}.search{min-width:220px;flex:1;background:#081320;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px}.select{background:#081320;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 10px}.pill{padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:#0d1828;color:#aebbd0;cursor:pointer;font-size:11px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.table{width:100%;border-collapse:collapse;min-width:1080px}.table th{position:sticky;top:0;background:#132139;color:#91a0bc;font-size:10px;text-align:left;padding:10px;border-bottom:1px solid var(--line);z-index:1}.table td{padding:10px;border-bottom:1px solid #1d2c44;font-size:12px}.table tbody tr{cursor:pointer}.table tbody tr:hover{background:#102038}.namecell b{font-size:13px}.ticker{color:var(--muted);font-size:10px;margin-top:3px}.scorebadge{font-weight:900;font-size:16px}.signal{display:inline-flex;align-items:center;font-weight:850;border-radius:999px;padding:5px 8px;font-size:10px;white-space:nowrap}.sig-BUY{color:#74e8b8;background:#0f3027}.sig-HOLD{color:#82bbff;background:#10294a}.sig-WATCH{color:#f2ce77;background:#302815}.sig-EXIT{color:#ff9297;background:#361a20}.sig-NEUTRAL{color:#aebbd3;background:#1b2433}.pos{color:var(--good)}.neg{color:var(--bad)}.muted{color:var(--muted)}.yes{color:var(--good);font-weight:850}.no{color:#748198}.star{border:0;background:transparent;color:#7e8ba2;font-size:19px;cursor:pointer;padding:0 3px}.star.on{color:#f1ce69}.empty{padding:34px!important;text-align:center;color:var(--muted)}
+.mobile-list{display:none}.stock-card{border:1px solid var(--line);border-radius:14px;background:#0d192b;padding:13px;cursor:pointer}.stock-card-top,.stock-card-signal{display:flex;justify-content:space-between;align-items:center;gap:8px}.stock-name{font-size:15px;font-weight:900}.stock-card-signal{margin-top:12px}.stock-card-signal>b{font-size:20px}.stock-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:11px}.stock-metrics div{background:#0a1424;border-radius:9px;padding:8px}.stock-metrics span{display:block;color:var(--muted);font-size:9px}.stock-metrics b{display:block;margin-top:3px;font-size:13px}.stock-reason{margin-top:9px;color:#aebbd0;font-size:10px}.empty-card{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.explain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:13px}.explain{border:1px solid var(--line);background:#0c1728;border-radius:12px;padding:12px}.explain b{display:block;font-size:13px}.explain span{display:block;color:var(--muted);font-size:10px;line-height:1.6;margin-top:6px}.footer{color:var(--muted);font-size:10px;line-height:1.65;padding:2px 3px 26px}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(720px,96vw);background:#091321;border-left:1px solid var(--line);z-index:30;transform:translateX(100%);transition:.22s;box-shadow:-22px 0 55px rgba(0,0,0,.48);overflow:auto}.drawer.open{transform:translateX(0)}.drawer-head{position:sticky;top:0;z-index:3;background:rgba(9,19,33,.96);display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line);backdrop-filter:blur(9px)}.detail-title h3{margin:0;font-size:22px}.detail-title div{color:var(--muted);font-size:11px;margin-top:4px}.close{background:#122139;border:1px solid var(--line);color:white;border-radius:10px;width:36px;height:36px;cursor:pointer}.drawer-body{padding:18px}.detail-topline{display:flex;justify-content:space-between;align-items:center}.watch-btn{border:1px solid var(--line);background:#102036;color:#b6c2d5;border-radius:10px;padding:7px 10px;cursor:pointer}.watch-btn.on{color:#f1ce69;border-color:#6b5b26}.detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0}.dcard{background:#0f1c30;border:1px solid var(--line);border-radius:11px;padding:11px}.dcard .k,.whybox .k{color:var(--muted);font-size:9px}.dcard .v{font-size:17px;font-weight:850;margin-top:4px}.whybox{background:#10203a;border:1px solid #2b4569;border-radius:12px;padding:12px}.whybox>div:last-child{font-size:13px;font-weight:750;margin-top:5px}.chartbox{height:380px;background:#07101d;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}.detail-section-title{font-size:14px!important;margin:16px 0 9px!important}.condition-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}.condition-row{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;border:1px solid var(--line);background:#0d192b;border-radius:10px;font-size:11px}
+.alignment-box{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:8px;margin:10px 0 12px}.alignment-item{border:1px solid #294766;background:#0b1b2e;border-radius:11px;padding:10px 11px}.alignment-item span{display:block;color:#8fa3bd;font-size:9px}.alignment-item b{display:block;color:#e7f1ff;font-size:12px;line-height:1.5;margin-top:4px}.alignment-item.primary{border-color:#36715b;background:#10271f}.alignment-item.primary b{color:#77e0b0}.alignment-item.off{border-color:#5d4b35;background:#251d13}.alignment-item.off b{color:#e5c276}
+.alignment-timeline{display:grid;gap:7px;margin-bottom:13px}.alignment-event{display:grid;grid-template-columns:82px 92px 1fr;gap:8px;align-items:center;border:1px solid #263c59;background:#0a1728;border-radius:10px;padding:9px 10px}.alignment-event .event-date{color:#91a6c2;font-size:9px}.alignment-event .event-type{font-size:9px;font-weight:900;border-radius:999px;padding:4px 7px;text-align:center}.alignment-event .event-detail{color:#c7d5e7;font-size:10px;line-height:1.55}.alignment-event.first .event-type,.alignment-event.recover .event-type{color:#72dfae;background:#113127}.alignment-event.break .event-type{color:#ff9da2;background:#351c22}.alignment-event.short .event-detail{color:#efd17c}.alignment-empty{border:1px dashed #2b405d;border-radius:10px;padding:12px;color:#8296b2;font-size:10px;line-height:1.6}
+@media(max-width:1100px){.sector-grid{grid-template-columns:repeat(3,1fr)}.explain-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.app{padding:12px}.topbar{display:block}.brand h1{font-size:25px}.statusbox{text-align:left;margin-top:12px}.hero-grid{grid-template-columns:1fr}.hero-main{min-height:auto}.hero-title{font-size:21px}.hero-side{grid-template-columns:1fr 1fr}.sector-grid{grid-template-columns:repeat(2,1fr)}.section{padding:12px}.section-head{align-items:flex-start;display:block}.section-note{margin-top:6px}.stock-head .controls{margin-top:11px}.controls{display:grid;grid-template-columns:1fr 1fr}.search{min-width:0;grid-column:1/-1}.desktop-table{display:none}.mobile-list{display:grid;gap:9px}.stock-metrics{grid-template-columns:repeat(4,1fr)}.explain-grid{grid-template-columns:1fr}.detail-grid{grid-template-columns:repeat(2,1fr)}.condition-list{grid-template-columns:1fr}.drawer{width:100vw}.tabs{margin-left:-1px}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.hero-chip{width:100%}}
+@media(max-width:430px){.sector-grid{grid-template-columns:1fr 1fr;gap:7px}.sector{padding:10px}.sector-score b{font-size:22px}.stock-metrics{grid-template-columns:1fr 1fr}.hero-actions{grid-template-columns:1fr}.brand .sub{font-size:12px}}
+
+/* V3 · CAN SLIM */
+.notice-card{display:flex;gap:12px;align-items:flex-start;border:1px solid #315279;background:linear-gradient(135deg,#10233d,#0c192b);border-radius:15px;padding:13px 15px;margin-bottom:15px}.notice-icon{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#254b7c;font-weight:900;font-size:18px}.notice-card b{display:block;font-size:13px}.notice-card span{display:block;color:#a7b6cc;font-size:11px;line-height:1.65;margin-top:4px}.roomy{margin-top:6px;max-width:960px}.canslim-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}.cs-card{display:flex;gap:12px;border:1px solid var(--line);background:#0d192b;border-radius:14px;padding:14px}.cs-letter,.cs-mini-letter{flex:0 0 40px;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#315e93,#654ea3);font-size:20px;font-weight:950}.cs-card h3{margin:0;color:#8dbdff;font-size:11px;letter-spacing:.02em}.cs-card b{display:block;font-size:13px;margin-top:4px}.cs-card p{color:#a9b7cb;font-size:11px;line-height:1.72;margin:8px 0}.cs-card p strong{color:#eaf1ff}.rule{font-size:10px;line-height:1.55;color:#d8e5f7;border-top:1px solid #263958;padding-top:8px}.cs-badge{display:inline-flex;white-space:nowrap;border-radius:999px;padding:5px 7px;font-size:9px;font-weight:900;border:1px solid transparent}.cs-badge.full{background:#123326;color:#79e7b4;border-color:#245c46}.cs-badge.strong{background:#102d42;color:#82c9ff;border-color:#25577a}.cs-badge.prelim{background:#2c2717;color:#f0ce78;border-color:#66582a}.cs-badge.weak{background:#1b2433;color:#98a7bc;border-color:#313f53}.cs-mobile{margin-top:9px}.glossary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:13px}.glossary-grid details{border:1px solid var(--line);background:#0c1728;border-radius:12px;padding:11px 12px}.glossary-grid summary{cursor:pointer;font-size:12px;font-weight:850;color:#e5edfa}.glossary-grid p{color:#a7b6ca;font-size:10.5px;line-height:1.7;margin:9px 0 1px}.cs-summary{display:grid;gap:3px;background:#0f2037;border:1px solid #2b466d;border-radius:12px;padding:12px;margin-bottom:9px}.cs-summary b{font-size:14px}.cs-summary span{font-size:10px;color:#b7c5d8}.cs-summary small{font-size:9px;color:#7f90a9}.canslim-detail{display:grid;gap:8px}.cs-detail-row{display:flex;gap:10px;padding:11px;border:1px solid var(--line);background:#0d192b;border-radius:12px}.cs-mini-letter{flex-basis:34px;width:34px;height:34px;font-size:16px;border-radius:9px}.cs-detail-main{min-width:0;flex:1}.cs-detail-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.cs-detail-head b{font-size:11px}.cs-status{font-size:9px;font-weight:900;padding:4px 7px;border-radius:999px;white-space:nowrap}.cs-status.pass{color:#79e7b4;background:#123326}.cs-status.fail{color:#ff9aa0;background:#351c22}.cs-status.unknown{color:#f1cd77;background:#332b18}.cs-value{font-size:11px;margin-top:7px;color:#dfe9f7}.cs-criterion{font-size:9.5px;color:#8ea0ba;margin-top:4px}.cs-detail-row p{font-size:10px;color:#a8b6ca;line-height:1.6;margin:5px 0 0}.table{min-width:1240px}
+@media(max-width:1100px){.canslim-grid{grid-template-columns:1fr}.glossary-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.glossary-grid{grid-template-columns:1fr}.cs-card{padding:12px}.cs-letter{flex-basis:34px;width:34px;height:34px;font-size:17px}.notice-card{padding:12px}.cs-detail-head{align-items:flex-start}.hero-side{grid-template-columns:1fr 1fr}}
+
+
+/* V4 · full screening framework */
+.framework-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:15px}
+.framework-card{display:flex;gap:12px;border:1px solid var(--line);background:#0d192b;border-radius:15px;padding:14px}
+.framework-num{flex:0 0 38px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#1a365c;color:#a9d0ff;font-size:17px;font-weight:950}
+.framework-card h3{font-size:14px;margin:1px 0 5px;color:#8fc0ff}
+.framework-card>b,.framework-card>div>b{font-size:12px}
+.framework-card p{color:#a9b7cb;font-size:10.7px;line-height:1.72;margin:8px 0}
+.framework-card details{border-top:1px solid #293a55;margin-top:9px;padding-top:9px}
+.framework-card summary{cursor:pointer;font-size:10.5px;font-weight:850;color:#dce8f8}
+.criteria-list{display:grid;gap:7px;margin-top:9px}
+.criteria-list>div{background:#091526;border:1px solid #223550;border-radius:9px;padding:8px 9px}
+.criteria-list strong{display:block;color:#e6eefb;font-size:10.5px}
+.criteria-list span{display:block;color:#94a6bf;font-size:9.8px;line-height:1.6;margin-top:3px}
+.framework-card .rule{margin-top:10px}
+@media(max-width:900px){.framework-grid{grid-template-columns:1fr}}
+
+/* V5 data-health */
+.health-banner{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 13px;border:1px solid #27445f;background:#0e1c2c;border-radius:12px;margin-bottom:15px}
+.health-main{display:flex;flex-direction:column;gap:3px}.health-main b{font-size:12px}.health-main span{font-size:10.5px;color:var(--muted);line-height:1.55}
+.health-pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.health-pill{padding:5px 8px;border-radius:999px;border:1px solid #314766;background:#111f31;color:#b9c8dd;font-size:9.5px;font-weight:850}
+.health-banner.good{border-color:#245a47;background:#0f241d}.health-banner.warn{border-color:#675a28;background:#282313}.health-banner.bad{border-color:#77373a;background:#2a1719}
+.health-pill.good{color:#86e0bb;border-color:#245a47}.health-pill.warn{color:#f1d986;border-color:#675a28}.health-pill.bad{color:#ff9e9e;border-color:#77373a}
+.data-tag{display:inline-flex;align-items:center;padding:2px 5px;margin-left:5px;border-radius:999px;font-size:8px;font-weight:900;border:1px solid #354a68;color:#a8bad3}
+.data-tag.live{color:#83dfb8;border-color:#245a47}.data-tag.cached{color:#f1d986;border-color:#675a28}.data-tag.stale{color:#ff9e9e;border-color:#77373a}
+@media(max-width:760px){.health-banner{display:block}.health-pills{justify-content:flex-start;margin-top:8px}}
+
+/* V6 full-market funnel */
+.funnel-section{border:1px solid var(--line);background:#0b1627;border-radius:16px;padding:16px;margin-bottom:16px}
+.funnel-section h2{font-size:16px;margin:4px 0 13px}
+.funnel-grid{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:7px;align-items:center}
+.funnel-card{min-width:0;background:#0d1c30;border:1px solid #233a58;border-radius:12px;padding:10px 9px;text-align:center}
+.funnel-card span{display:block;color:#9fb0c8;font-size:9.5px}.funnel-card b{display:block;font-size:19px;margin:4px 0;color:#e7effc}
+.funnel-card small{display:block;color:#687d9b;font-size:8px;line-height:1.4}.funnel-card.emphasis{border-color:#2c674f;background:#10271f}.funnel-card.emphasis b{color:#87e0b8}
+.funnel-arrow{color:#4e6888;font-weight:900}.funnel-note{margin-top:10px;padding:8px 10px;border-radius:9px;background:#091321;color:#91a4bf;font-size:9.5px;line-height:1.6}
+@media(max-width:1000px){.funnel-grid{grid-template-columns:repeat(3,1fr)}.funnel-arrow{display:none}}
+@media(max-width:620px){.funnel-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* V8 catalysts / revisions */
+.catalyst-list{display:grid;gap:7px;margin-bottom:17px}
+.catalyst-item{display:grid;grid-template-columns:68px 82px 1fr;gap:8px;align-items:center;border:1px solid #243650;background:#0b1728;border-radius:10px;padding:8px 9px;font-size:10px}
+.catalyst-date{color:#7f93af}.catalyst-cat{font-weight:850;color:#b7c8de}.catalyst-item.POSITIVE .catalyst-cat{color:#82ddb5}.catalyst-item.DILUTION .catalyst-cat,.catalyst-item.RISK .catalyst-cat{color:#ff9b9b}
+.catalyst-report{color:#d8e3f3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.catalyst-empty{padding:12px;border:1px dashed #2b3c56;border-radius:10px;color:#8194b0;font-size:10px}
+@media(max-width:600px){.catalyst-item{grid-template-columns:60px 70px 1fr}.catalyst-report{white-space:normal}}
+
+
+.sector-leader{margin-top:9px;padding:8px 9px;border-radius:9px;background:#0a1424;border:1px solid #223754;font-size:10px;line-height:1.55}
+.sector-leader b{color:#7fbeff}.sector-major{margin-top:5px;color:#91a3bc;font-size:9px;line-height:1.45}
+.sector-guide{display:grid;grid-template-columns:1.1fr 1fr;gap:10px;margin:0 0 12px}
+.sector-guide-main,.sector-guide-example{border:1px solid #2b4567;border-radius:13px;padding:12px 13px;background:#0a1729}
+.sector-guide b{display:block;font-size:12px;color:#e4f0ff;margin-bottom:6px}.sector-guide p{margin:0;color:#9eb0c8;font-size:10px;line-height:1.65}
+.sector-guide-example{border-color:#3b5364;background:#0d1a26}.sector-guide-example b{color:#85d8bc}
+.sector-guide-example strong{color:#d8e8fa}.sector-scope{margin-top:8px;color:#768ba8;font-size:9px;line-height:1.55}
+.sector-reliability{display:inline-flex;align-items:center;border:1px solid #355a55;background:#10241f;color:#78d8b1;border-radius:999px;padding:2px 6px;font-size:8px;font-weight:850}
+.sector-reliability.reference{border-color:#5a4b2d;background:#251e10;color:#e6bd6a}
+.business-box{margin:12px 0;background:linear-gradient(135deg,#102945,#0d1c31);border:1px solid #31577e;border-radius:13px;padding:13px}
+.business-box .biz-k{font-size:10px;color:#81baff;font-weight:900;letter-spacing:.02em}
+.business-box .biz-easy{font-size:13px;font-weight:850;line-height:1.65;margin-top:6px;color:#eff5ff}
+.business-box .biz-detail{font-size:11px;line-height:1.7;margin-top:8px;color:#b8c7dc}
+.business-box .biz-src{font-size:9px;color:#778ba7;margin-top:8px}
+
+
+.sector-leader{margin-top:9px;padding:8px 9px;border-radius:9px;background:#0a1424;border:1px solid #223754;font-size:10px;line-height:1.55}
+.sector-leader b{color:#7fbeff}.sector-major{margin-top:5px;color:#91a3bc;font-size:9px;line-height:1.45}
+.biz-pro-head{font-size:13px;font-weight:900;line-height:1.65;color:#eff6ff;margin:2px 0 10px}
+.biz-pro-grid{display:grid;grid-template-columns:1fr;gap:7px}
+.biz-pro-row{background:#091728;border:1px solid #25415f;border-radius:9px;padding:9px 10px}
+.biz-pro-label{font-size:9px;font-weight:900;color:#75b9f4;margin-bottom:3px}
+.biz-pro-value{font-size:11px;line-height:1.62;color:#c9d7e9}
+.biz-pro-segments{font-size:9px;color:#88a0bd;margin-top:8px;line-height:1.5}
+
+
+/* V29 CLEAN UI */
+.framework-section,.canslim-section,.explain-section{display:none}
+.scan-strip{display:flex;align-items:center;gap:18px;border:1px solid var(--line);background:rgba(11,21,38,.9);border-radius:15px;padding:12px 14px;margin-bottom:14px;box-shadow:var(--shadow)}
+.scan-label{min-width:150px}.scan-label b{display:block;font-size:12px}.scan-label span{display:block;color:var(--muted);font-size:9px;margin-top:3px}
+.scan-flow{display:flex;align-items:center;gap:8px;min-width:0;overflow:auto;flex:1}.scan-flow div{min-width:74px;background:#0c192b;border:1px solid #243956;border-radius:10px;padding:7px 8px;text-align:center}.scan-flow div.focus{border-color:#2d6a52;background:#10271f}.scan-flow span{display:block;color:#8fa3bf;font-size:8px}.scan-flow b{display:block;font-size:16px;margin-top:2px}.scan-flow i{color:#526b8c;font-style:normal;font-size:11px}
+.hero-main{min-height:150px}.hero-side .mini-stat{position:relative}.mini-stat small{display:block;color:#7185a3;font-size:8px;line-height:1.35;margin-top:4px}.mini-stat.primary{border-color:#2c6b52;background:#10271f}
+.filter-section{background:rgba(11,21,38,.88);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:15px;box-shadow:var(--shadow)}
+.filter-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px}.filter-head h2{font-size:18px;margin:5px 0 0}
+.filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}
+.filter-card{display:block;text-align:left;border:1px solid #273a56;background:#0d192b;color:#dce7f5;border-radius:12px;padding:11px 10px;cursor:pointer;min-width:0}
+.filter-card span{display:block;font-size:10px;font-weight:850;color:#9db0c9}.filter-card b{display:block;font-size:25px;line-height:1.05;margin-top:5px}.filter-card small{display:block;color:#71859f;font-size:8px;line-height:1.35;margin-top:5px;min-height:22px}
+.filter-card:hover{border-color:#5077ab;transform:translateY(-1px)}.filter-card.active{border-color:#70a9ed;background:#122845;box-shadow:inset 0 0 0 1px rgba(112,169,237,.16)}
+.filter-card.buy b{color:#6fe1af}.filter-card.growth b{color:#8dbdff}.filter-card.stage b{color:#aa92ff}.filter-card.high b{color:#f0c86a}.filter-card.can b{color:#d1b9ff}.filter-card.watch b{color:#f0c86a}
+.sector-grid{grid-template-columns:repeat(4,1fr)}.sector{min-height:160px}.sector .name{font-size:12px}.sector-score b{font-size:23px}
+.detail-grid.compact{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}.detail-grid.compact .dcard{min-height:68px}.detail-grid.compact .dcard.key{border-color:#35618f;background:#10233d}
+.business-box{margin-top:13px}.business-box .biz-k{font-size:10px}
+.cs-status.disabled{color:#91a1bb;background:#1b2433}
+.rules-panel{border:1px solid var(--line);background:#0b1627;border-radius:15px;margin:15px 0;padding:0 14px}.rules-panel>summary{cursor:pointer;padding:13px 2px;font-size:12px;font-weight:850;color:#dbe8f8}.rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 0 14px}.rules-grid div{border:1px solid #243956;background:#091526;border-radius:10px;padding:10px}.rules-grid b{display:block;font-size:11px}.rules-grid span{display:block;color:#8fa2bd;font-size:9.5px;line-height:1.55;margin-top:4px}
+.stock-card{box-shadow:0 8px 24px rgba(0,0,0,.16)}.stock-reason{border-top:1px solid #20324b;padding-top:8px}
+@media(max-width:1180px){.filter-grid{grid-template-columns:repeat(4,1fr)}.sector-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.scan-strip{display:block}.scan-label{margin-bottom:8px}.filter-head{display:block}.filter-head .section-note{margin-top:5px}.filter-grid{grid-template-columns:repeat(2,1fr)}.sector-grid{grid-template-columns:repeat(2,1fr)}.sector-guide{grid-template-columns:1fr}.rules-grid{grid-template-columns:1fr}.detail-grid.compact{grid-template-columns:repeat(2,1fr)}.alignment-box{grid-template-columns:1fr}.alignment-event{grid-template-columns:72px 78px 1fr}}
+.table{min-width:1460px}
+.reading-path{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 14px}.path-step{display:flex;gap:10px;align-items:flex-start;border:1px solid #29415f;background:#0b1829;border-radius:13px;padding:11px 12px}.path-num{flex:0 0 28px;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#19375a;color:#8fc3ff;font-weight:950;font-size:12px}.path-step b{display:block;font-size:11px}.path-step span{display:block;color:#879bb7;font-size:9px;line-height:1.55;margin-top:3px}
+.quality-panel{border:1px solid #2a405e;background:#0a1728;border-radius:12px;margin:-4px 0 14px;padding:0 12px}.quality-panel>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:10px 0;color:#b9c9dd;font-size:10px;font-weight:850}.quality-summary{color:#7f94b2;font-weight:700}.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:0 0 9px}.quality-card{border:1px solid #243a57;background:#091321;border-radius:9px;padding:9px}.quality-card span{display:block;color:#8296b3;font-size:8px}.quality-card b{display:block;font-size:13px;margin-top:3px}.quality-note{color:#8ea2bd;font-size:9px;line-height:1.65;padding:0 0 10px}.quality-errors{display:grid;gap:5px;padding:0 0 11px}.quality-error{border-left:2px solid #7b4b4f;padding:4px 7px;color:#aebbd0;font-size:8.5px;line-height:1.5;background:#111722}
+.method-guide{border:1px solid #2a405f;background:#0a1728;border-radius:15px;margin:15px 0;overflow:hidden}.method-guide>summary{cursor:pointer;padding:14px 16px;font-size:12px;font-weight:900;color:#dce9f8}.method-guide>summary span{display:block;color:#8094b0;font-size:9px;font-weight:500;margin-top:4px}.method-body{padding:0 12px 12px}.method-body .framework-section,.method-body .canslim-section,.method-body .explain-section{display:block!important;margin:9px 0;box-shadow:none}.method-body .section-kicker{margin-top:2px}
+.sector-evidence{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}.sector-evidence span{border:1px solid #263c59;background:#091526;border-radius:7px;padding:5px 6px;color:#8fa3bf;font-size:8px}.sector-classification{margin-top:6px;color:#7186a4;font-size:8px;line-height:1.4}.candidate-note{display:inline-flex;align-items:center;gap:5px;color:#e0c274;background:#2a2415;border:1px solid #5b4e27;border-radius:999px;padding:4px 7px;font-size:8px;font-weight:850;margin-top:6px}
+.data-tag.partial{color:#e8c878;border-color:#675a28}.short-history-note{color:#e8c878!important}.drawer-note{margin:9px 0 0;color:#8fa2bd;font-size:9px;line-height:1.55}.chart-caption{color:#7f94b2;font-size:9px;line-height:1.55;margin:-5px 1px 10px}.focusable:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #69aaf7;outline-offset:2px}body.drawer-open{overflow:hidden}
+@media(max-width:760px){.reading-path{grid-template-columns:1fr}.quality-grid{grid-template-columns:repeat(2,1fr)}.method-body{padding:0 7px 7px}.method-body .section{padding:10px}.sector-evidence{grid-template-columns:1fr 1fr}}
+
+/* 최종 가독성 보정: 보조정보도 태블릿에서 확대 없이 읽을 수 있는 크기로 유지 */
+.section-note,.sector-guide p{font-size:12px}.path-step b{font-size:12px}.path-step span{font-size:11px}
+.filter-card span{font-size:11px}.filter-card small{font-size:10px}.mini-stat span{font-size:12px}.mini-stat small{font-size:10px}
+.sector .name{font-size:14px}.sector-evidence span{font-size:10px}.sector-leader,.sector-major{font-size:10.5px}.sector-classification,.sector-scope{font-size:10px}
+.quality-panel>summary{font-size:12px}.quality-card span{font-size:10px}.quality-card b{font-size:14px}.quality-note,.quality-error{font-size:10.5px}
+.stock-metrics span{font-size:10.5px}.stock-reason{font-size:11.5px}.ticker{font-size:11px}.table th{font-size:11px}
+.alignment-item span{font-size:10px}.alignment-item b{font-size:13px}.alignment-event .event-date,.alignment-event .event-type{font-size:10px}.alignment-event .event-detail{font-size:11px}
+.drawer-note,.chart-caption{font-size:10.5px}.method-guide>summary span{font-size:10.5px}.footer{font-size:11px}
+@media(max-width:760px){body{font-size:15px}.app{padding:12px 10px}.filter-card{min-height:92px}.stock-card{padding:14px}.controls .select,.controls .pill,.search{min-height:42px}.quality-panel{padding:0 10px}}
+.drawer-backdrop{position:fixed;inset:0;background:rgba(1,6,13,.66);z-index:29;opacity:0;visibility:hidden;transition:.2s}.drawer-backdrop.open{opacity:1;visibility:visible}
+.market-switch{display:flex;gap:8px;align-items:center;margin:0 0 14px;padding:6px;border:1px solid #294460;background:#0a1728;border-radius:14px;width:max-content;max-width:100%}.market-switch a{min-width:112px;padding:10px 16px;border:1px solid transparent;border-radius:10px;color:#8fa5bf;text-decoration:none;text-align:center;font-size:12px;font-weight:950}.market-switch a:hover{color:#eaf3ff;background:#10233a}.market-switch a.active{color:#fff;border-color:#4f91d0;background:linear-gradient(135deg,#174f82,#263f78);box-shadow:0 0 18px rgba(65,139,205,.18)}.market-switch small{color:#698099;font-size:9px;padding:0 8px}.market-label-us{color:#ffcf78!important}
+@media(max-width:520px){.market-switch{width:100%;display:grid;grid-template-columns:1fr 1fr}.market-switch a{min-width:0}.market-switch small{grid-column:1/-1;text-align:center;padding:2px 4px}}
+.minervini-panel{border:1px solid #31527b;background:linear-gradient(145deg,#0d1d32,#0b1728);border-radius:14px;padding:13px;margin:10px 0 14px}.minervini-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.minervini-head b{font-size:13px}.minervini-status{font-size:9px;font-weight:900;padding:5px 8px;border-radius:999px;background:#1a2b40;color:#9db3cc}.minervini-status.ready,.minervini-status.breakout{background:#12382c;color:#79e7b4}.minervini-status.watch{background:#332b18;color:#f1cd77}.minervini-checks{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:10px}.minervini-check{border:1px solid #5b3540;background:#281720;color:#c99aa5;border-radius:8px;padding:6px 7px;font-size:8.5px;line-height:1.35}.minervini-check.pass{border-color:#2c7f5f;background:#10352a;color:#9ee8c8}.minervini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.minervini-cell{border:1px solid #243d5b;background:#091524;border-radius:9px;padding:9px}.minervini-cell span{display:block;color:#8298b5;font-size:9px}.minervini-cell b{display:block;font-size:11px;margin-top:4px;line-height:1.45}.minervini-note{color:#8da1bb;font-size:9.5px;line-height:1.6;margin-top:9px}.risk-plan{border-top:1px solid #29415f;margin-top:10px;padding-top:10px}.risk-input-row{display:flex;gap:7px;align-items:center}.risk-input-row label{font-size:10px;color:#b8c7da}.risk-input-row input{min-width:0;width:150px;background:#071220;border:1px solid #355478;color:#fff;border-radius:8px;padding:8px}.risk-input-row button{border:1px solid #3e638d;background:#16365a;color:#dcecff;border-radius:8px;padding:8px 10px;cursor:pointer}.risk-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.risk-levels div{background:#091524;border:1px solid #243d5b;border-radius:8px;padding:8px}.risk-levels span{display:block;color:#8298b5;font-size:8.5px}.risk-levels b{display:block;font-size:10.5px;margin-top:3px}@media(max-width:720px){.minervini-checks{grid-template-columns:1fr 1fr}}@media(max-width:520px){.minervini-grid,.risk-levels{grid-template-columns:1fr 1fr}.risk-input-row{align-items:stretch;flex-wrap:wrap}.risk-input-row input{flex:1}}
+
+/* V40 · 네 기준 독립 분류: 섹터액션을 신고가와 무관한 네 번째 후보축으로 승격 */
+.hero-side{grid-template-columns:1fr}.mini-stat.axis{border-left:4px solid #4c78ae}.mini-stat.axis.growth{border-left-color:#63a9ff}.mini-stat.axis.stage{border-left-color:#aa92ff}.mini-stat.axis.high{border-left-color:#f0c86a}.mini-stat.axis.sector-action{border-left-color:#52e1ae}
+.primary-axes{grid-template-columns:repeat(6,1fr)}.primary-axes .filter-card{border-width:2px;min-height:112px}.primary-axes .filter-card span{color:#c6d5e8}.primary-axes .filter-card small{line-height:1.5}.primary-axes .filter-card.triple b{color:#ffe08a}.primary-axes .filter-card.triple.active{border-color:#efc75e;background:linear-gradient(135deg,#3a2c0d,#1e2540);box-shadow:inset 0 0 0 1px rgba(239,199,94,.2),0 0 18px rgba(239,199,94,.13)}.primary-axes .filter-card.sector-action b{color:#72dfae}.primary-axes .filter-card.sector-action.active{border-color:#52e1ae;background:linear-gradient(135deg,#10382b,#10283a);box-shadow:inset 0 0 0 1px rgba(82,225,174,.2),0 0 18px rgba(36,207,145,.12)}.primary-axes .filter-card.energy.active{border-color:#59d6e8;background:linear-gradient(135deg,#0c3440,#10283a)}.filter-tools{grid-template-columns:repeat(3,minmax(130px,1fr));margin-top:8px}.filter-tools .filter-card{padding:8px 10px}.filter-tools .filter-card b{font-size:18px}.filter-tools .filter-card small{min-height:auto}.view-guide{margin-top:10px;border:1px solid #31506a;background:#091929;border-radius:11px;padding:11px 13px;color:#9eb4cb;font-size:10px;line-height:1.65}.view-guide b{color:#e4f1ff}.selection-definition{margin:0 0 12px;border-left:4px solid #4a91d1;background:#0a1828;border-radius:8px;padding:10px 12px;color:#9db1c8;font-size:10px;line-height:1.65}.selection-definition b{color:#e3efff}
+.sector-member-browser{display:none;margin-top:12px;border:1px solid #356080;background:#081725;border-radius:13px;padding:12px}.sector-member-browser.show{display:block}.sector-member-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.sector-member-head h3{font-size:17px;margin:3px 0}.sector-member-head p{color:#8199b2;font-size:9.5px;line-height:1.55;margin:0}.sector-member-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.sector-member-row{display:grid;grid-template-columns:minmax(110px,1.4fr) repeat(4,minmax(48px,.65fr));gap:6px;align-items:center;text-align:left;border:1px solid #29435e;background:#0b1c2e;color:#dce9f7;border-radius:9px;padding:9px;cursor:pointer}.sector-member-row:hover{border-color:#5b9ed8;background:#102944}.sector-member-row span{font-size:8px;color:#7891aa}.sector-member-row b{display:block;font-size:10px;margin-top:2px}.sector-member-name b{font-size:11px;margin:0}.sector-member-name small{display:block;color:#7891aa;font-size:8px;margin-top:3px}.sector-stage-label{display:inline-flex;margin-top:4px;border-radius:999px;padding:2px 5px;background:#18344d;color:#aad2f1;font-size:7px;font-weight:900}
+.hero-chip{min-width:210px}.hero-chip .chip-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.hero-chip .chip-badges .sector-action-badge{margin:0}
+.sector-action-badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:5px 8px;margin-top:6px;font-size:9px;font-weight:950;white-space:nowrap;border:1px solid #34475f;background:#172235;color:#9fb0c7}
+.sector-action-badge.confirmed{color:#eafff6;background:linear-gradient(135deg,#0a6a4a,#12825d);border-color:#52e1ae;box-shadow:0 0 0 1px rgba(82,225,174,.18),0 0 18px rgba(36,207,145,.24)}
+.sector-action-badge.watch{color:#c5dcff;background:#17355a;border-color:#4678b8}.sector-action-badge.holding{color:#ffe3a0;background:#4b3812;border-color:#c89b35}.sector-action-badge.none{color:#71839d;background:#111b2a;border-color:#263750}
+.sector-action-explain{border:1px solid #33755b;background:linear-gradient(135deg,#0e2b25,#0b1f24);border-radius:13px;padding:12px 14px;margin-bottom:12px;color:#bcd5cc;font-size:11px;line-height:1.65}.sector-action-explain b{color:#76e2b7}.holding-theme-note{display:none;margin-top:10px;border:1px solid #66542e;background:#261f12;color:#d9c18a;border-radius:10px;padding:9px 11px;font-size:10px;line-height:1.55}.holding-theme-note.show{display:block}
+.high-zone{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:900;color:#ffe9aa;background:#3a2e12;border:1px solid #8b7130}.high-zone.off{color:#71839d;background:#111b2a;border-color:#263750}
+.detail-topline>div{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.stock-card-sector{margin-top:9px}.axis-count{color:#93a8c5;font-weight:800}
+@media(max-width:1100px){.primary-axes{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.hero-side{grid-template-columns:repeat(2,1fr)}.hero-side .mini-stat{padding:10px 8px}.hero-side .mini-stat b{font-size:21px}.hero-side .mini-stat span{font-size:10px}.hero-side .mini-stat small{font-size:8px}.primary-axes{grid-template-columns:repeat(2,1fr)}.filter-tools{grid-template-columns:repeat(3,1fr)}.filter-tools .filter-card{min-height:74px}}
+@media(max-width:760px){.sector-member-list{grid-template-columns:1fr}.sector-member-row{grid-template-columns:minmax(105px,1.3fr) repeat(2,1fr)}.sector-member-row .wide-only{display:none}}
+@media(max-width:480px){.filter-tools{grid-template-columns:1fr 1fr}.filter-tools .filter-card:first-child{grid-column:1/-1}}
+@media(max-width:520px){.hero-side,.primary-axes{grid-template-columns:1fr}.hero-side .mini-stat{min-height:auto}}
+
+/* V38 · DART 공식원천 / FnGuide 보조확인 분리 */
+.detail-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.external-check-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;padding:7px 11px;border-radius:10px;border:1px solid #4e86ca;background:linear-gradient(135deg,#12365d,#174a79);color:#e7f3ff;font-size:10px;font-weight:900;text-decoration:none;box-shadow:0 0 0 1px rgba(78,134,202,.12)}
+.external-check-btn:hover{background:linear-gradient(135deg,#174776,#1c5b92);border-color:#76b5ff}.external-check-btn[hidden]{display:none}
+.external-check-note{margin:9px 0 13px;padding:9px 11px;border:1px solid #294667;background:#0b192b;border-radius:10px;color:#9eb2cc;font-size:10px;line-height:1.55}
+.external-check-note b{color:#91c7ff}.external-check-note a{color:#b9dbff}
+.source-separation{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:10px 0 13px}.source-card{border-radius:12px;padding:11px 12px;border:1px solid #29405e;background:#0a1728}.source-card.official{border-color:#287556;background:linear-gradient(135deg,#0b2a22,#0a1c22)}.source-card.auxiliary{border-color:#755f2d;background:linear-gradient(135deg,#2a2211,#171a22)}.source-card .source-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.source-card .source-head b{font-size:11px;color:#edf5ff}.source-card.official .source-head b{color:#83e4ba}.source-card.auxiliary .source-head b{color:#f3cf78}.source-tag{border-radius:999px;padding:3px 6px;font-size:8px;font-weight:950;background:#1b2a3e;color:#a9bbd1;white-space:nowrap}.source-card.official .source-tag{background:#123e30;color:#9df0c9}.source-card.auxiliary .source-tag{background:#4a3915;color:#ffe3a1}.source-desc{font-size:9px;line-height:1.55;color:#94a9c3}.consensus-status{display:inline-flex;align-items:center;gap:5px;margin-top:8px;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:900;border:1px solid #40526b;color:#a8b8cd}.consensus-status.live{color:#a7f3d0;border-color:#2d8a65;background:#10372b}.consensus-status.cached{color:#bdd7ff;border-color:#4775ad;background:#172f4c}.consensus-status.failed{color:#ffb8b8;border-color:#914949;background:#3b1d22}.consensus-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.consensus-metric{background:#0b1524;border:1px solid #29384e;border-radius:8px;padding:7px}.consensus-metric span{display:block;color:#7f93ae;font-size:8px}.consensus-metric b{display:block;margin-top:3px;color:#eef5ff;font-size:11px}.consensus-foot{margin-top:7px;color:#7488a4;font-size:8px;line-height:1.45}
+.data-tag.fnguide-live{color:#9df0c9;border-color:#2d8a65;background:#10372b}.data-tag.fnguide-cached{color:#bdd7ff;border-color:#4775ad;background:#172f4c}.data-tag.fnguide-failed{color:#ffb8b8;border-color:#914949;background:#3b1d22}
+@media(max-width:760px){.detail-topline{align-items:flex-start;gap:9px;flex-wrap:wrap}.detail-actions{width:100%;justify-content:stretch}.detail-actions>*{flex:1}.external-check-btn{min-height:40px;text-align:center}}
+@media(max-width:560px){.source-separation{grid-template-columns:1fr}.consensus-metrics{grid-template-columns:repeat(3,1fr)}}
+
+/* V39 · 신고가와 독립된 7·30거래일 세부섹터 흐름 */
+.sector-flow-section{border-color:#2f5276;background:linear-gradient(160deg,rgba(12,29,50,.96),rgba(8,20,36,.96))}
+.sector-flow-intro{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;margin-bottom:12px}
+.sector-flow-rule,.sector-flow-source{border:1px solid #2b4868;background:#0a192b;border-radius:12px;padding:11px 12px;color:#9eb2cb;font-size:10.5px;line-height:1.65}
+.sector-flow-rule b,.sector-flow-source b{color:#dcecff}.sector-flow-source{border-color:#3e5a4b;background:#0b1d1c}
+.flow-filters{display:flex;gap:7px;overflow:auto;padding:1px 0 10px}
+.flow-filter{border:1px solid #2d4360;background:#0c192b;color:#a9bbd1;border-radius:10px;padding:8px 10px;cursor:pointer;white-space:nowrap;font-size:10px;font-weight:850}
+.flow-filter b{margin-left:4px;color:#e8f1ff}.flow-filter.active{border-color:#62a9f6;background:#15365a;color:#eef7ff}
+.flow-filter.warning.active{border-color:#d6a849;background:#4a3512;color:#ffe4a3}
+.sector-flow-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.flow-card{border:1px solid #294463;background:#0b182a;color:var(--text);border-radius:14px;padding:12px;text-align:left;cursor:pointer;min-width:0;transition:.16s}
+.flow-card:hover,.flow-card.selected{transform:translateY(-1px);border-color:#67a9ed;background:#10243d}.flow-card.caution{border-color:#69542f}
+.flow-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.flow-card-title{font-size:14px;font-weight:900;line-height:1.35}.flow-card-meta{color:#8297b4;font-size:9.5px;margin-top:3px}
+.flow-status{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:8.5px;font-weight:950;white-space:nowrap;border:1px solid #3c5875;background:#132a43;color:#b7d8fa}
+.flow-status.both{border-color:#43c392;background:#0e4b38;color:#dffff3;box-shadow:0 0 15px rgba(55,196,143,.16)}
+.flow-status.new7{border-color:#5c9fe7;background:#143e68;color:#d9ecff}.flow-status.persist30{border-color:#9a7ce4;background:#382a67;color:#eee7ff}
+.flow-periods{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.flow-period{border:1px solid #253b58;background:#081524;border-radius:10px;padding:9px}
+.flow-period strong{display:block;font-size:10px;color:#8fa9c6}.flow-period .flow-return{font-size:18px;font-weight:950;margin-top:4px}.flow-period .flow-return.pos{color:#62dda9}.flow-period .flow-return.neg{color:#ff8d94}
+.flow-period small{display:block;color:#8499b4;font-size:8.5px;line-height:1.55;margin-top:4px}.flow-period .flow-score{display:inline-flex;margin-top:6px;border-radius:999px;padding:3px 6px;background:#15253a;color:#abc0d9;font-size:8px;font-weight:850}
+.flow-flags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.flow-flag{border:1px solid #38516e;border-radius:999px;padding:4px 6px;color:#a9bdd5;font-size:8.5px;font-weight:850}.flow-flag.expand{border-color:#2d8c68;background:#10382b;color:#9ce8c5}.flow-flag.caution{border-color:#9a7431;background:#3b2c10;color:#f3ce79}.flow-flag.cap{border-color:#4d72a1;background:#152a44;color:#bcd9fb}
+.flow-why{margin-top:9px;border-left:3px solid #4a83bc;background:#0a1524;border-radius:7px;padding:8px 9px;color:#a9bdd5;font-size:9.5px;line-height:1.55}.flow-why b{color:#dcecff}
+.flow-members-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px;color:#dbe9fa;font-size:10px;font-weight:900}.flow-members-title span{color:#7f94af;font-size:8.5px;font-weight:700}.flow-members-list{display:grid;gap:5px;max-height:245px;overflow:auto;margin-top:7px;padding-right:2px}.flow-member{display:grid;grid-template-columns:minmax(84px,1.25fr) repeat(4,minmax(52px,.72fr));gap:5px;align-items:center;border:1px solid #243a55;background:#081421;border-radius:8px;padding:7px 8px;font-size:8.5px}.flow-member-name{min-width:0}.flow-member-name b{display:block;color:#e7f1ff;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.flow-member-name small{display:block;color:#7087a4;font-size:7.5px;margin-top:2px}.flow-member-metric span{display:block;color:#7289a5;font-size:7.5px}.flow-member-metric b{display:block;margin-top:2px;font-size:9px}.flow-member-axis{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}.flow-member-axis i{font-style:normal;border:1px solid #34506e;border-radius:999px;padding:2px 4px;color:#8ea6c1;font-size:6.8px}.flow-member-axis i.on{border-color:#328661;background:#10382b;color:#a4edcd}.flow-view-button{width:100%;margin-top:8px;border:1px solid #4b83bd;background:#112e4b;color:#d9ecff;border-radius:9px;padding:8px 10px;font-size:9.5px;font-weight:900;cursor:pointer}.flow-view-button:hover{background:#164065;border-color:#6aacee}.flow-empty{grid-column:1/-1;padding:28px;border:1px dashed #314862;border-radius:12px;text-align:center;color:#8ea2ba;font-size:11px;line-height:1.7}
+.flow-members-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px;color:#dbe9fa;font-size:10px;font-weight:900}.flow-members-title span{color:#7f94af;font-size:8.5px;font-weight:700}.flow-members-list{display:grid;gap:5px;max-height:265px;overflow:auto;margin-top:7px;padding-right:2px}.flow-member{display:grid;grid-template-columns:minmax(84px,1.25fr) repeat(4,minmax(52px,.72fr));gap:5px;align-items:center;width:100%;text-align:left;color:inherit;border:1px solid #243a55;background:#081421;border-radius:8px;padding:7px 8px;font-size:8.5px;cursor:pointer}.flow-member:hover,.flow-member.current{border-color:#4c86bf;background:#0d2338}.flow-member-name{min-width:0}.flow-member-name b{display:block;color:#e7f1ff;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.flow-member-name small{display:block;color:#7087a4;font-size:7.5px;margin-top:2px}.flow-member-metric span{display:block;color:#7289a5;font-size:7.5px}.flow-member-metric b{display:block;margin-top:2px;font-size:9px}.flow-member-axis{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}.flow-member-axis i{font-style:normal;border:1px solid #34506e;border-radius:999px;padding:2px 4px;color:#8ea6c1;font-size:6.8px}.flow-member-axis i.on{border-color:#328661;background:#10382b;color:#a4edcd}.detail-flow-criteria{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}.detail-flow-criteria i{font-style:normal;border:1px solid #64404a;background:#281821;color:#b98a95;border-radius:999px;padding:3px 5px;font-size:7px}.detail-flow-criteria i.pass{border-color:#2f8060;background:#10362a;color:#9fe7c8}.flow-empty{grid-column:1/-1;padding:28px;border:1px dashed #314862;border-radius:12px;text-align:center;color:#8ea2ba;font-size:11px;line-height:1.7}
+.sector-flow-method{margin-top:10px;color:#7e93ae;font-size:9.5px;line-height:1.65}
+.detail-sector-flow{border:1px solid #315b78;background:#0b1c2e;border-radius:11px;padding:10px 11px;margin:-2px 0 12px;color:#9eb3cc;font-size:10px;line-height:1.65}.detail-sector-flow b{color:#dcecff}.detail-sector-flow .detail-flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.detail-sector-flow .detail-flow-grid span{border:1px solid #29435f;background:#091625;border-radius:8px;padding:7px}
+@media(max-width:1100px){.reading-path{grid-template-columns:repeat(2,1fr)}.sector-flow-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.sector-flow-intro{grid-template-columns:1fr}.sector-flow-grid{grid-template-columns:1fr}.flow-card{padding:13px}.flow-period small{font-size:9.5px}.flow-card-meta,.sector-flow-method{font-size:10px}.flow-member{grid-template-columns:minmax(92px,1.3fr) repeat(2,1fr)}.flow-member-metric.relative{display:none}.detail-sector-flow .detail-flow-grid{grid-template-columns:1fr}}
+
+/* V42 · 볼린저 밴드 시장 에너지 — 네 종목 후보축과 분리 */
+.filter-tools{grid-template-columns:repeat(4,minmax(130px,1fr))}.filter-card.energy b{color:#59d6e8}.filter-card.energy{border-color:#31576a;background:linear-gradient(135deg,#0c2430,#0d1a2b)}
+.market-energy-section{border-color:#28606a;background:linear-gradient(155deg,rgba(9,35,45,.97),rgba(8,20,35,.97))}.energy-headline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}.energy-regime{display:inline-flex;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:950;border:1px solid #3f6174;background:#102b38;color:#bfe9f1}.energy-regime.strong,.energy-regime.recovery{border-color:#2e9977;background:#103b30;color:#aaf1d4}.energy-regime.cooling{border-color:#b28c3f;background:#3a2b12;color:#ffe09a}.energy-regime.weak,.energy-regime.long_warning{border-color:#a85555;background:#3b1c21;color:#ffb6b9}.energy-regime.data_check,.energy-regime.warmup{border-color:#7a5960;background:#321e24;color:#ffc2c5}
+.energy-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:13px 0}.energy-kpi{border:1px solid #274759;background:#091b28;border-radius:11px;padding:10px}.energy-kpi span{display:block;color:#82a7b5;font-size:9px}.energy-kpi b{display:block;font-size:21px;margin-top:4px}.energy-kpi small{display:block;color:#68899b;font-size:8.5px;line-height:1.45;margin-top:4px}.energy-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.8fr);gap:10px}.energy-chartbox{height:330px;border:1px solid #284657;background:#071520;border-radius:12px;overflow:hidden}.energy-breakout-box{border:1px solid #284657;background:#091824;border-radius:12px;padding:10px;min-width:0}.energy-breakout-title{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px;font-weight:900}.energy-breakout-title span{color:#7594a8;font-size:9px}.energy-breakout-list{display:grid;gap:5px;max-height:278px;overflow:auto;margin-top:8px}.energy-stock{display:grid;grid-template-columns:minmax(90px,1fr) auto;gap:7px;border:1px solid #213d4f;background:#07141f;border-radius:8px;padding:7px 8px}.energy-stock b{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.energy-stock small{display:block;color:#6e8da0;font-size:8px;margin-top:2px}.energy-stock>span{font-size:9px;color:#77e0b0;font-weight:900}.energy-empty{color:#819dad;font-size:10px;line-height:1.6;padding:20px 6px;text-align:center}.energy-method{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.energy-method>div{border:1px solid #254152;background:#091824;border-radius:10px;padding:10px;color:#8faebd;font-size:9.5px;line-height:1.65}.energy-method b{color:#d9f0f4}
+.energy-zone-guide{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 10px}.energy-zone{border:1px solid #284657;background:#091824;border-radius:11px;padding:10px 11px;position:relative;overflow:hidden}.energy-zone:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#59758a}.energy-zone.danger:before{background:#e36d73}.energy-zone.caution:before{background:#e2b958}.energy-zone.favorable:before{background:#4fd19c}.energy-zone.cooling:before{background:#d49355}.energy-zone span{display:block;color:#829eae;font-size:9px}.energy-zone b{display:block;font-size:14px;margin-top:4px}.energy-zone small{display:block;color:#8295a5;font-size:9px;line-height:1.55;margin-top:4px}.energy-zone.current{border-color:#8cc7e3;box-shadow:inset 0 0 0 1px rgba(140,199,227,.26),0 0 18px rgba(80,166,200,.12)}.energy-zone.current:after{content:"현재";position:absolute;right:7px;top:7px;border-radius:999px;padding:3px 6px;background:#1b4760;color:#dff7ff;font-size:8px;font-weight:950}.energy-reading{border:1px solid #335566;background:#0a1c29;border-radius:10px;padding:10px 12px;margin:0 0 10px;color:#a6bdc9;font-size:10px;line-height:1.65}.energy-reading b{color:#e3f4f6}.energy-reading strong{color:#79e1b6}
+.has-tip,[data-tip]{cursor:help}.has-tip:not(canvas):after,[data-tip].tip-mark:not(canvas):after{content:" ⓘ";font-size:.78em;color:#72bfe6;font-weight:900}.wamo-tooltip{position:fixed;z-index:10000;max-width:min(360px,calc(100vw - 24px));padding:10px 12px;border:1px solid #4d7896;border-radius:10px;background:rgba(5,17,29,.97);color:#dcecf5;box-shadow:0 12px 34px rgba(0,0,0,.42);font-size:11px;line-height:1.58;white-space:pre-line;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .1s,transform .1s}.wamo-tooltip.show{opacity:1;transform:none}.wamo-tooltip b{color:#7fe1b7}.chartbox canvas,.energy-chartbox canvas{cursor:crosshair;touch-action:pan-y}
+@media(max-width:900px){.energy-kpis{grid-template-columns:repeat(3,1fr)}.energy-layout{grid-template-columns:1fr}.energy-breakout-list{max-height:220px}.energy-method{grid-template-columns:1fr}.energy-zone-guide{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.filter-tools{grid-template-columns:repeat(2,1fr)}.energy-kpis{grid-template-columns:repeat(2,1fr)}.energy-kpi:last-child{grid-column:1/-1}.energy-chartbox{height:290px}}
+@media(max-width:480px){.filter-tools .filter-card:first-child{grid-column:auto}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="market-switch" aria-label="시장 선택">
+    <a href="./">🇰🇷 한국</a>
+    <a class="active" href="us.html" aria-current="page">🇺🇸 미국</a>
+    <small>시장은 완전히 분리해 계산합니다</small>
+  </nav>
+  <header class="topbar">
+    <div class="brand">
+      <div class="eyebrow">WAMO MARKET RADAR · US</div>
+      <h1>오늘 뭐가 강해지고 있나</h1>
+      <div class="sub">NYSE·Nasdaq·NYSE American에서 강해지는 섹터와 주도 후보를 빠르게 찾는 미국 투자 대시보드</div>
+    </div>
+    <div class="statusbox">
+      <div class="mode-badge"><span class="dot"></span><span id="mode">—</span></div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </header>
+
+  <div id="healthBanner" class="health-banner">
+      <div class="health-main">
+        <b id="healthTitle">데이터 상태 확인 중</b>
+        <span id="healthText">—</span>
+      </div>
+      <div class="health-pills" id="healthPills"></div>
+    </div>
+
+  <details class="quality-panel" id="qualityPanel">
+    <summary><span>데이터 범위·오류·정합성 자세히 보기</span><span class="quality-summary" id="qualitySummary">—</span></summary>
+    <div class="quality-grid" id="qualityGrid"></div>
+    <div class="quality-note" id="qualityNote"></div>
+    <div class="quality-errors" id="qualityErrors"></div>
+  </details>
+
+  <div id="demoBanner" class="demo-banner">
+    <b>지금은 화면 확인용 데모입니다.</b> 실제 투자 판단용 데이터가 아닙니다. 특히 CAN SLIM의 C·A·I는 재무/기관 데이터 연결 전에는 억지로 판정하지 않고 <b>확인 필요</b>로 표시합니다.
+  </div>
+
+  <section class="scan-strip">
+  <div class="scan-label"><b>오늘 시장 스캔</b><span id="funnelNote">전체시장 자동 스캔 결과</span></div>
+  <div class="scan-flow">
+    <div><span>상장</span><b id="fListed">—</b></div><i>→</i>
+    <div><span>시총 통과</span><b id="fMarketCap">—</b></div><i>→</i>
+    <div class="focus"><span>정밀 계산</span><b id="fScanned">—</b></div>
+  </div>
+  <span id="fLiquid" style="display:none">—</span><span id="fGrowth" style="display:none">—</span><span id="fStage2" style="display:none">—</span>
+</section>
+
+  <section class="hero-grid">
+    <div class="hero-main">
+      <div class="section-kicker">오늘 겹치는 강한 후보</div>
+      <div class="hero-title" id="heroTitle">—</div>
+      <div class="hero-desc" id="heroDesc">—</div>
+      <div class="hero-actions" id="heroActions"></div>
+    </div>
+    <div class="hero-side">
+      <div class="mini-stat axis growth"><span>① 이세무사 성장주 기준 후보</span><b id="statGrowth">—</b><small>6조건 중 4개 이상</small></div>
+      <div class="mini-stat axis stage"><span>② 미너비니 Stage 2</span><b id="statStage2">—</b><small>추세 템플릿 8조건 · RS70은 8번째</small></div>
+      <div class="mini-stat axis high"><span>③ 신고가권</span><b id="statHighZone">—</b><small>52주 또는 역사적 고점 대비 7% 이내</small></div>
+      <div class="mini-stat axis sector-action"><span>④ 섹터액션</span><b id="statSectorAction">—</b><small>신고가와 무관한 7·30일 동반강세</small></div>
+    </div>
+  </section>
+
+  <section class="reading-path" aria-label="대시보드 읽는 순서">
+    <div class="path-step"><span class="path-num">1</span><div><b>4개 모두 충족 종목 먼저 확인</b><span>상단에는 이세무사·미너비니·신고가권·섹터액션을 전부 충족한 종목만 표시합니다.</span></div></div>
+    <div class="path-step"><span class="path-num">2</span><div><b>원하는 기준 하나를 선택</b><span>네 후보 기준은 동급입니다. 카드를 누르면 해당 기준을 충족한 종목만 바로 아래에 나옵니다.</span></div></div>
+    <div class="path-step"><span class="path-num">3</span><div><b>종목을 눌러 상세 검증</b><span>차트·정배열·공시·사업구조와 함께, 섹터액션 종목은 같은 섹터의 다른 동참 종목까지 확인합니다.</span></div></div>
+    <div class="path-step"><span class="path-num">4</span><div><b>시장 에너지는 별도 확인</b><span>볼린저 상단 돌파 종목수와 5일 평균은 종목 후보점수와 섞지 않고 시장 확산만 봅니다.</span></div></div>
+    <div class="path-step"><span class="path-num">5</span><div><b>섹터 전체 흐름은 아래에서 비교</b><span>7일 신규·30일 지속·7·30일 동시 강세를 세부섹터 단위로 비교합니다.</span></div></div>
+  </section>
+
+  <section class="section sector-flow-section" id="sectorFlowSection">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">4단계 · SECTOR FLOW · 7 / 30 TRADING DAYS</div>
+        <h2>섹터 전체 비교 · 7일 신규·30일 지속·동시 강세</h2>
+      </div>
+      <div class="section-note" id="sectorFlowSummary">최소 3종목 · 최신 가격 기준</div>
+    </div>
+    <div class="sector-flow-intro">
+      <div class="sector-flow-rule"><b>강세 판정</b><br>7일·30일을 각각 따로 봅니다. ① 중앙값 수익률 플러스 ② Nasdaq Composite 또는 S&amp;P 500 대비 중앙값 상대수익률 플러스 ③ 상승 종목 60% 이상 ④ 시장을 이긴 종목 60% 이상 ⑤ 7일은 20일선·30일은 60일선 위 60% 이상. 다섯 조건 중 4개 이상이면서 ①·②를 모두 만족해야 강세입니다.</div>
+      <div class="sector-flow-source"><b>왜 평균만 보지 않나?</b><br>한 종목 급등에 끌려가지 않도록 중앙값과 상승 확산도를 중심으로 봅니다. 평균과 중앙값 괴리·상승분 집중도가 크면 ‘쏠림 주의’를 붙이고, 대형주와 상대적 중소형주가 함께 오르는지도 별도로 표시합니다.</div>
+    </div>
+    <div class="flow-filters" role="group" aria-label="섹터 흐름 분류">
+      <button class="flow-filter active" data-flow="strong">강한 흐름 전체 <b id="flowStrongCount">—</b></button>
+      <button class="flow-filter" data-flow="both">7·30일 동시 <b id="flowBothCount">—</b></button>
+      <button class="flow-filter" data-flow="new7">7일 신규 <b id="flowNew7Count">—</b></button>
+      <button class="flow-filter" data-flow="persist30">30일 지속 <b id="flowPersist30Count">—</b></button>
+      <button class="flow-filter" data-flow="expanding">확산 중 <b id="flowExpandingCount">—</b></button>
+      <button class="flow-filter warning" data-flow="concentration">쏠림 주의 <b id="flowConcentrationCount">—</b></button>
+    </div>
+    <div class="sector-flow-grid" id="sectorFlowGrid"></div>
+    <div class="sector-member-browser" id="sectorMemberBrowser"></div>
+    <div class="sector-flow-method" id="sectorFlowMethod">시장 대비는 Nasdaq 종목은 Nasdaq Composite, NYSE·NYSE American 종목은 S&amp;P 500과 비교합니다. 지수 수집 실패 시 같은 시장의 정밀계산 종목 중앙값을 대체 기준으로 쓰고 데이터 상태에 명시합니다. ‘확산 중’은 7일 강세이면서 상승비율이 30일보다 15%포인트 이상 넓어지고, 대형·상대적 중소형 종목이 함께 오르며, 구성종목 3분의 1 이상에서 최근 7일 평균 거래량이 직전 20일보다 20% 이상 늘어난 경우입니다.</div>
+  </section>
+
+
+  <section class="section" id="sectorStructureSection">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">SECONDARY OVERLAY · TREND STRUCTURE</div>
+        <h2>참고용 중기 섹터 점수 · 네 번째 후보축과 별도</h2>
+      </div>
+      <div class="section-note">위 7·30일 수익률 흐름과 별도의 중기 추세 확인자료입니다.</div>
+    </div>
+    <div class="sector-action-explain"><b>두 화면의 차이:</b> 위 ‘7·30일 섹터 흐름’은 실제 기간 수익률과 시장 대비 확산으로 네 번째 후보축인 섹터액션을 판정합니다. 이 영역은 평균 RS, 60일선 위 비율, 신고가권, 거래량, 미너비니 Stage 2를 합산해 중기 추세구조를 재확인합니다. 네 후보축은 서로를 통과하기 위한 필수조건이 아닙니다.</div>
+    <div class="sector-guide">
+      <div class="sector-guide-main">
+        <b>‘중기 섹터 점수’란?</b>
+        <p>같은 방식으로 돈을 버는 종목이 <strong>최소 3개 이상</strong>인지 확인한 뒤 평균 RS, 60일선 위 비율, 52주 고점 7% 이내 비율, 거래량, 미너비니 Stage 2 비율을 합산한 참고 점수입니다. 위 7·30일 섹터액션 후보 판정과는 별개입니다.</p>
+      </div>
+      <div class="sector-guide-example">
+        <b>K-뷰티도 돈 버는 방식에 따라 따로 봅니다</b>
+        <p><strong>달바글로벌</strong>은 자체 제품을 파는 ‘화장품 브랜드’, <strong>한국콜마</strong>는 브랜드 대신 개발·생산하는 ‘화장품 ODM/OEM’, <strong>실리콘투</strong>는 해외에 유통하는 ‘K-뷰티 유통’입니다. 서로 관련돼도 수익구조가 달라 별도 세부섹터로 계산합니다.</p>
+      </div>
+    </div>
+    <div class="sector-scope">※ ‘현재 대장’은 추세·이세무사 성장주 조건·WAMO점수를 종합한 연구 우선순위입니다. 카드의 ‘현재 분석 종목’에는 대장 후보와 같은 세부섹터의 시총 상위기업을 함께 표시합니다. 시총 10억달러 이상 일반기업 중 시총순 최대 900개를 가격수집하고, 50일 평균 거래대금 1천만달러 이상을 정밀계산합니다.</div>
+    <div class="sector-grid" id="sectorGrid"></div>
+    <div class="holding-theme-note" id="holdingThemeNote"></div>
+  </section>
+
+  <section class="filter-section">
+  <div class="filter-head">
+    <div><div class="section-kicker">0단계 · 시작 메뉴</div><h2>무엇을 볼지 먼저 선택하세요</h2></div>
+    <div class="section-note">여섯 대메뉴 중 하나를 누르면 해당 화면만 아래에 표시됩니다.</div>
+  </div>
+  <div class="filter-grid primary-axes">
+    <button class="tab filter-card growth active" data-tab="six"><span>① 이세무사 성장주</span><b id="qGrowth">—</b><small>장기추세·고점·낙폭·20개월선·정배열 등 6개 중 4개 이상</small></button>
+    <button class="tab filter-card stage" data-tab="stage2"><span>② 미너비니 Stage 2</span><b id="qStage2">—</b><small>추세 템플릿 8조건(차트 7 + RS 70) 전부 충족</small></button>
+    <button class="tab filter-card high" data-tab="high"><span>③ 신고가권</span><b id="qHighZone">—</b><small>현재가가 52주 또는 전체 수집이력 고점의 93% 이상</small></button>
+    <button class="tab filter-card triple" data-tab="triple"><span>④ 3축 동시충족</span><b id="qTriple">—</b><small>이세무사 4/6 이상 + Stage 2 + 52주 또는 역사적 신고가권</small></button>
+    <button class="tab filter-card sector-action" data-tab="sectoraction"><span>⑤ 섹터액션</span><b id="qSectorAction">—</b><small>섹터 선택 → 소속 종목 → 종목 상세의 3단계 탐색</small></button>
+    <button id="marketEnergyMenu" class="tab filter-card energy" data-tab="energy" type="button"><span>⑥ 시장에너지</span><b id="qEnergy">—</b><small>볼린저 상단 돌파 종목수 · 5일 평균과 확산 기울기</small></button>
+  </div>
+  <div class="filter-grid filter-tools">
+    <button class="tab filter-card" data-tab="all"><span>전체 보기</span><b id="qAll">—</b><small>시총·거래대금·가격수집 검증 후 기술지표 계산이 끝난 일반기업 전체</small></button>
+    <button class="tab filter-card can" data-tab="canslim"><span>CAN SLIM 보조</span><b id="qCan">—</b><small>I 제외 자동 6항목 · 5개+ 우선</small></button>
+    <button class="tab filter-card watch" data-tab="watchlist"><span>내 관심</span><b id="qWatch">★</b><small>직접 저장한 관심종목</small></button>
+  </div>
+  <div class="view-guide" id="viewGuide"><b>이세무사 성장주</b> · 6개 기술조건 중 4개 이상인 종목만 표시합니다.</div>
+</section>
+
+  <section class="section" id="stocks">
+    <div class="section-head stock-head">
+      <div>
+        <div class="section-kicker">선택 결과 · STOCK SCREENER</div>
+        <h2>선택한 기준의 종목</h2>
+        <div class="section-note" id="count"></div>
+        <div class="candidate-note">연구 후보 · 매수추천 아님</div>
+      </div>
+      <div class="controls">
+        <input id="search" class="search" placeholder="종목명 또는 섹터 검색"/>
+        <select id="signal" class="select">
+          <option value="">판정 전체</option>
+          <option value="BUY">기술적 강세 신규</option>
+          <option value="HOLD">기술적 강세 유지</option>
+          <option value="WATCH">기술적 관찰</option>
+          <option value="EXIT">청산·회피</option>
+          <option value="NEUTRAL">비주도</option>
+        </select>
+        <select id="instrument" class="select" aria-label="증권 유형">
+          <option value="company">일반기업</option>
+          <option value="reit">리츠</option>
+          <option value="fund">ETF·ETN</option>
+          <option value="all">증권 전체</option>
+        </select>
+        <select id="sort" class="select" aria-label="정렬 기준">
+          <option value="auto">기준별 자동정렬</option>
+          <option value="score">WAMO 점수</option>
+          <option value="rs">RS 높은 순</option>
+          <option value="conditions">6조건 많은 순</option>
+          <option value="alignment">정배열 오래된 순</option>
+          <option value="high">신고가권 가까운 순</option>
+        </select>
+        <button id="clear" class="pill">초기화</button>
+      </div>
+    </div>
+
+    <div class="selection-definition" id="selectionDefinition"></div>
+    <div class="mobile-list" id="mobileList"></div>
+
+    <div class="table-wrap desktop-table">
+      <table class="table">
+        <thead><tr>
+          <th></th><th>#</th><th>종목</th><th>판정</th><th>점수</th><th>RS</th><th>CAN 자동</th><th>1일</th><th>신고가권</th><th>거래량</th><th>6조건</th><th>Stage 2</th><th>정배열</th><th>섹터 7·30일 흐름</th><th>왜 잡혔나</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section market-energy-section" id="marketEnergySection">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker">MARKET ENERGY · BOLLINGER BREADTH</div>
+        <h2>미국 정밀계산 유니버스 · 볼린저 상단 돌파 확산</h2>
+        <div class="energy-headline"><span class="energy-regime data_check" id="energyRegime">갱신 대기</span><span class="section-note" id="energyRegimeNote">자동갱신 후 계산됩니다.</span></div>
+      </div>
+      <div class="section-note" id="energySource">네 종목 후보축·WAMO 점수와 별도</div>
+    </div>
+    <div class="energy-kpis">
+      <div class="energy-kpi"><span>오늘 상단 돌파</span><b id="energyToday">—</b><small id="energyTodayNote">실제 검출 종목수</small></div>
+      <div class="energy-kpi"><span>5일 이동평균</span><b id="energyMa5">—</b><small>비교용 350종목 기준 환산</small></div>
+      <div class="energy-kpi"><span>최근 5일 기울기</span><b id="energySlope">—</b><small>현재 MA5 − 5거래일 전 MA5</small></div>
+      <div class="energy-kpi"><span>MA5 10 미만 연속</span><b id="energyBelow">—</b><small>40거래일≈약 2개월 참고</small></div>
+      <div class="energy-kpi"><span>가격 커버리지</span><b id="energyCoverage">—</b><small id="energyCoverageNote">90% 미만은 판정 보류</small></div>
+    </div>
+    <div class="energy-zone-guide" aria-label="볼린저 밴드 시장 에너지 구간 설명">
+      <div class="energy-zone danger" data-energy-zone="danger"><span>MA5 10 미만</span><b>주의 · 확산 약화</b><small>상단 돌파 종목이 매우 적은 구간입니다. 40거래일가량 지속되면 장기 경고로 봅니다.</small></div>
+      <div class="energy-zone caution" data-energy-zone="caution"><span>MA5 10 이상 20 미만</span><b>중립 · 회복 확인</b><small>10선을 상향 돌파하고 기울기가 오르면 회복, 다시 10 아래로 내려가면 재약화로 봅니다.</small></div>
+      <div class="energy-zone favorable" data-energy-zone="favorable"><span>MA5 20 이상 + 기울기 상승</span><b>상대적 우호 구간</b><small>상승 에너지가 시장 전반으로 넓어지는 상태입니다. 손실 가능성이 없다는 뜻은 아닙니다.</small></div>
+      <div class="energy-zone cooling" data-energy-zone="cooling"><span>MA5 20 이상 + 기울기 하락</span><b>고점 통과 여부 주의</b><small>절대 수준은 강하지만 확산 속도가 둔화된 상태입니다. 연속 하락과 20선 이탈을 확인합니다.</small></div>
+    </div>
+    <div class="energy-reading" id="energyReading"><b>현재 해석</b> · 자동갱신 후 표시됩니다.</div>
+    <div class="energy-layout">
+      <div class="energy-chartbox"><canvas id="energyChart"></canvas></div>
+      <div class="energy-breakout-box">
+        <div class="energy-breakout-title">오늘 돌파 종목 <span id="energyBreakoutCount">—</span></div>
+        <div class="energy-breakout-list" id="energyBreakoutList"></div>
+      </div>
+    </div>
+    <div class="energy-method">
+      <div><b>계산식</b><br>종가가 ‘20일 단순이동평균 + 2 × 20일 종가의 모집단 표준편차’를 <b>엄격히 초과</b>하면 1개로 셉니다. 일중 고가 터치는 포함하지 않습니다.</div>
+      <div><b>10·20 기준 읽기</b><br>5일 평균 10 미만은 확산 약화, 20 이상이면서 상승은 강한 확산, 최근 10 상향 돌파는 회복 참고로 표시합니다. 영상에서 제시한 경험칙이며 자동 매매·현금비중 명령은 아닙니다.</div>
+      <div id="energyCaveat"><b>통계·데이터 주의</b><br>+2σ의 2.3%는 정규분포 한쪽 꼬리의 이론값이지 실제 주가 돌파확률이 아닙니다. 미국판은 현재 정밀계산 유니버스를 과거에도 소급 적용해 350종목 기준으로 환산하므로, 공식 S&amp;P 500·Nasdaq 전체 시계열이 아니며 생존편향이 있습니다.</div>
+    </div>
+  </section>
+
+
+  <section class="section framework-section">
+    <div class="section-kicker">SCREENING FRAMEWORK · 전체 기준 설명</div>
+    <h2>이 대시보드가 종목을 고르는 기준 — 전부 쉽게 풀어서</h2>
+    <div class="section-note roomy">
+      아래 기준들은 서로 대체하는 것이 아니라 역할이 다릅니다. <b>이세무사 성장주 6조건</b>은 “차트가 성장주답게 강한가”,
+      <b>미너비니 Stage 2</b>는 “본격 상승추세에 들어왔는가”, <b>RS</b>는 “다른 종목보다 강한가”,
+      <b>섹터 액션</b>은 “혼자 오르는가, 업종 전체가 같이 강한가”, <b>CAN SLIM</b>은 “실적·수급·시장까지 받쳐주는가”를 봅니다.
+    </div>
+
+    <div class="framework-grid">
+      <article class="framework-card">
+        <div class="framework-num">①</div>
+        <div>
+          <h3>이세무사 성장주 6조건</h3>
+          <b>“차트 모양 자체가 강한 성장주인가?”</b>
+          <p>주가가 장기 상승추세를 유지하면서 최근 고점 부근에 있고, 단기·중기·장기 이동평균선이 순서대로 올라와 있는지를 봅니다.
+          6/6이면 매우 강한 차트 구조, 5/6이면 한 조건만 부족, 4/6이면 후보군으로 두고 추가 확인하는 식으로 사용합니다.</p>
+          <details open><summary>6개 조건을 하나씩 보면</summary>
+            <div class="criteria-list">
+              <div><strong>1. 장기 우상향</strong><span>현재가가 200일선 위에 있고 200일선 자체도 상승하며, 최근 1년 수익률도 양수인지 봅니다. 장기 추세가 이미 꺾인 종목을 거르기 위한 조건입니다.</span></div>
+              <div><strong>2. 최근 1년 내 장기 신고가</strong><span>최근 약 3년 고점을 만든 시점이 1년 안쪽인지 봅니다. 아주 오랫동안 시장의 관심에서 멀어진 종목보다 최근 실제로 강했던 종목을 선호합니다.</span></div>
+              <div><strong>3. 고점 대비 -30% 이내</strong><span>52주 최고가에서 현재가가 30% 넘게 무너지지 않았는지 봅니다. -10%면 고점 대비 10% 조정, -35%면 이미 추세 훼손 가능성을 크게 봅니다.</span></div>
+              <div><strong>4. 52주 신고가권 7% 이내</strong><span>현재가가 52주 최고가의 93% 이상인지 봅니다. 예: 최고가 100,000원인데 현재가 94,000원이면 고점 대비 6% 아래이므로 통과합니다.</span></div>
+              <div><strong>5. 월봉 20개월선 위</strong><span>약 20개월 평균 주가보다 현재 월봉 종가가 위인지 봅니다. 일봉은 좋아 보여도 장기 월봉 추세가 나쁜 종목을 거르는 장치입니다.</span></div>
+              <div><strong>6. 일봉 정배열</strong><span>현재가 &gt; 20일선 &gt; 60일선 &gt; 120일선 &gt; 200일선 순서인지 봅니다. 단기부터 장기까지 매수세가 층층이 받쳐주는 전형적인 상승추세 배열입니다.</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">②</div>
+        <div>
+          <h3>미너비니 Stage 2 · Trend Template</h3>
+          <b>“본격적인 상승 국면에 진입했는가?”</b>
+          <p>단순히 하루 급등한 종목이 아니라 장기 이동평균선들이 상승 방향으로 정렬되고, 주가가 장기 저점에서 충분히 벗어나며,
+          동시에 52주 고점에서도 너무 멀지 않은 종목을 찾습니다.</p>
+          <details><summary>WAMO에서 확인하는 7개 항목</summary>
+            <div class="criteria-list">
+              <div><strong>주가 &gt; 150·200일선</strong><span>현재 가격이 장기 평균 매입단가보다 위에 있어야 합니다.</span></div>
+              <div><strong>150일선 &gt; 200일선</strong><span>중장기 추세가 장기 추세보다 강해야 합니다.</span></div>
+              <div><strong>200일선 상승</strong><span>200일선이 단순히 아래에 있는 것만으로 부족하고, 방향 자체가 위로 기울어야 합니다.</span></div>
+              <div><strong>50일선 &gt; 150·200일선</strong><span>최근 약 2개월의 주가 흐름이 장기 흐름보다 강한지를 봅니다.</span></div>
+              <div><strong>주가 &gt; 50일선</strong><span>현재 가격이 중기 추세선 위에 있어야 합니다.</span></div>
+              <div><strong>52주 저점 대비 +30% 이상</strong><span>바닥 부근의 약한 종목이 아니라 저점에서 충분히 상승한 종목을 고릅니다.</span></div>
+              <div><strong>52주 고점에서 25% 이내</strong><span>최고가 대비 너무 멀리 밀린 종목을 제외합니다. 현재 기준은 고점의 75% 이상을 요구합니다.</span></div>
+            </div>
+          </details>
+          <div class="rule">대시보드 표시: 차트 추세조건 7개 + 비교군 RS 70 이상(8번째 조건)을 모두 충족하면 미너비니 Stage 2 YES · RS 80~90대는 우수 후보로 별도 확인</div>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">③</div>
+        <div>
+          <h3>RS · Relative Strength</h3>
+          <b>“시장 안에서 누가 더 세게 오르고 있는가?”</b>
+          <p>RS는 회사의 질이 아니라 <strong>주가의 상대적 힘</strong>을 봅니다. 이 화면의 비교 대상은 시총 10억달러 이상 일반기업 중 시총순 최대 900개를 가격수집한 뒤, 50일 평균 거래대금 1천만달러 이상으로 정밀계산된 미국 종목입니다. RS 90이라면 그 비교군의 약 90%보다 강했다는 뜻입니다.
+          시장이 -10%인데 어떤 종목이 -1%만 빠져도 상대강도는 강할 수 있습니다.</p>
+          <details><summary>일반 RS와 오닐식 RS의 차이</summary>
+            <div class="criteria-list">
+              <div><strong>일반 RS</strong><span>5일·20일·60일 시장 대비 초과수익을 섞어 단기~중기 리더를 빠르게 찾습니다. 가중치는 20%·40%·40%입니다.</span></div>
+              <div><strong>오닐식 RS</strong><span>최근 약 12개월을 네 구간으로 나누고 최근 3개월을 더 중요하게 반영합니다. CAN SLIM의 L(Leader) 판정에 사용합니다.</span></div>
+            </div>
+          </details>
+          <div class="rule">해석 예: RS 95 = 매우 강함 · RS 70 = 상위권 · RS 50 = 중간 · RS 30 = 시장보다 약한 편</div>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">④</div>
+        <div>
+          <h3>섹터 액션</h3>
+          <b>“이 종목만 오르는가, 같은 산업이 함께 움직이는가?”</b>
+          <p>신고가 여부는 사용하지 않고, 같은 세부섹터에서 가격 이력이 충분한 종목이 <strong>최소 3개</strong> 함께 움직이는지를 7거래일과 30거래일로 나눠 봅니다. 종목 하나만 급등하거나 시장 전체가 오른 것만으로는 섹터액션으로 인정하지 않습니다.</p>
+          <details open><summary>7일·30일 각각 확인하는 5개 조건</summary>
+            <div class="criteria-list">
+              <div><strong>1. 수익률 중앙값이 플러스</strong><span>종목들을 수익률 순으로 줄 세웠을 때 가운데 종목도 올라야 합니다. 한 종목 급등이 평균을 끌어올리는 왜곡을 줄입니다.</span></div>
+              <div><strong>2. 시장대비 중앙값이 플러스</strong><span>Nasdaq 종목은 Nasdaq Composite, NYSE·NYSE American 종목은 S&amp;P 500과 비교해 가운데 종목도 자기 시장보다 강해야 합니다.</span></div>
+              <div><strong>3. 상승 종목 60% 이상</strong><span>5종목이면 최소 3종목이 올라야 합니다. 상승 참여 폭(Breadth, 함께 오르는 종목의 비율)을 봅니다.</span></div>
+              <div><strong>4. 시장을 이긴 종목 60% 이상</strong><span>단순 동반 상승이 아니라 구성종목 다수가 자기 시장지수보다 높은 수익률을 내야 합니다.</span></div>
+              <div><strong>5. 추세선 위 종목 60% 이상</strong><span>7일 판정은 20일 이동평균선, 30일 판정은 60일 이동평균선 위에 있는 종목 비율을 사용합니다.</span></div>
+            </div>
+          </details>
+          <div class="rule">정식 판정: 최소 3종목 + ① 수익률 중앙값 플러스 + ② 시장대비 중앙값 플러스 + 5개 조건 중 4개 이상. 7일만 충족=7일 신규, 30일만 충족=30일 지속, 둘 다 충족=7·30일 동시 강세.</div>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">⑤</div>
+        <div>
+          <h3>거래량 · Volume</h3>
+          <b>“가격 움직임 뒤에 실제 돈이 얼마나 붙었는가?”</b>
+          <p>주가 +8%라도 거래량이 평소의 절반이면 신뢰도가 낮을 수 있습니다. 반대로 신고가 돌파 때 거래량이 평소 2~3배면
+          기관 등 큰 자금이 참여했을 가능성을 확인하는 단서가 됩니다.</p>
+          <details><summary>화면의 1.0x, 2.0x가 뜻하는 것</summary>
+            <div class="criteria-list">
+              <div><strong>1.0x</strong><span>오늘 거래량이 최근 20거래일 평균과 비슷합니다.</span></div>
+              <div><strong>1.5x</strong><span>평균보다 50% 많습니다. 의미 있는 관심 증가로 볼 수 있습니다.</span></div>
+              <div><strong>2.0x</strong><span>평균의 두 배입니다. 돌파와 함께 나오면 강한 확인 신호로 봅니다.</span></div>
+              <div><strong>주의</strong><span>악재 급락에도 거래량은 폭증하므로 “거래량이 많다=좋다”가 아닙니다. 반드시 가격 방향과 함께 봅니다.</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+
+      <article class="framework-card">
+        <div class="framework-num">⑥</div>
+        <div>
+          <h3>WAMO 종합점수</h3>
+          <b>“여러 기준을 한 숫자로 요약하되, 원자료도 반드시 같이 본다”</b>
+          <p>종합점수는 정답이 아니라 종목 자체의 기술적 우선순위를 정하는 도구입니다. 점수가 높을수록 상대강도·고점 위치·거래량·Stage 2가 우호적이라는 뜻입니다. 섹터액션은 네 번째 독립 후보 기준이지만 종목 자체 점수에 가산하지 않아 같은 사실을 중복 반영하지 않습니다.</p>
+          <details><summary>현재 점수 가중치</summary>
+            <div class="criteria-list">
+              <div><strong>종목 자체 점수</strong><span>RS 30% + 성장주 6조건 25% + 52주 고점 위치 15% + 거래량 10% + Stage 2 20%.</span></div>
+              <div><strong>섹터와 점수 분리</strong><span>섹터액션은 네 후보 필터 중 하나로는 사용하지만 WAMO 종목 점수에는 넣지 않습니다. 개별 종목 강도와 업종 동반강세를 따로 비교하기 위한 설계입니다.</span></div>
+              <div><strong>상세창에서 재검증</strong><span>섹터액션 종목을 누르면 같은 섹터의 다른 동참 종목, 각 종목의 7일·30일 수익률과 시장대비 수익률을 함께 표시합니다.</span></div>
+              <div><strong>주의</strong><span>CAN SLIM의 C·A·I처럼 아직 데이터가 없는 항목을 임의로 점수에 넣지 않습니다.</span></div>
+            </div>
+          </details>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section canslim-section">
+    <div class="section-kicker">WILLIAM O'NEIL · CAN SLIM</div>
+    <h2>CAN SLIM 7개 항목 — 뜻과 실제로 무엇을 보는지</h2>
+    <div class="section-note roomy">아래 숫자는 오닐의 핵심 취지를 자동 스크리닝으로 구현한 현재 계산 기준입니다. 질적 판단이 필요한 N·I·M은 원래 개념을 함께 적어 두었습니다.</div>
+    <div class="canslim-grid">
+      <article class="cs-card"><div class="cs-letter">C</div><div><h3>Current Quarterly Earnings</h3><b>최근 분기 이익이 강하게 증가하는가?</b><p><strong>EPS</strong>(주당순이익: 회사가 벌어들인 이익을 주식 1주당으로 나눈 값)의 최근 분기 전년동기 대비 성장률을 봅니다. 핵심 통과 기준은 <strong>최근 분기 EPS YoY +25% 이상</strong>입니다. 매출도 함께 증가하는지 확인해 “회계상 이익만 늘어난 것인지”를 걸러냅니다.</p><div class="rule">현재 기준: 최근 분기 EPS YoY ≥ +25% · 매출 성장률은 보조 확인</div></div></article>
+      <article class="cs-card"><div class="cs-letter">A</div><div><h3>Annual Earnings Growth</h3><b>몇 년에 걸쳐 이익이 지속적으로 성장했는가?</b><p>한 분기의 깜짝 실적만으로는 부족합니다. <strong>CAGR</strong>(연평균복합성장률: 여러 해의 성장을 1년 평균 성장률로 환산한 값)을 이용해 최근 3년 EPS 성장 추세를 봅니다. <strong>ROE</strong>(자기자본이익률: 주주가 맡긴 자본으로 얼마나 효율적으로 이익을 냈는지)도 보조지표로 확인합니다.</p><div class="rule">현재 기준: 최근 연간 EPS 성장률 ≥ +25% AND 3년 EPS CAGR ≥ +25%</div></div></article>
+      <article class="cs-card"><div class="cs-letter">N</div><div><h3>New</h3><b>주가를 새 단계로 끌어올릴 “새로운 것”이 있는가?</b><p>신제품·신서비스·새 경영진·산업 구조 변화·새로운 가격대 등이 해당합니다. 현재 무료 자동화에서는 질적 공시 내용을 억지 판정하지 않고, 오닐이 중요하게 본 <strong>새로운 주가 고점</strong>만 대체지표로 사용합니다.</p><div class="rule">현재 자동기준: 현재가 ≥ 52주 또는 전체 수집이력 고점의 95%</div></div></article>
+      <article class="cs-card"><div class="cs-letter">S</div><div><h3>Supply & Demand</h3><b>팔려는 주식보다 사려는 자금이 더 강한가?</b><p>주가는 결국 수요와 공급으로 움직입니다. 미국판은 무료로 일관된 발행주식수 시계열을 확보하지 못한 경우 임의 판정하지 않고, 상승일 거래량이 하락일 거래량보다 강한지만 가격 데이터로 봅니다.</p><div class="rule">현재 자동기준: 상승일/하락일 거래량 비율 ≥ 1.15x · 희석 여부는 SEC 원문에서 별도 확인</div></div></article>
+      <article class="cs-card"><div class="cs-letter">L</div><div><h3>Leader or Laggard</h3><b>같은 시장·업종에서 진짜 대장주인가?</b><p><strong>RS Rating</strong>(Relative Strength Rating, 상대강도 순위)은 주가 성과를 다른 종목과 비교한 순위입니다. 90이면 비교 대상의 약 90%보다 강했다는 뜻입니다. 단순히 싸 보이는 낙폭과대주보다 강한 업종의 강한 종목을 찾습니다.</p><div class="rule">현재 기준: 오닐식 12개월 가중 RS 백분위 ≥ 80 + 세부섹터 상승 이상</div></div></article>
+      <article class="cs-card"><div class="cs-letter">I</div><div><h3>Institutional Sponsorship</h3><b>기관 자금이 실제로 들어오고 있는가?</b><p>펀드·자산운용사 같은 큰 자금이 보유를 늘리는지 보는 원래 개념입니다. 신뢰할 만한 무료 기관보유 변화 시계열을 자동 연결하지 못했으므로 <strong>I는 자동점수에서 제외</strong>하고 임의로 통과시키지 않습니다.</p><div class="rule">현재 처리: I는 확인 불가 · C/A/N/S/L/M 6개만 자동판정</div></div></article>
+      <article class="cs-card"><div class="cs-letter">M</div><div><h3>Market Direction</h3><b>좋은 종목보다 먼저 “지금 시장이 살 만한 시장인가?”를 본다</b><p>개별 종목이 아무리 좋아도 전체 시장이 하락 추세면 성공 확률이 떨어집니다. 오닐 방법론에서는 <strong>Follow-Through Day</strong>(추세확인일: 하락 뒤 반등 시도 중 주요 지수가 강한 상승과 거래량 증가를 동반해 새 상승장의 가능성을 확인하는 날)를 중요하게 봅니다.</p><div class="rule">현재 기준: 지수 50일선·200일선 및 장기 상승 여부로 보수적 대체</div></div></article>
+    </div>
+  </section>
+
+  <section class="section explain-section">
+    <div class="section-kicker">GLOSSARY · 용어 사전</div>
+    <h2>화면에 나오는 용어를 쉽게 풀면 — 숫자를 어떻게 해석해야 하는지까지</h2>
+    <div class="glossary-grid">
+      <details open><summary>RS · 상대강도</summary><p>“이 종목이 비교군보다 얼마나 강한가”를 보는 지표입니다. 비교군은 시총 10억달러 이상 일반기업 중 시총순 최대 900개를 가격수집하고, 50일 평균 거래대금 1천만달러 이상으로 정밀계산한 종목입니다. 일반 RS와 CAN SLIM의 오닐식 RS는 계산 기간이 달라 별도로 표시합니다.</p></details>
+      <details><summary>YoY · 전년동기 대비</summary><p><strong>Year over Year</strong>의 약자입니다. 2026년 2분기 매출을 2025년 2분기와 비교합니다. 계절성이 있는 기업을 전분기와 비교할 때 생기는 왜곡을 줄이는 데 유용합니다.</p></details>
+      <details><summary>EPS · 주당순이익</summary><p><strong>Earnings Per Share</strong>. 순이익을 주식 수로 나눈 값입니다. EPS가 1,000원에서 1,300원으로 증가했다면 EPS 성장률은 +30%입니다. CAN SLIM의 C와 A에서 핵심적으로 사용합니다.</p></details>
+      <details><summary>CAGR · 연평균복합성장률</summary><p>여러 해 동안의 성장률을 “매년 같은 속도로 성장했다고 가정했을 때의 평균 성장률”로 바꾼 값입니다. 예를 들어 EPS가 3년 동안 100→200으로 늘었다면 단순 평균이 아니라 복리 기준 성장 속도를 계산합니다.</p></details>
+      <details><summary>ROE · 자기자본이익률</summary><p><strong>Return on Equity</strong>. 주주가 넣어둔 자기자본 100원으로 몇 원의 순이익을 냈는지 봅니다. ROE 20%라면 자기자본 100원당 약 20원의 이익을 냈다는 뜻입니다.</p></details>
+      <details><summary>52주 고점比</summary><p>현재 주가가 최근 252거래일 최고가의 몇 % 수준인지 나타냅니다. 98%라면 최고가보다 약 2% 아래입니다. 상장 후 252거래일이 지나지 않은 신규 종목은 실제 확보된 상장 이후 이력의 고점을 사용하고 ‘짧은 이력’으로 표시합니다.</p></details>
+      <details><summary>역사적 신고가권</summary><p>Yahoo Finance 또는 네이버가 제공하는 <strong>상장 이후 전체 수정주가 이력</strong>의 최고가와 현재가를 비교합니다. 현재가가 그 고점의 93% 이상, 즉 고점 대비 7% 이내면 역사적 신고가권으로 분류합니다. 화면에는 실제 수집 시작일도 함께 표시합니다.</p></details>
+      <details><summary>고점 낙폭 · Drawdown</summary><p>최근 고점에서 현재가까지 얼마나 떨어졌는지입니다. -20%라면 고점 대비 현재 주가가 20% 낮습니다. 상승 추세 주도주인지, 큰 조정에 들어갔는지를 볼 때 사용합니다.</p></details>
+      <details><summary>이동평균선 · MA</summary><p>최근 일정 기간의 평균 주가를 선으로 표시한 것입니다. MA20은 최근 20거래일 평균, MA200은 최근 200거래일 평균입니다. 짧은 평균선이 긴 평균선 위에 차례로 놓이면 상승 추세가 강하다고 해석합니다.</p></details>
+      <details><summary>정배열·준비기간</summary><p>현재가 &gt; MA20 &gt; MA60 &gt; MA120 &gt; MA200 순서면 정배열입니다. 처음에는 MA200을 계산할 수 있게 된 날부터 최초 정배열 도달일까지, 이후에는 정배열 이탈일부터 다시 회복한 날까지를 <strong>준비기간</strong>으로 표시합니다. 잠깐 깨졌다 회복한 경우도 빼지 않고 이탈·회복 날짜와 준비기간(주·거래일)을 함께 기록합니다.</p></details>
+      <details><summary>미너비니 Stage 2</summary><p>마크 미너비니의 Trend Template을 구현한 본격적인 상승 추세 판정입니다. 주가가 장기 이동평균선 위에 있고 장기 평균선도 상승하며, 52주 고점에 비교적 가까운지와 RS 70 이상을 함께 봅니다.</p></details>
+      <details><summary>거래량 배수</summary><p>오늘 거래량을 최근 20일 평균 거래량으로 나눈 값입니다. 1.0x는 평소 수준, 2.0x는 평소의 2배입니다. 주가 상승과 함께 거래량이 급증하면 큰 자금의 매수 가능성을 확인하는 단서가 됩니다.</p></details>
+      <details><summary>7·30일 섹터 흐름</summary><p>신고가 여부와 무관하게 같은 세부사업군의 주가가 실제로 함께 좋아지는지 봅니다. 각 기간의 구성종목 중앙값 수익률, Nasdaq Composite·S&amp;P 500 대비 상대수익률, 상승 종목 비율, 시장을 이긴 종목 비율, 이동평균선 위 종목 비율을 사용합니다. 최소 3종목이며 다섯 조건 중 4개 이상, 수익률과 시장대비 중앙값이 모두 플러스일 때 강세입니다.</p></details>
+      <details><summary>섹터 추세구조 점수</summary><p>7·30일 실제 수익률 흐름과 별도로 평균 RS, 60일선 위 종목 비율, 신고가 종목 비율, 거래량, Stage 2 비율을 합산한 중기 확인자료입니다. 후보 통과조건이나 WAMO 종목점수에는 섞지 않습니다. 지주사는 서로 다른 자회사 산업을 묶으므로 일반 산업 섹터와 별도로 표시합니다.</p></details>
+      <details><summary>기관 후원 · Sponsorship</summary><p>뮤추얼펀드·연기금·자산운용사 등 전문 투자기관이 해당 종목을 보유하거나 보유량을 늘리는 현상입니다. CAN SLIM의 I는 단순 하루 순매수보다 “좋은 기관들이 지속해서 참여하는가”를 중시합니다.</p></details>
+      <details><summary>희석 · Dilution</summary><p>유상증자·전환사채 전환·스톡옵션 등으로 주식 수가 늘어나 기존 주주의 1주당 몫이 줄어드는 현상입니다. 사업가치가 그대로인데 주식 수가 100주에서 120주로 늘면 기존 1주의 경제적 몫은 작아집니다.</p></details>
+      <details><summary>돌파 · Breakout</summary><p>주가가 일정 기간의 박스권·베이스 상단을 거래량과 함께 넘어서는 움직임입니다. CAN SLIM에서는 좋은 기업을 아무 가격에 사는 것이 아니라 적절한 차트 패턴의 매수 지점을 중요하게 봅니다.</p></details>
+
+      <details><summary>기술적 강세 신규 · BUY</summary><p><strong>미너비니 Stage 2 + 이세무사 성장주 6조건 중 5개 이상 + RS 70 이상</strong>을 이번 갱신에서 처음 동시에 만족한 상태입니다. 매수 지시가 아니라 기술적·성장 조건이 겹친 종목이라는 분류입니다.</p></details>
+      <details><summary>기술적 강세 유지 · HOLD</summary><p>직전 갱신에서 이미 핵심 강세 조건을 만족했고 이번에도 유지하는 종목입니다. 새로 조건에 들어온 종목과 기존 강세 종목을 구분합니다.</p></details>
+      <details><summary>기술적 관찰 · WATCH</summary><p>이세무사 성장주 6조건 중 4개 이상, RS 60 이상처럼 상당수 조건은 맞지만 아직 미너비니 Stage 2나 상대강도가 충분하지 않은 종목입니다.</p></details>
+      <details><summary>청산·회피 · EXIT</summary><p>현재 엔진에서는 주가가 60일 이동평균선 아래로 내려간 경우 추세 훼손 신호로 표시합니다. 실제 매도 여부는 보유단가·실적·시장 상황까지 함께 판단해야 합니다.</p></details>
+      <details><summary>Breadth · 상승 폭의 넓이</summary><p>업종이나 시장에서 몇 개의 대장주만 오르는지, 아니면 많은 종목이 함께 상승하는지를 뜻합니다. 예를 들어 10종목 중 8종목이 60일선 위라면 Breadth 80%입니다. 넓은 상승은 섹터 추세의 신뢰도를 높입니다.</p></details>
+      <details><summary>20개월선</summary><p>월봉 종가 기준 최근 20개월 평균입니다. 대략 1년 8개월의 장기 평균 가격입니다. 주가가 이 선 위에서 움직이면 장기 상승 추세가 살아 있을 가능성을 높게 봅니다.</p></details>
+      <details><summary>50·60·120·150·200일선은 왜 여러 개 보나</summary><p>각 선은 서로 다른 투자자의 평균 매입단가를 대략적으로 보여줍니다. 50~60일선은 중기, 120~150일선은 중장기, 200일선은 장기 추세 확인용으로 씁니다. 여러 선이 모두 상승하며 정배열될수록 서로 다른 기간의 투자자들이 수익구간에 있을 가능성이 커집니다.</p></details>
+      <details><summary>52주 신고가가 왜 좋은가</summary><p>“비싸 보인다”와 “강하다”는 다릅니다. 신고가 부근에는 위쪽에 과거 매수자의 본전 매물이 상대적으로 적고, 시장이 기업의 새 정보를 가격에 반영하고 있을 가능성이 있습니다. 다만 과열·클라이맥스 가능성은 거래량과 상승 속도를 함께 봐야 합니다.</p></details>
+
+      <details><summary>LIVE · CACHED · STALE</summary><p><strong>LIVE</strong>는 이번 갱신에서 새 데이터를 정상적으로 받았다는 뜻입니다. <strong>CACHED</strong>는 데이터 공급처가 잠시 실패해 마지막 정상 데이터를 대신 사용했다는 뜻입니다. <strong>STALE</strong>은 마지막 데이터가 오래되어 투자 판단에 바로 쓰면 안 된다는 경고입니다.</p></details>
+      <details><summary>데이터 캐시(Cache)</summary><p>마지막으로 정상 수집한 주가·거래량을 파일로 보관해두는 장치입니다. 데이터 제공처가 하루 장애를 일으켜도 대시보드가 통째로 비어버리지 않게 합니다. 단, 오래된 값은 반드시 STALE 경고를 붙입니다.</p></details>
+      <details><summary>데이터 소스(Source)</summary><p>가격·거래량은 Yahoo Finance 가격 이력으로 직접 계산합니다. 과거 실적·재무·공시는 미국 증권거래위원회(SEC)의 EDGAR submissions·XBRL companyfacts를 공식 원천으로 사용합니다. Nasdaq 공식 주식 스크리너는 상장기업·시가총액·업종의 시작 목록으로 씁니다. 무료로 신뢰성 있게 자동 연결하지 못한 컨센서스와 기관보유 시계열은 임의 수치 없이 ‘확인 불가’로 표시합니다.</p></details>
+          <details><summary>시가총액 10억달러 필터</summary><p>시가총액은 <strong>주가 × 상장주식수</strong>입니다. 기본값은 10억달러 이상으로 설정했습니다. 작은 종목의 낮은 유동성·가격 왜곡을 줄이려는 1차 안전장치입니다.</p></details>
+      <details><summary>외국인·기관 20일 순매수</summary><p>최근 약 20거래일 동안 매수금액에서 매도금액을 뺀 누적값입니다. +500억원이면 해당 투자자군이 20일 동안 500억원을 순매수했다는 뜻입니다. 하루 수급보다 지속성을 보기 위해 20일 누적을 주로 사용합니다.</p></details>
+      <details><summary>연기금·사모 수급</summary><p>기관합계 안에서도 성격이 다릅니다. 연기금은 장기 자금, 사모는 보다 적극적인 운용자금 성격이 강합니다. 특정 투자자 하나의 매수만으로 좋은 종목이라고 판정하지 않고 가격·실적·RS와 같이 봅니다.</p></details>
+          <details><summary>실적 리비전 · Revision</summary><p>증권사들이 예상하는 미래 EPS·영업이익이 시간이 지나며 올라가는지 내려가는지 보는 지표입니다. 예를 들어 4주 전 내년 EPS 예상치가 10,000원이었는데 현재 11,000원이면 +10% 리비전입니다. 주가가 강한데 실적 추정치도 같이 올라가는 종목을 더 신뢰할 수 있습니다.</p></details>
+      <details><summary>공시 촉매 · Catalyst</summary><p>주가와 이익 전망을 바꿀 수 있는 새로운 사건입니다. 대규모 공급계약, 신규 시설투자, 인수, 기술이전 등이 대표적입니다. 반대로 유상증자·전환사채처럼 주식 수를 늘릴 수 있는 공시는 희석 리스크로 별도 표시합니다.</p></details>
+    </div>
+  </section>
+
+  <details class="rules-panel">
+      <summary>판정 기준·CAN SLIM·용어 설명 보기</summary>
+      <div class="rules-grid">
+        <div><b>기술적 강세 신규/유지</b><span>미너비니 Stage 2 + 이세무사 성장주 6조건 5개 이상 + RS 70 이상이 겹친 상태를 신규와 유지로 구분합니다.</span></div>
+        <div><b>이세무사 성장주 기준 후보</b><span>이세무사 성장주 6조건 중 4개 이상을 만족한 종목입니다. 미너비니 Stage 2 진입 여부를 추가 확인합니다.</span></div>
+        <div><b>미너비니 Stage 2</b><span>차트 추세조건 7개와 8번째 조건인 RS 70 이상을 모두 충족한 본격 상승추세 구간입니다. RS는 IBD 유료지수가 아니라 이 화면 비교군의 가격수익률 백분위 대체치이며, 상세창에서 VCP·피봇·거래량 고갈을 별도로 확인합니다.</span></div>
+        <div><b>신고가권</b><span>52주 고점 또는 전체 수집이력의 역사적 고점 중 하나라도 현재가가 7% 이내면 해당합니다. 목록에는 52주·역사적·둘 다를 구분해 표시합니다.</span></div>
+        <div><b>RS</b><span>비교 종목 가운데 상대적으로 얼마나 강한지 나타내는 순위입니다. 90이면 상위 약 10% 수준입니다.</span></div>
+        <div><b>CAN SLIM 보조</b><span>C·A·N·S·L·M 6개를 자동판정합니다. I(기관 후원)는 수급 데이터를 사용하지 않으므로 점수에서 제외합니다.</span></div>
+        <div><b>섹터액션</b><span>신고가와 무관한 네 번째 독립 후보 기준입니다. 같은 사업군 3개 이상이 7일 또는 30일 동안 시장보다 넓게 강하면 해당합니다.</span></div>
+      </div>
+    </details>
+    <footer class="footer">미국판 WAMO는 과거 실적·재무·공시의 공식 원천으로 SEC EDGAR 10-K·10-Q/XBRL을 사용합니다. 섹터액션은 신고가 여부와 분리해 7·30거래일 실제 수익률·Nasdaq Composite/S&amp;P 500 대비·상승 확산으로 판정합니다. 가격으로 확인 가능한 기술지표는 직접 계산하며, 무료로 신뢰성 있게 연결하지 못한 컨센서스·기관보유 시계열은 임의로 채우지 않습니다. 모든 결과는 연구 우선순위를 정하는 스크리닝 후보이며 매수·매도 추천이 아닙니다.</footer>
+</div>
+
+<div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="detailName" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="detail-title"><h3 id="detailName">—</h3><div id="detailSub">—</div></div>
+    <button class="close" id="close" aria-label="닫기">×</button>
+  </div>
+  <div class="drawer-body">
+    <div class="detail-topline">
+      <div id="detailSignal"></div>
+      <div class="detail-actions">
+        <a id="naverResearchLink" class="external-check-btn" href="#" target="_blank" rel="noopener noreferrer">네이버증권 바로가기 ↗</a>
+        <button id="detailWatch" class="watch-btn">☆ 관심종목</button>
+      </div>
+    </div>
+    <div class="source-separation" aria-label="공식 데이터와 보조 데이터 구분">
+      <div class="source-card official"><div class="source-head"><b>SEC 10-K·10-Q 과거 실적·재무·공시</b><span class="source-tag">공식 원천</span></div><div class="source-desc" id="dartSourceStatus">SEC EDGAR 공식자료를 기준으로 사용합니다.</div></div>
+      <div class="source-card auxiliary"><div class="source-head"><b>미국 추정치·기관보유 시계열</b><span class="source-tag">미연결</span></div><div class="source-desc">무료로 신뢰성 있게 자동 연결하지 못한 값은 임의로 표시하지 않습니다.</div><div id="fnguideCheckStatus" class="consensus-status">자동 연결 안 함</div><div class="consensus-metrics"><div class="consensus-metric"><span>추정 EPS</span><b id="forecastEps">—</b></div><div class="consensus-metric"><span>추정 PER</span><b id="forecastPer">—</b></div><div class="consensus-metric"><span>목표주가</span><b id="targetPrice">—</b></div></div><div class="consensus-foot" id="consensusFoot">SEC 공식 수치와 합산하거나 대체하지 않습니다.</div></div>
+    </div>
+    <div class="external-check-note"><b>사용 원칙</b> · SEC EDGAR는 공식 과거자료입니다. 자동으로 확보하지 못한 추정치·기관보유 값은 비워 두며, 최종 판단 전에는 위 SEC EDGAR 바로가기에서 원문을 다시 확인하세요.</div>
+    <div class="detail-grid compact">
+      <div class="dcard key"><div class="k">WAMO 점수</div><div class="v" id="dScore">—</div></div>
+      <div class="dcard"><div class="k">일반 RS</div><div class="v" id="dRS">—</div></div>
+      <div class="dcard"><div class="k">이세무사 성장주 6조건</div><div class="v" id="dCond">—</div></div>
+      <div class="dcard"><div class="k">미너비니 Stage 2</div><div class="v" id="dStage">—</div></div>
+      <div class="dcard"><div class="k">52주 고점比</div><div class="v" id="dHigh">—</div><small id="dHighNote" class="muted">—</small></div>
+      <div class="dcard"><div class="k">역사적 고점比</div><div class="v" id="dHistoricalHigh">—</div><small id="dHistoryRange" class="muted">—</small></div>
+      <div class="dcard"><div class="k">거래량</div><div class="v" id="dVol">—</div></div>
+      <div class="dcard"><div class="k">오닐식 RS</div><div class="v" id="dOneilRS">—</div></div>
+      <div class="dcard"><div class="k">당일 등락</div><div class="v" id="dDay">—</div></div>
+      <div class="dcard"><div class="k">최근 7거래일</div><div class="v" id="dRet7">—</div></div>
+      <div class="dcard"><div class="k">최근 30거래일</div><div class="v" id="dRet30">—</div></div>
+      <div class="dcard"><div class="k">현재 정배열</div><div class="v" id="dAlignment">—</div><small id="dAlignmentAge" class="muted">—</small></div>
+    </div>
+    <h2 class="detail-section-title">미너비니 SEPA 정밀확인 · VCP·피봇·리스크</h2>
+    <div class="minervini-panel" id="minerviniDetail">자동갱신 후 정량 후보가 표시됩니다.</div>
+    <div class="detail-sector-flow" id="detailSectorFlow"><b>소속 세부섹터 7·30일 흐름</b><br>다음 자동갱신 후 표시됩니다.</div>
+    <div class="alignment-box" id="alignmentBox">
+      <div class="alignment-item primary" id="alignmentState"><span>정배열 여부</span><b id="alignmentStateText">—</b></div>
+      <div class="alignment-item"><span>현재 연속 정배열 시작일</span><b id="alignmentStartText">—</b></div>
+      <div class="alignment-item"><span>시작 후 경과기간</span><b id="alignmentElapsedText">—</b></div>
+    </div>
+    <h2 class="detail-section-title">정배열 도달·이탈·회복 이력</h2>
+    <div class="alignment-timeline" id="alignmentTimeline"></div>
+    <div class="drawer-note">정배열은 현재가 &gt; MA20 &gt; MA60 &gt; MA120 &gt; MA200 기준입니다. ‘준비기간’은 최초 도달 전 또는 이탈 후 다시 정배열을 회복할 때까지 걸린 기간입니다.</div>
+    <div class="whybox"><div class="k">왜 이 판정이 나왔나</div><div id="detailWhy">—</div></div>
+    <div class="business-box">
+      <div class="biz-k">이 회사는 뭘로 돈 버나</div>
+      <div class="biz-easy" id="businessEasy">—</div>
+      <div class="biz-detail" id="businessModel">—</div>
+      <div class="biz-src" id="businessSource">—</div>
+    </div>
+    <div class="chartbox"><canvas id="chart" role="img" aria-label="주가와 20일·60일·120일·200일 이동평균선 차트"></canvas></div>
+    <div class="chart-caption">차트 위 색상표에서 주가와 각 이동평균선을 구분할 수 있습니다. 초록 점선은 현재 연속 정배열 시작일입니다.</div>
+    <h2 class="detail-section-title">최근 공시 촉매 · SEC EDGAR</h2>
+    <div id="catalystList" class="catalyst-list"></div>
+
+    <h2 class="detail-section-title">CAN SLIM 7항목 상세</h2>
+    <div id="canSlimSummary" class="cs-summary"></div>
+    <div class="canslim-detail" id="canSlimDetail"></div>
+
+    <h2 class="detail-section-title">이세무사 성장주 6조건 상세</h2>
+    <div class="condition-list" id="conditions"></div>
+  </div>
+</aside>
+
+<script>
+window.WAMO_DATA = {"meta":{"market":"US","title":"WAMO MARKET RADAR · US","mode":"SETUP","asOf":"—","updatedAt":"—","universeCount":0,"eligibleUniverseCount":0,"successCount":0,"errorCount":0,"dataHealth":{"liveCount":0,"cachedCount":0,"staleCount":0,"failedCount":0,"secConnected":false,"message":"미국판 첫 자동갱신을 실행하면 SEC·가격 데이터가 표시됩니다."},"universeFunnel":{"listed":0,"marketCapPass":0,"deepScanned":0,"growth4plus":0,"stage2":0,"highZone":0,"tripleAxis":0,"sectorAction":0},"marketEnergy":{"status":"PENDING","series":[],"breakouts":[],"constituents":[]},"sectorFlowMeta":{"status":"PENDING"},"consensusMeta":{"status":"NOT_USED"},"dartMeta":{},"profileMeta":{},"qa":{"status":"PENDING","checks":0,"note":"첫 미국 자동갱신 전입니다."}},"sectors":[],"stocks":[],"errors":[]};
+</script>
+<script>
+(() => {
+  let data = window.WAMO_DATA || {meta:{}, sectors:[], stocks:[]};
+  if((data.meta||{}).market!=='US'){
+    data={
+      meta:{market:'US',mode:'SETUP',asOf:'—',successCount:0,eligibleUniverseCount:0,
+        dataHealth:{liveCount:0,cachedCount:0,staleCount:0,failedCount:0,secConnected:false,message:'미국판 첫 자동갱신을 실행하면 SEC·가격 데이터가 표시됩니다.'},
+        universeFunnel:{listed:0,marketCapPass:0,deepScanned:0},marketEnergy:{status:'PENDING',series:[]},
+        sectorFlowMeta:{status:'PENDING'},consensusMeta:{status:'NOT_USED'},dartMeta:{},profileMeta:{},qa:{}},
+      sectors:[],stocks:[],errors:[]
+    };
+  }
+  data.meta=data.meta||{}; data.sectors=Array.isArray(data.sectors)?data.sectors:[]; data.stocks=Array.isArray(data.stocks)?data.stocks:[]; data.errors=Array.isArray(data.errors)?data.errors:[];
+  let activeTab = 'six', sectorFilter = '', sectorFlowMode='strong', signalFilter = '', instrumentFilter='company', sortMode='auto', query='', detailStock=null;
+  let savedWatch=[];
+  try{const parsed=JSON.parse(localStorage.getItem('wamoWatchlist')||'[]');savedWatch=Array.isArray(parsed)?parsed:[]}catch(_){savedWatch=[]}
+  const watch = new Set(savedWatch);
+  const $ = s => document.querySelector(s);
+  const fmt = (v,d=1) => v===null || v===undefined || Number.isNaN(Number(v)) ? '—' : Number(v).toFixed(d);
+  const signed = (v,d=1,suffix='%') => v===null || v===undefined || Number.isNaN(Number(v)) ? '—' : `${v>=0?'+':''}${Number(v).toFixed(d)}${suffix}`;
+  const cls = v => (v||0)>=0 ? 'pos' : 'neg';
+  const signalLabel = {BUY:'기술적 강세 신규',HOLD:'기술적 강세 유지',WATCH:'기술적 관찰',EXIT:'청산·회피',NEUTRAL:'비주도'};
+  let energyChartState=null, priceChartState=null, tooltipPinned=false;
+  const HELP={
+    six:'장기 우상향·최근 장기 신고가·고점 대비 낙폭 30% 이내·52주 고점 7% 이내·월봉 20개월선 위·일봉 정배열의 6개 중 4개 이상입니다.',
+    stage2:'미너비니 추세 템플릿 8조건입니다. 현재가·50·150·200일선·52주 고저점의 차트조건 7개와 8번째 조건인 비교군 상대강도(RS) 70 이상을 모두 충족해야 합니다. 200일선은 20거래일 전보다 상승했는지 확인합니다. RS는 IBD 유료지수가 아니라 화면 비교군의 가격수익률 백분위 대체치입니다.',
+    high:'현재가가 52주 고점 또는 확보된 전체 가격이력 고점의 93% 이상인 종목입니다.',
+    triple:'세 기준의 교집합입니다. 이세무사 성장주 6조건 중 4개 이상, 미너비니 Stage 2, 52주 또는 전체이력 고점의 93% 이상을 모두 동시에 충족해야 합니다. 섹터액션은 필수조건이 아닙니다.',
+    sectoraction:'신고가와 독립된 기준입니다. 같은 세부업종의 유효 종목이 최소 3개이고, 7일 또는 30일 기준에서 수익률·시장대비·상승확산·시장상회확산·추세선 항목 중 4개 이상을 충족해야 합니다.',
+    canslim:'CAN SLIM 7항목 중 기관후원(I)은 데이터가 없으면 판정하지 않습니다. 나머지 자동측정 항목의 충족 수를 표시하며, 모르는 값을 통과로 간주하지 않습니다.',
+    energy:'미국 정밀계산 유니버스에서 종가가 20일 평균+2표준편차 상단을 넘은 실제 종목수와 350종목 환산 5일 평균입니다. 공식 지수 전체 구성 시계열은 아닙니다.',
+    all:'모든 미국 상장종목이 아닙니다. ETF·ETN·스팩을 분리하고 시가총액 10억달러 이상, 50일 평균 거래대금 1천만달러 이상, 가격수집 성공 조건을 통과해 기술지표 정밀계산이 끝난 일반기업 전체입니다.',
+    score:'WAMO 기술점수입니다. RS 30% + 이세무사 6조건 25% + 신고가 근접도 15% + 거래량 10% + Stage 2 20%로 계산하며, 섹터액션은 독립 기준이라 점수에 섞지 않습니다.',
+    rs:'비교군 안에서의 상대강도 백분위입니다. 90이면 비교 종목의 약 90%보다 강했다는 뜻이며 수익률 90%를 뜻하지 않습니다.',
+    watch:'기술적 관찰: 60일선 위이면서 이세무사 성장주 조건 4/6 이상, RS 60 이상이지만 ‘Stage 2 + 5/6 이상 + RS 70 이상’의 신규 강세 기준에는 아직 못 미친 상태입니다.',
+    buy:'기술적 강세 신규: 60일선 위, 미너비니 Stage 2 충족, 이세무사 성장주 5/6 이상, RS 70 이상을 동시에 만족한 신규 신호입니다.',
+    hold:'기술적 강세 유지: 신규 강세 기준을 계속 충족하며 이전 갱신에서도 BUY 또는 HOLD였던 종목입니다.',
+    exit:'청산·회피: 현재가가 60일 이동평균선 아래여서 이 대시보드의 추세 훼손 기준에 해당합니다. 자동 매도 명령은 아닙니다.',
+    neutral:'비주도: 60일선 이탈은 아니지만 기술적 관찰 또는 강세 기준에 필요한 조건 수·RS가 부족합니다.',
+    concentration:'쏠림 주의: 한 종목의 플러스 수익 기여가 70% 이상, 또는 60% 이상이면서 상승종목 비율 67% 미만, 또는 평균수익률이 중앙값보다 ‘4%p와 |중앙값|×1.5 중 큰 값’ 이상 높을 때 표시합니다.',
+    expanding:'확산 중: 7일 강세이며 상승종목 비율이 30일보다 15%p 이상 확대되고, 대형·중소형이 함께 상승하며, 구성종목 3분의 1 이상에서 최근 7일 평균 거래량이 직전 20일보다 20% 이상 증가한 상태입니다.',
+    cap:'시가총액 상위 절반과 나머지 절반의 수익률 중앙값이 모두 플러스인 상태입니다.',
+    both:'7일과 30일이 각각 강세 판정 5조건 중 4개 이상이며, 수익률 중앙값과 시장대비 중앙값도 모두 플러스인 상태입니다.',
+    new7:'7일 기준만 강세를 충족한 초기 확산 후보입니다. 30일 지속성은 아직 확인되지 않았습니다.',
+    persist30:'30일 기준은 강하지만 7일 기준은 미충족인 상태입니다. 중기 강세 속 단기 둔화 가능성을 함께 확인합니다.',
+    alignment:'정배열은 현재가 > 20일선 > 60일선 > 120일선 > 200일선 순서입니다.',
+    highBadge:'52주 고점 또는 확보된 전체 가격이력 고점 대비 현재가가 93% 이상인지 표시합니다.',
+    sectorBadge:'동일 세부업종의 7일·30일 동반 흐름 판정입니다. 최소 3종목과 중앙값 기준을 사용해 한 종목 급등의 왜곡을 줄입니다.'
+  };
+
+  function setTip(el,text,mark=true){if(!el||!text)return;el.dataset.tip=text;el.removeAttribute('title');el.classList.toggle('tip-mark',!!mark);if(!/^(BUTTON|SELECT|INPUT|A)$/.test(el.tagName)&&!el.hasAttribute('tabindex'))el.tabIndex=0;}
+  function decorateTooltips(root=document){
+    root.querySelectorAll?.('.filter-card').forEach(el=>setTip(el,HELP[el.dataset.tab]||((el.id==='marketEnergyMenu')?HELP.energy:'선택하면 해당 기준의 종목만 아래 목록에 표시됩니다.'),false));
+    const flowHelp={strong:'7일 또는 30일 강세 기준을 충족한 섹터 전체입니다.',both:HELP.both,new7:HELP.new7,persist30:HELP.persist30,expanding:HELP.expanding,concentration:HELP.concentration};
+    root.querySelectorAll?.('.flow-filter').forEach(el=>setTip(el,flowHelp[el.dataset.flow],false));
+    root.querySelectorAll?.('.signal').forEach(el=>{const t=el.textContent.trim();setTip(el,t.includes('신규')?HELP.buy:t.includes('유지')?HELP.hold:t.includes('관찰')?HELP.watch:t.includes('청산')?HELP.exit:HELP.neutral)});
+    root.querySelectorAll?.('.scorebadge').forEach(el=>setTip(el,HELP.score));
+    root.querySelectorAll?.('.cs-badge').forEach(el=>setTip(el,HELP.canslim));
+    root.querySelectorAll?.('.high-zone').forEach(el=>setTip(el,HELP.highBadge));
+    root.querySelectorAll?.('.sector-action-badge').forEach(el=>setTip(el,HELP.sectorBadge));
+    root.querySelectorAll?.('.data-tag').forEach(el=>{const t=el.textContent.trim();setTip(el,t==='LIVE'?'최신 자동갱신에서 가격 데이터를 정상 수집한 종목입니다.':t==='CACHED'?'이번 수집 실패로 직전 정상 데이터를 사용한 종목입니다.':t.startsWith('이력')?'장기 이동평균 계산에 필요한 260거래일보다 가격이력이 짧아 일부 지표가 제한됩니다.':'해당 데이터 연결·측정 상태입니다.')});
+    root.querySelectorAll?.('.flow-status').forEach(el=>{const t=el.textContent;setTip(el,t.includes('동시')?HELP.both:t.includes('7일')?HELP.new7:t.includes('30일')?HELP.persist30:'강세 판정은 최소 3종목, 중앙값 수익률·시장대비 플러스, 5조건 중 4개 이상입니다.')});
+    root.querySelectorAll?.('.flow-flag.expand').forEach(el=>setTip(el,HELP.expanding));
+    root.querySelectorAll?.('.flow-flag.cap').forEach(el=>setTip(el,HELP.cap));
+    root.querySelectorAll?.('.flow-flag.caution').forEach(el=>setTip(el,HELP.concentration));
+    root.querySelectorAll?.('.energy-zone').forEach(el=>setTip(el,el.querySelector('small')?.textContent||HELP.energy,false));
+    root.querySelectorAll?.('.energy-regime').forEach(el=>setTip(el,'현재 5일 평균의 절대 수준과 최근 5거래일 기울기를 결합한 시장 확산 판정입니다. 매수·매도 명령이 아닙니다.'));
+    root.querySelectorAll?.('.energy-kpi').forEach(el=>{const k=el.querySelector('span')?.textContent||'';const m={'오늘 상단 돌파':'당일 종가가 20일 단순이동평균 + 2×20일 모집단 표준편차를 엄격히 초과한 실제 종목수입니다.','5일 이동평균':'미국 정밀계산 유니버스의 최근 5거래일 상단 돌파 비율을 비교용 350종목 기준으로 환산해 평균한 값입니다.','최근 5일 기울기':'현재 5일 평균에서 5거래일 전 5일 평균을 뺀 값입니다. 플러스면 확산 개선, 마이너스면 둔화입니다.','MA5 10 미만 연속':'5일 평균이 10개 미만인 상태가 이어진 거래일 수입니다. 약 40거래일이면 2개월 장기 경고 참고값입니다.','가격 커버리지':'현재 미국 정밀계산 유니버스 중 유효한 가격이 확보된 비율입니다. 90% 미만이면 강·약 판정을 보류합니다.'};setTip(el,m[k],false)});
+    root.querySelectorAll?.('.stock-metrics>div').forEach(el=>{const k=el.querySelector('span')?.textContent||'';const m={'일반 RS':HELP.rs,'이세무사 6조건':HELP.six,'미너비니 Stage 2':HELP.stage2,'신고가권':HELP.highBadge,'현재 정배열':HELP.alignment,'거래량':'최근 거래량을 기준 거래량과 비교한 배수입니다.','CAN 자동':HELP.canslim,'4개 기준 중':'이세무사·Stage 2·신고가권·섹터액션 네 독립 기준 중 충족한 개수입니다.'};if(m[k])setTip(el,m[k],false)});
+    const thHelp={판정:'기술적 강세 신규·유지, 기술적 관찰, 청산·회피, 비주도로 구분합니다.',점수:HELP.score,RS:HELP.rs,'CAN 자동':HELP.canslim,신고가권:HELP.highBadge,거래량:'최근 거래량을 기준 거래량과 비교한 배수입니다. 1.5x면 평소의 약 1.5배입니다.','6조건':HELP.six,'Stage 2':HELP.stage2,정배열:HELP.alignment,'섹터 7·30일 흐름':HELP.sectorBadge};
+    root.querySelectorAll?.('th').forEach(el=>{const k=el.textContent.trim();if(thHelp[k])setTip(el,thHelp[k])});
+  }
+  const csLetters = ['C','A','N','S','L','I','M'];
+  const csNames = {
+    C:'Current Quarterly Earnings · 최근 분기 이익',
+    A:'Annual Earnings Growth · 연간 이익 성장',
+    N:'New · 새로운 변화',
+    S:'Supply & Demand · 수요와 공급',
+    L:'Leader or Laggard · 주도주 여부',
+    I:'Institutional Sponsorship · 기관 후원',
+    M:'Market Direction · 시장 방향'
+  };
+
+  function inferInstrument(x){
+    if(x.instrumentType) return x.instrumentType;
+    const n=String(x.name||'').toUpperCase();
+    if(/^(KODEX|TIGER|ACE|RISE|SOL|PLUS|HANARO|KBSTAR|KOSEF|ARIRANG|TIMEFOLIO|WOORI|1Q)/.test(n)||/\bETF\b|\bETN\b/.test(n)) return 'ETF_ETN';
+    if(/스팩|SPAC/.test(n)) return 'SPAC';
+    if(/리츠|REIT/.test(n)) return 'REIT';
+    return 'COMPANY';
+  }
+
+  function stockCodeForExternalLink(x){
+    const direct=String(x.stock_code||'').match(/\d{6}/);
+    if(direct) return direct[0];
+    const ticker=String(x.ticker||'').match(/\d{6}/);
+    return ticker?ticker[0]:'';
+  }
+
+  function updateNaverResearchLink(x){
+    const link=$('#naverResearchLink');
+    if(!link) return;
+    link.hidden=false;
+    link.href=x.secFilingUrl||x.secCompanyUrl||`https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(x.displayTicker||x.ticker||'')}`;
+    link.textContent='SEC EDGAR 바로가기 ↗';
+    link.setAttribute('aria-label',`${x.name||x.ticker} SEC EDGAR 공식 공시 새 창에서 열기`);
+  }
+
+  function renderSourceSeparation(x){
+    const dart=$('#dartSourceStatus');
+    if(dart){
+      const connected=!!(data.meta&&data.meta.dataHealth&&data.meta.dataHealth.secConnected);
+      dart.textContent=connected
+        ? `SEC EDGAR 연결 · 공식 재무·공시 기준일 ${x.date||data.meta.asOf||'—'}`
+        : 'SEC EDGAR 연결 상태 확인 필요 · 공식 수치 미확인 항목은 임의 보완하지 않음';
+    }
+    const statusBox=$('#fnguideCheckStatus');
+    if(statusBox){
+      statusBox.className='consensus-status';
+      statusBox.textContent='무료 추정치·기관보유 시계열 자동 연결 안 함';
+    }
+    $('#forecastEps').textContent='—';
+    $('#forecastPer').textContent='—';
+    $('#targetPrice').textContent='—';
+    const foot=$('#consensusFoot');
+    if(foot) foot.textContent='SEC 공식 과거자료와 섞지 않으며, 미확인 값을 임의로 채우지 않습니다.';
+  }
+
+  function prepareLayout(){
+    const filter=document.querySelector('.filter-section');
+    const stocks=$('#stocks');
+    const marketEnergy=$('#marketEnergySection');
+    const sectorFlow=$('#sectorFlowSection');
+    const scan=document.querySelector('.scan-strip');
+    if(filter&&stocks&&sectorFlow&&scan){
+      scan.parentNode.insertBefore(filter,scan);
+      filter.after(stocks);
+      stocks.after(sectorFlow);
+      if(marketEnergy) sectorFlow.after(marketEnergy);
+    }
+    [scan,document.querySelector('.hero-grid'),document.querySelector('.reading-path'),$('#sectorStructureSection')].filter(Boolean).forEach(el=>el.style.display='none');
+
+    const sections=['.framework-section','.canslim-section','.explain-section'].map(s=>document.querySelector(s)).filter(Boolean);
+    if(sections.length){
+      const guide=document.createElement('details'); guide.className='method-guide';
+      guide.innerHTML='<summary>전체 판정 기준·CAN SLIM·용어 설명<span>필요할 때 펼쳐서 계산 기준과 제한사항을 모두 확인할 수 있습니다.</span></summary><div class="method-body"></div>';
+      const body=guide.querySelector('.method-body'); sections.forEach(s=>body.appendChild(s));
+      const rules=document.querySelector('.rules-panel'); (rules||document.querySelector('.footer')).before(guide);
+    }
+  }
+
+  function showActiveView(scroll=false){
+    const stockModes=['six','stage2','high','triple','all','canslim','watchlist'];
+    const stocks=$('#stocks'),sector=$('#sectorFlowSection'),energy=$('#marketEnergySection');
+    if(stocks)stocks.style.display=stockModes.includes(activeTab)?'':'none';
+    if(sector)sector.style.display=activeTab==='sectoraction'?'':'none';
+    if(energy){const e=data.meta.marketEnergy||{},ok=(e.series||[]).length&&e.status==='LIVE'&&e.membershipMode==='SCREENED_US_UNIVERSE';energy.style.display=activeTab==='energy'&&ok?'':'none'}
+    const guides={
+      six:'<b>이세무사 성장주</b> · 장기추세·장기 신고가·고점 대비 낙폭·52주 고점 근접·월봉 20개월선·일봉 정배열의 6개 중 4개 이상만 표시합니다.',
+      stage2:'<b>미너비니 Stage 2</b> · 추세 템플릿 8조건(차트 7개 + RS 70 이상)을 모두 충족한 종목만 표시하며, 목록은 VCP 돌파·피봇 근접·수축 관찰 후보를 우선 정렬합니다.',
+      high:'<b>신고가권</b> · 현재가가 52주 고점 또는 확보된 전체 가격이력 고점의 93% 이상인 종목만 표시합니다.',
+      triple:'<b>3축 동시충족</b> · 이세무사 성장주 6조건 중 4개 이상, 미너비니 Stage 2, 52주 또는 전체 가격이력 신고가권(고점의 93% 이상)을 모두 동시에 충족한 종목만 표시합니다. 섹터액션은 이 메뉴의 필수조건이 아닙니다.',
+      sectoraction:'<b>섹터액션</b> · 먼저 강한 세부섹터를 고르고 → 그 섹터의 모든 정밀계산 종목을 보고 → 종목을 눌러 상세정보를 확인합니다.',
+      energy:'<b>시장에너지</b> · 미국 정밀계산 유니버스의 볼린저 상단 돌파 종목수와 350종목 환산 5일 평균만 보여줍니다. 공식 지수 전체 시계열은 아니며 개별 종목 후보점수와 섞지 않습니다.',
+      all:'<b>전체 보기</b> · 미국 상장종목에서 ETF·ETN·스팩을 분리하고, 시가총액 10억달러 이상·50일 평균 거래대금 1천만달러 이상·가격수집 성공 조건을 통과해 기술지표 정밀계산이 끝난 일반기업 전체입니다. “모든 미국 상장종목”이라는 뜻은 아닙니다.',
+      canslim:'<b>CAN SLIM 보조</b> · 자동측정 가능한 항목을 우선 충족한 종목입니다. 기관후원(I)처럼 데이터가 없는 항목은 임의 통과시키지 않습니다.',
+      watchlist:'<b>내 관심</b> · 별표를 직접 눌러 현재 브라우저에 저장한 종목만 표시합니다.'
+    };
+    if($('#viewGuide'))$('#viewGuide').innerHTML=guides[activeTab]||'';
+    if($('#selectionDefinition'))$('#selectionDefinition').innerHTML=guides[activeTab]||'';
+    if(activeTab==='energy')setTimeout(()=>drawEnergyChart(),40);
+    if(scroll){const target=activeTab==='sectoraction'?sector:activeTab==='energy'?energy:stocks;target?.scrollIntoView({behavior:'smooth',block:'start'})}
+  }
+
+  function energyRegimeLabel(regime){
+    return ({FAVORABLE:'상대적 우호',DANGER:'확산 약화',CAUTION:'중립·확인',STRONG:'강한 확산',COOLING:'강세 둔화 확인',RECOVERY:'회복 신호',NEUTRAL:'중립·확인',WEAK:'확산 약화',LONG_WARNING:'장기 경고',DATA_CHECK:'데이터 확인',WARMUP:'이력 준비'})[regime]||'갱신 대기';
+  }
+
+  function drawEnergyChart(hoverIdx=null){
+    const energy=data.meta.marketEnergy||{};
+    const series=(energy.series||[]).filter(x=>Number.isFinite(Number(x.normalizedCount)));
+    const c=$('#energyChart'); if(!c) return;
+    const ctx=c.getContext('2d'),wrap=c.parentElement,ratio=window.devicePixelRatio||1;
+    const w=Math.max(280,wrap.clientWidth),h=wrap.clientHeight||330;
+    c.width=w*ratio;c.height=h*ratio;c.style.width='100%';c.style.height=h+'px';ctx.setTransform(ratio,0,0,ratio,0,0);
+    ctx.clearRect(0,0,w,h);ctx.fillStyle='#071520';ctx.fillRect(0,0,w,h);
+    if(series.length<5){energyChartState=null;ctx.fillStyle='#839ead';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText('자동갱신 후 시계열이 표시됩니다.',w/2,h/2);return;}
+    const top=35,bottom=h-36,left=38,right=w-12;
+    const maxVal=Math.max(25,...series.flatMap(x=>[Number(x.normalizedCount)||0,Number(x.ma5)||0]));
+    const hi=Math.ceil(maxVal/5)*5;
+    const X=i=>left+(right-left)*i/(series.length-1),Y=v=>bottom-(Math.max(0,v)/hi)*(bottom-top);
+    energyChartState={series,left,right,top,bottom,X,Y};
+    const zone=(low,high,color)=>{const lo=Math.max(0,Math.min(hi,low)),up=Math.max(0,Math.min(hi,high));if(up<=lo)return;ctx.fillStyle=color;ctx.fillRect(left,Y(up),right-left,Y(lo)-Y(up))};
+    zone(0,10,'rgba(227,109,115,.11)');zone(10,20,'rgba(226,185,88,.09)');zone(20,hi,'rgba(79,209,156,.08)');
+    ctx.font='9px sans-serif';ctx.textAlign='right';
+    for(let j=0;j<=4;j++){const v=hi*j/4,y=Y(v);ctx.strokeStyle='#1d3747';ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();ctx.fillStyle='#7895a7';ctx.fillText(String(Math.round(v)),left-6,y+3)}
+    [10,20].forEach(v=>{if(v>hi)return;ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle=v===10?'#d4a94e':'#4dcf9b';ctx.beginPath();ctx.moveTo(left,Y(v));ctx.lineTo(right,Y(v));ctx.stroke();ctx.restore();ctx.fillStyle=v===10?'#d4b96f':'#76ddb6';ctx.textAlign='left';ctx.fillText(v===10?'10 약화선':'20 강한 확산',left+4,Y(v)-4)});
+    const barW=Math.max(1,(right-left)/series.length*.58);ctx.fillStyle='rgba(73,172,206,.34)';series.forEach((x,i)=>{const y=Y(Number(x.normalizedCount)||0);ctx.fillRect(X(i)-barW/2,y,barW,bottom-y)});
+    ctx.lineWidth=2.2;for(let i=1;i<series.length;i++){const a=Number(series[i-1].ma5),b=Number(series[i].ma5);if(!Number.isFinite(a)||!Number.isFinite(b))continue;ctx.strokeStyle=b>=a?'#63dfa9':'#f0a45f';ctx.beginPath();ctx.moveTo(X(i-1),Y(a));ctx.lineTo(X(i),Y(b));ctx.stroke()}
+    ctx.fillStyle='#8ba7b8';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText(series[0].date,left,bottom+20);ctx.textAlign='right';ctx.fillText(series[series.length-1].date,right,bottom+20);
+    ctx.textAlign='left';ctx.fillStyle='#65cbe0';ctx.fillText('■ 일별 돌파수',left,15);ctx.fillStyle='#63dfa9';ctx.fillText('━ MA5 상승',Math.min(w-150,left+92),15);ctx.fillStyle='#f0a45f';ctx.fillText('━ MA5 하락',Math.min(w-72,left+168),15);
+    if(Number.isInteger(hoverIdx)&&series[hoverIdx]){const x0=X(hoverIdx),row=series[hoverIdx],daily=Number(row.normalizedCount),avg=Number(row.ma5);ctx.save();ctx.setLineDash([3,3]);ctx.strokeStyle='#d9f4ff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x0,top);ctx.lineTo(x0,bottom);ctx.stroke();ctx.restore();if(Number.isFinite(daily)){ctx.fillStyle='#65cbe0';ctx.beginPath();ctx.arc(x0,Y(daily),3.5,0,Math.PI*2);ctx.fill()}if(Number.isFinite(avg)){ctx.fillStyle='#fff0a8';ctx.beginPath();ctx.arc(x0,Y(avg),4,0,Math.PI*2);ctx.fill()}}
+  }
+
+  function renderMarketEnergy(){
+    const e=data.meta.marketEnergy||{};
+    const has=(e.series||[]).length>0;
+    const available=has&&e.status==='LIVE'&&e.membershipMode==='SCREENED_US_UNIVERSE';
+    const menu=$('#marketEnergyMenu'),section=$('#marketEnergySection');
+    if(menu) menu.style.display=available?'':'none';
+    if(section) section.style.display=available&&activeTab==='energy'?'':'none';
+    if(!available) return;
+    const regime=has?(e.regime||'DATA_CHECK'):'DATA_CHECK';
+    const badge=$('#energyRegime');badge.textContent=has?energyRegimeLabel(regime):'갱신 대기';badge.className='energy-regime '+String(regime).toLowerCase();
+    $('#energyRegimeNote').textContent=e.regimeNote||(has?'판정 설명을 확인하세요.':'새 자동갱신을 한 번 실행하면 계산됩니다.');
+    $('#energySource').textContent=`${e.source||'미국 정밀계산 유니버스'}${e.asOf?` · ${e.asOf}`:''}`;
+    $('#energyToday').textContent=has?`${e.breakoutCount??'—'}개`:'—';
+    $('#energyTodayNote').textContent=has?`유효 ${e.validCount||0}개 · 350 환산 ${fmt(e.normalizedBreakoutCount,1)}개`:'실제 검출 종목수';
+    $('#energyMa5').textContent=has?`${fmt(e.ma5,1)}개`:'—';
+    $('#energySlope').textContent=has?signed(e.ma5Change5d,1,'개'):'—';
+    $('#energySlope').className=has?cls(e.ma5Change5d):'';
+    $('#energyBelow').textContent=has?`${e.below10Streak||0}일`:'—';
+    $('#energyCoverage').textContent=has?`${fmt(e.coveragePct,1)}%`:'—';
+    $('#energyCoverageNote').textContent=has?`${e.constituentCount||350}개 구성 · ${e.historyErrorCount||0}개 가격 오류`:'90% 미만은 판정 보류';
+    $('#qEnergy').textContent=has?(e.ma5==null?'—':fmt(e.ma5,1)):'—';
+    document.querySelectorAll('[data-energy-zone]').forEach(x=>x.classList.remove('current'));
+    const ma5=Number(e.ma5),slope=Number(e.ma5Change5d),below=Number(e.below10Streak)||0;
+    const zoneKey=ma5<10?'danger':ma5<20?'caution':slope>0?'favorable':'cooling';
+    const zoneEl=document.querySelector(`[data-energy-zone="${zoneKey}"]`);if(zoneEl)zoneEl.classList.add('current');
+    const reading=$('#energyReading');
+    if(reading){
+      const lead=`5일 평균 ${fmt(ma5,1)}개 · 최근 5일 ${signed(slope,1,'개')}`;
+      const messages={
+        danger:`확산 약화 구간입니다.${below>=40?` 10 미만이 ${below}거래일 지속돼 장기 경고에 해당합니다.`:' 기울기와 10선 회복 여부를 함께 확인하세요.'}`,
+        caution:'중립 구간입니다. 10선 유지와 상승 기울기가 이어지는지 확인하세요.',
+        favorable:'상대적 우호 구간입니다. 시장 확산은 강하지만 지수 하락 가능성이 사라진다는 뜻은 아닙니다.',
+        cooling:'절대 수준은 강하지만 기울기가 둔화됐습니다. 20선 이탈 또는 하락 지속 여부를 확인하세요.'
+      };
+      reading.innerHTML=`<b>현재 해석</b> · <strong>${lead}</strong> — ${messages[zoneKey]}`;
+    }
+    const list=$('#energyBreakoutList'),breakouts=e.breakouts||[];
+    $('#energyBreakoutCount').textContent=has?`${breakouts.length}개`:'—';
+    if(!breakouts.length){list.innerHTML=`<div class="energy-empty">${has?'해당일 종가 기준 상단 돌파 종목이 없습니다.':'자동갱신 후 오늘의 돌파 종목이 표시됩니다.'}</div>`}
+    else{
+      list.innerHTML=breakouts.map(x=>`<button class="energy-stock" type="button" data-energy-ticker="${escBiz(x.ticker||'')}"><span><b>${escBiz(x.name||x.code)}</b><small>${escBiz(x.index||'')} · 종가 ${Number(x.close||0).toLocaleString('ko-KR')} · 상단 ${Number(x.upper||0).toLocaleString('ko-KR')}</small></span><span>+${fmt(x.distancePct,2)}%</span></button>`).join('');
+      document.querySelectorAll('[data-energy-ticker]').forEach(b=>b.onclick=()=>{const stock=data.stocks.find(x=>x.ticker===b.dataset.energyTicker);if(stock)openDetail(stock);else window.open(`https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(b.dataset.energyTicker)}`,'_blank','noopener')});
+    }
+    drawEnergyChart();
+  }
+
+  function statusLabel(status){
+    if(status==='PASS') return '충족';
+    if(status==='FAIL') return '미충족';
+    if(status==='DISABLED') return '사용 안 함';
+    return '확인 필요';
+  }
+  function statusClass(status){ return status==='PASS'?'pass':status==='FAIL'?'fail':status==='DISABLED'?'disabled':'unknown'; }
+  function csSummaryText(x){
+    const c=x.canSlim||{};
+    const pass=c.passCount||0, measured=c.measuredCount||0, unknown=Math.max(0,6-measured);
+    if(c.fullMatch) return `6/6 자동충족`;
+    if(c.strongCandidate) return `${pass}/6 강한 보조`;
+    if(measured<6) return `${pass}/${measured} 측정 · ${unknown}확인`;
+    return `${pass}/6`;
+  }
+  function isCanCandidate(x){
+    const c=x.canSlim||{};
+    return !!(c.fullMatch || c.strongCandidate || ((c.passCount||0)>=4 && (c.measuredCount||0)>=5));
+  }
+  function csBadge(x){
+    const c=x.canSlim||{};
+    const klass=c.fullMatch?'full':c.strongCandidate?'strong':c.preliminary?'prelim':'weak';
+    return `<span class="cs-badge ${klass}">${csSummaryText(x)}</span>`;
+  }
+  function highZoneParts(x){
+    return {h52:(x.high52Ratio||0)>=93,hist:(x.historicalHighRatio||0)>=93};
+  }
+  function isHighZone(x){const h=highZoneParts(x);return h.h52||h.hist;}
+  function isStage2Candidate(x){return !!x.trendTemplate&&(x.rsPercentile||0)>=70;}
+  function isTripleCandidate(x){return (x.conditionCount||0)>=4&&isStage2Candidate(x)&&isHighZone(x);}
+  function isSectorAction(x){return (x.sectorAction||{}).status==='CONFIRMED';}
+  function highZoneLabel(x){
+    const h=highZoneParts(x);
+    if(h.h52&&h.hist) return '52주·역사적';
+    if(h.h52) return '52주';
+    if(h.hist) return '역사적';
+    return '해당 없음';
+  }
+  function axisCount(x){return Number((x.conditionCount||0)>=4)+Number(isStage2Candidate(x))+Number(isHighZone(x))+Number(isSectorAction(x));}
+  function highZoneBadge(x){return `<span class="high-zone ${isHighZone(x)?'':'off'}">신고가권 · ${highZoneLabel(x)}</span>`;}
+  function sectorActionBadge(x,compact=false){
+    const a=x.sectorAction||{};
+    const klass=a.status==='CONFIRMED'?'confirmed':a.status==='HOLDING_THEME'?'holding':a.status==='WATCH'?'watch':'none';
+    const label=a.label||(klass==='confirmed'?'섹터 동반강세':klass==='holding'?'지주사 동조 · 참고':klass==='watch'?'섹터 동반확인 중':'섹터 동반신호 없음');
+    const flags=compact?'':`${a.expanding?' · 확산 중':''}${a.concentrationWarning?' · 쏠림 주의':''}`;
+    const detail=compact?'':(a.memberCount?` · ${a.memberCount}종목${a.score!=null?` · 추세 ${fmt(a.score,0)}점`:''}`:'');
+    return `<span class="sector-action-badge ${klass}" title="신고가와 무관한 네 번째 후보 기준 · 7·30일 섹터 흐름">${klass==='confirmed'?'▲ ':''}${label}${detail}${flags}</span>`;
+  }
+  function hydrateSectorActions(){
+    const map=new Map(data.sectors.map(s=>[s.name,s]));
+    data.stocks.forEach(x=>{
+      const s=map.get(x.sector)||{};
+      const existing=x.sectorAction||{};
+      const holding=s.groupStatus==='HOLDING_THEME'||/지주회사|금융지주|지주사/.test(String(x.sector||''));
+      const flowLabels={BOTH:'7·30일 섹터 동반강세',NEW_7D:'7일 신규 섹터강세',PERSISTENT_30D:'30일 지속 섹터강세'};
+      const confirmed=!holding&&Object.prototype.hasOwnProperty.call(flowLabels,s.flowStatus);
+      const watch=!holding&&(s.memberCount||0)>=3&&!confirmed;
+      x.sectorAction={status:holding?'HOLDING_THEME':confirmed?'CONFIRMED':watch?'WATCH':'NONE',label:holding?'지주사 동조 · 참고':confirmed?flowLabels[s.flowStatus]:watch?'섹터 동반확인 중':'섹터 동반신호 없음',action:s.action,score:s.score,memberCount:s.memberCount||0,breadth60:s.breadth60,newHighPct:s.newHighPct,stage2Pct:s.stage2Pct,flowStatus:s.flowStatus,flowStatusLabel:s.flowStatusLabel,flow7:s.flow7,flow30:s.flow30,flowMembers:s.flowMembers||[],expanding:!!s.expanding,concentrationWarning:!!s.concentrationWarning,...existing};
+      if(!(x.sectorAction.flowMembers||[]).length) x.sectorAction.flowMembers=s.flowMembers||[];
+    });
+  }
+
+  function setMeta(){
+    $('#mode').textContent = data.meta.mode || '—';
+    $('#mode').parentElement.classList.toggle('live', data.meta.mode==='LIVE');
+    $('#meta').innerHTML = `기준일 <b>${data.meta.asOf||'—'}</b><br>${data.meta.successCount||0}/${data.meta.eligibleUniverseCount||data.meta.universeCount||0}개 기업·리츠 정밀계산`;
+    if(data.meta.mode==='DEMO') $('#demoBanner').classList.add('show');
+
+    const h=data.meta.dataHealth||{};
+    const cm=data.meta.consensusMeta||{};
+    const sf=data.meta.sectorFlowMeta||{};
+    const fresh=h.liveCount||0, cached=h.cachedCount||0, stale=h.staleCount||0, failed=h.failedCount||0;
+    const hb=$('#healthBanner');
+    hb.classList.remove('good','warn','bad');
+    const cap=h.priceAttemptedCount||(data.meta.universeFunnel||{}).marketCapPass||fresh+cached+stale+failed||1;
+    const materialFailure=failed>Math.max(10,cap*.05);
+    const level=stale>0||materialFailure?'bad':(cached>0||failed>0)?'warn':'good';
+    hb.classList.add(level);
+    $('#healthTitle').textContent = data.meta.mode==='DEMO' ? '데모 데이터 · 실제 투자용 아님' : (level==='good'?'데이터 정상':level==='warn'?'대부분 정상 · 일부 종목 제외':'일부 데이터 주의 필요');
+    $('#healthText').textContent = data.meta.mode==='DEMO'
+      ? '실제 자동갱신이 시작되면 여기에서 최신성·대체 데이터 사용 여부·SEC 연결 상태를 바로 확인할 수 있습니다.'
+      : (h.message||`새 데이터 ${fresh}종목 · 마지막 정상값 사용 ${cached}종목 · 오래된 데이터 ${stale}종목 · 실패 ${failed}종목`);
+    $('#healthPills').innerHTML = [
+      `<span class="health-pill good">LIVE ${fresh}</span>`,
+      `<span class="health-pill ${cached?'warn':''}">CACHED ${cached}</span>`,
+      `<span class="health-pill ${stale?'bad':''}">STALE ${stale}</span>`,
+      `<span class="health-pill ${failed?'warn':'good'}">FAILED ${failed}</span>`,
+      `<span class="health-pill ${h.secConnected?'good':'warn'}">SEC ${h.secConnected?'연결':'미연결'}</span>`,
+      `<span class="health-pill warn">추정치·기관보유 미연결</span>`,
+      `<span class="health-pill ${sf.status==='LIVE'?'good':sf.status?'warn':''}">섹터 7·30일 ${sf.status||'다음 갱신'}</span>`,
+      `<span class="health-pill ${(data.meta.qa||{}).status==='PASS'?'good':'warn'}">정합성 ${(data.meta.qa||{}).status||'미확인'}</span>`
+    ].join('');
+    renderQuality();
+  }
+
+  function renderQuality(){
+    const h=data.meta.dataHealth||{}, f=data.meta.universeFunnel||{}, d=data.meta.dartMeta||{}, p=data.meta.profileMeta||{}, cm=data.meta.consensusMeta||{}, sf=data.meta.sectorFlowMeta||{}, qa=data.meta.qa||{};
+    const source=h.sourceCounts||{};
+    $('#qualitySummary').textContent=`기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`;
+    const cards=[
+      ['기업 가격수집',`${h.priceFetchedCount??(h.liveCount||0)}/${h.priceAttemptedCount??f.marketCapPass??0}개 · ${h.priceCoveragePct??'—'}%`],
+      ['짧은 가격 이력',`${h.shortHistoryCount||0}종목`],
+      ['SEC EDGAR 재무·공시',`${d.successCount||0}/${f.deepScanned||0}종목 · 이번 조회 ${d.targetCount||0}`],
+      ['추정치·기관보유',`자동 연결 안 함 · 임의값 없음`],
+      ['자동 사업내용 세분류',`${p.coveredCount||0}/${p.targetCount||0}종목`],
+      ['7·30일 섹터 흐름',sf.eligibleSectorCount!=null?`강세 ${sf.strongSectorCount||0}/${sf.eligibleSectorCount||0}개 · ${sf.status||'—'}`:'다음 자동갱신부터'],
+      ['Yahoo 가격',`${source['Yahoo Finance']||0}종목`],
+      ['가격수집 실패',`${h.failedCount||0}개 기업`],
+      ['ETF·ETN·스팩 분리',`${h.excludedInstrumentCount??f.excludedInstruments??0}종목`],
+      ['후보 계산 범위',`기업·리츠 ${f.companyUniverse||0} → 시총 ${f.marketCapPass||0} → 유동성 ${f.deepScanned||0}`],
+      ['정합성 검사',qa.status==='PASS'?`${qa.checks||0}개 항목 통과`:'다음 갱신부터 표시']
+    ];
+    $('#qualityGrid').innerHTML=cards.map(([k,v])=>`<div class="quality-card"><span>${k}</span><b>${v}</b></div>`).join('');
+    $('#qualityNote').innerHTML=`<b>해석:</b> ETF·ETN·스팩은 기업의 재무·사업 기준과 맞지 않아 후보 계산 전에 별도로 분리합니다. RS는 시총 10억달러 이상 일반기업 중 시총순 최대 900개를 가격수집하고, 50일 평균 거래대금 1천만달러 이상으로 정밀계산한 미국 기업·리츠 안의 상대순위입니다. <b>7·30일 섹터 흐름</b>은 신고가 비율을 쓰지 않고 중앙값 수익률·Nasdaq Composite/S&amp;P 500 대비·상승 확산·이동평균선 위 비율로 판정합니다. <b>SEC EDGAR</b>는 과거 실적·재무·공시의 공식 원천입니다. 무료로 신뢰성 있게 연결하지 못한 컨센서스·기관보유 시계열은 비워 둡니다. <b>정합성 PASS</b>는 표시 숫자와 내부 계산이 서로 맞는다는 뜻이고, 데이터 누락 정도는 기업 가격수집률로 따로 확인합니다. 실시간 가격이 실패하면 직전 미국 정상값을 CACHED로 표시합니다. 260거래일 미만 신규 상장주는 실제 보유 이력 범위를 사용하며, 200일선·Stage 2·정배열은 이력이 충분할 때만 판정합니다.`;
+    const errs=(data.errors||[]).slice(0,10);
+    $('#qualityErrors').innerHTML=errs.length?`<div class="quality-note"><b>ETF·ETN·스팩을 제외한 기업 가격수집 실패 ${data.errors.length}건 중 일부</b></div>`+errs.map(e=>`<div class="quality-error"><b>${escBiz(e.name||e.ticker||'종목')}</b> · ${escBiz(String(e.error||'수집 실패').replace(/attempt \d+: /g,'').slice(0,180))}</div>`).join(''):'<div class="quality-note">기업 가격수집 오류가 없습니다.</div>';
+  }
+
+  const krwBig=v=>{
+    if(v==null || !isFinite(Number(v))) return '—';
+    v=Number(v);
+    if(Math.abs(v)>=1e12) return `${(v/1e12).toFixed(1)}조`;
+    if(Math.abs(v)>=1e8) return `${(v/1e8).toFixed(0)}억`;
+    return Math.round(v).toLocaleString('ko-KR');
+  };
+  function setFunnel(){
+    const f=data.meta.universeFunnel||{};
+    const n=x=>x===null||x===undefined?'—':Number(x).toLocaleString('ko-KR');
+    $('#fListed').textContent=n(f.listed); $('#fLiquid').textContent=n(f.liquidityPass);
+    $('#fMarketCap').textContent=n(f.marketCapPass); $('#fScanned').textContent=n(f.deepScanned); $('#fGrowth').textContent=n(f.growth4plus);
+    $('#fStage2').textContent=n(f.stage2);
+    let note='';
+    if(f.liquidityThresholdUSD) note+=`1차 기준: 50일 평균 거래대금 $${(f.liquidityThresholdUSD/1000000).toFixed(0)}M 이상. `;
+    if(f.marketCapThresholdUSD) note+=`시가총액 $${(f.marketCapThresholdUSD/1000000000).toFixed(1)}B 이상 기준도 적용 중입니다.`;
+    if(f.excludedInstruments) note+=` ETF·ETN·스팩 ${n(f.excludedInstruments)}종목은 기업 후보 계산 전에 별도 분리했습니다.`;
+    $('#funnelNote').textContent=data.meta.mode==='DEMO'
+      ? '현재 데모는 기존 예시 종목만 보여줍니다. 실제 배포 후에는 Nasdaq 주식 스크리너에서 미국 상장기업 목록을 자동으로 가져옵니다.'
+      : (note||'전체 시장 자동 스캔 결과입니다.');
+  }
+
+  function setStats(){
+    const allStocks=data.stocks;
+    const s=allStocks.filter(passesInstrument);
+    const growth=s.filter(x=>(x.conditionCount||0)>=4).length;
+    const st2=s.filter(isStage2Candidate).length;
+    const highZone=s.filter(isHighZone).length;
+    const triple=s.filter(isTripleCandidate).length;
+    const sectorAction=s.filter(isSectorAction).length;
+    const can=s.filter(isCanCandidate).length;
+
+    $('#statGrowth').textContent=growth;
+    $('#statStage2').textContent=st2;
+    $('#statHighZone').textContent=highZone;
+    $('#statSectorAction').textContent=sectorAction;
+
+    const counts={qAll:s.length,qGrowth:growth,qStage2:st2,qHighZone:highZone,qTriple:triple,qSectorAction:sectorAction,qCan:can};
+    Object.entries(counts).forEach(([id,v])=>{const el=document.getElementById(id);if(el) el.textContent=v;});
+
+    const companies=s.filter(x=>inferInstrument(x)==='COMPANY');
+    const perfect=companies.filter(x=>axisCount(x)===4).sort((a,b)=>(b.score||0)-(a.score||0)||(b.rsPercentile||0)-(a.rsPercentile||0));
+    const heroStocks=perfect.slice(0,4);
+    if(heroStocks.length){
+      $('#heroTitle').textContent=`4개 기준 모두 충족 · ${perfect.length}종목`;
+      $('#heroDesc').textContent='이 영역에는 이세무사 4/6 이상, 미너비니 Stage 2, 신고가권, 섹터액션을 전부 충족한 종목만 표시합니다. 일부 기준만 충족한 종목은 아래 개별 기준 메뉴를 눌러 따로 확인하세요.';
+      $('#heroActions').innerHTML=heroStocks.map(x=>`<button class="hero-chip" data-ticker="${x.ticker}">${x.name}<span><b class="axis-count">${axisCount(x)}/4 기준</b> · 이세무사 ${x.conditionCount}/6 · ${isStage2Candidate(x)?'미너비니 YES':'미너비니 NO'}</span><span class="chip-badges">${highZoneBadge(x)}${sectorActionBadge(x,true)}</span></button>`).join('');
+      document.querySelectorAll('.hero-chip').forEach(b=>b.onclick=()=>openDetail(s.find(x=>x.ticker===b.dataset.ticker)));
+    }else{
+      $('#heroTitle').textContent='현재 4개 기준 모두 충족한 종목 없음';
+      $('#heroDesc').textContent='빈칸을 억지로 채우지 않습니다. 바로 아래에서 이세무사·미너비니·신고가권·섹터액션을 각각 눌러 해당 종목을 확인하세요.';
+      $('#heroActions').innerHTML='';
+    }
+  }
+
+  function showSectorMembers(s,scroll=true){
+    const box=$('#sectorMemberBrowser');if(!box)return;
+    const flowMap=new Map((s.flowMembers||[]).map(m=>[m.ticker,m]));
+    const members=data.stocks.filter(x=>x.sector===s.name&&passesInstrument(x)&&['HIGH','MEDIUM'].includes(x.sectorConfidence)).sort((a,b)=>(b.rsPercentile||0)-(a.rsPercentile||0)||(b.score||0)-(a.score||0));
+    const rows=members.map(x=>{const f=flowMap.get(x.ticker)||{};return `<button class="sector-member-row" type="button" data-sector-member="${escBiz(x.ticker)}"><span class="sector-member-name"><b>${escBiz(x.name)}</b><small>${escBiz(x.ticker)} · WAMO ${fmt(x.score,0)}</small><i class="sector-stage-label">${isStage2Candidate(x)?'Stage 2':'Stage 2 미충족'}</i></span><span><span>7일 수익률</span><b class="${cls(f.ret7??x.ret7)}">${signed(f.ret7??x.ret7,1)}</b></span><span><span>30일 수익률</span><b class="${cls(f.ret30??x.ret30)}">${signed(f.ret30??x.ret30,1)}</b></span><span class="wide-only"><span>RS</span><b>${fmt(x.rsPercentile,0)}</b></span><span class="wide-only"><span>이세무사</span><b>${x.conditionCount||0}/6</b></span></button>`}).join('');
+    box.innerHTML=`<div class="sector-member-head"><div><span class="section-kicker">2단계 · 섹터 소속 종목</span><h3>${escBiz(s.name)} · ${members.length}종목</h3><p>Nasdaq 업종분류와 SEC 공식자료를 기준으로 분류 신뢰도가 HIGH·MEDIUM인 정밀계산 종목을 모두 표시합니다. 강한 종목뿐 아니라 약한 종목도 숨기지 않습니다. 종목을 누르면 차트·사업내용·SEC 공시 상세가 열립니다.</p></div></div><div class="sector-member-list">${rows||'<div class="flow-empty">현재 표시할 검증 완료 종목이 없습니다.</div>'}</div>`;
+    box.classList.add('show');
+    box.querySelectorAll('[data-sector-member]').forEach(b=>b.onclick=()=>{const x=data.stocks.find(z=>z.ticker===b.dataset.sectorMember);if(x)openDetail(x)});
+    if(scroll)box.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function renderSectorFlow(){
+    const box=$('#sectorFlowGrid');
+    if(!box) return;
+    const memberBrowser=$('#sectorMemberBrowser');if(memberBrowser){memberBrowser.classList.remove('show');memberBrowser.innerHTML=''}
+    const isHolding=s=>s.groupStatus==='HOLDING_THEME'||/지주회사|금융지주|지주사/.test(String(s.name||''));
+    const eligible=data.sectors.filter(s=>!isHolding(s)&&s.name!=='ETF'&&(s.flowEligibleCount||0)>=3);
+    const strong=eligible.filter(s=>['BOTH','NEW_7D','PERSISTENT_30D'].includes(s.flowStatus));
+    const counts={
+      flowStrongCount:strong.length,
+      flowBothCount:eligible.filter(s=>s.flowStatus==='BOTH').length,
+      flowNew7Count:eligible.filter(s=>s.flowStatus==='NEW_7D').length,
+      flowPersist30Count:eligible.filter(s=>s.flowStatus==='PERSISTENT_30D').length,
+      flowExpandingCount:eligible.filter(s=>s.expanding).length,
+      flowConcentrationCount:eligible.filter(s=>s.concentrationWarning).length
+    };
+    Object.entries(counts).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value;});
+
+    const meta=(data.meta||{}).sectorFlowMeta||{};
+    const summary=$('#sectorFlowSummary');
+    if(summary){
+      const sourceStatus=meta.status==='LIVE'?'미국 지수 정상':meta.status?`시장기준 ${meta.status}`:'다음 자동갱신 후 계산';
+      summary.textContent=`강한 흐름 ${strong.length}개 / 유효 세부섹터 ${eligible.length}개 · ${sourceStatus}`;
+    }
+    const method=$('#sectorFlowMethod');
+    if(method&&meta.source){
+      const src=typeof meta.source==='object'?Object.entries(meta.source).map(([k,v])=>`${k} ${v}`).join(' · '):meta.source;
+      method.innerHTML=`<b>시장 대비 기준:</b> ${escBiz(src)}. 최소 3종목이며 최신 기준일보다 4일 넘게 오래된 가격은 흐름 표본에서 제외합니다. ‘수익률 중앙값’은 구성 종목을 줄 세웠을 때 가운데 값이라 한 종목 급등의 왜곡을 줄입니다.<br><b>확산 중:</b> 7일 강세 + 상승비율이 30일보다 15%포인트 이상 확대 + 대형·상대적 중소형 동반 + 구성종목 3분의 1 이상에서 최근 7일 평균 거래량이 직전 20일보다 20% 이상 증가. <b>쏠림 주의:</b> 한 종목의 플러스 수익 기여가 70% 이상이거나, 기여가 60% 이상이면서 상승 종목이 3분의 2 미만이거나, 평균 수익률이 중앙값보다 ‘4%포인트와 중앙값 크기의 1.5배 중 큰 값’ 이상 벌어진 경우입니다.`;
+    }
+
+    let list=[];
+    if(sectorFlowMode==='both') list=eligible.filter(s=>s.flowStatus==='BOTH');
+    else if(sectorFlowMode==='new7') list=eligible.filter(s=>s.flowStatus==='NEW_7D');
+    else if(sectorFlowMode==='persist30') list=eligible.filter(s=>s.flowStatus==='PERSISTENT_30D');
+    else if(sectorFlowMode==='expanding') list=eligible.filter(s=>s.expanding);
+    else if(sectorFlowMode==='concentration') list=eligible.filter(s=>s.concentrationWarning);
+    else list=strong;
+
+    const statusRank={BOTH:3,NEW_7D:2,PERSISTENT_30D:1,NONE:0};
+    list.sort((a,b)=>(statusRank[b.flowStatus]||0)-(statusRank[a.flowStatus]||0)||Number(!!b.expanding)-Number(!!a.expanding)||Math.max((b.flow7||{}).score||0,(b.flow30||{}).score||0)-Math.max((a.flow7||{}).score||0,(a.flow30||{}).score||0)||((b.flow30||{}).medianRelative||0)-((a.flow30||{}).medianRelative||0));
+
+    if(!data.sectors.some(s=>s.flow7||s.flow30)){
+      box.innerHTML='<div class="flow-empty">업로드 후 WAMO 자동갱신을 한 번 실행하면 네 번째 후보축인 7·30거래일 섹터액션이 계산됩니다. 데이터가 없을 때는 임의로 판정하지 않습니다.</div>';
+      return;
+    }
+    if(!list.length){
+      const label={strong:'강한 흐름',both:'7·30일 동시 강세',new7:'7일 신규 강세',persist30:'30일 지속 강세',expanding:'확산 중',concentration:'쏠림 주의'}[sectorFlowMode]||'선택 조건';
+      box.innerHTML=`<div class="flow-empty">현재 <b>${label}</b>에 해당하는 세부섹터가 없습니다. 기준을 낮춰 억지로 채우지 않습니다.</div>`;
+      return;
+    }
+
+    const statusClass=s=>s.flowStatus==='BOTH'?'both':s.flowStatus==='NEW_7D'?'new7':s.flowStatus==='PERSISTENT_30D'?'persist30':'';
+    const period=(label,f)=>{
+      f=f||{};
+      const positive=(f.medianReturn||0)>=0;
+      return `<div class="flow-period"><strong>${label} 중앙값</strong><div class="flow-return ${positive?'pos':'neg'}">${signed(f.medianReturn,1)}</div><small>평균 ${signed(f.meanReturn,1)} · 시장대비 중앙값 ${signed(f.medianRelative,1,'%p')}<br>상승 ${f.positiveCount||0}/${f.eligibleCount||0} · 시장상회 ${f.outperformCount||0}/${f.eligibleCount||0}<br>${label==='7거래일'?'20일선':'60일선'} 위 ${fmt(f.trendBreadthPct,0)}%</small><span class="flow-score">강세조건 ${f.conditionCount||0}/5</span></div>`;
+    };
+
+    box.innerHTML='';
+    list.forEach(s=>{
+      const f7=s.flow7||{}, f30=s.flow30||{};
+      const card=document.createElement('button');
+      card.className=`flow-card ${s.concentrationWarning?'caution':''} ${sectorFilter===s.name?'selected':''}`;
+      const flags=[];
+      if(s.expanding) flags.push('<span class="flow-flag expand">확산 중</span>');
+      if(f7.largeMidTogether||f30.largeMidTogether){
+        const windows=[f7.largeMidTogether?'7일':'',f30.largeMidTogether?'30일':''].filter(Boolean).join('·');
+        flags.push(`<span class="flow-flag cap">${windows} 대형·중소형 동반</span>`);
+      }
+      if(s.concentrationWarning) flags.push(`<span class="flow-flag caution">${escBiz(s.concentrationWindow||'7·30일')} 쏠림 주의</span>`);
+      const members=(s.flowMembers||[]).slice(0,5).map(m=>`${escBiz(m.name)} 7일 ${signed(m.ret7,1)} · 30일 ${signed(m.ret30,1)}`).join(' / ');
+      card.innerHTML=`<div class="flow-card-head"><div><div class="flow-card-title">${escBiz(s.name)}</div><div class="flow-card-meta">유효 ${s.flowEligibleCount||0}/${s.memberCount||0}종목 · 사업내용 세부분류 ${s.detailClassifiedCount||0}/${s.memberCount||0}</div></div><span class="flow-status ${statusClass(s)}">${escBiz(s.flowStatusLabel||'확인 중')}</span></div><div class="flow-periods">${period('7거래일',f7)}${period('30거래일',f30)}</div><div class="flow-flags">${flags.join('')}</div><div class="flow-members">${members||'구성 종목 수익률은 다음 갱신에서 표시'}</div>`;
+      card.onclick=()=>{
+        sectorFilter=s.name;
+        document.querySelectorAll('.flow-card').forEach(z=>z.classList.toggle('selected',z===card));
+        showSectorMembers(s,true);
+      };
+      box.appendChild(card);
+    });
+  }
+
+  function renderSectors(){
+    const box=$('#sectorGrid'); box.innerHTML='';
+    const isHolding=s=>s.groupStatus==='HOLDING_THEME'||/지주회사|금융지주|지주사/.test(String(s.name||''));
+    const confirmed=data.sectors.filter(s=>!isHolding(s)&&s.name!=='ETF'&&(s.memberCount||0)>=3&&['강화','상승'].includes(s.action));
+    const holdings=data.sectors.filter(isHolding);
+    const holdingNote=$('#holdingThemeNote');
+    if(holdingNote){
+      holdingNote.classList.toggle('show',holdings.length>0);
+      holdingNote.innerHTML=holdings.length?`<b>지주사 동조 · 산업 섹터와 별도 참고</b><br>${holdings.slice(0,4).map(s=>`${s.name} ${s.memberCount||0}종목 · ${fmt(s.score,0)}점`).join(' / ')} · 지주사는 서로 다른 자회사 산업을 묶고 있어 일반 영업 섹터동반강세로 판정하지 않습니다.`:'';
+    }
+    const sectorList=confirmed.slice(0,8);
+    if(!sectorList.length){
+      box.innerHTML='<div class="empty">현재 참고용 중기 섹터 점수에서 상승·강화에 해당하는 세부섹터가 없습니다. 종목 하나의 급등이나 중립·약화 섹터는 억지로 채우지 않습니다.</div>';
+      return;
+    }
+    sectorList.forEach((s,i)=>{
+      const d=document.createElement('button'); d.className=`sector ${sectorFilter===s.name?'selected':''}`;
+      const reliable=(s.memberCount||0)>=3;
+      const companies=[...(s.leaderCandidates||[]).map(x=>x.name),...(s.majorCompanies||[])].filter((v,j,a)=>v&&a.indexOf(v)===j).slice(0,8);
+      d.innerHTML=`<div class="sector-top"><span class="rank">#${i+1}</span><span class="action">${s.action}</span></div><div class="name">${s.name}</div><span class="sector-reliability ${reliable?'':'reference'}">${s.groupStatusLabel||`${s.memberCount||0}개 동조`}</span><div class="sector-score"><b>${fmt(s.score,0)}</b><span>/100</span></div><div class="progress"><span style="width:${Math.min(100,s.score||0)}%"></span></div><div class="sector-evidence"><span>평균 RS ${fmt(s.rsPercentile,0)}</span><span>60일선 위 ${fmt(s.breadth60,0)}%</span><span>신고가권 ${fmt(s.newHighPct,0)}%</span><span>Stage 2 ${fmt(s.stage2Pct,0)}%</span></div><div class="sector-leader"><b>현재 대장 · ${(s.leaderStock&&s.leaderStock.name)||((s.leaders||[])[0]||'—')}</b><div>${s.leaderStock?`WAMO ${fmt(s.leaderStock.score,0)} · RS ${fmt(s.leaderStock.rs,0)} · 이세무사 ${s.leaderStock.conditions}/6${s.leaderStock.stage2?' · 미너비니 Stage 2':''}`:'—'}</div></div><div class="sector-major">현재 분석 종목 · ${companies.join(' · ')||'—'}</div><div class="sector-classification">${s.classificationLabel||'사업내용 세부분류는 다음 갱신에서 표시'}</div>`;
+      d.onclick=()=>{sectorFilter = sectorFilter===s.name?'':s.name; renderSectorFlow(); renderSectors(); renderStocks(); document.getElementById('stocks').scrollIntoView({behavior:'smooth',block:'start'});};
+      box.appendChild(d);
+    });
+  }
+
+  function passesTab(x){
+    if(activeTab==='canslim') return isCanCandidate(x);
+    if(activeTab==='six') return (x.conditionCount||0)>=4;
+    if(activeTab==='stage2') return isStage2Candidate(x);
+    if(activeTab==='high') return isHighZone(x);
+    if(activeTab==='triple') return isTripleCandidate(x);
+    if(activeTab==='sectoraction') return isSectorAction(x);
+    if(activeTab==='watchlist') return watch.has(x.ticker);
+    return true;
+  }
+
+  function passesInstrument(x){
+    const t=inferInstrument(x);
+    if(instrumentFilter==='all') return true;
+    if(instrumentFilter==='fund') return t==='ETF_ETN';
+    if(instrumentFilter==='reit') return t==='REIT';
+    return t==='COMPANY';
+  }
+
+  function visibleStocks(){
+    return data.stocks.filter(x=>passesInstrument(x) && passesTab(x))
+      .filter(x=>!sectorFilter || x.sector===sectorFilter)
+      .filter(x=>!signalFilter || x.signal===signalFilter)
+      .filter(x=>!query || `${x.name} ${x.ticker} ${x.sector}`.toLowerCase().includes(query.toLowerCase()))
+      .sort((a,b)=>{
+        if(sortMode==='rs') return (b.rsPercentile||0)-(a.rsPercentile||0);
+        if(sortMode==='conditions') return (b.conditionCount||0)-(a.conditionCount||0)||(b.score||0)-(a.score||0);
+        if(sortMode==='alignment') return Number(!!(b.alignment||{}).isAligned)-Number(!!(a.alignment||{}).isAligned)||((b.alignment||{}).currentTradingDays||0)-((a.alignment||{}).currentTradingDays||0);
+        if(sortMode==='high') return Math.max(b.high52Ratio||0,b.historicalHighRatio||0)-Math.max(a.high52Ratio||0,a.historicalHighRatio||0);
+        if(sortMode==='score') return (b.score||0)-(a.score||0);
+        if(activeTab==='canslim'){
+          const ap=(a.canSlim&&a.canSlim.passCount)||0, bp=(b.canSlim&&b.canSlim.passCount)||0;
+          if(bp!==ap) return bp-ap;
+          const am=(a.canSlim&&a.canSlim.measuredCount)||0, bm=(b.canSlim&&b.canSlim.measuredCount)||0;
+          if(bm!==am) return bm-am;
+        }
+        if(activeTab==='six') return (b.conditionCount||0)-(a.conditionCount||0)||Number(!!b.trendTemplate)-Number(!!a.trendTemplate)||(b.score||0)-(a.score||0);
+        if(activeTab==='stage2'){const vr={BREAKOUT:3,READY:2,WATCH:1,NONE:0,INSUFFICIENT:0};return (vr[(b.vcp||{}).status]||0)-(vr[(a.vcp||{}).status]||0)||(b.rsPercentile||0)-(a.rsPercentile||0)||(b.score||0)-(a.score||0)}
+        if(activeTab==='high') return Number(highZoneParts(b).h52&&highZoneParts(b).hist)-Number(highZoneParts(a).h52&&highZoneParts(a).hist)||Math.max(b.high52Ratio||0,b.historicalHighRatio||0)-Math.max(a.high52Ratio||0,a.historicalHighRatio||0);
+        if(activeTab==='triple') return Number(highZoneParts(b).h52&&highZoneParts(b).hist)-Number(highZoneParts(a).h52&&highZoneParts(a).hist)||(b.conditionCount||0)-(a.conditionCount||0)||(b.rsPercentile||0)-(a.rsPercentile||0)||(b.score||0)-(a.score||0);
+        if(activeTab==='sectoraction'){
+          const flowRank={BOTH:3,NEW_7D:2,PERSISTENT_30D:1};
+          const aa=a.sectorAction||{}, bb=b.sectorAction||{};
+          return (flowRank[bb.flowStatus]||0)-(flowRank[aa.flowStatus]||0)||Number(!!bb.expanding)-Number(!!aa.expanding)||(bb.score||0)-(aa.score||0)||(b.rsPercentile||0)-(a.rsPercentile||0);
+        }
+        return axisCount(b)-axisCount(a)||Number((b.sectorAction||{}).status==='CONFIRMED')-Number((a.sectorAction||{}).status==='CONFIRMED')||(b.score||0)-(a.score||0);
+      });
+  }
+
+  function watchButton(x){ return `<button class="star ${watch.has(x.ticker)?'on':''}" data-watch="${x.ticker}" title="관심종목">${watch.has(x.ticker)?'★':'☆'}</button>`; }
+
+  function dataTags(x){
+    const status=x.dataStatus||'DEMO';
+    const short=(x.historyTradingDays||9999)<260;
+    const sec=['LIVE','CACHED'].includes(String(x.secStatus||''))?`<span class="data-tag ${x.secStatus==='LIVE'?'fnguide-live':'fnguide-cached'}">SEC ${x.secStatus==='LIVE'?'확인':'캐시'}</span>`:'';
+    return `<span class="data-tag ${String(status).toLowerCase()}">${status}</span>${short?`<span class="data-tag partial" title="가격 이력이 260거래일보다 짧아 일부 장기 지표가 제한됩니다.">이력 ${x.historyTradingDays}일</span>`:''}${sec}`;
+  }
+
+  function alignmentSummary(x){
+    const a=x.alignment||{};
+    if(a.isAligned) return `<span class="yes">YES · ${fmt(a.currentWeeks,1)}주</span>`;
+    if(a.firstAlignedDate) return '<span class="no">현재 NO</span>';
+    return '<span class="no">이력 없음</span>';
+  }
+
+  function renderAlignmentDetail(x){
+    const a=x.alignment||{};
+    const state=$('#alignmentState');
+    const timeline=$('#alignmentTimeline');
+    state.classList.toggle('primary',!!a.isAligned);
+    state.classList.toggle('off',!a.isAligned);
+    $('#dAlignment').textContent=a.isAligned?'YES':'NO';
+
+    if(a.isAligned){
+      $('#dAlignmentAge').textContent=`${a.currentStartDate||'—'}부터 · ${fmt(a.currentWeeks,1)}주`;
+      $('#alignmentStateText').textContent='정배열 유지 중';
+      $('#alignmentStartText').textContent=a.currentStartDate||'—';
+      $('#alignmentElapsedText').textContent=`${a.currentCalendarDays||0}일 · ${fmt(a.currentWeeks,1)}주 · ${a.currentTradingDays||0}거래일`;
+    }else{
+      const preparing=(a.activePreparationTradingDays||0)>0;
+      $('#dAlignmentAge').textContent=preparing?`준비기간 ${fmt(a.activePreparationWeeks,1)}주째`:(a.firstAlignedDate?'최근 이탈 상태':'아직 최초 도달 전');
+      $('#alignmentStateText').textContent=preparing?'현재 정배열 준비 중':'현재 정배열 아님';
+      $('#alignmentStartText').textContent=a.lastStartDate?(a.lastEndDate?`최근 ${a.lastStartDate} ~ ${a.lastEndDate}`:`최근 ${a.lastStartDate}`):'정배열 이력 없음';
+      $('#alignmentElapsedText').textContent=preparing?`준비기간 ${fmt(a.activePreparationWeeks,1)}주 · ${a.activePreparationTradingDays||0}거래일`:(a.daysSinceLastEnd!=null?`최근 이탈 후 ${a.daysSinceLastEnd}일`:'—');
+    }
+
+    const rows=[];
+    if(a.initialPreparationStartDate){
+      rows.push(`<div class="alignment-event first"><span class="event-date">${escBiz(a.initialPreparationStartDate)} → ${escBiz(a.firstAlignedDate||'진행 중')}</span><span class="event-type">최초 준비기간</span><span class="event-detail">${a.firstAlignedDate?`${fmt(a.initialPreparationWeeks,1)}주 · ${a.initialPreparationTradingDays||0}거래일 만에 최초 정배열 도달`:`현재 ${fmt(a.activePreparationWeeks,1)}주 · ${a.activePreparationTradingDays||0}거래일째 준비 중`}</span></div>`);
+    }
+    (a.events||[]).forEach(e=>{
+      if(e.type==='FIRST') rows.push(`<div class="alignment-event first"><span class="event-date">${escBiz(e.date||'—')}</span><span class="event-type">최초 도달</span><span class="event-detail">정배열 기준을 처음 충족</span></div>`);
+      if(e.type==='BREAK') rows.push(`<div class="alignment-event break"><span class="event-date">${escBiz(e.date||'—')}</span><span class="event-type">정배열 이탈</span><span class="event-detail">${escBiz(e.reason||'이동평균선 순서 이탈')} · 이날부터 회복 준비기간 계산</span></div>`);
+      if(e.type==='RECOVER') rows.push(`<div class="alignment-event recover ${e.shortBreak?'short':''}"><span class="event-date">${escBiz(e.date||'—')}</span><span class="event-type">${e.shortBreak?'빠른 회복':'정배열 회복'}</span><span class="event-detail">준비기간 ${fmt(e.preparationWeeks,1)}주 · ${e.preparationTradingDays||0}거래일${e.shortBreak?' · 5거래일 이내 잠깐 이탈':''}</span></div>`);
+    });
+    if(!a.isAligned && (a.activePreparationTradingDays||0)>0){
+      rows.push(`<div class="alignment-event break"><span class="event-date">현재</span><span class="event-type">준비 중</span><span class="event-detail">정배열 회복까지 ${fmt(a.activePreparationWeeks,1)}주 · ${a.activePreparationTradingDays||0}거래일 경과</span></div>`);
+    }
+    timeline.innerHTML=rows.length?rows.join(''):'<div class="alignment-empty">가격 이력이 200거래일 이상 쌓이면 최초 준비기간과 정배열 이력이 표시됩니다.</div>';
+  }
+
+  function renderStocks(){
+    const rows=visibleStocks(); const typeLabel={company:'일반기업',reit:'리츠',fund:'ETF·ETN',all:'증권 전체'}[instrumentFilter];
+    const tabLabel={all:'전체',six:'이세무사',stage2:'미너비니 Stage 2',high:'신고가권',triple:'3축 동시충족',sectoraction:'섹터액션',canslim:'CAN SLIM 보조',watchlist:'내 관심'}[activeTab]||'전체';
+    $('#count').textContent=`${tabLabel} · ${typeLabel} ${rows.length}종목${sectorFilter?` · ${sectorFilter}만 보는 중`:''}`;
+    const body=$('#tbody'); body.innerHTML='';
+    const mobile=$('#mobileList'); mobile.innerHTML='';
+    if(!rows.length){
+      const emptyText=activeTab==='sectoraction'?'현재 7일·30일 섹터 동반강세에 해당하는 종목이 없습니다. 신고가 조건과는 무관하며, 기준을 낮춰 억지로 채우지 않습니다.':activeTab==='triple'?'현재 이세무사 4/6 이상·미너비니 Stage 2·신고가권을 동시에 충족한 종목이 없습니다. 세 조건을 모두 만족할 때만 표시합니다.':'현재 선택한 조건에 맞는 종목이 없습니다.';
+      body.innerHTML=`<tr><td colspan="15" class="empty">${emptyText}</td></tr>`;
+      mobile.innerHTML=`<div class="empty-card">${emptyText}</div>`;
+      return;
+    }
+    rows.forEach((x,idx)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${watchButton(x)}</td><td>${idx+1}</td><td class="namecell"><b>${x.name}</b><div class="ticker">${x.ticker} · ${x.sector}${dataTags(x)}</div></td><td><span class="signal sig-${x.signal}">${signalLabel[x.signal]||x.signal}</span></td><td><span class="scorebadge">${fmt(x.score,0)}</span></td><td>${fmt(x.rsPercentile,0)}</td><td>${csBadge(x)}</td><td class="${cls(x.chg1d)}">${signed(x.chg1d)}</td><td>${highZoneBadge(x)}</td><td>${fmt(x.volumeRatio,1)}x</td><td><b>${x.conditionCount}/6</b></td><td>${isStage2Candidate(x)?'<span class="yes">YES</span>':'<span class="no">—</span>'}</td><td>${alignmentSummary(x)}</td><td>${sectorActionBadge(x)}</td><td class="muted">${x.signalReason||''}</td>`;
+      tr.onclick=e=>{if(e.target.closest('.star')) return; openDetail(x)};
+      body.appendChild(tr);
+
+      const card=document.createElement('div'); card.className='stock-card';
+      card.innerHTML=`<div class="stock-card-top"><div><div class="stock-name">${x.name}</div><div class="ticker">${x.ticker} · ${x.sector}${dataTags(x)}</div></div>${watchButton(x)}</div><div class="stock-card-sector">${sectorActionBadge(x)}</div><div class="stock-card-signal"><span class="signal sig-${x.signal}">${signalLabel[x.signal]||x.signal}</span><b>${fmt(x.score,0)}점</b></div><div class="cs-mobile">${csBadge(x)}</div><div class="stock-metrics"><div><span>일반 RS</span><b>${fmt(x.rsPercentile,0)}</b></div><div><span>이세무사 6조건</span><b>${x.conditionCount}/6</b></div><div><span>미너비니 Stage 2</span><b>${isStage2Candidate(x)?'YES':'—'}</b></div><div><span>신고가권</span><b>${highZoneLabel(x)}</b></div><div><span>현재 정배열</span><b>${alignmentSummary(x)}</b></div><div><span>거래량</span><b>${fmt(x.volumeRatio,1)}x</b></div><div><span>CAN 자동</span><b>${csSummaryText(x)}</b></div><div><span>4개 기준 중</span><b>${axisCount(x)}/4</b></div></div><div class="stock-reason">${x.signalReason||'—'}</div>`;
+      card.onclick=e=>{if(e.target.closest('.star')) return; openDetail(x)};
+      mobile.appendChild(card);
+    });
+    bindWatchButtons();
+  }
+
+  function bindWatchButtons(){
+    document.querySelectorAll('[data-watch]').forEach(b=>{
+      b.onclick=e=>{
+        e.stopPropagation(); const t=b.dataset.watch;
+        watch.has(t)?watch.delete(t):watch.add(t);
+        localStorage.setItem('wamoWatchlist',JSON.stringify([...watch]));
+        renderStocks();
+        if(detailStock && detailStock.ticker===t) updateDetailWatch();
+      };
+    });
+  }
+
+  function updateDetailWatch(){
+    if(!detailStock) return;
+    const on=watch.has(detailStock.ticker); $('#detailWatch').textContent=on?'★ 관심종목 저장됨':'☆ 관심종목'; $('#detailWatch').classList.toggle('on',on);
+  }
+
+  function renderCanSlimDetail(x){
+    const c=x.canSlim||{items:{},passCount:0,measuredCount:0,unknownCount:7};
+    $('#canSlimSummary').innerHTML=`<b>CAN SLIM 보조 · ${csSummaryText(x)}</b><span>C·A·N·S·L·M 자동판정 · I(기관 후원)는 무료 시계열 미연결</span><small>확인 필요 항목은 탈락이 아니라 SEC/가격 데이터가 충분하지 않아 판정을 보류한 것입니다.</small>`;
+    const box=$('#canSlimDetail'); box.innerHTML='';
+    csLetters.forEach(letter=>{
+      const item=(c.items||{})[letter]||{status:'UNKNOWN',value:'—',criterion:'데이터 연결 후 판정',why:'아직 필요한 데이터가 없습니다.'};
+      const row=document.createElement('div'); row.className='cs-detail-row';
+      row.innerHTML=`<div class="cs-mini-letter">${letter}</div><div class="cs-detail-main"><div class="cs-detail-head"><b>${csNames[letter]}</b><span class="cs-status ${statusClass(item.status)}">${statusLabel(item.status)}</span></div><div class="cs-value">현재값: <strong>${item.value??'—'}</strong></div><div class="cs-criterion">판정기준: ${item.criterion||'—'}</div><p>${item.why||''}</p></div>`;
+      box.appendChild(row);
+    });
+  }
+
+  function displayPrice(v){
+    if(v==null||!Number.isFinite(Number(v)))return '—';
+    return data.meta.market==='US'?`$${Number(v).toLocaleString('ko-KR',{maximumFractionDigits:2})}`:`${Math.round(Number(v)).toLocaleString('ko-KR')}원`;
+  }
+
+  function renderMinerviniDetail(x){
+    const box=$('#minerviniDetail');if(!box)return;
+    const v=x.vcp||{},r=x.minerviniRisk||{},f=x.sepaFundamental||{};
+    const stageChecks=x.stage2Checks||{};
+    const stagePass=Object.values(stageChecks).filter(Boolean).length+Number((x.rsPercentile||0)>=70);
+    const depths=(v.contractions||[]).map(c=>`-${fmt(c.depthPct,1)}%`).join(' → ')||'검출된 수축 없음';
+    const growth=(x.quarterlyEpsGrowthHistory||[]).map(z=>`${z.frame.replace('CY','')} ${signed(z.growthPct,0)}`).join(' → ');
+    const sales=(x.quarterlySalesGrowthHistory||[]).map(z=>`${z.frame.replace('CY','')} ${signed(z.growthPct,0)}`).join(' → ');
+    const margin=x.operatingMargin||x.grossMargin;
+    const marginLabel=x.operatingMargin?'영업이익률':'매출총이익률';
+    const fundamental=f.status==='STRONG'?'SEC 실적 성장·가속 우호':x.eps_yoy!=null?`최근 EPS ${signed(x.eps_yoy,1)}`:'비교 가능한 가속 데이터 부족';
+    const templateChecks=[...Object.entries(stageChecks),['RS 70 이상',(x.rsPercentile||0)>=70]];
+    const checkHtml=templateChecks.map(([name,pass])=>`<div class="minervini-check ${pass?'pass':''}">${pass?'✓':'×'} ${escBiz(name)}</div>`).join('');
+    const warning=r.heavy50Break?'50일선 대량거래 이탈 경고':r.climaxWatch?'클라이맥스 정량 주의':r.below21Ema?'21일 EMA 아래 확인':'주요 추세경고 없음';
+    const key=`wamo_sepa_entry_${data.meta.market||'KR'}_${x.ticker}`;
+    let saved='';try{saved=localStorage.getItem(key)||''}catch(e){}
+    box.innerHTML=`<div class="minervini-head"><b>추세 템플릿 ${stagePass}/8 · RS ${fmt(x.rsPercentile,0)}</b><span class="minervini-status ${String(v.status||'none').toLowerCase()}">${escBiz(v.label||'VCP 갱신 대기')}</span></div><div class="minervini-checks">${checkHtml||'<div class="minervini-check">자동갱신 후 8조건 표시</div>'}</div>
+      <div class="minervini-grid">
+        <div class="minervini-cell"><span>수축 깊이</span><b>${escBiz(depths)}</b></div>
+        <div class="minervini-cell"><span>거래량 고갈</span><b>${v.volumeDryRatio==null?'—':`${fmt(v.volumeDryRatio,2)}x · ${v.volumeDryUp?'충족':'미충족'}`}</b></div>
+        <div class="minervini-cell"><span>10일 가격폭</span><b>${v.range10Pct==null?'—':`${fmt(v.range10Pct,1)}% · ${v.tightRange?'타이트':'추가 축소 필요'}`}</b></div>
+        <div class="minervini-cell"><span>정량 피봇·거리</span><b>${displayPrice(v.pivot)} · ${v.distanceToPivotPct==null?'—':signed(v.distanceToPivotPct,1)}</b></div>
+        <div class="minervini-cell"><span>돌파 거래량</span><b>${v.breakoutVolumeRatio==null?'—':`${fmt(v.breakoutVolumeRatio,2)}x · ${v.breakout?'돌파 후보':'미확인'}`}</b></div>
+        <div class="minervini-cell"><span>추세 위험 신호</span><b>${warning}</b></div>
+        <div class="minervini-cell"><span>EPS 성장 가속</span><b>${escBiz(growth||fundamental)}</b></div>
+        <div class="minervini-cell"><span>매출 성장 가속</span><b>${escBiz(sales||'비교 데이터 부족')}</b></div>
+        <div class="minervini-cell"><span>${marginLabel}</span><b>${margin?`${fmt(margin.latestPct,1)}% · 전년동기比 ${signed(margin.changePp,1,'%p')}`:'비교 데이터 부족'}</b></div>
+      </div>
+      <div class="minervini-note"><b>VCP 정량 기준:</b> ${escBiz(v.criterion||'자동갱신 후 계산')}<br>${escBiz(v.caveat||'VCP는 차트 형태를 최종 확인해야 합니다.')} RS는 IBD 고유지수가 아닌 비교군 가격수익률 백분위 대체치입니다. 어닝 서프라이즈·애널리스트 추정치 상향은 무료 컨센서스가 없으면 판정하지 않습니다.</div>
+      <div class="risk-plan"><div class="risk-input-row"><label for="sepaEntryPrice">내 진입가(선택)</label><input id="sepaEntryPrice" type="number" min="0" step="any" value="${escBiz(saved)}" placeholder="숫자 입력"><button id="sepaRiskCalc" type="button">참고선 계산</button></div><div class="risk-levels" id="sepaRiskLevels"><div><span>현재 21일 EMA</span><b>${displayPrice(r.ema21)}</b></div><div><span>200일선 이격</span><b>${r.distanceFrom200Pct==null?'—':signed(r.distanceFrom200Pct,1)}</b></div><div><span>연속 양봉</span><b>${r.positiveDayStreak||0}일</b></div></div><div class="minervini-note">진입가 계산은 -5% 선호위험, -7~-8% 최대위험, +10~15%에서 본전 스톱 검토, +20~25% Base Hit를 단순 산술로 보여주는 교육용 참고선입니다. 실제 주문·매수·매도 지시가 아닙니다.</div></div>`;
+    const input=$('#sepaEntryPrice'),levels=$('#sepaRiskLevels');
+    const calculate=()=>{const entry=Number(input.value);if(!Number.isFinite(entry)||entry<=0)return;try{localStorage.setItem(key,String(entry))}catch(e){}levels.innerHTML=`<div><span>선호위험 -5%</span><b>${displayPrice(entry*.95)}</b></div><div><span>최대위험 -7~-8%</span><b>${displayPrice(entry*.93)} ~ ${displayPrice(entry*.92)}</b></div><div><span>2R·3R (+10·15%)</span><b>${displayPrice(entry*1.10)} · ${displayPrice(entry*1.15)}</b></div><div><span>Base Hit +20~25%</span><b>${displayPrice(entry*1.20)} ~ ${displayPrice(entry*1.25)}</b></div><div><span>현재가 대비</span><b>${signed((x.close/entry-1)*100,1)}</b></div><div><span>3:1 예시</span><b>-5% 위험 / +15% 기대</b></div>`};
+    $('#sepaRiskCalc').onclick=calculate;if(saved)calculate();
+  }
+
+
+  function renderCatalysts(x){
+    const box=$('#catalystList'); const rows=x.catalysts||[];
+    if(!rows.length){box.innerHTML='<div class="catalyst-empty">SEC 신규 공시의 질적 촉매 자동분류는 아직 연결하지 않았습니다. 위 SEC EDGAR 원문에서 직접 확인하세요.</div>';return;}
+    box.innerHTML=rows.slice(0,8).map(r=>`<div class="catalyst-item ${r.polarity||''}"><span class="catalyst-date">${r.date||'—'}</span><span class="catalyst-cat">${r.category||'공시'}</span><span class="catalyst-report">${r.report||'—'}</span></div>`).join('');
+  }
+
+  function renderDetailSectorFlow(x){
+    const box=$('#detailSectorFlow');
+    if(!box) return;
+    const sector=data.sectors.find(s=>s.name===x.sector)||{};
+    const a=x.sectorAction||{}, f7=a.flow7||sector.flow7||{}, f30=a.flow30||sector.flow30||{};
+    const members=(a.flowMembers&&a.flowMembers.length?a.flowMembers:sector.flowMembers)||[];
+    if(!a.flow7&&!a.flow30&&!sector.flow7&&!sector.flow30){
+      box.innerHTML='<b>소속 세부섹터 7·30일 흐름</b><br>업로드 후 자동갱신을 한 번 실행하면 표시됩니다.';
+      return;
+    }
+    const criteriaLabels={medianReturnPositive:'중앙값 +',medianRelativePositive:'시장대비 +',positiveBreadth60:'상승 60%+',outperformBreadth60:'시장상회 60%+',trendBreadth60:'추세선 위 60%+'};
+    const line=(label,f)=>{
+      const chips=Object.entries(criteriaLabels).map(([k,v])=>`<i class="${(f.criteria||{})[k]?'pass':''}">${(f.criteria||{})[k]?'✓':'×'} ${v}</i>`).join('');
+      return `<span><b>${label} · ${f.strong?'강세 충족':'강세 미충족'}</b><br>수익률 중앙값 ${signed(f.medianReturn,1)} · 시장대비 ${signed(f.medianRelative,1,'%p')}<br>상승 ${f.positiveCount||0}/${f.eligibleCount||0} (${fmt(f.positivePct,0)}%) · 시장상회 ${f.outperformCount||0}/${f.eligibleCount||0} (${fmt(f.outperformPct,0)}%)<br>${label==='7거래일'?'20일선':'60일선'} 위 ${fmt(f.trendBreadthPct,0)}% · 강세조건 ${f.conditionCount||0}/5<div class="detail-flow-criteria">${chips}</div></span>`;
+    };
+    const why={BOTH:'7일과 30일이 모두 강해 단기 확산과 중기 지속성이 함께 확인됐습니다.',NEW_7D:'30일 기준은 아직 미충족이지만 7일 기준이 새로 강해져 초기 확산 후보로 잡혔습니다.',PERSISTENT_30D:'30일 강세는 유지되지만 7일 기준은 미충족이므로 중기 흐름 속 단기 둔화 여부를 함께 봐야 합니다.'}[a.flowStatus]||'현재 7일·30일 강세 기준을 충족하지 않아 정식 섹터액션 후보는 아닙니다.';
+    const memberRows=members.map(m=>{
+      const current=m.ticker===x.ticker;
+      return `<button class="flow-member ${current?'current':''}" data-member-ticker="${escBiz(m.ticker||'')}"><span class="flow-member-name"><b>${escBiz(m.name||m.ticker||'—')}${current?' · 현재':''}</b><small>${escBiz(m.market||'')} · RS ${fmt(m.rs,0)}</small><span class="flow-member-axis"><i class="${(m.conditions||0)>=4?'on':''}">이 ${m.conditions||0}/6</i><i class="${m.stage2?'on':''}">S2</i><i class="${m.highZone?'on':''}">신고가</i><i class="${a.status==='CONFIRMED'?'on':''}">섹터</i></span></span><span class="flow-member-metric"><span>7일</span><b class="${cls(m.ret7)}">${signed(m.ret7,1)}</b></span><span class="flow-member-metric relative"><span>7일 시장比</span><b class="${cls(m.relative7)}">${signed(m.relative7,1,'%p')}</b></span><span class="flow-member-metric"><span>30일</span><b class="${cls(m.ret30)}">${signed(m.ret30,1)}</b></span><span class="flow-member-metric relative"><span>30일 시장比</span><b class="${cls(m.relative30)}">${signed(m.relative30,1,'%p')}</b></span></button>`;
+    }).join('');
+    box.innerHTML=`<b>${escBiz(x.sector)} · ${escBiz(a.label||'소속 세부섹터 흐름 확인')}</b><div class="flow-why"><b>왜 잡혔나</b> ${why} 정식 강세는 최소 3종목, 수익률 중앙값과 시장대비 중앙값이 모두 플러스, 5개 조건 중 4개 이상일 때만 인정합니다.${a.expanding?' 현재 상승 참여와 거래량이 함께 넓어져 ‘확산 중’입니다.':''}${a.concentrationWarning?' 다만 일부 종목 기여가 커 ‘쏠림 주의’가 붙었습니다.':''}</div><div class="detail-flow-grid">${line('7거래일',f7)}${line('30거래일',f30)}</div><div class="flow-members-title">섹터액션 판정에 포함된 종목 ${members.length}개<span>하락·시장하회 종목도 숨기지 않음 · 누르면 상세 전환</span></div><div class="flow-members-list">${memberRows||'<div class="alignment-empty">동참 종목별 수익률은 다음 자동갱신 후 표시됩니다.</div>'}</div>`;
+    box.querySelectorAll('[data-member-ticker]').forEach(btn=>{btn.onclick=e=>{e.stopPropagation();const target=data.stocks.find(z=>z.ticker===btn.dataset.memberTicker);if(target)openDetail(target)}});
+  }
+
+  function openDetail(x){
+    if(!x) return; detailStock=x;
+    updateNaverResearchLink(x);
+    renderSourceSeparation(x);
+    $('#detailName').textContent=x.name; $('#detailSub').textContent=`${x.displayTicker||x.ticker} · ${x.exchange||'미국시장'} · ${x.sector}${x.krxSector&&x.krxSector!==x.sector?' · '+x.krxSector:''} · ${x.date||data.meta.asOf} · ${x.dataSource||'데이터소스 확인 필요'} · ${x.dataStatus||'—'}`;
+    $('#detailSignal').innerHTML=`<span class="signal sig-${x.signal}">${signalLabel[x.signal]||x.signal}</span>${highZoneBadge(x)}${sectorActionBadge(x)}`;
+    $('#dScore').textContent=fmt(x.score,0); $('#dRS').textContent=fmt(x.rsPercentile,0); $('#dOneilRS').textContent=fmt(x.oneilRsPercentile,0);
+    $('#dHigh').textContent=`${fmt(x.high52Ratio,1)}%`;
+    const highDays=x.high52WindowDays||Math.min(252,(x.history||[]).length);
+    $('#dHighNote').textContent=highDays<252?`신규 상장 · 보유 이력 ${highDays}거래일 고점 기준`:'최근 252거래일 고점 기준';
+    $('#dHighNote').classList.toggle('short-history-note',highDays<252);
+    $('#dHistoricalHigh').textContent=x.historicalHighRatio==null?'—':`${fmt(x.historicalHighRatio,1)}%`;
+    $('#dHistoryRange').textContent=x.historyStartDate?`${x.historyStartDate}부터 · 고점 ${x.historicalHighDate||'—'}`:'전체 이력 갱신 필요';
+    $('#dVol').textContent=`${fmt(x.volumeRatio,1)}x`;
+    $('#dCond').textContent=`${x.conditionCount}/6`; $('#dStage').textContent=x.trendTemplate?'YES':'NO'; $('#dDay').textContent=signed(x.chg1d); $('#dRet7').textContent=signed(x.ret7); $('#dRet30').textContent=signed(x.ret30);
+    renderDetailSectorFlow(x);
+    renderAlignmentDetail(x);
+    renderCatalysts(x);
+    $('#detailWhy').textContent=x.signalReason||'—';
+    const be=document.getElementById('businessEasy'), bm=document.getElementById('businessModel'), bs=document.getElementById('businessSource');
+    if(be) be.textContent=x.businessModelEasy||`${x.sector} 업종 기업입니다.`;
+    if(bm) bm.textContent=x.businessModel||'회사별 사업보고서 핵심 설명은 아직 준비되지 않았습니다.';
+    if(bs) bs.textContent=`근거: ${x.businessModelSource||'SEC EDGAR 연결 대기'}${x.businessModelReportDate?' · '+x.businessModelReportDate:''}`;
+    updateDetailWatch();
+    renderBusinessProfilePro(x);
+    const list=$('#conditions'); list.innerHTML=''; Object.entries(x.conditions||{}).forEach(([k,v])=>{list.innerHTML+=`<div class="condition-row"><span>${k}</span><span class="${v?'yes':'no'}">${v?'충족':'미충족'}</span></div>`});
+    renderCanSlimDetail(x); renderMinerviniDetail(x); drawChart(x); $('#drawer').classList.add('open'); $('#drawer').setAttribute('aria-hidden','false'); $('#drawerBackdrop').classList.add('open'); document.body.classList.add('drawer-open');
+  }
+
+
+  function escBiz(v){
+    return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // WAMO_FIXED_BUSINESS_DB_V1
+  // Static company-specific descriptions. This block is intentionally outside WAMO_DATA
+  // so the daily updater can replace market data without deleting these profiles.
+  const WAMO_BUSINESS_DB = {"001450":{"summary":"현대해상은 자동차·장기·일반보험을 판매하는 손해보험사입니다.","products":"자동차보험, 장기 보장성보험, 일반보험","customers":"개인과 기업 보험계약자","revenue":"보험료에서 보험금·사업비를 뺀 보험손익과 보험자산 운용수익으로 돈을 법니다.","drivers":"손해율, 보험료율, 신계약 성장, CSM, 금리·운용수익률","segments":["손해보험"]},"181710":{"summary":"NHN은 게임을 기반으로 결제·광고, 커머스, 클라우드·IT, 콘텐츠 사업을 함께 하는 인터넷·IT 그룹입니다.","products":"한게임 등 게임, PAYCO·결제/광고, 커머스 솔루션, NHN Cloud·Dooray 등","customers":"게임 이용자, 온라인 가맹점·기업, 공공·기업 IT 고객","revenue":"게임 아이템·서비스 매출, 결제/광고 수수료, 커머스·클라우드 사용료와 구축비가 주요 수익원입니다.","drivers":"게임 흥행, 결제 거래액, 클라우드/GPU 인프라 가동률, 기업 고객 증가","segments":["게임","결제·광고","커머스","클라우드·IT","콘텐츠"]},"078930":{"summary":"GS는 GS에너지와 GS리테일 등을 핵심 축으로 보유하는 지주회사입니다. 에너지 계열을 통해 정유·발전 사업에 간접 노출됩니다.","products":"GS에너지, GS리테일, GS EPS·GS E&R·GS글로벌 등 주요 계열사 지분","customers":"직접 제품을 파는 회사라기보다 자회사·관계회사 가치와 배당을 보유하는 구조입니다.","revenue":"계열사 배당금, 지분법이익, 브랜드·용역 수익 등이 지주회사 실적의 핵심입니다.","drivers":"GS칼텍스 정제마진, 발전 전력가격·연료비, GS리테일 실적, 자회사 배당·자산가치","segments":["지주회사","에너지·발전","리테일"]},"161890":{"summary":"한국콜마는 화장품 ODM/OEM이 핵심인 제조업체입니다. 고객 브랜드 대신 제품을 개발·제형화·생산해 납품하며, 연결 기준으로 제약·H&B와 화장품 용기 사업도 보유합니다.","products":"스킨케어·선케어·메이크업 등 화장품 ODM/OEM, 전문의약품·H&B, 화장품 용기","customers":"국내외 화장품 브랜드사와 제약·헬스케어 유통채널","revenue":"화장품은 고객 주문량×납품단가가 기본 구조이고, 제약·H&B·용기 제품 매출이 연결 실적에 더해집니다.","drivers":"인디·글로벌 브랜드 수주, 선케어 등 고부가 제품 믹스, 해외 고객 확대, 공장 가동률, 원재료비","segments":["화장품 ODM/OEM","전문의약품·H&B","화장품 용기"]},"241710":{"summary":"코스메카코리아는 화장품 브랜드를 대신해 제품을 기획·개발·생산하는 ODM/OEM 업체입니다.","products":"스킨케어·메이크업·선케어 등 화장품 ODM/OEM","customers":"국내외 화장품 브랜드사; 미국에서는 잉글우드랩 등을 통해 고객 기반을 보유합니다.","revenue":"브랜드사의 주문량×납품단가가 매출의 핵심이며, 생산 가동률과 제품 믹스가 마진을 좌우합니다.","drivers":"북미·글로벌 고객 수주, 인디브랜드 성장, 공장 가동률, 고마진 제품 비중","segments":["화장품 ODM/OEM","북미 생산"]},"161390":{"summary":"한국타이어앤테크놀로지는 승용차·SUV·트럭용 타이어를 개발·생산해 완성차와 교체용 시장에 판매합니다.","products":"신차용(OE)·교체용(RE) 타이어, 고인치·전기차용 타이어","customers":"글로벌 완성차 업체, 타이어 유통망·딜러와 소비자","revenue":"타이어 판매량×판매단가가 핵심이며 고인치·프리미엄 제품 비중이 수익성에 영향을 줍니다.","drivers":"글로벌 자동차 생산·교체수요, 고인치/EV 타이어 믹스, 천연고무·합성고무 가격, 환율","segments":["타이어"]},"010950":{"summary":"S-Oil은 원유를 정제해 휘발유·경유·항공유를 만들고 석유화학·윤활기유 제품도 판매하는 정유회사입니다.","products":"휘발유·경유·항공유, 석유화학 제품, 윤활기유","customers":"국내외 주유·산업·항공·석유화학 고객","revenue":"원유 매입가격과 석유제품 판매가격의 차이인 정제마진, 석유화학·윤활기유 스프레드가 이익의 핵심입니다.","drivers":"정제마진, 유가·재고평가, 가동률, 석유화학 스프레드, 신규 설비 램프업","segments":["정유","석유화학","윤활기유"]},"086790":{"summary":"하나금융지주는 하나은행을 중심으로 카드·증권·보험·자산운용사를 거느린 금융지주회사입니다.","products":"은행 대출·예금, 카드, 증권·IB, 보험·자산관리","customers":"개인·기업·기관 금융고객","revenue":"은행 순이자이익과 카드·증권·자산관리 수수료, 계열사 이익이 핵심입니다.","drivers":"대출 성장, 순이자마진(NIM), 대손비용, 비이자이익, 자본비율·주주환원","segments":["은행","카드","증권·IB","보험·자산관리"]},"055550":{"summary":"신한지주는 신한은행을 중심으로 카드·증권·보험·자산운용을 보유한 종합 금융지주입니다.","products":"은행, 카드, 증권, 보험, 자산관리 서비스","customers":"개인·기업·기관 금융고객","revenue":"순이자이익과 카드·증권·보험 등 비은행 계열사의 수수료·운용이익이 핵심입니다.","drivers":"NIM, 대출 성장, 대손비용, 비은행 이익, CET1과 주주환원","segments":["은행","카드","증권","보험"]},"131290":{"summary":"티에스이는 반도체 검사 공정에 쓰이는 테스트 인터페이스 부품과 검사 솔루션을 공급합니다.","products":"프로브카드, 테스트 소켓, 인터페이스 보드 등 반도체 검사 부품","customers":"메모리·비메모리 반도체 제조사와 후공정 테스트 업체","revenue":"고객 공정·칩 규격에 맞춘 검사부품 납품과 교체 수요에서 매출이 발생합니다.","drivers":"반도체 테스트 물량, 고사양 칩 전환, 신규 고객 채택, 소모성 부품 교체주기","segments":["반도체 테스트 인터페이스"]},"006360":{"summary":"GS건설은 주택·건축, 인프라, 플랜트 등을 수주해 설계·시공하는 종합 건설사입니다.","products":"아파트·건축물, 토목·인프라, 플랜트·신사업","customers":"주택 수요자, 시행사, 기업, 정부·공공기관","revenue":"수주한 공사의 진행률에 따라 매출을 인식하고 주택 개발·분양에서 이익을 냅니다.","drivers":"신규 수주, 주택 분양률, 원가율, 공사손실 충당금, 해외 플랜트 수익성","segments":["주택·건축","인프라","플랜트"]},"009420":{"summary":"한올바이오파마는 의약품을 판매하면서 자가면역·안과 등 바이오 신약 파이프라인을 개발하는 제약·바이오 회사입니다.","products":"전문의약품·일반의약품, 자가면역·안과 신약 후보물질","customers":"병원·약국·의약품 유통사와 글로벌 제약 파트너","revenue":"국내 의약품 판매와 신약 기술이전 계약금·마일스톤·로열티가 주요 수익원입니다.","drivers":"임상 결과, 글로벌 파트너 개발 진척, 허가·마일스톤, 기존 의약품 판매 성장","segments":["의약품","바이오 신약"]},"282330":{"summary":"BGF리테일은 편의점 CU를 운영하는 프랜차이즈 유통회사입니다.","products":"CU 편의점 상품·서비스, 가맹점 운영 지원","customers":"편의점 소비자와 CU 가맹점주","revenue":"상품 유통마진과 가맹 관련 수익이 핵심이며 점포 수·점포당 매출이 실적을 좌우합니다.","drivers":"점포 순증, 동일점 매출, 상품 믹스, 물류·인건비, 소비경기","segments":["편의점 CU"]},"073240":{"summary":"금호타이어는 승용차·SUV·트럭용 타이어를 생산해 신차용과 교체용 시장에 판매합니다.","products":"승용차·SUV·트럭 타이어, 전기차용 타이어","customers":"완성차 업체와 글로벌 타이어 유통망·소비자","revenue":"타이어 판매량×ASP가 매출의 핵심이며 공장 가동률과 제품 믹스가 이익률을 좌우합니다.","drivers":"판매량, 고인치·EV 타이어 비중, 원재료 가격, 생산능력·가동률, 환율","segments":["타이어"]},"483650":{"summary":"달바글로벌은 d'Alba를 중심으로 화장품을 개발·브랜딩해 글로벌 소비자에게 판매하는 K-뷰티 브랜드 회사입니다.","products":"화이트 트러플 기반 스킨케어·미스트·선케어, 이너뷰티·홈뷰티 제품","customers":"미국·일본·한국 등 온라인·오프라인 유통채널의 최종 소비자","revenue":"자체 브랜드 제품 판매가 핵심이며 해외 매출 비중과 채널 확장이 성장의 핵심입니다.","drivers":"미국·일본 등 해외 침투율, 히트제품 지속성, 선케어 시즌성, 광고 효율, 유통망 확대","segments":["d'Alba 화장품","이너뷰티","홈뷰티"]},"005830":{"summary":"DB손해보험은 자동차·장기·일반보험을 판매하는 손해보험사입니다.","products":"자동차보험, 장기 보장성보험, 일반보험","customers":"개인·기업 보험계약자","revenue":"보험손익과 보험자산 운용수익으로 돈을 법니다.","drivers":"손해율, 신계약 성장, CSM, 사업비, 금리·운용수익률","segments":["손해보험"]},"088350":{"summary":"한화생명은 사망·건강·연금·저축성 상품 등을 판매하는 생명보험사입니다.","products":"보장성보험, 연금·저축성보험, 변액보험 등","customers":"개인 보험계약자와 기업 단체보험 고객","revenue":"보험계약 서비스마진과 투자수익이 핵심이며 신계약 가치와 자본건전성이 중요합니다.","drivers":"신계약 CSM, 보장성 상품 판매, 해지율, 금리, 자본비율","segments":["생명보험"]},"064760":{"summary":"티씨케이는 반도체 공정용 SiC·흑연 부품을 만드는 기능성 세라믹 소재·부품 업체입니다.","products":"고순도 흑연 부품, SiC/TaC 코팅 부품, CVD SiC 링·샤워헤드·더미웨이퍼","customers":"반도체·LED·웨이퍼 제조장비 업체와 반도체 생산라인","revenue":"식각·증착 등 공정장비에 들어가는 소모성 고순도 부품을 납품하고 교체 수요에서 반복 매출이 발생합니다.","drivers":"반도체 가동률, 식각 공정 강도, NAND 적층·첨단공정 투자, 신규 고객 인증, 소모품 교체주기","segments":["SiC 부품","고순도 흑연"]},"017670":{"summary":"SK텔레콤은 이동통신을 기반으로 AI·데이터센터·기업용 ICT 사업을 확대하는 통신회사입니다.","products":"5G/LTE 이동통신, 초고속·기업 통신, 데이터센터·AI 서비스","customers":"개인 이동통신 가입자와 기업·공공기관","revenue":"월 통신요금과 기업 통신·데이터센터·AI 서비스 사용료가 핵심입니다.","drivers":"가입자 ARPU, 해지율, 마케팅비, 데이터센터 가동률, AI B2B 매출","segments":["이동통신","AI·데이터센터","B2B"]},"068270":{"summary":"셀트리온은 항체 바이오시밀러를 개발·생산하고 글로벌 시장에 판매하는 바이오제약 회사입니다.","products":"램시마 계열 등 바이오시밀러와 신약·후속 파이프라인","customers":"글로벌 병원·의약품 유통사·보험자·환자 시장","revenue":"바이오의약품 판매량×가격이 핵심이며 자체 판매망 확대와 고마진 제품 믹스가 중요합니다.","drivers":"신제품 허가·출시, 미국·유럽 점유율, 가격 경쟁, 생산수율, 직판 비중","segments":["바이오시밀러","신약"]},"204320":{"summary":"HL만도는 제동·조향·현가와 ADAS 등 자동차 핵심 시스템을 완성차 업체에 공급하는 부품사입니다.","products":"브레이크, 스티어링, 서스펜션, ADAS·전동화 부품","customers":"글로벌 완성차 제조사","revenue":"완성차 생산량×부품 탑재단가가 매출을 결정하고 전장·ADAS 비중이 수익성에 영향을 줍니다.","drivers":"고객 생산량, 신규 수주, ADAS·전동화 믹스, 원재료비, 환율","segments":["샤시 부품","ADAS"]},"271560":{"summary":"오리온은 초코파이·스낵·비스킷 등을 한국·중국·베트남·러시아 등에서 생산·판매하는 식품회사입니다.","products":"파이, 스낵, 비스킷, 캔디 등 제과제품","customers":"대형마트·편의점·온라인·도매 유통망과 최종 소비자","revenue":"제품 판매량×판매단가가 핵심이며 현지 생산·유통망과 브랜드력이 마진을 좌우합니다.","drivers":"해외 판매 성장, 가격 인상, 원재료비, 신제품, 중국·베트남 소비경기","segments":["제과","해외 식품"]},"140860":{"summary":"파크시스템스는 나노 단위 표면을 측정하는 원자현미경(AFM)과 첨단 나노계측 장비를 만드는 회사입니다.","products":"연구용·산업용 AFM, 웨이퍼 계측·광학 프로파일링 등 나노계측 장비","customers":"글로벌 반도체 기업, 대학·연구소, 재료·디스플레이 연구 고객","revenue":"고가 계측장비 판매와 설치·서비스·옵션 매출이 핵심입니다.","drivers":"반도체 미세화·첨단패키징 계측 수요, 산업용 AFM 채택, 수주·납기, 해외 서비스망","segments":["원자현미경 AFM","나노계측"]},"316140":{"summary":"우리금융지주는 우리은행을 중심으로 증권·카드·캐피탈 등 금융계열사를 보유한 금융지주입니다.","products":"은행 대출·예금, 카드, 증권·IB, 캐피탈 등","customers":"개인·기업·기관 금융고객","revenue":"은행 순이자이익과 비은행 계열사의 수수료·운용이익이 핵심입니다.","drivers":"NIM, 대출 성장, 대손비용, 비은행 이익, 자본비율·주주환원","segments":["은행","증권","카드·캐피탈"]},"028670":{"summary":"팬오션은 벌크선을 중심으로 원자재를 운송하는 해운회사입니다.","products":"철광석·석탄·곡물 등 드라이벌크 운송, 일부 탱커·컨테이너 등","customers":"글로벌 원자재 생산·무역·철강·발전·곡물 기업","revenue":"운송물량×운임이 핵심이며 보유선·용선 비용 차이가 이익률을 좌우합니다.","drivers":"BDI 등 벌크 운임, 중국 원자재 수요, 선박 공급, 유가·용선료","segments":["드라이벌크 해운"]},"058610":{"summary":"에스피지는 정밀 기어드모터와 감속기를 만드는 모션제어 부품 업체입니다.","products":"AC/DC 기어드모터, 정밀감속기, 산업·로봇용 모터","customers":"가전·산업자동화·로봇·물류장비 제조사","revenue":"모터·감속기 출하량×판매단가가 매출의 핵심이며 고정밀 제품 비중이 마진을 좌우합니다.","drivers":"로봇·자동화 수요, 정밀감속기 고객 인증, 제품 믹스, 원재료비","segments":["기어드모터","정밀감속기"]},"475150":{"summary":"SK이터닉스는 태양광·풍력·ESS·연료전지 발전자산을 개발·운영하고 전력중개까지 확장하는 신재생에너지 사업자입니다.","products":"태양광·육상/해상풍력, ESS, 연료전지, 전력중개·VPP","customers":"전력시장, 장기 전력구매 고객, 발전사업 투자자·산업체","revenue":"발전 전력 판매, REC·장기계약, 개발·EPC·운영 수익과 ESS·전력거래 수익이 핵심입니다.","drivers":"신규 발전소 상업운전, 발전량·전력가격, 프로젝트 파이프라인, 금융비용, 미국 ESS 확대","segments":["태양광","풍력","ESS","연료전지","VPP"]},"006340":{"summary":"대원전선은 전력·통신 인프라에 쓰이는 전선과 케이블을 생산하는 제조업체입니다.","products":"전력케이블, 절연전선, 자동차·산업용 전선 등","customers":"전력·건설·산업 설비 고객과 전선 유통망","revenue":"구리 등 원재료 가격이 반영된 전선 판매량×단가가 매출의 핵심입니다.","drivers":"전력망 투자, 건설·설비 수요, 구리가격과 판가 전가, 가동률","segments":["전선·케이블"]},"105560":{"summary":"KB금융은 KB국민은행을 중심으로 증권·보험·카드 등 비은행 사업을 함께 보유한 금융지주입니다.","products":"은행, 증권, 손해보험, 카드, 자산운용","customers":"개인·기업·기관 금융고객","revenue":"순이자이익과 증권·보험·카드 등 비은행 수익이 핵심입니다.","drivers":"NIM, 대출 성장, 대손비용, 비은행 이익, CET1·자사주·배당","segments":["은행","증권","보험","카드"]},"032640":{"summary":"LG유플러스는 이동통신·초고속인터넷·IPTV와 기업용 통신·IDC 서비스를 제공하는 통신회사입니다.","products":"5G/LTE, 인터넷·IPTV, 기업 네트워크, IDC·솔루션","customers":"개인 가입자와 기업·공공기관","revenue":"월 통신요금과 기업용 네트워크·데이터센터 사용료가 반복 매출을 만듭니다.","drivers":"가입자·ARPU, 해지율, 마케팅비, IDC 수요, 기업사업 성장","segments":["이동통신","홈미디어","B2B·IDC"]},"175330":{"summary":"JB금융지주는 전북은행·광주은행 등을 중심으로 캐피탈 등 계열사를 보유한 지방금융지주입니다.","products":"은행 대출·예금, 캐피탈·금융 서비스","customers":"지역 개인·중소기업과 전국 금융고객","revenue":"은행 순이자이익과 캐피탈 등 비은행 수익이 핵심입니다.","drivers":"NIM, 대출 성장, 연체율·대손비용, 자본비율, 배당·주주환원","segments":["은행","캐피탈"]},"028050":{"summary":"삼성E&A는 석유화학·정유·가스·산업설비 플랜트를 설계·조달·시공(EPC)하는 엔지니어링 회사입니다.","products":"정유·석유화학·가스·산업·환경 플랜트 EPC","customers":"중동·아시아 등 글로벌 에너지·화학·산업 기업","revenue":"수주 프로젝트의 진행률에 따라 매출을 인식하며 설계·조달·시공 마진이 핵심입니다.","drivers":"신규 수주, 수주잔고, 프로젝트 원가율, 중동 CAPEX, 공정 지연·클레임","segments":["플랜트 EPC"]},"000810":{"summary":"삼성화재는 자동차·장기·일반보험을 판매하는 대형 손해보험사입니다.","products":"자동차보험, 장기 보장성보험, 기업 일반보험","customers":"개인·기업 보험계약자","revenue":"보험손익과 보험자산 운용수익으로 돈을 법니다.","drivers":"손해율, 신계약 CSM, 사업비, 금리·운용수익률, 자본정책","segments":["손해보험"]},"086280":{"summary":"현대글로비스는 완성차 물류·해운과 자동차 유통, CKD 부품 공급을 담당하는 종합 물류회사입니다.","products":"완성차 해상운송(PCTC), 육상물류, CKD, 중고차·유통","customers":"현대차그룹을 포함한 글로벌 완성차·부품·화주 기업","revenue":"운송물량×운임, 물류 계약, CKD·유통 매출이 핵심입니다.","drivers":"완성차 수출물량, PCTC 운임, 비계열 고객 확대, 환율, 선대 공급","segments":["물류","해운","CKD·유통"]},"098460":{"summary":"고영은 전자·반도체 생산라인의 불량을 3차원으로 측정하는 검사장비 업체입니다.","products":"3D SPI(납도포 검사), 3D AOI(부품 검사), 반도체 패키징 검사장비","customers":"글로벌 전자제품·자동차전장·반도체/OSAT 제조사","revenue":"생산라인용 검사장비 판매와 소프트웨어·서비스에서 매출이 발생합니다.","drivers":"전자·반도체 CAPEX, 첨단패키징 검사 수요, 신규 장비 채택, 고객 라인 증설","segments":["3D 검사장비","반도체 패키징 검사"]},"241560":{"summary":"두산밥캣은 소형 건설기계와 농업·조경 장비를 글로벌 딜러망에 판매합니다.","products":"스키드스티어로더, 컴팩트 트랙로더, 미니굴착기, 농업·조경장비","customers":"건설·농업·렌털업체와 북미 등 글로벌 딜러·최종 사용자","revenue":"장비 판매량×판매단가와 부품·애프터마켓 매출이 핵심입니다.","drivers":"북미 건설·주택 경기, 딜러 재고, 가격·제품 믹스, 원재료비·환율","segments":["소형 건설기계","농업·조경장비"]},"005930":{"summary":"삼성전자는 메모리·파운드리·시스템반도체와 스마트폰·TV·가전, 디스플레이 등 전자제품을 만드는 글로벌 종합 전자회사입니다.","products":"DRAM·NAND·HBM, 파운드리, 스마트폰, TV·가전, 디스플레이","customers":"데이터센터·전자기기 기업과 전세계 소비자","revenue":"반도체와 완제품의 출하량×ASP가 핵심이며 사업부별 사이클과 제품 믹스가 이익을 좌우합니다.","drivers":"메모리 가격·HBM 경쟁력, 파운드리 수율, 스마트폰 판매, AI 서버 수요, CAPEX·원가","segments":["메모리","파운드리","모바일","가전·TV","디스플레이"]},"138040":{"summary":"메리츠금융지주는 메리츠화재와 메리츠증권을 중심으로 보험·증권 사업을 보유한 금융그룹입니다.","products":"손해보험, 증권·IB·트레이딩·자산관리","customers":"보험계약자, 개인·기관 투자자, 기업금융 고객","revenue":"보험손익·운용수익과 증권의 IB·트레이딩·수수료 수익이 핵심입니다.","drivers":"보험 CSM·손해율, 증권 운용손익·부동산 익스포저, 자본배분·자사주","segments":["손해보험","증권"]},"079550":{"summary":"LIG디펜스앤에어로스페이스는 유도무기·감시정찰·지휘통제·항공전자 등 첨단 방산체계를 개발·생산하는 방산업체입니다.","products":"정밀유도무기(PGM), 감시정찰(AEW), 지휘통제·통신(C4I), 항공전자·전자전 등","customers":"대한민국 정부·방위사업청과 해외 정부·방산 고객","revenue":"장기 방산 수주 계약의 개발·양산·정비 매출이 핵심이며 수출 비중 확대가 성장동력입니다.","drivers":"국내 방위력개선 수주, 중동·미국 등 수출, 수주잔고, 개발비·양산 원가","segments":["정밀유도무기","감시정찰","C4I","항공전자"]},"278470":{"summary":"에이피알은 메디큐브를 중심으로 화장품과 홈뷰티 디바이스를 글로벌 소비자에게 직접 판매하는 뷰티테크 회사입니다.","products":"메디큐브 화장품·AGE-R 뷰티 디바이스, 기타 뷰티·라이프스타일 브랜드","customers":"한국·미국·일본 등 온라인·오프라인 최종 소비자","revenue":"자체 브랜드 제품 판매가 핵심이며 디바이스와 화장품의 교차판매·재구매가 수익성을 높입니다.","drivers":"미국·일본 등 해외 성장, 신제품 히트, 디바이스 보급대수, 화장품 재구매, 마케팅 효율","segments":["화장품","홈뷰티 디바이스"]},"267250":{"summary":"HD현대는 조선·해양, 에너지, 건설기계 등 핵심 계열사를 지배하는 지주회사입니다.","products":"HD한국조선해양 계열 조선, 에너지, 건설기계 계열사 지분","customers":"지주회사로서 직접 소비자 매출보다 계열사 지분가치·배당·브랜드 수익이 중요합니다.","revenue":"자회사 배당·지분법이익과 브랜드·용역 수익이 핵심입니다.","drivers":"조선 수주·선가, 정유마진, 건설기계 경기, 자회사 배당·자본정책","segments":["지주회사","조선","에너지","건설기계"]},"036570":{"summary":"NC는 리니지 등 게임 IP를 개발·운영하고 PC·모바일 게임에서 수익을 내는 게임회사입니다.","products":"MMORPG 등 PC·모바일 게임과 게임 IP","customers":"한국·아시아·북미 등 게임 이용자","revenue":"게임 내 아이템·패스·콘텐츠 결제와 신작 매출이 핵심입니다.","drivers":"신작 흥행, 기존 IP 이용자 유지, 글로벌 출시, 마케팅·개발비 효율","segments":["게임"]},"033780":{"summary":"KT&G는 담배를 중심으로 전자담배(NGP), 건강기능식품·홍삼, 부동산 등 사업을 보유한 소비재 그룹입니다.","products":"궐련담배, 전자담배·스틱, 홍삼·건강기능식품, 일부 부동산 사업","customers":"국내외 담배 소비자와 건강기능식품 소비자","revenue":"담배 판매량×가격이 핵심이고 해외 담배·NGP와 건강기능식품 매출이 성장축입니다.","drivers":"해외 담배 판매, NGP 침투율, 가격·믹스, 환율, 원재료·마케팅비","segments":["담배","NGP","건강기능식품"]},"011780":{"summary":"금호석유화학은 합성고무·합성수지·정밀화학 등 석유화학 제품을 생산하는 소재회사입니다.","products":"합성고무, 합성수지, 페놀유도체·정밀화학, 에너지 등","customers":"타이어·자동차·가전·산업재 제조사","revenue":"제품 판매가격과 원재료 가격의 차이인 스프레드와 판매물량이 이익을 좌우합니다.","drivers":"합성고무·수지 스프레드, 타이어 수요, 원재료 가격, 가동률·증설","segments":["합성고무","합성수지","화학"]},"003490":{"summary":"대한항공은 국제·국내 여객과 항공화물 운송을 주력으로 하고 항공우주·정비 사업도 보유합니다.","products":"여객 운송, 화물 운송, 항공우주·MRO 서비스","customers":"여행객, 글로벌 화주·물류기업, 정부·항공우주 고객","revenue":"여객수×운임과 화물량×운임이 핵심이며 항공우주·정비 매출이 더해집니다.","drivers":"국제선 수요, 여객·화물 운임, 유가, 환율, 공급좌석·기재 효율","segments":["항공여객","항공화물","항공우주"]},"139130":{"summary":"iM금융지주는 iM뱅크를 중심으로 증권·생명보험·캐피탈 등 계열사를 보유한 금융지주입니다.","products":"은행, 증권, 보험, 캐피탈 등 금융서비스","customers":"대구·경북 기반 및 전국 개인·기업 금융고객","revenue":"은행 순이자이익과 비은행 계열사 수수료·운용이익이 핵심입니다.","drivers":"NIM, 대출 성장, 대손비용, 비은행 실적, 자본비율·주주환원","segments":["은행","증권","보험·캐피탈"]},"005940":{"summary":"NH투자증권은 주식 중개·자산관리, 기업금융(IB), 트레이딩을 하는 종합 증권사입니다.","products":"브로커리지, WM, IPO·회사채·M&A 등 IB, 채권·주식 운용","customers":"개인·기관 투자자와 자금조달·M&A가 필요한 기업","revenue":"위탁매매·WM·IB 수수료와 채권·주식 트레이딩·이자수익이 핵심입니다.","drivers":"증시 거래대금, IPO·회사채 발행, 금리, 운용손익, 부동산 금융 건전성","segments":["증권","WM","IB","트레이딩"]},"257720":{"summary":"실리콘투는 한국 화장품 브랜드를 해외 소비자·리셀러에게 유통하는 K-뷰티 글로벌 유통 플랫폼 회사입니다.","products":"다수 K-뷰티 브랜드 제품의 해외 B2B/B2C 유통, StyleKorean 등 온라인 채널","customers":"해외 소비자, 현지 리테일러·도매상·온라인 판매자","revenue":"화장품을 매입해 해외에 판매하는 유통마진과 자체 물류·플랫폼 확장에서 수익이 발생합니다.","drivers":"K-뷰티 해외 수요, 신규 국가·물류센터 확대, 브랜드·SKU 확보, 재고회전·운임","segments":["K-뷰티 글로벌 유통"]},"096770":{"summary":"SK이노베이션은 정유·석유화학·윤활유와 배터리, LNG·전력 등 에너지 사업을 묶은 종합 에너지 그룹입니다.","products":"석유제품, 화학·윤활유, 배터리, LNG·발전·에너지 솔루션","customers":"운송·산업·석유화학 고객, 완성차 업체, 전력·가스 고객","revenue":"정유·화학 스프레드, 배터리 판매, LNG·발전 수익이 핵심입니다.","drivers":"정제마진, 배터리 가동률·수율, EV 수요, 유가·가스가격, 재무구조","segments":["정유","화학·윤활유","배터리","LNG·전력"]},"028300":{"summary":"HLB는 항암제를 중심으로 신약 개발과 바이오 사업을 추진하는 바이오 그룹입니다.","products":"항암 신약 후보물질과 바이오·헬스케어 계열 사업","customers":"향후 허가 시 병원·의약품 시장과 글로벌 제약 파트너가 핵심 고객입니다.","revenue":"현재는 계열 사업 매출과 투자·기술개발 구조가 섞여 있으며, 핵심 투자포인트는 신약 허가·상업화 가치입니다.","drivers":"임상·규제 허가, 상업화 일정, 파트너십, 자금조달·희석 위험","segments":["바이오 신약"]},"214450":{"summary":"파마리서치는 PN/PDRN 기반 재생의학 제품을 중심으로 의료기기·의약품·화장품을 판매합니다.","products":"리쥬란 등 피부 재생 의료기기, 관절·의약품, 화장품","customers":"피부과·성형외과 등 의료기관과 유통채널·소비자","revenue":"시술용 의료기기 반복 사용량과 의약품·화장품 판매가 핵심입니다.","drivers":"리쥬란 국내외 시술 확대, 의료기기 허가·수출, ASP·제품 믹스, 생산능력","segments":["재생의학 의료기기","의약품","화장품"]},"032830":{"summary":"삼성생명은 보장성·연금·저축성 보험을 판매하고 대규모 보험자산을 운용하는 생명보험사입니다.","products":"보장성보험, 연금·저축성보험, 변액보험 등","customers":"개인 보험계약자와 기업 단체보험 고객","revenue":"보험서비스 결과와 보험자산 운용수익이 핵심입니다.","drivers":"신계약 CSM, 보장성 판매, 해지율, 금리·운용수익률, 자본정책","segments":["생명보험"]},"035420":{"summary":"NAVER는 검색·광고를 기반으로 커머스, 핀테크, 콘텐츠, 클라우드·AI 사업을 운영하는 인터넷 플랫폼 회사입니다.","products":"검색·디스플레이 광고, 스마트스토어·커머스, 네이버페이, 웹툰, 클라우드·AI","customers":"이용자, 광고주, 판매자, 결제 가맹점, 기업·공공 클라우드 고객","revenue":"광고, 커머스 중개·결제 수수료, 콘텐츠 결제, 클라우드 사용료가 핵심입니다.","drivers":"검색/광고 성장, 커머스 거래액, 핀테크 이용, AI 검색 수익화, 클라우드 고객 확대","segments":["검색·광고","커머스","핀테크","콘텐츠","클라우드·AI"]},"035720":{"summary":"카카오는 카카오톡을 중심으로 광고·커머스, 모빌리티, 핀테크, 콘텐츠 등 플랫폼 사업을 운영합니다.","products":"카카오톡 광고·커머스, 모빌리티, 페이, 게임·웹툰·음악 등","customers":"메신저 이용자, 광고주·판매자, 모빌리티·결제 이용자, 콘텐츠 소비자","revenue":"광고·커머스 수수료, 플랫폼 거래수수료, 콘텐츠 결제와 계열사 수익이 핵심입니다.","drivers":"톡비즈 광고·커머스 성장, 모빌리티·페이 수익화, 콘텐츠 흥행, 비용 통제","segments":["메신저·광고","커머스","모빌리티","핀테크","콘텐츠"]},"030200":{"summary":"KT는 유무선 통신을 기반으로 기업용 네트워크, 클라우드·IDC, 미디어 등 사업을 운영합니다.","products":"5G/LTE, 초고속인터넷·IPTV, 기업 통신, IDC·클라우드, 미디어","customers":"개인 가입자와 기업·공공기관","revenue":"통신 월정액과 기업 네트워크·데이터센터·클라우드 사용료가 핵심입니다.","drivers":"ARPU, 해지율, B2B·IDC 성장, 설비투자, 미디어·AI 수익화","segments":["통신","B2B·IDC","미디어"]},"112610":{"summary":"씨에스윈드는 풍력발전기에 들어가는 대형 타워와 구조물을 글로벌 터빈 업체에 공급합니다.","products":"육상·해상 풍력 타워 및 관련 구조물","customers":"글로벌 풍력터빈 제조사와 풍력 프로젝트 개발사","revenue":"풍력 프로젝트 수주량×타워 납품단가가 핵심이며 공장 가동률이 마진을 좌우합니다.","drivers":"미국·유럽 풍력 설치, 고객 수주, 공장 가동률, 철강가격·물류비","segments":["풍력 타워"]},"018260":{"summary":"삼성에스디에스는 기업용 클라우드·IT서비스와 물류 플랫폼 서비스를 제공하는 회사입니다.","products":"클라우드·데이터센터, 시스템 구축·운영, AI·업무솔루션, 디지털 물류","customers":"삼성 계열사와 국내외 기업·공공기관","revenue":"클라우드 사용료·IT 구축/운영비와 물류 서비스 수수료가 핵심입니다.","drivers":"클라우드 전환, GPU/AI 인프라 수요, 기업 IT 투자, 물류 운임·물동량","segments":["클라우드·IT서비스","물류"]},"064400":{"summary":"LG씨엔에스는 기업·공공기관의 시스템 구축·운영, 클라우드·AI·데이터센터 등 디지털 전환을 지원하는 IT서비스 회사입니다.","products":"클라우드·AI, 시스템통합(SI), 스마트팩토리·물류, 데이터센터·보안","customers":"LG 계열사와 국내외 기업·금융·공공기관","revenue":"IT 구축 프로젝트, 클라우드·운영 서비스, 데이터센터·솔루션 사용료가 핵심입니다.","drivers":"기업 AI·클라우드 투자, 데이터센터 수요, 대형 SI 수주, 인력·외주 원가","segments":["IT서비스","클라우드·AI","스마트팩토리"]}};
+
+  function wamoBusinessFor(x){
+    const code=String(x.stock_code||'').padStart(6,'0');
+    const fixed=WAMO_BUSINESS_DB[code];
+    const liveSource=String(x.businessModelSource||'');
+    const liveProfile=x.businessProfile||{};
+    const liveUrl=x.businessModelUrl||'';
+
+    // 기존에 검수한 회사는 읽기 쉬운 고정 설명을 유지하고,
+    // DART 자동 엔진은 세부섹터 검증과 원문 링크에 사용한다.
+    if(fixed) return {
+      profile:fixed,
+      source:liveSource.startsWith('OpenDART')
+        ? 'WAMO 검수 기업설명 DB · DART 자동확인'
+        : 'WAMO 검수 기업설명 DB',
+      url:liveUrl
+    };
+
+    // 미국 신규 종목은 SEC EDGAR 10-K·XBRL 결과를 자동 사용한다.
+    if(liveSource.startsWith('SEC') && liveProfile.summary){
+      return {profile:liveProfile,source:liveSource,url:liveUrl};
+    }
+
+    const n=String(x.name||'');
+    const isEtf=/^(KODEX|TIGER|ACE|RISE|SOL|PLUS|HANARO|TIMEFOLIO|KBSTAR|KOSEF|ARIRANG)/.test(n);
+    if(isEtf) return {
+      profile:{
+        summary:`${n}은 개별 기업이 아니라 여러 자산을 묶어 운용하는 ETF입니다.`,
+        products:'기초지수 또는 정해진 운용전략을 추종하는 상장지수펀드',
+        customers:'증권시장에서 ETF를 매매하는 투자자',
+        revenue:'기업의 매출·영업이익을 보는 대상이 아니라 보유자산의 가격변동과 분배금이 수익률을 결정합니다.',
+        drivers:'기초지수 수익률, 환율(해외형), 운용보수, 추적오차, 분배정책'
+      },
+      source:'ETF 자동 분류',
+      url:''
+    };
+
+    return {
+      profile:{
+        summary:'이번 갱신에서 SEC 회사별 사업내용을 확보하지 못했습니다.',
+        products:'—',
+        customers:'—',
+        revenue:'업종명만 보고 사업모델을 임의 생성하지 않습니다.',
+        drivers:'다음 자동갱신에서 SEC EDGAR 원문을 다시 시도합니다.'
+      },
+      source:liveSource || 'SEC EDGAR 연결 대기',
+      url:''
+    };
+  }
+
+  WAMO_BUSINESS_DB["347700"]={"summary":"스피어는 우주발사체에 사용되는 고성능 특수합금 소재를 조달·가공·공급하는 우주항공 공급망 전문기업입니다. 2025년 합병과 사명 변경을 거쳐 기존 디지털 헬스케어 중심에서 우주항공 소재 중심으로 사업구조를 전환했습니다.","products":"우주발사체 엔진·노즐 등에 쓰이는 니켈계 특수합금과 관련 공급망 관리 서비스","customers":"글로벌 민간 우주발사체·우주항공 기업과 특수소재 수요처","revenue":"외주 생산망을 활용해 고객 규격에 맞는 특수합금을 조달·가공·공급하고 납품대금에서 수익을 냅니다.","drivers":"글로벌 우주 발사 횟수, 장기 공급계약, 특수합금 조달가격, 납기·품질 관리, 니켈 공급망과 운전자금","segments":["우주항공 특수합금","공급망 관리","니켈 소재"]};
+
+  function renderBusinessProfilePro(x){
+    const be=document.getElementById('businessEasy');
+    const bm=document.getElementById('businessModel');
+    const bs=document.getElementById('businessSource');
+    if(!be) return;
+    const got=wamoBusinessFor(x);
+    const p=got.profile||{};
+    const row=(label,val)=>`<div class="biz-pro-row"><div class="biz-pro-label">${escBiz(label)}</div><div class="biz-pro-value">${escBiz(val||'—')}</div></div>`;
+    be.innerHTML=`<div class="biz-pro-head">${escBiz(p.summary||'회사 사업구조 확인 필요')}</div>
+      <div class="biz-pro-grid">
+        ${row('주요 제품·서비스',p.products)}
+        ${row('고객·판매처',p.customers)}
+        ${row('돈 버는 구조',p.revenue)}
+        ${row('실적이 좋아지는 조건',p.drivers)}
+      </div>
+      ${Array.isArray(p.segments)&&p.segments.length?`<div class="biz-pro-segments">사업영역 · ${p.segments.map(escBiz).join(' · ')}</div>`:''}`;
+    if(bm) bm.style.display='none';
+    if(bs) bs.innerHTML=`근거: ${escBiz(got.source)}${got.url?` · <a href="${escBiz(got.url)}" target="_blank" rel="noopener" style="color:#81baff">SEC 원문</a>`:''}`;
+  }
+
+  function drawChart(x,hoverIdx=null){
+    const c=$('#chart'), ctx=c.getContext('2d'); const wrap=c.parentElement; const ratio=window.devicePixelRatio||1; c.width=wrap.clientWidth*ratio; c.height=380*ratio; c.style.width='100%'; c.style.height='380px'; ctx.setTransform(ratio,0,0,ratio,0,0);
+    const w=wrap.clientWidth,h=380; ctx.clearRect(0,0,w,h); ctx.fillStyle='#0a1120';ctx.fillRect(0,0,w,h);
+    const hist=x.history||[]; if(hist.length<20){priceChartState=null;ctx.fillStyle='#91a0bc';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('실제 주가 데이터 연결 후 차트가 이곳에 표시됩니다.',w/2,h/2);return;}
+    const closes=hist.map(r=>Number(r.close)), vols=hist.map(r=>Number(r.volume||0));
+    const ma=n=>{let sum=0;return closes.map((v,i)=>{sum+=v;if(i>=n)sum-=closes[i-n];return i<n-1?null:sum/n})};
+    const lines=[
+      {label:'주가',arr:closes,color:'#f4f7ff',width:2.7},
+      {label:'MA20',arr:ma(20),color:'#38bdf8',width:1.9},
+      {label:'MA60',arr:ma(60),color:'#f6c945',width:1.9},
+      {label:'MA120',arr:ma(120),color:'#a78bfa',width:1.9},
+      {label:'MA200',arr:ma(200),color:'#ff6b6b',width:2.1}
+    ];
+    const vals=lines.flatMap(l=>l.arr.filter(v=>Number.isFinite(v))); const min=Math.min(...vals),max=Math.max(...vals),pad=(max-min)*.08||1,lo=min-pad,hi=max+pad;
+    const compact=w<520,top=compact?76:55,bottom=286,left=12,right=w-58; const X=i=>left+(right-left)*i/(closes.length-1); const Y=v=>top+(hi-v)*(bottom-top)/(hi-lo);
+    priceChartState={hist,lines,vols,left,right,top,bottom,X,Y};
+
+    ctx.font='10px sans-serif'; let lx=12,ly=18;
+    lines.forEach(l=>{
+      const last=[...l.arr].reverse().find(v=>Number.isFinite(v)); const label=`${l.label} ${last!=null?Math.round(last).toLocaleString('ko-KR'):'—'}`; const tw=ctx.measureText(label).width+30;
+      if(lx+tw>w-8){lx=12;ly+=19;}
+      ctx.strokeStyle=l.color;ctx.lineWidth=l.width;ctx.beginPath();ctx.moveTo(lx,ly-3);ctx.lineTo(lx+16,ly-3);ctx.stroke();ctx.fillStyle='#dce6f5';ctx.textAlign='left';ctx.fillText(label,lx+21,ly);lx+=tw;
+    });
+
+    ctx.strokeStyle='#202b44';ctx.lineWidth=1;ctx.fillStyle='#8091aa';ctx.font='9px sans-serif';ctx.textAlign='left';
+    for(let j=0;j<5;j++){const y=top+(bottom-top)*j/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();const v=hi-(hi-lo)*j/4;ctx.fillText(Math.round(v).toLocaleString('ko-KR'),right+5,y+3)}
+    lines.forEach(l=>{ctx.strokeStyle=l.color;ctx.lineWidth=l.width;ctx.beginPath();let started=false;l.arr.forEach((v,i)=>{if(!Number.isFinite(v)){started=false;return;}const x0=X(i),y0=Y(v);if(!started){ctx.moveTo(x0,y0);started=true}else ctx.lineTo(x0,y0)});ctx.stroke()});
+
+    const startDate=(x.alignment||{}).currentStartDate; const startIdx=startDate?hist.findIndex(r=>r.date===startDate):-1;
+    if(startDate&&(startIdx>=0||startDate<hist[0].date)){const sx=startIdx>=0?X(startIdx):left;ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle='#72dfae';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(sx,top);ctx.lineTo(sx,bottom);ctx.stroke();ctx.restore();ctx.fillStyle='#72dfae';ctx.font='9px sans-serif';ctx.textAlign=sx>right-120?'right':'left';ctx.fillText(`정배열 시작 ${startDate}${startIdx<0?' · 차트 이전':''}`,sx+(sx>right-120?-4:4),top+12)}
+
+    const volTop=305,volBottom=362,vmax=Math.max(...vols)||1; ctx.fillStyle='rgba(56,189,248,.28)'; vols.forEach((v,i)=>{const bh=(v/vmax)*(volBottom-volTop);ctx.fillRect(X(i)-1.2,volBottom-bh,2.4,bh)});
+    ctx.fillStyle='#8091aa';ctx.font='9px sans-serif';ctx.textAlign='left';ctx.fillText('거래량',12,303);ctx.fillText(hist[0].date,12,h-5);ctx.textAlign='right';ctx.fillText(hist[hist.length-1].date,w-12,h-5);
+    if(Number.isInteger(hoverIdx)&&hist[hoverIdx]){const x0=X(hoverIdx);ctx.save();ctx.setLineDash([3,3]);ctx.strokeStyle='#d9f4ff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x0,top);ctx.lineTo(x0,volBottom);ctx.stroke();ctx.restore();lines.forEach(l=>{const v=Number(l.arr[hoverIdx]);if(!Number.isFinite(v))return;ctx.fillStyle=l.color;ctx.beginPath();ctx.arc(x0,Y(v),l.label==='주가'?4:3,0,Math.PI*2);ctx.fill()})}
+  }
+
+  function tooltipEl(){let el=$('#wamoTooltip');if(!el){el=document.createElement('div');el.id='wamoTooltip';el.className='wamo-tooltip';el.setAttribute('role','tooltip');document.body.appendChild(el)}return el}
+  function showTooltip(text,clientX,clientY,pin=false){if(!text)return;const el=tooltipEl();el.textContent=text;el.classList.add('show');tooltipPinned=pin||tooltipPinned;const gap=14,pad=10;let x=clientX+gap,y=clientY+gap;const r=el.getBoundingClientRect();if(x+r.width>innerWidth-pad)x=Math.max(pad,clientX-r.width-gap);if(y+r.height>innerHeight-pad)y=Math.max(pad,clientY-r.height-gap);el.style.left=x+'px';el.style.top=y+'px'}
+  function hideTooltip(force=false){if(tooltipPinned&&!force)return;tooltipEl().classList.remove('show');if(force)tooltipPinned=false}
+  function energyTip(row){const avg=Number(row.ma5),daily=Number(row.normalizedCount),actual=Number(row.count);const zone=!Number.isFinite(avg)?'5일 평균 준비 중':avg<10?'주의 · 확산 약화':avg<20?'중립 · 회복 확인':'20 이상 · 선의 초록/주황색으로 상승·하락 기울기 확인';return `${row.date}\n일별 상단 돌파: ${Number.isFinite(actual)?actual+'개':'—'}${Number.isFinite(daily)&&daily!==actual?` · 350종목 환산 ${fmt(daily,1)}개`:''}\n5일 이동평균: ${Number.isFinite(avg)?fmt(avg,1)+'개':'—'}\n구간: ${zone}`}
+  function priceTip(state,i){const row=state.hist[i]||{};const values=state.lines.map(l=>{const v=Number(l.arr[i]);return `${l.label}: ${Number.isFinite(v)?Math.round(v).toLocaleString('ko-KR'):'—'}`}).join('\n');return `${row.date||'—'}\n${values}\n거래량: ${Number(row.volume||0).toLocaleString('ko-KR')}주`}
+  function bindChartInteractions(){
+    const energy=$('#energyChart');if(energy&&!energy.dataset.tipBound){energy.dataset.tipBound='1';const move=e=>{const s=energyChartState;if(!s)return;const r=energy.getBoundingClientRect(),x=e.clientX-r.left;if(x<s.left||x>s.right){hideTooltip();drawEnergyChart();return}const i=Math.max(0,Math.min(s.series.length-1,Math.round((x-s.left)/(s.right-s.left)*(s.series.length-1))));drawEnergyChart(i);showTooltip(energyTip(s.series[i]),e.clientX,e.clientY,e.pointerType==='touch')};energy.addEventListener('pointermove',e=>{if(e.pointerType!=='touch')move(e)});energy.addEventListener('pointerdown',move);energy.addEventListener('pointerleave',()=>{if(!tooltipPinned){hideTooltip();drawEnergyChart()}})}
+    const price=$('#chart');if(price&&!price.dataset.tipBound){price.dataset.tipBound='1';const move=e=>{const s=priceChartState;if(!s||!detailStock)return;const r=price.getBoundingClientRect(),x=e.clientX-r.left;if(x<s.left||x>s.right){hideTooltip();drawChart(detailStock);return}const i=Math.max(0,Math.min(s.hist.length-1,Math.round((x-s.left)/(s.right-s.left)*(s.hist.length-1))));drawChart(detailStock,i);showTooltip(priceTip(s,i),e.clientX,e.clientY,e.pointerType==='touch')};price.addEventListener('pointermove',e=>{if(e.pointerType!=='touch')move(e)});price.addEventListener('pointerdown',move);price.addEventListener('pointerleave',()=>{if(!tooltipPinned){hideTooltip();drawChart(detailStock)}})}
+  }
+
+  function bindHelpTooltips(){
+    decorateTooltips();
+    new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1)decorateTooltips(n)}))).observe(document.body,{childList:true,subtree:true});
+    document.addEventListener('pointerover',e=>{const t=e.target.closest?.('[data-tip]');if(!t||t.tagName==='CANVAS')return;tooltipPinned=false;showTooltip(t.dataset.tip,e.clientX,e.clientY)});
+    document.addEventListener('pointermove',e=>{const t=e.target.closest?.('[data-tip]');if(t&&t.tagName!=='CANVAS'&&!tooltipPinned)showTooltip(t.dataset.tip,e.clientX,e.clientY)});
+    document.addEventListener('pointerout',e=>{const t=e.target.closest?.('[data-tip]');if(t&&t.tagName!=='CANVAS'&&!t.contains(e.relatedTarget))hideTooltip()});
+    document.addEventListener('focusin',e=>{const t=e.target.closest?.('[data-tip]');if(!t)return;const r=t.getBoundingClientRect();showTooltip(t.dataset.tip,r.left+r.width/2,r.bottom)});
+    document.addEventListener('focusout',e=>{if(e.target.closest?.('[data-tip]'))hideTooltip(true)});
+    document.addEventListener('click',e=>{if(!e.target.closest?.('[data-tip],canvas'))hideTooltip(true)});
+  }
+
+  function closeDrawer(){
+    hideTooltip(true);$('#drawer').classList.remove('open'); $('#drawer').setAttribute('aria-hidden','true'); $('#drawerBackdrop').classList.remove('open'); document.body.classList.remove('drawer-open');
+  }
+
+  function bind(){
+    bindHelpTooltips();bindChartInteractions();
+    document.querySelectorAll('.tab').forEach(b=>{b.setAttribute('aria-pressed',String(b.classList.contains('active')));b.onclick=()=>{document.querySelectorAll('.tab').forEach(z=>{z.classList.remove('active');z.setAttribute('aria-pressed','false')});b.classList.add('active');b.setAttribute('aria-pressed','true');activeTab=b.dataset.tab;if(activeTab!=='sectoraction')sectorFilter='';if(activeTab==='sectoraction')renderSectorFlow();else if(activeTab!=='energy')renderStocks();showActiveView(true)}});
+    document.querySelectorAll('.flow-filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.flow-filter').forEach(z=>z.classList.remove('active'));b.classList.add('active');sectorFlowMode=b.dataset.flow||'strong';renderSectorFlow()});
+    $('#search').oninput=e=>{query=e.target.value;renderStocks()}; $('#signal').onchange=e=>{signalFilter=e.target.value;renderStocks()};
+    $('#instrument').onchange=e=>{instrumentFilter=e.target.value;setStats();renderStocks()};
+    $('#sort').onchange=e=>{sortMode=e.target.value;renderStocks()};
+    $('#clear').onclick=()=>{query='';sectorFilter='';sectorFlowMode='strong';signalFilter='';instrumentFilter='company';sortMode='auto';$('#search').value='';$('#signal').value='';$('#instrument').value='company';$('#sort').value='auto';document.querySelectorAll('.tab').forEach(z=>{const on=z.dataset.tab==='six';z.classList.toggle('active',on);z.setAttribute('aria-pressed',String(on))});document.querySelectorAll('.flow-filter').forEach(z=>z.classList.toggle('active',z.dataset.flow==='strong'));activeTab='six';setStats();renderSectorFlow();renderSectors();renderStocks();showActiveView()};
+    $('#close').onclick=closeDrawer;
+    $('#drawerBackdrop').onclick=closeDrawer;
+    $('#detailWatch').onclick=()=>{if(!detailStock)return;watch.has(detailStock.ticker)?watch.delete(detailStock.ticker):watch.add(detailStock.ticker);localStorage.setItem('wamoWatchlist',JSON.stringify([...watch]));updateDetailWatch();renderStocks()};
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+    let energyResizeTimer=null;
+    window.addEventListener('resize',()=>{if($('#drawer').classList.contains('open')&&detailStock)drawChart(detailStock);clearTimeout(energyResizeTimer);energyResizeTimer=setTimeout(drawEnergyChart,120)});
+  }
+
+  hydrateSectorActions(); prepareLayout(); setMeta(); setFunnel(); setStats(); renderMarketEnergy(); renderSectorFlow(); renderSectors(); bind(); renderStocks(); showActiveView();
+})();
+
+</script>
+</body>
+</html>
