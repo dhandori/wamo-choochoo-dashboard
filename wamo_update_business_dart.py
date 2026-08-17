@@ -28,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/39.1)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/40.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -2022,18 +2022,19 @@ def _latest_consensus_snapshot(hist, ticker, today, max_age_days=CONSENSUS_CACHE
     return latest
 
 def consensus_enrich(raw):
-    """후보 종목만 제한 조회하고 3일 캐시를 우선 사용하는 보조 컨센서스."""
+    """네 후보축 종목만 제한 조회하고 3일 캐시를 우선 사용하는 보조 컨센서스."""
     hist = _load_consensus_history()
     today = datetime.now(KST).date()
     today_s = today.isoformat()
 
-    # 이세무사 4/6+, 미너비니 Stage 2, 신고가권 중 하나라도 해당하는 종목만 대상이다.
+    # 이세무사 4/6+, 미너비니 Stage 2, 신고가권, 섹터액션 중 하나라도 해당하는 종목만 대상이다.
     candidate_pool = [
         x for x in raw
         if (x.get("conditionCount", 0) >= 4)
         or bool(x.get("trendTemplate"))
         or (x.get("high52Ratio") or 0) >= 93
         or (x.get("historicalHighRatio") or 0) >= 93
+        or (x.get("sectorAction") or {}).get("status") == "CONFIRMED"
     ]
     target = sorted(
         candidate_pool,
@@ -2042,6 +2043,7 @@ def consensus_enrich(raw):
                 x.get("conditionCount", 0) >= 4,
                 bool(x.get("trendTemplate")),
                 (x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93,
+                (x.get("sectorAction") or {}).get("status") == "CONFIRMED",
             )),
             x.get("conditionCount", 0),
             1 if x.get("trendTemplate") else 0,
@@ -3546,7 +3548,7 @@ def _build_sector_stats(raw, flow_benchmarks=None):
 
 
 def _sector_action_overlay(sector):
-    """종목 선별과 섞지 않는 독립 보조신호. 모든 종목에 동일한 형식으로 붙인다."""
+    """신고가와 독립된 네 번째 후보축. 모든 종목에 동일한 형식으로 붙인다."""
     group_status = sector.get("groupStatus")
     action = sector.get("action")
     flow_status = sector.get("flowStatus")
@@ -4271,11 +4273,11 @@ def validate_payload_integrity(payload):
         sec = next((s for s in sectors if s.get("name") == x.get("sector")), None)
         checks += 1
         if not sec:
-            issues.append(f"{ticker}: 섹터 보조정보 원본 없음")
+            issues.append(f"{ticker}: 섹터액션 원본 없음")
         elif _is_holding_sector_name(x.get("sector")) and overlay.get("status") == "CONFIRMED":
             issues.append(f"{ticker}: 지주사를 산업 섹터동반강세로 오분류")
         elif overlay.get("status") != _sector_action_overlay(sec).get("status"):
-            issues.append(f"{ticker}: 섹터 보조정보 불일치")
+            issues.append(f"{ticker}: 섹터액션 판정 불일치")
 
         consensus_status = x.get("consensus_check_status") or "NOT_TARGET"
         checks += 1
@@ -4294,6 +4296,9 @@ def validate_payload_integrity(payload):
     checks += 1
     if funnel.get("highZone") != sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in stocks):
         issues.append("신고가권 후보 수 불일치")
+    checks += 1
+    if funnel.get("sectorAction") != sum((x.get("sectorAction") or {}).get("status") == "CONFIRMED" for x in stocks):
+        issues.append("섹터액션 후보 수 불일치")
 
     checks += 1
     consensus_targeted = sum((x.get("consensus_check_status") or "NOT_TARGET") != "NOT_TARGET" for x in stocks)
@@ -4541,8 +4546,7 @@ def main():
         hc = max(0, min(100, (x["high52Ratio"] - 70) / 30 * 100))
         vc = min(100, x["volumeRatio"] / 2 * 100)
         base = 0.30 * x["rsPercentile"] + 25 * x["conditionCount"] / 6 + 0.15 * hc + 0.10 * vc + 20 * (1 if x["trendTemplate"] else 0)
-        # 종목 자체 점수와 섹터동반액션을 섞지 않는다.
-        # 섹터동반액션은 매우 중요한 별도 보조신호로 화면에 강하게 표시한다.
+        # 네 번째 후보축인 섹터액션은 독립 분류로 유지하고 종목 자체 점수에는 섞지 않는다.
         x["score"] = round(base, 1)
 
         if x["ma60"] and x["close"] < x["ma60"]:
@@ -4584,7 +4588,7 @@ def main():
 
     raw.sort(key=lambda x: x["score"], reverse=True)
 
-    print("9/11 FnGuide 보조확인 — 3개 후보군 중 상위 20개 / 3일 캐시 우선")
+    print("9/11 FnGuide 보조확인 — 4개 후보군 중 상위 20개 / 3일 캐시 우선")
     consensus_meta = consensus_enrich(raw)
     print("  ", consensus_meta.get("message"))
 
@@ -4695,6 +4699,7 @@ def main():
                 "growth4plus": sum(x["conditionCount"] >= 4 for x in raw),
                 "stage2": sum(bool(x["trendTemplate"]) for x in raw),
                 "highZone": sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in raw),
+                "sectorAction": sum((x.get("sectorAction") or {}).get("status") == "CONFIRMED" for x in raw),
                 "buy": sum(x["signal"] in ("BUY", "HOLD") for x in raw),
                 "liquidityThresholdKRW": MIN_AVG_VALUE_50D,
                 "marketCapThresholdKRW": MIN_MARKET_CAP,
