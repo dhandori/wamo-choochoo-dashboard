@@ -28,6 +28,8 @@ jobs:
       - name: 전체 투자 데이터 갱신
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
+          KRX_ID: ${{ secrets.KRX_ID }}
+          KRX_PW: ${{ secrets.KRX_PW }}
         run: python wamo_update_business_dart.py
 
       - name: 새 결과 저장
