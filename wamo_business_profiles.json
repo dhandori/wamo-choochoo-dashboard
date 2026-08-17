@@ -2101,5 +2101,183 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
     "failed": false
+  },
+  "080220": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "제주반도체는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260813",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001713",
+    "detailSector": "반도체",
+    "sectorTags": [
+      "반도체"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "011070": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "LG이노텍는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001879",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "001740": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002753",
+    "detailSector": "유통",
+    "sectorTags": [
+      "유통"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "005380": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003521",
+    "detailSector": "자동차·부품",
+    "sectorTags": [
+      "자동차·부품"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "042700": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "한미반도체는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003665",
+    "detailSector": "특수 목적용 기계 제조업",
+    "sectorTags": [
+      "특수 목적용 기계 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "353200": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "대덕전자는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260813",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001620",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "031980": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "피에스케이홀딩스는 여러 자회사의 지분을 보유·관리하는 지주회사입니다. 투자 판단에서는 지주회사 자체 매출보다 핵심 자회사들의 사업가치와 실적을 봐야 합니다.",
+      "products": "핵심 자회사 지분 보유·관리, 브랜드·경영지원 등 지주회사 기능",
+      "customers": "일반 제조업처럼 최종 고객에게 단일 제품을 파는 구조가 아니라 자회사 사업을 통해 최종 시장에 노출됩니다.",
+      "revenue": "자회사 배당, 상표권·용역·임대수익과 연결·지분법 실적이 핵심입니다.",
+      "drivers": "핵심 자회사 이익과 배당, 자산가치(NAV), 지주회사 할인율, 자본배분·주주환원이 중요합니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814000743",
+    "detailSector": "지주회사",
+    "sectorTags": [
+      "지주회사"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "420770": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003218",
+    "detailSector": "특수 목적용 기계 제조업",
+    "sectorTags": [
+      "특수 목적용 기계 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
   }
 }
