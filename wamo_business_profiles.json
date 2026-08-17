@@ -3355,5 +3355,177 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
     "failed": false
+  },
+  "001440": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003722",
+    "detailSector": "절연선 및 케이블 제조업",
+    "sectorTags": [
+      "절연선 및 케이블 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "000990": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003091",
+    "detailSector": "금융",
+    "sectorTags": [
+      "금융"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "131970": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002891",
+    "detailSector": "그외 기타 전문, 과학 및 기술 서비스업",
+    "sectorTags": [
+      "그외 기타 전문, 과학 및 기술 서비스업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "138930": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "BNK금융지주는 은행·증권·카드·보험 등 금융계열사를 보유·관리하는 금융지주회사입니다.",
+      "products": "은행·증권·카드·보험·자산관리 등 자회사 금융서비스",
+      "customers": "직접 영업보다 자회사들이 개인·기업·기관 고객에게 금융서비스를 제공합니다.",
+      "revenue": "자회사 이익이 연결 실적에 반영되고, 지주회사는 배당·브랜드·용역 등에서도 수익을 얻습니다.",
+      "drivers": "핵심 자회사 순이자마진·대손비용·비이자이익, 자본비율, 자회사 배당과 주주환원이 중요합니다.",
+      "segments": [
+        "금융지주"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003965",
+    "detailSector": "금융지주",
+    "sectorTags": [
+      "금융지주"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "016360": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002836",
+    "detailSector": "금융",
+    "sectorTags": [
+      "금융"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "069960": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003395",
+    "detailSector": "유통",
+    "sectorTags": [
+      "유통"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "014680": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "한솔케미칼는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260813",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001414",
+    "detailSector": "화학",
+    "sectorTags": [
+      "화학"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "006800": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004118",
+    "detailSector": "금융",
+    "sectorTags": [
+      "금융"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
   }
 }
