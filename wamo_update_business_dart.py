@@ -582,11 +582,92 @@ def market_direction():
             "close": c[-1],
             "ma50": ma50,
             "ma200": ma200,
+            "date": rows[-1][0],
+            "ret7": round((pct_change(c, 7) or 0) * 100, 4),
+            "ret30": round((pct_change(c, 30) or 0) * 100, 4),
             "note": "주가·거래량·6조건·Stage 2·RS·OpenDART 공식 재무/공시 + 섹터 대장주/주요기업을 사용합니다. FnGuide 컨센서스는 후보 종목의 보조 확인으로만 분리하며 시장방향 판정에는 넣지 않습니다.",
         }
     except Exception as e:
         print("Market direction unavailable:", e)
         return {"pass": None, "note": "시장지수 데이터 수집 실패"}
+
+
+def sector_flow_benchmarks(raw, market_context=None):
+    """7·30거래일 섹터 흐름의 시장 대비 기준을 만듭니다.
+
+    1순위는 KOSPI·KOSDAQ 지수의 Yahoo Finance 이력입니다. 지수 수집이
+    실패해도 섹터 흐름 전체가 사라지지 않도록, 같은 거래소의 정밀계산
+    유니버스 중앙값을 명시적인 대체 기준으로 사용합니다.
+    """
+    market_symbols = {"KOSPI": "^KS11", "KOSDAQ": "^KQ11"}
+    benchmarks = {}
+    errors = []
+
+    if market_context and market_context.get("ret7") is not None and market_context.get("ret30") is not None:
+        benchmarks["KOSPI"] = {
+            "ret7": float(market_context["ret7"]),
+            "ret30": float(market_context["ret30"]),
+            "source": "Yahoo Finance 지수",
+            "symbol": "^KS11",
+            "date": market_context.get("date"),
+            "fallback": False,
+        }
+
+    for market, symbol in market_symbols.items():
+        if market in benchmarks:
+            continue
+        try:
+            rows = fetch_yahoo_index(symbol=symbol, years=2)
+            closes = [float(x[1]) for x in rows]
+            r7 = pct_change(closes, 7)
+            r30 = pct_change(closes, 30)
+            if r7 is None or r30 is None:
+                raise RuntimeError("7·30거래일 지수 수익률 계산 불가")
+            benchmarks[market] = {
+                "ret7": round(r7 * 100, 4),
+                "ret30": round(r30 * 100, 4),
+                "source": "Yahoo Finance 지수",
+                "symbol": symbol,
+                "date": rows[-1][0],
+                "fallback": False,
+            }
+        except Exception as e:
+            errors.append(f"{market}: {e}")
+
+    for market in market_symbols:
+        if market in benchmarks:
+            continue
+        members = [x for x in raw if x.get("krx_market") == market]
+        vals7 = [float(x["ret7"]) for x in members if x.get("ret7") is not None]
+        vals30 = [float(x["ret30"]) for x in members if x.get("ret30") is not None]
+        if not vals7 or not vals30:
+            benchmarks[market] = {
+                "ret7": 0.0, "ret30": 0.0,
+                "source": "대체 기준 없음", "symbol": market,
+                "date": None, "fallback": True,
+            }
+            continue
+        benchmarks[market] = {
+            "ret7": round(statistics.median(vals7), 4),
+            "ret30": round(statistics.median(vals30), 4),
+            "source": "정밀계산 유니버스 중앙값 대체",
+            "symbol": market,
+            "date": max((x.get("date") or "" for x in members), default=None),
+            "fallback": True,
+        }
+
+    fallback_count = sum(bool(v.get("fallback")) for v in benchmarks.values())
+    status = "LIVE" if fallback_count == 0 else "PARTIAL" if fallback_count < len(benchmarks) else "FALLBACK"
+    source_labels = ", ".join(
+        f"{m} {v.get('source')}" for m, v in benchmarks.items()
+    )
+    return benchmarks, {
+        "status": status,
+        "source": source_labels,
+        "benchmarks": benchmarks,
+        "errors": errors,
+        "message": "7·30거래일 수익률은 종목별 거래소 지수와 비교합니다. 지수 실패 시 해당 거래소 정밀계산 종목 중앙값을 대체 기준으로 명시합니다.",
+    }
 
 def calc_raw(meta, rows):
     closes = [r["close"] for r in rows]
@@ -617,8 +698,12 @@ def calc_raw(meta, rows):
     mcl = monthly_closes(rows)
     ma20m = mean_tail(mcl, 20)
 
-    ret = {n: (pct_change(closes, n) or 0) for n in (1, 5, 20, 60, 120, 252)}
+    ret = {n: (pct_change(closes, n) or 0) for n in (1, 5, 7, 20, 30, 60, 120, 252)}
     rs_blend = 0.20 * ret[5] + 0.40 * ret[20] + 0.40 * ret[60]
+    recent7_volume = statistics.mean(vols[-7:]) if len(vols) >= 7 else statistics.mean(vols)
+    prior20_slice = vols[-27:-7] if len(vols) >= 27 else vols[:-7]
+    prior20_volume = statistics.mean(prior20_slice) if prior20_slice else vol20
+    volume_trend7 = recent7_volume / prior20_volume if prior20_volume else 0
 
     cond = {
         "장기 우상향": bool(ma200 and ma200_prev and closes[-1] > ma200 > ma200_prev and ret[252] > 0),
@@ -647,6 +732,8 @@ def calc_raw(meta, rows):
         "technicalCoverage": "FULL" if len(rows) >= 260 else "SHORT_HISTORY",
         "close": closes[-1],
         "chg1d": ret[1] * 100,
+        "ret7": ret[7] * 100,
+        "ret30": ret[30] * 100,
         "ret252": ret[252] * 100,
         "rs5": ret[5] * 100,
         "rs20": ret[20] * 100,
@@ -655,6 +742,7 @@ def calc_raw(meta, rows):
         "oneilRsRaw": oneil_rs_raw(closes) * 100,
         "demandRatio": demand_ratio(rows),
         "volumeRatio": vol_ratio,
+        "volumeTrend7": volume_trend7,
         "high52Ratio": high_ratio * 100,
         "historicalHighRatio": historical_high_ratio * 100,
         "historicalHighDate": rows[historical_high_idx]["date"],
@@ -3317,10 +3405,94 @@ def _is_holding_sector_name(name):
     return any(k in s for k in ("지주회사", "금융지주", "지주사"))
 
 
-def _build_sector_stats(raw):
+def _build_sector_stats(raw, flow_benchmarks=None):
+    flow_benchmarks = flow_benchmarks or {}
     groups = {}
     for x in raw:
         groups.setdefault(x.get("sector") or "기타", []).append(x)
+
+    latest_date = max((x.get("date") or "" for x in raw), default="")
+    latest_dt = date.fromisoformat(latest_date) if latest_date else None
+
+    def pct_true(values):
+        return round(sum(1 for v in values if v) / len(values) * 100, 1) if values else 0.0
+
+    def top_gain_share(returns):
+        positive = [max(0.0, float(v)) for v in returns]
+        total = sum(positive)
+        return round(max(positive) / total * 100, 1) if total > 0 else 0.0
+
+    def period_flow(members, days):
+        ret_key = f"ret{days}"
+        returns = [float(m.get(ret_key) or 0) for m in members]
+        relatives = []
+        for m, value in zip(members, returns):
+            market = m.get("krx_market") or "KOSPI"
+            benchmark = flow_benchmarks.get(market) or {}
+            relatives.append(value - float(benchmark.get(ret_key) or 0))
+
+        positive = [v > 0 for v in returns]
+        outperform = [v > 0 for v in relatives]
+        trend = [
+            bool(m.get("ma20") and m.get("close") > m.get("ma20"))
+            if days == 7 else
+            bool(m.get("ma60") and m.get("close") > m.get("ma60"))
+            for m in members
+        ]
+        volume_expansion = [float(m.get("volumeTrend7") or 0) >= 1.2 for m in members]
+        median_return = statistics.median(returns) if returns else 0.0
+        median_relative = statistics.median(relatives) if relatives else 0.0
+        positive_pct = pct_true(positive)
+        outperform_pct = pct_true(outperform)
+        trend_pct = pct_true(trend)
+
+        criteria = {
+            "medianReturnPositive": median_return > 0,
+            "medianRelativePositive": median_relative > 0,
+            "positiveBreadth60": positive_pct >= 60,
+            "outperformBreadth60": outperform_pct >= 60,
+            "trendBreadth60": trend_pct >= 60,
+        }
+        condition_count = sum(bool(v) for v in criteria.values())
+
+        cap_ranked = sorted(members, key=lambda m: float(m.get("market_cap_krw") or 0), reverse=True)
+        cut = max(1, (len(cap_ranked) + 1) // 2)
+        large = [float(m.get(ret_key) or 0) for m in cap_ranked[:cut]]
+        smaller = [float(m.get(ret_key) or 0) for m in cap_ranked[cut:]]
+        cap_together = bool(
+            smaller
+            and statistics.median(large) > 0
+            and statistics.median(smaller) > 0
+        )
+
+        top_share = top_gain_share(returns)
+        concentration = bool(
+            top_share >= 70
+            or (top_share >= 60 and positive_pct < 67)
+            or ((statistics.mean(returns) - median_return) >= max(4.0, abs(median_return) * 1.5))
+        ) if returns else False
+
+        return {
+            "window": days,
+            "eligibleCount": len(members),
+            "meanReturn": round(statistics.mean(returns), 2) if returns else 0.0,
+            "medianReturn": round(median_return, 2),
+            "meanRelative": round(statistics.mean(relatives), 2) if relatives else 0.0,
+            "medianRelative": round(median_relative, 2),
+            "positiveCount": sum(positive),
+            "positivePct": positive_pct,
+            "outperformCount": sum(outperform),
+            "outperformPct": outperform_pct,
+            "trendBreadthPct": trend_pct,
+            "volumeExpansionPct": pct_true(volume_expansion),
+            "largeMidTogether": cap_together,
+            "topGainSharePct": top_share,
+            "concentrationWarning": concentration,
+            "criteria": criteria,
+            "conditionCount": condition_count,
+            "score": condition_count * 20,
+            "strong": bool(len(members) >= 3 and median_return > 0 and median_relative > 0 and condition_count >= 4),
+        }
 
     sectors = []
     for name, members in groups.items():
@@ -3345,6 +3517,61 @@ def _build_sector_stats(raw):
             action = "강화" if score >= 72 else "상승" if score >= 58 else "중립" if score >= 45 else "약화"
         else:
             action = "참고" if group_status == "REFERENCE" else "단일"
+
+        flow_members = []
+        for m in members:
+            if m.get("ret7") is None or m.get("ret30") is None:
+                continue
+            if latest_dt and m.get("date"):
+                try:
+                    if (latest_dt - date.fromisoformat(m["date"])).days > 4:
+                        continue
+                except Exception:
+                    continue
+            flow_members.append(m)
+
+        flow7 = period_flow(flow_members, 7)
+        flow30 = period_flow(flow_members, 30)
+        if is_holding_theme:
+            flow_status, flow_label = "HOLDING_THEME", "지주사 동조 · 별도 참고"
+        elif flow7["strong"] and flow30["strong"]:
+            flow_status, flow_label = "BOTH", "7·30일 동시 강세"
+        elif flow7["strong"]:
+            flow_status, flow_label = "NEW_7D", "7일 신규 강세"
+        elif flow30["strong"]:
+            flow_status, flow_label = "PERSISTENT_30D", "30일 지속 강세"
+        else:
+            flow_status, flow_label = "NONE", "강세 기준 미충족"
+
+        expanding = bool(
+            not is_holding_theme
+            and flow7["strong"]
+            and flow7["positivePct"] >= 67
+            and flow7["positivePct"] >= flow30["positivePct"] + 15
+            and flow7["largeMidTogether"]
+            and flow7["volumeExpansionPct"] >= 33
+        )
+        concentration_warning = bool(flow7["concentrationWarning"] or flow30["concentrationWarning"])
+        concentration_windows = []
+        if flow7["concentrationWarning"]:
+            concentration_windows.append("7일")
+        if flow30["concentrationWarning"]:
+            concentration_windows.append("30일")
+
+        flow_member_rows = []
+        for m in sorted(flow_members, key=lambda z: max(float(z.get("ret7") or 0), float(z.get("ret30") or 0)), reverse=True):
+            market = m.get("krx_market") or "KOSPI"
+            benchmark = flow_benchmarks.get(market) or {}
+            flow_member_rows.append({
+                "name": m.get("name"),
+                "ticker": m.get("ticker"),
+                "market": market,
+                "ret7": round(float(m.get("ret7") or 0), 2),
+                "ret30": round(float(m.get("ret30") or 0), 2),
+                "relative7": round(float(m.get("ret7") or 0) - float(benchmark.get("ret7") or 0), 2),
+                "relative30": round(float(m.get("ret30") or 0) - float(benchmark.get("ret30") or 0), 2),
+            })
+
         sectors.append({
             "name": name,
             "score": round(score, 1),
@@ -3361,6 +3588,17 @@ def _build_sector_stats(raw):
             "classificationLabel": f"사업내용 세부분류 {detail_count}/{member_count}" if detail_count else "KRX 업종 기준 · 세부분류 대기",
             "leaders": [m["name"] for m in sorted(members, key=lambda z: z["rsPercentile"], reverse=True)[:3]],
             "memberCount": member_count,
+            "flowEligibleCount": len(flow_members),
+            "flowCoveragePct": round(len(flow_members) / member_count * 100, 1) if member_count else 0,
+            "flow7": flow7,
+            "flow30": flow30,
+            "flowStatus": flow_status,
+            "flowStatusLabel": flow_label,
+            "flowScore": round((flow7["score"] + flow30["score"]) / 2, 1),
+            "expanding": expanding,
+            "concentrationWarning": concentration_warning,
+            "concentrationWindow": "·".join(concentration_windows),
+            "flowMembers": flow_member_rows[:12],
         })
     status_rank = {"SECTOR_ACTION": 3, "HOLDING_THEME": 2, "REFERENCE": 1, "SINGLE": 0}
     sectors.sort(key=lambda s: (status_rank.get(s.get("groupStatus"), 0), s["score"]), reverse=True)
@@ -3371,10 +3609,17 @@ def _sector_action_overlay(sector):
     """종목 선별과 섞지 않는 독립 보조신호. 모든 종목에 동일한 형식으로 붙인다."""
     group_status = sector.get("groupStatus")
     action = sector.get("action")
+    flow_status = sector.get("flowStatus")
     if group_status == "HOLDING_THEME":
         status, label = "HOLDING_THEME", "지주사 동조 · 참고"
+    elif flow_status == "BOTH":
+        status, label = "CONFIRMED", "7·30일 섹터 동반강세"
+    elif flow_status == "NEW_7D":
+        status, label = "CONFIRMED", "7일 신규 섹터강세"
+    elif flow_status == "PERSISTENT_30D":
+        status, label = "CONFIRMED", "30일 지속 섹터강세"
     elif group_status == "SECTOR_ACTION" and action in ("강화", "상승"):
-        status, label = "CONFIRMED", "섹터 동반강세"
+        status, label = "WATCH", "섹터 추세 확인 중"
     elif group_status == "SECTOR_ACTION":
         status, label = "WATCH", "섹터 동반확인 중"
     else:
@@ -3388,6 +3633,12 @@ def _sector_action_overlay(sector):
         "breadth60": sector.get("breadth60"),
         "newHighPct": sector.get("newHighPct"),
         "stage2Pct": sector.get("stage2Pct"),
+        "flowStatus": flow_status,
+        "flowStatusLabel": sector.get("flowStatusLabel"),
+        "flow7": sector.get("flow7"),
+        "flow30": sector.get("flow30"),
+        "expanding": bool(sector.get("expanding")),
+        "concentrationWarning": bool(sector.get("concentrationWarning")),
     }
 
 
@@ -4055,13 +4306,73 @@ def validate_payload_integrity(payload):
         if leader and leader.get("name") not in [x.get("name") for x in stocks if x.get("sector") == sec.get("name")]:
             issues.append(f"{sec.get('name')}: 대장주 섹터 불일치")
 
+        flow_eligible = int(sec.get("flowEligibleCount") or 0)
+        checks += 1
+        if flow_eligible > int(sec.get("memberCount") or 0):
+            issues.append(f"{sec.get('name')}: 섹터 흐름 유효종목 수 초과")
+
+        for key in ("flow7", "flow30"):
+            flow = sec.get(key) or {}
+            criteria = flow.get("criteria") or {}
+            condition_count = sum(bool(v) for v in criteria.values())
+            checks += 1
+            if flow.get("eligibleCount") != flow_eligible:
+                issues.append(f"{sec.get('name')}: {key} 표본 수 불일치")
+            if flow.get("conditionCount") != condition_count or flow.get("score") != condition_count * 20:
+                issues.append(f"{sec.get('name')}: {key} 강세조건 합계 불일치")
+            expected_strong = bool(
+                flow_eligible >= 3
+                and criteria.get("medianReturnPositive")
+                and criteria.get("medianRelativePositive")
+                and condition_count >= 4
+            )
+            if bool(flow.get("strong")) != expected_strong:
+                issues.append(f"{sec.get('name')}: {key} 강세판정 불일치")
+
+        f7 = sec.get("flow7") or {}
+        f30 = sec.get("flow30") or {}
+        if sec.get("groupStatus") == "HOLDING_THEME":
+            expected_flow_status = "HOLDING_THEME"
+        elif f7.get("strong") and f30.get("strong"):
+            expected_flow_status = "BOTH"
+        elif f7.get("strong"):
+            expected_flow_status = "NEW_7D"
+        elif f30.get("strong"):
+            expected_flow_status = "PERSISTENT_30D"
+        else:
+            expected_flow_status = "NONE"
+        checks += 1
+        if sec.get("flowStatus") != expected_flow_status:
+            issues.append(f"{sec.get('name')}: 7·30일 섹터 흐름 상태 불일치")
+
+    flow_meta = meta.get("sectorFlowMeta") or {}
+    eligible_flow_sectors = [
+        s for s in sectors
+        if s.get("groupStatus") != "HOLDING_THEME"
+        and s.get("name") != "ETF"
+        and (s.get("flowEligibleCount") or 0) >= 3
+    ]
+    expected_flow_counts = {
+        "eligibleSectorCount": len(eligible_flow_sectors),
+        "strongSectorCount": sum(s.get("flowStatus") in ("BOTH", "NEW_7D", "PERSISTENT_30D") for s in eligible_flow_sectors),
+        "bothStrongCount": sum(s.get("flowStatus") == "BOTH" for s in eligible_flow_sectors),
+        "new7dCount": sum(s.get("flowStatus") == "NEW_7D" for s in eligible_flow_sectors),
+        "persistent30dCount": sum(s.get("flowStatus") == "PERSISTENT_30D" for s in eligible_flow_sectors),
+        "expandingCount": sum(bool(s.get("expanding")) for s in eligible_flow_sectors),
+        "concentrationWarningCount": sum(bool(s.get("concentrationWarning")) for s in eligible_flow_sectors),
+    }
+    for key, expected in expected_flow_counts.items():
+        checks += 1
+        if flow_meta.get(key) != expected:
+            issues.append(f"섹터 흐름 요약 {key} 불일치")
+
     if issues:
         raise RuntimeError("정합성 검사 실패: " + " / ".join(issues[:12]))
     return {
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널 합계를 자동 대조했습니다.",
+        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·7·30일 섹터 흐름·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널 합계를 자동 대조했습니다.",
     }
 
 
@@ -4074,7 +4385,7 @@ def main():
     old_mode = (old_payload.get("meta") or {}).get("mode")
     old_by_ticker = {x.get("ticker"): x for x in old_payload.get("stocks", []) if x.get("ticker")}
 
-    print("1/9 코스피·코스닥 시가총액 목록 수집")
+    print("1/11 코스피·코스닥 시가총액 목록 수집")
     listed = fetch_market_summary(0, ".KS", "KOSPI") + fetch_market_summary(1, ".KQ", "KOSDAQ")
     sector_map = kind_sector_map()
     for r in listed:
@@ -4090,7 +4401,7 @@ def main():
         raise RuntimeError(f"시가총액 1조원 통과 종목이 비정상적으로 적습니다: {len(cap_pass)}")
 
     print(
-        "2/9 시총 1조 이상 기업 가격 이력 수집:", len(cap_pass),
+        "2/11 시총 1조 이상 기업 가격 이력 수집:", len(cap_pass),
         "(ETF·ETN·스팩 사전 제외", len(excluded_instruments), ")"
     )
     raw = []
@@ -4158,7 +4469,7 @@ def main():
     if len(raw) < 50:
         raise RuntimeError(f"정상 계산 종목이 너무 적어 기존 사이트를 덮어쓰지 않습니다: {len(raw)} / 가격수집 오류 {len(errors)}개. 첫 오류: {(errors[0].get('error') if errors else '없음')}")
 
-    print("3/9 RS / Stage 2 계산")
+    print("3/11 RS / Stage 2 계산")
     rsvals = [x["rsBlend"] for x in raw]
     ovals = [x["oneilRsRaw"] for x in raw]
     for x in raw:
@@ -4168,23 +4479,45 @@ def main():
 
     mkt = market_direction()
 
-    print("4/9 OpenDART 재무·공시 — 캐시 우선 / 신규조회 최대 18개")
+    print("4/11 OpenDART 재무·공시 — 캐시 우선 / 신규조회 최대 18개")
     dart_meta = dart_enrich(raw, old_by_ticker)
     print("  ", dart_meta.get("message"))
 
-    print("5/9 OpenDART 사업내용 + 세부섹터 — 신규·강한 10개 우선 + 백로그 8개")
+    print("5/11 OpenDART 사업내용 + 세부섹터 — 신규·강한 10개 우선 + 백로그 8개")
     profile_meta = profile_enrich(raw, old_by_ticker)
     print("  ", profile_meta.get("message"))
 
+    print("6/11 KOSPI·KOSDAQ 대비 7·30거래일 섹터 흐름 계산")
+    flow_benchmarks, sector_flow_meta = sector_flow_benchmarks(raw, mkt)
+
     # IMPORTANT: sector action is now calculated on DART-derived business sectors,
-    # not only the broad KRX industry label.
-    sectors = _build_sector_stats(raw)
+    # not only the broad KRX industry label. 신고가 여부와 독립된 7·30거래일
+    # 수익률·시장대비·확산도를 별도 흐름으로 함께 계산합니다.
+    sectors = _build_sector_stats(raw, flow_benchmarks)
     sector_by_name = {s["name"]: s for s in sectors}
 
-    print("6/10 수급 생략 · 컨센서스는 후보 선별 후 제한 확인")
+    operating_flow_sectors = [
+        s for s in sectors
+        if s.get("groupStatus") != "HOLDING_THEME"
+        and s.get("name") != "ETF"
+        and (s.get("flowEligibleCount") or 0) >= 3
+    ]
+    sector_flow_meta.update({
+        "eligibleSectorCount": len(operating_flow_sectors),
+        "strongSectorCount": sum(s.get("flowStatus") in ("BOTH", "NEW_7D", "PERSISTENT_30D") for s in operating_flow_sectors),
+        "bothStrongCount": sum(s.get("flowStatus") == "BOTH" for s in operating_flow_sectors),
+        "new7dCount": sum(s.get("flowStatus") == "NEW_7D" for s in operating_flow_sectors),
+        "persistent30dCount": sum(s.get("flowStatus") == "PERSISTENT_30D" for s in operating_flow_sectors),
+        "expandingCount": sum(bool(s.get("expanding")) for s in operating_flow_sectors),
+        "concentrationWarningCount": sum(bool(s.get("concentrationWarning")) for s in operating_flow_sectors),
+        "minimumMemberCount": 3,
+        "strongRule": "각 기간 5조건 중 4개 이상 + 중앙값 수익률·시장대비 모두 플러스",
+    })
+
+    print("7/11 수급 생략 · 컨센서스는 후보 선별 후 제한 확인")
     flow_meta = {"connected": False, "coverage": 0, "source": "사용 안 함", "message": "수급 미사용"}
 
-    print("7/9 점수 / 신호 / CAN SLIM 계산")
+    print("8/11 점수 / 신호 / CAN SLIM 계산")
     today = datetime.now(KST).date().isoformat()
     for x in raw:
         sector = sector_by_name[x["sector"]]
@@ -4226,7 +4559,7 @@ def main():
         for k in ("close","ma20","ma50","ma60","ma120","ma150","ma200","ma20m","avgTradingValue50d","market_cap_krw"):
             if x.get(k) is not None:
                 x[k] = round(float(x[k]), 2)
-        for k in ("chg1d","ret252","rs5","rs20","rs60","rsBlend","oneilRsRaw","demandRatio","volumeRatio","high52Ratio","historicalHighRatio","drawdown"):
+        for k in ("chg1d","ret7","ret30","ret252","rs5","rs20","rs60","rsBlend","oneilRsRaw","demandRatio","volumeRatio","volumeTrend7","high52Ratio","historicalHighRatio","drawdown"):
             if x.get(k) is not None:
                 x[k] = round(float(x[k]), 2)
         for r in x["history"]:
@@ -4236,7 +4569,7 @@ def main():
 
     raw.sort(key=lambda x: x["score"], reverse=True)
 
-    print("8/10 FnGuide 보조확인 — 3개 후보군 중 상위 20개 / 3일 캐시 우선")
+    print("9/11 FnGuide 보조확인 — 3개 후보군 중 상위 20개 / 3일 캐시 우선")
     consensus_meta = consensus_enrich(raw)
     print("  ", consensus_meta.get("message"))
 
@@ -4306,7 +4639,7 @@ def main():
     }
     coverage_pct = round(price_fetched_count / len(cap_pass) * 100, 1) if cap_pass else 0
 
-    print("9/10 섹터 대장주 연결")
+    print("10/11 섹터 대장주 연결")
 
     payload = {
         "meta": {
@@ -4356,9 +4689,10 @@ def main():
             "profileMeta": profile_meta,
             "marketContextMeta": {"status": "NOT_USED", "source": "사용 안 함", "message": "수급 미사용(사용자 설정)"},
             "flowMeta": flow_meta,
+            "sectorFlowMeta": sector_flow_meta,
             "consensusMeta": consensus_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
-            "note": "후보 스크리닝 대시보드입니다. 과거 실적·재무·공시는 OpenDART 공식자료를 사용합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 후보 상위 20개만 FnGuide 보조정보로 확인하고 3일 캐시하며, 공식자료와 구분해 표시합니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
+            "note": "후보 스크리닝 대시보드입니다. 과거 실적·재무·공시는 OpenDART 공식자료를 사용합니다. 7·30거래일 섹터 흐름은 신고가 여부와 무관하게 중앙값 수익률·거래소 지수 대비·상승 확산·추세 폭을 별도로 계산합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 후보 상위 20개만 FnGuide 보조정보로 확인하고 3일 캐시하며, 공식자료와 구분해 표시합니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
         },
         "sectors": sectors,
         "stocks": raw,
@@ -4367,7 +4701,7 @@ def main():
 
     payload["meta"]["qa"] = validate_payload_integrity(payload)
 
-    print("10/10 index.html 갱신")
+    print("11/11 index.html 갱신")
     new_html = replace_payload(old_html, payload)
     new_html = patch_index_health_ui(new_html)
     new_html = patch_leader_profile_ui(new_html)
