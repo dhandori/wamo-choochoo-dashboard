@@ -29,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/45.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/46.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -3839,6 +3839,30 @@ def _sector_action_overlay(sector):
     }
 
 
+def _stock_sector_action_overlay(stock, sector):
+    """종목 분류 신뢰도를 반영한 최종 섹터액션 판정의 단일 진실 원천.
+
+    HIGH/MEDIUM만 공식 섹터 흐름을 상속한다. LOW는 화면에는 남기되
+    섹터액션 후보·통계·컨센서스 대상에는 들어가지 않도록 항상 NONE이다.
+    저장 단계와 QA 단계가 반드시 이 함수를 함께 사용해야 한다.
+    """
+    if stock.get("sectorConfidence") in ("HIGH", "MEDIUM"):
+        return _sector_action_overlay(sector)
+    return {
+        "status": "NONE",
+        "label": "사업분류 검증 대기",
+        "action": sector.get("action"),
+        "score": sector.get("score"),
+        "memberCount": sector.get("memberCount", 0),
+        "flowStatus": "NONE",
+        "flowStatusLabel": "DART 세부분류 검증 대기",
+        "flow7": {},
+        "flow30": {},
+        "expanding": False,
+        "concentrationWarning": False,
+    }
+
+
 def _profile_is_priority(x, old_by_ticker):
     old = old_by_ticker.get(x.get("ticker"), {})
     return bool(
@@ -4531,8 +4555,12 @@ def validate_payload_integrity(payload):
             issues.append(f"{ticker}: 섹터액션 원본 없음")
         elif _is_holding_sector_name(x.get("sector")) and overlay.get("status") == "CONFIRMED":
             issues.append(f"{ticker}: 지주사를 산업 섹터동반강세로 오분류")
-        elif overlay.get("status") != _sector_action_overlay(sec).get("status"):
-            issues.append(f"{ticker}: 섹터액션 판정 불일치")
+        else:
+            expected_overlay = _stock_sector_action_overlay(x, sec)
+            if overlay.get("status") != expected_overlay.get("status"):
+                issues.append(f"{ticker}: 섹터액션 판정 불일치")
+            elif overlay.get("flowStatus") != expected_overlay.get("flowStatus"):
+                issues.append(f"{ticker}: 섹터액션 흐름상태 불일치")
 
         consensus_status = x.get("consensus_check_status") or "NOT_TARGET"
         checks += 1
@@ -4851,15 +4879,7 @@ def main():
     today = datetime.now(KST).date().isoformat()
     for x in raw:
         sector = sector_by_name[x["sector"]]
-        if x.get("sectorConfidence") in ("HIGH", "MEDIUM"):
-            x["sectorAction"] = _sector_action_overlay(sector)
-        else:
-            x["sectorAction"] = {
-                "status":"NONE", "label":"사업분류 검증 대기", "action":sector.get("action"),
-                "score":sector.get("score"), "memberCount":sector.get("memberCount",0),
-                "flowStatus":"NONE", "flowStatusLabel":"DART 세부분류 검증 대기",
-                "flow7":{}, "flow30":{}, "expanding":False, "concentrationWarning":False,
-            }
+        x["sectorAction"] = _stock_sector_action_overlay(x, sector)
         add_can_slim(x, sector, mkt)
         hc = max(0, min(100, (x["high52Ratio"] - 70) / 30 * 100))
         vc = min(100, x["volumeRatio"] / 2 * 100)
