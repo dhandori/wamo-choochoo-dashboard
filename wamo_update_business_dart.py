@@ -29,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/42.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/44.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -525,6 +525,8 @@ def build_market_energy(listed, histories_by_code, old_market_energy, target_dat
         regime, regime_note = "WARMUP", "5거래일 이동평균 계산을 위한 이력이 더 필요합니다."
     elif latest_ma >= 20 and (ma5_change or 0) > 0:
         regime, regime_note = "STRONG", "5일 평균이 20 이상이고 최근 5거래일 기울기도 상승입니다."
+    elif latest_ma >= 20:
+        regime, regime_note = "COOLING", "5일 평균은 20 이상이지만 최근 5거래일 기울기가 둔화됐습니다. 강한 확산의 정점 통과 여부를 확인합니다."
     elif crossed_above and (ma5_change or 0) > 0:
         regime, regime_note = "RECOVERY", "최근 10선을 상향 돌파하고 확산 기울기가 개선됐습니다."
     elif below_streak >= 40:
