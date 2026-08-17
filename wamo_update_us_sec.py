@@ -161,18 +161,39 @@ def translate_industry(industry, broad=""):
     return f"{broad_ko} 세부산업 ({original})"
 
 
+def _nasdaq_screener_rows(payload):
+    """Nasdaq 스크리너의 구형·현행 JSON 배열 위치를 모두 지원한다.
+
+    현행 응답은 data.rows를 사용하지만, 일부 캐시·배포 응답은
+    data.table.rows 형태로 내려온 적이 있어 두 형식을 모두 허용한다.
+    """
+    root = payload if isinstance(payload, dict) else {}
+    data = root.get("data") if isinstance(root.get("data"), dict) else {}
+    table = data.get("table") if isinstance(data.get("table"), dict) else {}
+    nested = data.get("data") if isinstance(data.get("data"), dict) else {}
+    for candidate in (data.get("rows"), table.get("rows"), nested.get("rows"), root.get("rows")):
+        if isinstance(candidate, list):
+            return candidate
+    return []
+
+
 def fetch_us_universe():
     """Nasdaq 공식 주식 스크리너 화면이 사용하는 JSON으로 미국 상장기업을 만든다."""
     query = urllib.parse.urlencode({
         "tableonly": "true", "limit": "5000", "offset": "0", "download": "true",
     })
-    data = _get_json(
+    payload = _get_json(
         "https://api.nasdaq.com/api/screener/stocks?" + query,
         headers={"Referer": "https://www.nasdaq.com/market-activity/stocks/screener"},
     )
-    rows = (((data or {}).get("data") or {}).get("table") or {}).get("rows") or []
+    rows = _nasdaq_screener_rows(payload)
     if len(rows) < 1000:
-        raise RuntimeError(f"Nasdaq 미국 종목 목록이 비정상적으로 적습니다: {len(rows)}")
+        status = (payload or {}).get("status") if isinstance(payload, dict) else None
+        message = (payload or {}).get("message") if isinstance(payload, dict) else None
+        raise RuntimeError(
+            f"Nasdaq 미국 종목 목록이 비정상적으로 적습니다: {len(rows)}"
+            f" · 응답상태={status or '없음'} · 메시지={message or '없음'}"
+        )
 
     listed = []
     excluded = 0
