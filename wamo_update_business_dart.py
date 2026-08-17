@@ -29,7 +29,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/44.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/45.0)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -3135,6 +3135,19 @@ def _fixed_profile_detail_sector(name, krx_sector, profile):
     ])
     return _detail_sector_from_business(name, krx_sector, text)
 
+def _reviewed_profile_override(code):
+    """Small, auditable overrides for material business conversions."""
+    if str(code) == "347700":
+        return {
+            "summary":"스피어는 우주발사체에 사용되는 고성능 특수합금 소재를 조달·가공·공급하는 우주항공 공급망 전문기업입니다. 2025년 합병과 사명 변경을 거쳐 기존 디지털 헬스케어 중심에서 우주항공 소재 중심으로 사업구조를 전환했습니다.",
+            "products":"우주발사체 엔진·노즐 등에 쓰이는 니켈계 특수합금과 관련 공급망 관리 서비스",
+            "customers":"글로벌 민간 우주발사체·우주항공 기업과 특수소재 수요처",
+            "revenue":"외주 생산망을 활용해 고객 규격에 맞는 특수합금을 조달·가공·공급하고 납품대금에서 수익을 냅니다.",
+            "drivers":"글로벌 우주 발사 횟수, 장기 공급계약, 특수합금 조달가격, 납기·품질 관리, 니켈 공급망과 운전자금",
+            "segments":["우주항공 특수합금","공급망 관리","니켈 소재"],
+        }
+    return None
+
 
 def _is_etf_name(name):
     return classify_instrument(name) == "ETF_ETN"
@@ -3454,6 +3467,15 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     if _is_etf_name(n):
         return "ETF", ["ETF"], "HIGH"
 
+    # Reviewed overrides for recent mergers/name changes where legacy business
+    # descriptions can remain in filings and caches.
+    reviewed_overrides = {
+        "스피어": ("우주항공 소재·공급망", ["우주항공", "특수합금", "공급망"], "HIGH"),
+        "스피어코퍼레이션": ("우주항공 소재·공급망", ["우주항공", "특수합금", "공급망"], "HIGH"),
+    }
+    if n in reviewed_overrides:
+        return reviewed_overrides[n]
+
     # Holding companies must not be mistaken for operating subsidiaries.
     head = t[:25000]
     if (
@@ -3473,10 +3495,19 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     ):
         return "지주회사", ["지주회사"], "HIGH"
 
+    # Current primary-business signals take precedence over legacy businesses.
+    if (
+        any(w in t for w in ("우주항공", "항공우주", "우주 발사체", "로켓 발사체"))
+        and any(w in t for w in ("특수합금", "니켈합금", "초합금", "발사체", "로켓", "공급망"))
+    ):
+        return "우주항공 소재·공급망", ["우주항공", "특수합금", "공급망"], "HIGH"
+
     # K-뷰티는 같은 산업 안에서도 돈 버는 방식이 크게 다르므로 우선 분리한다.
     # 단순히 '유통채널'이라는 단어가 있다는 이유로 자체 브랜드사를 유통사로
     # 오분류하지 않도록 ODM → 자체 브랜드 → 전문 유통 순서로 판정한다.
-    if "화장품" in t:
+    # A single historical/subsidiary mention is not enough for cosmetics.
+    beauty_core = t.count("화장품") >= 5 or "화장품" in k
+    if beauty_core:
         if any(w in t for w in ("odm", "oem", "제조자개발생산", "주문자상표부착생산")):
             return "화장품 ODM/OEM", ["화장품 ODM/OEM", "K-뷰티"], "HIGH"
         if any(w in t for w in ("자체 브랜드", "브랜드 회사", "브랜딩", "최종 소비자", "자체 제품")):
@@ -3524,6 +3555,8 @@ def _detail_sector_from_business(name, krx_sector, report_text):
 
     tags = []
     for label, must_any, support_any in narrow:
+        if label in ("화장품 ODM/OEM", "K-뷰티 유통", "화장품 브랜드") and not beauty_core:
+            continue
         if must_any and not any(w in t for w in must_any):
             continue
         if support_any and not any(w in t for w in support_any):
@@ -3546,6 +3579,8 @@ def _detail_sector_from_business(name, krx_sector, report_text):
         ("기계·장비", ["기계","장비"]),
     ]
     for label, words in broad:
+        if label == "화장품" and not beauty_core:
+            continue
         if any(w in t for w in words):
             return label, [label], "MEDIUM"
 
@@ -3673,6 +3708,11 @@ def _build_sector_stats(raw, flow_benchmarks=None):
 
         flow_members = []
         for m in members:
+            # Formal sector action uses only reviewed/DART-supported business
+            # classifications. Broad LOW-confidence fallbacks remain visible in
+            # stock screens but cannot create a sector signal.
+            if m.get("sectorConfidence") not in ("HIGH", "MEDIUM"):
+                continue
             if m.get("ret7") is None or m.get("ret30") is None:
                 continue
             if latest_dt and m.get("date"):
@@ -3898,7 +3938,7 @@ def profile_enrich(raw, old_by_ticker=None):
         except Exception:
             fresh = False
 
-        fixed = fixed_db.get(str(code))
+        fixed = _reviewed_profile_override(code) or fixed_db.get(str(code))
         if isinstance(fixed, dict) and fixed.get("summary"):
             detail, tags, confidence = _fixed_profile_detail_sector(
                 x.get("name"), original_sector, fixed
@@ -4531,6 +4571,12 @@ def validate_payload_integrity(payload):
         issues.append("가격수집 실패 건수 불일치")
 
     sector_counts = {}
+    stock_by_ticker = {x.get("ticker"): x for x in stocks}
+    sphere = next((x for x in stocks if str(x.get("stock_code") or "") == "347700"), None)
+    if sphere:
+        checks += 1
+        if sphere.get("sector") != "우주항공 소재·공급망":
+            issues.append("스피어 현재 주력사업 섹터 분류 불일치")
     for x in stocks:
         sector_counts[x.get("sector") or "기타"] = sector_counts.get(x.get("sector") or "기타", 0) + 1
     for sec in sectors:
@@ -4553,6 +4599,9 @@ def validate_payload_integrity(payload):
             issues.append(f"{sec.get('name')}: 상세창 동참 종목 수·중복 불일치")
         if any(t not in sector_tickers for t in flow_member_tickers):
             issues.append(f"{sec.get('name')}: 다른 섹터 종목이 상세창 목록에 혼입")
+        checks += 1
+        if any((stock_by_ticker.get(t) or {}).get("sectorConfidence") not in ("HIGH", "MEDIUM") for t in flow_member_tickers):
+            issues.append(f"{sec.get('name')}: LOW 신뢰도 종목이 공식 섹터액션에 혼입")
 
         for key in ("flow7", "flow30"):
             flow = sec.get(key) or {}
@@ -4629,7 +4678,7 @@ def validate_payload_integrity(payload):
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·7·30일 섹터 흐름·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
+        "note": "중복·6조건·Stage 2·신고가권·정배열·섹터 인원·7·30일 섹터 흐름·LOW 신뢰도 배제·스피어 사업전환 분류·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
     }
 
 
@@ -4802,7 +4851,15 @@ def main():
     today = datetime.now(KST).date().isoformat()
     for x in raw:
         sector = sector_by_name[x["sector"]]
-        x["sectorAction"] = _sector_action_overlay(sector)
+        if x.get("sectorConfidence") in ("HIGH", "MEDIUM"):
+            x["sectorAction"] = _sector_action_overlay(sector)
+        else:
+            x["sectorAction"] = {
+                "status":"NONE", "label":"사업분류 검증 대기", "action":sector.get("action"),
+                "score":sector.get("score"), "memberCount":sector.get("memberCount",0),
+                "flowStatus":"NONE", "flowStatusLabel":"DART 세부분류 검증 대기",
+                "flow7":{}, "flow30":{}, "expanding":False, "concentrationWarning":False,
+            }
         add_can_slim(x, sector, mkt)
         hc = max(0, min(100, (x["high52Ratio"] - 70) / 30 * 100))
         vc = min(100, x["volumeRatio"] / 2 * 100)
