@@ -177,6 +177,41 @@ def _nasdaq_screener_rows(payload):
     return []
 
 
+def _find_reference_cycle(value):
+    """dict/list 안에서 자기 자신을 다시 참조하는 경로를 찾는다."""
+    active = {}
+
+    def visit(node, path):
+        if not isinstance(node, (dict, list, tuple)):
+            return None
+        oid = id(node)
+        if oid in active:
+            return f"{active[oid]} → {path}"
+        active[oid] = path
+        try:
+            items = node.items() if isinstance(node, dict) else enumerate(node)
+            for key, child in items:
+                found = visit(child, f"{path}.{key}" if isinstance(node, dict) else f"{path}[{key}]")
+                if found:
+                    return found
+        finally:
+            active.pop(oid, None)
+        return None
+
+    return visit(value, "payload")
+
+
+def _assert_json_payload(payload):
+    """us.html 교체 전에 순환참조와 JSON 변환 가능 여부를 선제 검사한다."""
+    cycle = _find_reference_cycle(payload)
+    if cycle:
+        raise RuntimeError(f"미국 payload 순환참조 감지: {cycle}")
+    try:
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError(f"미국 payload JSON 검사 실패: {exc}") from exc
+
+
 def fetch_us_universe():
     """Nasdaq 공식 주식 스크리너 화면이 사용하는 JSON으로 미국 상장기업을 만든다."""
     query = urllib.parse.urlencode({
@@ -267,12 +302,14 @@ def market_direction_us():
             })
         except Exception as exc:
             errors.append({"symbol": symbol, "label": label, "error": str(exc), "pass": False})
-    primary = next((x for x in errors if x.get("symbol") == "^GSPC"), errors[0])
+    # errors 목록 안의 원본 dict에 benchmarks=errors를 붙이면
+    # dict → list → 같은 dict로 돌아오는 순환참조가 된다. 반드시 복사본을 쓴다.
+    primary = dict(next((x for x in errors if x.get("symbol") == "^GSPC"), errors[0]))
     primary["note"] = (
         "S&P 500이 50일선·200일선 위이고 50일선이 200일선 위이며 "
         "200일선이 상승하는지 확인합니다. Nasdaq Composite는 보조 확인입니다."
     )
-    primary["benchmarks"] = errors
+    primary["benchmarks"] = [dict(item) for item in errors]
     return primary
 
 
@@ -1054,6 +1091,7 @@ def main():
         "sectors": sectors, "stocks": raw, "errors": errors,
     }
     payload["meta"]["qa"] = validate_us_payload(payload)
+    _assert_json_payload(payload)
 
     print("8/9 us.html 데이터 교체")
     new_html = core.replace_payload(old_html, payload)
