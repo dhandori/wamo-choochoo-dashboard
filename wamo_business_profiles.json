@@ -2831,5 +2831,188 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
     "failed": false
+  },
+  "357780": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "솔브레인는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003813",
+    "detailSector": "화학",
+    "sectorTags": [
+      "화학"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "128940": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004181",
+    "detailSector": "제약·바이오",
+    "sectorTags": [
+      "제약·바이오"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "347850": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "보고서 작성일 현재 당사의 주요 매출은 당사가 개발한 후보물질에 대한 기술이전 및 마일스톤 등의 수취와 연구개발 서비스를 통해 발생되고 있으며, 제품 출시가 완료되어 판매되고 있는 제품은 없습니다.",
+      "products": "보고서 작성일 현재 당사의 주요 매출은 당사가 개발한 후보물질에 대한 기술이전 및 마일스톤 등의 수취와 연구개발 서비스를 통해 발생되고 있으며, 제품 출시가 완료되어 판매되고 있는 제품은 없습니다.",
+      "customers": "DD01(GLP-1 MASH 치료제) 국가신약개발사업단 임상과제 선정 (정부지원금 45.5억)",
+      "revenue": "보고서 작성일 현재 당사의 주요 매출은 당사가 개발한 후보물질에 대한 기술이전 및 마일스톤 등의 수취와 연구개발 서비스를 통해 발생되고 있으며, 제품 출시가 완료되어 판매되고 있는 제품은 없습니다.",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": [
+        "소프트웨어·플랫폼",
+        "유통·커머스",
+        "바이오·신약",
+        "전력·에너지"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002436",
+    "detailSector": "제약·바이오",
+    "sectorTags": [
+      "제약·바이오"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "078600": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "대주전자재료는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814000559",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "329180": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "HD현대중공업는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002879",
+    "detailSector": "선박 및 보트 건조업",
+    "sectorTags": [
+      "선박 및 보트 건조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "443060": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "HD현대마린솔루션는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001752",
+    "detailSector": "건축기술, 엔지니어링 및 관련 기술 서비스업",
+    "sectorTags": [
+      "건축기술, 엔지니어링 및 관련 기술 서비스업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "007660": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002283",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
+  },
+  "000270": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "기아는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003932",
+    "detailSector": "자동차·부품",
+    "sectorTags": [
+      "자동차·부품"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-17",
+    "failed": false
   }
 }
