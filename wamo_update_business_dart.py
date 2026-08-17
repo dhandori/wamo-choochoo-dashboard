@@ -69,14 +69,33 @@ FUND_PREFIXES = (
 
 def classify_instrument(name):
     """기업 스크리닝과 ETF/ETN을 같은 기준으로 섞지 않도록 증권 유형을 구분합니다."""
-    n = str(name or "").strip().upper()
+    n = re.sub(r"\s+", " ", str(name or "").replace("\u00a0", " ").strip()).upper()
     if n.startswith(FUND_PREFIXES) or " ETF" in n or " ETN" in n or n.endswith("ETN"):
+        return "ETF_ETN"
+    # 거래소 일반 종목 목록에 포함되는 상장 인프라펀드도 영업기업과 분리한다.
+    if n in ("맥쿼리인프라", "KB발해인프라"):
         return "ETF_ETN"
     if "스팩" in n or "SPAC" in n:
         return "SPAC"
     if "리츠" in n or "REIT" in n:
         return "REIT"
     return "COMPANY"
+
+
+def compact_provider_error(message):
+    """같은 공급자 재시도 오류를 화면에서 한 번만 보이도록 압축합니다."""
+    out = []
+    for part in re.split(r"\s+(?:/|\|\|)\s+", str(message or "")):
+        clean = re.sub(r"\s+attempt\s+\d+\s*:", ":", part, flags=re.I).strip()
+        if clean and clean not in out:
+            out.append(clean)
+    return " / ".join(out)
+
+
+def history_days_from_error(message):
+    """가격 공급자가 돌려준 '이력 부족: N일'의 최장 보유일수를 반환합니다."""
+    days = [int(x) for x in re.findall(r"이력\s*부족\s*:\s*(\d+)일", str(message or ""))]
+    return max(days) if days else None
 
 def http_bytes(url: str, timeout=25) -> bytes:
     req = urllib.request.Request(
@@ -310,7 +329,7 @@ def fetch_yahoo_history(ticker: str, years=None):
                 errors.append(f"{host} attempt {attempt+1}: {e}")
                 time.sleep(1.0 + attempt * 0.8)
 
-    raise RuntimeError(" / ".join(errors[-6:]))
+    raise RuntimeError(compact_provider_error(" / ".join(errors[-6:])))
 
 def fetch_naver_history(code: str, count=10000):
     url = f"https://fchart.stock.naver.com/sise.nhn?symbol={code}&timeframe=day&count={count}&requestType=0"
@@ -4631,11 +4650,28 @@ def patch_leader_profile_ui(html):
 
 
 def patch_index_health_ui(html):
-    """One-time safe UI enhancement: show DART / 수급 / 컨센서스 connection pills."""
+    """데이터 제외 사유를 실제 갱신 실패와 혼동하지 않도록 상태 UI를 보정합니다."""
     old = """`<span class="health-pill ${h.dartConnected?'good':'warn'}">DART ${h.dartConnected?'연결':'미연결'}</span>`"""
     new = """`<span class="health-pill ${h.dartConnected?'good':'warn'}">DART ${h.dartConnected?'연결':'미연결'}</span>`"""
     if old in html:
         html = html.replace(old, new, 1)
+    html = html.replace("FAILED ${failed}", "개별 제외 ${failed}")
+    html = html.replace(
+        "['가격수집 실패',`${h.failedCount||0}개 기업`],",
+        "['가격 제공처 오류',`${h.failedCount||0}개 기업`], ['신규상장 60일 미만',`${h.shortHistoryExcludedCount||0}개`],",
+    )
+    error_block = re.compile(
+        r"const errs=\(data\.errors\|\|\[\]\)\.slice\(0,10\);\s*"
+        r"\$\('#qualityErrors'\)\.innerHTML=errs\.length\?.*?"
+        r":'<div class=\"quality-note\">기업 가격수집 오류가 없습니다\.</div>';",
+        flags=re.S,
+    )
+    replacement = """const shortErrs=(data.shortHistoryExclusions||[]).map(e=>({...e,error:`신규상장·거래이력 ${e.historyTradingDays||'?'}일(60일 미만)`}));
+    const providerErrs=data.errors||[];
+    const errs=[...shortErrs,...providerErrs].slice(0,10);
+    const issueTotal=shortErrs.length+providerErrs.length;
+    $('#qualityErrors').innerHTML=issueTotal?`<div class="quality-note"><b>후보 계산 전 별도 제외 ${issueTotal}건 중 일부 · 신규상장 ${shortErrs.length}건 · 가격 제공처 오류 ${providerErrs.length}건</b></div>`+errs.map(e=>`<div class="quality-error"><b>${escBiz(e.name||e.ticker||'종목')}</b> · ${escBiz(String(e.error||e.reason||'별도 제외').replace(/attempt \\d+: /g,'').slice(0,180))}</div>`).join(''):'<div class="quality-note">기업 가격 확인 제외가 없습니다.</div>';"""
+    html = error_block.sub(lambda _m: replacement, html, count=1)
     return html
 
 
@@ -4752,11 +4788,14 @@ def validate_payload_integrity(payload):
     attempted = int(health.get("priceAttemptedCount") or 0)
     fetched = int(health.get("priceFetchedCount") or 0)
     failed = int(health.get("failedCount") or 0)
-    checks += 2
-    if attempted and attempted != fetched + failed:
+    short_excluded = int(health.get("shortHistoryExcludedCount") or 0)
+    checks += 3
+    if attempted and attempted != fetched + failed + short_excluded:
         issues.append("기업 가격수집 시도·성공·실패 합계 불일치")
     if failed != len(payload.get("errors") or []):
         issues.append("가격수집 실패 건수 불일치")
+    if short_excluded != len(payload.get("shortHistoryExclusions") or []):
+        issues.append("신규상장 이력부족 제외 건수 불일치")
 
     sector_counts = {}
     stock_by_ticker = {x.get("ticker"): x for x in stocks}
@@ -4901,6 +4940,7 @@ def main():
     )
     raw = []
     errors = []
+    short_history_exclusions = []
     price_fetched_count = 0
     liquidity_rejected_count = 0
     price_histories_by_code = {}
@@ -4960,7 +5000,16 @@ def main():
                 else:
                     liquidity_rejected_count += 1
             except Exception as e:
-                errors.append({"ticker": meta["ticker"], "name": meta["name"], "error": str(e)})
+                message = compact_provider_error(str(e))
+                history_days = history_days_from_error(message)
+                if history_days is not None and history_days < 60:
+                    short_history_exclusions.append({
+                        "ticker": meta["ticker"], "name": meta["name"],
+                        "historyTradingDays": history_days,
+                        "reason": "신규상장·거래이력 60일 미만",
+                    })
+                else:
+                    errors.append({"ticker": meta["ticker"], "name": meta["name"], "error": message})
             if i % 30 == 0:
                 print("  history", i, "/", len(cap_pass))
 
@@ -5182,11 +5231,12 @@ def main():
                 "liquidityRejectedCount": liquidity_rejected_count,
                 "excludedInstrumentCount": len(excluded_instruments),
                 "shortHistoryCount": short_history_count,
+                "shortHistoryExcludedCount": len(short_history_exclusions),
                 "sourceCounts": source_counts,
                 "dartConnected": bool(dart_meta.get("connected")),
                 "flowConnected": False,
                 "consensusConnected": consensus_meta.get("status") in ("LIVE", "PARTIAL"),
-                "message": f"상장 {len(listed):,}개 중 ETF·ETN·스팩 {len(excluded_instruments):,}개 분리 → 기업·리츠 {len(company_universe):,}개 → 시총 1조 이상 기업 {len(cap_pass):,}개 중 가격수집 {price_fetched_count:,}개({coverage_pct:.1f}%) → 거래대금 기준 통과 {len(raw):,}개 · 실패 {len(errors):,}개",
+                "message": f"상장 {len(listed):,}개 중 ETF·ETN·스팩·상장펀드 {len(excluded_instruments):,}개 분리 → 기업·리츠 {len(company_universe):,}개 → 시총 1조 이상 기업 {len(cap_pass):,}개 중 가격수집 {price_fetched_count:,}개({coverage_pct:.1f}%) → 거래대금 기준 통과 {len(raw):,}개 · 신규상장 60일 미만 {len(short_history_exclusions):,}개 · 제공처 오류 {len(errors):,}개",
             },
             "universeFunnel": {
                 "listed": len(listed),
@@ -5222,6 +5272,7 @@ def main():
         "sectors": sectors,
         "stocks": raw,
         "errors": errors,
+        "shortHistoryExclusions": short_history_exclusions,
     }
 
     payload["meta"]["qa"] = validate_payload_integrity(payload)

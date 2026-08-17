@@ -702,6 +702,26 @@ def sec_enrich_one(stock, mapping):
     }
 
 
+def _apply_sec_pending_profile(stock, status, note):
+    """SEC 상세가 없을 때 검증된 Nasdaq 분류만 표시하고 빈 화면을 피합니다."""
+    sector = stock.get("sector") or "산업 미분류"
+    broad = stock.get("krxSector") or sector
+    stock.update({
+        "secStatus": status,
+        "secSource": "SEC EDGAR",
+        "businessModelSource": "Nasdaq 산업분류 · SEC 상세 연결 대기",
+        "businessModelEasy": f"{stock.get('name')}은 Nasdaq 분류상 {sector}에 속합니다. SEC 사업 원문은 아직 연결되지 않았습니다.",
+        "businessProfile": {
+            "summary": f"{stock.get('name')}은 Nasdaq 분류상 {sector}에 속합니다. {note}",
+            "products": "SEC 10-K Item 1 연결 후 표시합니다.",
+            "customers": "SEC 10-K 고객·위험요인 연결 후 표시합니다.",
+            "revenue": "SEC XBRL 비교 가능 계정 연결 후 표시합니다.",
+            "drivers": "현재는 가격·거래량·섹터 흐름만 확인할 수 있습니다.",
+            "segments": list(dict.fromkeys([broad, sector])),
+        },
+    })
+
+
 def enrich_sec(raw):
     cache = _load_cache()
     errors = []
@@ -739,18 +759,11 @@ def enrich_sec(raw):
             stock["secStatus"] = "CACHED"
             cached_count += 1
         else:
-            stock.update({
-                "secStatus": "NOT_TARGET" if symbol in mapping else "NO_MATCH",
-                "secSource": "SEC EDGAR",
-                "businessModelSource": "Nasdaq 산업분류 · SEC 상세 연결 대기",
-                "businessProfile": {
-                    "summary": f"{stock.get('name')}은 Nasdaq 분류상 {stock.get('sector')}에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아닙니다.",
-                    "products": "—", "customers": "—",
-                    "revenue": "SEC XBRL 상세 연결 후 표시합니다.",
-                    "drivers": "가격·거래량·섹터 흐름을 우선 확인합니다.",
-                    "segments": [stock.get("krxSector"), stock.get("sector")],
-                },
-            })
+            _apply_sec_pending_profile(
+                stock,
+                "NOT_TARGET" if symbol in mapping else "NO_MATCH",
+                "SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+            )
 
     with ThreadPoolExecutor(max_workers=SEC_WORKERS) as pool:
         futures = {pool.submit(sec_enrich_one, stock, item): (stock, symbol) for stock, symbol, item in selected}
@@ -767,8 +780,11 @@ def enrich_sec(raw):
                     stock["secStatus"] = "CACHED"
                     cached_count += 1
                 else:
-                    stock["secStatus"] = "ERROR"
-                errors.append({"ticker": symbol, "error": str(exc)})
+                    _apply_sec_pending_profile(
+                        stock, "ERROR",
+                        "이번 갱신에서 SEC 원문을 확보하지 못해 다음 자동갱신에서 다시 시도합니다.",
+                    )
+                errors.append({"ticker": symbol, "error": core.compact_provider_error(str(exc))})
             if i % 10 == 0 or i == len(futures):
                 print("  SEC", i, "/", len(futures))
     _save_cache(cache)
@@ -868,6 +884,18 @@ def validate_us_payload(payload):
         checks += 1
         if funnel.get(key) != value:
             issues.append(f"퍼널 {key} 불일치")
+    health = (payload.get("meta") or {}).get("dataHealth") or {}
+    attempted = int(health.get("priceAttemptedCount") or 0)
+    fetched = int(health.get("priceFetchedCount") or 0)
+    failed = int(health.get("failedCount") or 0)
+    short_excluded = int(health.get("shortHistoryExcludedCount") or 0)
+    checks += 3
+    if attempted and attempted != fetched + failed + short_excluded:
+        issues.append("미국 가격수집 시도·성공·제외 합계 불일치")
+    if failed != len(payload.get("errors") or []):
+        issues.append("미국 가격 제공처 오류 건수 불일치")
+    if short_excluded != len(payload.get("shortHistoryExclusions") or []):
+        issues.append("미국 신규상장 이력부족 제외 건수 불일치")
     energy = (payload.get("meta") or {}).get("marketEnergy") or {}
     checks += 3
     if energy.get("status") == "LIVE" and (not energy.get("series") or energy.get("membershipMode") != "SCREENED_US_UNIVERSE"):
@@ -905,7 +933,7 @@ def main():
     print("  시총 10억달러 이상", len(listed), "개 · 가격수집 상위", len(candidates), "개")
 
     print("2/9 미국 가격·거래량 수집")
-    raw, errors = [], []
+    raw, errors, short_history_exclusions = [], [], []
     fetched = liquidity_rejected = 0
 
     def task(meta):
@@ -940,7 +968,16 @@ def main():
                 else:
                     liquidity_rejected += 1
             except Exception as exc:
-                errors.append({"ticker": meta.get("ticker"), "name": meta.get("name"), "error": str(exc)})
+                message = core.compact_provider_error(str(exc))
+                history_days = core.history_days_from_error(message)
+                if history_days is not None and history_days < 60:
+                    short_history_exclusions.append({
+                        "ticker": meta.get("ticker"), "name": meta.get("name"),
+                        "historyTradingDays": history_days,
+                        "reason": "신규상장·거래이력 60일 미만",
+                    })
+                else:
+                    errors.append({"ticker": meta.get("ticker"), "name": meta.get("name"), "error": message})
             if i % 50 == 0 or i == len(futures):
                 print("  price", i, "/", len(futures))
     if len(raw) < 50:
@@ -1073,10 +1110,11 @@ def main():
                 "failedCount": len(errors), "priceAttemptedCount": len(candidates), "priceFetchedCount": fetched,
                 "priceCoveragePct": coverage, "liquidityRejectedCount": liquidity_rejected,
                 "excludedInstrumentCount": excluded_by_name, "shortHistoryCount": sum((x.get("historyTradingDays") or 0) < 260 for x in raw),
+                "shortHistoryExcludedCount": len(short_history_exclusions),
                 "sourceCounts": {"Yahoo Finance": sum(x.get("dataSource") == "Yahoo Finance" for x in raw), "이전 미국 정상값": sum(x.get("dataSource") == "이전 미국 정상값" for x in raw)},
                 "dartConnected": bool(sec_meta.get("connected")), "secConnected": bool(sec_meta.get("connected")),
                 "flowConnected": False, "consensusConnected": False,
-                "message": f"시총 10억달러 이상 일반기업 {len(listed):,}개 중 상위 {len(candidates):,}개 가격수집 {fetched:,}개({coverage:.1f}%) → 50일 평균 거래대금 1천만달러 통과 {len(raw):,}개 · 실패 {len(errors):,}개",
+                "message": f"시총 10억달러 이상 일반기업 {len(listed):,}개 중 상위 {len(candidates):,}개 가격수집 {fetched:,}개({coverage:.1f}%) → 50일 평균 거래대금 1천만달러 통과 {len(raw):,}개 · 신규상장 60일 미만 {len(short_history_exclusions):,}개 · 제공처 오류 {len(errors):,}개",
             },
             "universeFunnel": funnel,
             "dartMeta": sec_meta, "secMeta": sec_meta,
@@ -1089,12 +1127,14 @@ def main():
             "note": "미국 후보 스크리닝 대시보드입니다. SEC 10-K·10-Q/XBRL 공식자료와 가격으로 확인 가능한 항목만 계산합니다. 미국 시장에너지는 현재 정밀계산 유니버스의 20일 볼린저 상단 돌파 종목수를 350종목 기준으로 환산한 참고값이며 공식 S&P 500·Nasdaq 전체 구성 시계열이 아닙니다. 무료로 신뢰성 있게 연결하지 못한 컨센서스와 기관 보유 시계열은 확인 불가로 표시합니다.",
         },
         "sectors": sectors, "stocks": raw, "errors": errors,
+        "shortHistoryExclusions": short_history_exclusions,
     }
     payload["meta"]["qa"] = validate_us_payload(payload)
     _assert_json_payload(payload)
 
     print("8/9 us.html 데이터 교체")
     new_html = core.replace_payload(old_html, payload)
+    new_html = core.patch_index_health_ui(new_html)
     temp = US_HTML.with_suffix(".html.tmp")
     temp.write_text(new_html, encoding="utf-8")
     temp.replace(US_HTML)
