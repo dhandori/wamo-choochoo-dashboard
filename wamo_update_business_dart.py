@@ -28,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
 KST = timezone(timedelta(hours=9))
-UA = "Mozilla/5.0 (WAMO-Market-Radar/29.0)"
+UA = "Mozilla/5.0 (WAMO-Market-Radar/39.1)"
 MIN_MARKET_CAP = 1_000_000_000_000       # 1조원
 MIN_AVG_VALUE_50D = 10_000_000_000       # 100억원
 MAX_WORKERS = 10
@@ -48,6 +48,12 @@ CONSENSUS_HISTORY = ROOT / "wamo_consensus_history.json"
 CONSENSUS_TARGET_MAX = 20
 CONSENSUS_WORKERS = 2
 CONSENSUS_CACHE_DAYS = 3
+
+# corpCode.xml is shared by the financial/disclosure and business-profile stages.
+# Download it at most once per workflow run. A failed request is remembered too,
+# so a transient DART outage cannot trigger the same long timeout again later.
+_DART_CORP_MAP_CACHE = None
+_DART_CORP_MAP_FAILURE = None
 
 FUND_PREFIXES = (
     "KODEX", "TIGER", "ACE", "RISE", "SOL", "PLUS", "HANARO",
@@ -804,24 +810,39 @@ def dart_json(endpoint: str, params: dict, timeout=25):
     raise last or RuntimeError("DART request failed")
 
 def dart_corp_map():
+    global _DART_CORP_MAP_CACHE, _DART_CORP_MAP_FAILURE
     if not DART_KEY:
         return {}
-    url = "https://opendart.fss.or.kr/api/corpCode.xml?" + urllib.parse.urlencode({"crtfc_key": DART_KEY})
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        raw = r.read()
-    with zipfile.ZipFile(io.BytesIO(raw)) as z:
-        xml = z.read(z.namelist()[0])
-    root = ET.fromstring(xml)
-    out = {}
-    for item in root.findall(".//list"):
-        stock_code = (item.findtext("stock_code") or "").strip()
-        corp_code = (item.findtext("corp_code") or "").strip()
-        if stock_code and corp_code:
-            out[stock_code] = corp_code
-    if len(out) < 1000:
-        raise RuntimeError(f"DART corp code map suspiciously small: {len(out)}")
-    return out
+    if _DART_CORP_MAP_CACHE is not None:
+        return _DART_CORP_MAP_CACHE
+    if _DART_CORP_MAP_FAILURE:
+        raise RuntimeError(
+            "DART corp-code list already failed in this run: "
+            + _DART_CORP_MAP_FAILURE
+        )
+
+    try:
+        url = "https://opendart.fss.or.kr/api/corpCode.xml?" + urllib.parse.urlencode({"crtfc_key": DART_KEY})
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            raw = r.read()
+        with zipfile.ZipFile(io.BytesIO(raw)) as z:
+            xml = z.read(z.namelist()[0])
+        root = ET.fromstring(xml)
+        out = {}
+        for item in root.findall(".//list"):
+            stock_code = (item.findtext("stock_code") or "").strip()
+            corp_code = (item.findtext("corp_code") or "").strip()
+            if stock_code and corp_code:
+                out[stock_code] = corp_code
+        if len(out) < 1000:
+            raise RuntimeError(f"DART corp code map suspiciously small: {len(out)}")
+    except Exception as e:
+        _DART_CORP_MAP_FAILURE = str(e)
+        raise
+
+    _DART_CORP_MAP_CACHE = out
+    return _DART_CORP_MAP_CACHE
 
 def dart_num(v):
     if v is None:
@@ -1477,6 +1498,7 @@ def _dart_priority_key(x, old_by_ticker):
 
 def dart_enrich(raw, old_by_ticker):
     meta = {
+        "status": "NO_KEY",
         "connected": False,
         "targetCount": 0,
         "successCount": 0,
@@ -1493,7 +1515,28 @@ def dart_enrich(raw, old_by_ticker):
         cmap = dart_corp_map()
         meta["connected"] = True
     except Exception as e:
-        meta["message"] = "OpenDART key validation/corp-code fetch failed: " + str(e)
+        # Financial/disclosure enrichment is optional for the daily price update.
+        # Preserve yesterday's official DART facts instead of aborting or blanking them.
+        cached = 0
+        for x in raw:
+            old = old_by_ticker.get(x.get("ticker"), {})
+            prior_corp = old.get("dartCorpCode")
+            if prior_corp:
+                x["dartCorpCode"] = prior_corp
+            if _copy_dart_cache(x, old):
+                cached += 1
+        usable = sum(x.get("dartStatus") in ("LIVE","CACHED","PARTIAL") for x in raw)
+        meta.update({
+            "status": "DEGRADED",
+            "targetCount": len(raw),
+            "successCount": usable,
+            "cachedCount": cached,
+            "errorCount": 1,
+            "message": (
+                f"OpenDART 고유번호 목록 일시 실패 · 기존 공식자료 {usable}/{len(raw)}개 유지"
+            ),
+            "errors": [{"scope": "corpCode.xml", "error": str(e)}],
+        })
         return meta
 
     today = datetime.now(KST).date()
@@ -1590,6 +1633,7 @@ def dart_enrich(raw, old_by_ticker):
     usable = sum(x.get("dartStatus") in ("LIVE","CACHED","PARTIAL") for x in raw)
     fresh = sum(x.get("dartStatus") == "LIVE" and x.get("dartFetchedAt") == today.isoformat() for x in selected)
     meta.update({
+        "status": "LIVE" if not errors else "PARTIAL",
         "targetCount": len(selected),
         "successCount": usable,
         "cachedCount": len(cached),
@@ -2264,119 +2308,15 @@ def _extract_business_sentences(section):
     return out
 
 def _sector_profile_template(sector):
-    s = str(sector or "")
-    rules = [
-        (["화장품"], {
-            "summary":"화장품 브랜드에 제품을 직접 판매하거나, 브랜드사를 대신해 제품을 개발·생산하는 사업입니다.",
-            "customers":"국내외 화장품 브랜드, 유통사, 소비자가 주요 고객입니다.",
-            "revenue":"자체 브랜드는 제품 판매액, ODM/OEM은 고객 주문량 × 납품단가가 매출의 핵심입니다.",
-            "drivers":"수주 증가, 해외 고객 확대, 공장 가동률 상승, 고마진 제품 비중 상승이 실적 개선에 중요합니다."
-        }),
-        (["보험"], {
-            "summary":"고객에게 보험상품을 판매해 보험료를 받고 위험을 인수하는 금융사업입니다.",
-            "customers":"개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널을 통해 판매합니다.",
-            "revenue":"보험료에서 보험금·사업비를 뺀 보험손익과 채권·주식 등 자산운용 수익으로 돈을 법니다.",
-            "drivers":"손해율 하락, 신계약 증가, 금리·운용수익률 개선, 비용 효율화가 핵심입니다."
-        }),
-        (["은행","금융"], {
-            "summary":"자금을 조달해 대출·투자하고 금융서비스를 제공하는 사업입니다.",
-            "customers":"개인, 중소기업, 대기업 등 예금·대출·결제·자산관리 고객이 핵심입니다.",
-            "revenue":"예대금리차에서 나오는 이자이익과 카드·자산관리·IB 등 수수료이익으로 돈을 법니다.",
-            "drivers":"대출 성장, 순이자마진, 대손비용, 연체율, 수수료 수익 증가가 실적을 좌우합니다."
-        }),
-        (["증권"], {
-            "summary":"주식·채권 중개, 자산관리, 투자은행(IB), 자기자본 운용을 하는 금융사업입니다.",
-            "customers":"개인·기관 투자자와 자금조달이 필요한 기업이 주요 고객입니다.",
-            "revenue":"위탁매매·자산관리·IB 수수료와 채권·주식 운용손익에서 수익을 냅니다.",
-            "drivers":"거래대금, IPO·회사채 발행, 시장금리, 보유자산 평가손익이 중요합니다."
-        }),
-        (["반도체"], {
-            "summary":"반도체 또는 반도체 제조에 필요한 소재·부품·장비를 개발·생산해 공급하는 사업입니다.",
-            "customers":"메모리·파운드리·팹리스·OSAT 등 반도체 기업이 주요 고객입니다.",
-            "revenue":"칩·장비·부품의 출하량 × 판매단가가 기본 매출 구조이며 유지보수·소모품 매출이 붙기도 합니다.",
-            "drivers":"고객 CAPEX, 가동률, 신규 공정 채택, 제품 믹스와 ASP 상승이 핵심입니다."
-        }),
-        (["의약","제약","바이오"], {
-            "summary":"의약품·바이오 제품을 연구개발하고 생산·판매하거나 기술을 이전하는 사업입니다.",
-            "customers":"병원·약국·유통사·글로벌 제약사 등이 주요 고객 또는 파트너입니다.",
-            "revenue":"제품 판매, 위탁생산, 기술이전 계약금·마일스톤·로열티에서 수익을 냅니다.",
-            "drivers":"허가·임상 성과, 처방·판매량 증가, 신제품 출시, 생산능력 확대가 중요합니다."
-        }),
-        (["자동차"], {
-            "summary":"완성차 또는 자동차 부품을 개발·생산해 판매하는 제조업입니다.",
-            "customers":"완성차 업체, 딜러·소비자 또는 1차 협력사가 주요 고객입니다.",
-            "revenue":"차량·부품 출하량 × 판매단가가 핵심이며 고사양 제품 비중이 수익성에 영향을 줍니다.",
-            "drivers":"완성차 생산량, 신차 사이클, 전기차 믹스, 원재료·환율이 중요합니다."
-        }),
-        (["건설"], {
-            "summary":"주택·건축·토목·플랜트 프로젝트를 수주해 설계·시공하는 사업입니다.",
-            "customers":"정부·공공기관, 시행사, 기업, 주택 수요자가 주요 발주처입니다.",
-            "revenue":"수주한 공사의 진행률에 따라 공사매출을 인식하고 개발사업에서는 분양이익도 얻습니다.",
-            "drivers":"신규 수주, 원가율, 공사 진행률, 분양률과 미분양, 자재비가 핵심입니다."
-        }),
-        (["조선"], {
-            "summary":"선박·해양설비를 수주한 뒤 설계·건조해 인도하는 장기 수주산업입니다.",
-            "customers":"글로벌 해운사·에너지 기업이 주요 고객입니다.",
-            "revenue":"선가 × 수주량이 매출 기반이며 공정 진행에 따라 매출과 이익을 인식합니다.",
-            "drivers":"신조선가, 수주잔고, 고선가 물량 비중, 후판가격, 생산성 개선이 중요합니다."
-        }),
-        (["기계","장비","전기"], {
-            "summary":"산업용 기계·장비·전기제품을 제조해 기업 고객에게 공급하는 B2B 제조업입니다.",
-            "customers":"제조공장, 건설·에너지·반도체 등 설비투자를 하는 기업이 주요 고객입니다.",
-            "revenue":"장비·부품 판매와 설치·유지보수 서비스에서 매출을 올립니다.",
-            "drivers":"고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다."
-        }),
-        (["소프트웨어","IT","정보"], {
-            "summary":"기업·소비자에게 소프트웨어, 플랫폼, 데이터 또는 IT 서비스를 제공하는 사업입니다.",
-            "customers":"기업·공공기관·개인 사용자가 주요 고객입니다.",
-            "revenue":"구독료, 라이선스, 광고, 거래수수료, 구축·운영비 등 반복 매출이 핵심입니다.",
-            "drivers":"사용자·고객 수 증가, ARPU, 재계약률, 클라우드 비용과 영업레버리지가 중요합니다."
-        }),
-        (["통신"], {
-            "summary":"유무선 통신망을 구축·운영해 개인과 기업에 통신서비스를 제공하는 사업입니다.",
-            "customers":"휴대전화·인터넷 가입자와 기업·공공기관이 주요 고객입니다.",
-            "revenue":"월 통신요금, 기업 네트워크·IDC·부가서비스 사용료가 핵심 매출입니다.",
-            "drivers":"가입자 수, ARPU, 해지율, 설비투자 부담, 기업서비스 성장률이 중요합니다."
-        }),
-        (["유통","소매","도매"], {
-            "summary":"상품을 매입하거나 중개해 소비자·기업에 판매하는 유통사업입니다.",
-            "customers":"최종 소비자 또는 소매·기업 고객이 주요 고객입니다.",
-            "revenue":"판매가와 매입가의 차이인 유통마진, 입점·중개 수수료 등으로 돈을 법니다.",
-            "drivers":"점포·플랫폼 거래액, 객단가, 재고회전, 매입단가와 판촉비가 중요합니다."
-        }),
-        (["화학"], {
-            "summary":"화학 소재·원료·제품을 생산해 다른 제조업체나 소비자에게 공급하는 사업입니다.",
-            "customers":"전자·자동차·건설·생활소비재 등 다양한 제조업체가 주요 고객입니다.",
-            "revenue":"판매물량 × 제품가격에서 원재료·에너지 비용을 뺀 스프레드가 핵심입니다.",
-            "drivers":"제품가격, 원재료 가격, 가동률, 증설·수급 사이클이 중요합니다."
-        }),
-        (["식품","음료"], {
-            "summary":"식품·음료를 개발·생산해 유통채널과 소비자에게 판매하는 사업입니다.",
-            "customers":"대형마트·편의점·온라인몰·외식업체와 최종 소비자가 주요 고객입니다.",
-            "revenue":"제품 판매량 × 판매단가가 매출의 핵심이고 브랜드력과 유통망이 마진을 좌우합니다.",
-            "drivers":"판매량, 가격 인상, 원재료비, 신제품·해외매출 비중이 중요합니다."
-        }),
-        (["운송","해운","항공"], {
-            "summary":"사람이나 화물을 운송하고 운임을 받는 사업입니다.",
-            "customers":"화주·여행객·물류기업이 주요 고객입니다.",
-            "revenue":"운송량 × 운임이 핵심 매출이며 연료비와 선박·항공기 가동률이 수익성에 영향을 줍니다.",
-            "drivers":"운임, 물동량, 유가, 환율, 공급능력과 가동률이 중요합니다."
-        }),
-        (["에너지","전력","가스"], {
-            "summary":"전력·가스·에너지를 생산·유통하거나 관련 설비를 운영하는 사업입니다.",
-            "customers":"가정·기업·발전사·정부·공공기관 등이 주요 고객입니다.",
-            "revenue":"에너지 판매량 × 판매단가 또는 장기 공급계약·설비 이용료로 수익을 냅니다.",
-            "drivers":"에너지 가격, 발전·가동률, 연료비, 규제요금과 신규설비가 중요합니다."
-        }),
-    ]
-    for keys, p in rules:
-        if any(k in s for k in keys):
-            return p
+    # Missing fields are not inferred from a broad industry label.  Only text
+    # extracted from the company's DART filing (or the vetted fixed DB) may make
+    # a company-specific business claim.
     return {
-        "summary":f"{s or '해당'} 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
-        "customers":"주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
-        "revenue":"제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
-        "drivers":"수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다."
+        "summary":"OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+        "products":"사업보고서 원문에서 확인 필요",
+        "customers":"사업보고서 원문에서 확인 필요",
+        "revenue":"사업보고서 원문에서 확인 필요",
+        "drivers":"사업보고서 원문에서 확인 필요",
     }
 
 def _sector_easy_model(sector):
@@ -3681,12 +3621,19 @@ def profile_enrich(raw, old_by_ticker=None):
             "source":"OpenDART","message":"DART API KEY 없음","errors":[]
         }
 
+    errors = []
+    corp_map_error = None
     try:
+        # Usually served from the in-run cache populated by dart_enrich().
         cmap = dart_corp_map()
     except Exception as e:
-        raise RuntimeError("기업설명용 DART 고유번호 목록 실패: " + str(e))
+        # Business-description enrichment is optional. On a DART outage, use only
+        # previously verified OpenDART text or the vetted fixed DB; never invent a
+        # company description from an industry template.
+        cmap = {}
+        corp_map_error = str(e)
+        errors.append("corpCode.xml: " + corp_map_error)
 
-    errors = []
     missing = []
     covered = 0
     cached_count = 0
@@ -3715,7 +3662,8 @@ def profile_enrich(raw, old_by_ticker=None):
             continue
 
         code = x.get("stock_code") or str(x.get("ticker","")).split(".")[0]
-        corp = x.get("dartCorpCode") or cmap.get(code)
+        old_stock = old_by_ticker.get(x.get("ticker"), {})
+        corp = x.get("dartCorpCode") or old_stock.get("dartCorpCode") or cmap.get(code)
         if corp:
             x["dartCorpCode"] = corp
 
@@ -3764,6 +3712,60 @@ def profile_enrich(raw, old_by_ticker=None):
             x["sector"] = x["detailSector"]
             covered += 1
             cached_count += 1
+            continue
+
+        if corp_map_error:
+            # The profile cache may be older than the normal 180-day refresh window,
+            # or only embedded in yesterday's index. It is still verified DART text
+            # and is safer than deleting it or replacing it with a made-up template.
+            prior_profile = None
+            prior_source = None
+            prior_report_date = None
+            prior_url = None
+            if isinstance(old.get("businessProfile"), dict) and not old.get("failed"):
+                prior_profile = old.get("businessProfile")
+                prior_source = old.get("businessModelSource") or "OpenDART 사업보고서 직접추출"
+                prior_report_date = old.get("businessModelReportDate")
+                prior_url = old.get("businessModelUrl")
+            elif (
+                isinstance(old_stock.get("businessProfile"), dict)
+                and str(old_stock.get("businessModelSource", "")).startswith("OpenDART")
+            ):
+                prior_profile = old_stock.get("businessProfile")
+                prior_source = old_stock.get("businessModelSource")
+                prior_report_date = old_stock.get("businessModelReportDate")
+                prior_url = old_stock.get("businessModelUrl")
+
+            if prior_profile and prior_profile.get("summary"):
+                detail, tags, confidence = _fixed_profile_detail_sector(
+                    x.get("name"), original_sector, prior_profile
+                )
+                x["businessProfile"] = prior_profile
+                x["businessModelEasy"] = prior_profile.get("summary") or ""
+                x["businessModelSource"] = prior_source
+                x["businessModelReportDate"] = prior_report_date
+                x["businessModelUrl"] = prior_url
+                x["businessModelDataStatus"] = "CACHED_DART_OUTAGE"
+                x["detailSector"] = detail
+                x["sectorTags"] = tags
+                x["sectorConfidence"] = confidence
+                x["sector"] = detail
+                covered += 1
+                cached_count += 1
+                continue
+
+            detail = _normalize_krx_sector(original_sector)
+            x["detailSector"] = detail
+            x["sectorTags"] = [detail]
+            x["sectorConfidence"] = "LOW"
+            x["sector"] = detail
+            x["businessProfile"] = {
+                "summary":"DART 고유번호 조회가 일시 실패해 이번 실행에서는 회사별 사업설명을 새로 만들지 않았습니다.",
+                "products":"—","customers":"—","revenue":"—","drivers":"—","segments":[]
+            }
+            x["businessModelEasy"] = x["businessProfile"]["summary"]
+            x["businessModelSource"] = "DART 일시 장애 · 업종분류만 유지"
+            x["businessModelDataStatus"] = "DEGRADED"
             continue
 
         # Failed records get a cooldown so one problematic filing cannot consume minutes every day.
@@ -3923,7 +3925,10 @@ def profile_enrich(raw, old_by_ticker=None):
         for x in raw if not _is_etf_name(x.get("name"))
     )
     pending = sum(
-        x.get("businessModelSource") in ("DART 백로그","DART 재시도 대기","DART 추출 실패")
+        x.get("businessModelSource") in (
+            "DART 백로그","DART 재시도 대기","DART 추출 실패",
+            "DART 일시 장애 · 업종분류만 유지",
+        )
         for x in raw
     )
     fixed_count = sum(x.get("businessModelSource") == "WAMO 검수 고정 DB" for x in raw)
@@ -3934,8 +3939,18 @@ def profile_enrich(raw, old_by_ticker=None):
     if selected:
         print("  이번 DART 자동처리 종목:", ", ".join(x.get("name","") for x in selected[:20]))
 
+    profile_status = (
+        "DEGRADED" if corp_map_error
+        else ("LIVE" if target_count and actual / target_count >= 0.70 else "PARTIAL")
+    )
+    profile_message = (
+        f"DART 고유번호 목록 일시 실패 · 기존 DART {actual}개 · 고정DB {fixed_count}개"
+        f" · 업종분류만 유지 {pending}개"
+        if corp_map_error else
+        f"DART {actual}개 · 고정DB {fixed_count}개 · 이번 DART조회 {len(selected)} · 백로그 {pending}"
+    )
     return {
-        "status": "LIVE" if target_count and actual / target_count >= 0.70 else "PARTIAL",
+        "status": profile_status,
         "targetCount": target_count,
         "coveredCount": actual,
         "cachedCount": cached_count,
@@ -3944,7 +3959,7 @@ def profile_enrich(raw, old_by_ticker=None):
         "pendingCount": pending,
         "retryWaitCount": retry_wait,
         "source": "OpenDART 정기보고서 원문 + DART 공시뷰어 fallback",
-        "message": f"DART {actual}개 · 고정DB {fixed_count}개 · 이번 DART조회 {len(selected)} · 백로그 {pending}",
+        "message": profile_message,
         "errors": errors[:20],
     }
 
@@ -4157,7 +4172,7 @@ def patch_leader_profile_ui(html):
       </div>
       ${Array.isArray(p.segments)&&p.segments.length?`<div class="biz-pro-segments">사업영역 · ${p.segments.map(escBiz).join(' · ')}</div>`:''}`;
     if(bm) bm.style.display='none';
-    if(bs) bs.textContent=`근거: ${x.businessModelSource||'업종 템플릿'}${x.businessModelReportDate?' · '+x.businessModelReportDate:''}`;
+    if(bs) bs.textContent=`근거: ${x.businessModelSource||'DART 원문 확인 필요'}${x.businessModelReportDate?' · '+x.businessModelReportDate:''}`;
   }
 """
     if "function renderBusinessProfilePro(x)" not in html:
