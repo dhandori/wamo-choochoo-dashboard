@@ -4475,5 +4475,179 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
     "failed": false
+  },
+  "373220": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260813",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813000255",
+    "detailSector": "일차전지 및 이차전지 제조업",
+    "sectorTags": [
+      "일차전지 및 이차전지 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
+  },
+  "259960": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003894",
+    "detailSector": "IT서비스·소프트웨어",
+    "sectorTags": [
+      "IT서비스·소프트웨어"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
+  },
+  "011790": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003336",
+    "detailSector": "화학",
+    "sectorTags": [
+      "화학"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
+  },
+  "051910": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002655",
+    "detailSector": "화학",
+    "sectorTags": [
+      "화학"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
+  },
+  "018880": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "한온시스템는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260813",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001074",
+    "detailSector": "일반 목적용 기계 제조업",
+    "sectorTags": [
+      "일반 목적용 기계 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
+  },
+  "086520": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "에코프로는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002690",
+    "detailSector": "금융",
+    "sectorTags": [
+      "금융"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
+  },
+  "008770": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001955",
+    "detailSector": "유통",
+    "sectorTags": [
+      "유통"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
+  },
+  "450080": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "에코프로머티는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260814",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001623",
+    "detailSector": "일차전지 및 이차전지 제조업",
+    "sectorTags": [
+      "일차전지 및 이차전지 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-08-25",
+    "failed": false
   }
 }
