@@ -3725,9 +3725,14 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     if tags:
         return tags[0], tags[:4], "HIGH"
 
+    # Broad fallback is intentionally conservative. A generic customer/supply-chain
+    # mention (e.g. a cosmetics company saying "자동차" once) must not create an
+    # operating-sector classification. Automotive requires either KRX industry
+    # confirmation or repeated core-business language in the DART narrative.
+    auto_core = ("자동차" in k) or (t.count("자동차") >= 4 and any(w in t for w in ("자동차부품", "완성차", "차량용", "전장", "모빌리티")))
     broad = [
         ("반도체", ["반도체"]),
-        ("자동차·부품", ["자동차"]),
+        ("자동차·부품", ["__AUTO_CORE__"]),
         ("제약·바이오", ["제약","바이오","의약"]),
         ("화장품", ["화장품"]),
         ("금융", ["은행","대출","예금"]),
@@ -3740,6 +3745,10 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     ]
     for label, words in broad:
         if label == "화장품" and not beauty_core:
+            continue
+        if label == "자동차·부품":
+            if auto_core:
+                return label, [label], "MEDIUM"
             continue
         if any(w in t for w in words):
             return label, [label], "MEDIUM"
