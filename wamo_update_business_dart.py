@@ -3662,11 +3662,26 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     ):
         return "우주항공 소재·공급망", ["우주항공", "특수합금", "공급망"], "HIGH"
 
+    # 자동차 오분류 방지: DART 본문에 고객/물류/전방산업 문맥으로 '자동차'가
+    # 한두 번 나오는 것만으로 자동차 섹터로 분류하지 않는다. KRX 업종 자체가
+    # 자동차이거나, 본문에서 자동차가 반복되고 자동차 고유 사업어가 함께 있어야 한다.
+    auto_core = (
+        "자동차" in k
+        or (
+            t.count("자동차") >= 4
+            and any(w in t for w in ("자동차부품", "완성차", "차량용", "전장", "모빌리티", "제동", "조향", "현가", "adas"))
+        )
+    )
+
     # K-뷰티는 같은 산업 안에서도 돈 버는 방식이 크게 다르므로 우선 분리한다.
     # 단순히 '유통채널'이라는 단어가 있다는 이유로 자체 브랜드사를 유통사로
     # 오분류하지 않도록 ODM → 자체 브랜드 → 전문 유통 순서로 판정한다.
     # A single historical/subsidiary mention is not enough for cosmetics.
-    beauty_core = t.count("화장품") >= 5 or "화장품" in k
+    beauty_core = (
+        t.count("화장품") >= 2
+        or "화장품" in k
+        or any(w in t for w in ("k-뷰티", "k뷰티", "코스메틱", "스킨케어", "메이크업"))
+    )
     if beauty_core:
         if any(w in t for w in ("odm", "oem", "제조자개발생산", "주문자상표부착생산")):
             return "화장품 ODM/OEM", ["화장품 ODM/OEM", "K-뷰티"], "HIGH"
@@ -3717,6 +3732,8 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     for label, must_any, support_any in narrow:
         if label in ("화장품 ODM/OEM", "K-뷰티 유통", "화장품 브랜드") and not beauty_core:
             continue
+        if label == "자동차 부품" and not auto_core:
+            continue
         if must_any and not any(w in t for w in must_any):
             continue
         if support_any and not any(w in t for w in support_any):
@@ -3725,11 +3742,7 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     if tags:
         return tags[0], tags[:4], "HIGH"
 
-    # Broad fallback is intentionally conservative. A generic customer/supply-chain
-    # mention (e.g. a cosmetics company saying "자동차" once) must not create an
-    # operating-sector classification. Automotive requires either KRX industry
-    # confirmation or repeated core-business language in the DART narrative.
-    auto_core = ("자동차" in k) or (t.count("자동차") >= 4 and any(w in t for w in ("자동차부품", "완성차", "차량용", "전장", "모빌리티")))
+    # Broad fallback uses the same conservative auto_core gate above.
     broad = [
         ("반도체", ["반도체"]),
         ("자동차·부품", ["__AUTO_CORE__"]),
