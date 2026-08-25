@@ -1,0 +1,6 @@
+1) 이 폴더 안 7개 실사용 파일(index.html, us.html, movers.html, wamo_update_movers.py, wamo_update_business_dart.py, wamo_update_us_sec.py, wamo_movers_cache.json)을 GitHub 저장소 최상단에 업로드/덮어쓰기.
+2) main.yml은 별도 파일로 제공됨. GitHub에서 .github/workflows 폴더로 들어가 기존 main.yml을 덮어쓰기.
+3) Actions > WAMO 자동갱신 > Run workflow 1회 실행.
+4) 성공 후 Pages에서 한국/미국/TOP30 메뉴 확인.
+
+자동갱신(KST): 한국 12:00 / 16:00, 미국 00:00 / 05:00.
