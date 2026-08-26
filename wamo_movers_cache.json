@@ -42126,12 +42126,12 @@
           "close": 221.97
         }
       ],
-      "sector": "소프트웨어 (Computer Software: Programming Data Processing)",
-      "industry": "소프트웨어 (Computer Software: Programming Data Processing)",
-      "description": "Nebius Group N.V. Class A Ordinary Shares은 Nasdaq 분류상 소프트웨어 (Computer Software: Programming Data Processing)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
+      "sector": "Technology",
+      "industry": "Computer Software: Programming, Data Processing",
+      "description": "Nebius Group N.V. Class A Ordinary Shares은 Nasdaq 공식 분류상 Technology · Computer Software: Programming, Data Processing 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "12/31/2025",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -42144,9 +42144,9 @@
         "netIncome": 82500.0,
         "debtRatioPct": 170.6,
         "currentRatioPct": 308.4,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -45375,12 +45375,12 @@
           "close": 240.38
         }
       ],
-      "sector": "반도체 (Semiconductors)",
-      "industry": "반도체 (Semiconductors)",
-      "description": "Marvell Technology Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "description": "Marvell Technology Inc. Common Stock은 Nasdaq 공식 분류상 Technology · Semiconductors 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "1/31/2026",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -45393,9 +45393,9 @@
         "netIncome": 2670100.0,
         "debtRatioPct": 55.7,
         "currentRatioPct": 200.6,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -47541,12 +47541,12 @@
           "close": 75.77
         }
       ],
-      "sector": "석유·가스 (Retail-Auto Dealers and Gas Stations)",
-      "industry": "석유·가스 (Retail-Auto Dealers and Gas Stations)",
-      "description": "Carvana Co. Class A Common Stock은 Nasdaq 분류상 석유·가스 (Retail-Auto Dealers and Gas Stations)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
+      "sector": "Consumer Discretionary",
+      "industry": "Retail-Auto Dealers and Gas Stations",
+      "description": "Carvana Co. Class A Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Retail-Auto Dealers and Gas Stations 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "12/31/2025",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -47559,9 +47559,9 @@
         "netIncome": 1407000.0,
         "debtRatioPct": 261.5,
         "currentRatioPct": 431.1,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -49707,12 +49707,12 @@
           "close": 106.96
         }
       ],
-      "sector": "금속·광업 (Other Metals and Minerals)",
-      "industry": "금속·광업 (Other Metals and Minerals)",
-      "description": "Cameco Corporation Common Stock은 Nasdaq 분류상 금속·광업 (Other Metals and Minerals)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
+      "sector": "Basic Materials",
+      "industry": "Other Metals and Minerals",
+      "description": "Cameco Corporation Common Stock은 Nasdaq 공식 분류상 Basic Materials · Other Metals and Minerals 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "12/31/2025",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -49725,9 +49725,9 @@
         "netIncome": 430087.0,
         "debtRatioPct": 49.2,
         "currentRatioPct": 246.6,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -64906,7 +64906,7 @@
     },
     "us": {
       "asOf": "2026-08-25",
-      "updatedAt": "2026-08-26T15:14+09:00",
+      "updatedAt": "2026-08-26T15:44+09:00",
       "count": 30,
       "candidateCount": 870,
       "financialFailCount": 15,
