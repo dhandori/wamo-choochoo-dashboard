@@ -1272,6 +1272,51 @@ def dart_statement(corp_code, year, reprt_code):
             return d.get("list") or [], fs_div
     return [], None
 
+
+def _statement_value(rows, patterns, statement_divisions):
+    """Return the best current-period value for a balance-sheet/income concept."""
+    compiled = [re.compile(p, re.I) for p in patterns]
+    candidates = []
+    for row in rows or []:
+        if row.get("sj_div") not in statement_divisions:
+            continue
+        name = str(row.get("account_nm") or "")
+        account_id = str(row.get("account_id") or "")
+        if any(rx.search(name) or rx.search(account_id) for rx in compiled):
+            value = dart_num(row.get("thstrm_amount"))
+            if value is not None:
+                candidates.append((1 if "표준계정코드 미사용" in account_id else 0, len(name), value))
+    return sorted(candidates)[0][2] if candidates else None
+
+
+def financial_health_from_dart_rows(rows, sector=""):
+    """Conservative, sector-aware financial-health check from official DART rows."""
+    assets = _statement_value(rows, (r"^자산총계$", r"^ifrs-full_Assets$"), ("BS",))
+    liabilities = _statement_value(rows, (r"^부채총계$", r"^ifrs-full_Liabilities$"), ("BS",))
+    equity = _statement_value(rows, (r"^자본총계$", r"^ifrs-full_Equity$"), ("BS",))
+    current_assets = _statement_value(rows, (r"^유동자산$", r"^ifrs-full_CurrentAssets$"), ("BS",))
+    current_liabilities = _statement_value(rows, (r"^유동부채$", r"^ifrs-full_CurrentLiabilities$"), ("BS",))
+    net_income = _statement_value(rows, (r"지배기업.*소유주.*귀속.*당기순이익", r"^당기순이익", r"^연결당기순이익", r"ProfitLoss"), ("IS", "CIS"))
+    debt_ratio = liabilities / equity * 100 if liabilities is not None and equity and equity > 0 else None
+    current_ratio = current_assets / current_liabilities * 100 if current_assets is not None and current_liabilities and current_liabilities > 0 else None
+    sector_text = str(sector or "").lower()
+    financial = any(k in sector_text for k in ("은행", "금융", "증권", "보험", "bank", "financial", "insurance"))
+    equity_ok = bool(equity is not None and equity > 0)
+    profit_ok = bool(net_income is not None and net_income > 0)
+    leverage_ok = True if financial else bool(debt_ratio is not None and debt_ratio <= 300)
+    liquidity_ok = True if financial or current_ratio is None else current_ratio >= 80
+    passed = equity_ok and profit_ok and leverage_ok and liquidity_ok
+    return {
+        "status": "PASS" if passed else "FAIL", "source": "OpenDART 공식 재무제표",
+        "sectorRule": "FINANCIAL" if financial else "GENERAL",
+        "equityPositive": equity_ok, "profitPositive": profit_ok,
+        "leveragePass": leverage_ok, "liquidityPass": liquidity_ok,
+        "assets": assets, "liabilities": liabilities, "equity": equity, "netIncome": net_income,
+        "debtRatioPct": round(debt_ratio, 1) if debt_ratio is not None else None,
+        "currentRatioPct": round(current_ratio, 1) if current_ratio is not None else None,
+        "criterion": "자본·순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상",
+    }
+
 def current_report_candidates(today=None):
     d = today or datetime.now(KST).date()
     y = d.year
@@ -1757,6 +1802,7 @@ def enrich_one_dart(x, corp_code, old=None):
 
     if latest_rows:
         result.update(extract_current_eps_sales(latest_rows, latest_reprt))
+        result["financialHealth"] = financial_health_from_dart_rows(latest_rows, x.get("sector") or x.get("detailSector") or "")
         result.update({
             "dartReportYear": latest_year,
             "dartReportCode": latest_reprt,
@@ -4671,7 +4717,7 @@ def patch_leader_profile_ui(html):
     return html
 
 
-def patch_index_health_ui(html):
+def patch_index_health_ui(html, market=None):
     """데이터 제외 사유를 실제 갱신 실패와 혼동하지 않도록 상태 UI를 보정합니다."""
     old = """`<span class="health-pill ${h.dartConnected?'good':'warn'}">DART ${h.dartConnected?'연결':'미연결'}</span>`"""
     new = """`<span class="health-pill ${h.dartConnected?'good':'warn'}">DART ${h.dartConnected?'연결':'미연결'}</span>`"""
@@ -4682,6 +4728,12 @@ def patch_index_health_ui(html):
         "['가격수집 실패',`${h.failedCount||0}개 기업`],",
         "['가격 제공처 오류',`${h.failedCount||0}개 기업`], ['신규상장 60일 미만',`${h.shortHistoryExcludedCount||0}개`],",
     )
+    if market == "US":
+        html = html.replace("`기준일 <b>${data.meta.asOf||'—'}</b><br>", "`미국 현지 장 마감 기준일 <b>${data.meta.asOf||'—'}</b><br>")
+        html = html.replace("`기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`", "`미국 현지 장 마감 기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`")
+        old_sec = "`<span class=\"health-pill ${h.secConnected?'good':'warn'}\">SEC ${h.secConnected?'연결':'미연결'}</span>`"
+        new_sec = "`<span class=\"health-pill ${h.secConnected?'good':'warn'}\" title=\"${escBiz((data.meta.secMeta||{}).message||'SEC 연결 상태를 상세 영역에서 확인하세요')}\">SEC ${h.secConnected?'연결':'접속실패'}</span>`"
+        html = html.replace(old_sec, new_sec)
     error_block = re.compile(
         r"const errs=\(data\.errors\|\|\[\]\)\.slice\(0,10\);\s*"
         r"\$\('#qualityErrors'\)\.innerHTML=errs\.length\?.*?"
@@ -5301,7 +5353,7 @@ def main():
 
     print("12/12 index.html 갱신")
     new_html = replace_payload(old_html, payload)
-    new_html = patch_index_health_ui(new_html)
+    new_html = patch_index_health_ui(new_html, market="KR")
     new_html = patch_leader_profile_ui(new_html)
     tmp = INDEX.with_suffix(".html.tmp")
     tmp.write_text(new_html, encoding="utf-8")

@@ -38,10 +38,7 @@ SEC_WORKERS = 3
 SEC_CACHE_DAYS = 7
 ENERGY_HISTORY_DAYS = 140
 
-SEC_UA = os.getenv(
-    "SEC_USER_AGENT",
-    "WAMO-Market-Radar/1.0 personal-research github.com/dhandori",
-).strip()
+SEC_UA = (os.getenv("SEC_USER_AGENT") or "WAMO-Market-Radar/1.0 dhandori@users.noreply.github.com").strip()
 _SEC_LOCK = threading.Lock()
 _SEC_LAST_REQUEST = 0.0
 
@@ -437,19 +434,41 @@ def _save_cache(data):
     SEC_CACHE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def sec_company_map():
-    data = _get_json(
+def sec_company_map(cache=None):
+    cache = cache if isinstance(cache, dict) else _load_cache()
+    cached_meta = cache.get("__company_map__") if isinstance(cache, dict) else None
+    cached_rows = (cached_meta or {}).get("rows") if isinstance(cached_meta, dict) else None
+    sources = (
+        "https://www.sec.gov/files/company_tickers_exchange.json",
         "https://www.sec.gov/files/company_tickers.json",
-        headers={"User-Agent": SEC_UA, "Referer": "https://www.sec.gov/"},
     )
-    out = {}
-    for row in (data or {}).values():
-        ticker = str(row.get("ticker") or "").upper()
-        if ticker:
-            out[ticker] = {"cik": str(row.get("cik_str") or "").zfill(10), "title": row.get("title")}
-    if len(out) < 5000:
-        raise RuntimeError(f"SEC ticker 목록이 비정상적으로 적습니다: {len(out)}")
-    return out
+    errors = []
+    for url in sources:
+        try:
+            data = _sec_get(url)
+            out = {}
+            if isinstance(data, dict) and isinstance(data.get("data"), list):
+                fields = data.get("fields") or []
+                for values in data["data"]:
+                    row = dict(zip(fields, values))
+                    ticker = str(row.get("ticker") or "").upper()
+                    if ticker:
+                        out[ticker] = {"cik": str(row.get("cik") or "").zfill(10), "title": row.get("name")}
+            else:
+                for row in (data or {}).values():
+                    ticker = str(row.get("ticker") or "").upper()
+                    if ticker:
+                        out[ticker] = {"cik": str(row.get("cik_str") or "").zfill(10), "title": row.get("title")}
+            if len(out) >= 5000:
+                cache["__company_map__"] = {"fetchedAt": date.today().isoformat(), "source": url, "rows": out}
+                _save_cache(cache)
+                return out
+            errors.append(f"{url}: {len(out)}개")
+        except Exception as exc:
+            errors.append(f"{url}: {core.compact_provider_error(str(exc))}")
+    if isinstance(cached_rows, dict) and len(cached_rows) >= 5000:
+        return cached_rows
+    raise RuntimeError("SEC 티커 목록 2개 경로와 캐시가 모두 실패했습니다: " + " / ".join(errors))
 
 
 def _sec_get(url):
@@ -466,12 +485,15 @@ def _sec_get(url):
 
 
 def _fact_units(facts, concepts):
-    usgaap = ((facts or {}).get("facts") or {}).get("us-gaap") or {}
-    for concept in concepts:
-        units = (usgaap.get(concept) or {}).get("units") or {}
-        for unit in ("USD/shares", "USD", "shares"):
-            if units.get(unit):
-                return units[unit], concept, unit
+    namespaces = ("us-gaap", "ifrs-full")
+    fact_root = (facts or {}).get("facts") or {}
+    for namespace in namespaces:
+        taxonomy = fact_root.get(namespace) or {}
+        for concept in concepts:
+            units = (taxonomy.get(concept) or {}).get("units") or {}
+            for unit in ("USD/shares", "USD", "shares"):
+                if units.get(unit):
+                    return units[unit], concept, unit
     return [], None, None
 
 
@@ -590,6 +612,58 @@ def _annual_metrics(facts, concepts):
             round(cagr, 1) if cagr is not None else None, series, concept)
 
 
+def _latest_fact_value(facts, concepts, annual_only=False):
+    rows, concept, _ = _fact_units(facts, concepts)
+    allowed = ("10-K", "20-F", "40-F") if annual_only else ("10-Q", "10-K", "20-F", "40-F")
+    usable = []
+    for row in rows:
+        if row.get("form") not in allowed or row.get("val") is None:
+            continue
+        if annual_only and row.get("fp") != "FY":
+            continue
+        rank = (str(row.get("end") or ""), str(row.get("filed") or ""), str(row.get("accn") or ""))
+        usable.append((rank, float(row["val"])))
+    if not usable:
+        return None, concept
+    usable.sort(key=lambda item: item[0])
+    return usable[-1][1], concept
+
+
+def financial_health_from_sec_facts(facts, sector=""):
+    assets, _ = _latest_fact_value(facts, ("Assets",))
+    liabilities, _ = _latest_fact_value(facts, ("Liabilities",))
+    equity, _ = _latest_fact_value(facts, ("StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest", "Equity"))
+    current_assets, _ = _latest_fact_value(facts, ("AssetsCurrent", "CurrentAssets"))
+    current_liabilities, _ = _latest_fact_value(facts, ("LiabilitiesCurrent", "CurrentLiabilities"))
+    net_income, _ = _latest_fact_value(facts, ("NetIncomeLoss", "ProfitLoss"), annual_only=True)
+    if liabilities is None and assets is not None and equity is not None:
+        liabilities = assets - equity
+    debt_ratio = liabilities / equity * 100 if liabilities is not None and equity and equity > 0 else None
+    current_ratio = current_assets / current_liabilities * 100 if current_assets is not None and current_liabilities and current_liabilities > 0 else None
+    sector_text = str(sector or "").lower()
+    financial = any(k in sector_text for k in ("finance", "financial", "bank", "insurance", "금융", "은행", "보험"))
+    equity_ok = bool(equity is not None and equity > 0)
+    profit_ok = bool(net_income is not None and net_income > 0)
+    leverage_ok = True if financial else bool(debt_ratio is not None and debt_ratio <= 300)
+    liquidity_ok = True if financial or current_ratio is None else current_ratio >= 80
+    passed = equity_ok and profit_ok and leverage_ok and liquidity_ok
+    return {
+        "status": "PASS" if passed else "FAIL", "source": "SEC EDGAR XBRL 공식 재무제표",
+        "sectorRule": "FINANCIAL" if financial else "GENERAL",
+        "equityPositive": equity_ok, "profitPositive": profit_ok,
+        "leveragePass": leverage_ok, "liquidityPass": liquidity_ok,
+        "assets": assets, "liabilities": liabilities, "equity": equity, "netIncome": net_income,
+        "debtRatioPct": round(debt_ratio, 1) if debt_ratio is not None else None,
+        "currentRatioPct": round(current_ratio, 1) if current_ratio is not None else None,
+        "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상",
+    }
+
+
+def sec_financial_health_for_mapping(mapping, sector=""):
+    facts = _sec_get(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{mapping['cik']}.json")
+    return financial_health_from_sec_facts(facts, sector)
+
+
 def sec_enrich_one(stock, mapping):
     cik = mapping["cik"]
     submissions = _sec_get(f"https://data.sec.gov/submissions/CIK{cik}.json")
@@ -685,6 +759,7 @@ def sec_enrich_one(stock, mapping):
         "salesAcceleration": sales_acceleration,
         "grossMargin": gross_margin,
         "operatingMargin": operating_margin,
+        "financialHealth": financial_health_from_sec_facts(facts, stock.get("sector") or stock.get("krxSector") or ""),
         "sepaFundamental": {
             "status": "STRONG" if eps_yoy is not None and eps_yoy >= 25 and sales_yoy is not None and sales_yoy >= 20 and (eps_acceleration or sales_acceleration) else "CHECK",
             "epsPass": bool(eps_yoy is not None and eps_yoy >= 25),
@@ -726,7 +801,7 @@ def enrich_sec(raw):
     cache = _load_cache()
     errors = []
     try:
-        mapping = sec_company_map()
+        mapping = sec_company_map(cache)
         connected = True
     except Exception as exc:
         mapping, connected = {}, False
@@ -789,6 +864,10 @@ def enrich_sec(raw):
                 print("  SEC", i, "/", len(futures))
     _save_cache(cache)
     usable = sum(x.get("secStatus") in ("LIVE", "CACHED") for x in raw)
+    connection_error = next((e.get("error") for e in errors if e.get("scope") == "company_tickers.json"), "")
+    sec_message = f"SEC 공식자료 사용가능 {usable}/{len(raw)}개 · 이번 조회 {len(selected)}개 · 캐시 {cached_count}개"
+    if connection_error:
+        sec_message += " · 티커목록 접속 실패: " + core.compact_provider_error(connection_error)
     return {
         "status": "LIVE" if connected and not errors else "PARTIAL" if connected or usable else "FAILED",
         "connected": connected,
@@ -798,7 +877,9 @@ def enrich_sec(raw):
         "fetchedCount": sum(x.get("secStatus") == "LIVE" for x in raw),
         "errorCount": len(errors),
         "source": "SEC EDGAR official submissions/XBRL",
-        "message": f"SEC 공식자료 사용가능 {usable}/{len(raw)}개 · 이번 조회 {len(selected)}개 · 캐시 {cached_count}개",
+        "message": sec_message,
+        "connectionError": connection_error,
+        "reasonLabel": "연결" if connected else "접속 실패",
         "errors": errors[:20],
     }
 
@@ -1134,7 +1215,7 @@ def main():
 
     print("8/9 us.html 데이터 교체")
     new_html = core.replace_payload(old_html, payload)
-    new_html = core.patch_index_health_ui(new_html)
+    new_html = core.patch_index_health_ui(new_html, market="US")
     temp = US_HTML.with_suffix(".html.tmp")
     temp.write_text(new_html, encoding="utf-8")
     temp.replace(US_HTML)

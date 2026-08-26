@@ -8,6 +8,9 @@ ROOT=Path(__file__).resolve().parent
 OUT=ROOT/'movers.html'
 CACHE=ROOT/'wamo_movers_cache.json'
 KST=timezone(timedelta(hours=9))
+KR_MIN_CAP=1_000_000_000_000
+US_MIN_CAP=2_000_000_000
+SCREEN_META={}
 
 import wamo_update_business_dart as kr
 import wamo_update_us_sec as us
@@ -90,27 +93,57 @@ def parse_naver_rise(sosok, market, limit=45):
     return sorted(ded.values(),key=lambda x:x['changePct'],reverse=True)
 
 
+def _daily_change(stock):
+    value=num(stock.get('chg1d'))
+    if value is not None: return value
+    hist=stock.get('history') or []
+    closes=[num(x.get('close')) for x in hist if isinstance(x,dict) and num(x.get('close')) is not None]
+    return (closes[-1]/closes[-2]-1)*100 if len(closes)>=2 and closes[-2]>0 else None
+
+
+def _kr_health(code, stock, corp_map):
+    old=stock.get('financialHealth') or {}
+    if old.get('status') in ('PASS','FAIL'): return old
+    corp=corp_map.get(code)
+    if not corp: return {'status':'UNAVAILABLE','source':'OpenDART','criterion':'DART 종목 연결 없음'}
+    try:
+        for year,report in kr.current_report_candidates():
+            rows,_=kr.dart_statement(corp,year,report)
+            if rows:
+                return kr.financial_health_from_dart_rows(rows,stock.get('sector') or stock.get('detailSector') or '')
+    except Exception as exc:
+        return {'status':'UNAVAILABLE','source':'OpenDART','criterion':kr.compact_provider_error(str(exc))}
+    return {'status':'UNAVAILABLE','source':'OpenDART','criterion':'비교 가능한 최신 재무제표 없음'}
+
+
 def korea_top30(km):
-    candidates=parse_naver_rise(0,'KOSPI',45)+parse_naver_rise(1,'KOSDAQ',45)
-    candidates=sorted(candidates,key=lambda x:x['changePct'],reverse=True)
-    sector_map=kr.kind_sector_map()
-    out=[]
-    for c in candidates:
+    candidates=[]
+    for code,old in km.items():
+        cap=num(old.get('market_cap_krw')) or 0
+        pct=_daily_change(old)
+        if cap<KR_MIN_CAP or pct is None or kr.classify_instrument(old.get('name'))!='COMPANY': continue
+        if len(old.get('history') or [])<20: continue
+        candidates.append((pct,code,old))
+    candidates.sort(reverse=True,key=lambda x:x[0])
+    try: corp_map=kr.dart_corp_map()
+    except Exception: corp_map={}
+    out=[]; failed=0; unavailable=0
+    for pct,code,old in candidates:
         if len(out)>=30: break
-        name=c['name']; inst=kr.classify_instrument(name)
-        if inst!='COMPANY': continue
-        code=c['ticker']; suffix='.KS' if c['market']=='KOSPI' else '.KQ'
-        try: hist=kr.fetch_naver_history(code,count=280)
-        except Exception:
-            try: hist,_=kr.fetch_yahoo_history(code+suffix,years=2)
-            except Exception: continue
-        t=trend_info(hist)
-        if len(t.get('history',[]))<20: continue
-        old=km.get(code,{})
-        sector=old.get('sector') or old.get('detailSector') or sector_map.get(code) or '업종 확인 필요'
-        prof=old.get('businessProfile') or {}
-        desc=prof.get('summary') or old.get('businessModelEasy') or f'{name}은(는) KIND 업종분류상 {sector}에 속하는 상장기업입니다.'
-        out.append({**c,**t,'sector':sector,'industry':old.get('krxSector') or sector,'description':desc,'source':'NAVER 상승률 + NAVER/KIND 가격·업종'})
+        health=_kr_health(code,old,corp_map)
+        if health.get('status')!='PASS':
+            unavailable += health.get('status')=='UNAVAILABLE'; failed += health.get('status')=='FAIL'; continue
+        hist=old.get('history') or []; t=trend_info(hist)
+        sector=old.get('sector') or old.get('detailSector') or '업종 확인 필요'
+        prof=old.get('businessProfile') or {}; name=old.get('name') or code
+        desc=prof.get('summary') or old.get('businessModelEasy') or f'{name}은(는) {sector}에 속하는 상장기업입니다.'
+        out.append({'ticker':code,'name':name,'market':old.get('krx_market') or old.get('market') or 'KR',
+                    'changePct':round(pct,3),'quotedPrice':old.get('close'),'marketCapKRW':old.get('market_cap_krw'),
+                    **t,'sector':sector,'industry':old.get('krxSector') or sector,'description':desc,
+                    'financialHealth':health,'source':'한국 중대형주 정밀계산 유니버스 + OpenDART 공식 재무'})
+    SCREEN_META['korea']={'candidateCount':len(candidates),'financialFailCount':failed,
+                          'financialUnavailableCount':unavailable,'minMarketCap':KR_MIN_CAP,
+                          'universe':'시총 1조원 이상·50일 평균 거래대금 1억원 이상 일반기업'}
     return out
 
 
@@ -200,52 +233,44 @@ def _us_fallback_candidates(um):
     return sorted(rows,key=lambda x:x['changePct'],reverse=True)
 
 
+def _us_health(ticker,stock,mapping):
+    old=stock.get('financialHealth') or {}
+    if old.get('status') in ('PASS','FAIL'): return old
+    item=mapping.get(str(stock.get('displayTicker') or ticker).upper()) or mapping.get(ticker.upper())
+    if not item: return {'status':'UNAVAILABLE','source':'SEC EDGAR','criterion':'SEC 티커 연결 없음'}
+    try: return us.sec_financial_health_for_mapping(item,stock.get('sector') or stock.get('krxSector') or '')
+    except Exception as exc: return {'status':'UNAVAILABLE','source':'SEC EDGAR','criterion':us.core.compact_provider_error(str(exc))}
+
+
 def us_top30(um):
-    try:
-        candidates=us_rows_all()
-    except Exception as exc:
-        print(f'WARN Nasdaq mover list unavailable: {exc}; using refreshed US dashboard fallback')
-        candidates=[]
-
-    # API가 응답했지만 스키마 변화 등으로 변화율 후보가 비정상적으로 적으면
-    # 실패시키지 말고 방금 갱신된 미국 대시보드의 일봉으로 보완한다.
-    if len(candidates)<30:
-        print(f'WARN Nasdaq mover candidates too few: {len(candidates)}; adding dashboard fallback')
-        seen={x.get('ticker') for x in candidates}
-        for x in _us_fallback_candidates(um):
-            if x.get('ticker') not in seen:
-                candidates.append(x); seen.add(x.get('ticker'))
-        candidates=sorted(candidates,key=lambda x:x['changePct'],reverse=True)
-
-    out=[]
-    for c in candidates:
-        if len(out)>=30:
-            break
-        old=um.get(c['ticker'],{})
-        provider='Yahoo Finance'
-        # fallback 후보는 이미 방금 갱신된 us.html의 일봉을 가지고 있으므로
-        # 같은 데이터를 재다운로드하지 않아도 된다.
-        if c.get('_fallback') and old.get('history'):
-            hist=old.get('history') or []
-            provider=old.get('priceProvider') or old.get('dataSource') or 'US dashboard history'
-        else:
-            try:
-                hist,provider=kr.fetch_yahoo_history(c['ticker'],years=2)
-            except Exception:
-                hist=old.get('history') or []
-                provider=old.get('priceProvider') or old.get('dataSource') or 'US dashboard history'
-        t=trend_info(hist)
-        if len(t.get('history',[]))<20:
-            continue
-        sector=old.get('sector') or us._bilingual(c.get('sectorRaw')) or '산업 미분류'
-        industry=old.get('industry') or us.translate_industry(c.get('industryRaw'),c.get('sectorRaw'))
-        prof=old.get('businessProfile') or {}
-        desc=prof.get('summary') or old.get('businessModelEasy') or f"{c['name']}은(는) Nasdaq 분류상 {industry}에 속하는 미국 상장기업입니다."
-        src='Nasdaq Screener 상승률 + Yahoo Finance 가격'
-        if c.get('_fallback'):
-            src='미국 정밀계산 유니버스 일봉 직접계산 (Nasdaq 응답 이상 시 안전망)'
-        clean={k:v for k,v in c.items() if not k.startswith('_')}
-        out.append({**clean,**t,'sector':sector,'industry':industry,'description':desc,'source':src,'priceProvider':provider})
+    candidates=[]
+    for ticker,old in um.items():
+        cap=num(old.get('market_cap_usd') or old.get('marketCapUSD')) or 0
+        pct=_daily_change(old)
+        if cap<US_MIN_CAP or pct is None or old.get('instrumentType') in ('ETF_ETN','SPAC','REIT'): continue
+        if len(old.get('history') or [])<20: continue
+        candidates.append((pct,ticker,old))
+    candidates.sort(reverse=True,key=lambda x:x[0])
+    try: mapping=us.sec_company_map()
+    except Exception: mapping={}
+    out=[]; failed=0; unavailable=0
+    for pct,ticker,old in candidates:
+        if len(out)>=30: break
+        health=_us_health(ticker,old,mapping)
+        if health.get('status')!='PASS':
+            unavailable += health.get('status')=='UNAVAILABLE'; failed += health.get('status')=='FAIL'; continue
+        hist=old.get('history') or []; t=trend_info(hist)
+        sector=old.get('sector') or '산업 미분류'; industry=old.get('industry') or sector
+        prof=old.get('businessProfile') or {}; name=old.get('name') or ticker
+        desc=prof.get('summary') or old.get('businessModelEasy') or f'{name}은(는) {industry}에 속하는 미국 상장기업입니다.'
+        out.append({'ticker':ticker,'displayTicker':old.get('displayTicker') or ticker,'name':name,
+                    'market':old.get('exchange') or old.get('market') or 'US','changePct':round(pct,3),
+                    'quotedPrice':old.get('close'),'marketCapUSD':old.get('market_cap_usd') or old.get('marketCapUSD'),
+                    **t,'sector':sector,'industry':industry,'description':desc,'financialHealth':health,
+                    'source':'미국 중대형주 정밀계산 유니버스 + SEC EDGAR XBRL','priceProvider':old.get('priceProvider') or old.get('dataSource')})
+    SCREEN_META['us']={'candidateCount':len(candidates),'financialFailCount':failed,
+                       'financialUnavailableCount':unavailable,'minMarketCap':US_MIN_CAP,
+                       'universe':'시총 20억달러 이상·50일 평균 거래대금 1천만달러 이상 일반기업'}
     return out
 
 
@@ -261,8 +286,8 @@ def html(payload):
     return f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WAMO 오늘의 급등주 30</title>
 <style>
 :root{{--bg:#07101d;--p:#0e192b;--p2:#101f34;--line:#263a57;--t:#f3f7ff;--m:#91a4bf;--g:#45d6a0;--r:#ff7e86;--b:#69adff;--y:#f1cb6c}}*{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at 90% -10%,#173868 0,transparent 32%),#07101d;color:var(--t);font-family:Inter,system-ui,-apple-system,"Noto Sans KR",sans-serif}}.app{{max-width:1480px;margin:auto;padding:22px}}nav{{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:20px}}nav a{{text-decoration:none;color:#aebdd1;border:1px solid var(--line);padding:8px 12px;border-radius:10px;background:#0b1728}}nav a.active{{background:#24466f;color:white;border-color:#4f7db5}}h1{{margin:4px 0 7px;font-size:30px}}.sub{{color:var(--m);font-size:12px;line-height:1.6}}.bar{{display:flex;justify-content:space-between;gap:12px;align-items:end;margin:18px 0 12px}}.tabs{{display:flex;gap:7px}}button{{border:1px solid var(--line);background:#0d1a2d;color:#aebdd1;padding:8px 12px;border-radius:9px;cursor:pointer}}button.on{{background:#21456f;color:#fff;border-color:#5682b6}}.meta{{font-size:11px;color:var(--m);text-align:right}}.summary{{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px}}.kpi{{border:1px solid var(--line);background:var(--p);border-radius:13px;padding:12px}}.kpi span{{font-size:10px;color:var(--m)}}.kpi b{{display:block;font-size:22px;margin-top:4px}}.grid{{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}}.card{{border:1px solid var(--line);background:linear-gradient(155deg,#0f1d31,#0a1423);border-radius:15px;padding:12px;min-width:0}}.top{{display:flex;justify-content:space-between;gap:8px}}.rank{{font-size:11px;color:var(--m)}}.name{{font-weight:900;font-size:15px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}.ticker{{font-size:10px;color:var(--m);margin-top:2px}}.gain{{font-size:21px;color:var(--r);font-weight:950;white-space:nowrap}}.badges{{display:flex;gap:5px;flex-wrap:wrap;margin:9px 0}}.badge{{font-size:9px;border:1px solid #3a516f;border-radius:999px;padding:4px 6px;color:#a9bad0}}.badge.y{{border-color:#2f8063;color:#83e6bd;background:#0e2b24}}.badge.n{{border-color:#79404a;color:#ffadb3;background:#2b171c}}.badge.p{{border-color:#725f34;color:#f5d987;background:#2b2415}}.sector{{font-size:11px;font-weight:850;color:#d6e6fa}}.desc{{font-size:10px;color:#9eb0c8;line-height:1.55;height:48px;overflow:hidden;margin-top:5px}}canvas{{display:block;width:100%;height:142px;margin-top:9px;border:1px solid #21344e;border-radius:9px;background:#07111e}}.metrics{{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}}.metrics div{{background:#081522;border-radius:7px;padding:6px}}.metrics span{{display:block;color:#7589a4;font-size:8px}}.metrics b{{display:block;font-size:10px;margin-top:2px}}.note{{margin-top:14px;color:#7f93ad;font-size:10px;line-height:1.6;border-top:1px solid var(--line);padding-top:11px}}@media(max-width:1050px){{.grid{{grid-template-columns:repeat(2,1fr)}}}}@media(max-width:700px){{.app{{padding:13px}}h1{{font-size:24px}}.grid{{grid-template-columns:1fr}}.summary{{grid-template-columns:repeat(2,1fr)}}.bar{{align-items:flex-start;flex-direction:column}}.meta{{text-align:left}}}}
-</style></head><body><div class="app"><nav><a href="./">🇰🇷 한국 대시보드</a><a href="us.html">🇺🇸 미국 대시보드</a><a class="active" href="movers.html">🚀 오늘의 상승률 TOP 30</a></nav><div class="sub">WAMO DAILY MOVERS · 전체시장 상승률 상위 종목을 별도 스캔</div><div class="sub"><b>자동갱신(KST) · 한국 12:00 / 16:00 · 미국 00:00 / 05:00 · 시장별 하루 2회</b></div><h1>오늘 가장 강하게 오른 30종목</h1><div class="sub">상승률만 보지 않고 업종·기업설명·거래량·52주 고점 위치·정배열 여부와 1년 가격추세를 함께 봅니다.</div><div class="bar"><div class="tabs"><button id="krBtn" onclick="setMarket('korea')">한국</button><button id="usBtn" onclick="setMarket('us')">미국</button></div><div class="meta" id="meta"></div></div><div class="summary" id="summary"></div><div class="grid" id="grid"></div><div class="note">정배열 = 종가 &gt; 20일선 &gt; 60일선 &gt; 120일선 &gt; 200일선. 200거래일 이력이 없으면 판정을 보류합니다. 한국 상승률 순위는 NAVER 증권의 KOSPI·KOSDAQ 상승률 화면, 미국은 Nasdaq Stock Screener를 사용하며 차트·이동평균은 NAVER/Yahoo Finance 일봉으로 재검산합니다. ETF·ETN·SPAC 등은 기업 랭킹에서 제외합니다.</div></div>
-<script>const D={data};let M='korea';const fmt=(x,d=1)=>x==null?'—':Number(x).toLocaleString(undefined,{{maximumFractionDigits:d}});function setMarket(m){{M=m;document.getElementById('krBtn').classList.toggle('on',m==='korea');document.getElementById('usBtn').classList.toggle('on',m==='us');render()}}function render(){{const a=D[M]||[];const md=(D.meta||{{}})[M]||{{}};document.getElementById('meta').textContent=`기준일 ${{md.asOf||'—'}} · 갱신 ${{md.updatedAt||'—'}} · ${{a.length}}종목`;const aligned=a.filter(x=>x.alignmentStatus==='YES').length,near=a.filter(x=>(x.high52Ratio||0)>=90).length,vol=a.filter(x=>(x.volumeRatio20||0)>=1.5).length;document.getElementById('summary').innerHTML=`<div class=kpi><span>상위 종목</span><b>${{a.length}}</b></div><div class=kpi><span>정배열</span><b>${{aligned}}</b></div><div class=kpi><span>52주 고점 90%+</span><b>${{near}}</b></div><div class=kpi><span>거래량 20일평균 1.5배+</span><b>${{vol}}</b></div>`;document.getElementById('grid').innerHTML=a.map((x,i)=>`<article class=card><div class=top><div><div class=rank>#${{i+1}}</div><div class=name>${{esc(x.name)}}</div><div class=ticker>${{esc(x.ticker)}} · ${{esc(x.market)}}</div></div><div class=gain>+${{fmt(x.changePct,2)}}%</div></div><div class=badges><span class="badge ${{x.alignmentStatus==='YES'?'y':x.alignmentStatus==='PENDING'?'p':'n'}}">${{x.alignmentStatus==='YES'?'정배열':x.alignmentStatus==='PENDING'?'정배열 판정보류':'정배열 아님'}}</span><span class=badge>52주 고점 ${{fmt(x.high52Ratio)}}%</span><span class=badge>거래량 ${{fmt(x.volumeRatio20,2)}}x</span></div><div class=sector>${{esc(x.sector||'—')}}</div><div class=desc>${{esc(x.description||'')}}</div><canvas id="c${{i}}" width="430" height="142"></canvas><div class=metrics><div><span>종가</span><b>${{fmt(x.close,2)}}</b></div><div><span>20일선</span><b>${{fmt(x.ma20,2)}}</b></div><div><span>60일선</span><b>${{fmt(x.ma60,2)}}</b></div><div><span>200일선</span><b>${{fmt(x.ma200,2)}}</b></div></div></article>`).join('');requestAnimationFrame(()=>a.forEach((x,i)=>draw(document.getElementById('c'+i),x.history||[])))}}function esc(s){{return String(s??'').replace(/[&<>\"]/g,c=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}}[c]))}}function draw(c,h){{if(!c||h.length<2)return;const ctx=c.getContext('2d'),w=c.width,hg=c.height,p=8,vals=h.map(x=>x.close),mn=Math.min(...vals),mx=Math.max(...vals),span=mx-mn||1;ctx.clearRect(0,0,w,hg);ctx.strokeStyle='#21344e';ctx.lineWidth=1;for(let j=1;j<4;j++){{let y=p+(hg-2*p)*j/4;ctx.beginPath();ctx.moveTo(p,y);ctx.lineTo(w-p,y);ctx.stroke()}}ctx.strokeStyle='#69adff';ctx.lineWidth=2;ctx.beginPath();vals.forEach((v,j)=>{{let x=p+(w-2*p)*j/(vals.length-1),y=hg-p-(v-mn)/span*(hg-2*p);j?ctx.lineTo(x,y):ctx.moveTo(x,y)}});ctx.stroke()}}setMarket('korea');</script></body></html>'''
+</style></head><body><div class="app"><nav><a href="./">🇰🇷 한국 대시보드</a><a href="us.html">🇺🇸 미국 대시보드</a><a class="active" href="movers.html">🚀 오늘의 상승률 TOP 30</a></nav><div class="sub">WAMO DAILY MOVERS · 재무가 확인된 중형·대형 일반기업 상승률 순위</div><div class="sub"><b>자동갱신(KST) · 한국 12:00 / 16:00 · 미국 00:00 / 05:00 · 시장별 하루 2회</b></div><h1>재무안정 중대형주 상승률 TOP 30</h1><div class="sub">한국은 시총 1조원, 미국은 시총 20억달러 이상에서 시작합니다. 공식 재무제표로 자본·순이익이 양수인지 확인하고, 비금융사는 부채비율 300% 이하를 추가 확인합니다. 조건 통과 종목이 30개보다 적으면 억지로 채우지 않습니다.</div><div class="bar"><div class="tabs"><button id="krBtn" onclick="setMarket('korea')">한국</button><button id="usBtn" onclick="setMarket('us')">미국</button></div><div class="meta" id="meta"></div></div><div class="summary" id="summary"></div><div class="grid" id="grid"></div><div class="note">정배열 = 종가 &gt; 20일선 &gt; 60일선 &gt; 120일선 &gt; 200일선. 재무안정 PASS는 투자등급이나 부도 가능성 보증이 아니라 최신 공식 재무제표의 최소 안전장치입니다. 금융사는 업종 특성상 일반기업의 부채비율·유동비율을 적용하지 않고 자본과 순이익만 확인합니다. 한국은 OpenDART, 미국은 SEC EDGAR XBRL을 사용하며, 재무를 확인할 수 없는 종목은 제외합니다.</div></div>
+<script>const D={data};let M='korea';const fmt=(x,d=1)=>x==null?'—':Number(x).toLocaleString(undefined,{{maximumFractionDigits:d}});const capText=x=>x.marketCapKRW!=null?`시총 ${{fmt(x.marketCapKRW/1e12,2)}}조원`:x.marketCapUSD!=null?`시총 ${{fmt(x.marketCapUSD/1e9,2)}}B달러`:'시총 —';function setMarket(m){{M=m;document.getElementById('krBtn').classList.toggle('on',m==='korea');document.getElementById('usBtn').classList.toggle('on',m==='us');render()}}function render(){{const a=D[M]||[];const md=(D.meta||{{}})[M]||{{}};const dateLabel=M==='us'?'미국 현지 장 마감 기준일':'기준일';document.getElementById('meta').textContent=`${{dateLabel}} ${{md.asOf||'—'}} · 갱신 ${{md.updatedAt||'—'}} · ${{a.length}}종목`;const aligned=a.filter(x=>x.alignmentStatus==='YES').length;document.getElementById('summary').innerHTML=`<div class=kpi><span>중대형 후보</span><b>${{md.candidateCount||0}}</b></div><div class=kpi><span>재무안정 TOP</span><b>${{a.length}}</b></div><div class=kpi><span>재무기준 탈락</span><b>${{md.financialFailCount||0}}</b></div><div class=kpi><span>정배열</span><b>${{aligned}}</b></div>`;document.getElementById('grid').innerHTML=a.map((x,i)=>{{const f=x.financialHealth||{{}};const ftitle=esc(f.criterion||'공식 재무제표 최소기준 통과');return `<article class=card><div class=top><div><div class=rank>#${{i+1}}</div><div class=name>${{esc(x.name)}}</div><div class=ticker>${{esc(x.ticker)}} · ${{esc(x.market)}}</div></div><div class=gain>+${{fmt(x.changePct,2)}}%</div></div><div class=badges><span class="badge y" title="${{ftitle}}">재무안정 PASS</span><span class=badge>${{capText(x)}}</span><span class="badge ${{x.alignmentStatus==='YES'?'y':x.alignmentStatus==='PENDING'?'p':'n'}}">${{x.alignmentStatus==='YES'?'정배열':x.alignmentStatus==='PENDING'?'정배열 판정보류':'정배열 아님'}}</span><span class=badge>52주 고점 ${{fmt(x.high52Ratio)}}%</span><span class=badge>거래량 ${{fmt(x.volumeRatio20,2)}}x</span></div><div class=sector>${{esc(x.sector||'—')}}</div><div class=desc>${{esc(x.description||'')}}</div><canvas id="c${{i}}" width="430" height="142"></canvas><div class=metrics><div><span>종가</span><b>${{fmt(x.close,2)}}</b></div><div><span>20일선</span><b>${{fmt(x.ma20,2)}}</b></div><div><span>부채비율</span><b>${{fmt(f.debtRatioPct)}}%</b></div><div><span>순이익</span><b>${{f.profitPositive?'양수':'—'}}</b></div></div></article>`}}).join('');requestAnimationFrame(()=>a.forEach((x,i)=>draw(document.getElementById('c'+i),x.history||[])))}}function esc(s){{return String(s??'').replace(/[&<>\"]/g,c=>({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}}[c]))}}function draw(c,h){{if(!c||h.length<2)return;const ctx=c.getContext('2d'),w=c.width,hg=c.height,p=8,vals=h.map(x=>x.close),mn=Math.min(...vals),mx=Math.max(...vals),span=mx-mn||1;ctx.clearRect(0,0,w,hg);ctx.strokeStyle='#21344e';ctx.lineWidth=1;for(let j=1;j<4;j++){{let y=p+(hg-2*p)*j/4;ctx.beginPath();ctx.moveTo(p,y);ctx.lineTo(w-p,y);ctx.stroke()}}ctx.strokeStyle='#69adff';ctx.lineWidth=2;ctx.beginPath();vals.forEach((v,j)=>{{let x=p+(w-2*p)*j/(vals.length-1),y=hg-p-(v-mn)/span*(hg-2*p);j?ctx.lineTo(x,y):ctx.moveTo(x,y)}});ctx.stroke()}}setMarket('korea');</script></body></html>'''
 
 
 def patch_nav(path):
@@ -285,15 +310,12 @@ def main():
     for m in markets:
         print('Updating movers:',m)
         arr=korea_top30(km) if m=='korea' else us_top30(um)
-        if len(arr)<20:
-            previous=cache.get(m) or []
-            if len(previous)>=20:
-                print(f'WARN {m} movers only {len(arr)}; keeping previous valid cache ({len(previous)})')
-                continue
-            raise RuntimeError(f'{m} top movers too few: {len(arr)}')
+        if not arr:
+            raise RuntimeError(f'{m} 재무안정 중대형 상승 종목을 한 종목도 확인하지 못했습니다')
+        if len(arr)<30: print(f'WARN {m} strict financial-health screen returned {len(arr)} stocks; not padding')
         cache[m]=arr
         asof=max((x['history'][-1]['date'] for x in arr if x.get('history')),default='—')
-        cache.setdefault('meta',{})[m]={'asOf':asof,'updatedAt':now,'count':len(arr)}
+        cache.setdefault('meta',{})[m]={'asOf':asof,'updatedAt':now,'count':len(arr),**SCREEN_META.get(m,{})}
     CACHE.write_text(json.dumps(cache,ensure_ascii=False,indent=2),encoding='utf-8')
     OUT.write_text(html(cache),encoding='utf-8')
     patch_nav(ROOT/'index.html'); patch_nav(ROOT/'us.html')
