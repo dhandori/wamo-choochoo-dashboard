@@ -9,8 +9,8 @@ on:
     - cron: '0 7 * * 1-5'
     # 미국장 장중 00:00 KST (15:00 UTC), 한국 기준 화~토 / UTC 월~금
     - cron: '0 15 * * 1-5'
-    # 미국장 종료 후 05:00 KST (20:00 UTC), 한국 기준 화~토 / UTC 월~금
-    - cron: '0 20 * * 1-5'
+    # 미국장 종료 후 06:20 KST (21:20 UTC), 한국 기준 화~토 / UTC 월~금
+    - cron: '20 21 * * 1-5'
 
 permissions:
   contents: write
@@ -73,7 +73,7 @@ jobs:
 
       - name: 미국 투자 데이터 갱신
         id: update_us
-        if: github.event_name == 'workflow_dispatch' || (github.event.schedule == '0 15 * * 1-5' || github.event.schedule == '0 20 * * 1-5')
+        if: github.event_name == 'workflow_dispatch' || (github.event.schedule == '0 15 * * 1-5' || github.event.schedule == '20 21 * * 1-5')
         continue-on-error: true
         env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
@@ -109,6 +109,6 @@ jobs:
             [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] && [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] || exit 1
           elif [ "${{ github.event.schedule }}" = "0 3 * * 1-5" ] || [ "${{ github.event.schedule }}" = "0 7 * * 1-5" ]; then
             [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] || exit 1
-          elif [ "${{ github.event.schedule }}" = "0 15 * * 1-5" ] || [ "${{ github.event.schedule }}" = "0 20 * * 1-5" ]; then
+          elif [ "${{ github.event.schedule }}" = "0 15 * * 1-5" ] || [ "${{ github.event.schedule }}" = "20 21 * * 1-5" ]; then
             [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] || exit 1
           fi
