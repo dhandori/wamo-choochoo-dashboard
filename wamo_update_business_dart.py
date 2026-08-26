@@ -4728,9 +4728,12 @@ def patch_index_health_ui(html, market=None):
         "['가격수집 실패',`${h.failedCount||0}개 기업`],",
         "['가격 제공처 오류',`${h.failedCount||0}개 기업`], ['신규상장 60일 미만',`${h.shortHistoryExcludedCount||0}개`],",
     )
+    old_qa_label = "`기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`"
+    timed_qa_label = "`기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과 · 검사시각 '+String(qa.checkedAt||data.meta.updatedAt||'—').replace('T',' ').slice(0,16)+' KST':'검사 대기'}`"
+    html = html.replace(old_qa_label, timed_qa_label)
     if market == "US":
         html = html.replace("`기준일 <b>${data.meta.asOf||'—'}</b><br>", "`미국 현지 장 마감 기준일 <b>${data.meta.asOf||'—'}</b><br>")
-        html = html.replace("`기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`", "`미국 현지 장 마감 기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`")
+        html = html.replace(timed_qa_label, timed_qa_label.replace("`기준일 ", "`미국 현지 장 마감 기준일 "))
         old_sec = "`<span class=\"health-pill ${h.secConnected?'good':'warn'}\">SEC ${h.secConnected?'연결':'미연결'}</span>`"
         new_sec = "`<span class=\"health-pill ${h.secConnected?'good':'warn'}\" title=\"${escBiz((data.meta.secMeta||{}).message||'기업정보 연결 상태를 상세 영역에서 확인하세요')}\">${h.secConnected?'SEC 직접연결':h.secFallbackConnected?'Nasdaq 대체연결':'기업정보 미연결'}</span>`"
         html = html.replace(old_sec, new_sec)
