@@ -61,7 +61,7 @@ jobs:
 
       - name: 한국 결과 즉시 저장
         id: save_korea
-        if: steps.update_korea.outcome == 'success'
+        if: steps.update_korea.outcome == 'success' && steps.movers_korea.outcome == 'success'
         continue-on-error: true
         run: |
           git add index.html
@@ -89,7 +89,7 @@ jobs:
 
       - name: 미국 결과 즉시 저장
         id: save_us
-        if: steps.update_us.outcome == 'success'
+        if: steps.update_us.outcome == 'success' && steps.movers_us.outcome == 'success'
         continue-on-error: true
         run: |
           git add us.html
