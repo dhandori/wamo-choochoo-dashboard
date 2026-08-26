@@ -36,6 +36,9 @@ PRICE_WORKERS = 16
 SEC_TARGET_MAX = 80
 SEC_WORKERS = 3
 SEC_CACHE_DAYS = 7
+NASDAQ_PROFILE_TARGET_MAX = 180
+NASDAQ_PROFILE_WORKERS = 8
+NASDAQ_PROFILE_CACHE_DAYS = 30
 ENERGY_HISTORY_DAYS = 140
 
 SEC_UA = (os.getenv("SEC_USER_AGENT") or "WAMO-Market-Radar/1.0 dhandori@users.noreply.github.com").strip()
@@ -664,6 +667,118 @@ def sec_financial_health_for_mapping(mapping, sector=""):
     return financial_health_from_sec_facts(facts, sector)
 
 
+def _nasdaq_table_value(table, label, column="value2"):
+    for row in (table or {}).get("rows") or []:
+        if str(row.get("value1") or "").strip().lower() == label.lower():
+            return _num(row.get(column))
+    return None
+
+
+def _nasdaq_financial_health(financials, sector=""):
+    data = (financials or {}).get("data") or {}
+    income = data.get("incomeStatementTable") or {}
+    balance = data.get("balanceSheetTable") or {}
+    assets = _nasdaq_table_value(balance, "Total Assets")
+    liabilities = _nasdaq_table_value(balance, "Total Liabilities")
+    equity = _nasdaq_table_value(balance, "Total Equity")
+    current_assets = _nasdaq_table_value(balance, "Total Current Assets")
+    current_liabilities = _nasdaq_table_value(balance, "Total Current Liabilities")
+    net_income = _nasdaq_table_value(income, "Net Income")
+    if liabilities is None and assets is not None and equity is not None:
+        liabilities = assets - equity
+    debt_ratio = liabilities / equity * 100 if liabilities is not None and equity and equity > 0 else None
+    current_ratio = current_assets / current_liabilities * 100 if current_assets is not None and current_liabilities and current_liabilities > 0 else None
+    sector_text = str(sector or "").lower()
+    financial = any(k in sector_text for k in ("finance", "financial", "bank", "insurance", "금융", "은행", "보험"))
+    equity_ok = bool(equity is not None and equity > 0)
+    profit_ok = bool(net_income is not None and net_income > 0)
+    leverage_ok = True if financial else bool(debt_ratio is not None and debt_ratio <= 300)
+    liquidity_ok = True if financial or current_ratio is None else current_ratio >= 80
+    passed = equity_ok and profit_ok and leverage_ok and liquidity_ok
+    period = ((balance.get("headers") or {}).get("value2") or (income.get("headers") or {}).get("value2") or "")
+    return {
+        "status": "PASS" if passed else "FAIL", "source": "Nasdaq 연간 재무제표(SEC 대체)",
+        "period": period, "sectorRule": "FINANCIAL" if financial else "GENERAL",
+        "equityPositive": equity_ok, "profitPositive": profit_ok,
+        "leveragePass": leverage_ok, "liquidityPass": liquidity_ok,
+        "assets": assets, "liabilities": liabilities, "equity": equity, "netIncome": net_income,
+        "debtRatioPct": round(debt_ratio, 1) if debt_ratio is not None else None,
+        "currentRatioPct": round(current_ratio, 1) if current_ratio is not None else None,
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사",
+    }
+
+
+def nasdaq_enrich_one(stock):
+    symbol = str(stock.get("displayTicker") or stock.get("ticker") or "").upper().replace("-", ".")
+    quoted = urllib.parse.quote(symbol)
+    referer = f"https://www.nasdaq.com/market-activity/stocks/{symbol.lower()}/company-profile"
+    profile_payload = _get_json(
+        f"https://api.nasdaq.com/api/company/{quoted}/company-profile",
+        headers={"Referer": referer}, retries=3,
+    )
+    financial_payload = _get_json(
+        f"https://api.nasdaq.com/api/company/{quoted}/financials?frequency=1",
+        headers={"Referer": referer}, retries=3,
+    )
+    profile_data = (profile_payload or {}).get("data") or {}
+    description = str(((profile_data.get("CompanyDescription") or {}).get("value") or "")).strip()
+    sector = str(((profile_data.get("Sector") or {}).get("value") or stock.get("sector") or "산업 미분류")).strip()
+    industry = str(((profile_data.get("Industry") or {}).get("value") or stock.get("industry") or sector)).strip()
+    company_url = str(((profile_data.get("CompanyUrl") or {}).get("value") or "")).strip()
+    if not description:
+        raise RuntimeError("Nasdaq 회사설명이 비어 있습니다")
+    finance_data = (financial_payload or {}).get("data") or {}
+    income = finance_data.get("incomeStatementTable") or {}
+    revenue_now = _nasdaq_table_value(income, "Total Revenue", "value2")
+    revenue_prev = _nasdaq_table_value(income, "Total Revenue", "value3")
+    annual_sales_yoy = ((revenue_now / revenue_prev - 1) * 100
+                        if revenue_now is not None and revenue_prev and revenue_prev > 0 else None)
+    period = ((income.get("headers") or {}).get("value2") or "")
+    financial_health = _nasdaq_financial_health(financial_payload, sector)
+    korean_summary = f"{stock.get('name')}은 Nasdaq 공식 분류상 {sector} · {industry} 기업입니다."
+    revenue_note = "Nasdaq 연간 손익계산서에서 비교 가능한 매출을 확보하지 못했습니다."
+    if revenue_now is not None:
+        revenue_note = f"최근 연간 매출은 {revenue_now:,.0f}천달러"
+        if annual_sales_yoy is not None:
+            revenue_note += f"로 전년 대비 {annual_sales_yoy:+.1f}%입니다"
+        else:
+            revenue_note += "입니다"
+        if period:
+            revenue_note += f"(결산기준 {period})"
+        revenue_note += "."
+    return {
+        "secStatus": "NASDAQ_FALLBACK",
+        "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+        "profileStatus": "LIVE",
+        "profileSource": "Nasdaq Company Profile",
+        "businessModelUrl": company_url or referer,
+        "businessModelReportDate": period,
+        "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+        "businessModelEasy": korean_summary + " 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+        "businessProfile": {
+            "summary": korean_summary,
+            "products": "Nasdaq 공식 회사설명(영문): " + description,
+            "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+            "revenue": revenue_note,
+            "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+            "segments": list(dict.fromkeys([z for z in (stock.get("krxSector"), sector, industry) if z])),
+        },
+        "financialHealth": financial_health,
+        "annualSalesYoyNasdaq": round(annual_sales_yoy, 1) if annual_sales_yoy is not None else None,
+        "catalysts": [],
+        "sepaFundamental": {
+            "status": "CHECK", "epsPass": False, "salesPass": False,
+            "epsAcceleration": False, "salesAcceleration": False,
+            "marginImproving": False, "earningsSurpriseStatus": "UNKNOWN",
+            "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다.",
+        },
+        "sector": sector, "industry": industry,
+        "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+        "profileFetchedAt": date.today().isoformat(),
+        "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생",
+    }
+
+
 def sec_enrich_one(stock, mapping):
     cik = mapping["cik"]
     submissions = _sec_get(f"https://data.sec.gov/submissions/CIK{cik}.json")
@@ -814,30 +929,47 @@ def enrich_sec(raw):
         x.get("rsPercentile", 0), x.get("market_cap_usd", 0),
     ), reverse=True)
     selected = []
+    nasdaq_selected = []
     cached_count = 0
+    nasdaq_cached_count = 0
     for stock in priority:
         symbol = str(stock.get("displayTicker") or stock.get("ticker") or "").upper()
         old = cache.get(symbol) or {}
-        fresh = False
+        sec_fresh = False
+        nasdaq_fresh = False
         try:
-            fresh = (date.today() - date.fromisoformat(str(old.get("secFetchedAt"))[:10])).days < SEC_CACHE_DAYS
+            sec_fresh = (date.today() - date.fromisoformat(str(old.get("secFetchedAt"))[:10])).days < SEC_CACHE_DAYS
         except Exception:
             pass
-        if fresh and old.get("secStatus") == "LIVE":
+        try:
+            nasdaq_fresh = (date.today() - date.fromisoformat(str(old.get("profileFetchedAt"))[:10])).days < NASDAQ_PROFILE_CACHE_DAYS
+        except Exception:
+            pass
+        if sec_fresh and old.get("secStatus") == "LIVE":
             stock.update(old)
             stock["secStatus"] = "CACHED"
             cached_count += 1
-        elif symbol in mapping and len(selected) < SEC_TARGET_MAX:
+        elif connected and symbol in mapping and len(selected) < SEC_TARGET_MAX:
             selected.append((stock, symbol, mapping[symbol]))
+        elif nasdaq_fresh and old.get("secStatus") in ("NASDAQ_FALLBACK", "NASDAQ_CACHED"):
+            stock.update(old)
+            stock["secStatus"] = "NASDAQ_CACHED"
+            nasdaq_cached_count += 1
         elif old.get("secStatus") in ("LIVE", "CACHED"):
             stock.update(old)
             stock["secStatus"] = "CACHED"
             cached_count += 1
+        elif old.get("secStatus") in ("NASDAQ_FALLBACK", "NASDAQ_CACHED"):
+            stock.update(old)
+            stock["secStatus"] = "NASDAQ_CACHED"
+            nasdaq_cached_count += 1
+        elif len(nasdaq_selected) < NASDAQ_PROFILE_TARGET_MAX:
+            nasdaq_selected.append((stock, symbol))
         else:
             _apply_sec_pending_profile(
                 stock,
                 "NOT_TARGET" if symbol in mapping else "NO_MATCH",
-                "SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+                "이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
             )
 
     with ThreadPoolExecutor(max_workers=SEC_WORKERS) as pool:
@@ -855,31 +987,69 @@ def enrich_sec(raw):
                     stock["secStatus"] = "CACHED"
                     cached_count += 1
                 else:
-                    _apply_sec_pending_profile(
-                        stock, "ERROR",
-                        "이번 갱신에서 SEC 원문을 확보하지 못해 다음 자동갱신에서 다시 시도합니다.",
-                    )
+                    try:
+                        enriched = nasdaq_enrich_one(stock)
+                        stock.update(enriched)
+                        cache[symbol] = enriched
+                    except Exception as fallback_exc:
+                        _apply_sec_pending_profile(
+                            stock, "ERROR",
+                            "이번 갱신에서 SEC와 Nasdaq 회사정보를 모두 확보하지 못했습니다.",
+                        )
+                        errors.append({"ticker": symbol, "provider": "Nasdaq fallback", "error": core.compact_provider_error(str(fallback_exc))})
                 errors.append({"ticker": symbol, "error": core.compact_provider_error(str(exc))})
             if i % 10 == 0 or i == len(futures):
                 print("  SEC", i, "/", len(futures))
+
+    if nasdaq_selected:
+        with ThreadPoolExecutor(max_workers=NASDAQ_PROFILE_WORKERS) as pool:
+            futures = {pool.submit(nasdaq_enrich_one, stock): (stock, symbol) for stock, symbol in nasdaq_selected}
+            for i, future in enumerate(as_completed(futures), 1):
+                stock, symbol = futures[future]
+                try:
+                    enriched = future.result()
+                    stock.update(enriched)
+                    cache[symbol] = enriched
+                except Exception as exc:
+                    prior = cache.get(symbol) or {}
+                    if prior.get("secStatus") in ("NASDAQ_FALLBACK", "NASDAQ_CACHED"):
+                        stock.update(prior)
+                        stock["secStatus"] = "NASDAQ_CACHED"
+                        nasdaq_cached_count += 1
+                    else:
+                        _apply_sec_pending_profile(
+                            stock, "ERROR",
+                            "이번 갱신에서 Nasdaq 회사정보·연간 재무를 확보하지 못했습니다.",
+                        )
+                    errors.append({"ticker": symbol, "provider": "Nasdaq", "error": core.compact_provider_error(str(exc))})
+                if i % 20 == 0 or i == len(futures):
+                    print("  Nasdaq profile", i, "/", len(futures))
     _save_cache(cache)
-    usable = sum(x.get("secStatus") in ("LIVE", "CACHED") for x in raw)
+    sec_usable = sum(x.get("secStatus") in ("LIVE", "CACHED") for x in raw)
+    nasdaq_usable = sum(x.get("secStatus") in ("NASDAQ_FALLBACK", "NASDAQ_CACHED") for x in raw)
+    usable = sec_usable + nasdaq_usable
     connection_error = next((e.get("error") for e in errors if e.get("scope") == "company_tickers.json"), "")
-    sec_message = f"SEC 공식자료 사용가능 {usable}/{len(raw)}개 · 이번 조회 {len(selected)}개 · 캐시 {cached_count}개"
+    sec_message = (f"기업정보 사용가능 {usable}/{len(raw)}개 · SEC {sec_usable}개 · "
+                   f"Nasdaq 대체 {nasdaq_usable}개 · SEC 캐시 {cached_count}개 · Nasdaq 캐시 {nasdaq_cached_count}개")
     if connection_error:
-        sec_message += " · 티커목록 접속 실패: " + core.compact_provider_error(connection_error)
+        sec_message += " · SEC 직접접속 실패, Nasdaq 대체경로 사용: " + core.compact_provider_error(connection_error)
+    fallback_connected = nasdaq_usable > 0
     return {
-        "status": "LIVE" if connected and not errors else "PARTIAL" if connected or usable else "FAILED",
+        "status": "LIVE" if connected and not errors else "FALLBACK" if fallback_connected else "PARTIAL" if connected or usable else "FAILED",
         "connected": connected,
-        "targetCount": len(selected),
+        "fallbackConnected": fallback_connected,
+        "effectiveConnected": bool(connected or fallback_connected),
+        "targetCount": len(selected) + len(nasdaq_selected),
         "successCount": usable,
         "cachedCount": cached_count,
         "fetchedCount": sum(x.get("secStatus") == "LIVE" for x in raw),
+        "nasdaqFetchedCount": sum(x.get("secStatus") == "NASDAQ_FALLBACK" for x in raw),
+        "nasdaqCachedCount": nasdaq_cached_count,
         "errorCount": len(errors),
-        "source": "SEC EDGAR official submissions/XBRL",
+        "source": "SEC EDGAR 우선 + Nasdaq Company Profile/Annual Financials 대체",
         "message": sec_message,
         "connectionError": connection_error,
-        "reasonLabel": "연결" if connected else "접속 실패",
+        "reasonLabel": "SEC 연결" if connected else "Nasdaq 대체연결" if fallback_connected else "기업정보 접속 실패",
         "errors": errors[:20],
     }
 
@@ -1074,7 +1244,7 @@ def main():
     energy = build_us_market_energy(raw)
     market = market_direction_us()
 
-    print("4/9 SEC EDGAR 공식 재무·공시")
+    print("4/9 기업정보·재무: SEC 우선 / Nasdaq 대체")
     sec_meta = enrich_sec(raw)
     print(" ", sec_meta.get("message"))
 
@@ -1183,7 +1353,7 @@ def main():
         "meta": {
             "market": "US", "title": "WAMO MARKET RADAR · US", "mode": "LIVE",
             "asOf": asof, "updatedAt": datetime.now(KST).isoformat(timespec="minutes"),
-            "source": "Nasdaq stock screener universe + Yahoo Finance price + SEC EDGAR official submissions/XBRL",
+            "source": "Nasdaq stock screener/company profile/annual financials + Yahoo Finance price + SEC EDGAR 우선",
             "universeCount": len(listed), "eligibleUniverseCount": len(listed), "successCount": len(raw), "errorCount": len(errors),
             "marketDirection": {"US": market}, "marketEnergy": energy,
             "dataHealth": {
@@ -1193,19 +1363,22 @@ def main():
                 "excludedInstrumentCount": excluded_by_name, "shortHistoryCount": sum((x.get("historyTradingDays") or 0) < 260 for x in raw),
                 "shortHistoryExcludedCount": len(short_history_exclusions),
                 "sourceCounts": {"Yahoo Finance": sum(x.get("dataSource") == "Yahoo Finance" for x in raw), "이전 미국 정상값": sum(x.get("dataSource") == "이전 미국 정상값" for x in raw)},
-                "dartConnected": bool(sec_meta.get("connected")), "secConnected": bool(sec_meta.get("connected")),
+                "dartConnected": bool(sec_meta.get("effectiveConnected")),
+                "secConnected": bool(sec_meta.get("connected")),
+                "secFallbackConnected": bool(sec_meta.get("fallbackConnected")),
+                "secEffectiveConnected": bool(sec_meta.get("effectiveConnected")),
                 "flowConnected": False, "consensusConnected": False,
                 "message": f"시총 10억달러 이상 일반기업 {len(listed):,}개 중 상위 {len(candidates):,}개 가격수집 {fetched:,}개({coverage:.1f}%) → 50일 평균 거래대금 1천만달러 통과 {len(raw):,}개 · 신규상장 60일 미만 {len(short_history_exclusions):,}개 · 제공처 오류 {len(errors):,}개",
             },
             "universeFunnel": funnel,
             "dartMeta": sec_meta, "secMeta": sec_meta,
-            "profileMeta": {"status": sec_meta.get("status"), "targetCount": len(raw), "coveredCount": sec_meta.get("successCount", 0), "fetchedCount": sec_meta.get("fetchedCount", 0), "source": "SEC EDGAR 10-K·XBRL", "message": sec_meta.get("message"), "errors": sec_meta.get("errors", [])},
+            "profileMeta": {"status": sec_meta.get("status"), "targetCount": len(raw), "coveredCount": sec_meta.get("successCount", 0), "fetchedCount": sec_meta.get("fetchedCount", 0) + sec_meta.get("nasdaqFetchedCount", 0), "source": "SEC EDGAR 우선 + Nasdaq Company Profile/Annual Financials 대체", "message": sec_meta.get("message"), "errors": sec_meta.get("errors", [])},
             "marketContextMeta": {"status": "NOT_USED", "source": "사용 안 함", "message": "무료 기관보유 시계열 자동연결 안 함"},
             "flowMeta": {"connected": False, "coverage": 0, "source": "사용 안 함", "message": "기관 수급 미사용"},
             "sectorFlowMeta": sector_flow_meta,
             "consensusMeta": {"status": "NOT_USED", "source": "사용 안 함", "message": "무료 컨센서스 자동연결 안 함"},
-            "catalystMeta": {"status": sec_meta.get("status"), "source": "SEC EDGAR official"},
-            "note": "미국 후보 스크리닝 대시보드입니다. SEC 10-K·10-Q/XBRL 공식자료와 가격으로 확인 가능한 항목만 계산합니다. 미국 시장에너지는 현재 정밀계산 유니버스의 20일 볼린저 상단 돌파 종목수를 350종목 기준으로 환산한 참고값이며 공식 S&P 500·Nasdaq 전체 구성 시계열이 아닙니다. 무료로 신뢰성 있게 연결하지 못한 컨센서스와 기관 보유 시계열은 확인 불가로 표시합니다.",
+            "catalystMeta": {"status": sec_meta.get("status"), "source": "SEC EDGAR 우선 · Nasdaq에는 공시 촉매 없음"},
+            "note": "미국 후보 스크리닝 대시보드입니다. 기업정보는 SEC EDGAR 10-K·10-Q/XBRL을 우선 사용하고, GitHub Actions에서 SEC가 차단되면 Nasdaq Company Profile과 연간 재무제표로 기업설명·섹터·최소 재무안정성만 대체합니다. Nasdaq 대체자료에는 SEC 공시 촉매와 분기 XBRL이 없으므로 해당 항목은 미확인으로 유지합니다. 미국 시장에너지는 현재 정밀계산 유니버스의 20일 볼린저 상단 돌파 종목수를 350종목 기준으로 환산한 참고값이며 공식 S&P 500·Nasdaq 전체 구성 시계열이 아닙니다. 무료로 신뢰성 있게 연결하지 못한 컨센서스와 기관 보유 시계열은 확인 불가로 표시합니다.",
         },
         "sectors": sectors, "stocks": raw, "errors": errors,
         "shortHistoryExclusions": short_history_exclusions,
@@ -1219,7 +1392,7 @@ def main():
     temp = US_HTML.with_suffix(".html.tmp")
     temp.write_text(new_html, encoding="utf-8")
     temp.replace(US_HTML)
-    print("9/9 완료:", asof, "미국 종목", len(raw), "가격오류", len(errors), "SEC오류", sec_meta.get("errorCount"))
+    print("9/9 완료:", asof, "미국 종목", len(raw), "가격오류", len(errors), "기업정보 오류", sec_meta.get("errorCount"))
 
 
 if __name__ == "__main__":

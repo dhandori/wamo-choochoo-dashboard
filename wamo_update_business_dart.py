@@ -4732,7 +4732,7 @@ def patch_index_health_ui(html, market=None):
         html = html.replace("`기준일 <b>${data.meta.asOf||'—'}</b><br>", "`미국 현지 장 마감 기준일 <b>${data.meta.asOf||'—'}</b><br>")
         html = html.replace("`기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`", "`미국 현지 장 마감 기준일 ${data.meta.asOf||'—'} · ${qa.status==='PASS'?'자동검사 통과':'검사 대기'}`")
         old_sec = "`<span class=\"health-pill ${h.secConnected?'good':'warn'}\">SEC ${h.secConnected?'연결':'미연결'}</span>`"
-        new_sec = "`<span class=\"health-pill ${h.secConnected?'good':'warn'}\" title=\"${escBiz((data.meta.secMeta||{}).message||'SEC 연결 상태를 상세 영역에서 확인하세요')}\">SEC ${h.secConnected?'연결':'접속실패'}</span>`"
+        new_sec = "`<span class=\"health-pill ${h.secConnected?'good':'warn'}\" title=\"${escBiz((data.meta.secMeta||{}).message||'기업정보 연결 상태를 상세 영역에서 확인하세요')}\">${h.secConnected?'SEC 직접연결':h.secFallbackConnected?'Nasdaq 대체연결':'기업정보 미연결'}</span>`"
         html = html.replace(old_sec, new_sec)
     error_block = re.compile(
         r"const errs=\(data\.errors\|\|\[\]\)\.slice\(0,10\);\s*"
