@@ -55,6 +55,8 @@ jobs:
         id: movers_korea
         if: steps.update_korea.outcome == 'success'
         continue-on-error: true
+        env:
+          OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
         run: python wamo_update_movers.py --market korea
 
       - name: 한국 결과 즉시 저장
@@ -73,12 +75,16 @@ jobs:
         id: update_us
         if: github.event_name == 'workflow_dispatch' || (github.event.schedule == '0 15 * * 1-5' || github.event.schedule == '0 20 * * 1-5')
         continue-on-error: true
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: python wamo_update_us_sec.py
 
       - name: 미국 상승률 TOP 30 갱신
         id: movers_us
         if: steps.update_us.outcome == 'success'
         continue-on-error: true
+        env:
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: python wamo_update_movers.py --market us
 
       - name: 미국 결과 즉시 저장
