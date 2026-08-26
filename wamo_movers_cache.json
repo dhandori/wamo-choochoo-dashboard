@@ -33464,7 +33464,7 @@
       ],
       "sector": "컴퓨터·IT 하드웨어 (Computer Manufacturing)",
       "industry": "컴퓨터·IT 하드웨어 (Computer Manufacturing)",
-      "description": "Super Micro Computer Inc. Common Stock은 Nasdaq 분류상 컴퓨터·IT 하드웨어 (Computer Manufacturing)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Super Micro Computer Inc. Common Stock은 Nasdaq 분류상 컴퓨터·IT 하드웨어 (Computer Manufacturing)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -34545,12 +34545,12 @@
           "close": 171.02
         }
       ],
-      "sector": "은행 (Investment Bankers/Brokers/Service)",
-      "industry": "은행 (Investment Bankers/Brokers/Service)",
-      "description": "Freedom Holding Corp. Common Stock은 Nasdaq 분류상 은행 (Investment Bankers/Brokers/Service)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "sector": "Finance",
+      "industry": "Investment Bankers/Brokers/Service",
+      "description": "Freedom Holding Corp. Common Stock은 Nasdaq 공식 분류상 Finance · Investment Bankers/Brokers/Service 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "3/31/2026",
         "sectorRule": "FINANCIAL",
         "equityPositive": true,
@@ -34563,9 +34563,9 @@
         "netIncome": 153328.0,
         "debtRatioPct": 783.3,
         "currentRatioPct": null,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -35630,7 +35630,7 @@
       ],
       "sector": "은행 (Investment Bankers/Brokers/Service)",
       "industry": "은행 (Investment Bankers/Brokers/Service)",
-      "description": "Futu Holdings Limited American Depositary Shares은 Nasdaq 분류상 은행 (Investment Bankers/Brokers/Service)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Futu Holdings Limited American Depositary Shares은 Nasdaq 분류상 은행 (Investment Bankers/Brokers/Service)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -36713,7 +36713,7 @@
       ],
       "sector": "은행 (Investment Bankers/Brokers/Service)",
       "industry": "은행 (Investment Bankers/Brokers/Service)",
-      "description": "Robinhood Markets Inc. Class A Common Stock은 Nasdaq 분류상 은행 (Investment Bankers/Brokers/Service)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Robinhood Markets Inc. Class A Common Stock은 Nasdaq 분류상 은행 (Investment Bankers/Brokers/Service)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -37794,12 +37794,12 @@
           "close": 93.1
         }
       ],
-      "sector": "은행 (Major Banks)",
-      "industry": "은행 (Major Banks)",
-      "description": "Bank Nova Scotia Halifax Pfd 3 Ordinary Shares은 Nasdaq 분류상 은행 (Major Banks)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "sector": "Finance",
+      "industry": "Major Banks",
+      "description": "Bank Nova Scotia Halifax Pfd 3 Ordinary Shares은 Nasdaq 공식 분류상 Finance · Major Banks 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "10/31/2025",
         "sectorRule": "FINANCIAL",
         "equityPositive": true,
@@ -37812,9 +37812,9 @@
         "netIncome": 5559000.0,
         "debtRatioPct": 1578.8,
         "currentRatioPct": null,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -38879,7 +38879,7 @@
       ],
       "sector": "기술 세부산업 (EDP Services)",
       "industry": "기술 세부산업 (EDP Services)",
-      "description": "Reddit Inc. Class A Common Stock은 Nasdaq 분류상 기술 세부산업 (EDP Services)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Reddit Inc. Class A Common Stock은 Nasdaq 분류상 기술 세부산업 (EDP Services)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -39962,7 +39962,7 @@
       ],
       "sector": "금융서비스 (Finance: Consumer Services)",
       "industry": "금융서비스 (Finance: Consumer Services)",
-      "description": "IREN Limited Ordinary Shares은 Nasdaq 분류상 금융서비스 (Finance: Consumer Services)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "IREN Limited Ordinary Shares은 Nasdaq 분류상 금융서비스 (Finance: Consumer Services)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -41043,12 +41043,12 @@
           "close": 98.19
         }
       ],
-      "sector": "은행 (Investment Bankers/Brokers/Service)",
-      "industry": "은행 (Investment Bankers/Brokers/Service)",
-      "description": "Interactive Brokers Group Inc. Class A Common Stock은 Nasdaq 분류상 은행 (Investment Bankers/Brokers/Service)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "sector": "Finance",
+      "industry": "Investment Bankers/Brokers/Service",
+      "description": "Interactive Brokers Group Inc. Class A Common Stock은 Nasdaq 공식 분류상 Finance · Investment Bankers/Brokers/Service 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "12/31/2025",
         "sectorRule": "FINANCIAL",
         "equityPositive": true,
@@ -41061,9 +41061,9 @@
         "netIncome": 984000.0,
         "debtRatioPct": 3407.9,
         "currentRatioPct": null,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -42128,7 +42128,7 @@
       ],
       "sector": "소프트웨어 (Computer Software: Programming Data Processing)",
       "industry": "소프트웨어 (Computer Software: Programming Data Processing)",
-      "description": "Nebius Group N.V. Class A Ordinary Shares은 Nasdaq 분류상 소프트웨어 (Computer Software: Programming Data Processing)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Nebius Group N.V. Class A Ordinary Shares은 Nasdaq 분류상 소프트웨어 (Computer Software: Programming Data Processing)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -43211,7 +43211,7 @@
       ],
       "sector": "소프트웨어 (Computer Software: Prepackaged Software)",
       "industry": "소프트웨어 (Computer Software: Prepackaged Software)",
-      "description": "Cadence Design Systems Inc. Common Stock은 Nasdaq 분류상 소프트웨어 (Computer Software: Prepackaged Software)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Cadence Design Systems Inc. Common Stock은 Nasdaq 분류상 소프트웨어 (Computer Software: Prepackaged Software)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -44294,7 +44294,7 @@
       ],
       "sector": "반도체 (Semiconductors)",
       "industry": "반도체 (Semiconductors)",
-      "description": "Advanced Micro Devices Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Advanced Micro Devices Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -45377,7 +45377,7 @@
       ],
       "sector": "반도체 (Semiconductors)",
       "industry": "반도체 (Semiconductors)",
-      "description": "Marvell Technology Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Marvell Technology Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -46460,7 +46460,7 @@
       ],
       "sector": "기술 세부산업 (Electrical Products)",
       "industry": "기술 세부산업 (Electrical Products)",
-      "description": "TTM Technologies Inc. Common Stock은 Nasdaq 분류상 기술 세부산업 (Electrical Products)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "TTM Technologies Inc. Common Stock은 Nasdaq 분류상 기술 세부산업 (Electrical Products)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -47543,7 +47543,7 @@
       ],
       "sector": "석유·가스 (Retail-Auto Dealers and Gas Stations)",
       "industry": "석유·가스 (Retail-Auto Dealers and Gas Stations)",
-      "description": "Carvana Co. Class A Common Stock은 Nasdaq 분류상 석유·가스 (Retail-Auto Dealers and Gas Stations)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Carvana Co. Class A Common Stock은 Nasdaq 분류상 석유·가스 (Retail-Auto Dealers and Gas Stations)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -48626,7 +48626,7 @@
       ],
       "sector": "소프트웨어 (Computer Software: Prepackaged Software)",
       "industry": "소프트웨어 (Computer Software: Prepackaged Software)",
-      "description": "NetEase Inc. American Depositary Shares은 Nasdaq 분류상 소프트웨어 (Computer Software: Prepackaged Software)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "NetEase Inc. American Depositary Shares은 Nasdaq 분류상 소프트웨어 (Computer Software: Prepackaged Software)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -49709,7 +49709,7 @@
       ],
       "sector": "금속·광업 (Other Metals and Minerals)",
       "industry": "금속·광업 (Other Metals and Minerals)",
-      "description": "Cameco Corporation Common Stock은 Nasdaq 분류상 금속·광업 (Other Metals and Minerals)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Cameco Corporation Common Stock은 Nasdaq 분류상 금속·광업 (Other Metals and Minerals)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -50792,7 +50792,7 @@
       ],
       "sector": "전자부품·전자기기 (Electronic Components)",
       "industry": "전자부품·전자기기 (Electronic Components)",
-      "description": "Coherent Corp. Common Stock은 Nasdaq 분류상 전자부품·전자기기 (Electronic Components)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Coherent Corp. Common Stock은 Nasdaq 분류상 전자부품·전자기기 (Electronic Components)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -51875,7 +51875,7 @@
       ],
       "sector": "금융서비스 (Finance: Consumer Services)",
       "industry": "금융서비스 (Finance: Consumer Services)",
-      "description": "Coinbase Global Inc. Class A Common Stock은 Nasdaq 분류상 금융서비스 (Finance: Consumer Services)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Coinbase Global Inc. Class A Common Stock은 Nasdaq 분류상 금융서비스 (Finance: Consumer Services)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -52958,7 +52958,7 @@
       ],
       "sector": "통신서비스 (Telecommunications Equipment)",
       "industry": "통신서비스 (Telecommunications Equipment)",
-      "description": "Ciena Corporation Common Stock은 Nasdaq 분류상 통신서비스 (Telecommunications Equipment)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Ciena Corporation Common Stock은 Nasdaq 분류상 통신서비스 (Telecommunications Equipment)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -54041,7 +54041,7 @@
       ],
       "sector": "금융서비스 (Finance: Consumer Services)",
       "industry": "금융서비스 (Finance: Consumer Services)",
-      "description": "SoFi Technologies Inc. Common Stock은 Nasdaq 분류상 금융서비스 (Finance: Consumer Services)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "SoFi Technologies Inc. Common Stock은 Nasdaq 분류상 금융서비스 (Finance: Consumer Services)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -55124,7 +55124,7 @@
       ],
       "sector": "기술 세부산업 (Electrical Products)",
       "industry": "기술 세부산업 (Electrical Products)",
-      "description": "Celestica Inc. Common Stock은 Nasdaq 분류상 기술 세부산업 (Electrical Products)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Celestica Inc. Common Stock은 Nasdaq 분류상 기술 세부산업 (Electrical Products)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -56207,7 +56207,7 @@
       ],
       "sector": "방송 (Radio And Television Broadcasting And Communications Equipment)",
       "industry": "방송 (Radio And Television Broadcasting And Communications Equipment)",
-      "description": "Ubiquiti Inc. Common Stock은 Nasdaq 분류상 방송 (Radio And Television Broadcasting And Communications Equipment)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Ubiquiti Inc. Common Stock은 Nasdaq 분류상 방송 (Radio And Television Broadcasting And Communications Equipment)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -57288,12 +57288,12 @@
           "close": 30.79
         }
       ],
-      "sector": "금속·광업 (Metal Mining)",
-      "industry": "금속·광업 (Metal Mining)",
-      "description": "Hudbay Minerals Inc. Ordinary Shares (Canada)은 Nasdaq 분류상 금속·광업 (Metal Mining)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "sector": "Basic Materials",
+      "industry": "Metal Mining",
+      "description": "Hudbay Minerals Inc. Ordinary Shares (Canada)은 Nasdaq 공식 분류상 Basic Materials · Metal Mining 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "12/31/2025",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -57306,9 +57306,9 @@
         "netIncome": 564300.0,
         "debtRatioPct": 92.6,
         "currentRatioPct": 94.7,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -58373,7 +58373,7 @@
       ],
       "sector": "소프트웨어 (Computer Software: Programming Data Processing)",
       "industry": "소프트웨어 (Computer Software: Programming Data Processing)",
-      "description": "Applovin Corporation Class A Common Stock은 Nasdaq 분류상 소프트웨어 (Computer Software: Programming Data Processing)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Applovin Corporation Class A Common Stock은 Nasdaq 분류상 소프트웨어 (Computer Software: Programming Data Processing)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -59454,12 +59454,12 @@
           "close": 56.72
         }
       ],
-      "sector": "바이오테크 (Biotechnology: Biological Products (No Diagnostic Substances))",
-      "industry": "바이오테크 (Biotechnology: Biological Products (No Diagnostic Substances))",
-      "description": "Exelixis Inc. Common Stock은 Nasdaq 분류상 바이오테크 (Biotechnology: Biological Products (No Diagnostic Substances))에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "sector": "Health Care",
+      "industry": "Biotechnology: Biological Products (No Diagnostic Substances)",
+      "description": "Exelixis Inc. Common Stock은 Nasdaq 공식 분류상 Health Care · Biotechnology: Biological Products (No Diagnostic Substances) 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "12/31/2025",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -59472,9 +59472,9 @@
         "netIncome": 782570.0,
         "debtRatioPct": 31.6,
         "currentRatioPct": 355.8,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -60539,7 +60539,7 @@
       ],
       "sector": "방송 (Radio And Television Broadcasting And Communications Equipment)",
       "industry": "방송 (Radio And Television Broadcasting And Communications Equipment)",
-      "description": "Nokia Corporation Sponsored American Depositary Shares은 Nasdaq 분류상 방송 (Radio And Television Broadcasting And Communications Equipment)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Nokia Corporation Sponsored American Depositary Shares은 Nasdaq 분류상 방송 (Radio And Television Broadcasting And Communications Equipment)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -61620,12 +61620,12 @@
           "close": 156.45
         }
       ],
-      "sector": "바이오테크 (Biotechnology: Pharmaceutical Preparations)",
-      "industry": "바이오테크 (Biotechnology: Pharmaceutical Preparations)",
-      "description": "Merck & Company Inc. Common Stock (new)은 Nasdaq 분류상 바이오테크 (Biotechnology: Pharmaceutical Preparations)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "sector": "Health Care",
+      "industry": "Biotechnology: Pharmaceutical Preparations",
+      "description": "Merck & Company Inc. Common Stock (new)은 Nasdaq 공식 분류상 Health Care · Biotechnology: Pharmaceutical Preparations 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "12/31/2025",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -61638,9 +61638,9 @@
         "netIncome": 18254000.0,
         "debtRatioPct": 160.1,
         "currentRatioPct": 153.6,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -62705,7 +62705,7 @@
       ],
       "sector": "산업재 세부산업 (Aluminum)",
       "industry": "산업재 세부산업 (Aluminum)",
-      "description": "Alcoa Corporation Common Stock은 Nasdaq 분류상 산업재 세부산업 (Aluminum)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Alcoa Corporation Common Stock은 Nasdaq 분류상 산업재 세부산업 (Aluminum)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -63788,7 +63788,7 @@
       ],
       "sector": "수도 유틸리티 (Water Supply)",
       "industry": "수도 유틸리티 (Water Supply)",
-      "description": "Companhia de saneamento Basico Do Estado De Sao Paulo - Sabesp American Depositary Shares (Each repstg 250 Common Shares)은 Nasdaq 분류상 수도 유틸리티 (Water Supply)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Companhia de saneamento Basico Do Estado De Sao Paulo - Sabesp American Depositary Shares (Each repstg 250 Common Shares)은 Nasdaq 분류상 수도 유틸리티 (Water Supply)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -64871,7 +64871,7 @@
       ],
       "sector": "소프트웨어 (Computer Software: Prepackaged Software)",
       "industry": "소프트웨어 (Computer Software: Prepackaged Software)",
-      "description": "Synopsys Inc. Common Stock은 Nasdaq 분류상 소프트웨어 (Computer Software: Prepackaged Software)에 속합니다. SEC 회사별 상세는 이번 제한조회 대상이 아니거나 티커 연결 대기 중입니다.",
+      "description": "Synopsys Inc. Common Stock은 Nasdaq 분류상 소프트웨어 (Computer Software: Prepackaged Software)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
       "financialHealth": {
         "status": "PASS",
         "source": "Nasdaq 연간 재무제표",
@@ -64906,7 +64906,7 @@
     },
     "us": {
       "asOf": "2026-08-25",
-      "updatedAt": "2026-08-26T14:18+09:00",
+      "updatedAt": "2026-08-26T15:14+09:00",
       "count": 30,
       "candidateCount": 870,
       "financialFailCount": 15,
