@@ -99,16 +99,39 @@ jobs:
           git diff --cached --quiet || git commit -m "auto update US dashboard and movers"
           git push
 
+      - name: 깡토 추세추종 계산 자체검사
+        id: test_kkangto
+        if: always() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '0 3 * * 1-5' || github.event.schedule == '0 7 * * 1-5' || github.event.schedule == '0 15 * * 1-5' || github.event.schedule == '20 21 * * 1-5')
+        continue-on-error: true
+        run: python wamo_update_kkangto.py --self-test
+
+      - name: 깡토 추세추종 모듈 갱신
+        id: update_kkangto
+        if: steps.test_kkangto.outcome == 'success'
+        continue-on-error: true
+        run: python wamo_update_kkangto.py
+
+      - name: 깡토 결과 저장
+        id: save_kkangto
+        if: steps.update_kkangto.outcome == 'success'
+        continue-on-error: true
+        run: |
+          git add kkangto.html wamo_kkangto_state.json index.html us.html
+          if [ -f movers.html ]; then git add movers.html; fi
+          git diff --cached --quiet || git commit -m "auto update Kangto trend-following module"
+          git push
+
       - name: 최종 갱신 결과 확인
         if: always()
         run: |
           echo "event=${{ github.event_name }} schedule=${{ github.event.schedule }}"
           echo "한국 계산: ${{ steps.update_korea.outcome }} / 상승률: ${{ steps.movers_korea.outcome }} / 저장: ${{ steps.save_korea.outcome }}"
           echo "미국 계산: ${{ steps.update_us.outcome }} / 상승률: ${{ steps.movers_us.outcome }} / 저장: ${{ steps.save_us.outcome }}"
+          echo "깡토 자체검사: ${{ steps.test_kkangto.outcome }} / 계산: ${{ steps.update_kkangto.outcome }} / 저장: ${{ steps.save_kkangto.outcome }}"
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] && [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] || exit 1
+            [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] && [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] && [ "${{ steps.test_kkangto.outcome }}" = "success" ] && [ "${{ steps.update_kkangto.outcome }}" = "success" ] && [ "${{ steps.save_kkangto.outcome }}" = "success" ] || exit 1
           elif [ "${{ github.event.schedule }}" = "0 3 * * 1-5" ] || [ "${{ github.event.schedule }}" = "0 7 * * 1-5" ]; then
-            [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] || exit 1
+            [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] && [ "${{ steps.test_kkangto.outcome }}" = "success" ] && [ "${{ steps.update_kkangto.outcome }}" = "success" ] && [ "${{ steps.save_kkangto.outcome }}" = "success" ] || exit 1
           elif [ "${{ github.event.schedule }}" = "0 15 * * 1-5" ] || [ "${{ github.event.schedule }}" = "20 21 * * 1-5" ]; then
-            [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] || exit 1
+            [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] && [ "${{ steps.test_kkangto.outcome }}" = "success" ] && [ "${{ steps.update_kkangto.outcome }}" = "success" ] && [ "${{ steps.save_kkangto.outcome }}" = "success" ] || exit 1
           fi
