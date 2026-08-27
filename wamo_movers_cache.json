@@ -39960,12 +39960,12 @@
           "close": 129.66
         }
       ],
-      "sector": "경기소비재 세부산업 (Other Specialty Stores)",
-      "industry": "경기소비재 세부산업 (Other Specialty Stores)",
-      "description": "Dick's Sporting Goods Inc Common Stock은 Nasdaq 분류상 경기소비재 세부산업 (Other Specialty Stores)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
+      "sector": "Consumer Discretionary",
+      "industry": "Other Specialty Stores",
+      "description": "Dick's Sporting Goods Inc Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Other Specialty Stores 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "1/31/2026",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -39978,9 +39978,9 @@
         "netIncome": 849239.0,
         "debtRatioPct": 214.3,
         "currentRatioPct": 153.0,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -53132,7 +53132,7 @@
         },
         {
           "date": "2025-10-01",
-          "close": 832.63
+          "close": 832.62
         },
         {
           "date": "2025-10-02",
@@ -62703,12 +62703,12 @@
           "close": 87.23
         }
       ],
-      "sector": "반도체 (Semiconductors)",
-      "industry": "반도체 (Semiconductors)",
-      "description": "Nextpower Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속합니다. 이번 회차의 Nasdaq 대체조회 상한 밖입니다. 다음 자동갱신에서 순차 보강합니다.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "description": "Nextpower Inc. Common Stock은 Nasdaq 공식 분류상 Technology · Semiconductors 기업입니다.",
       "financialHealth": {
         "status": "PASS",
-        "source": "Nasdaq 연간 재무제표",
+        "source": "Nasdaq 연간 재무제표(SEC 대체)",
         "period": "3/31/2026",
         "sectorRule": "GENERAL",
         "equityPositive": true,
@@ -62721,9 +62721,9 @@
         "netIncome": 585883.0,
         "debtRatioPct": 74.5,
         "currentRatioPct": 244.6,
-        "criterion": "SEC 우선 · SEC 접속 불가 시 Nasdaq 연간 재무로 자본·순이익 및 비금융 부채비율을 확인"
+        "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
       },
-      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표",
+      "source": "미국 중대형주 정밀계산 유니버스 + Nasdaq 연간 재무제표(SEC 대체)",
       "priceProvider": "query1.finance.yahoo.com"
     },
     {
@@ -64906,7 +64906,7 @@
     },
     "us": {
       "asOf": "2026-08-26",
-      "updatedAt": "2026-08-27T09:53+09:00",
+      "updatedAt": "2026-08-27T11:13+09:00",
       "count": 30,
       "candidateCount": 870,
       "financialFailCount": 18,
