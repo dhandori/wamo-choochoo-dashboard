@@ -32418,7 +32418,7 @@
       "aligned": true,
       "alignmentStatus": "YES",
       "high52Ratio": 100.0,
-      "volumeRatio20": 4.69,
+      "volumeRatio20": 4.7,
       "historyDays": 260,
       "history": [
         {
@@ -36750,7 +36750,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 72.0,
-      "volumeRatio20": 1.55,
+      "volumeRatio20": 1.56,
       "historyDays": 260,
       "history": [
         {
@@ -41082,7 +41082,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 89.6,
-      "volumeRatio20": 1.29,
+      "volumeRatio20": 1.3,
       "historyDays": 260,
       "history": [
         {
@@ -46497,7 +46497,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 49.2,
-      "volumeRatio20": 0.91,
+      "volumeRatio20": 0.92,
       "historyDays": 260,
       "history": [
         {
@@ -48663,7 +48663,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 73.4,
-      "volumeRatio20": 0.76,
+      "volumeRatio20": 0.79,
       "historyDays": 260,
       "history": [
         {
@@ -52995,7 +52995,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 77.3,
-      "volumeRatio20": 1.08,
+      "volumeRatio20": 1.09,
       "historyDays": 260,
       "history": [
         {
@@ -56244,7 +56244,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 80.6,
-      "volumeRatio20": 0.85,
+      "volumeRatio20": 0.87,
       "historyDays": 260,
       "history": [
         {
@@ -60576,7 +60576,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 81.9,
-      "volumeRatio20": 0.92,
+      "volumeRatio20": 0.93,
       "historyDays": 260,
       "history": [
         {
@@ -64906,7 +64906,7 @@
     },
     "us": {
       "asOf": "2026-08-27",
-      "updatedAt": "2026-08-28T09:11+09:00",
+      "updatedAt": "2026-08-28T14:30+09:00",
       "count": 30,
       "candidateCount": 871,
       "financialFailCount": 24,
