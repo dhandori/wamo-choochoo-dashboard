@@ -854,14 +854,20 @@
       },
       "BNS": {
         "name": "Bank Nova Scotia Halifax Pfd 3 Ordinary Shares",
-        "state": "베이스 형성",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "돌파대기",
+        "since": "2026-08-28T09:12+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -919,27 +925,39 @@
       },
       "BIIB": {
         "name": "Biogen Inc. Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "돌파대기",
+        "since": "2026-08-28T09:12+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
       "BSAC": {
         "name": "Banco Santander - Chile ADS",
-        "state": "돌파대기",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "베이스 형성",
+        "since": "2026-08-28T09:12+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -971,14 +989,20 @@
       },
       "ING": {
         "name": "ING Group N.V. Common Stock",
-        "state": "보유",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "돌파대기",
+        "since": "2026-08-28T09:12+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "보유"
+          },
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": "보유",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1241,8 +1265,190 @@
             "to": "보유"
           }
         ]
+      },
+      "ROIV": {
+        "name": "Roivant Sciences Ltd. Common Shares",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "ARWR": {
+        "name": "Arrowhead Pharmaceuticals Inc. Common Stock",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "HALO": {
+        "name": "Halozyme Therapeutics Inc. Common Stock",
+        "state": "보유",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "보유"
+          }
+        ]
+      },
+      "RVMD": {
+        "name": "Revolution Medicines Inc. Common Stock",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "MPC": {
+        "name": "Marathon Petroleum Corporation Common Stock",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "AMGN": {
+        "name": "Amgen Inc. Common Stock",
+        "state": "보유",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "보유"
+          }
+        ]
+      },
+      "GKOS": {
+        "name": "Glaukos Corporation Common Stock",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "IMO": {
+        "name": "Imperial Oil Limited Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "E": {
+        "name": "ENI S.p.A. Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "GH": {
+        "name": "Guardant Health Inc. Common Stock",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "BHP": {
+        "name": "BHP Group Limited American Depositary Shares (Each representing two Ordinary Shares)",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "ROKU": {
+        "name": "Roku Inc. Class A Common Stock",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "RNR": {
+        "name": "RenaissanceRe Holdings Ltd. Common Stock",
+        "state": "돌파대기",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "THC": {
+        "name": "Tenet Healthcare Corporation Common Stock",
+        "state": "관찰",
+        "since": "2026-08-28T09:12+09:00",
+        "changes": [
+          {
+            "at": "2026-08-28T09:12+09:00",
+            "date": "2026-08-27",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
       }
     }
   },
-  "updatedAt": "2026-08-28T03:25+09:00"
+  "updatedAt": "2026-08-28T09:12+09:00"
 }
