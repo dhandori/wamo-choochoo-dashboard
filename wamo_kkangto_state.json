@@ -973,14 +973,20 @@
       },
       "KB": {
         "name": "KB Financial Group Inc",
-        "state": "베이스 형성",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1095,14 +1101,20 @@
       },
       "MFG": {
         "name": "Mizuho Financial Group Inc. Sponosred ADR (Japan)",
-        "state": "베이스 형성",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1160,27 +1172,39 @@
       },
       "SMFG": {
         "name": "Sumitomo Mitsui Financial Group Inc Unsponsored American Depositary Shares (Japan)",
-        "state": "베이스 형성",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
       "MUFG": {
         "name": "Mitsubishi UFJ Financial Group Inc. Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1277,14 +1301,20 @@
       },
       "SU": {
         "name": "Suncor Energy  Inc. Common Stock",
-        "state": "돌파대기",
-        "since": "2026-08-27T11:13+09:00",
+        "state": "베이스 형성",
+        "since": "2026-08-29T08:48+09:00",
         "changes": [
           {
             "at": "2026-08-27T11:13+09:00",
             "date": "2026-08-26",
             "from": null,
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1521,8 +1551,151 @@
             "to": "관찰"
           }
         ]
+      },
+      "VRTX": {
+        "name": "Vertex Pharmaceuticals Incorporated Common Stock",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "NTRA": {
+        "name": "Natera Inc. Common Stock",
+        "state": "보유",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "보유"
+          }
+        ]
+      },
+      "PR": {
+        "name": "Permian Resources Corporation Class A Common Stock",
+        "state": "관찰",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "AMP": {
+        "name": "Ameriprise Financial Inc. Common Stock",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "ILMN": {
+        "name": "Illumina Inc. Common Stock",
+        "state": "보유",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "보유"
+          }
+        ]
+      },
+      "FCX": {
+        "name": "Freeport-McMoRan Inc. Common Stock",
+        "state": "관찰",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "HUM": {
+        "name": "Humana Inc. Common Stock",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "TD": {
+        "name": "Toronto Dominion Bank (The) Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "VOD": {
+        "name": "Vodafone Group Plc American Depositary Shares",
+        "state": "돌파대기",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "MRK": {
+        "name": "Merck & Company Inc. Common Stock (new)",
+        "state": "보유",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "보유"
+          }
+        ]
+      },
+      "BDX": {
+        "name": "Becton Dickinson and Company Common Stock",
+        "state": "보유",
+        "since": "2026-08-29T08:48+09:00",
+        "changes": [
+          {
+            "at": "2026-08-29T08:48+09:00",
+            "date": "2026-08-28",
+            "from": null,
+            "to": "보유"
+          }
+        ]
       }
     }
   },
-  "updatedAt": "2026-08-29T04:24+09:00"
+  "updatedAt": "2026-08-29T08:48+09:00"
 }
