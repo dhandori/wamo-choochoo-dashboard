@@ -610,14 +610,20 @@
       },
       "BIIB": {
         "name": "Biogen Inc. Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-02T03:06+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -727,14 +733,20 @@
       },
       "PSX": {
         "name": "Phillips 66 Common Stock",
-        "state": "매수신호",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "관찰",
+        "since": "2026-09-02T03:06+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "매수신호"
+          },
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": "매수신호",
+            "to": "관찰"
           }
         ]
       },
@@ -753,27 +765,39 @@
       },
       "CVX": {
         "name": "Chevron Corporation Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
       "ABBV": {
         "name": "AbbVie Inc. Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -792,14 +816,20 @@
       },
       "MPC": {
         "name": "Marathon Petroleum Corporation Common Stock",
-        "state": "매수신호",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "관찰",
+        "since": "2026-09-02T03:06+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "매수신호"
+          },
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": "매수신호",
+            "to": "관찰"
           }
         ]
       },
@@ -818,14 +848,20 @@
       },
       "CRL": {
         "name": "Charles River Laboratories International Inc. Common Stock",
-        "state": "보유",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "관찰",
+        "since": "2026-09-02T03:06+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "보유"
+          },
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": "보유",
+            "to": "관찰"
           }
         ]
       },
@@ -935,14 +971,20 @@
       },
       "EXEL": {
         "name": "Exelixis Inc. Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1114,8 +1156,177 @@
             "to": "관찰"
           }
         ]
+      },
+      "EC": {
+        "name": "Ecopetrol S.A. American Depositary Shares",
+        "state": "베이스 형성",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "BSAC": {
+        "name": "Banco Santander - Chile ADS",
+        "state": "베이스 형성",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "BCH": {
+        "name": "Banco De Chile ADS",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "NVS": {
+        "name": "Novartis AG Common Stock",
+        "state": "매수신호",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "매수신호"
+          }
+        ]
+      },
+      "CCEP": {
+        "name": "Coca-Cola Europacific Partners plc Ordinary Shares",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "AMGN": {
+        "name": "Amgen Inc. Common Stock",
+        "state": "보유",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "보유"
+          }
+        ]
+      },
+      "CVE": {
+        "name": "Cenovus Energy Inc Common Stock",
+        "state": "관찰",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
+      },
+      "HUM": {
+        "name": "Humana Inc. Common Stock",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "COKE": {
+        "name": "Coca-Cola Consolidated Inc. Common Stock",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "XOM": {
+        "name": "ExxonMobil Holdings Corporation Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "SHEL": {
+        "name": "Shell PLC American Depositary Shares (each representing two (2) Ordinary Shares)",
+        "state": "돌파대기",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "BDX": {
+        "name": "Becton Dickinson and Company Common Stock",
+        "state": "보유",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "보유"
+          }
+        ]
+      },
+      "CAH": {
+        "name": "Cardinal Health Inc. Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-02T03:06+09:00",
+        "changes": [
+          {
+            "at": "2026-09-02T03:06+09:00",
+            "date": "2026-09-01",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
       }
     }
   },
-  "updatedAt": "2026-09-01T21:45+09:00"
+  "updatedAt": "2026-09-02T03:06+09:00"
 }
