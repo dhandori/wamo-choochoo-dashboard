@@ -49372,5 +49372,117 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-08-28",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "INIO": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.innio.com/",
+    "businessModelReportDate": "",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "INNIO N.V. Ordinary Shares은 Nasdaq 공식 분류상 Consumer Discretionary · Metal Fabrications 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "INNIO N.V. Ordinary Shares은 Nasdaq 공식 분류상 Consumer Discretionary · Metal Fabrications 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): INNIO N.V. (Nasdaq: INIO) is a global distributed energy solutions provider that delivers reliable, flexible, transient, decentralized, modular, and efficient power. With a track record of innovation, INNIO designs, manufactures, and services high-performance power systems under its Jenbacher and Waukesha brands. INNIO delivers power for applications including data centers, microgrids, grid stabilization, industrial energy, and gas compression. INNIO has global coverage across approximately 100 countries as of December 31, 2025, supported by a resilient, high-margin services business that delivers long-term, recurring revenues across the full equipment lifecycle. As electricity demand accelerates-driven by AI, electrification and grid constraints-INNIO enables scalable, behind-the-meter power generation with high efficiency, fast-start capability, strong transient performance, and fuel flexibility, including hydrogen-ready solutions.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "Nasdaq 연간 손익계산서에서 비교 가능한 매출을 확보하지 못했습니다.",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "경기소비재 (Consumer Discretionary)",
+        "Consumer Discretionary",
+        "Metal Fabrications"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "",
+      "sectorRule": "GENERAL",
+      "equityPositive": false,
+      "profitPositive": false,
+      "leveragePass": false,
+      "liquidityPass": true,
+      "assets": null,
+      "liabilities": null,
+      "equity": null,
+      "netIncome": null,
+      "debtRatioPct": null,
+      "currentRatioPct": null,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": null,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Consumer Discretionary",
+    "industry": "Metal Fabrications",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-01",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "DAR": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.darlingii.com",
+    "businessModelReportDate": "1/3/2026",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Darling Ingredients Inc. Common Stock은 Nasdaq 공식 분류상 Consumer Staples · Packaged Foods 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Darling Ingredients Inc. Common Stock은 Nasdaq 공식 분류상 Consumer Staples · Packaged Foods 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): A pioneer in circularity, Darling Ingredients Inc. (NYSE: DAR) takes material from the animal agriculture and food industries, and transforms them into valuable ingredients that nourish people, feed animals and crops, and fuel the world with renewable energy. The company operates over 260 facilities in more than 15 countries and processes about 15% of the world's animal agricultural by-products, produces about 30% of the world's collagen (both gelatin and hydrolyzed collagen), and is one of the largest producers of renewable energy.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 6,135,877천달러로 전년 대비 +7.4%입니다(결산기준 1/3/2026).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "필수소비재 (Consumer Staples)",
+        "Consumer Staples",
+        "Packaged Foods"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "1/3/2026",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 10298782.0,
+      "liabilities": 5489267.0,
+      "equity": 4736911.0,
+      "netIncome": 62804.0,
+      "debtRatioPct": 115.9,
+      "currentRatioPct": 150.1,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 7.4,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Consumer Staples",
+    "industry": "Packaged Foods",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-01",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
