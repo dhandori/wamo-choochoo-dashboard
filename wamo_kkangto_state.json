@@ -770,8 +770,8 @@
       },
       "BIIB": {
         "name": "Biogen Inc. Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-02T08:24+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
@@ -790,6 +790,12 @@
             "date": "2026-09-01",
             "from": "베이스 형성",
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -821,14 +827,20 @@
       },
       "VRTX": {
         "name": "Vertex Pharmaceuticals Incorporated Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1001,14 +1013,20 @@
       },
       "E": {
         "name": "ENI S.p.A. Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1072,8 +1090,8 @@
       },
       "STT": {
         "name": "State Street Corporation Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-02T08:24+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
@@ -1086,6 +1104,12 @@
             "date": "2026-09-01",
             "from": "돌파대기",
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1104,8 +1128,8 @@
       },
       "BNY": {
         "name": "The Bank of New York Mellon Corporation Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-02T08:24+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
@@ -1118,6 +1142,12 @@
             "date": "2026-09-01",
             "from": "돌파대기",
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1149,8 +1179,8 @@
       },
       "EXEL": {
         "name": "Exelixis Inc. Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-02T03:06+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
@@ -1163,6 +1193,12 @@
             "date": "2026-09-01",
             "from": "베이스 형성",
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1207,14 +1243,20 @@
       },
       "MFG": {
         "name": "Mizuho Financial Group Inc. Sponosred ADR (Japan)",
-        "state": "돌파대기",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1265,8 +1307,8 @@
       },
       "IMO": {
         "name": "Imperial Oil Limited Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-02T08:24+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
@@ -1279,6 +1321,12 @@
             "date": "2026-09-01",
             "from": "베이스 형성",
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1349,8 +1397,8 @@
       },
       "EC": {
         "name": "Ecopetrol S.A. American Depositary Shares",
-        "state": "돌파대기",
-        "since": "2026-09-02T08:24+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-02T03:06+09:00",
@@ -1363,6 +1411,12 @@
             "date": "2026-09-01",
             "from": "베이스 형성",
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1547,8 +1601,151 @@
             "to": "관찰"
           }
         ]
+      },
+      "CNC": {
+        "name": "Centene Corporation Common Stock",
+        "state": "돌파대기",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "RGA": {
+        "name": "Reinsurance Group of America Incorporated Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "RNR": {
+        "name": "RenaissanceRe Holdings Ltd. Common Stock",
+        "state": "돌파대기",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "BHP": {
+        "name": "BHP Group Limited American Depositary Shares (Each representing two Ordinary Shares)",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "UBS": {
+        "name": "UBS Group AG Registered Ordinary Shares",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "BNS": {
+        "name": "Bank Nova Scotia Halifax Pfd 3 Ordinary Shares",
+        "state": "돌파대기",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "TD": {
+        "name": "Toronto Dominion Bank (The) Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "NWG": {
+        "name": "NatWest Group plc American Depositary Shares (each representing two (2) Ordinary Shares)",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "PFG": {
+        "name": "Principal Financial Group Inc Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "NTRS": {
+        "name": "Northern Trust Corporation Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "BBVA": {
+        "name": "Banco Bilbao Vizcaya Argentaria S.A. Common Stock",
+        "state": "관찰",
+        "since": "2026-09-03T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-03T03:17+09:00",
+            "date": "2026-09-02",
+            "from": null,
+            "to": "관찰"
+          }
+        ]
       }
     }
   },
-  "updatedAt": "2026-09-02T21:06+09:00"
+  "updatedAt": "2026-09-03T03:17+09:00"
 }
