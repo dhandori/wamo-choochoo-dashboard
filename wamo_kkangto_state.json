@@ -897,8 +897,8 @@
       },
       "VRTX": {
         "name": "Vertex Pharmaceuticals Incorporated Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-03T03:17+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
@@ -911,6 +911,12 @@
             "date": "2026-09-02",
             "from": "돌파대기",
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1370,8 +1376,8 @@
       },
       "HSBC": {
         "name": "HSBC Holdings plc. Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-02T08:24+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
@@ -1384,6 +1390,12 @@
             "date": "2026-09-01",
             "from": "베이스 형성",
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1414,14 +1426,20 @@
       },
       "AMP": {
         "name": "Ameriprise Financial Inc. Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-01T13:00+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-01T13:00+09:00",
             "date": "2026-08-31",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1705,8 +1723,8 @@
       },
       "RGA": {
         "name": "Reinsurance Group of America Incorporated Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-03T08:24+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-03T03:17+09:00",
@@ -1719,19 +1737,31 @@
             "date": "2026-09-02",
             "from": "베이스 형성",
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
       "RNR": {
         "name": "RenaissanceRe Holdings Ltd. Common Stock",
-        "state": "돌파대기",
-        "since": "2026-09-03T03:17+09:00",
+        "state": "베이스 형성",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-03T03:17+09:00",
             "date": "2026-09-02",
             "from": null,
             "to": "돌파대기"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "돌파대기",
+            "to": "베이스 형성"
           }
         ]
       },
@@ -1750,21 +1780,27 @@
       },
       "UBS": {
         "name": "UBS Group AG Registered Ordinary Shares",
-        "state": "베이스 형성",
-        "since": "2026-09-03T03:17+09:00",
+        "state": "보유",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-03T03:17+09:00",
             "date": "2026-09-02",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "베이스 형성",
+            "to": "보유"
           }
         ]
       },
       "BNS": {
         "name": "Bank Nova Scotia Halifax Pfd 3 Ordinary Shares",
-        "state": "베이스 형성",
-        "since": "2026-09-03T08:24+09:00",
+        "state": "보유",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-03T03:17+09:00",
@@ -1777,32 +1813,50 @@
             "date": "2026-09-02",
             "from": "돌파대기",
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "베이스 형성",
+            "to": "보유"
           }
         ]
       },
       "TD": {
         "name": "Toronto Dominion Bank (The) Common Stock",
-        "state": "베이스 형성",
-        "since": "2026-09-03T03:17+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-03T03:17+09:00",
             "date": "2026-09-02",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
       "NWG": {
         "name": "NatWest Group plc American Depositary Shares (each representing two (2) Ordinary Shares)",
-        "state": "베이스 형성",
-        "since": "2026-09-03T03:17+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-03T03:17+09:00",
             "date": "2026-09-02",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "베이스 형성",
+            "to": "돌파대기"
           }
         ]
       },
@@ -1847,18 +1901,89 @@
       },
       "LYG": {
         "name": "Lloyds Banking Group Plc American Depositary Shares",
-        "state": "베이스 형성",
-        "since": "2026-09-03T08:24+09:00",
+        "state": "돌파대기",
+        "since": "2026-09-04T03:17+09:00",
         "changes": [
           {
             "at": "2026-09-03T08:24+09:00",
             "date": "2026-09-02",
             "from": null,
             "to": "베이스 형성"
+          },
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": "베이스 형성",
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "UNM": {
+        "name": "Unum Group Common Stock",
+        "state": "돌파대기",
+        "since": "2026-09-04T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": null,
+            "to": "돌파대기"
+          }
+        ]
+      },
+      "RY": {
+        "name": "Royal Bank Of Canada Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-04T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "USB": {
+        "name": "U.S. Bancorp Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-04T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "BPOP": {
+        "name": "Popular Inc. Common Stock",
+        "state": "베이스 형성",
+        "since": "2026-09-04T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": null,
+            "to": "베이스 형성"
+          }
+        ]
+      },
+      "KB": {
+        "name": "KB Financial Group Inc",
+        "state": "관찰",
+        "since": "2026-09-04T03:17+09:00",
+        "changes": [
+          {
+            "at": "2026-09-04T03:17+09:00",
+            "date": "2026-09-03",
+            "from": null,
+            "to": "관찰"
           }
         ]
       }
     }
   },
-  "updatedAt": "2026-09-03T21:16+09:00"
+  "updatedAt": "2026-09-04T03:17+09:00"
 }
