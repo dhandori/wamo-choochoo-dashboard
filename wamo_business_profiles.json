@@ -4739,5 +4739,28 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-31",
     "failed": false
+  },
+  "022100": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "포스코DX는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260417",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260417000431",
+    "detailSector": "건축기술, 엔지니어링 및 관련 기술 서비스업",
+    "sectorTags": [
+      "건축기술, 엔지니어링 및 관련 기술 서비스업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-09-03",
+    "failed": false
   }
 }
