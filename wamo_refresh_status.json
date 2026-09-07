@@ -1,11 +1,11 @@
 {
   "KR": {
-    "status": "PASS",
-    "attemptedAt": "2026-09-07T13:44:34.005755+00:00",
+    "status": "FAILED",
+    "attemptedAt": "2026-09-07T15:45:32.371110+00:00",
     "scheduledFor": "2026-09-07T07:00:00+00:00",
     "nextScheduledFor": "2026-09-08T03:00:00+00:00",
     "trigger": "코드 반영 후 실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34129040595",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34139871726",
     "moversStatus": "PASS",
     "warnings": [],
     "lastSuccessAt": "2026-09-07T14:00:47.611361+00:00",
@@ -20,7 +20,7 @@
       "calendar": "XKRX"
     },
     "count": 209,
-    "error": null,
+    "error": "가격 갱신 또는 최신성 검사 실패 · 이전 정상 데이터 유지 · 실행 로그 확인",
     "kis": {
       "status": "LIVE",
       "connected": true,
@@ -39,23 +39,23 @@
   },
   "US": {
     "status": "WARNING",
-    "attemptedAt": "2026-09-07T14:00:47.611456+00:00",
+    "attemptedAt": "2026-09-07T15:53:12.939663+00:00",
     "scheduledFor": "2026-09-04T21:20:00+00:00",
     "nextScheduledFor": "2026-09-08T15:00:00+00:00",
     "trigger": "코드 반영 후 실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34129040595",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34139871726",
     "moversStatus": "PASS",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-09-07T14:02:18.171019+00:00",
+    "lastSuccessAt": "2026-09-07T15:55:46.043772+00:00",
     "asOf": "2026-09-04",
     "freshness": {
       "status": "PASS",
       "expectedSession": "2026-09-04",
       "currentCount": 879,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-07T23:02:15+09:00",
+      "checkedAt": "2026-09-08T00:55:43+09:00",
       "warnings": [
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
@@ -63,6 +63,18 @@
     },
     "count": 879,
     "error": null,
-    "kis": null
+    "kis": {
+      "status": "LIVE",
+      "connected": true,
+      "quoteCount": 20,
+      "targetCount": 20,
+      "errorCount": 0,
+      "cachedCount": 0,
+      "skippedCount": 0,
+      "errors": [],
+      "industryCount": 16,
+      "forwardMetricsConnected": false,
+      "message": "미국 한국투자 시세 20/20종목 신규 확인 · 업종 16 · 이전값 0 · 실패 0 · 미조회 0"
+    }
   }
 }
