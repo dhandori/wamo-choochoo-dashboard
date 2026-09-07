@@ -1314,6 +1314,10 @@ def main():
             row["volume"] = int(row["volume"])
     raw.sort(key=lambda x: x["score"], reverse=True)
 
+    from wamo_kis import enrich_us
+    kis_meta = enrich_us(raw)
+    print(kis_meta['message'])
+
     print("7/9 섹터 대장주 연결")
     for sector in sectors:
         members = [x for x in raw if x.get("sector") == sector.get("name")]
@@ -1372,7 +1376,7 @@ def main():
                 "message": f"시총 10억달러 이상 일반기업 {len(listed):,}개 중 상위 {len(candidates):,}개 가격수집 {fetched:,}개({coverage:.1f}%) → 50일 평균 거래대금 1천만달러 통과 {len(raw):,}개 · 신규상장 60일 미만 {len(short_history_exclusions):,}개 · 제공처 오류 {len(errors):,}개",
             },
             "universeFunnel": funnel,
-            "dartMeta": sec_meta, "secMeta": sec_meta,
+            "dartMeta": sec_meta, "secMeta": sec_meta, "kisMeta": kis_meta,
             "profileMeta": {"status": sec_meta.get("status"), "targetCount": len(raw), "coveredCount": sec_meta.get("successCount", 0), "fetchedCount": sec_meta.get("fetchedCount", 0) + sec_meta.get("nasdaqFetchedCount", 0), "source": "SEC EDGAR 우선 + Nasdaq Company Profile/Annual Financials 대체", "message": sec_meta.get("message"), "errors": sec_meta.get("errors", [])},
             "marketContextMeta": {"status": "NOT_USED", "source": "사용 안 함", "message": "무료 기관보유 시계열 자동연결 안 함"},
             "flowMeta": {"connected": False, "coverage": 0, "source": "사용 안 함", "message": "기관 수급 미사용"},
