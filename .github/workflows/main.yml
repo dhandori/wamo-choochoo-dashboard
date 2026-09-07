@@ -2,15 +2,23 @@ name: WAMO 자동갱신
 
 on:
   workflow_dispatch:
+    inputs:
+      market:
+        description: 갱신할 시장
+        type: choice
+        default: both
+        options: [both, KR, US]
+  push:
+    branches: [main]
+    paths: ['wamo_*.py', 'wamo_status.js', 'requirements.txt', '.github/workflows/main.yml']
   schedule:
-    # 한국장 장중 12:00 KST (03:00 UTC), 월~금
+    # UTC. KST 한국 평일 12:00 / 16:00, 미국 화~토 00:00 / 06:20.
     - cron: '0 3 * * 1-5'
-    # 한국장 종료 후 16:00 KST (07:00 UTC), 월~금
     - cron: '0 7 * * 1-5'
-    # 미국장 장중 00:00 KST (15:00 UTC), 한국 기준 화~토 / UTC 월~금
     - cron: '0 15 * * 1-5'
-    # 미국장 종료 후 06:20 KST (21:20 UTC), 한국 기준 화~토 / UTC 월~금
     - cron: '20 21 * * 1-5'
+    # Completed slots never rerun. Off-hour checks recover missed slots.
+    - cron: '17,47 * * * 1-5'
 
 permissions:
   contents: write
@@ -23,115 +31,44 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-
+    env:
+      PYTHONUNBUFFERED: '1'
     steps:
-      - name: 파일 가져오기
+      - name: 최신 파일 가져오기
         uses: actions/checkout@v6
-
+        with:
+          ref: main
+          fetch-depth: 0
       - name: Python 준비
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-
-      - name: 필요한 도구 설치
-        run: pip install pandas openpyxl xlrd lxml html5lib beautifulsoup4 requests
-
+          cache: pip
+      - name: 도구 설치
+        run: python -m pip install -r requirements.txt
+      - name: 갱신 회귀검사
+        run: python -m unittest discover -s tests -v
       - name: Git 저장 준비
         run: |
-          git config user.name "wamo-dashboard-bot"
-          git config user.email "actions@users.noreply.github.com"
-
-      - name: 한국 투자 데이터 갱신
-        id: update_korea
-        if: github.event_name == 'workflow_dispatch' || (github.event.schedule == '0 3 * * 1-5' || github.event.schedule == '0 7 * * 1-5')
-        continue-on-error: true
+          git config user.name 'wamo-dashboard-bot'
+          git config user.email 'actions@users.noreply.github.com'
+      - name: 시장별 갱신·최신성 검증·결과 저장
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
           KRX_ID: ${{ secrets.KRX_ID }}
           KRX_PW: ${{ secrets.KRX_PW }}
-        run: python wamo_update_business_dart.py
-
-      - name: 한국 상승률 TOP 30 갱신
-        id: movers_korea
-        if: steps.update_korea.outcome == 'success'
-        continue-on-error: true
-        env:
-          OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
-        run: python wamo_update_movers.py --market korea
-
-      - name: 한국 결과 즉시 저장
-        id: save_korea
-        if: steps.update_korea.outcome == 'success' && steps.movers_korea.outcome == 'success'
-        continue-on-error: true
-        run: |
-          git add index.html
-          if [ -f wamo_business_profiles.json ]; then git add wamo_business_profiles.json; fi
-          if [ -f movers.html ]; then git add movers.html; fi
-          if [ -f wamo_movers_cache.json ]; then git add wamo_movers_cache.json; fi
-          git diff --cached --quiet || git commit -m "auto update Korea dashboard and movers"
-          git push
-
-      - name: 미국 투자 데이터 갱신
-        id: update_us
-        if: github.event_name == 'workflow_dispatch' || (github.event.schedule == '0 15 * * 1-5' || github.event.schedule == '20 21 * * 1-5')
-        continue-on-error: true
-        env:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
-        run: python wamo_update_us_sec.py
-
-      - name: 미국 상승률 TOP 30 갱신
-        id: movers_us
-        if: steps.update_us.outcome == 'success'
-        continue-on-error: true
-        env:
-          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
-        run: python wamo_update_movers.py --market us
-
-      - name: 미국 결과 즉시 저장
-        id: save_us
-        if: steps.update_us.outcome == 'success' && steps.movers_us.outcome == 'success'
-        continue-on-error: true
-        run: |
-          git add us.html
-          if [ -f wamo_us_sec_cache.json ]; then git add wamo_us_sec_cache.json; fi
-          if [ -f movers.html ]; then git add movers.html; fi
-          if [ -f wamo_movers_cache.json ]; then git add wamo_movers_cache.json; fi
-          git diff --cached --quiet || git commit -m "auto update US dashboard and movers"
-          git push
-
-      - name: 깡토 추세추종 계산 자체검사
-        id: test_kkangto
-        if: always() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '0 3 * * 1-5' || github.event.schedule == '0 7 * * 1-5' || github.event.schedule == '0 15 * * 1-5' || github.event.schedule == '20 21 * * 1-5')
-        continue-on-error: true
-        run: python wamo_update_kkangto.py --self-test
-
-      - name: 깡토 추세추종 모듈 갱신
-        id: update_kkangto
-        if: steps.test_kkangto.outcome == 'success'
-        continue-on-error: true
-        run: python wamo_update_kkangto.py
-
-      - name: 깡토 결과 저장
-        id: save_kkangto
-        if: steps.update_kkangto.outcome == 'success'
-        continue-on-error: true
-        run: |
-          git add kkangto.html wamo_kkangto_state.json index.html us.html
-          if [ -f movers.html ]; then git add movers.html; fi
-          git diff --cached --quiet || git commit -m "auto update Kangto trend-following module"
-          git push
-
-      - name: 최종 갱신 결과 확인
-        if: always()
-        run: |
-          echo "event=${{ github.event_name }} schedule=${{ github.event.schedule }}"
-          echo "한국 계산: ${{ steps.update_korea.outcome }} / 상승률: ${{ steps.movers_korea.outcome }} / 저장: ${{ steps.save_korea.outcome }}"
-          echo "미국 계산: ${{ steps.update_us.outcome }} / 상승률: ${{ steps.movers_us.outcome }} / 저장: ${{ steps.save_us.outcome }}"
-          echo "깡토 자체검사: ${{ steps.test_kkangto.outcome }} / 계산: ${{ steps.update_kkangto.outcome }} / 저장: ${{ steps.save_kkangto.outcome }}"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] && [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] && [ "${{ steps.test_kkangto.outcome }}" = "success" ] && [ "${{ steps.update_kkangto.outcome }}" = "success" ] && [ "${{ steps.save_kkangto.outcome }}" = "success" ] || exit 1
-          elif [ "${{ github.event.schedule }}" = "0 3 * * 1-5" ] || [ "${{ github.event.schedule }}" = "0 7 * * 1-5" ]; then
-            [ "${{ steps.update_korea.outcome }}" = "success" ] && [ "${{ steps.movers_korea.outcome }}" = "success" ] && [ "${{ steps.save_korea.outcome }}" = "success" ] && [ "${{ steps.test_kkangto.outcome }}" = "success" ] && [ "${{ steps.update_kkangto.outcome }}" = "success" ] && [ "${{ steps.save_kkangto.outcome }}" = "success" ] || exit 1
-          elif [ "${{ github.event.schedule }}" = "0 15 * * 1-5" ] || [ "${{ github.event.schedule }}" = "20 21 * * 1-5" ]; then
-            [ "${{ steps.update_us.outcome }}" = "success" ] && [ "${{ steps.movers_us.outcome }}" = "success" ] && [ "${{ steps.save_us.outcome }}" = "success" ] && [ "${{ steps.test_kkangto.outcome }}" = "success" ] && [ "${{ steps.update_kkangto.outcome }}" = "success" ] && [ "${{ steps.save_kkangto.outcome }}" = "success" ] || exit 1
-          fi
+          KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+          KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
+          REQUESTED_MARKET: ${{ inputs.market || 'auto' }}
+        run: python -u wamo_run.py --market "$REQUESTED_MARKET" --publish
+      - name: 실패 결과 보관
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: refresh-diagnostics-${{ github.run_id }}
+          path: |
+            wamo_refresh_status.json
+            wamo_refresh_state.json
+          if-no-files-found: ignore
+          retention-days: 7

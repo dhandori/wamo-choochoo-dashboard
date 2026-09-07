@@ -25,6 +25,7 @@ import html as html_lib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta, date
 from pathlib import Path
+from wamo_runtime import run_meta, validate_freshness, patch_status_ui
 
 ROOT = Path(__file__).resolve().parent
 INDEX = ROOT / "index.html"
@@ -409,7 +410,9 @@ def _fetch_krx_index_members(opener, ticker, target_date):
         },
     )
     obj = json.loads(opener.open(req, timeout=25).read().decode("utf-8"))
-    return [str(r.get("ISU_SRT_CD") or "").zfill(6) for r in obj.get("output", []) if r.get("ISU_SRT_CD")]
+    # Aggregate rows are not securities. Do not pad labels or invent a code.
+    codes = [str(r.get("ISU_SRT_CD") or "").strip() for r in obj.get("output", [])]
+    return [code for code in codes if re.fullmatch(r"\d{6}", code)]
 
 
 def resolve_market_energy_members(listed, old_market_energy, target_date):
@@ -1871,6 +1874,7 @@ def _copy_dart_cache(x, old):
         "catalysts","new_catalyst","new_catalyst_note",
         "dilution_events_365d","dilution_filing_365d","dilution_note",
         "businessReportRceptNo","businessReportDate","dartFetchedAt",
+        "financialHealth",
     }
     copied = False
     for k in exact:
@@ -4719,6 +4723,7 @@ def patch_leader_profile_ui(html):
 
 def patch_index_health_ui(html, market=None):
     """데이터 제외 사유를 실제 갱신 실패와 혼동하지 않도록 상태 UI를 보정합니다."""
+    html = patch_status_ui(html, market or "KR")
     old = """`<span class="health-pill ${h.dartConnected?'good':'warn'}">DART ${h.dartConnected?'연결':'미연결'}</span>`"""
     new = """`<span class="health-pill ${h.dartConnected?'good':'warn'}">DART ${h.dartConnected?'연결':'미연결'}</span>`"""
     if old in html:
@@ -4982,7 +4987,7 @@ def validate_payload_integrity(payload):
         "status": "PASS",
         "checks": checks,
         "checkedAt": datetime.now(KST).isoformat(timespec="minutes"),
-        "note": "중복·6조건·Stage 2 8조건·VCP 정량 후보·신고가권·3축 동시충족·정배열·섹터 인원·7·30일 섹터 흐름·LOW 신뢰도 배제·스피어 사업전환 분류·지주사 분리·종목별 섹터 보조정보·FnGuide 제한조회·퍼널·KRX 공식 350종목 시장 에너지를 자동 대조했습니다.",
+        "note": "종목·조건·차트·섹터·퍼널의 표시 정합성을 대조했습니다. 가격 최신성과 시장 에너지 연결 상태는 각각 별도로 표시합니다.",
     }
 
 
@@ -5212,8 +5217,13 @@ def main():
 
     raw.sort(key=lambda x: x["score"], reverse=True)
 
-    print("10/12 FnGuide 보조확인 — 4개 후보군 중 상위 20개 / 3일 캐시 우선")
-    consensus_meta = consensus_enrich(raw)
+    print("10/12 한국투자 API 후보 보조확인")
+    from wamo_kis import enrich as kis_enrich
+    kis_meta = kis_enrich(raw)
+    print("  ", kis_meta.get("message"))
+    # Consensus is optional. Do not repeatedly scrape an unavailable provider.
+    consensus_meta = {"status": "NOT_USED", "source": "사용 안 함", "targetCount": 0,
+                      "message": "컨센서스 미연결 · 한국투자 추정실적 필드 확인 후 별도 연결"}
     print("  ", consensus_meta.get("message"))
 
     # Rebuild sector leadership AFTER WAMO score is finalized.
@@ -5286,6 +5296,7 @@ def main():
 
     payload = {
         "meta": {
+            **run_meta("KR"),
             "title": "WAMO MARKET RADAR · AUTO",
             "mode": "LIVE",
             "asOf": asof,
@@ -5343,6 +5354,7 @@ def main():
             "flowMeta": flow_meta,
             "sectorFlowMeta": sector_flow_meta,
             "consensusMeta": consensus_meta,
+            "kisMeta": kis_meta,
             "catalystMeta": {"status": "LIVE" if dart_meta.get("successCount",0) > 0 else "NOT_CONNECTED", "source": "OpenDART official"},
             "note": "후보 스크리닝 대시보드입니다. 과거 실적·재무·공시는 OpenDART 공식자료를 사용합니다. 시장 에너지는 20일 볼린저 상단을 종가로 돌파한 KOSPI200·KOSDAQ150 종목수와 5일 평균을 별도 시장 타이밍 참고지표로 계산하며 네 후보축·WAMO 점수에는 섞지 않습니다. 7·30거래일 섹터 흐름은 신고가 여부와 무관하게 중앙값 수익률·거래소 지수 대비·상승 확산·추세 폭을 별도로 계산합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 후보 상위 20개만 FnGuide 보조정보로 확인하고 3일 캐시하며, 공식자료와 구분해 표시합니다. 신규 상장주는 60거래일부터 포함하되 200일선·Stage 2·정배열의 이력 부족을 별도 표시합니다.",
         },
@@ -5352,6 +5364,11 @@ def main():
         "shortHistoryExclusions": short_history_exclusions,
     }
 
+    payload["meta"]["source"] = payload["meta"]["source"].replace(" + FnGuide auxiliary consensus for selected candidates", "")
+    payload["meta"]["note"] = payload["meta"]["note"].replace(
+        "추정 EPS·추정 PER·목표주가·컨센서스는 후보 상위 20개만 FnGuide 보조정보로 확인하고 3일 캐시하며, 공식자료와 구분해 표시합니다.",
+        "컨센서스는 선택 항목이며 현재 점수의 필수조건이 아닙니다. 한국투자 현재가 응답의 PER·EPS를 Forward 지표로 사용하지 않습니다.")
+    validate_freshness(payload, "KR")
     payload["meta"]["qa"] = validate_payload_integrity(payload)
 
     print("12/12 index.html 갱신")

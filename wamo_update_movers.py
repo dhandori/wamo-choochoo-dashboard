@@ -121,7 +121,7 @@ def korea_top30(km):
     for code,old in km.items():
         cap=num(old.get('market_cap_krw')) or 0
         pct=_daily_change(old)
-        if cap<KR_MIN_CAP or pct is None or kr.classify_instrument(old.get('name'))!='COMPANY': continue
+        if cap<KR_MIN_CAP or pct is None or pct<=0 or old.get('isStale') or kr.classify_instrument(old.get('name'))!='COMPANY': continue
         if len(old.get('history') or [])<20: continue
         candidates.append((pct,code,old))
     candidates.sort(reverse=True,key=lambda x:x[0])
@@ -143,7 +143,7 @@ def korea_top30(km):
                     'financialHealth':health,'source':'한국 중대형주 정밀계산 유니버스 + OpenDART 공식 재무'})
     SCREEN_META['korea']={'candidateCount':len(candidates),'financialFailCount':failed,
                           'financialUnavailableCount':unavailable,'minMarketCap':KR_MIN_CAP,
-                          'universe':'시총 1조원 이상·50일 평균 거래대금 1억원 이상 일반기업'}
+                          'universe':'시총 1조원 이상·50일 평균 거래대금 100억원 이상 일반기업'}
     return out
 
 
@@ -280,7 +280,7 @@ def us_top30(um):
     for ticker,old in um.items():
         cap=num(old.get('market_cap_usd') or old.get('marketCapUSD')) or 0
         pct=_daily_change(old)
-        if cap<US_MIN_CAP or pct is None or old.get('instrumentType') in ('ETF_ETN','SPAC','REIT'): continue
+        if cap<US_MIN_CAP or pct is None or pct<=0 or old.get('isStale') or old.get('instrumentType') in ('ETF_ETN','SPAC','REIT'): continue
         if len(old.get('history') or [])<20: continue
         candidates.append((pct,ticker,old))
     candidates.sort(reverse=True,key=lambda x:x[0])
@@ -338,19 +338,22 @@ def patch_nav(path):
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--market',choices=['korea','us','both'],default='both'); args=ap.parse_args()
-    km,um=profile_maps(); cache=read_cache(); now=datetime.now(KST).isoformat(timespec='minutes')
+    km,um=profile_maps(); cache=read_cache()
     markets=['korea','us'] if args.market=='both' else [args.market]
     for m in markets:
         print('Updating movers:',m)
         arr=korea_top30(km) if m=='korea' else us_top30(um)
-        if not arr:
-            raise RuntimeError(f'{m} 재무안정 중대형 상승 종목을 한 종목도 확인하지 못했습니다')
+        if not (km if m=='korea' else um):
+            raise RuntimeError(f'{m} 원본 정밀계산 데이터가 없습니다')
         if len(arr)<30: print(f'WARN {m} strict financial-health screen returned {len(arr)} stocks; not padding')
         cache[m]=arr
-        asof=max((x['history'][-1]['date'] for x in arr if x.get('history')),default='—')
+        source=load_payload(ROOT/('index.html' if m=='korea' else 'us.html'))
+        asof=(source.get('meta') or {}).get('asOf') or '—'
+        now=datetime.now(KST).isoformat(timespec='seconds')
         cache.setdefault('meta',{})[m]={'asOf':asof,'updatedAt':now,'count':len(arr),**SCREEN_META.get(m,{})}
     CACHE.write_text(json.dumps(cache,ensure_ascii=False,indent=2),encoding='utf-8')
-    OUT.write_text(html(cache),encoding='utf-8')
+    from wamo_runtime import patch_status_ui
+    OUT.write_text(patch_status_ui(html(cache), 'KR'),encoding='utf-8')
     patch_nav(ROOT/'index.html'); patch_nav(ROOT/'us.html')
     print('Done:',OUT)
 

@@ -1,0 +1,29 @@
+name: WAMO 회귀검사
+on:
+  push:
+    branches: ['codex/**']
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - run: node --check wamo_status.js
+      - run: python -m pip install playwright==1.62.0
+      - run: python -m playwright install --with-deps chromium
+      - run: python tests/browser_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dashboard-browser-check
+          path: test-results/
+          if-no-files-found: ignore
