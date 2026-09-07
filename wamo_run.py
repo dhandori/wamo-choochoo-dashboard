@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent
 STATE = ROOT / 'wamo_refresh_state.json'
 STATUS = ROOT / 'wamo_refresh_status.json'
 MARKETS = {
-    'KR': ('wamo_update_business_dart.py', 'index.html', 'korea', ['wamo_business_profiles.json', 'wamo_consensus_history.json', 'wamo_kis_cache.json']),
+    'KR': ('wamo_update_business_dart.py', 'index.html', 'korea', ['wamo_business_profiles.json', 'wamo_consensus_history.json', 'wamo_kis_cache.json', 'wamo_kis_estimate_history.json']),
     'US': ('wamo_update_us_sec.py', 'us.html', 'us', ['wamo_us_sec_cache.json']),
 }
 SHARED = ['movers.html', 'wamo_movers_cache.json']
