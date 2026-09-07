@@ -4762,5 +4762,28 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-09-03",
     "failed": false
+  },
+  "0126Z0": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "삼성에피스홀딩스는 여러 자회사의 지분을 보유·관리하는 지주회사입니다. 투자 판단에서는 지주회사 자체 매출보다 핵심 자회사들의 사업가치와 실적을 봐야 합니다.",
+      "products": "핵심 자회사 지분 보유·관리, 브랜드·경영지원 등 지주회사 기능",
+      "customers": "일반 제조업처럼 최종 고객에게 단일 제품을 파는 구조가 아니라 자회사 사업을 통해 최종 시장에 노출됩니다.",
+      "revenue": "자회사 배당, 상표권·용역·임대수익과 연결·지분법 실적이 핵심입니다.",
+      "drivers": "핵심 자회사 이익과 배당, 자산가치(NAV), 지주회사 할인율, 자본배분·주주환원이 중요합니다.",
+      "segments": [
+        "지주회사"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260515",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260515003119",
+    "detailSector": "지주회사",
+    "sectorTags": [
+      "지주회사"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-09-07",
+    "failed": false
   }
 }
