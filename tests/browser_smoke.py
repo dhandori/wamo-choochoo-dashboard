@@ -51,8 +51,8 @@ with tempfile.TemporaryDirectory() as folder:
                     assert '검색 결과가 없습니다.' in panel.inner_text()
                     search.fill('')
                     assert panel.locator('tbody tr:visible').count() > 0
-                    # Existing hero opens the real drawer, including the provider card.
-                    page.locator('.hero-chip').first.click()
+                    # Open an existing stock on each viewport, even when no perfect candidate exists.
+                    page.locator('#tbody .namecell' if width > 760 else '#mobileList .stock-name').first.click()
                     page.wait_for_timeout(100)
                     assert '한국투자 시세·밸류 보조확인' in page.locator('#wamo-kis-detail').inner_text()
                     assert not errors, errors
