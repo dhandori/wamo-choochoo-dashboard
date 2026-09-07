@@ -1351,6 +1351,7 @@ def main():
     }
     payload = {
         "meta": {
+            **core.run_meta("US"),
             "market": "US", "title": "WAMO MARKET RADAR · US", "mode": "LIVE",
             "asOf": asof, "updatedAt": datetime.now(KST).isoformat(timespec="minutes"),
             "source": "Nasdaq stock screener/company profile/annual financials + Yahoo Finance price + SEC EDGAR 우선",
@@ -1383,6 +1384,7 @@ def main():
         "sectors": sectors, "stocks": raw, "errors": errors,
         "shortHistoryExclusions": short_history_exclusions,
     }
+    core.validate_freshness(payload, "US")
     payload["meta"]["qa"] = validate_us_payload(payload)
     _assert_json_payload(payload)
 
