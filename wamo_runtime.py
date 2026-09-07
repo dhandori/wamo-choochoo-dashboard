@@ -78,6 +78,9 @@ def validate_freshness(payload, market, now=None):
         warnings.append('시장 에너지 확인 불가: ' + str(energy.get('fallbackReason') or energy.get('regimeNote') or '자료 없음'))
     if current < len(stocks):
         warnings.append(f'당일 신규수집 제외 {len(stocks) - current}종목 · 종목별 날짜 확인')
+    kis = meta.get('kisMeta') or {}
+    if market == 'KR' and kis.get('status') in ('PARTIAL', 'FAILED', 'AUTH_FAILED'):
+        warnings.append('한국투자 보조조회 일부 실패 · 가격 갱신과 별도 확인')
     if market == 'US' and not (meta.get('secMeta') or {}).get('connected'):
         warnings.append('SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분')
     result = {'status': 'PASS', 'expectedSession': expected, 'currentCount': current,

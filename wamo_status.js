@@ -60,6 +60,76 @@
     const qa = document.getElementById('qualitySummary');
     if (qa && !isMovers) qa.textContent = `표시 정합성 ${meta.qa?.status === 'PASS' ? '통과' : '확인 필요'} · 검사시각 ${stamp(meta.qa?.checkedAt)} · 가격 최신성은 위 실행 상태 참고`;
   };
+  // Render authenticated market data from the generated payload, never credentials.
+  if (!isMovers && market === 'KR') {
+    const stocks = data.stocks || [];
+    const targets = stocks.filter(s => s.kisQuote || s.kisEstimate);
+    const create = (tag, text, parent) => {
+      const node = document.createElement(tag);
+      if (text != null) node.textContent = text;
+      if (parent) parent.append(node);
+      return node;
+    };
+    const n = (value, digits=2) => typeof value === 'number' && Number.isFinite(value)
+      ? value.toLocaleString('ko-KR', {maximumFractionDigits:digits}) : '미확인';
+    const state = q => ({LIVE:'신규 확인', CACHED:'이전값 · 이번 조회 실패', FAILED:'조회 실패', SKIPPED:'미조회'})[q?.status] || '미조회';
+    const panel = create('details');
+    panel.id = 'wamo-kis-panel';
+    panel.style.cssText = 'margin:12px 0;padding:14px;border:1px solid #37516c;border-radius:12px;background:#101e30;color:#dbe8f5;font:13px/1.7 system-ui;min-width:0';
+    create('summary', `한국투자 시세·밸류 확인 · ${meta.kisMeta?.quoteCount || 0}/${meta.kisMeta?.targetCount || targets.length}종목 신규 조회`, panel).style.cursor = 'pointer';
+    create('p', '기존 추세·점수 상위 20종목을 보조 조회합니다. PER(주가수익비율)·EPS(주당순이익)·PBR(주가순자산비율)은 현재가 API의 값이며, 예상실적 기준이 아닙니다. 비어 있는 값은 0으로 계산하지 않습니다.', panel);
+    const search = create('input', null, panel);
+    search.type='search'; search.placeholder='종목명 또는 코드 검색'; search.setAttribute('aria-label','한국투자 조회 종목 검색');
+    search.style.cssText='box-sizing:border-box;width:100%;max-width:360px;padding:8px;margin-bottom:8px';
+    const wrap = create('div', null, panel);
+    wrap.style.cssText='overflow:auto;max-height:350px';
+    const table = create('table', null, wrap);
+    table.style.cssText='width:100%;min-width:620px;border-collapse:collapse';
+    const header = create('tr', null, create('thead', null, table));
+    ['종목 / 확인시각(KST)', '조회 상태', 'KIS 조회가(원)', 'PER(배)', 'EPS(원)', 'PBR(배)'].forEach(t=>create('th',t,header));
+    const tbody = create('tbody', null, table);
+    const rows = [];
+    for (const stock of targets) {
+      const q = stock.kisQuote || {};
+      const row = create('tr', null, tbody);
+      const cell = create('td', null, row);
+      create('b', `${stock.name} · ${stock.stock_code || stock.ticker}`, cell);
+      create('div', stamp(q.checkedAt), cell).style.fontSize='11px';
+      [state(q), n(q.price,0), n(q.per), n(q.eps), n(q.pbr)].forEach(t=>create('td',t,row));
+      rows.push([row,`${stock.name} ${stock.stock_code} ${stock.ticker}`.toLowerCase()]);
+    }
+    table.querySelectorAll('td,th').forEach(e=>e.style.cssText='text-align:left;padding:8px;border-bottom:1px solid #37516c;white-space:nowrap');
+    const empty = create('div', targets.length ? '' : '현재 확인된 보조조회 결과가 없습니다.', panel);
+    search.addEventListener('input',()=>{
+      let visible=0;
+      rows.forEach(([r,label])=>{r.hidden=!label.includes(search.value.trim().toLowerCase());if(!r.hidden)visible++;});
+      empty.textContent=visible ? '' : '검색 결과가 없습니다.';
+    });
+    create('p', `추정실적 응답: ${meta.kisMeta?.estimateCount || 0}종목. 항목·단위와 예상치 기준을 검증 중이며, Forward PER(예상 주당순이익 기준 주가수익비율)과 컨센서스 상향률은 아직 제공하지 않습니다. 조회일을 추정치 작성일로 간주하지 않습니다.`, panel);
+    box.after(panel);
+    // The existing detail drawer updates its ticker label whenever a stock opens.
+    const detailSub = document.getElementById('detailSub');
+    if (detailSub) {
+      const detail = create('section');
+      detail.id='wamo-kis-detail';
+      detail.style.cssText='margin:12px 0;padding:12px;border:1px solid #37516c;border-radius:10px;font-size:13px;overflow-wrap:anywhere';
+      document.getElementById('detailSectorFlow')?.after(detail);
+      const update = () => {
+        const ticker = detailSub.textContent.split(' · ')[0];
+        const stock = stocks.find(s=>s.ticker === ticker);
+        detail.replaceChildren();
+        create('b','한국투자 시세·밸류 보조확인',detail);
+        const q = stock?.kisQuote;
+        if (!q) { create('div','이번 상위 20종목 보조조회 대상에 포함되지 않았습니다.',detail); return; }
+        create('div',`${state(q)} · 확인시각 ${stamp(q.checkedAt)}`,detail);
+        create('div',`KIS 조회가 ${n(q.price,0)}원 · PER ${n(q.per)}배 · EPS ${n(q.eps)}원 · PBR ${n(q.pbr)}배`,detail);
+        create('div','현재가 API 기준 · 예상실적 지표가 아닙니다.',detail);
+        const estimate = stock.kisEstimate;
+        if (estimate?.periods?.length) create('div',`추정실적 응답 결산기간: ${estimate.periods.join(' / ')} · E는 제공사 예상치 표시 · 항목 검증 대기`,detail);
+      };
+      new MutationObserver(update).observe(detailSub,{childList:true,characterData:true,subtree:true});
+    }
+  }
   render(null);
   fetch('wamo_refresh_status.json', {cache:'no-store'})
     .then(r => { if (!r.ok) throw Error('status'); return r.json(); })

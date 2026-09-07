@@ -42,6 +42,20 @@ with tempfile.TemporaryDirectory() as folder:
                 assert '05:00' not in page.locator('#wamo-live-status').inner_text()
                 if name == 'index.html':
                     assert '갱신 실패' in page.locator('#wamo-live-status').inner_text()
+                if name == 'index.html':
+                    panel = page.locator('#wamo-kis-panel')
+                    panel.locator('summary').click()
+                    assert 'Forward PER' in panel.inner_text()
+                    search = panel.locator('input')
+                    search.fill('__absent__')
+                    assert '검색 결과가 없습니다.' in panel.inner_text()
+                    search.fill('')
+                    assert panel.locator('tbody tr:visible').count() > 0
+                    # Existing hero opens the real drawer, including the provider card.
+                    page.locator('.hero-chip').first.click()
+                    page.wait_for_timeout(100)
+                    assert '한국투자 시세·밸류 보조확인' in page.locator('#wamo-kis-detail').inner_text()
+                    assert not errors, errors
                 overflow = page.evaluate('document.documentElement.scrollWidth > innerWidth + 1')
                 assert not overflow, (name, width, 'horizontal overflow')
                 page.screenshot(path=str(results / f'{name}-{width}.png'), full_page=False)

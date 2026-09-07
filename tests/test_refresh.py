@@ -128,7 +128,7 @@ class RefreshTests(unittest.TestCase):
         stock = {'stock_code': '005930', 'ticker': '005930.KS', 'score': 80}
         with patch.dict('os.environ', {'KIS_APP_KEY': 'test', 'KIS_APP_SEC': 'test'}), \
              patch.object(kis.KIS, 'authenticate'), patch.object(kis.KIS, 'quote', return_value={'stck_prpr': '70000', 'eps': '4000', 'per': '17.5'}), \
-             patch.object(kis.KIS, 'estimate_available', return_value=True), patch.object(kis, 'write_json'):
+             patch.object(kis.KIS, 'estimate', return_value={}), patch.object(kis, 'write_json'):
             meta = kis.enrich([stock])
         self.assertTrue(meta['connected'])
         self.assertFalse(meta['forwardMetricsConnected'])
