@@ -1,140 +1,6 @@
 {
-  "078930": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:24+09:00",
-    "price": 125600.0,
-    "per": 14.89,
-    "eps": 8434.0,
-    "pbr": 0.81,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "status": "LIVE",
-    "estimate": {
-      "checkedAt": "2026-09-07T22:51:26+09:00",
-      "status": "RESPONSE_AVAILABLE_UNMAPPED",
-      "periods": [
-        "2023.12",
-        "2024.12",
-        "2025.12",
-        "2026.12E",
-        "2027.12E"
-      ],
-      "mappingStatus": "UNVERIFIED",
-      "forwardMetricsConnected": false,
-      "output2": [
-        {
-          "data1": 259785.0,
-          "data2": 252500.0,
-          "data3": 251841.0,
-          "data4": 261551.0,
-          "data5": 267405.0
-        },
-        {
-          "data1": -91.0,
-          "data2": -28.0,
-          "data3": -3.0,
-          "data4": 39.0,
-          "data5": 22.0
-        },
-        {
-          "data1": 37218.0,
-          "data2": 30772.0,
-          "data3": 29361.0,
-          "data4": 26795.0,
-          "data5": 28220.0
-        },
-        {
-          "data1": -273.0,
-          "data2": -173.0,
-          "data3": -46.0,
-          "data4": -87.0,
-          "data5": 53.0
-        },
-        {
-          "data1": 13007.0,
-          "data2": 5670.0,
-          "data3": 7987.0,
-          "data4": 7213.0,
-          "data5": 7664.0
-        },
-        {
-          "data1": -393.0,
-          "data2": -564.0,
-          "data3": 409.0,
-          "data4": -97.0,
-          "data5": 63.0
-        }
-      ],
-      "output3": [
-        {
-          "data1": 37218.0,
-          "data2": 30772.0,
-          "data3": 29361.0,
-          "data4": 26795.0,
-          "data5": 28220.0
-        },
-        {
-          "data1": 137370.0,
-          "data2": 59880.0,
-          "data3": 84350.0,
-          "data4": 76170.0,
-          "data5": 80934.0
-        },
-        {
-          "data1": -393.0,
-          "data2": -564.0,
-          "data3": 409.0,
-          "data4": -97.0,
-          "data5": 63.0
-        },
-        {
-          "data1": 30.0,
-          "data2": 66.0,
-          "data3": 67.0,
-          "data4": 91.0,
-          "data5": 86.0
-        },
-        {
-          "data1": 46.0,
-          "data2": 56.0,
-          "data3": 65.0,
-          "data4": 75.0,
-          "data5": 72.0
-        },
-        {
-          "data1": 100.0,
-          "data2": 41.0,
-          "data3": 56.0,
-          "data4": 48.0,
-          "data5": 49.0
-        },
-        {
-          "data1": 954.0,
-          "data2": 898.0,
-          "data3": 860.0,
-          "data4": 884.0,
-          "data5": 883.0
-        },
-        {
-          "data1": 91.0,
-          "data2": 71.0,
-          "data3": 77.0,
-          "data4": 71.0,
-          "data5": 76.0
-        }
-      ],
-      "vendorDateRaw": "20260410"
-    }
-  },
   "003490": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:19+09:00",
-    "status": "LIVE",
-    "price": 30350.0,
-    "per": 14.38,
-    "eps": 2111.0,
-    "pbr": 1.02,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:22+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -251,16 +117,126 @@
       "vendorDateRaw": "20251127"
     }
   },
+  "078930": {
+    "2026-09-07": {
+      "checkedAt": "2026-09-07T22:51:26+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 259785.0,
+          "data2": 252500.0,
+          "data3": 251841.0,
+          "data4": 261551.0,
+          "data5": 267405.0
+        },
+        {
+          "data1": -91.0,
+          "data2": -28.0,
+          "data3": -3.0,
+          "data4": 39.0,
+          "data5": 22.0
+        },
+        {
+          "data1": 37218.0,
+          "data2": 30772.0,
+          "data3": 29361.0,
+          "data4": 26795.0,
+          "data5": 28220.0
+        },
+        {
+          "data1": -273.0,
+          "data2": -173.0,
+          "data3": -46.0,
+          "data4": -87.0,
+          "data5": 53.0
+        },
+        {
+          "data1": 13007.0,
+          "data2": 5670.0,
+          "data3": 7987.0,
+          "data4": 7213.0,
+          "data5": 7664.0
+        },
+        {
+          "data1": -393.0,
+          "data2": -564.0,
+          "data3": 409.0,
+          "data4": -97.0,
+          "data5": 63.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 37218.0,
+          "data2": 30772.0,
+          "data3": 29361.0,
+          "data4": 26795.0,
+          "data5": 28220.0
+        },
+        {
+          "data1": 137370.0,
+          "data2": 59880.0,
+          "data3": 84350.0,
+          "data4": 76170.0,
+          "data5": 80934.0
+        },
+        {
+          "data1": -393.0,
+          "data2": -564.0,
+          "data3": 409.0,
+          "data4": -97.0,
+          "data5": 63.0
+        },
+        {
+          "data1": 30.0,
+          "data2": 66.0,
+          "data3": 67.0,
+          "data4": 91.0,
+          "data5": 86.0
+        },
+        {
+          "data1": 46.0,
+          "data2": 56.0,
+          "data3": 65.0,
+          "data4": 75.0,
+          "data5": 72.0
+        },
+        {
+          "data1": 100.0,
+          "data2": 41.0,
+          "data3": 56.0,
+          "data4": 48.0,
+          "data5": 49.0
+        },
+        {
+          "data1": 954.0,
+          "data2": 898.0,
+          "data3": 860.0,
+          "data4": 884.0,
+          "data5": 883.0
+        },
+        {
+          "data1": 91.0,
+          "data2": 71.0,
+          "data3": 77.0,
+          "data4": 71.0,
+          "data5": 76.0
+        }
+      ],
+      "vendorDateRaw": "20260410"
+    }
+  },
   "086790": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:28+09:00",
-    "status": "LIVE",
-    "price": 138900.0,
-    "per": 9.84,
-    "eps": 14110.0,
-    "pbr": 0.84,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:30+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -321,15 +297,7 @@
     }
   },
   "001450": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:33+09:00",
-    "status": "LIVE",
-    "price": 51000.0,
-    "per": 4.47,
-    "eps": 11407.0,
-    "pbr": 0.78,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:35+09:00",
       "status": "EMPTY",
       "periods": [],
@@ -341,15 +309,7 @@
     }
   },
   "055550": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:37+09:00",
-    "status": "LIVE",
-    "price": 113900.0,
-    "per": 11.29,
-    "eps": 10085.0,
-    "pbr": 0.94,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:39+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -410,15 +370,7 @@
     }
   },
   "008930": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:41+09:00",
-    "status": "LIVE",
-    "price": 54200.0,
-    "per": 31.31,
-    "eps": 1731.0,
-    "pbr": 3.82,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:44+09:00",
       "status": "EMPTY",
       "periods": [],
@@ -429,15 +381,7 @@
     }
   },
   "031980": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:46+09:00",
-    "status": "LIVE",
-    "price": 156000.0,
-    "per": 36.69,
-    "eps": 4252.0,
-    "pbr": 6.64,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:48+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -555,15 +499,7 @@
     }
   },
   "181710": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:50+09:00",
-    "status": "LIVE",
-    "price": 70800.0,
-    "per": 74.21,
-    "eps": 954.0,
-    "pbr": 1.49,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:52+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -646,15 +582,7 @@
     }
   },
   "131290": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:55+09:00",
-    "status": "LIVE",
-    "price": 261500.0,
-    "per": 75.67,
-    "eps": 3456.0,
-    "pbr": 7.39,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:51:57+09:00",
       "status": "EMPTY",
       "periods": [],
@@ -665,15 +593,7 @@
     }
   },
   "010950": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:51:59+09:00",
-    "status": "LIVE",
-    "price": 157600.0,
-    "per": 103.82,
-    "eps": 1518.0,
-    "pbr": 2.06,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:01+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -791,15 +711,7 @@
     }
   },
   "192820": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:06+09:00",
-    "status": "LIVE",
-    "price": 274000.0,
-    "per": 25.27,
-    "eps": 10843.0,
-    "pbr": 5.57,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:08+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -917,15 +829,7 @@
     }
   },
   "161890": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:10+09:00",
-    "status": "LIVE",
-    "price": 144300.0,
-    "per": 27.23,
-    "eps": 5299.0,
-    "pbr": 3.74,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:15+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -1043,15 +947,7 @@
     }
   },
   "180640": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:20+09:00",
-    "status": "LIVE",
-    "price": 148900.0,
-    "per": 64.65,
-    "eps": 2303.0,
-    "pbr": 3.0,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:22+09:00",
       "status": "EMPTY",
       "periods": [],
@@ -1062,15 +958,7 @@
     }
   },
   "005830": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:24+09:00",
-    "status": "LIVE",
-    "price": 192400.0,
-    "per": 7.62,
-    "eps": 25263.0,
-    "pbr": 1.07,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:27+09:00",
       "status": "EMPTY",
       "periods": [],
@@ -1082,15 +970,7 @@
     }
   },
   "105560": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:29+09:00",
-    "status": "LIVE",
-    "price": 175900.0,
-    "per": 11.64,
-    "eps": 15116.0,
-    "pbr": 1.07,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:31+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -1151,15 +1031,7 @@
     }
   },
   "028670": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:33+09:00",
-    "status": "LIVE",
-    "price": 6060.0,
-    "per": 10.74,
-    "eps": 564.0,
-    "pbr": 0.57,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:35+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -1277,15 +1149,7 @@
     }
   },
   "138040": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:38+09:00",
-    "status": "LIVE",
-    "price": 133700.0,
-    "per": 10.53,
-    "eps": 12698.0,
-    "pbr": 2.18,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:40+09:00",
       "status": "EMPTY",
       "periods": [],
@@ -1297,15 +1161,7 @@
     }
   },
   "241710": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:42+09:00",
-    "status": "LIVE",
-    "price": 129100.0,
-    "per": 30.34,
-    "eps": 4255.0,
-    "pbr": 5.46,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:47+09:00",
       "status": "EMPTY",
       "periods": [],
@@ -1316,15 +1172,7 @@
     }
   },
   "073240": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:49+09:00",
-    "status": "LIVE",
-    "price": 7350.0,
-    "per": 6.08,
-    "eps": 1209.0,
-    "pbr": 1.04,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:51+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
@@ -1442,15 +1290,7 @@
     }
   },
   "088350": {
-    "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-07T22:52:56+09:00",
-    "status": "LIVE",
-    "price": 5890.0,
-    "per": 7.98,
-    "eps": 738.0,
-    "pbr": 0.32,
-    "label": "현재가 조회 응답 · Forward 지표 아님",
-    "estimate": {
+    "2026-09-07": {
       "checkedAt": "2026-09-07T22:52:58+09:00",
       "status": "EMPTY",
       "periods": [],
