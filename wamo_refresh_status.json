@@ -1,51 +1,55 @@
 {
   "KR": {
     "status": "PASS",
-    "attemptedAt": "2026-09-07T11:49:54.760338+00:00",
+    "attemptedAt": "2026-09-07T12:10:40.389354+00:00",
     "scheduledFor": "2026-09-07T07:00:00+00:00",
     "nextScheduledFor": "2026-09-08T03:00:00+00:00",
-    "trigger": "코드 반영 후 실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34118577772",
+    "trigger": "수동실행",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34120382042",
     "moversStatus": "PASS",
     "warnings": [],
-    "lastSuccessAt": "2026-09-07T11:53:20.737617+00:00",
+    "lastSuccessAt": "2026-09-07T12:14:07.312934+00:00",
     "asOf": "2026-09-07",
     "freshness": {
       "status": "PASS",
       "expectedSession": "2026-09-07",
       "currentCount": 209,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-07T20:52:30+09:00",
+      "checkedAt": "2026-09-07T21:13:09+09:00",
       "warnings": [],
       "calendar": "XKRX"
     },
     "count": 209,
     "error": null,
     "kis": {
-      "status": "NOT_CONFIGURED",
-      "connected": false,
-      "message": "한국투자 API 미연결 · GitHub Secret KIS_APP_KEY / KIS_APP_SEC 확인 필요"
+      "status": "PARTIAL",
+      "connected": true,
+      "quoteCount": 1,
+      "errorCount": 3,
+      "estimateEndpoint": "RESPONSE_AVAILABLE_UNMAPPED",
+      "forwardMetricsConnected": false,
+      "message": "한국투자 현재가·PER·EPS 1종목 확인 · 추정실적 필드 검증 전, Forward PER 미표시"
     }
   },
   "US": {
     "status": "WARNING",
-    "attemptedAt": "2026-09-07T11:53:20.737718+00:00",
+    "attemptedAt": "2026-09-07T12:14:07.313013+00:00",
     "scheduledFor": "2026-09-04T21:20:00+00:00",
     "nextScheduledFor": "2026-09-08T15:00:00+00:00",
-    "trigger": "코드 반영 후 실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34118577772",
+    "trigger": "수동실행",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34120382042",
     "moversStatus": "PASS",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-09-07T11:54:52.465307+00:00",
+    "lastSuccessAt": "2026-09-07T12:15:34.416340+00:00",
     "asOf": "2026-09-04",
     "freshness": {
       "status": "PASS",
       "expectedSession": "2026-09-04",
       "currentCount": 879,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-07T20:54:50+09:00",
+      "checkedAt": "2026-09-07T21:15:32+09:00",
       "warnings": [
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
