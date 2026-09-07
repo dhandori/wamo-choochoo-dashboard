@@ -6,12 +6,40 @@ Secrets and bearer tokens stay in process memory; only selected quote fields are
 from datetime import datetime
 from pathlib import Path
 import math
+import io
 import os
+import re
 import time
+import urllib.request
+import zipfile
 import requests
 from wamo_runtime import KST, write_json
 
 BASE = 'https://openapi.koreainvestment.com:9443'
+
+
+def kospi200_master_members():
+    """Read KIS's public symbol master to cross-check a non-200 KRX count.
+
+    Field layout from the official stocks_info/kis_kospi_code_mst.py.
+    This public reference file requires no account key and is not a REST login.
+    """
+    url = 'https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip'
+    with urllib.request.urlopen(url, timeout=25) as response:
+        raw = response.read()
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        text = archive.read('kospi_code.mst').decode('cp949')
+    members = set()
+    for row in text.splitlines(keepends=True):
+        if len(row) <= 249:
+            continue
+        head, tail = row[:-228], row[-228:]
+        code = head[:9].strip()
+        if tail[:2] == 'ST' and tail[18:19] in '123456789AB' and re.fullmatch(r'[0-9A-Z]{6}', code):
+            members.add(code)
+    if len(members) < 180:
+        raise RuntimeError('한국투자 종목 마스터 형식 또는 구성 검증 실패')
+    return members
 
 
 def number(value):

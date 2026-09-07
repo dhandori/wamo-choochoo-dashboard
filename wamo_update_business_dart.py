@@ -157,7 +157,7 @@ def fetch_market_summary(sosok: int, suffix: str, krx_market: str):
         stock_rows = re.findall(r"<tr[^>]*>(.*?)</tr>", txt, flags=re.S | re.I)
         page_count = 0
         for tr in stock_rows:
-            m = re.search(r'href="/item/main\.naver\?code=(\d{6})"[^>]*>(.*?)</a>', tr, flags=re.S | re.I)
+            m = re.search(r'href="/item/main\.naver\?code=([0-9A-Z]{6})"[^>]*>(.*?)</a>', tr, flags=re.S | re.I)
             if not m:
                 continue
             code = m.group(1)
@@ -191,7 +191,7 @@ def fetch_market_summary(sosok: int, suffix: str, krx_market: str):
             lname = name.replace(" ", "")
             if re.search(r"(스팩|SPAC)$", lname, flags=re.I):
                 continue
-            if re.search(r"우([A-Z]|\d|B)?$", lname):
+            if re.search(r"(?:\d*우[A-Z\d]*(?:\(전환\))?)$", lname):
                 continue
             rows.append(
                 {
@@ -236,9 +236,11 @@ def kind_sector_map():
             if not code_col or not sector_col:
                 continue
             for _, r in df.iterrows():
-                code = re.sub(r"\D", "", str(r.get(code_col, "")))[-6:].zfill(6)
+                code = str(r.get(code_col, "")).strip().upper()
+                if re.fullmatch(r"\d+(?:\.0)?", code):
+                    code = code.removesuffix('.0').zfill(6)
                 sec = str(r.get(sector_col, "")).strip()
-                if re.fullmatch(r"\d{6}", code) and sec and sec.lower() != "nan":
+                if re.fullmatch(r"[0-9A-Z]{6}", code) and sec and sec.lower() != "nan":
                     out[code] = sec
         return out
     except Exception as e:
@@ -412,17 +414,23 @@ def _fetch_krx_index_members(opener, ticker, target_date):
     obj = json.loads(opener.open(req, timeout=25).read().decode("utf-8"))
     # Aggregate rows are not securities. Do not pad labels or invent a code.
     codes = [str(r.get("ISU_SRT_CD") or "").strip() for r in obj.get("output", [])]
-    return [code for code in codes if re.fullmatch(r"\d{6}", code)]
+    return [code for code in codes if re.fullmatch(r"[0-9A-Z]{6}", code)]
 
 
 def resolve_market_energy_members(listed, old_market_energy, target_date):
-    """Use only authenticated KRX official 200+150 membership; never approximate."""
+    """Use authenticated KRX members, including temporary corporate-action changes."""
     listed_map = {r["stock_code"]: r for r in listed}
     opener = _krx_login_opener()
     k200 = list(dict.fromkeys(_fetch_krx_index_members(opener, "1028", target_date)))
     kq150 = list(dict.fromkeys(_fetch_krx_index_members(opener, "2203", target_date)))
+    count_check = 'KRX 공식 구성종목 수 확인'
     if len(k200) != 200:
-        raise RuntimeError(f"KRX 공식 KOSPI200 구성종목 수 검증 실패: {len(k200)}개")
+        # A fixed 200 rejected the actual 201-member list after spin-offs.
+        # Accept it only when an independent published master matches every code.
+        from wamo_kis import kospi200_master_members
+        if set(k200) != kospi200_master_members():
+            raise RuntimeError(f"KRX·한국투자 KOSPI200 구성 교차검증 실패: KRX {len(k200)}개")
+        count_check = 'KRX·한국투자 공개 종목 마스터 전체 코드 교차검증 통과'
     if len(kq150) != 150:
         raise RuntimeError(f"KRX 공식 KOSDAQ150 구성종목 수 검증 실패: {len(kq150)}개")
     overlap = set(k200) & set(kq150)
@@ -439,14 +447,16 @@ def resolve_market_energy_members(listed, old_market_energy, target_date):
                 "name": meta.get("name") or code,
                 "index": index_name,
             })
-    if len(constituents) != 350:
-        raise RuntimeError(f"공식 시장 에너지 구성종목 합계 검증 실패: {len(constituents)}개")
+    if len(constituents) != len(k200) + len(kq150):
+        raise RuntimeError('공식 시장 에너지 구성종목 합계 검증 실패')
     return constituents, {
         "status": "LIVE",
         "membershipMode": "OFFICIAL",
         "approximationUsed": False,
         "source": "KRX Data Marketplace 공식 KOSPI200·KOSDAQ150 구성종목",
-        "notes": ["공식 구성종목 수 검증 200+150개 통과 · 근사값 미사용"],
+        "membershipCounts": {"KOSPI200": len(k200), "KOSDAQ150": len(kq150)},
+        "membershipCheck": count_check,
+        "notes": [f"{count_check} · 실제 구성 {len(k200)}+{len(kq150)}개 · 350종목 환산값 별도 표시"],
     }
 
 
@@ -4972,10 +4982,14 @@ def validate_payload_integrity(payload):
         checks += 5
         if energy.get("membershipMode") != "OFFICIAL":
             issues.append("시장 에너지 공식 구성종목 아님")
-        if energy.get("constituentCount") != 350:
-            issues.append("시장 에너지 구성종목 350개 불일치")
-        if len(energy.get("constituents") or []) != 350:
-            issues.append("시장 에너지 구성종목 목록 길이 불일치")
+        members = energy.get("constituents") or []
+        if energy.get("constituentCount") != len(members):
+            issues.append("시장 에너지 실제 구성종목 수 불일치")
+        if len({m.get('code') for m in members}) != len(members):
+            issues.append("시장 에너지 구성종목 중복")
+        counts = energy.get('membershipCounts') or {'KOSPI200': 200, 'KOSDAQ150': 150}
+        if len(members) != sum(counts.values()):
+            issues.append("시장 에너지 지수별 구성 합계 불일치")
         if not energy.get("series"):
             issues.append("시장 에너지 시계열 없음")
         if energy.get("approximationUsed") is True:

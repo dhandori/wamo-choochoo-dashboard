@@ -1,4 +1,5 @@
 import copy
+import io
 from datetime import datetime
 import json
 from pathlib import Path
@@ -19,6 +20,28 @@ def instant(value):
 
 
 class RefreshTests(unittest.TestCase):
+    def test_krx_keeps_alphanumeric_codes_and_discards_aggregate_rows(self):
+        response = {'output': [{'ISU_SRT_CD': code} for code in ['005930', '0126Z0', '0220W0', '합계', '']]}
+        from unittest.mock import Mock
+        opener = Mock()
+        opener.open.return_value = io.BytesIO(json.dumps(response).encode())
+        self.assertEqual(core._fetch_krx_index_members(opener, '1028', '2026-09-07'), ['005930', '0126Z0', '0220W0'])
+
+    def test_real_201_member_list_requires_independent_full_set_confirmation(self):
+        k200 = [f'{i:06d}' for i in range(199)] + ['0126Z0', '0220W0']
+        kq150 = [f'{i:06d}' for i in range(1000, 1150)]
+        with patch.object(core, '_krx_login_opener'), \
+             patch.object(core, '_fetch_krx_index_members', side_effect=[k200, kq150]), \
+             patch.object(kis, 'kospi200_master_members', return_value=set(k200)):
+            members, meta = core.resolve_market_energy_members([], {}, '2026-09-07')
+        self.assertEqual(len(members), 351)
+        self.assertFalse(meta['approximationUsed'])
+        with patch.object(core, '_krx_login_opener'), \
+             patch.object(core, '_fetch_krx_index_members', side_effect=[k200, kq150]), \
+             patch.object(kis, 'kospi200_master_members', return_value=set(k200[:-1])):
+            with self.assertRaisesRegex(RuntimeError, '교차검증 실패'):
+                core.resolve_market_energy_members([], {}, '2026-09-07')
+
     def test_two_distinct_korean_slots_and_duplicate_suppression(self):
         first = instant('2026-09-07T03:05')
         targets = runner.select_targets({}, first)
