@@ -1,0 +1,12 @@
+{
+  "KR": {
+    "slot": "2026-09-07T07:00:00+00:00",
+    "attempts": 1,
+    "success": true
+  },
+  "US": {
+    "slot": "2026-09-04T21:20:00+00:00",
+    "attempts": 1,
+    "success": true
+  }
+}
