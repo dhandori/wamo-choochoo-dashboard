@@ -369,6 +369,25 @@ def fetch_naver_history(code: str, count=10000):
     return rows
 
 
+
+def fetch_current_kr_history(ticker, code, expected, years=None, count=10000):
+    """An HTTP success with an old trading date is a provider failure too."""
+    errors = []
+    for source in ('Yahoo Finance', 'NAVER Finance'):
+        try:
+            if source == 'Yahoo Finance':
+                rows, host = fetch_yahoo_history(ticker, years=years)
+            else:
+                rows, host = fetch_naver_history(code, count=count), 'fchart.stock.naver.com'
+            if not rows or rows[-1]['date'] < expected:
+                last = rows[-1]['date'] if rows else 'EMPTY'
+                raise RuntimeError(f'가격 날짜 지연: {last}, 기대 {expected}')
+            return rows, source, host
+        except Exception as exc:
+            errors.append(f'{source}: {exc}')
+    raise RuntimeError(' || '.join(errors))
+
+
 def _krx_login_opener():
     """Return an authenticated KRX opener; exact membership is mandatory."""
     login_id = os.getenv("KRX_ID", "").strip()
@@ -469,14 +488,8 @@ def build_market_energy(listed, histories_by_code, old_market_energy, target_dat
         code = item["code"]
         if len(histories_by_code.get(code) or []) >= 60:
             return code, histories_by_code[code], "REUSED"
-        try:
-            rows, host = fetch_yahoo_history(item["ticker"], years=2)
-            return code, rows, host
-        except Exception as yahoo_error:
-            try:
-                return code, fetch_naver_history(code, count=360), "fchart.stock.naver.com"
-            except Exception as naver_error:
-                raise RuntimeError(f"Yahoo {yahoo_error} || NAVER {naver_error}")
+        rows, _, host = fetch_current_kr_history(item["ticker"], code, target_date, years=2, count=360)
+        return code, rows, host
 
     missing = [x for x in constituents if len(histories_by_code.get(x["code"]) or []) < 60]
     if missing:
@@ -5040,27 +5053,18 @@ def main():
     price_fetched_count = 0
     liquidity_rejected_count = 0
     price_histories_by_code = {}
+    from wamo_runtime import expected_session
+    expected_price_date = expected_session('KR')
     def task(meta):
         errors_local = []
-        # 1순위: Yahoo Finance. GitHub Actions 서버에서 네이버 fchart가 막히는 경우를 피함.
         try:
-            rows, host = fetch_yahoo_history(meta["ticker"])
+            rows, source, host = fetch_current_kr_history(meta['ticker'], meta['stock_code'], expected_price_date)
             x = calc_raw(meta, rows)
-            x["dataSource"] = "Yahoo Finance"
-            x["priceProvider"] = host
+            x['dataSource'] = source
+            x['priceProvider'] = host
             return x
         except Exception as e:
-            errors_local.append("Yahoo: " + str(e))
-
-        # 2순위: Naver Finance. Yahoo가 개별 종목에서 실패할 때만 사용.
-        try:
-            rows = fetch_naver_history(meta["stock_code"])
-            x = calc_raw(meta, rows)
-            x["dataSource"] = "NAVER Finance"
-            x["priceProvider"] = "fchart.stock.naver.com"
-            return x
-        except Exception as e:
-            errors_local.append("Naver: " + str(e))
+            errors_local.append(str(e))
 
         # 두 실시간 공급자가 모두 실패하면 직전 정상 갱신값을 사용한다.
         # 후보 자체를 조용히 삭제하지 않고 CACHED로 명확히 표시한다.
