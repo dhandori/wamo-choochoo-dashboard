@@ -13,7 +13,7 @@ class KISUSTests(unittest.TestCase):
         stock={'ticker':'NVDA','exchange':'NASDAQ','score':90,'sector':'반도체'}
         with patch.dict('os.environ',{'KIS_APP_KEY':'test','KIS_APP_SEC':'test'}), \
              patch.object(kis.KIS,'authenticate'), patch.object(kis.KIS,'overseas_quote',return_value=(NVDA,'NAS')), \
-             patch.object(kis,'read_cache',return_value={}), patch.object(kis,'write_json'):
+             patch.object(kis,'read_cache',return_value={}), patch.object(kis,'us_master_records',return_value={}), patch.object(kis,'write_json'):
             meta=kis.enrich_us([stock])
         self.assertEqual(meta['quoteCount'],1)
         self.assertEqual(meta['industryCount'],1)
@@ -41,7 +41,13 @@ class KISUSTests(unittest.TestCase):
         stock={'ticker':'NVDA','exchange':'NASDAQ'}
         with patch.dict('os.environ',{'KIS_APP_KEY':'test','KIS_APP_SEC':'test'}), \
              patch.object(kis.KIS,'authenticate'), patch.object(kis.KIS,'overseas_quote',return_value=(dict(NVDA,curr=''),'NAS')), \
-             patch.object(kis,'read_cache',return_value={}), patch.object(kis,'write_json'):
+             patch.object(kis,'read_cache',return_value={}), patch.object(kis,'us_master_records',return_value={}), patch.object(kis,'write_json'):
             meta=kis.enrich_us([stock])
         self.assertEqual(meta['errorCount'],1)
         self.assertNotIn('price',stock['kisQuote'])
+
+    def test_master_preserves_symbol_punctuation_and_exchange(self):
+        row = '\t'.join(['US','1','NYS','NYSE','BRK/B','DNYSBRK/B','버크셔','BERKSHIRE','2','USD'])
+        result = kis.parse_us_master(row,'NYS')
+        self.assertEqual(result['BRK-B'],{'symbol':'BRK/B','exchange':'NYS'})
+        self.assertEqual(kis.parse_us_master(row,'NAS'),{})

@@ -5,6 +5,7 @@ Secrets and bearer tokens stay in process memory; only selected quote fields are
 """
 from datetime import datetime, timedelta
 from pathlib import Path
+from functools import lru_cache
 import math
 import json
 import io
@@ -41,6 +42,37 @@ def kospi200_master_members():
     if len(members) < 180:
         raise RuntimeError('한국투자 종목 마스터 형식 또는 구성 검증 실패')
     return members
+
+
+def parse_us_master(text, exchange):
+    records = {}
+    for line in text.splitlines():
+        parts = [v.strip() for v in line.split('\t')]
+        if len(parts) < 10 or parts[2].upper() != exchange:
+            continue
+        symbol = parts[4].upper()
+        if not re.fullmatch(r'[A-Z0-9][A-Z0-9./-]{0,14}', symbol):
+            continue
+        records[symbol.replace('.', '-').replace('/', '-')] = {'symbol':symbol, 'exchange':exchange}
+    return records
+
+
+@lru_cache(maxsize=1)
+def us_master_records():
+    records = {}
+    for exchange in ('NAS', 'NYS', 'AMS'):
+        name = exchange.lower() + 'mst.cod'
+        with urllib.request.urlopen('https://new.real.download.dws.co.kr/common/master/' + name + '.zip', timeout=15) as response:
+            raw = response.read()
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            matches = [entry for entry in archive.namelist() if Path(entry).name.lower() == name]
+            if len(matches) != 1:
+                raise RuntimeError('MASTER_FILE_UNVERIFIED')
+            rows = parse_us_master(archive.read(matches[0]).decode('cp949'), exchange)
+        if len(rows) < 50:
+            raise RuntimeError('MASTER_FORMAT_UNVERIFIED')
+        records.update(rows)
+    return records
 
 
 def number(value):
@@ -277,6 +309,10 @@ def enrich_us(stocks):
         api.authenticate()
     except (requests.RequestException, RuntimeError, ValueError):
         return {'status':'AUTH_FAILED', 'connected':False, 'message':'미국 한국투자 API 인증 실패'}
+    try:
+        symbols = us_master_records()
+    except (OSError, ValueError, RuntimeError, zipfile.BadZipFile):
+        symbols = {}
     path = Path(__file__).resolve().parent / 'wamo_kis_us_cache.json'
     cache = read_cache(path)
     now = datetime.now(KST)
@@ -294,7 +330,8 @@ def enrich_us(stocks):
         try:
             if not re.fullmatch(r'[A-Z0-9][A-Z0-9.-]{0,14}', symbol):
                 raise RuntimeError('INVALID_SYMBOL')
-            quote, exchange = api.overseas_quote(symbol, stock.get('exchange'))
+            master = symbols.get(symbol) or {}
+            quote, exchange = api.overseas_quote(master.get('symbol', symbol), master.get('exchange', stock.get('exchange')))
             currency = str(quote.get('curr') or '').strip()
             if currency != 'USD':
                 raise RuntimeError('CURRENCY_UNVERIFIED')

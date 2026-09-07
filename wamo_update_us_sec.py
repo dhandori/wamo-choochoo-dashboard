@@ -278,6 +278,18 @@ def fetch_us_universe():
             "instrumentType": "REIT" if "REIT" in name.upper() else "COMPANY",
             "sectorConfidence": "MEDIUM" if industry or broad else "LOW",
         })
+    from wamo_kis import us_master_records
+    try:
+        master = us_master_records()
+        labels = {'NAS':'NASDAQ', 'NYS':'NYSE', 'AMS':'NYSE AMERICAN'}
+        for stock in listed:
+            entry = master.get(stock['ticker'])
+            if entry:
+                stock['exchange'] = labels[entry['exchange']]
+                stock['krx_market'] = 'NASDAQ' if entry['exchange'] == 'NAS' else 'NYSE'
+                stock['exchangeSource'] = '한국투자증권 공식 해외종목 마스터'
+    except Exception as exc:
+        print('미국 거래소 마스터 확인 실패:', type(exc).__name__)
     listed.sort(key=lambda x: x["market_cap_usd"], reverse=True)
     if len(listed) < 300:
         raise RuntimeError(f"시총 10억달러 미국 일반기업이 비정상적으로 적습니다: {len(listed)}")
