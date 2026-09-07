@@ -15,3 +15,14 @@
 - https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/estimate_perform
 
 읽기 전용 실응답 검사: https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34128442941
+
+
+## 한국·미국 업종·시세 확장
+
+- 한국 `inquire-price`: `bstp_kor_isnm` 업종 한글명과 `w52_hgpr`/`w52_lwpr`를 추가한다.
+- 미국 `price-detail` (HHDFS76200200): `last`, `perx`, `epsx`, `pbrx`, `curr`, `e_icod`, `h52p`, `l52p`. 실제 NAS/NYS 3종목에서 한글 업종 및 USD 응답을 확인했다.
+- 시장별 기존 추세·점수 상위 20종목 조회. 미국 캐시는 별도 파일에 저장하고 미국 예약 갱신에서 업데이트한다. KRW/USD 단위와 소수점을 구분한다.
+- 한투 업종은 기존 세부업종 옆에 출처를 구분해 표시한다. 일부 후보의 분류만 바꿔 섹터 액션의 구성종목을 뒤섞지 않는다. 상세 사업설명은 기존 DART/SEC/Nasdaq 자료를 사용한다.
+- 잘못 알려진 거래소의 정상 빈 응답에 한해 다른 미국 거래소를 확인한다. 인증·권한 오류에는 거래소 변경 재시도를 하지 않는다.
+- 실조회 확인: https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34132155425
+- 공식 필드: https://github.com/koreainvestment/open-trading-api/blob/main/examples_llm/overseas_stock/price_detail/chk_price_detail.py

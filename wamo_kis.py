@@ -5,6 +5,7 @@ Secrets and bearer tokens stay in process memory; only selected quote fields are
 """
 from datetime import datetime, timedelta
 from pathlib import Path
+from functools import lru_cache
 import math
 import json
 import io
@@ -41,6 +42,37 @@ def kospi200_master_members():
     if len(members) < 180:
         raise RuntimeError('한국투자 종목 마스터 형식 또는 구성 검증 실패')
     return members
+
+
+def parse_us_master(text, exchange):
+    records = {}
+    for line in text.splitlines():
+        parts = [v.strip() for v in line.split('\t')]
+        if len(parts) < 10 or parts[2].upper() != exchange:
+            continue
+        symbol = parts[4].upper()
+        if not re.fullmatch(r'[A-Z0-9][A-Z0-9./-]{0,14}', symbol):
+            continue
+        records[symbol.replace('.', '-').replace('/', '-')] = {'symbol':symbol, 'exchange':exchange}
+    return records
+
+
+@lru_cache(maxsize=1)
+def us_master_records():
+    records = {}
+    for exchange in ('NAS', 'NYS', 'AMS'):
+        name = exchange.lower() + 'mst.cod'
+        with urllib.request.urlopen('https://new.real.download.dws.co.kr/common/master/' + name + '.zip', timeout=15) as response:
+            raw = response.read()
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            matches = [entry for entry in archive.namelist() if Path(entry).name.lower() == name]
+            if len(matches) != 1:
+                raise RuntimeError('MASTER_FILE_UNVERIFIED')
+            rows = parse_us_master(archive.read(matches[0]).decode('cp949'), exchange)
+        if len(rows) < 50:
+            raise RuntimeError('MASTER_FORMAT_UNVERIFIED')
+        records.update(rows)
+    return records
 
 
 def number(value):
@@ -107,6 +139,20 @@ class KIS:
     def quote(self, code):
         return self.get('/uapi/domestic-stock/v1/quotations/inquire-price', 'FHKST01010100',
                         {'FID_COND_MRKT_DIV_CODE': 'J', 'FID_INPUT_ISCD': code}).get('output') or {}
+
+    def overseas_quote(self, symbol, exchange):
+        exchanges = {'NASDAQ':'NAS', 'NYSE':'NYS', 'NYSE AMERICAN':'AMS', 'AMEX':'AMS',
+                     'NAS':'NAS', 'NYS':'NYS', 'AMS':'AMS'}
+        primary = exchanges.get(str(exchange).upper())
+        # The existing screener sometimes guesses an exchange when its field is empty.
+        for excd in dict.fromkeys([primary, 'NAS', 'NYS', 'AMS']):
+            if not excd:
+                continue
+            data = self.get('/uapi/overseas-price/v1/quotations/price-detail', 'HHDFS76200200',
+                            {'AUTH':'', 'EXCD':excd, 'SYMB':symbol}).get('output') or {}
+            if (number(data.get('last')) or 0) > 0:
+                return data, excd
+        raise RuntimeError('EMPTY_PRICE')
 
     def estimate(self, code):
         return self.get('/uapi/domestic-stock/v1/quotations/estimate-perform', 'HHKST668300C0', {'SHT_CD': code})
@@ -199,7 +245,9 @@ def enrich(stocks):
             if not price or price <= 0:
                 raise RuntimeError('EMPTY_PRICE')
             record = {'source': '한국투자증권 Open API', 'checkedAt': datetime.now(KST).isoformat(timespec='seconds'),
-                      'status': 'LIVE', 'price': price, 'per': number(quote.get('per')), 'eps': number(quote.get('eps')),
+                      'status': 'LIVE', 'currency': 'KRW', 'industry': str(quote.get('bstp_kor_isnm') or '').strip(),
+                      'high52': number(quote.get('w52_hgpr')), 'low52': number(quote.get('w52_lwpr')),
+                      'price': price, 'per': number(quote.get('per')), 'eps': number(quote.get('eps')),
                       'pbr': number(quote.get('pbr')), 'label': '현재가 조회 응답 · Forward 지표 아님'}
             # Negative/zero earnings do not support a meaningful positive valuation multiple.
             if record['eps'] is not None and record['eps'] <= 0:
@@ -248,3 +296,78 @@ def enrich(stocks):
             'estimateCount': estimate_count, 'estimateErrorCount': estimate_errors,
             'forwardMetricsConnected': False,
             'message': f'한국투자 시세 {count}/{len(targets)}종목 새로 확인 · 이전값 {cached_count} · 실패 {errors} · 미조회 {skipped} · 추정실적 응답 {estimate_count}종목(단위·항목 검증 대기)'}
+
+
+def enrich_us(stocks):
+    """Candidate US quotes and provider industries; no inferred forecasts or SEC data."""
+    for stock in stocks:
+        stock.pop('kisQuote', None)
+    api = KIS()
+    if not api.configured:
+        return {'status':'NOT_CONFIGURED', 'connected':False, 'message':'미국 한국투자 API 미연결'}
+    try:
+        api.authenticate()
+    except (requests.RequestException, RuntimeError, ValueError):
+        return {'status':'AUTH_FAILED', 'connected':False, 'message':'미국 한국투자 API 인증 실패'}
+    try:
+        symbols = us_master_records()
+    except (OSError, ValueError, RuntimeError, zipfile.BadZipFile):
+        symbols = {}
+    path = Path(__file__).resolve().parent / 'wamo_kis_us_cache.json'
+    cache = read_cache(path)
+    now = datetime.now(KST)
+    targets = sorted(stocks, key=lambda s:(bool(s.get('trendTemplate')), s.get('score') or 0), reverse=True)[:20]
+    count = errors = cached_count = skipped = consecutive = 0
+    diagnostics = []
+    started = time.monotonic()
+    for stock in targets:
+        symbol = str(stock.get('ticker') or '').upper()
+        old = cache.get(symbol) or {}
+        if time.monotonic() - started > 240 or consecutive >= 5:
+            stock['kisQuote'] = {'status':'SKIPPED', 'message':'일시적인 조회 장애로 다음 갱신에서 재시도'}
+            skipped += 1
+            continue
+        try:
+            if not re.fullmatch(r'[A-Z0-9][A-Z0-9.-]{0,14}', symbol):
+                raise RuntimeError('INVALID_SYMBOL')
+            master = symbols.get(symbol) or {}
+            quote, exchange = api.overseas_quote(master.get('symbol', symbol), master.get('exchange', stock.get('exchange')))
+            currency = str(quote.get('curr') or '').strip()
+            if currency != 'USD':
+                raise RuntimeError('CURRENCY_UNVERIFIED')
+            record = {'status':'LIVE', 'source':'한국투자증권 해외주식 현재가상세',
+                      'checkedAt':datetime.now(KST).isoformat(timespec='seconds'),
+                      'price':number(quote.get('last')), 'per':number(quote.get('perx')),
+                      'eps':number(quote.get('epsx')), 'pbr':number(quote.get('pbrx')),
+                      'currency':currency, 'exchange':exchange,
+                      'industry':str(quote.get('e_icod') or '').strip(),
+                      'high52':number(quote.get('h52p')), 'low52':number(quote.get('l52p')),
+                      'label':'현재가상세 API 조회값 · Forward 지표 아님'}
+            if not record['price'] or record['price'] <= 0:
+                raise RuntimeError('EMPTY_PRICE')
+            if record['eps'] is not None and record['eps'] <= 0:
+                record['per'] = None
+            for field in ('per','pbr','high52','low52'):
+                if record[field] is not None and record[field] <= 0:
+                    record[field] = None
+            stock['kisQuote'] = record
+            cache[symbol] = record
+            count += 1
+            consecutive = 0
+        except (requests.RequestException, RuntimeError, ValueError) as exc:
+            errors += 1
+            consecutive += 1
+            code = str(exc) if re.fullmatch(r'[A-Z0-9_]{1,60}', str(exc)) else 'QUERY_FAILED'
+            diagnostics.append({'code':symbol,'error':code})
+            if old.get('price') and recent(old, now, 3):
+                stock['kisQuote'] = dict(old, status='CACHED', message='이번 조회 실패 · 이전 확인값')
+                cached_count += 1
+            else:
+                stock['kisQuote'] = {'status':'FAILED','message':'미국 현재가 조회 실패'}
+    write_json(path, cache)
+    industries = sum(bool(s.get('kisQuote',{}).get('industry')) and s['kisQuote']['status']=='LIVE' for s in targets)
+    return {'status':'LIVE' if count == len(targets) and count else 'PARTIAL' if count else 'FAILED',
+            'connected':bool(count),'quoteCount':count,'targetCount':len(targets),'errorCount':errors,
+            'cachedCount':cached_count,'skippedCount':skipped,'errors':diagnostics,'industryCount':industries,
+            'forwardMetricsConnected':False,
+            'message':f'미국 한국투자 시세 {count}/{len(targets)}종목 신규 확인 · 업종 {industries} · 이전값 {cached_count} · 실패 {errors} · 미조회 {skipped}'}

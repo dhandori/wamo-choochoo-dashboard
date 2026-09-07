@@ -19,6 +19,15 @@ with tempfile.TemporaryDirectory() as folder:
     folder = Path(folder)
     for name in ['index.html', 'us.html', 'movers.html']:
         html = (root / name).read_text(encoding='utf-8')
+        if name == 'us.html':
+            payload = core.extract_old_payload(html)
+            if not any(s.get('kisQuote') for s in payload['stocks']):
+                # Public real-response fixture, only for pre-deployment rendering.
+                stock = next(s for s in payload['stocks'] if s['ticker'] == 'NVDA')
+                stock['kisQuote'] = {'status':'LIVE','price':230.36,'eps':7.91,'per':29.12,'pbr':24.29,
+                                     'currency':'USD','industry':'반도체 및 반도체장비','checkedAt':'2026-09-07T23:17:58+09:00'}
+                payload['meta']['kisMeta'] = {'quoteCount':1,'targetCount':1}
+                html = core.replace_payload(html,payload)
         (folder / name).write_text(patch_status_ui(html, 'US' if name == 'us.html' else 'KR'), encoding='utf-8')
     (folder / 'wamo_status.js').write_bytes((root / 'wamo_status.js').read_bytes())
     status = {'KR': {'status': 'FAILED', 'asOf': '2026-09-07', 'attemptedAt': '2026-09-07T08:00:00Z',
@@ -42,10 +51,13 @@ with tempfile.TemporaryDirectory() as folder:
                 assert '05:00' not in page.locator('#wamo-live-status').inner_text()
                 if name == 'index.html':
                     assert '갱신 실패' in page.locator('#wamo-live-status').inner_text()
-                if name == 'index.html':
+                if name in ('index.html', 'us.html'):
                     panel = page.locator('#wamo-kis-panel')
                     panel.locator('summary').click()
                     assert 'Forward PER' in panel.inner_text()
+                    if name == 'us.html':
+                        assert 'EPS(달러)' in panel.inner_text()
+                        assert '한투 제공 업종' in panel.inner_text()
                     search = panel.locator('input')
                     search.fill('__absent__')
                     assert '검색 결과가 없습니다.' in panel.inner_text()
