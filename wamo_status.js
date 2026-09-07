@@ -47,6 +47,10 @@
       if (s.error) line(s.error, '#ffb3a9');
       const kis = s.kis || p.kisMeta;
       if (m === 'KR' && kis) line(kis.message || `한국투자 API: ${kis.status}`);
+      if (m === 'KR' && p.marketEnergy?.membershipCounts) {
+        const counts = p.marketEnergy.membershipCounts;
+        line(`시장 에너지 · KRX 실제 구성 ${counts.KOSPI200}+${counts.KOSDAQ150}개 · ${p.marketEnergy.membershipCheck || '공식 구성 확인'} · 350종목 환산값 별도 표시`);
+      }
       if (s.runUrl && /^https:\/\/github\.com\/dhandori\/wamo-choochoo-dashboard\/actions\/runs\/\d+$/.test(s.runUrl)) {
         const a = document.createElement('a');
         a.href = s.runUrl; a.textContent = `${title} 실행 기록 보기`; a.style.color = '#98c7ff';
