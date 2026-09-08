@@ -26,7 +26,7 @@
   };
   const render = status => {
     box.replaceChildren();
-    line('정규예약(KST) · 한국 12:00 / 16:00 · 미국 00:00 / 06:20 · 시장별 거래일 2회', '#a8cbef');
+    line('정규예약(KST) · 한국 09:30 / 12:00 / 16:00 · 미국 22:40 / 01:00 / 06:20 · 시장별 거래일 3회', '#a8cbef');
     const markets = isMovers ? ['KR', 'US'] : [market];
     for (const m of markets) {
       const s = status?.[m] || {};
