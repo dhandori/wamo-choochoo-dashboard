@@ -42,7 +42,9 @@ class RefreshTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, '교차검증 실패'):
                 core.resolve_market_energy_members([], {}, '2026-09-07')
 
-    def test_two_distinct_korean_slots_and_duplicate_suppression(self):
+    def test_three_distinct_korean_slots_and_duplicate_suppression(self):
+        morning = instant('2026-09-07T00:30')
+        self.assertEqual(runner.select_targets({}, morning), [('KR', morning)])
         first = instant('2026-09-07T03:05')
         targets = runner.select_targets({}, first)
         self.assertEqual([m for m, _ in targets], ['KR'])
@@ -61,8 +63,18 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(rt.latest_slot('US', close), close)
         self.assertEqual(close.astimezone(rt.KST).strftime('%a %H:%M'), 'Sat 06:20')
         # Labor Day has no US update slots; next session is Tuesday.
-        self.assertEqual(rt.next_slot('US', close), instant('2026-09-08T15:00'))
+        self.assertEqual(rt.next_slot('US', close), instant('2026-09-08T13:40'))
         self.assertEqual(rt.expected_session('US', instant('2026-09-07T20:00')), '2026-09-04')
+
+    def test_workflow_and_calendar_have_same_six_slots(self):
+        import re
+        workflow = (runner.ROOT / '.github/workflows/main.yml').read_text()
+        crons = re.findall(r"cron: '([0-9]+) ([0-9]+) \* \* 1-5'", workflow)
+        actual = {(int(hour), int(minute)) for minute, hour in crons}
+        self.assertEqual(actual, {slot for slots in rt.SLOTS.values() for slot in slots})
+        self.assertEqual(len(actual), 6)
+        slots = [s for s in rt.slots_near('US', instant('2026-09-08T15:00')) if s.date().isoformat() == '2026-09-08']
+        self.assertEqual([s.astimezone(rt.KST).strftime('%d %H:%M') for s in slots], ['08 22:40', '09 01:00', '09 06:20'])
 
     def test_no_past_weekend_catchup_or_endless_retries(self):
         self.assertEqual(runner.select_targets({}, instant('2026-09-06T12:00')), [])
@@ -95,6 +107,8 @@ class RefreshTests(unittest.TestCase):
             data = core.extract_old_payload(original)
             self.assertEqual(validator(data)['status'], 'PASS')
             revised = core.patch_index_health_ui(original, market)
+            # Only the declared schedule label may change; all market data must match.
+            data['meta']['scheduledUpdateKst'] = rt.run_meta(market)['scheduledUpdateKst']
             self.assertEqual(core.extract_old_payload(revised), data)
             self.assertNotIn('href="kkangto.html"', revised)
             self.assertNotIn('미국 00:00 / 05:00', revised)

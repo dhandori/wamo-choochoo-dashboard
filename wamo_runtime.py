@@ -8,7 +8,7 @@ import re
 
 UTC = timezone.utc
 KST = timezone(timedelta(hours=9))
-SLOTS = {'KR': ((3, 0), (7, 0)), 'US': ((15, 0), (21, 20))}
+SLOTS = {'KR': ((0, 30), (3, 0), (7, 0)), 'US': ((13, 40), (16, 0), (21, 20))}
 
 
 @lru_cache(maxsize=2)
@@ -53,7 +53,7 @@ def run_meta(market):
         'scheduledFor': os.getenv('WAMO_SCHEDULED_FOR'),
         'runUrl': (f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/"
                    f"{os.environ['GITHUB_RUN_ID']}" if os.getenv('GITHUB_RUN_ID') else None),
-        'scheduledUpdateKst': '한국 12:00 / 16:00' if market == 'KR' else '미국 00:00 / 06:20',
+        'scheduledUpdateKst': '한국 09:30 / 12:00 / 16:00' if market == 'KR' else '미국 22:40 / 01:00 / 06:20',
         'priceDateLabel': '가격 기준일' if market == 'KR' else '미국 현지 가격 기준일',
     }
 
@@ -92,7 +92,10 @@ def validate_freshness(payload, market, now=None):
 
 def patch_status_ui(html, market):
     html = re.sub(r'\s*<a\b[^>]*href=["\x27](?:\./)?kkangto\.html["\x27][^>]*>.*?</a>', '', html, flags=re.S)
-    html = html.replace('미국 00:00 / 05:00', '미국 00:00 / 06:20')
+    html = html.replace('한국 12:00 / 16:00', '한국 09:30 / 12:00 / 16:00')
+    for old in ('미국 00:00 / 05:00', '미국 00:00 / 06:20'):
+        html = html.replace(old, '미국 22:40 / 01:00 / 06:20')
+    html = html.replace('시장별 하루 2회', '시장별 거래일 3회')
     html = html.replace('미국 현지 장 마감 기준일', '미국 현지 가격 기준일')
     # Replace the whole legacy assignment; previously the US variant evaded the patch.
     html = re.sub(r"\$\('#qualitySummary'\)\.textContent\s*=\s*`[^`]*`;",
