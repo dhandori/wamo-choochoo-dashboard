@@ -33,14 +33,17 @@
       const p = isMovers ? {} : meta;
       const title = m === 'KR' ? '한국' : '미국';
       const asOf = s.asOf || p.asOf || '확인 불가';
-      const late = s.nextScheduledFor && Date.now() > Date.parse(s.nextScheduledFor) + 45 * 60000;
+      const late = s.nextScheduledFor && Date.now() > Date.parse(s.nextScheduledFor) + 5 * 60000;
       let label = s.status === 'FAILED' ? '갱신 실패 · 이전 데이터 유지'
-        : late ? '예약 이후 갱신 확인 필요'
+        : late ? '예약시각 경과 · 새 결과 대기'
         : s.status === 'WARNING' ? '가격 갱신 완료 · 일부 항목 확인 필요'
         : s.status === 'PASS' ? '가격 갱신 완료' : '실행 상태 기록 없음';
+      if (isMovers && s.moversStatus === 'RUNNING') label = 'TOP 30 갱신 중 · 이전 결과 표시';
       if (isMovers && s.moversStatus === 'FAILED') label = 'TOP 30 갱신 실패 · 이전 결과 유지';
       line(`${title} · ${label} · 가격 기준일 ${asOf}`, s.status === 'FAILED' || late ? '#ffb3a9' : '#f4d58a');
       line(`예정 ${stamp(s.scheduledFor || p.scheduledFor)} · 실제 시작 ${stamp(s.attemptedAt || p.runStartedAt)} · 완료 ${stamp(s.lastSuccessAt || p.updatedAt)} · ${s.trigger || p.runTrigger || '이전 실행'}`);
+      if (!isMovers && s.moversStatus === 'RUNNING') line('가격 계산 완료 · TOP 30은 별도로 갱신 중');
+      if (isMovers && s.moversCompletedAt) line(`TOP 30 완료 ${stamp(s.moversCompletedAt)}`);
       if (s.nextScheduledFor) line(`다음 예약 ${stamp(s.nextScheduledFor)} · GitHub 예약 지연 시 누락 확인 후 재시도`);
       const warnings = s.warnings || p.freshness?.warnings || [];
       warnings.forEach(w => line(w, '#f4d58a'));
