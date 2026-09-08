@@ -8,7 +8,15 @@ import re
 
 UTC = timezone.utc
 KST = timezone(timedelta(hours=9))
-SLOTS = {'KR': ((0, 30), (3, 0), (7, 0)), 'US': ((13, 40), (16, 0), (21, 20))}
+FULL_SLOTS = {'KR': ((0, 30), (3, 0), (7, 0)), 'US': ((13, 40), (16, 0), (21, 20))}
+SLOTS = {'KR': ((0, 30), (1, 30), (2, 30), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0)),
+         'US': ((13, 40), (14, 40), (16, 0), (17, 0), (18, 0), (19, 0), (20, 0), (21, 20))}
+SCHEDULE_LABEL = {'KR': '한국 09:30 / 10:30 / 11:30 / 12:00 / 13:00 / 14:00 / 15:00 / 16:00',
+                  'US': '미국 22:40 / 23:40 / 01:00 / 02:00 / 03:00 / 04:00 / 05:00 / 06:20'}
+
+def price_only_slot(market, slot):
+    return (slot.hour, slot.minute) not in FULL_SLOTS[market]
+
 
 
 @lru_cache(maxsize=2)
@@ -43,6 +51,20 @@ def next_slot(market, now):
     return min(s for s in slots_near(market, now) if s > now)
 
 
+def latest_full_slot(market, now):
+    return max(s for s in slots_near(market, now) if s <= now and not price_only_slot(market, s))
+
+
+def use_price_only(market, slot, entry):
+    # A late trigger must still perform the full run it missed before an extra slot.
+    completed = entry.get('lastFullSlot')
+    if not completed and entry.get('success') and entry.get('slot'):
+        previous = datetime.fromisoformat(entry['slot'])
+        if not price_only_slot(market, previous):
+            completed = previous.isoformat()
+    return price_only_slot(market, slot) and completed == latest_full_slot(market, slot).isoformat()
+
+
 def run_meta(market):
     event = os.getenv('GITHUB_EVENT_NAME', '')
     return {
@@ -53,7 +75,8 @@ def run_meta(market):
         'scheduledFor': os.getenv('WAMO_SCHEDULED_FOR'),
         'runUrl': (f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/"
                    f"{os.environ['GITHUB_RUN_ID']}" if os.getenv('GITHUB_RUN_ID') else None),
-        'scheduledUpdateKst': '한국 09:30 / 12:00 / 16:00' if market == 'KR' else '미국 22:40 / 01:00 / 06:20',
+        'scheduledUpdateKst': SCHEDULE_LABEL[market],
+        'refreshMode': 'PRICE' if os.getenv('WAMO_PRICE_ONLY') == '1' else 'FULL',
         'priceDateLabel': '가격 기준일' if market == 'KR' else '미국 현지 가격 기준일',
     }
 
@@ -95,7 +118,9 @@ def patch_status_ui(html, market):
     html = html.replace('한국 12:00 / 16:00', '한국 09:30 / 12:00 / 16:00')
     for old in ('미국 00:00 / 05:00', '미국 00:00 / 06:20'):
         html = html.replace(old, '미국 22:40 / 01:00 / 06:20')
-    html = html.replace('시장별 하루 2회', '시장별 거래일 3회')
+    html = html.replace('한국 09:30 / 12:00 / 16:00', SCHEDULE_LABEL['KR'])
+    html = html.replace('미국 22:40 / 01:00 / 06:20', SCHEDULE_LABEL['US'])
+    html = html.replace('시장별 하루 2회', '시장별 거래일 8회').replace('시장별 거래일 3회', '시장별 거래일 8회')
     html = html.replace('미국 현지 장 마감 기준일', '미국 현지 가격 기준일')
     # Replace the whole legacy assignment; previously the US variant evaded the patch.
     html = re.sub(r"\$\('#qualitySummary'\)\.textContent\s*=\s*`[^`]*`;",
