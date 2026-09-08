@@ -50,7 +50,7 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual([m for m, _ in targets], ['KR'])
         slot = targets[0][1].isoformat()
         state = {'KR': {'slot': slot, 'success': True, 'attempts': 1}}
-        self.assertEqual(runner.select_targets(state, instant('2026-09-07T04:47')), [])
+        self.assertEqual(runner.select_targets(state, instant('2026-09-07T03:47')), [])
         second = runner.select_targets(state, instant('2026-09-07T07:17'))
         self.assertEqual(second, [('KR', instant('2026-09-07T07:00'))])
 
@@ -66,15 +66,15 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(rt.next_slot('US', close), instant('2026-09-08T13:40'))
         self.assertEqual(rt.expected_session('US', instant('2026-09-07T20:00')), '2026-09-04')
 
-    def test_workflow_and_calendar_have_same_six_slots(self):
+    def test_workflow_and_calendar_have_same_sixteen_slots(self):
         import re
         workflow = (runner.ROOT / '.github/workflows/main.yml').read_text()
         crons = re.findall(r"cron: '([0-9]+) ([0-9]+) \* \* 1-5'", workflow)
         actual = {(int(hour), int(minute)) for minute, hour in crons}
         self.assertEqual(actual, {slot for slots in rt.SLOTS.values() for slot in slots})
-        self.assertEqual(len(actual), 6)
+        self.assertEqual(len(actual), 16)
         slots = [s for s in rt.slots_near('US', instant('2026-09-08T15:00')) if s.date().isoformat() == '2026-09-08']
-        self.assertEqual([s.astimezone(rt.KST).strftime('%d %H:%M') for s in slots], ['08 22:40', '09 01:00', '09 06:20'])
+        self.assertEqual([s.astimezone(rt.KST).strftime('%d %H:%M') for s in slots], ['08 22:40', '08 23:40', '09 01:00', '09 02:00', '09 03:00', '09 04:00', '09 05:00', '09 06:20'])
 
     def test_no_past_weekend_catchup_or_endless_retries(self):
         self.assertEqual(runner.select_targets({}, instant('2026-09-06T12:00')), [])

@@ -1,4 +1,4 @@
-"""Run due market updates, retain good data on failure, publish one commit."""
+"""Run due market updates, retain good data on failure, publish each market promptly."""
 from datetime import datetime, timedelta
 from pathlib import Path
 import argparse
@@ -7,7 +7,7 @@ import os
 import subprocess
 import sys
 
-from wamo_runtime import UTC, KST, latest_slot, next_slot, patch_status_ui, write_json
+from wamo_runtime import UTC, KST, latest_slot, next_slot, patch_status_ui, write_json, use_price_only, latest_full_slot
 
 ROOT = Path(__file__).resolve().parent
 STATE = ROOT / 'wamo_refresh_state.json'
@@ -99,11 +99,17 @@ def main():
         old_entry = state.get(market, {})
         same = old_entry.get('slot') == slot.isoformat()
         entry = {'slot': slot.isoformat(), 'attempts': old_entry.get('attempts', 0) + 1 if same else 1, 'success': False}
+        fast = not force and use_price_only(market, slot, old_entry)
+        if fast:
+            entry['lastFullSlot'] = latest_full_slot(market, slot).isoformat()
+        elif old_entry.get('lastFullSlot'):
+            entry['lastFullSlot'] = old_entry['lastFullSlot']
         start = datetime.now(UTC)
         env = dict(os.environ, WAMO_RUN_STARTED_AT=start.isoformat(),
-                   WAMO_SCHEDULED_FOR=slot.isoformat(), PYTHONUNBUFFERED='1')
+                   WAMO_SCHEDULED_FOR=slot.isoformat(), WAMO_PRICE_ONLY='1' if fast else '0', PYTHONUNBUFFERED='1')
         report = dict(status.get(market, {}), status='FAILED',
                       attemptedAt=start.isoformat(), scheduledFor=slot.isoformat(),
+                      refreshMode='PRICE' if fast else 'FULL',
                       nextScheduledFor=next_slot(market, start).isoformat(),
                       trigger={'schedule': '예약실행', 'push': '코드 반영 후 실행',
                                'workflow_dispatch': '수동실행'}.get(event, '직접실행'),
@@ -117,12 +123,14 @@ def main():
             data = core.extract_old_payload((ROOT / page).read_text(encoding='utf-8'))
             fresh = validate_freshness(data, market)
             warnings = list(fresh['warnings'])
-            report['moversStatus'] = 'RUNNING'
+            report['moversStatus'] = 'DEFERRED' if fast else 'RUNNING'
             report.update(status='WARNING' if warnings else 'PASS', warnings=warnings,
                           lastSuccessAt=datetime.now(UTC).isoformat(), asOf=data['meta']['asOf'],
                           freshness=fresh, count=len(data['stocks']), error=None,
                           kis=data['meta'].get('kisMeta'))
             entry['success'] = True
+            if not fast:
+                entry['lastFullSlot'] = latest_full_slot(market, slot).isoformat()
             changed.extend([page, *caches])
         except (subprocess.SubprocessError, RuntimeError, ValueError, KeyError) as exc:
             restore(saved)
@@ -140,7 +148,7 @@ def main():
         write_json(STATUS, status)
         if args.publish:
             publish([page, *caches, STATE.name, STATUS.name])
-        if entry['success']:
+        if entry['success'] and not fast:
             movers_saved = snapshot(SHARED)
             try:
                 run_script('wamo_update_movers.py', ['--market', movers_market], env, timeout=900)

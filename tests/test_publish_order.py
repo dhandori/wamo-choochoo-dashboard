@@ -14,8 +14,8 @@ import wamo_update_business_dart as core
 
 class EarlyPublicationTests(unittest.TestCase):
     def test_price_is_published_before_movers_even_when_movers_fail(self):
-        for fail_movers in (False, True):
-            with self.subTest(fail_movers=fail_movers), tempfile.TemporaryDirectory() as directory:
+        for fail_movers, fast in ((False, False), (True, False), (False, True)):
+            with self.subTest(fail_movers=fail_movers, fast=fast), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 (root / 'index.html').write_text('<body>fresh prices</body>')
                 (root / 'us.html').write_text('<body>previous US</body>')
@@ -34,8 +34,13 @@ class EarlyPublicationTests(unittest.TestCase):
                     events.append('publish')
                     published.append(json.loads((root / 'wamo_refresh_status.json').read_text()))
                 payload = {'meta': {'asOf': '2026-09-08'}, 'stocks': [{'date': '2026-09-08'}]}
-                with patch.object(runner, 'ROOT', root), patch.object(runner, 'STATE', root / 'wamo_refresh_state.json'), patch.object(runner, 'STATUS', root / 'wamo_refresh_status.json'), patch.object(runner, 'run_script', side_effect=script), patch.object(runner, 'publish', side_effect=publish), patch.object(core, 'extract_old_payload', return_value=payload), patch.object(runtime, 'validate_freshness', return_value={'warnings': []}), patch.object(sys, 'argv', ['wamo_run.py', '--market', 'KR', '--publish']), patch.dict('os.environ', {}, clear=True), contextlib.redirect_stdout(io.StringIO()):
+                with patch.object(runner, 'ROOT', root), patch.object(runner, 'STATE', root / 'wamo_refresh_state.json'), patch.object(runner, 'STATUS', root / 'wamo_refresh_status.json'), patch.object(runner, 'run_script', side_effect=script), patch.object(runner, 'publish', side_effect=publish), patch.object(core, 'extract_old_payload', return_value=payload), patch.object(runtime, 'validate_freshness', return_value={'warnings': []}), patch.object(sys, 'argv', ['wamo_run.py', '--publish']), patch.dict('os.environ', {}, clear=True), patch.object(runner, 'use_price_only', return_value=fast), patch.object(runner, 'select_targets', return_value=[('KR', runtime.datetime(2026, 9, 8, 4, tzinfo=runtime.UTC))]), contextlib.redirect_stdout(io.StringIO()):
                     runner.main()
+                if fast:
+                    self.assertNotIn('wamo_update_movers.py', events)
+                    self.assertEqual(published[0]['KR']['moversStatus'], 'DEFERRED')
+                    self.assertEqual(published[0]['KR']['refreshMode'], 'PRICE')
+                    continue
                 self.assertEqual(events[:3], ['wamo_update_business_dart.py', 'publish', 'wamo_update_movers.py'])
                 self.assertEqual(published[-1]['KR']['moversStatus'], 'FAILED' if fail_movers else 'PASS')
                 self.assertEqual(published[-1]['KR']['lastSuccessAt'], published[0]['KR']['lastSuccessAt'])

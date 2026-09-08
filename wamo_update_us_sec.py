@@ -927,9 +927,10 @@ def _apply_sec_pending_profile(stock, status, note):
 def enrich_sec(raw):
     cache = _load_cache()
     errors = []
+    fast = os.getenv("WAMO_PRICE_ONLY") == "1"
     try:
-        mapping = sec_company_map(cache)
-        connected = True
+        mapping = {} if fast else sec_company_map(cache)
+        connected = not fast
     except Exception as exc:
         mapping, connected = {}, False
         errors.append({"scope": "company_tickers.json", "error": str(exc)})
@@ -975,7 +976,7 @@ def enrich_sec(raw):
             stock.update(old)
             stock["secStatus"] = "NASDAQ_CACHED"
             nasdaq_cached_count += 1
-        elif len(nasdaq_selected) < NASDAQ_PROFILE_TARGET_MAX:
+        elif not fast and len(nasdaq_selected) < NASDAQ_PROFILE_TARGET_MAX:
             nasdaq_selected.append((stock, symbol))
         else:
             _apply_sec_pending_profile(
@@ -1043,6 +1044,8 @@ def enrich_sec(raw):
     connection_error = next((e.get("error") for e in errors if e.get("scope") == "company_tickers.json"), "")
     sec_message = (f"기업정보 사용가능 {usable}/{len(raw)}개 · SEC {sec_usable}개 · "
                    f"Nasdaq 대체 {nasdaq_usable}개 · SEC 캐시 {cached_count}개 · Nasdaq 캐시 {nasdaq_cached_count}개")
+    if fast:
+        sec_message += " · 장중 가격 갱신: 기업정보·공시 신규조회 생략"
     if connection_error:
         sec_message += " · SEC 직접접속 실패, Nasdaq 대체경로 사용: " + core.compact_provider_error(connection_error)
     fallback_connected = nasdaq_usable > 0

@@ -26,7 +26,7 @@
   };
   const render = status => {
     box.replaceChildren();
-    line('정규예약(KST) · 한국 09:30 / 12:00 / 16:00 · 미국 22:40 / 01:00 / 06:20 · 시장별 거래일 3회', '#a8cbef');
+    line('갱신예약(KST) · 한국 09:30 / 10:30 / 11:30 / 12:00 / 13:00 / 14:00 / 15:00 / 16:00 · 미국 22:40 / 23:40 / 01:00 / 02:00 / 03:00 / 04:00 / 05:00 / 06:20', '#a8cbef');
     const markets = isMovers ? ['KR', 'US'] : [market];
     for (const m of markets) {
       const s = status?.[m] || {};
@@ -38,10 +38,12 @@
         : late ? '예약시각 경과 · 새 결과 대기'
         : s.status === 'WARNING' ? '가격 갱신 완료 · 일부 항목 확인 필요'
         : s.status === 'PASS' ? '가격 갱신 완료' : '실행 상태 기록 없음';
+      if (isMovers && s.moversStatus === 'DEFERRED') label = 'TOP 30 기존 결과 · 전체 갱신 회차에 업데이트';
       if (isMovers && s.moversStatus === 'RUNNING') label = 'TOP 30 갱신 중 · 이전 결과 표시';
       if (isMovers && s.moversStatus === 'FAILED') label = 'TOP 30 갱신 실패 · 이전 결과 유지';
       line(`${title} · ${label} · 가격 기준일 ${asOf}`, s.status === 'FAILED' || late ? '#ffb3a9' : '#f4d58a');
       line(`예정 ${stamp(s.scheduledFor || p.scheduledFor)} · 실제 시작 ${stamp(s.attemptedAt || p.runStartedAt)} · 완료 ${stamp(s.lastSuccessAt || p.updatedAt)} · ${s.trigger || p.runTrigger || '이전 실행'}`);
+      if (s.refreshMode === 'PRICE') line('장중 보강 · 가격·거래량·추세 재계산 / 기업정보·공시는 기존 자료 / TOP 30은 전체 갱신 시 갱신');
       if (!isMovers && s.moversStatus === 'RUNNING') line('가격 계산 완료 · TOP 30은 별도로 갱신 중');
       if (isMovers && s.moversCompletedAt) line(`TOP 30 완료 ${stamp(s.moversCompletedAt)}`);
       if (s.nextScheduledFor) line(`다음 예약 ${stamp(s.nextScheduledFor)} · GitHub 예약 지연 시 누락 확인 후 재시도`);

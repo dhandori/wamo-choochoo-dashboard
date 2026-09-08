@@ -1952,6 +1952,12 @@ def dart_enrich(raw, old_by_ticker):
         "source": "OpenDART official",
         "message": "OpenDART key not connected",
     }
+    if os.getenv("WAMO_PRICE_ONLY") == "1":
+        cached = sum(_copy_dart_cache(x, old_by_ticker.get(x.get("ticker"), {})) for x in raw)
+        meta.update(status="CACHED", successCount=cached, cachedCount=cached,
+                    message=f"장중 가격 갱신 · DART 기존자료 {cached}/{len(raw)}개 재사용 · 공시 신규조회는 전체 갱신 시 수행")
+        return meta
+
     if not DART_KEY:
         return meta
 
@@ -4143,6 +4149,23 @@ def _profile_priority_key(x, old_by_ticker):
 
 def profile_enrich(raw, old_by_ticker=None):
     old_by_ticker = old_by_ticker or {}
+    if os.getenv("WAMO_PRICE_ONLY") == "1":
+        covered = 0
+        fields = ("krxSector", "detailSector", "sector", "sectorTags", "sectorConfidence",
+                  "businessProfile", "businessModelEasy", "businessModelSource",
+                  "businessModelReportDate", "businessModelUrl")
+        for x in raw:
+            old = old_by_ticker.get(x.get("ticker"), {})
+            for key in fields:
+                if key in old:
+                    x[key] = old[key]
+            x.setdefault("detailSector", _normalize_krx_sector(x.get("sector")))
+            x["sector"] = x["detailSector"]
+            x["businessModelDataStatus"] = "CACHED" if old.get("businessProfile") else "NOT_TARGET"
+            covered += bool(old.get("businessProfile"))
+        return {"status": "CACHED", "targetCount": 0, "coveredCount": covered,
+                "fetchedCount": 0, "source": "OpenDART 기존자료",
+                "message": f"장중 가격 갱신 · 기존 사업정보 {covered}개 재사용", "errors": []}
     cache = _load_profile_cache()
     fixed_db = _load_fixed_business_db_from_index()
     today = datetime.now(KST).date()
