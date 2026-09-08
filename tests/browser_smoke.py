@@ -9,7 +9,7 @@ import threading
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import wamo_update_business_dart as core
-from wamo_runtime import patch_status_ui
+from wamo_runtime import patch_status_ui, SCHEDULE_LABEL
 from playwright.sync_api import sync_playwright
 
 root = Path(__file__).resolve().parents[1]
@@ -48,7 +48,9 @@ with tempfile.TemporaryDirectory() as folder:
                 page.locator('#wamo-live-status').wait_for()
                 assert not errors, (name, width, errors)
                 assert page.locator('a[href="kkangto.html"]').count() == 0
-                assert '05:00' not in page.locator('#wamo-live-status').inner_text()
+                schedule_text = page.locator('#wamo-live-status').inner_text()
+                assert all(label in schedule_text for label in SCHEDULE_LABEL.values())
+                assert '미국 00:00 / 05:00' not in schedule_text
                 if name == 'index.html':
                     assert '갱신 실패' in page.locator('#wamo-live-status').inner_text()
                 if name in ('index.html', 'us.html'):
