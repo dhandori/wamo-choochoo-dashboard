@@ -107,6 +107,8 @@ class RefreshTests(unittest.TestCase):
             data = core.extract_old_payload(original)
             self.assertEqual(validator(data)['status'], 'PASS')
             revised = core.patch_index_health_ui(original, market)
+            # Only the declared schedule label may change; all market data must match.
+            data['meta']['scheduledUpdateKst'] = rt.run_meta(market)['scheduledUpdateKst']
             self.assertEqual(core.extract_old_payload(revised), data)
             self.assertNotIn('href="kkangto.html"', revised)
             self.assertNotIn('미국 00:00 / 05:00', revised)
