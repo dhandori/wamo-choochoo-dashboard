@@ -117,15 +117,7 @@ def main():
             data = core.extract_old_payload((ROOT / page).read_text(encoding='utf-8'))
             fresh = validate_freshness(data, market)
             warnings = list(fresh['warnings'])
-            # Optional movers cannot prevent fresh main-dashboard data from saving.
-            movers_saved = snapshot(SHARED)
-            try:
-                run_script('wamo_update_movers.py', ['--market', movers_market], env, timeout=900)
-                report['moversStatus'] = 'PASS'
-            except (subprocess.SubprocessError, RuntimeError):
-                restore(movers_saved)
-                warnings.append('상승률 TOP 30 갱신 실패 · 이전 결과 유지')
-                report['moversStatus'] = 'FAILED'
+            report['moversStatus'] = 'RUNNING'
             report.update(status='WARNING' if warnings else 'PASS', warnings=warnings,
                           lastSuccessAt=datetime.now(UTC).isoformat(), asOf=data['meta']['asOf'],
                           freshness=fresh, count=len(data['stocks']), error=None,
@@ -141,6 +133,27 @@ def main():
             print(f'{market} FAILED: {type(exc).__name__}', flush=True)
         state[market], status[market] = entry, report
         print(market, report['status'], '가격 기준일', report.get('asOf'), flush=True)
+        # Publish each validated market before slow optional movers or the other market.
+        path = ROOT / page
+        path.write_text(patch_status_ui(path.read_text(encoding='utf-8'), market), encoding='utf-8')
+        write_json(STATE, state)
+        write_json(STATUS, status)
+        if args.publish:
+            publish([page, *caches, STATE.name, STATUS.name])
+        if entry['success']:
+            movers_saved = snapshot(SHARED)
+            try:
+                run_script('wamo_update_movers.py', ['--market', movers_market], env, timeout=900)
+                report['moversStatus'] = 'PASS'
+                report['moversCompletedAt'] = datetime.now(UTC).isoformat()
+            except (subprocess.SubprocessError, RuntimeError):
+                restore(movers_saved)
+                report['warnings'].append('상승률 TOP 30 갱신 실패 · 이전 결과 유지')
+                report['moversStatus'] = 'FAILED'
+                report['status'] = 'WARNING'
+            write_json(STATUS, status)
+            if args.publish:
+                publish([*SHARED, STATUS.name])
     # Apply navigation/status fixes even to the market whose provider failed.
     for market, (_, page, _, _) in MARKETS.items():
         path = ROOT / page
