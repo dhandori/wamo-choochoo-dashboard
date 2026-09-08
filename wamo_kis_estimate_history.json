@@ -1383,5 +1383,16 @@
       ],
       "vendorDateRaw": "20260731"
     }
+  },
+  "021240": {
+    "2026-09-08": {
+      "checkedAt": "2026-09-08T11:42:09+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
+    }
   }
 }
