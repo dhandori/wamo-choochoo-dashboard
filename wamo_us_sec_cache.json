@@ -49932,5 +49932,61 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-09-08",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "CGNX": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.cognex.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Cognex Corporation Common Stock은 Nasdaq 공식 분류상 Industrials · Industrial Machinery/Components 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Cognex Corporation Common Stock은 Nasdaq 공식 분류상 Industrials · Industrial Machinery/Components 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): For over 40 years, Cognex has been making advanced machine vision easy, paving the way for manufacturing and distribution companies to become faster, smarter, and more efficient through automation. Innovative technology in our vision sensors and systems solves critical manufacturing and distribution challenges, providing unparalleled performance for industries from automotive to consumer electronics to packaged goods. Cognex makes these tools more capable and easier to deploy thanks to a longstanding focus on AI, helping factories and warehouses improve quality and maximize efficiency without needing highly technical expertise. We are headquartered near Boston, USA, with locations in over 30 countries and more than 30,000 customers worldwide. Learn more at cognex.com.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 994,359천달러로 전년 대비 +8.7%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "산업재 (Industrials)",
+        "Industrials",
+        "Industrial Machinery/Components"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 2016555.0,
+      "liabilities": 524654.0,
+      "equity": 1491901.0,
+      "netIncome": 114442.0,
+      "debtRatioPct": 35.2,
+      "currentRatioPct": 379.9,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 8.7,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Industrials",
+    "industry": "Industrial Machinery/Components",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-09",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
