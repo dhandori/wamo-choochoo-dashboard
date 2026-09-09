@@ -1477,5 +1477,16 @@
       ],
       "vendorDateRaw": "20260224"
     }
+  },
+  "000500": {
+    "2026-09-09": {
+      "checkedAt": "2026-09-09T16:32:02+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
+    }
   }
 }
