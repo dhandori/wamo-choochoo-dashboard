@@ -1,21 +1,21 @@
 {
   "KR": {
     "status": "PASS",
-    "attemptedAt": "2026-09-09T04:28:34.639989+00:00",
-    "scheduledFor": "2026-09-09T04:00:00+00:00",
-    "nextScheduledFor": "2026-09-09T05:00:00+00:00",
+    "attemptedAt": "2026-09-09T06:09:45.602688+00:00",
+    "scheduledFor": "2026-09-09T06:00:00+00:00",
+    "nextScheduledFor": "2026-09-09T07:00:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34311076524",
-    "moversStatus": "PASS",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34317822021",
+    "moversStatus": "DEFERRED",
     "warnings": [],
-    "lastSuccessAt": "2026-09-09T04:36:17.332674+00:00",
+    "lastSuccessAt": "2026-09-09T06:13:27.852609+00:00",
     "asOf": "2026-09-09",
     "freshness": {
       "status": "PASS",
       "expectedSession": "2026-09-09",
       "currentCount": 211,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-09T13:36:17+09:00",
+      "checkedAt": "2026-09-09T15:13:27+09:00",
       "warnings": [],
       "calendar": "XKRX"
     },
@@ -31,13 +31,13 @@
       "skippedCount": 0,
       "errors": [],
       "estimateEndpoint": "RESPONSE_AVAILABLE_UNMAPPED",
-      "estimateCount": 13,
+      "estimateCount": 12,
       "estimateErrorCount": 0,
       "forwardMetricsConnected": false,
-      "message": "한국투자 시세 20/20종목 새로 확인 · 이전값 0 · 실패 0 · 미조회 0 · 추정실적 응답 13종목(단위·항목 검증 대기)"
+      "message": "한국투자 시세 20/20종목 새로 확인 · 이전값 0 · 실패 0 · 미조회 0 · 추정실적 응답 12종목(단위·항목 검증 대기)"
     },
     "moversCompletedAt": "2026-09-09T04:43:09.466195+00:00",
-    "refreshMode": "FULL"
+    "refreshMode": "PRICE"
   },
   "US": {
     "status": "WARNING",
