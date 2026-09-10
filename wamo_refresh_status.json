@@ -41,23 +41,23 @@
   },
   "US": {
     "status": "WARNING",
-    "attemptedAt": "2026-09-10T17:10:14.740447+00:00",
-    "scheduledFor": "2026-09-10T17:00:00+00:00",
-    "nextScheduledFor": "2026-09-10T18:00:00+00:00",
+    "attemptedAt": "2026-09-10T18:56:37.345418+00:00",
+    "scheduledFor": "2026-09-10T18:00:00+00:00",
+    "nextScheduledFor": "2026-09-10T19:00:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34506487079",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34517344580",
     "moversStatus": "DEFERRED",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-09-10T17:12:07.609671+00:00",
+    "lastSuccessAt": "2026-09-10T18:58:34.527614+00:00",
     "asOf": "2026-09-10",
     "freshness": {
       "status": "PASS",
       "expectedSession": "2026-09-10",
       "currentCount": 877,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-11T02:12:07+09:00",
+      "checkedAt": "2026-09-11T03:58:34+09:00",
       "warnings": [
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
