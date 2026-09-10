@@ -41,29 +41,29 @@
   },
   "US": {
     "status": "WARNING",
-    "attemptedAt": "2026-09-09T22:00:22.779948+00:00",
-    "scheduledFor": "2026-09-09T21:20:00+00:00",
-    "nextScheduledFor": "2026-09-10T13:40:00+00:00",
+    "attemptedAt": "2026-09-10T16:58:23.769682+00:00",
+    "scheduledFor": "2026-09-10T16:00:00+00:00",
+    "nextScheduledFor": "2026-09-10T17:00:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34409896718",
-    "moversStatus": "PASS",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34505272474",
+    "moversStatus": "RUNNING",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-09-09T22:02:32.352716+00:00",
-    "asOf": "2026-09-09",
+    "lastSuccessAt": "2026-09-10T17:00:36.837465+00:00",
+    "asOf": "2026-09-10",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-09-09",
-      "currentCount": 878,
+      "expectedSession": "2026-09-10",
+      "currentCount": 877,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-10T07:02:32+09:00",
+      "checkedAt": "2026-09-11T02:00:36+09:00",
       "warnings": [
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
       "calendar": "XNYS"
     },
-    "count": 878,
+    "count": 877,
     "error": null,
     "kis": {
       "status": "LIVE",
