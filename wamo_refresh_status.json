@@ -1,25 +1,25 @@
 {
   "KR": {
     "status": "PASS",
-    "attemptedAt": "2026-09-10T06:09:14.937749+00:00",
-    "scheduledFor": "2026-09-10T06:00:00+00:00",
-    "nextScheduledFor": "2026-09-10T07:00:00+00:00",
+    "attemptedAt": "2026-09-10T07:24:56.381629+00:00",
+    "scheduledFor": "2026-09-10T07:00:00+00:00",
+    "nextScheduledFor": "2026-09-11T00:30:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34443934153",
-    "moversStatus": "DEFERRED",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34449788043",
+    "moversStatus": "RUNNING",
     "warnings": [],
-    "lastSuccessAt": "2026-09-10T06:12:25.411106+00:00",
+    "lastSuccessAt": "2026-09-10T07:32:30.141749+00:00",
     "asOf": "2026-09-10",
     "freshness": {
       "status": "PASS",
       "expectedSession": "2026-09-10",
-      "currentCount": 213,
+      "currentCount": 214,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-10T15:12:25+09:00",
+      "checkedAt": "2026-09-10T16:32:30+09:00",
       "warnings": [],
       "calendar": "XKRX"
     },
-    "count": 213,
+    "count": 214,
     "error": null,
     "kis": {
       "status": "LIVE",
@@ -37,7 +37,7 @@
       "message": "한국투자 시세 20/20종목 새로 확인 · 이전값 0 · 실패 0 · 미조회 0 · 추정실적 응답 13종목(단위·항목 검증 대기)"
     },
     "moversCompletedAt": "2026-09-10T04:31:00.954731+00:00",
-    "refreshMode": "PRICE"
+    "refreshMode": "FULL"
   },
   "US": {
     "status": "WARNING",
