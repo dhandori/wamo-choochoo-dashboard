@@ -148,68 +148,8 @@ def clean_num(x):
         return None
 
 def fetch_market_summary(sosok: int, suffix: str, krx_market: str):
-    # Naver market-cap summary: market cap is displayed in 억원.
-    rows = []
-    for page in range(1, 80):
-        url = f"https://finance.naver.com/sise/sise_market_sum.naver?sosok={sosok}&page={page}"
-        txt = http_text(url, encoding="euc-kr")
-        # Each stock row has a link with code=XXXXXX, followed by TD values.
-        stock_rows = re.findall(r"<tr[^>]*>(.*?)</tr>", txt, flags=re.S | re.I)
-        page_count = 0
-        for tr in stock_rows:
-            m = re.search(r'href="/item/main\.naver\?code=([0-9A-Z]{6})"[^>]*>(.*?)</a>', tr, flags=re.S | re.I)
-            if not m:
-                continue
-            code = m.group(1)
-            name = re.sub(r"<.*?>", "", m.group(2)).strip()
-            tds = re.findall(r"<td[^>]*>(.*?)</td>", tr, flags=re.S | re.I)
-            values = []
-            for td in tds:
-                v = re.sub(r"<.*?>", "", td)
-                v = v.replace("&nbsp;", " ").strip()
-                values.append(v)
-            # Expected Naver columns after the leading rank cell:
-            # 종목명, 현재가, 전일비, 등락률, 액면가, 시가총액(억원), 상장주식수...
-            # Find market cap defensively by locating name cell position.
-            texts = [re.sub(r"\s+", "", x) for x in values]
-            try:
-                ni = next(i for i, x in enumerate(texts) if name.replace(" ", "") in x)
-            except StopIteration:
-                ni = 1
-            mcap_100m = None
-            # Standard layout market cap is 5 numeric cells after name.
-            for idx in (ni + 5, ni + 6):
-                if 0 <= idx < len(values):
-                    v = clean_num(values[idx])
-                    if v is not None and v > 0:
-                        mcap_100m = v
-                        break
-            if mcap_100m is None:
-                continue
-            market_cap = mcap_100m * 100_000_000
-            # Avoid preferred shares / SPAC for this growth-stock screen.
-            lname = name.replace(" ", "")
-            if re.search(r"(스팩|SPAC)$", lname, flags=re.I):
-                continue
-            if re.search(r"(?:\d*우[A-Z\d]*(?:\(전환\))?)$", lname):
-                continue
-            rows.append(
-                {
-                    "ticker": code + suffix,
-                    "stock_code": code,
-                    "name": name,
-                    "market": "KOREA",
-                    "krx_market": krx_market,
-                    "market_cap_krw": market_cap,
-                }
-            )
-            page_count += 1
-        if page_count == 0:
-            break
-        time.sleep(0.05)
-    if len(rows) < 100:
-        raise RuntimeError(f"{krx_market} 시가총액 목록 수집이 비정상적으로 적습니다: {len(rows)}")
-    return rows
+    from wamo_market_data import fetch_naver_universe
+    return fetch_naver_universe(http_text, sosok, suffix, krx_market)
 
 def kind_sector_map():
     # Best-effort KRX KIND industry mapping. Failure is allowed.
