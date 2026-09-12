@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-09-12T02:59:18.094162+00:00",
+  "checkedAt": "2026-09-12T08:01:38.684925+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-09-12T02:44:10.418212+00:00",
+      "generatedAt": "2026-09-12T04:33:19.513927+00:00",
       "sessions": {
-        "US-AMEX": "20260911",
         "US-NYSE": "20260911",
+        "US-AMEX": "20260911",
         "US-NASDAQ": "20260911"
       },
       "releaseKey": "US:US-AMEX=20260911|US-NASDAQ=20260911|US-NYSE=20260911",
@@ -5385,14 +5385,14 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-09-12T02:44:56.498334+00:00",
+      "generatedAt": "2026-09-12T04:34:06.556030+00:00",
       "sessions": {
         "CN-SH": "20260911",
-        "CN-SZ": "20260911",
+        "JP-TSE": "20260911",
         "KR-KOSPI": "20260911",
-        "KR-KOSDAQ": "20260911",
+        "CN-SZ": "20260911",
         "HK-HKEX": "20260911",
-        "JP-TSE": "20260911"
+        "KR-KOSDAQ": "20260911"
       },
       "releaseKey": "ASIA:CN-SH=20260911|CN-SZ=20260911|HK-HKEX=20260911|JP-TSE=20260911|KR-KOSDAQ=20260911|KR-KOSPI=20260911",
       "fingerprint": "078e9ef5f4da271a995695c8fc9506e79961e05aab2d32877d5f218caac4871c",
