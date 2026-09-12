@@ -74,6 +74,15 @@ jobs:
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
           REQUESTED_MARKET: ${{ inputs.market || 'auto' }}
         run: python -u wamo_run.py --market "$REQUESTED_MARKET" --publish
+      - name: 공개 검색 카탈로그 별도 갱신·저장
+        if: always()
+        run: |
+          set -euo pipefail
+          python wamo_catalog.py
+          git add -- wamo_catalog.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'Refresh public WAMO search catalog'
+          git push origin HEAD:main
       - name: 실패 결과 보관
         if: failure()
         uses: actions/upload-artifact@v4
