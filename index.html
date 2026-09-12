@@ -1487,7 +1487,8 @@ window.WAMO_DATA = {"meta":{"market":"KR","runTrigger":"코드 반영 후 실행
     box.querySelectorAll('[data-member-ticker]').forEach(btn=>{btn.onclick=e=>{e.stopPropagation();const target=data.stocks.find(z=>z.ticker===btn.dataset.memberTicker);if(target)openDetail(target)}});
   }
 
-  function openDetail(x){
+  window.WAMO_OPEN_DETAIL = ticker => { const stock = data.stocks.find(s => s.ticker === ticker); if (!stock) return false; openDetail(stock); return true; };
+function openDetail(x){
     if(!x) return; detailStock=x;
     updateNaverResearchLink(x);
     renderSourceSeparation(x);
