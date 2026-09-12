@@ -114,6 +114,9 @@ def validate_freshness(payload, market, now=None):
 
 
 def patch_status_ui(html, market):
+    if 'window.WAMO_OPEN_DETAIL' not in html:
+        html = html.replace('function openDetail(x){',
+            "window.WAMO_OPEN_DETAIL = ticker => { const stock = data.stocks.find(s => s.ticker === ticker); if (!stock) return false; openDetail(stock); return true; };\nfunction openDetail(x){", 1)
     html = re.sub(r'\s*<a\b[^>]*href=["\x27](?:\./)?kkangto\.html["\x27][^>]*>.*?</a>', '', html, flags=re.S)
     html = html.replace('한국 12:00 / 16:00', '한국 09:30 / 12:00 / 16:00')
     for old in ('미국 00:00 / 05:00', '미국 00:00 / 06:20'):
