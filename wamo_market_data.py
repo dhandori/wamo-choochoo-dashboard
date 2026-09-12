@@ -52,4 +52,3 @@ def fetch_naver_universe(http_text, sosok, suffix, market):
                 raise RuntimeError(f'{market} 적격 종목 목록 부족')
             return rows
     raise RuntimeError(f'{market} 종목 목록 페이지 한도 초과')
-

@@ -37,4 +37,3 @@ No generated HTML, caches, ranking formulas, financial data, secrets or
 production schedules are changed. A complete production refresh still needs
 its configured provider credentials and freshness gates. This repair is the
 first isolated market-data boundary, not completion of Investment OS integration.
-
