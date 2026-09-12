@@ -1,6 +1,10 @@
 /* Render operational status separately from the mathematical QA badge. */
 (() => {
   'use strict';
+  const discovery = document.createElement('script');
+  discovery.src = 'wamo_discovery.js';
+  discovery.defer = true;
+  document.head.append(discovery);
   const data = window.WAMO_DATA;
   const meta = data?.meta || {};
   const isMovers = !data;

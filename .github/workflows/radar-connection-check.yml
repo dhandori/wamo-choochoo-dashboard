@@ -1,0 +1,33 @@
+name: Radar private connection check
+on:
+  push:
+    branches: ['codex/radar-integration']
+    paths: ['.github/workflows/radar-connection-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify read access without printing credentials or private data
+        env:
+          RADAR_READ_TOKEN: ${{ secrets.RADAR_READ_TOKEN }}
+        shell: python
+        run: |
+          import os, json, urllib.request, urllib.error
+          token = os.environ.get('RADAR_READ_TOKEN', '')
+          if not token:
+              raise SystemExit('RADAR_READ_TOKEN is not configured')
+          request = urllib.request.Request(
+              'https://api.github.com/repos/dhandori/global-high-radar/contents/data/radar_report_index.json',
+              headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json'})
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  data = json.load(response)
+              if data.get('type') != 'file' or not data.get('sha'):
+                  raise SystemExit('Unexpected response shape')
+          except urllib.error.HTTPError as error:
+              raise SystemExit('Repository read failed: HTTP ' + str(error.code)) from None
+          print('PASS: private radar report index is readable; no source data exported')
