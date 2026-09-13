@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-09-13T14:32:55.164739+00:00",
+  "checkedAt": "2026-09-13T18:15:37.138716+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-09-12T13:37:02.534226+00:00",
+      "generatedAt": "2026-09-13T18:10:58.285523+00:00",
       "sessions": {
-        "US-AMEX": "20260911",
+        "US-NASDAQ": "20260911",
         "US-NYSE": "20260911",
-        "US-NASDAQ": "20260911"
+        "US-AMEX": "20260911"
       },
       "releaseKey": "US:US-AMEX=20260911|US-NASDAQ=20260911|US-NYSE=20260911",
-      "fingerprint": "a701174b8c09733664e5aab77285ab3d326465c654cbaafe4775ebe02e94c8d8",
+      "fingerprint": "e6213935bdc17d54348e067d6660b46a3c95efbfb68e05b1336fbd0204dd597a",
       "signals": [
         {
           "key": "NAS:TXG",
@@ -5385,17 +5385,17 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-09-12T13:37:49.768798+00:00",
+      "generatedAt": "2026-09-13T18:11:44.489154+00:00",
       "sessions": {
-        "CN-SZ": "20260911",
+        "KR-KOSPI": "20260911",
+        "KR-KOSDAQ": "20260911",
         "JP-TSE": "20260911",
         "CN-SH": "20260911",
         "HK-HKEX": "20260911",
-        "KR-KOSPI": "20260911",
-        "KR-KOSDAQ": "20260911"
+        "CN-SZ": "20260911"
       },
       "releaseKey": "ASIA:CN-SH=20260911|CN-SZ=20260911|HK-HKEX=20260911|JP-TSE=20260911|KR-KOSDAQ=20260911|KR-KOSPI=20260911",
-      "fingerprint": "078e9ef5f4da271a995695c8fc9506e79961e05aab2d32877d5f218caac4871c",
+      "fingerprint": "03a90d4985c2d24d0b549de13914179d9f41247c08d27f9add31322261107324",
       "signals": [
         {
           "key": "SHS:688151",
@@ -8142,9 +8142,7 @@
           "micro_verified": false,
           "classification_status": "documented_exchange_or_provider_industry",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
+            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
           ],
           "current_close": 3194.0,
           "entry_status": "신고가 단계 상승",
@@ -8380,9 +8378,7 @@
           "micro_verified": false,
           "classification_status": "documented_exchange_or_provider_industry",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
+            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
           ],
           "current_close": 1526.5,
           "entry_status": "신규 등장",
@@ -8482,9 +8478,7 @@
           "micro_verified": false,
           "classification_status": "documented_exchange_or_provider_industry",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
+            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
           ],
           "current_close": 3796.0,
           "entry_status": "신규 등장",
@@ -9471,10 +9465,10 @@
             "세부 제품 확인 불가",
             "공급망 확인 불가"
           ],
-          "eligible_classified_issuers": 101,
+          "eligible_classified_issuers": 92,
           "current_signal_issuers": 3,
           "micro_verified": false,
-          "phase": "약화되는 산업",
+          "phase": "동반 신호 확인·단계 판정 보류",
           "comparison_scope": "현재 확인된 분류·종목군 고정, 21거래일 가격 재계산; 과거 전체 시장 복원이 아님"
         },
         {
@@ -10290,20 +10284,6 @@
           "comparison_scope": "현재 확인된 분류·종목군 고정, 21거래일 가격 재계산; 과거 전체 시장 복원이 아님"
         },
         {
-          "market": "JP",
-          "industry_path": [
-            "경제섹터 확인 불가",
-            "제공사 원문 업종",
-            "情報・通信",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 7,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "약화되는 산업",
-          "comparison_scope": "현재 확인된 분류·종목군 고정, 21거래일 가격 재계산; 과거 전체 시장 복원이 아님"
-        },
-        {
           "market": "CN",
           "industry_path": [
             "건강관리",
@@ -10371,6 +10351,20 @@
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "개별 종목 신호",
+          "comparison_scope": "현재 확인된 분류·종목군 고정, 21거래일 가격 재계산; 과거 전체 시장 복원이 아님"
+        },
+        {
+          "market": "JP",
+          "industry_path": [
+            "경제섹터 확인 불가",
+            "제공사 원문 업종",
+            "情報・通信",
+            "구체적 제품·공급망 확인 불가"
+          ],
+          "eligible_classified_issuers": 16,
+          "current_signal_issuers": 1,
+          "micro_verified": false,
+          "phase": "약화되는 산업",
           "comparison_scope": "현재 확인된 분류·종목군 고정, 21거래일 가격 재계산; 과거 전체 시장 복원이 아님"
         },
         {
