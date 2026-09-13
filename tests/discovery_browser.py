@@ -19,10 +19,6 @@ CATALOG = json.loads((ROOT / "wamo_catalog.json").read_text(encoding="utf-8"))
 RADAR = json.loads((ROOT / "wamo_radar.json").read_text(encoding="utf-8"))
 NOW = datetime(2026, 9, 13, 0, 0, tzinfo=timezone.utc)
 TTL_MS = 3 * 60 * 60 * 1000
-FIXTURE_HTML = """<!doctype html><html lang=\"ko\"><head><meta charset=\"utf-8\">
-<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Discovery fixture</title></head>
-<body><div id=\"wamo-live-status\">fixture</div><script>window.WAMO_DATA={};</script>
-<script src=\"/wamo_discovery.js\"></script></body></html>"""
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -82,9 +78,7 @@ def route_sources(page, base_url, catalog_plan, radar_plan):
     def handler(route):
         url = route.request.url
         path = urlparse(url).path
-        if path == "/__discovery_fixture.html":
-            route.fulfill(body=FIXTURE_HTML, content_type="text/html; charset=utf-8")
-        elif path.endswith("/wamo_catalog.json"):
+        if path.endswith("/wamo_catalog.json"):
             catalog_plan.serve(route)
         elif path.endswith("/wamo_radar.json"):
             radar_plan.serve(route)
@@ -97,7 +91,7 @@ def route_sources(page, base_url, catalog_plan, radar_plan):
 
 
 def open_page(browser, base_url, *, catalog_steps=(CATALOG,), radar_steps=None,
-              width=1440, path="/__discovery_fixture.html"):
+              width=1440, path="/discovery.html"):
     context = browser.new_context(viewport={"width": width, "height": 900})
     page = context.new_page()
     page.clock.install(time=NOW)
@@ -108,7 +102,7 @@ def open_page(browser, base_url, *, catalog_steps=(CATALOG,), radar_steps=None,
     radar_plan = SourcePlan(*(radar_steps or (fresh_radar(),)))
     route_sources(page, base_url, catalog_plan, radar_plan)
     page.goto(base_url + path, wait_until="domcontentloaded", timeout=60_000)
-    page.locator("#discovery-query").wait_for()
+    page.locator("#discovery-query" if path == "/discovery.html" else "#wamo-live-status").wait_for()
     return context, page, errors, catalog_plan, radar_plan
 
 
@@ -122,6 +116,55 @@ def wait_status(page, *parts):
 def assert_no_overflow(page):
     dimensions = page.evaluate("({scroll:document.documentElement.scrollWidth, client:document.documentElement.clientWidth})")
     assert dimensions["scroll"] <= dimensions["client"], dimensions
+
+
+def test_dedicated_navigation(browser, base_url):
+    for width in (1440, 390):
+        for name in ("index.html", "us.html", "movers.html"):
+            context = browser.new_context(viewport={"width": width, "height": 900})
+            page = context.new_page()
+            page.clock.install(time=NOW)
+            catalog_plan, radar_plan = SourcePlan(CATALOG), SourcePlan(fresh_radar())
+            route_sources(page, base_url, catalog_plan, radar_plan)
+            try:
+                page.goto(f"{base_url}/{name}", wait_until="networkidle")
+                link = page.get_by_role("link", name="🌐 글로벌 종목 발견", exact=True)
+                expect(link).to_be_visible()
+                assert page.locator("#wamo-discovery").count() == 0
+                assert catalog_plan.calls == radar_plan.calls == 0
+                link.click()
+                page.wait_for_url("**/discovery.html")
+                wait_status(page, "레이더: 연결 확인 유효", "카탈로그: 연결됨")
+                assert result_total(page) > 0
+                expect(page.locator('a[aria-current="page"]')).to_have_text("🌐 글로벌 종목 발견")
+                assert page.evaluate("typeof window.WAMO_DATA") == "undefined"
+                assert_no_overflow(page)
+                page.locator(f'nav a[href="{name}"]').click()
+                page.wait_for_url(f"**/{name}")
+                expect(page.locator("#wamo-live-status")).to_be_visible()
+                assert page.locator("#wamo-discovery").count() == 0
+                print("DISCOVERY NAVIGATION PASS", name, width)
+            finally:
+                context.close()
+
+
+def test_entry_errors(browser, base_url):
+    context = browser.new_context()
+    page = context.new_page()
+    route_sources(page, base_url, SourcePlan(CATALOG), SourcePlan(fresh_radar()))
+    try:
+        page.route("**/discovery/view.js", lambda route: route.abort("failed"))
+        page.goto(base_url + "/discovery.html")
+        expect(page.locator("#discovery-load-error")).to_be_visible()
+        page.get_by_role("link", name="🇰🇷 한국", exact=True).click()
+        expect(page.locator("#wamo-live-status")).to_be_visible()
+        page.goto(base_url + "/index.html?stock=__missing__")
+        expect(page.locator("#discovery-original-notice")).to_be_visible()
+        assert page.locator("#wamo-discovery").count() == 0
+        assert page.locator('#drawer[aria-hidden="false"]').count() == 0
+        print("DISCOVERY ENTRY ERRORS PASS")
+    finally:
+        context.close()
 
 
 def test_real_snapshot_interactions(browser, base_url, width):
@@ -454,14 +497,14 @@ def test_original_detail_without_radar(browser, base_url):
     for country, page_name in [("KR", "index.html"), ("US", "us.html")]:
         row = next(stock for stock in CATALOG["stocks"] if stock["country"] == country)
         path = f"/{page_name}?stock={quote(row['ticker'])}"
-        context, page, errors, _, _ = open_page(
+        context, page, errors, catalog_plan, radar_plan = open_page(
             browser, base_url, radar_steps=("network-error",), path=path
         )
         try:
-            wait_status(page, "레이더: 연결 실패")
             expect(page.locator('#drawer[aria-hidden="false"]')).to_be_visible()
             assert row["ticker"].split(".", 1)[0] in page.locator("#detailSub").inner_text()
-            assert page.locator("#discovery-query").is_enabled()
+            assert page.locator("#wamo-discovery").count() == 0
+            assert catalog_plan.calls == radar_plan.calls == 0
             assert_no_overflow(page)
             assert not errors, errors
             print("DISCOVERY ORIGINAL DETAIL PASS", country)
@@ -477,6 +520,8 @@ def main():
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
             try:
+                test_dedicated_navigation(browser, base_url)
+                test_entry_errors(browser, base_url)
                 test_real_snapshot_interactions(browser, base_url, 1440)
                 test_real_snapshot_interactions(browser, base_url, 390)
                 test_stale_and_expiry(browser, base_url)

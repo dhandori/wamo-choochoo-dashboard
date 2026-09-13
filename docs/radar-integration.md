@@ -9,9 +9,14 @@ never raw private caches, credentials or private operational records.
   all required exchange sessions, coverage and candidates, then allowlist output.
 - `wamo_radar.json`: public derived results only. Failures retain prior edition
   data but explicitly mark it FAILED; the browser hides failed/stale candidates.
-- `wamo_discovery.js`: searchable cross-market discovery and industry analysis.
-  Known KR/US securities open the existing WAMO detail; unsupported securities
-  explicitly remain unevaluated. No browser authentication is used.
+- `discovery.html`: dedicated global discovery tab for search, signals and industry
+  exploration. It loads the public catalog/radar, not the large KR/US price HTML.
+- `wamo_discovery.js`: shared navigation and original-detail routing. It mounts the
+  discovery modules only in the dedicated page's host. Existing market pages do not
+  fetch the discovery catalog/radar; their `?stock=` and legacy `?radar=` links still
+  open the original detail independently. The status loader supplies the navigation
+  link again after every normal HTML regeneration, without patching market payloads.
+  Unsupported securities remain unevaluated. No browser authentication is used.
 - `wamo_runtime.patch_status_ui`: installs a small detail-opening hook without
   replacing existing detail rendering or changing embedded market data.
 - `radar-sync.yml`: hourly update at UTC minute 25, serialized with existing
