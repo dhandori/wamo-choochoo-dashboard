@@ -3,6 +3,8 @@
   'use strict';
   const source = document.currentScript?.src || new URL('wamo_discovery.js', location.href).href;
   const nav = document.querySelector('.market-nav, .market-switch') || document.querySelector('nav');
+  // Keep regenerated legacy navigation within its container at tablet widths.
+  if (nav?.matches('.market-switch')) nav.style.flexWrap = 'wrap';
   if (nav && !nav.querySelector('a[href="discovery.html"]')) {
     const link = document.createElement('a');
     link.href = 'discovery.html';

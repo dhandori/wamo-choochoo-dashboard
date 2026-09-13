@@ -119,7 +119,7 @@ def assert_no_overflow(page):
 
 
 def test_dedicated_navigation(browser, base_url):
-    for width in (1440, 390):
+    for width in (1440, 521, 540, 390):
         for name in ("index.html", "us.html", "movers.html"):
             context = browser.new_context(viewport={"width": width, "height": 900})
             page = context.new_page()
@@ -130,6 +130,13 @@ def test_dedicated_navigation(browser, base_url):
                 page.goto(f"{base_url}/{name}", wait_until="networkidle")
                 link = page.get_by_role("link", name="🌐 글로벌 종목 발견", exact=True)
                 expect(link).to_be_visible()
+                assert page.locator('.market-switch').evaluate_all("""navs => navs.every(nav => {
+                    const box = nav.getBoundingClientRect();
+                    return [...nav.children].every(child => {
+                        const rect = child.getBoundingClientRect();
+                        return rect.left >= box.left && rect.right <= box.right;
+                    });
+                })"""), f"navigation content overflow at {width}px on {name}"
                 assert page.locator("#wamo-discovery").count() == 0
                 assert catalog_plan.calls == radar_plan.calls == 0
                 link.click()
