@@ -261,6 +261,54 @@ def test_stale_and_expiry(browser, base_url):
         context.close()
 
 
+def test_dialog_focus_across_source_refresh(browser, base_url):
+    fresh = fresh_radar()
+    signal = all_pass_signals(fresh)[0]
+    row_id = identity_for_signal(signal)
+    updated = deepcopy(fresh)
+    updated["checkedAt"] = (NOW + timedelta(minutes=5)).isoformat().replace("+00:00", "Z")
+    updated_signal = next(row for row in all_pass_signals(updated) if identity_for_signal(row) == row_id)
+    updated_signal["name"] += " · 갱신본"
+    context, page, errors, _, _ = open_page(browser, base_url, radar_steps=(fresh, updated))
+    try:
+        wait_status(page, "레이더: 연결 확인 유효")
+        page.locator("#discovery-mode").select_option("search")
+        page.locator("#discovery-query").fill(signal["symbol"])
+        card = page.locator(f'.discovery-stock[data-id="{row_id}"]')
+        card.locator("button").evaluate("node => window.__discoveryOrigin = node")
+        card.locator("button").click()
+        page.clock.fast_forward(5 * 60 * 1000 + 1)
+        wait_status(page, "레이더: 연결 확인 유효")
+        expect(page.locator("#discovery-detail")).to_be_visible()
+        expect(card).to_contain_text("갱신본")
+        assert page.evaluate("!window.__discoveryOrigin.isConnected")
+        page.keyboard.press("Escape")
+        assert page.evaluate('document.activeElement.closest(".discovery-stock")?.dataset.id') == row_id
+        assert not errors, errors
+    finally:
+        context.close()
+
+    context, page, errors, _, _ = open_page(
+        browser, base_url, radar_steps=(fresh, "network-error")
+    )
+    try:
+        wait_status(page, "레이더: 연결 확인 유효")
+        card = page.locator(".discovery-stock").first
+        card.locator("button").evaluate("node => window.__discoveryOrigin = node")
+        card.locator("button").click()
+        page.clock.fast_forward(5 * 60 * 1000 + 1)
+        wait_status(page, "레이더: 연결 실패")
+        expect(page.locator(".discovery-stock")).to_have_count(0)
+        expect(page.locator("#discovery-detail")).to_be_visible()
+        assert page.evaluate("!window.__discoveryOrigin.isConnected")
+        page.locator("#discovery-detail-close").click()
+        assert page.evaluate("document.activeElement.id") == "discovery-count"
+        assert not errors, errors
+        print("DISCOVERY DIALOG REFRESH FOCUS PASS")
+    finally:
+        context.close()
+
+
 def test_failed_refresh_and_recovery(browser, base_url):
     fresh = fresh_radar()
     context, page, errors, catalog_plan, radar_plan = open_page(
@@ -432,6 +480,7 @@ def main():
                 test_real_snapshot_interactions(browser, base_url, 1440)
                 test_real_snapshot_interactions(browser, base_url, 390)
                 test_stale_and_expiry(browser, base_url)
+                test_dialog_focus_across_source_refresh(browser, base_url)
                 test_failed_refresh_and_recovery(browser, base_url)
                 test_independent_and_invalid_sources(browser, base_url)
                 test_catalog_revalidation_detail(browser, base_url)
