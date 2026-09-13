@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-13T06:01:05Z",
+  "generatedAt": "2026-09-13T06:16:01Z",
   "markets": {
     "KR": {
       "asOf": "2026-09-11",
@@ -4092,7 +4092,7 @@
         "rsPercentile": 34.7,
         "ma50": 478404.76,
         "ma150": 550387.98,
-        "ma200": 551005.91,
+        "ma200": 551005.92,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": false,
@@ -5016,7 +5016,7 @@
         "rsPercentile": 27.6,
         "ma50": 770617.36,
         "ma150": 945417.61,
-        "ma200": 916242.55,
+        "ma200": 916242.56,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": true,
@@ -10517,9 +10517,9 @@
         "stage2": true,
         "aligned": false,
         "rsPercentile": 87.5,
-        "ma50": 93.47,
-        "ma150": 82.25,
-        "ma200": 79.91,
+        "ma50": 93.5,
+        "ma150": 82.27,
+        "ma200": 79.93,
         "checks": {
           "주가>150·200일선": true,
           "150일선>200일선": true,
@@ -13898,6 +13898,39 @@
       }
     },
     {
+      "id": "US:BRK-A",
+      "country": "US",
+      "market": "US",
+      "symbol": "BRK-A",
+      "ticker": "BRK-A",
+      "name": "Berkshire Hathaway Inc.",
+      "sector": "산업 미분류",
+      "asOf": "2026-09-11",
+      "currency": "USD",
+      "close": 766000.0,
+      "detailUrl": "us.html?stock=BRK-A",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-09-11",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 62.8,
+        "ma50": 755549.68,
+        "ma150": 736630.63,
+        "ma200": 738741.3,
+        "checks": {
+          "주가>150·200일선": true,
+          "150일선>200일선": false,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": true,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": true
+        }
+      }
+    },
+    {
       "id": "US:WELL",
       "country": "US",
       "market": "US",
@@ -14415,39 +14448,6 @@
         "ma150": null,
         "ma200": null,
         "checks": {}
-      }
-    },
-    {
-      "id": "US:BRK-A",
-      "country": "US",
-      "market": "US",
-      "symbol": "BRK-A",
-      "ticker": "BRK-A",
-      "name": "Berkshire Hathaway Inc.",
-      "sector": "산업 미분류",
-      "asOf": "2026-09-11",
-      "currency": "USD",
-      "close": 766000.0,
-      "detailUrl": "us.html?stock=BRK-A",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-09-11",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 62.8,
-        "ma50": 755549.68,
-        "ma150": 736630.63,
-        "ma200": 738741.3,
-        "checks": {
-          "주가>150·200일선": true,
-          "150일선>200일선": false,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": true,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": true
-        }
       }
     },
     {
@@ -17974,39 +17974,6 @@
       }
     },
     {
-      "id": "US:NLY",
-      "country": "US",
-      "market": "US",
-      "symbol": "NLY",
-      "ticker": "NLY",
-      "name": "Annaly Capital Management Inc. Common Stock",
-      "sector": "Real Estate",
-      "asOf": "2026-09-11",
-      "currency": "USD",
-      "close": 21.9,
-      "detailUrl": "us.html?stock=NLY",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-09-11",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 38.1,
-        "ma50": 22.88,
-        "ma150": 21.77,
-        "ma200": 21.63,
-        "checks": {
-          "주가>150·200일선": true,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": true
-        }
-      }
-    },
-    {
       "id": "US:J",
       "country": "US",
       "market": "US",
@@ -18035,6 +18002,39 @@
           "50일선>150·200일선": true,
           "주가>50일선": true,
           "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": true
+        }
+      }
+    },
+    {
+      "id": "US:NLY",
+      "country": "US",
+      "market": "US",
+      "symbol": "NLY",
+      "ticker": "NLY",
+      "name": "Annaly Capital Management Inc. Common Stock",
+      "sector": "Real Estate",
+      "asOf": "2026-09-11",
+      "currency": "USD",
+      "close": 21.9,
+      "detailUrl": "us.html?stock=NLY",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-09-11",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 38.1,
+        "ma50": 22.88,
+        "ma150": 21.77,
+        "ma200": 21.63,
+        "checks": {
+          "주가>150·200일선": true,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": true
         }
       }
@@ -18989,39 +18989,6 @@
       }
     },
     {
-      "id": "US:PCAR",
-      "country": "US",
-      "market": "US",
-      "symbol": "PCAR",
-      "ticker": "PCAR",
-      "name": "PACCAR Inc. Common Stock",
-      "sector": "Industrials",
-      "asOf": "2026-09-11",
-      "currency": "USD",
-      "close": 122.73,
-      "detailUrl": "us.html?stock=PCAR",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-09-11",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 45.9,
-        "ma50": 127.77,
-        "ma150": 121.61,
-        "ma200": 119.62,
-        "checks": {
-          "주가>150·200일선": true,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": true
-        }
-      }
-    },
-    {
       "id": "US:APD",
       "country": "US",
       "market": "US",
@@ -19050,6 +19017,39 @@
           "50일선>150·200일선": true,
           "주가>50일선": false,
           "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": true
+        }
+      }
+    },
+    {
+      "id": "US:PCAR",
+      "country": "US",
+      "market": "US",
+      "symbol": "PCAR",
+      "ticker": "PCAR",
+      "name": "PACCAR Inc. Common Stock",
+      "sector": "Industrials",
+      "asOf": "2026-09-11",
+      "currency": "USD",
+      "close": 122.73,
+      "detailUrl": "us.html?stock=PCAR",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-09-11",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 45.9,
+        "ma50": 127.77,
+        "ma150": 121.61,
+        "ma200": 119.62,
+        "checks": {
+          "주가>150·200일선": true,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": true
         }
       }
