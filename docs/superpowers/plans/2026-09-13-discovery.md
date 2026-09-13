@@ -58,7 +58,9 @@ historyReady200 true, not isStale, and valid close/date; otherwise all indicator
 Export pure `buildModel(catalog, radar, now, connectionFailed=false)`,
 `selectStocks(model, filters)`, `selectIndustries(model, filters)`.
 Model has `stocks`, `industries`, `status`; rows retain source signals separate from technical.
-Filters: `{mode:'candidates'|'search', query:'', country:'', industry:'', signal:'', historical:false}`.
+Filters: `{mode:'candidates'|'search', query:'', country:'', industry:'', signal:'', technical:'', historical:false}`.
+High signal and technical (stage2/aligned/rs80) are independent AND conditions.
+The technical selector is separately labeled; unknown observations cannot qualify.
 Store exposes `createStore({fetcher, now, onChange})` returning `refresh()` and `getState()`;
 view owns refresh scheduling on interval/focus/online, error display and filter state.
 

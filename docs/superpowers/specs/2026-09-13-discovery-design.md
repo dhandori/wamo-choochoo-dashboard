@@ -9,7 +9,8 @@ Three modes: verified high candidates, industry exploration, and known-security 
 Search covers the public WAMO KR/US snapshots plus allowlisted radar candidates, not an
 entire-exchange directory. Show the scope and counts explicitly. No result is not proof
 that a security has no signal: distinguish outside coverage, no matching current candidate,
-stale release and failed connection. All market/query/industry filters compose.
+stale release and failed connection. All market/query/industry filters compose. High-period
+and technical filters are separate and conjunctive (e.g. close 52-week high AND Stage 2 core).
 
 Candidate cards show country, ticker, name, as-of, currency/close, true high flags and
 classification caveats. Industry cards show numerator/denominator, ratio and source phase;
