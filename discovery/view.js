@@ -1,6 +1,6 @@
 import {createStore} from './store.js';
 import {COUNTRIES,FLAGS,CONNECTION_TTL,selectStocks,selectIndustries} from './model.js';
-import {el,openDetail,handleOriginalRequest,candidateText,priceText} from './detail.js';
+import {el,openDetail,candidateText,priceText} from './detail.js';
 
 const PAGE_SIZE=24;
 const defaults=()=>({mode:'candidates',query:'',country:'',industry:'',signal:'',technical:'',historical:false,sort:'recent'});
@@ -22,13 +22,13 @@ export function emptyStateMessage(model,filters={}) {
 }
 
 export function mountDiscovery() {
-  if(!window.WAMO_DATA || document.getElementById('wamo-discovery')) return;
+  const host=document.getElementById('discovery-root');
+  if(!host || document.getElementById('wamo-discovery')) return;
   const stylesheet=el('link',null,document.head); stylesheet.rel='stylesheet'; stylesheet.href=new URL('./discovery.css',import.meta.url).href;
   const panel=el('section'); panel.id='wamo-discovery'; panel.setAttribute('aria-labelledby','discovery-title');
-  const anchor=document.getElementById('wamo-live-status');
-  if(anchor) anchor.after(panel); else document.body.prepend(panel);
+  host.replaceChildren(panel);
   el('p','WAMO DISCOVERY',panel,'discovery-eyebrow');
-  el('h2','글로벌 종목 발견',panel).id='discovery-title';
+  el('h1','글로벌 종목 발견',panel).id='discovery-title';
   el('p','신고가 근거로 후보를 찾고, 산업의 확산을 살펴보고, 알고 있는 종목을 확인하세요.',panel,'discovery-intro');
   const scope=el('p','공개 자료 범위를 확인하는 중…',panel,'discovery-muted'); scope.id='discovery-scope';
   const metrics=el('div',null,panel,'discovery-metrics'); metrics.id='discovery-metrics';
@@ -176,8 +176,6 @@ export function mountDiscovery() {
     const expires=Date.parse(model.status.checkedAt)+CONNECTION_TTL+1;
     if(model.status.radar==='current' && expires>Date.now()) expiryTimer=setTimeout(render,expires-Date.now());
   }
-  const requested=handleOriginalRequest(location.search,window.WAMO_OPEN_DETAIL);
-  if(requested==='missing') el('p','요청한 종목을 이 페이지의 기존 WAMO 상세에서 찾을 수 없습니다. 국가 페이지와 종목코드를 확인하거나 아래 검색을 이용하세요.',panel,'discovery-warning').id='discovery-original-notice';
   render();store.refresh();
   setInterval(()=>store.refresh(),5*60*1000);
   setInterval(()=>render(),30000);

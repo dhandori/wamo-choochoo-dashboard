@@ -1,7 +1,7 @@
 #wamo-discovery,.discovery-dialog{--discovery-bg:#101e30;--discovery-line:#37516c;--discovery-text:#e3edf7;--discovery-muted:#b5c5d8;--discovery-accent:#83e0c2;box-sizing:border-box;color:var(--discovery-text);font:14px/1.65 system-ui,sans-serif;overflow-wrap:anywhere;text-align:left}
 #wamo-discovery{margin:18px 0;padding:24px;border:1px solid var(--discovery-line);border-radius:18px;background:linear-gradient(130deg,#14283d,#101e30 58%)}
 #wamo-discovery *, .discovery-dialog *{box-sizing:border-box;min-width:0}
-#wamo-discovery h2,.discovery-dialog h2{margin:0 0 10px;font-size:clamp(22px,3vw,30px);line-height:1.3;color:var(--discovery-text)}
+#wamo-discovery h1,.discovery-dialog h2{margin:0 0 10px;font-size:clamp(22px,3vw,30px);line-height:1.3;color:var(--discovery-text)}
 #wamo-discovery p,.discovery-dialog p{margin:8px 0}
 #wamo-discovery .discovery-eyebrow{margin:0 0 6px;color:var(--discovery-accent);font-size:11px;letter-spacing:.16em;font-weight:750}
 #wamo-discovery .discovery-intro{font-size:15px}

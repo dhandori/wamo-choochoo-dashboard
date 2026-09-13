@@ -3,11 +3,9 @@ from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import json
-import shutil
 import sys
 import tempfile
 import threading
-from datetime import datetime, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import wamo_update_business_dart as core
@@ -33,30 +31,6 @@ with tempfile.TemporaryDirectory() as folder:
         (folder / name).write_text(patch_status_ui(html, 'US' if name == 'us.html' else 'KR'), encoding='utf-8')
     (folder / 'wamo_status.js').write_bytes((root / 'wamo_status.js').read_bytes())
     (folder / 'wamo_discovery.js').write_bytes((root / 'wamo_discovery.js').read_bytes())
-    (folder / 'wamo_catalog.json').write_bytes((root / 'wamo_catalog.json').read_bytes())
-    shutil.copytree(root / 'discovery', folder / 'discovery')
-    radar_signals = []
-    for filename, market in [('index.html', 'KR-KOSPI'), ('us.html', 'US-NASDAQ')]:
-        stock = core.extract_old_payload((folder / filename).read_text(encoding='utf-8'))['stocks'][0]
-        if filename == 'index.html':
-            market = 'KR-KOSDAQ' if stock['ticker'].endswith('.KQ') else 'KR-KOSPI'
-        radar_signals.append(dict(key=market + ':' + stock['ticker'], market=market,
-            country='한국' if market.startswith('KR-') else '미국',
-            symbol=stock.get('stock_code') or stock['ticker'], name=stock['name'],
-            currency='KRW' if market.startswith('KR-') else 'USD', as_of='20260911',
-            industry_path=['테스트 산업'], micro_verified=False,
-            classification_status='test_fixture',
-            classification_caveats=['브라우저 회귀검사 공개 스냅샷'],
-            current_close=float(stock.get('currentPrice') or stock.get('price') or 1),
-            entry_status='신고가 단계 상승',
-            flags={'intraday_63': None, 'intraday_126': None, 'intraday_252': None,
-                   'intraday_ath': None, 'close_63': True, 'close_126': False,
-                   'close_252': False, 'close_ath': None}))
-    (folder / 'wamo_radar.json').write_text(json.dumps(dict(schemaVersion=1,
-        checkedAt=datetime.now(timezone.utc).isoformat(), scope='테스트 종목군',
-        editions={'TEST': dict(status='PASS', generatedAt='2026-09-11T23:00:00Z',
-            sessions={}, releaseKey='browser-smoke', fingerprint='browser-smoke',
-            signals=radar_signals, industries=[])})), encoding='utf-8')
     status = {'KR': {'status': 'FAILED', 'asOf': '2026-09-07', 'attemptedAt': '2026-09-07T08:00:00Z',
                      'lastSuccessAt': '2026-09-07T07:00:00Z', 'error': '가격 갱신 실패 · 이전 정상 데이터 유지'},
               'US': {'status': 'WARNING', 'asOf': '2026-09-04', 'warnings': ['SEC 직접연결 안 됨']}}
@@ -81,18 +55,8 @@ with tempfile.TemporaryDirectory() as folder:
                 if name == 'index.html':
                     assert '갱신 실패' in page.locator('#wamo-live-status').inner_text()
                 if name in ('index.html', 'us.html'):
-                    discovery = page.locator('#wamo-discovery')
-                    page.wait_for_function("document.querySelector('#discovery-status')?.textContent.includes('연결 확인 유효')")
-                    assert '2개 후보' in discovery.inner_text()
-                    discovery.locator('#discovery-query').fill('__absent__')
-                    assert '0개 후보' in discovery.inner_text()
-                    discovery.locator('#discovery-query').fill('')
-                    candidate = radar_signals[0 if name == 'index.html' else 1]
-                    discovery.get_by_role('button', name=f"{candidate['name']} · {candidate['market']}:{candidate['symbol']}", exact=True).click()
-                    detail = page.locator('#discovery-detail')
-                    assert detail.is_visible()
-                    assert candidate['symbol'] in detail.inner_text()
-                    detail.get_by_role('button', name='닫기', exact=True).click()
+                    assert page.locator('#wamo-discovery').count() == 0
+                    assert page.get_by_role('link', name='🌐 글로벌 종목 발견', exact=True).is_visible()
                     panel = page.locator('#wamo-kis-panel')
                     panel.locator('summary').click()
                     assert 'Forward PER' in panel.inner_text()
