@@ -5,7 +5,7 @@ on:
     - cron: '25 * * * *'
   push:
     branches: [main, 'codex/radar-integration']
-    paths: ['wamo_radar.py', '.github/workflows/radar-sync.yml']
+    paths: ['wamo_radar.py', 'wamo_catalog.py', '.github/workflows/radar-sync.yml']
 permissions:
   contents: write
 concurrency:
@@ -28,6 +28,9 @@ jobs:
         env:
           RADAR_READ_TOKEN: ${{ secrets.RADAR_READ_TOKEN }}
         run: python wamo_radar.py
+      - name: Rebuild public WAMO catalog
+        if: always()
+        run: python wamo_catalog.py
       - name: Save verified results or explicit failure status
         if: always()
         env:
@@ -37,7 +40,7 @@ jobs:
           test -f wamo_radar.json || exit 0
           git config user.name wamo-dashboard-bot
           git config user.email actions@users.noreply.github.com
-          git add -- wamo_radar.json index.html us.html
+          git add -- wamo_radar.json wamo_catalog.json index.html us.html
           git diff --cached --quiet && exit 0
           git commit -m 'Refresh validated global discovery results'
           git pull --rebase origin "$TARGET_BRANCH"

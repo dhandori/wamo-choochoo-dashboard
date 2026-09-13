@@ -26,12 +26,21 @@ high flags. Industry denominators are classified observed cohorts, not entire
 exchanges. All nine market coverage entries must agree with latest completed
 sessions (10-minute provider grace). No partial-current report is published.
 The browser stops showing candidates when connection checks are over 3 hours old.
+The connection state and each market edition are reported separately. A recent connection
+does not make a failed or malformed edition current, and a failed catalog revalidation does
+not make cached technical evidence current. The historical opt-in exposes only the retained
+published observations in this discovery scope; it is not whole-market or all-universe coverage.
 
 ## Verification
 
 Offline tests cover allowlisting, null preservation, mismatched releases,
 stale sessions, duplicate symbols, invalid candidate dates and hook idempotence.
-Browser tests use existing public stocks in synthetic discovery fixtures.
+Browser tests load the real discovery modules and checked-in public catalog/radar snapshots.
+Their controlled clock and intercepted source responses verify desktop/mobile search, exact
+industry drilldown, combined high/technical filters, original detail links, three-hour expiry,
+independent failures, malformed responses, failed editions and retry recovery without external
+network access. The original index/US/movers smoke suite runs separately to protect the existing
+WAMO pages.
 The branch connection workflow tests private read access without printing data.
 
 ## Remaining Investment OS scope
@@ -48,3 +57,7 @@ Token expiration: renew the fine-grained private-repository Contents read token
 in the RADAR_READ_TOKEN Actions secret. Never commit it or put it in browser code.
 For rollback, revert the integration commit; the original WAMO pages and price
 pipelines remain independent. Review Actions when a FAILED badge appears.
+
+The discovery `다시 확인` button reloads the latest published catalog and radar snapshots; it
+does not call a market-data API directly. A connection failure keeps search controls available,
+but current candidates remain hidden until a valid, recent published radar response is loaded.

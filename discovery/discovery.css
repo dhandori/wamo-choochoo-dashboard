@@ -1,0 +1,54 @@
+#wamo-discovery,.discovery-dialog{--discovery-bg:#101e30;--discovery-line:#37516c;--discovery-text:#e3edf7;--discovery-muted:#b5c5d8;--discovery-accent:#83e0c2;box-sizing:border-box;color:var(--discovery-text);font:14px/1.65 system-ui,sans-serif;overflow-wrap:anywhere;text-align:left}
+#wamo-discovery{margin:18px 0;padding:24px;border:1px solid var(--discovery-line);border-radius:18px;background:linear-gradient(130deg,#14283d,#101e30 58%)}
+#wamo-discovery *, .discovery-dialog *{box-sizing:border-box;min-width:0}
+#wamo-discovery h2,.discovery-dialog h2{margin:0 0 10px;font-size:clamp(22px,3vw,30px);line-height:1.3;color:var(--discovery-text)}
+#wamo-discovery p,.discovery-dialog p{margin:8px 0}
+#wamo-discovery .discovery-eyebrow{margin:0 0 6px;color:var(--discovery-accent);font-size:11px;letter-spacing:.16em;font-weight:750}
+#wamo-discovery .discovery-intro{font-size:15px}
+#wamo-discovery .discovery-muted,.discovery-dialog .discovery-muted{color:var(--discovery-muted);font-size:12px}
+#wamo-discovery .discovery-metrics{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+#wamo-discovery .discovery-metrics p{margin:0;padding:8px 12px;border:1px solid var(--discovery-line);border-radius:8px;background:#142b40;font-weight:650}
+#wamo-discovery .discovery-status-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#wamo-discovery .discovery-warning,.discovery-dialog .discovery-warning{color:#ffd08b}
+#wamo-discovery .discovery-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+#wamo-discovery .discovery-field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--discovery-muted);min-width:0}
+#wamo-discovery .discovery-query-field{grid-column:span 2}
+#wamo-discovery input,#wamo-discovery select{width:100%;min-height:44px;padding:10px 11px;border:1px solid #57718c;border-radius:8px;background:#0c1928;color:var(--discovery-text);font:14px system-ui;max-width:100%}
+#wamo-discovery button,.discovery-dialog button,.discovery-dialog .discovery-original-link{min-height:42px;padding:9px 14px;border:1px solid #5c7791;border-radius:8px;background:#20374e;color:var(--discovery-text);font:600 13px/1.5 system-ui;cursor:pointer;white-space:normal;text-align:center;text-decoration:none}
+#wamo-discovery button:hover,.discovery-dialog button:hover,.discovery-dialog .discovery-original-link:hover{border-color:var(--discovery-accent);background:#29455b}
+#wamo-discovery button:disabled{opacity:.45;cursor:default}
+#wamo-discovery :focus-visible,.discovery-dialog :focus-visible{outline:3px solid var(--discovery-accent);outline-offset:3px}
+#wamo-discovery [hidden]{display:none!important}
+#wamo-discovery .discovery-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:16px 0}
+#wamo-discovery .discovery-checkbox{display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer}
+#wamo-discovery .discovery-checkbox input{width:19px;height:19px;min-height:19px;margin:0;flex:0 0 auto;accent-color:#69cfb0}
+#wamo-discovery .discovery-note,.discovery-dialog .discovery-notice{padding:12px 14px;border-left:3px solid #6092b6;background:#172d42;border-radius:0 8px 8px 0;color:#d4e3f1;font-size:12px}
+#wamo-discovery .discovery-count{font-size:13px;font-weight:650;margin:18px 0 12px}
+#wamo-discovery .discovery-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#wamo-discovery .discovery-stock,#wamo-discovery .discovery-industry{padding:17px;border:1px solid var(--discovery-line);border-radius:12px;background:#0e1d2d;display:flex;flex-direction:column;align-items:stretch;font-size:12px}
+#wamo-discovery .discovery-card-market{font-size:11px;color:#96bad9;letter-spacing:.04em;margin:0 0 7px}
+#wamo-discovery .discovery-open-detail,#wamo-discovery .discovery-open-industry{padding:0;min-height:44px;border:0;background:transparent;text-align:left;font-size:15px;line-height:1.45;color:#f3f8fc}
+#wamo-discovery .discovery-open-detail:hover,#wamo-discovery .discovery-open-industry:hover{color:var(--discovery-accent);text-decoration:underline}
+#wamo-discovery .discovery-current{color:var(--discovery-accent);font-size:12px}
+#wamo-discovery .discovery-price{font-weight:650;color:#e6eef7}
+#wamo-discovery .discovery-caveat{display:block;color:#bdc5ce;font-size:11px;line-height:1.6}
+#wamo-discovery .discovery-technical{color:#a9cbe6;font-size:11px;border-top:1px solid var(--discovery-line);padding-top:8px;margin-top:auto}
+#wamo-discovery .discovery-industry-ratio{font-size:22px;color:var(--discovery-accent);font-weight:700}
+#wamo-discovery .discovery-empty{grid-column:1/-1;min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:#0e1d2d;border:1px dashed var(--discovery-line);border-radius:12px;color:var(--discovery-muted)}
+#wamo-discovery .discovery-pagination{display:flex;justify-content:center;align-items:center;gap:15px;margin:18px 0;background:transparent;padding:0;border:0;font-size:12px}
+.discovery-dialog{width:min(860px,calc(100vw - 32px));max-width:calc(100vw - 32px);max-height:88dvh;padding:24px;border:1px solid #56728d;border-radius:16px;background:var(--discovery-bg);overflow:auto;box-shadow:0 25px 90px #0009}
+.discovery-dialog::backdrop{background:#020914bd}
+.discovery-dialog .discovery-detail-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px}
+.discovery-dialog .discovery-detail-heading button{flex:0 0 auto}
+.discovery-dialog .discovery-detail-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.discovery-dialog .discovery-evidence{padding:16px;border:1px solid var(--discovery-line);border-radius:10px;background:#132438}
+.discovery-dialog .discovery-chart{grid-column:1/-1}
+.discovery-dialog h3{font-size:16px;margin:0 0 12px;color:#e7f0f8}
+.discovery-dialog h4{font-size:14px;margin:18px 0 8px}
+.discovery-dialog ul{padding-left:22px;font-size:12px;color:var(--discovery-muted)}
+.discovery-dialog .discovery-flags{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.discovery-dialog .discovery-flags th,.discovery-dialog .discovery-flags td{padding:7px 10px;border-bottom:1px solid var(--discovery-line);text-align:left;color:var(--discovery-text);background:transparent}
+.discovery-dialog summary{cursor:pointer;min-height:44px;padding:10px 0;color:var(--discovery-accent)}
+.discovery-dialog .discovery-original-link{display:inline-block;margin-top:4px;color:var(--discovery-accent)}
+@media(max-width:1050px){#wamo-discovery .discovery-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){#wamo-discovery{padding:16px 12px;margin:12px 0;border-radius:12px}#wamo-discovery .discovery-controls{grid-template-columns:repeat(2,minmax(0,1fr))}#wamo-discovery .discovery-field:first-child{grid-column:1/-1}#wamo-discovery .discovery-query-field{grid-column:1/-1}#wamo-discovery .discovery-results{grid-template-columns:minmax(0,1fr)}#wamo-discovery .discovery-metrics{gap:6px}#wamo-discovery .discovery-metrics p{font-size:11px;padding:7px 8px}#wamo-discovery .discovery-status-row{align-items:flex-start}#wamo-discovery .discovery-status-row button{flex:0 0 auto}#wamo-discovery .discovery-checkbox{font-size:12px}.discovery-dialog{padding:16px;width:calc(100vw - 20px);max-width:calc(100vw - 20px)}.discovery-dialog .discovery-detail-panels{grid-template-columns:minmax(0,1fr)}.discovery-dialog h2{font-size:20px}}
