@@ -21,8 +21,9 @@ market-value list, using the existing HTTP timeout and headers. The updater's
 - Preserve existing preferred-share/SPAC exclusions. Existing downstream
   instrument classification, capitalization/liquidity thresholds and signals
   are unchanged.
-- Schema drift, incomplete pagination, duplicate rows or changed totals fail
-  the refresh. They do not silently shrink the universe or reuse stale rows as LIVE.
+- Schema drift, incomplete pages, duplicates within one page or changed totals fail
+  the refresh. Cross-page rank movement is reconciled across at most two full sweeps;
+  the number of unique identifiers must equal the stable provider total before use. They do not silently shrink the universe or reuse stale rows as LIVE.
 - This endpoint is provider-controlled, not a guaranteed public API contract.
   Future changes must remain visible as failed refreshes with old data retained.
 
@@ -37,3 +38,13 @@ No generated HTML, caches, ranking formulas, financial data, secrets or
 production schedules are changed. A complete production refresh still needs
 its configured provider credentials and freshness gates. This repair is the
 first isolated market-data boundary, not completion of Investment OS integration.
+
+## 2026-09-14 rank movement incident
+
+The 17:00 KST run failed on KOSDAQ identifier validation before KIS quotation.
+A read-only reproduction observed code 123330 appearing again at page 5.
+Market-value pagination is not an immutable snapshot. The adapter now collects
+latest valid records by code across up to two complete sweeps. Missing identities
+are not ignored, and current quotes are still collected independently downstream.
+The status UI labels the retained completion time and KIS summary as previous
+successful data. Recovery cron windows include two hours after the final slot.

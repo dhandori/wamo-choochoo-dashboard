@@ -42,7 +42,7 @@ class UniverseTests(unittest.TestCase):
         first = [stock(i) for i in range(100)]
         for second in ([], [stock(0)]):
             with self.subTest(second=second), self.assertRaises(RuntimeError):
-                self.fetch([page(first, total=101), page(second, 2, 101)])
+                self.fetch([page(first, total=101), page(second, 2, 101)] * 2)
 
     def test_wrong_market_or_invalid_cap_fails_closed(self):
         for change in ({'sosok': '1'}, {'marketValueRaw': 'NaN'}, {'marketValueRaw': None}):

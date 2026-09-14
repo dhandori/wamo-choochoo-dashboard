@@ -32,7 +32,7 @@ with tempfile.TemporaryDirectory() as folder:
     (folder / 'wamo_status.js').write_bytes((root / 'wamo_status.js').read_bytes())
     (folder / 'wamo_discovery.js').write_bytes((root / 'wamo_discovery.js').read_bytes())
     status = {'KR': {'status': 'FAILED', 'asOf': '2026-09-07', 'attemptedAt': '2026-09-07T08:00:00Z',
-                     'lastSuccessAt': '2026-09-07T07:00:00Z', 'error': '가격 갱신 실패 · 이전 정상 데이터 유지'},
+                     'lastSuccessAt': '2026-09-07T07:00:00Z', 'kis': {'message': '한국투자 시세 20/20종목 새로 확인'}, 'error': '가격 갱신 실패 · 이전 정상 데이터 유지'},
               'US': {'status': 'WARNING', 'asOf': '2026-09-04', 'warnings': ['SEC 직접연결 안 됨']}}
     (folder / 'wamo_refresh_status.json').write_text(json.dumps(status), encoding='utf-8')
     server = ThreadingHTTPServer(('127.0.0.1', 0), partial(SimpleHTTPRequestHandler, directory=str(folder)))
@@ -54,6 +54,8 @@ with tempfile.TemporaryDirectory() as folder:
                 assert '미국 00:00 / 05:00' not in schedule_text
                 if name == 'index.html':
                     assert '갱신 실패' in page.locator('#wamo-live-status').inner_text()
+                    assert '마지막 성공' in page.locator('#wamo-live-status').inner_text()
+                    assert '이전 성공 자료' in page.locator('#wamo-live-status').inner_text()
                 if name in ('index.html', 'us.html'):
                     assert page.locator('#wamo-discovery').count() == 0
                     assert page.get_by_role('link', name='🌐 글로벌 종목 발견', exact=True).is_visible()
