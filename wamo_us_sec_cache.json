@@ -50212,5 +50212,117 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-09-11",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "OSCR": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.hioscar.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Oscar Health Inc. Class A Common Stock은 Nasdaq 공식 분류상 Health Care · Medical Specialities 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Oscar Health Inc. Class A Common Stock은 Nasdaq 공식 분류상 Health Care · Medical Specialities 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Oscar Health, Inc. is a leading healthcare technology company built on a full-stack platform and a relentless focus on member experience. Oscar Health helps make high-quality and affordable care more accessible for millions of people through Oscar's Individual & Family plans and ICHRA solutions, Lucie Health Marketplace, and Trove Group. Consumers benefit from better choice, deeper engagement, and connection to high-value clinical care.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 11,701,427천달러로 전년 대비 +27.5%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "헬스케어 (Health Care)",
+        "Health Care",
+        "Medical Specialities"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": false,
+      "leveragePass": false,
+      "liquidityPass": true,
+      "assets": 6325411.0,
+      "liabilities": 5344676.0,
+      "equity": 977648.0,
+      "netIncome": -443151.0,
+      "debtRatioPct": 546.7,
+      "currentRatioPct": null,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 27.5,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Health Care",
+    "industry": "Medical Specialities",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-14",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "DDS": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.dillards.com",
+    "businessModelReportDate": "1/31/2026",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Dillard's Inc. Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Department/Specialty Retail Stores 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Dillard's Inc. Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Department/Specialty Retail Stores 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Dillard's was founded by William T. Dillard in 1938 in Nashville, Arkansas, with an $8,000 investment in a hometown department store. Today, Dillard's, Inc. ranks among the nation's largest fashion retailers - operating 271 Dillard's locations, including 28 clearance centers spanning 30 states and an Internet store at dillards.com. The Company focuses on delivering style, quality, and value to its customers by offering premium fashion apparel, beauty, and home collections from both national and exclusive brand sources. Dillard's complements this curated product assortment with exceptional, client-focused customer care.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 6,563,336천달러로 전년 대비 -0.4%입니다(결산기준 1/31/2026).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "경기소비재 (Consumer Discretionary)",
+        "Consumer Discretionary",
+        "Department/Specialty Retail Stores"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "1/31/2026",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 3505023.0,
+      "liabilities": 1726053.0,
+      "equity": 1778970.0,
+      "netIncome": 570187.0,
+      "debtRatioPct": 97.0,
+      "currentRatioPct": 264.6,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": -0.4,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Consumer Discretionary",
+    "industry": "Department/Specialty Retail Stores",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-14",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
