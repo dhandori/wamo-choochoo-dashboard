@@ -1,11 +1,11 @@
 {
   "KR": {
-    "status": "PASS",
-    "attemptedAt": "2026-09-13T06:01:42.563777+00:00",
-    "scheduledFor": "2026-09-11T07:00:00+00:00",
-    "nextScheduledFor": "2026-09-14T00:30:00+00:00",
-    "trigger": "코드 반영 후 실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34741686284",
+    "status": "FAILED",
+    "attemptedAt": "2026-09-14T04:44:24.435870+00:00",
+    "scheduledFor": "2026-09-14T04:00:00+00:00",
+    "nextScheduledFor": "2026-09-14T05:00:00+00:00",
+    "trigger": "예약실행",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/34807106023",
     "moversStatus": "PASS",
     "warnings": [],
     "lastSuccessAt": "2026-09-13T06:08:20.845517+00:00",
@@ -20,7 +20,7 @@
       "calendar": "XKRX"
     },
     "count": 212,
-    "error": null,
+    "error": "가격 갱신 또는 최신성 검사 실패 · 이전 정상 데이터 유지 · 실행 로그 확인",
     "kis": {
       "status": "LIVE",
       "connected": true,
