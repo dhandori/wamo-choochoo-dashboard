@@ -29,8 +29,8 @@ on:
     - cron: '0 19 * * 1-5'
     - cron: '0 20 * * 1-5'
     - cron: '20 21 * * 1-5'
-    # Retry missed slots every 15 minutes during update windows; completed slots skip.
-    - cron: '7,22,37,52 0-7,13-21 * * 1-5'
+    # Include two hours after close so a delayed final run can still retry; completed slots skip.
+    - cron: '7,22,37,52 0-9,13-23 * * 1-5'
 
 permissions:
   contents: write

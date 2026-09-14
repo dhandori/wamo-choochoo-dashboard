@@ -46,7 +46,7 @@
       if (isMovers && s.moversStatus === 'RUNNING') label = 'TOP 30 갱신 중 · 이전 결과 표시';
       if (isMovers && s.moversStatus === 'FAILED') label = 'TOP 30 갱신 실패 · 이전 결과 유지';
       line(`${title} · ${label} · 가격 기준일 ${asOf}`, s.status === 'FAILED' || late ? '#ffb3a9' : '#f4d58a');
-      line(`예정 ${stamp(s.scheduledFor || p.scheduledFor)} · 실제 시작 ${stamp(s.attemptedAt || p.runStartedAt)} · 완료 ${stamp(s.lastSuccessAt || p.updatedAt)} · ${s.trigger || p.runTrigger || '이전 실행'}`);
+      line(`예정 ${stamp(s.scheduledFor || p.scheduledFor)} · 실제 시작 ${stamp(s.attemptedAt || p.runStartedAt)} · 마지막 성공 ${stamp(s.lastSuccessAt || p.updatedAt)} · ${s.trigger || p.runTrigger || '이전 실행'}`);
       if (s.refreshMode === 'PRICE') line('장중 보강 · 가격·거래량·추세 재계산 / 기업정보·공시는 기존 자료 / TOP 30은 전체 갱신 시 갱신');
       if (!isMovers && s.moversStatus === 'RUNNING') line('가격 계산 완료 · TOP 30은 별도로 갱신 중');
       if (isMovers && s.moversCompletedAt) line(`TOP 30 완료 ${stamp(s.moversCompletedAt)}`);
@@ -55,7 +55,7 @@
       warnings.forEach(w => line(w, '#f4d58a'));
       if (s.error) line(s.error, '#ffb3a9');
       const kis = s.kis || p.kisMeta;
-      if (kis) line(kis.message || `한국투자 API: ${kis.status}`);
+      if (kis) line((s.status === 'FAILED' ? '이전 성공 자료 · 이번 실행의 한투 조회 결과는 확인되지 않음: ' : '') + (kis.message || `한국투자 API: ${kis.status}`));
       if (m === 'KR' && p.marketEnergy?.membershipCounts) {
         const counts = p.marketEnergy.membershipCounts;
         line(`시장 에너지 · KRX 실제 구성 ${counts.KOSPI200}+${counts.KOSDAQ150}개 · ${p.marketEnergy.membershipCheck || '공식 구성 확인'} · 350종목 환산값 별도 표시`);
