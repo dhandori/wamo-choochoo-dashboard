@@ -50324,5 +50324,117 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-09-14",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "WTFC": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.wintrust.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Wintrust Financial Corporation Common Stock은 Nasdaq 공식 분류상 Finance · Major Banks 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Wintrust Financial Corporation Common Stock은 Nasdaq 공식 분류상 Finance · Major Banks 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Wintrust is a financial holding company with $74.7 billion in assets whose common stock is traded on the Nasdaq Global Select Market. Guided by its 'Different Approach, Better Results®' philosophy, Wintrust offers the sophisticated resources of a large bank while providing a community banking experience to each customer. Wintrust operates more than 200 retail banking locations through 16 community bank subsidiaries in the greater Chicago, southern Wisconsin, west Michigan, northwest Indiana, and southwest Florida market areas. In addition, Wintrust operates various non-bank business units, providing residential mortgage origination, wealth management, commercial and life insurance premium financing, short-term accounts receivable financing/outsourced administrative services to the temporary staffing services industry, and qualified intermediary services for tax-deferred exchanges.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 4,229,973천달러로 전년 대비 +6.7%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "금융 (Finance)",
+        "Finance",
+        "Major Banks"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "FINANCIAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 71142046.0,
+      "liabilities": 63883331.0,
+      "equity": 7258715.0,
+      "netIncome": 823844.0,
+      "debtRatioPct": 880.1,
+      "currentRatioPct": null,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 6.7,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Finance",
+    "industry": "Major Banks",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-14",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "SSB": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.southstatebank.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "SouthState Bank Corporation Common Stock은 Nasdaq 공식 분류상 Finance · Major Banks 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "SouthState Bank Corporation Common Stock은 Nasdaq 공식 분류상 Finance · Major Banks 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): SouthState Bank Corporation (NYSE: SSB) is a financial services company headquartered in Winter Haven, Florida. SouthState Bank, N.A., the company's nationally chartered bank subsidiary, provides consumer, commercial, mortgage and wealth management solutions to more than one million customers throughout Florida, Alabama, Georgia, the Carolinas and Virginia.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 3,757,242천달러로 전년 대비 +53.8%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "금융 (Finance)",
+        "Finance",
+        "Major Banks"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "FINANCIAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 67197412.0,
+      "liabilities": 58138304.0,
+      "equity": 9059108.0,
+      "netIncome": 798667.0,
+      "debtRatioPct": 641.8,
+      "currentRatioPct": null,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 53.8,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Finance",
+    "industry": "Major Banks",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-14",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
