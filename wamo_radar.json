@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-09-14T14:16:32.565660+00:00",
+  "checkedAt": "2026-09-14T19:30:05.465320+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-09-14T13:57:06.724224+00:00",
+      "generatedAt": "2026-09-14T16:58:09.613207+00:00",
       "sessions": {
-        "US-AMEX": "20260911",
         "US-NYSE": "20260911",
-        "US-NASDAQ": "20260911"
+        "US-NASDAQ": "20260911",
+        "US-AMEX": "20260911"
       },
       "releaseKey": "US:US-AMEX=20260911|US-NASDAQ=20260911|US-NYSE=20260911",
-      "fingerprint": "bb1cd58c40ea6c31503f345619945514b383a9fd31b14f66033e3c75d8ffc9c2",
+      "fingerprint": "859359035c0e8d3d0152dd24b60735762d36c1391b815a7e9b5787af3410e9ee",
       "signals": [
         {
           "key": "NAS:TXG",
@@ -5385,14 +5385,14 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-09-14T13:57:44.058157+00:00",
+      "generatedAt": "2026-09-14T16:58:46.209644+00:00",
       "sessions": {
-        "JP-TSE": "20260914",
         "CN-SH": "20260914",
+        "CN-SZ": "20260914",
         "KR-KOSDAQ": "20260914",
+        "JP-TSE": "20260914",
         "HK-HKEX": "20260914",
-        "KR-KOSPI": "20260914",
-        "CN-SZ": "20260914"
+        "KR-KOSPI": "20260914"
       },
       "releaseKey": "ASIA:CN-SH=20260914|CN-SZ=20260914|HK-HKEX=20260914|JP-TSE=20260914|KR-KOSDAQ=20260914|KR-KOSPI=20260914",
       "fingerprint": "a4971d7b074cf2143ff0f47dc823d5adfcb6cfa8d0e26f70c610b2b8d8a75f8c",
