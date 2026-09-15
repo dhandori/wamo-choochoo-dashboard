@@ -82,6 +82,11 @@ class RefreshTests(unittest.TestCase):
         failed['US']['attempts'] = 3
         self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US', True), [])
 
+    def test_schedule_migration_deduplicates_by_market_session(self):
+        legacy = {'US': {'slot': instant('2026-09-14T21:20').isoformat(),
+                         'success': True, 'attempts': 1}}
+        self.assertEqual(runner.select_targets(legacy, instant('2026-09-15T05:45'), 'US', True), [])
+
     def test_workflow_has_only_three_close_candidates(self):
         import inspect
         import re
