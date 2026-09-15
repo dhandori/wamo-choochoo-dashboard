@@ -1,8 +1,8 @@
 {
   "KR": {
-    "slot": "2026-09-15T00:30:00+00:00",
+    "slot": "2026-09-15T05:00:00+00:00",
     "attempts": 1,
-    "success": true,
+    "success": false,
     "lastFullSlot": "2026-09-15T00:30:00+00:00"
   },
   "US": {
