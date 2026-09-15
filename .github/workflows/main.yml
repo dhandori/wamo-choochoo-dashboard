@@ -8,63 +8,69 @@ on:
         type: choice
         default: both
         options: [both, KR, US]
+      publish:
+        description: 검증 결과를 실제 게시
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths: ['wamo_*.py', 'wamo_status.js', 'requirements.txt', '.github/workflows/main.yml']
   schedule:
-    # UTC slots match wamo_runtime.SLOTS. Holidays are filtered by exchange calendar.
-    - cron: '30 0 * * 1-5'
-    - cron: '30 1 * * 1-5'
-    - cron: '30 2 * * 1-5'
-    - cron: '0 3 * * 1-5'
-    - cron: '0 4 * * 1-5'
-    - cron: '0 5 * * 1-5'
-    - cron: '0 6 * * 1-5'
+    # Korea: 16:00 KST. US: two UTC candidates preserve 16:20 New York across DST.
     - cron: '0 7 * * 1-5'
-    - cron: '40 13 * * 1-5'
-    - cron: '40 14 * * 1-5'
-    - cron: '0 16 * * 1-5'
-    - cron: '0 17 * * 1-5'
-    - cron: '0 18 * * 1-5'
-    - cron: '0 19 * * 1-5'
-    - cron: '0 20 * * 1-5'
+    - cron: '20 20 * * 1-5'
     - cron: '20 21 * * 1-5'
-    # Include two hours after close so a delayed final run can still retry; completed slots skip.
-    - cron: '7,22,37,52 0-9,13-23 * * 1-5'
 
 permissions:
   contents: write
 
 concurrency:
-  group: wamo-data-update
+  group: wamo-${{ github.event_name == 'push' && 'code-check' || 'data-update' }}
   cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 65
     env:
       PYTHONUNBUFFERED: '1'
     steps:
       - name: 최신 파일 가져오기
         uses: actions/checkout@v6
+        timeout-minutes: 5
         with:
           ref: main
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Python 준비
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: pip
       - name: 도구 설치
-        run: python -m pip install -r requirements.txt
-      - name: 갱신 회귀검사
+        timeout-minutes: 10
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: 코드 변경 전체 회귀검사
+        if: github.event_name != 'schedule'
         run: python -m unittest discover -s tests -v
+      - name: 예약 갱신 핵심검사
+        if: github.event_name == 'schedule'
+        timeout-minutes: 5
+        run: >-
+          python -m unittest -v
+          tests.test_refresh.RefreshTests.test_korean_close_runs_once_at_1600_kst
+          tests.test_refresh.RefreshTests.test_us_dst_standard_time_and_early_close
+          tests.test_refresh.RefreshTests.test_two_us_cron_candidates_publish_only_once_per_session
+          tests.test_refresh.RefreshTests.test_prices_do_not_become_fresh_by_advancing_update_timestamp
+          tests.test_refresh.RefreshTests.test_provider_failure_restores_output
       - name: Git 저장 준비
+        if: github.event_name != 'push'
         run: |
           git config user.name 'wamo-dashboard-bot'
           git config user.email 'actions@users.noreply.github.com'
       - name: 시장별 갱신·최신성 검증·결과 저장
+        id: refresh
+        if: github.event_name != 'push'
+        timeout-minutes: 40
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
           KRX_ID: ${{ secrets.KRX_ID }}
@@ -73,9 +79,20 @@ jobs:
           KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
           REQUESTED_MARKET: ${{ inputs.market || 'auto' }}
-        run: python -u wamo_run.py --market "$REQUESTED_MARKET" --publish
+          EVENT_SCHEDULE: ${{ github.event.schedule || '' }}
+          PUBLISH_RESULT: ${{ inputs.publish || github.event_name == 'schedule' }}
+        run: |
+          set -euo pipefail
+          market="$REQUESTED_MARKET"
+          if [[ "${GITHUB_EVENT_NAME}" == 'schedule' ]]; then
+            if [[ "$EVENT_SCHEDULE" == '0 7 * * 1-5' ]]; then market='KR'; else market='US'; fi
+          fi
+          args=(--market "$market")
+          if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
+          python -u wamo_run.py "${args[@]}"
       - name: 공개 검색 카탈로그 별도 갱신·저장
-        if: always()
+        if: success() && steps.refresh.outputs.updated == 'true' && (github.event_name == 'schedule' || inputs.publish)
+        timeout-minutes: 5
         run: |
           set -euo pipefail
           python wamo_catalog.py

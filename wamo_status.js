@@ -9,6 +9,10 @@
   const meta = data?.meta || {};
   const isMovers = !data;
   const market = meta.market === 'US' || /\/us\.html$/.test(location.pathname) ? 'US' : 'KR';
+  const scheduleLabel = '갱신예약 · 한국 16:00 KST · 미국 뉴욕 16:20 이후 (한국 05:20/06:20) · 시장별 거래일 1회';
+  document.querySelectorAll('small, #wamo-update-schedule, .sub b').forEach(el => {
+    if (/자동갱신/.test(el.textContent || '')) el.textContent = scheduleLabel;
+  });
   const stamp = value => {
     if (!value) return '기록 없음';
     const d = new Date(value);
@@ -30,7 +34,7 @@
   };
   const render = status => {
     box.replaceChildren();
-    line('갱신예약(KST) · 한국 09:30 / 10:30 / 11:30 / 12:00 / 13:00 / 14:00 / 15:00 / 16:00 · 미국 22:40 / 23:40 / 01:00 / 02:00 / 03:00 / 04:00 / 05:00 / 06:20', '#a8cbef');
+    line(scheduleLabel, '#a8cbef');
     const markets = isMovers ? ['KR', 'US'] : [market];
     for (const m of markets) {
       const s = status?.[m] || {};
@@ -50,7 +54,7 @@
       if (s.refreshMode === 'PRICE') line('장중 보강 · 가격·거래량·추세 재계산 / 기업정보·공시는 기존 자료 / TOP 30은 전체 갱신 시 갱신');
       if (!isMovers && s.moversStatus === 'RUNNING') line('가격 계산 완료 · TOP 30은 별도로 갱신 중');
       if (isMovers && s.moversCompletedAt) line(`TOP 30 완료 ${stamp(s.moversCompletedAt)}`);
-      if (s.nextScheduledFor) line(`다음 예약 ${stamp(s.nextScheduledFor)} · GitHub 예약 지연 시 누락 확인 후 재시도`);
+      if (s.nextScheduledFor) line(`다음 예약 ${stamp(s.nextScheduledFor)} · GitHub 예약 지연은 실제 시작시각으로 확인`);
       const warnings = s.warnings || p.freshness?.warnings || [];
       warnings.forEach(w => line(w, '#f4d58a'));
       if (s.error) line(s.error, '#ffb3a9');
