@@ -50436,5 +50436,117 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-09-14",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "AVTR": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.avantorsciences.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Avantor Inc. Common Stock은 Nasdaq 공식 분류상 Industrials · Biotechnology: Laboratory Analytical Instruments 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Avantor Inc. Common Stock은 Nasdaq 공식 분류상 Industrials · Biotechnology: Laboratory Analytical Instruments 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Avantor® is a leading life science tools company and global provider of mission-critical products and services to the life sciences and advanced technology industries. We work side-by-side with customers at every step of the scientific journey to enable breakthroughs in medicine, healthcare, and technology. Our portfolio is used in virtually every stage of the most important research, development and production activities at more than 300,000 customer locations in 180 countries.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 6,552,200천달러로 전년 대비 -3.4%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "산업재 (Industrials)",
+        "Industrials",
+        "Biotechnology: Laboratory Analytical Instruments"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": false,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 11794700.0,
+      "liabilities": 6229700.0,
+      "equity": 5565000.0,
+      "netIncome": -530200.0,
+      "debtRatioPct": 111.9,
+      "currentRatioPct": 177.8,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": -3.4,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Industrials",
+    "industry": "Biotechnology: Laboratory Analytical Instruments",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-15",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "UHS": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.uhs.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Universal Health Services Inc. Common Stock은 Nasdaq 공식 분류상 Health Care · Hospital/Nursing Management 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Universal Health Services Inc. Common Stock은 Nasdaq 공식 분류상 Health Care · Hospital/Nursing Management 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Headquartered in King of Prussia, PA, Universal Health Services, Inc. (NYSE: UHS) is one of the nation's largest and most respected providers of hospital and healthcare services. Since our founding in 1979, UHS has grown steadily into a premier Fortune 500 corporation perennially recognized by multiple esteemed national rating entities. Through its subsidiaries, UHS employs more than 102,000 employees and operates 30 inpatient acute care facilities, more than 380 inpatient behavioral health facilities, approximately 170 outpatient and other facilities, nationwide virtual behavioral health services, an insurance offering, a physician network and various related services with physical locations in 40 states, Washington, D.C., Puerto Rico, Ireland and the United Kingdom.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 17,364,829천달러로 전년 대비 +9.7%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "헬스케어 (Health Care)",
+        "Health Care",
+        "Hospital/Nursing Management"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 15527593.0,
+      "liabilities": 8118185.0,
+      "equity": 7275792.0,
+      "netIncome": 1488796.0,
+      "debtRatioPct": 111.6,
+      "currentRatioPct": 105.2,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 9.7,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Health Care",
+    "industry": "Hospital/Nursing Management",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-15",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
