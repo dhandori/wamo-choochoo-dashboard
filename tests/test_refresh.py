@@ -86,6 +86,10 @@ class RefreshTests(unittest.TestCase):
         legacy = {'US': {'slot': instant('2026-09-14T21:20').isoformat(),
                          'success': True, 'attempts': 1}}
         self.assertEqual(runner.select_targets(legacy, instant('2026-09-15T05:45'), 'US', True), [])
+        malformed = {'US': {'slot': '0001-01-01T00:00:00+14:00',
+                            'success': True, 'attempts': 1}}
+        self.assertEqual(runner.select_targets(malformed, instant('2026-09-15T05:45'), 'US', True),
+                         [('US', instant('2026-09-14T20:20'))])
 
     def test_workflow_has_only_three_close_candidates(self):
         import inspect
