@@ -8,9 +8,10 @@ def fetch_naver_universe(http_text, sosok, suffix, market):
     if expected.get(market) != (sosok, suffix):
         raise ValueError('시장과 티커 접미사 불일치')
     records, total = {}, None
-    # Market-value order can change between requests. Reconcile at most two
+    # Market-value order can change between requests. Reconcile at most four
     # complete sweeps, retaining strict identity, market, cap and count checks.
-    for attempt in range(2):
+    max_sweeps = 4
+    for attempt in range(max_sweeps):
         for number in range(1, 81):
             url = f'https://m.stock.naver.com/api/stocks/marketValue/{market}?page={number}&pageSize=100'
             payload = json.loads(http_text(url, encoding='utf-8'))
@@ -61,5 +62,5 @@ def fetch_naver_universe(http_text, sosok, suffix, market):
             if len(rows) < 100:
                 raise RuntimeError(f'{market} 적격 종목 목록 부족')
             return rows
-        print(f'{market} 순위 변동 재확인 · 고유 종목 {len(records)}/{total} · 조회 {attempt + 1}/2', flush=True)
-    raise RuntimeError(f'{market} 고유 종목 수 부족 {len(records)}/{total} · 2회 전체 조회 후 중단')
+        print(f'{market} 순위 변동 재확인 · 고유 종목 {len(records)}/{total} · 조회 {attempt + 1}/{max_sweeps}', flush=True)
+    raise RuntimeError(f'{market} 고유 종목 수 부족 {len(records)}/{total} · {max_sweeps}회 전체 조회 후 중단')

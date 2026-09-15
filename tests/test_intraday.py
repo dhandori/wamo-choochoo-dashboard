@@ -1,26 +1,11 @@
 import os
 import unittest
-from datetime import datetime
 from unittest.mock import patch
-import wamo_runtime as rt
-import wamo_run as runner
 import wamo_update_business_dart as core
 import wamo_update_us_sec as us
 
 
 class IntradayTests(unittest.TestCase):
-    def test_extra_slots_are_price_only_and_original_slots_are_full(self):
-        for market in rt.SLOTS:
-            slots = list(rt.slots_near(market, datetime(2026, 9, 8, tzinfo=rt.UTC)))
-            slots = [s for s in slots if s.date().isoformat() == '2026-09-08']
-            self.assertEqual(sum(rt.price_only_slot(market, s) for s in slots), 5)
-            self.assertEqual(sum(not rt.price_only_slot(market, s) for s in slots), 3)
-        now = datetime(2026, 9, 8, 4, 22, tzinfo=rt.UTC)
-        state = {'KR': {'slot': '2026-09-08T03:00:00+00:00', 'success': True}}
-        targets = runner.select_targets(state, now, 'KR')
-        self.assertEqual(targets[0][1].hour, 4)
-        state['KR'] = {'slot': targets[0][1].isoformat(), 'success': True}
-        self.assertEqual(runner.select_targets(state, now, 'KR'), [])
 
     def test_kr_price_mode_preserves_fundamentals_dates_and_sector_without_network(self):
         old = {'ticker': '005930.KS', 'dartStatus': 'LIVE', 'dartFetchedAt': '2026-09-07',
@@ -50,10 +35,3 @@ class IntradayTests(unittest.TestCase):
         self.assertEqual(raw[0]['secStatus'], 'NASDAQ_CACHED')
         self.assertEqual(meta['targetCount'], 0)
         self.assertEqual(meta['fetchedCount'] + meta['nasdaqFetchedCount'], 0)
-
-    def test_delayed_full_slot_is_not_lost_to_added_price_slot(self):
-        slot = datetime(2026, 9, 8, 4, tzinfo=rt.UTC)
-        self.assertFalse(rt.use_price_only('KR', slot, {}))
-        self.assertFalse(rt.use_price_only('KR', slot, {'lastFullSlot': '2026-09-08T00:30:00+00:00'}))
-        self.assertTrue(rt.use_price_only('KR', slot, {'lastFullSlot': '2026-09-08T03:00:00+00:00'}))
-        self.assertTrue(rt.use_price_only('KR', slot, {'slot': '2026-09-08T03:00:00+00:00', 'success': True}))

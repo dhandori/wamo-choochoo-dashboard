@@ -7,7 +7,7 @@ import os
 import subprocess
 import sys
 
-from wamo_runtime import UTC, KST, latest_slot, next_slot, patch_status_ui, write_json, use_price_only, latest_full_slot
+from wamo_runtime import UTC, KST, MARKET_TZ, expected_session, latest_slot, next_slot, patch_status_ui, write_json
 
 ROOT = Path(__file__).resolve().parent
 STATE = ROOT / 'wamo_refresh_state.json'
@@ -23,6 +23,13 @@ def read_json(path):
     return json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
 
 
+def set_action_output(updated):
+    output = os.getenv('GITHUB_OUTPUT')
+    if output:
+        with Path(output).open('a', encoding='utf-8') as stream:
+            stream.write(f"updated={'true' if updated else 'false'}\n")
+
+
 def select_targets(state, now, requested='auto', force=False):
     targets = []
     for market in MARKETS:
@@ -31,12 +38,18 @@ def select_targets(state, now, requested='auto', force=False):
         slot = latest_slot(market, now)
         entry = state.get(market, {})
         same_slot = entry.get('slot') == slot.isoformat()
-        # A delayed noon trigger may arrive after the close. Refresh the latest
-        # due slot once; never fabricate the missed noon snapshot.
-        if not force:
-            if now - slot > timedelta(hours=12):
+        if now - slot > timedelta(hours=12):
+            continue
+        session = slot.astimezone(MARKET_TZ[market]).date().isoformat()
+        if expected_session(market, now) != session:
+            continue
+        if same_slot:
+            if entry.get('success'):
                 continue
-            if same_slot and (entry.get('success') or entry.get('attempts', 0) >= 3):
+            # A second DST cron candidate must not become an automatic retry.
+            # Explicit manual dispatch may retry a failed close up to three times.
+            retry_limit = 3 if force else 1
+            if entry.get('attempts', 0) >= retry_limit:
                 continue
         targets.append((market, slot))
     return targets
@@ -55,7 +68,7 @@ def restore(saved):
             path.write_bytes(content)
 
 
-def run_script(script, args=(), env=None, timeout=1800):
+def run_script(script, args=(), env=None, timeout=1500):
     subprocess.run([sys.executable, '-u', script, *args], cwd=ROOT, env=env,
                    timeout=timeout, check=True)
 
@@ -86,11 +99,12 @@ def main():
     args = parser.parse_args()
     now = datetime.now(UTC)
     event = os.getenv('GITHUB_EVENT_NAME', '')
-    force = event in ('workflow_dispatch', 'push') or args.market != 'auto'
+    force = event == 'workflow_dispatch'
     state, status = read_json(STATE), read_json(STATUS)
     targets = select_targets(state, now, args.market, force)
     print('갱신 대상:', [(market, slot.astimezone(KST).isoformat()) for market, slot in targets], flush=True)
     if args.plan or not targets:
+        set_action_output(False)
         return
     changed = ['wamo_refresh_state.json', 'wamo_refresh_status.json', *SHARED]
     failures = []
@@ -99,17 +113,12 @@ def main():
         old_entry = state.get(market, {})
         same = old_entry.get('slot') == slot.isoformat()
         entry = {'slot': slot.isoformat(), 'attempts': old_entry.get('attempts', 0) + 1 if same else 1, 'success': False}
-        fast = not force and use_price_only(market, slot, old_entry)
-        if fast:
-            entry['lastFullSlot'] = latest_full_slot(market, slot).isoformat()
-        elif old_entry.get('lastFullSlot'):
-            entry['lastFullSlot'] = old_entry['lastFullSlot']
         start = datetime.now(UTC)
         env = dict(os.environ, WAMO_RUN_STARTED_AT=start.isoformat(),
-                   WAMO_SCHEDULED_FOR=slot.isoformat(), WAMO_PRICE_ONLY='1' if fast else '0', PYTHONUNBUFFERED='1')
+                   WAMO_SCHEDULED_FOR=slot.isoformat(), WAMO_PRICE_ONLY='0', PYTHONUNBUFFERED='1')
         report = dict(status.get(market, {}), status='FAILED',
                       attemptedAt=start.isoformat(), scheduledFor=slot.isoformat(),
-                      refreshMode='PRICE' if fast else 'FULL',
+                      refreshMode='FULL',
                       nextScheduledFor=next_slot(market, start).isoformat(),
                       trigger={'schedule': '예약실행', 'push': '코드 반영 후 실행',
                                'workflow_dispatch': '수동실행'}.get(event, '직접실행'),
@@ -123,14 +132,13 @@ def main():
             data = core.extract_old_payload((ROOT / page).read_text(encoding='utf-8'))
             fresh = validate_freshness(data, market)
             warnings = list(fresh['warnings'])
-            report['moversStatus'] = 'DEFERRED' if fast else 'RUNNING'
+            report['moversStatus'] = 'RUNNING'
             report.update(status='WARNING' if warnings else 'PASS', warnings=warnings,
                           lastSuccessAt=datetime.now(UTC).isoformat(), asOf=data['meta']['asOf'],
                           freshness=fresh, count=len(data['stocks']), error=None,
                           kis=data['meta'].get('kisMeta'))
             entry['success'] = True
-            if not fast:
-                entry['lastFullSlot'] = latest_full_slot(market, slot).isoformat()
+            entry['lastFullSlot'] = slot.isoformat()
             changed.extend([page, *caches])
         except (subprocess.SubprocessError, RuntimeError, ValueError, KeyError) as exc:
             restore(saved)
@@ -148,10 +156,10 @@ def main():
         write_json(STATUS, status)
         if args.publish:
             publish([page, *caches, STATE.name, STATUS.name])
-        if entry['success'] and not fast:
+        if entry['success']:
             movers_saved = snapshot(SHARED)
             try:
-                run_script('wamo_update_movers.py', ['--market', movers_market], env, timeout=900)
+                run_script('wamo_update_movers.py', ['--market', movers_market], env, timeout=600)
                 report['moversStatus'] = 'PASS'
                 report['moversCompletedAt'] = datetime.now(UTC).isoformat()
             except (subprocess.SubprocessError, RuntimeError):
@@ -174,6 +182,7 @@ def main():
         Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(summary + '\n', encoding='utf-8')
     if args.publish:
         publish(changed)
+    set_action_output(any(state[market].get('success') for market, _ in targets))
     if failures:
         raise SystemExit('갱신 실패: ' + ', '.join(failures))
 
