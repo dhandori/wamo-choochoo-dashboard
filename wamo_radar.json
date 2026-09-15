@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-09-15T07:54:10.943885+00:00",
+  "checkedAt": "2026-09-15T13:42:27.762090+00:00",
   "editions": {
     "US": {
-      "status": "PASS",
+      "status": "FAILED",
       "generatedAt": "2026-09-15T05:02:10.927520+00:00",
       "sessions": {
         "US-NASDAQ": "20260914",
@@ -6069,7 +6069,8 @@
           "phase": "약화되는 산업",
           "comparison_scope": "현재 확인된 분류·종목군 고정, 21거래일 가격 재계산; 과거 전체 시장 복원이 아님"
         }
-      ]
+      ],
+      "error": "신고가 자료 연결·기준일·검증 확인 실패. 이전 결과는 현재 신호가 아닙니다."
     },
     "ASIA": {
       "status": "FAILED",
