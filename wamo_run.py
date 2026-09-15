@@ -43,6 +43,15 @@ def select_targets(state, now, requested='auto', force=False):
         session = slot.astimezone(MARKET_TZ[market]).date().isoformat()
         if expected_session(market, now) != session:
             continue
+        completed_session = None
+        if entry.get('success') and entry.get('slot'):
+            try:
+                completed_session = datetime.fromisoformat(entry['slot']).astimezone(
+                    MARKET_TZ[market]).date().isoformat()
+            except (TypeError, ValueError, OverflowError):
+                pass
+        if completed_session == session:
+            continue
         if same_slot:
             if entry.get('success'):
                 continue

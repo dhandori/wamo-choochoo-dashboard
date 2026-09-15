@@ -82,6 +82,15 @@ class RefreshTests(unittest.TestCase):
         failed['US']['attempts'] = 3
         self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US', True), [])
 
+    def test_schedule_migration_deduplicates_by_market_session(self):
+        legacy = {'US': {'slot': instant('2026-09-14T21:20').isoformat(),
+                         'success': True, 'attempts': 1}}
+        self.assertEqual(runner.select_targets(legacy, instant('2026-09-15T05:45'), 'US', True), [])
+        malformed = {'US': {'slot': '0001-01-01T00:00:00+14:00',
+                            'success': True, 'attempts': 1}}
+        self.assertEqual(runner.select_targets(malformed, instant('2026-09-15T05:45'), 'US', True),
+                         [('US', instant('2026-09-14T20:20'))])
+
     def test_workflow_has_only_three_close_candidates(self):
         import inspect
         import re
