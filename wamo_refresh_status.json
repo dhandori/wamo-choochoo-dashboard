@@ -41,29 +41,29 @@
   },
   "US": {
     "status": "WARNING",
-    "attemptedAt": "2026-09-15T22:56:33.224650+00:00",
-    "scheduledFor": "2026-09-15T20:20:00+00:00",
-    "nextScheduledFor": "2026-09-16T20:20:00+00:00",
+    "attemptedAt": "2026-09-16T23:00:52.210382+00:00",
+    "scheduledFor": "2026-09-16T20:20:00+00:00",
+    "nextScheduledFor": "2026-09-17T20:20:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/35033358048",
-    "moversStatus": "PASS",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/35160333889",
+    "moversStatus": "RUNNING",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-09-15T22:58:21.462474+00:00",
-    "asOf": "2026-09-15",
+    "lastSuccessAt": "2026-09-16T23:03:30.707682+00:00",
+    "asOf": "2026-09-16",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-09-15",
-      "currentCount": 877,
+      "expectedSession": "2026-09-16",
+      "currentCount": 876,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-16T07:58:21+09:00",
+      "checkedAt": "2026-09-17T08:03:30+09:00",
       "warnings": [
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
       "calendar": "XNYS"
     },
-    "count": 877,
+    "count": 876,
     "error": null,
     "kis": {
       "status": "LIVE",
@@ -74,9 +74,9 @@
       "cachedCount": 0,
       "skippedCount": 0,
       "errors": [],
-      "industryCount": 16,
+      "industryCount": 17,
       "forwardMetricsConnected": false,
-      "message": "미국 한국투자 시세 20/20종목 신규 확인 · 업종 16 · 이전값 0 · 실패 0 · 미조회 0"
+      "message": "미국 한국투자 시세 20/20종목 신규 확인 · 업종 17 · 이전값 0 · 실패 0 · 미조회 0"
     },
     "moversCompletedAt": "2026-09-15T22:58:29.355484+00:00",
     "refreshMode": "FULL"

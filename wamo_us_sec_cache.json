@@ -50548,5 +50548,117 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-09-15",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "FPS": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.nasdaq.com/market-activity/stocks/fps/company-profile",
+    "businessModelReportDate": "6/30/2026",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Forgent Power Solutions Inc. Class A Common Stock은 Nasdaq 공식 분류상 Energy · Industrial Machinery/Components 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Forgent Power Solutions Inc. Class A Common Stock은 Nasdaq 공식 분류상 Energy · Industrial Machinery/Components 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Forgent (NYSE: FPS) is a leading U.S. designer and manufacturer of electrical distribution equipment used in data centers, the power grid and energy-intensive industrial facilities. The Company specializes in manufacturing custom products that are 'engineered-to-order' for technically demanding applications. We believe Forgent is one of a small number of companies that can manufacture all of the electrical distribution equipment required for a data center or large manufacturing facility's powertrain with some of the highest levels of customization and shortest lead times available in the industry.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 1,420,059천달러로 전년 대비 +88.5%입니다(결산기준 6/30/2026).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "에너지 (Energy)",
+        "Energy",
+        "Industrial Machinery/Components"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "6/30/2026",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 2230765.0,
+      "liabilities": 1559364.0,
+      "equity": 564317.0,
+      "netIncome": 81845.0,
+      "debtRatioPct": 276.3,
+      "currentRatioPct": 154.0,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 88.5,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Energy",
+    "industry": "Industrial Machinery/Components",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-16",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "ENSG": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.ensigngroup.net",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "The Ensign Group Inc. Common Stock은 Nasdaq 공식 분류상 Health Care · Hospital/Nursing Management 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "The Ensign Group Inc. Common Stock은 Nasdaq 공식 분류상 Health Care · Hospital/Nursing Management 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): The Ensign Group, Inc.'s independent operating subsidiaries provide a broad spectrum of skilled nursing and senior living services, physical, occupational and speech therapies and other rehabilitative and healthcare services at 398 healthcare facilities in Alabama, Alaska, Arizona, California, Colorado, Idaho, Iowa, Kansas, Nebraska, Nevada, Oregon, South Carolina, Tennessee, Texas, Utah, Washington and Wisconsin.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 5,057,841천달러로 전년 대비 +18.7%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "헬스케어 (Health Care)",
+        "Health Care",
+        "Hospital/Nursing Management"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 5462970.0,
+      "liabilities": 3228146.0,
+      "equity": 2231725.0,
+      "netIncome": 343971.0,
+      "debtRatioPct": 144.6,
+      "currentRatioPct": 142.3,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 18.7,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Health Care",
+    "industry": "Hospital/Nursing Management",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-16",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
