@@ -4806,5 +4806,36 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-09-08",
     "failed": false
+  },
+  "437730": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "천연물소재 원료의약품 및 기능성 식품의 제조 가공, 생산, 판매, 수출입업",
+      "products": "바이오 의약품 및 바이오의약사업 관련 기술 및 제품의 제조가공, 생산, 판매, 수출입업",
+      "customers": "당사의 주요 사업 부문인 모빌리티부문에서는 국내 최초로 2014년 'DCT(Double Clutch Transmission) 모터', 그리고 2019년 세계 최초로 'CVVD(Continuously Variable Valve Duration)' 제품을 개발 및 양산에 성공하는 등 독보적인 기술력을 입증하며 현대자동차 그룹 및 관련 협력사를 주요 고객사로 확보하고 있습니다.",
+      "revenue": "이와 같은 전략적 접근을 통해 당사는 중장기적으로 상당한 수주 물량을 확보할 수 있을 것으로 기대하고 있으며, 이는 매출 성장과 글로벌 시장 점유율 확대에 기여할 것으로 전망됩니다.",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": [
+        "2차전지",
+        "자동차 부품",
+        "완성차",
+        "조선",
+        "건설·플랜트",
+        "소프트웨어·플랫폼",
+        "유통·커머스"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260319",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260319000680",
+    "detailSector": "우주항공 소재·공급망",
+    "sectorTags": [
+      "우주항공",
+      "특수합금",
+      "공급망"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-09-16",
+    "failed": false
   }
 }
