@@ -6,7 +6,7 @@
     "nextScheduledFor": "2026-09-18T07:00:00+00:00",
     "trigger": "예약실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/35221668238",
-    "moversStatus": "RUNNING",
+    "moversStatus": "PASS",
     "warnings": [
       "한국투자 보조조회 일부 실패 · 가격 갱신과 별도 확인"
     ],
@@ -30,7 +30,7 @@
       "connected": false,
       "message": "한국투자 API 인증 실패 · 기존 가격 경로 유지"
     },
-    "moversCompletedAt": "2026-09-16T12:44:48.680947+00:00",
+    "moversCompletedAt": "2026-09-17T12:45:06.949140+00:00",
     "refreshMode": "FULL"
   },
   "US": {
