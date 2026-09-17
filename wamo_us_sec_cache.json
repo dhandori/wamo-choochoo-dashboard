@@ -50660,5 +50660,116 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-09-16",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "PS": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.nasdaq.com/market-activity/stocks/ps/company-profile",
+    "businessModelReportDate": "",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Pershing Square Inc. Common Stock은 Nasdaq 공식 분류상 자산운용 (Investment Managers) · 자산운용 (Investment Managers) 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Pershing Square Inc. Common Stock은 Nasdaq 공식 분류상 자산운용 (Investment Managers) · 자산운용 (Investment Managers) 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Pershing Square Inc. is an alternative asset management company that manages pools of permanent capital invested in long-term, high-return investment strategies. Our growth is principally driven by the long-term compounding of our assets under management and the opportunistic launch of new permanent capital vehicles that enable us to pursue new investment verticals or to pursue our core investment strategies in new jurisdictions.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "Nasdaq 연간 손익계산서에서 비교 가능한 매출을 확보하지 못했습니다.",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "금융 (Finance)",
+        "자산운용 (Investment Managers)"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "",
+      "sectorRule": "GENERAL",
+      "equityPositive": false,
+      "profitPositive": false,
+      "leveragePass": false,
+      "liquidityPass": true,
+      "assets": null,
+      "liabilities": null,
+      "equity": null,
+      "netIncome": null,
+      "debtRatioPct": null,
+      "currentRatioPct": null,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": null,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "자산운용 (Investment Managers)",
+    "industry": "자산운용 (Investment Managers)",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-17",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "TWST": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.twistbioscience.com",
+    "businessModelReportDate": "9/30/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Twist Bioscience Corporation Common Stock은 Nasdaq 공식 분류상 Health Care · Biotechnology: Biological Products (No Diagnostic Substances) 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Twist Bioscience Corporation Common Stock은 Nasdaq 공식 분류상 Health Care · Biotechnology: Biological Products (No Diagnostic Substances) 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): At Twist Bioscience, our customizable solutions across the biological continuum raise the bar in diagnostics, therapeutics, industrial, agriculture and research markets. We drive innovation with confidence, without compromise. Whether delivering oligos, genes, proteins, libraries, characterization data, antibody discovery solutions, or NGS workflow tools, our scientific expertise and exceptional customer experience help navigate complex challenges, all with precision and at the scale and speed customers require. By enhancing R&D efficiency at every turn, we give scientists more shots on goal - more experiments, more iterations, more chances for remarkable discoveries. Together, we stand with customers in the relentless pursuit of progress, backed by enterprise reliability, to shape a healthier and more sustainable future for all.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 376,572천달러로 전년 대비 +20.3%입니다(결산기준 9/30/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "헬스케어 (Health Care)",
+        "Health Care",
+        "Biotechnology: Biological Products (No Diagnostic Substances)"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "9/30/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": false,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 641861.0,
+      "liabilities": 168903.0,
+      "equity": 472958.0,
+      "netIncome": -77670.0,
+      "debtRatioPct": 35.7,
+      "currentRatioPct": 364.3,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 20.3,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Health Care",
+    "industry": "Biotechnology: Biological Products (No Diagnostic Substances)",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-09-17",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
