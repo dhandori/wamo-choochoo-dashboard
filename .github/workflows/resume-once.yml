@@ -73,18 +73,42 @@ jobs:
           fi
           args=(--market "$market")
           if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
-          # Explicit one-time retry after KRX/KIS connectivity recovered.
-          # Scheduled jobs in main.yml still retain once-per-session deduplication.
+          # Repair only Korean auxiliary fields after endpoint connectivity passed.
+          # Keep the verified close, price histories and daily refresh state intact.
           python - <<'PY'
-          import json
+          import json, hashlib
           from pathlib import Path
-          path = Path('wamo_refresh_state.json')
-          state = json.loads(path.read_text())
-          state['KR']['success'] = False
-          state['KR']['attempts'] = 0
-          path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + '\n')
+          from datetime import datetime
+          import wamo_update_business_dart as core
+          import wamo_kis
+          import wamo_run
+          from wamo_runtime import UTC, expected_session, validate_freshness, write_json
+          page = Path('index.html')
+          html = page.read_text()
+          data = core.extract_old_payload(html)
+          target = expected_session('KR')
+          assert data['meta']['asOf'] == target
+          def prices():
+              return json.dumps([(s['ticker'], s['date'], s['close'], s['history']) for s in data['stocks']], sort_keys=True)
+          before = prices()
+          listed = core.fetch_market_summary(0, '.KS', 'KOSPI') + core.fetch_market_summary(1, '.KQ', 'KOSDAQ')
+          histories = {s['stock_code']: s['history'] for s in data['stocks']}
+          energy = core.build_market_energy(listed, histories, data['meta'].get('marketEnergy') or {}, target)
+          assert energy['status'] == 'LIVE', 'Official market energy not verified'
+          data['meta']['marketEnergy'] = energy
+          data['meta']['kisMeta'] = wamo_kis.enrich(data['stocks'])
+          assert data['meta']['kisMeta']['connected'], 'KIS enrichment connection not verified'
+          assert before == prices(), 'Auxiliary repair changed market prices'
+          fresh = validate_freshness(data, 'KR')
+          core.validate_payload_integrity(data)
+          status = json.loads(Path('wamo_refresh_status.json').read_text())
+          status['KR'].update(status='WARNING' if fresh['warnings'] else 'PASS', warnings=fresh['warnings'],
+              freshness=fresh, kis=data['meta']['kisMeta'], auxiliaryCheckedAt=datetime.now(UTC).isoformat())
+          page.write_text(core.replace_payload(html, data))
+          write_json(Path('wamo_refresh_status.json'), status)
+          wamo_run.publish(['index.html', 'wamo_refresh_status.json', 'wamo_kis_cache.json', 'wamo_kis_estimate_history.json'])
+          print('KR auxiliary repair', status['KR']['status'], 'energy', energy['status'], 'KIS', data['meta']['kisMeta']['status'], flush=True)
           PY
-          python -u wamo_run.py "${args[@]}"
       - name: 보조 연결 오류 유형 확인
         if: always()
         timeout-minutes: 3
