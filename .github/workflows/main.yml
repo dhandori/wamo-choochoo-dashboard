@@ -1,6 +1,12 @@
 name: WAMO 자동갱신
 
 on:
+  schedule:
+    # KR close: 16:00 KST. US close: 16:20 New York (DST-aware).
+    # wamo_run.py permits only one collection per market trading session.
+    - cron: '0 7 * * 1-5'
+    - cron: '20 20 * * 1-5'
+    - cron: '20 21 * * 1-5'
   workflow_dispatch:
     inputs:
       market:
