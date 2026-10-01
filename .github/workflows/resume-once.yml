@@ -78,6 +78,7 @@ jobs:
         if: always()
         timeout-minutes: 3
         env:
+          PYTHONPATH: .
           KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
           KRX_ID: ${{ secrets.KRX_ID }}
@@ -97,7 +98,7 @@ jobs:
               except Exception as exc:
                   print(name, 'ERROR_TYPE', type(exc).__name__, flush=True)
       - name: 공개 검색 카탈로그 별도 갱신·저장
-        if: success() && steps.refresh.outputs.updated == 'true'
+        if: success()
         timeout-minutes: 5
         run: |
           set -euo pipefail
