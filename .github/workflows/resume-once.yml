@@ -62,7 +62,7 @@ jobs:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
           KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
-          REQUESTED_MARKET: both
+          REQUESTED_MARKET: US
           EVENT_SCHEDULE: ${{ github.event.schedule || '' }}
           PUBLISH_RESULT: 'true'
         run: |
@@ -74,6 +74,28 @@ jobs:
           args=(--market "$market")
           if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
           python -u wamo_run.py "${args[@]}"
+      - name: 보조 연결 오류 유형 확인
+        if: always()
+        timeout-minutes: 3
+        env:
+          KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+          KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
+          KRX_ID: ${{ secrets.KRX_ID }}
+          KRX_PW: ${{ secrets.KRX_PW }}
+        shell: python
+        run: |
+          import urllib.error, urllib.parse
+          from wamo_kis import KIS
+          from wamo_update_business_dart import _krx_login_opener
+          for name, check in [('KIS', KIS().authenticate), ('KRX', _krx_login_opener)]:
+              try:
+                  check()
+                  print(name, 'CONNECTED', flush=True)
+              except urllib.error.HTTPError as exc:
+                  location = urllib.parse.urlsplit(exc.headers.get('Location', ''))
+                  print(name, 'HTTP', exc.code, 'redirect_host', location.hostname, 'redirect_path', location.path, flush=True)
+              except Exception as exc:
+                  print(name, 'ERROR_TYPE', type(exc).__name__, flush=True)
       - name: 공개 검색 카탈로그 별도 갱신·저장
         if: success() && steps.refresh.outputs.updated == 'true'
         timeout-minutes: 5
