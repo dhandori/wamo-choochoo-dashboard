@@ -98,8 +98,9 @@ jobs:
         run: |
           import urllib.error, urllib.parse
           from wamo_kis import KIS
-          from wamo_update_business_dart import _krx_login_opener
-          for name, check in [('KIS', KIS().authenticate), ('KRX', _krx_login_opener)]:
+          from wamo_update_business_dart import _krx_login_opener, _fetch_krx_index_members
+          from wamo_runtime import expected_session
+          for name, check in [('KIS', KIS().authenticate), ('KRX', _krx_login_opener), ('KRX_MEMBERS', lambda: _fetch_krx_index_members(_krx_login_opener(), '1028', expected_session('KR')))]:
               try:
                   check()
                   print(name, 'CONNECTED', flush=True)
