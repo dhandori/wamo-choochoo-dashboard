@@ -6,7 +6,7 @@
     "nextScheduledFor": "2026-10-02T07:00:00+00:00",
     "trigger": "코드 반영 후 실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/36884750176",
-    "moversStatus": "RUNNING",
+    "moversStatus": "PASS",
     "warnings": [
       "시장 에너지 확인 불가: HTTP Error 307: Temporary Redirect",
       "한국투자 보조조회 일부 실패 · 가격 갱신과 별도 확인"
@@ -32,7 +32,7 @@
       "connected": false,
       "message": "한국투자 API 인증 실패 · 기존 가격 경로 유지"
     },
-    "moversCompletedAt": "2026-09-17T12:45:06.949140+00:00",
+    "moversCompletedAt": "2026-10-01T15:42:03.681980+00:00",
     "refreshMode": "FULL"
   },
   "US": {
