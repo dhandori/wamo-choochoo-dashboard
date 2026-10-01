@@ -62,7 +62,7 @@ jobs:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
           KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
-          REQUESTED_MARKET: US
+          REQUESTED_MARKET: KR
           EVENT_SCHEDULE: ${{ github.event.schedule || '' }}
           PUBLISH_RESULT: 'true'
         run: |
@@ -73,6 +73,17 @@ jobs:
           fi
           args=(--market "$market")
           if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
+          # Explicit one-time retry after KRX/KIS connectivity recovered.
+          # Scheduled jobs in main.yml still retain once-per-session deduplication.
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('wamo_refresh_state.json')
+          state = json.loads(path.read_text())
+          state['KR']['success'] = False
+          state['KR']['attempts'] = 0
+          path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + '\n')
+          PY
           python -u wamo_run.py "${args[@]}"
       - name: 보조 연결 오류 유형 확인
         if: always()
