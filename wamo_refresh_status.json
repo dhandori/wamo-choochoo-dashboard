@@ -1,29 +1,31 @@
 {
   "KR": {
     "status": "WARNING",
-    "attemptedAt": "2026-09-17T12:32:44.665116+00:00",
-    "scheduledFor": "2026-09-17T07:00:00+00:00",
-    "nextScheduledFor": "2026-09-18T07:00:00+00:00",
-    "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/35221668238",
-    "moversStatus": "PASS",
+    "attemptedAt": "2026-10-01T15:30:51.016370+00:00",
+    "scheduledFor": "2026-10-01T07:00:00+00:00",
+    "nextScheduledFor": "2026-10-02T07:00:00+00:00",
+    "trigger": "코드 반영 후 실행",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/36884750176",
+    "moversStatus": "RUNNING",
     "warnings": [
+      "시장 에너지 확인 불가: HTTP Error 307: Temporary Redirect",
       "한국투자 보조조회 일부 실패 · 가격 갱신과 별도 확인"
     ],
-    "lastSuccessAt": "2026-09-17T12:39:49.907970+00:00",
-    "asOf": "2026-09-17",
+    "lastSuccessAt": "2026-10-01T15:37:11.135138+00:00",
+    "asOf": "2026-10-01",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-09-17",
-      "currentCount": 210,
+      "expectedSession": "2026-10-01",
+      "currentCount": 213,
       "currentPct": 100.0,
-      "checkedAt": "2026-09-17T21:39:49+09:00",
+      "checkedAt": "2026-10-02T00:37:11+09:00",
       "warnings": [
+        "시장 에너지 확인 불가: HTTP Error 307: Temporary Redirect",
         "한국투자 보조조회 일부 실패 · 가격 갱신과 별도 확인"
       ],
       "calendar": "XKRX"
     },
-    "count": 210,
+    "count": 213,
     "error": null,
     "kis": {
       "status": "AUTH_FAILED",
