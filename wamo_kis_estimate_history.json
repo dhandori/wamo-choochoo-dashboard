@@ -1223,6 +1223,15 @@
       "forwardMetricsConnected": false,
       "output2": [],
       "output3": []
+    },
+    "2026-10-02": {
+      "checkedAt": "2026-10-02T22:52:58+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
     }
   },
   "031980": {

@@ -4932,5 +4932,68 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-10-02",
     "failed": false
+  },
+  "417200": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260604",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260604000337",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-10-02",
+    "failed": false
+  },
+  "457190": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260319",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260319001027",
+    "detailSector": "화학",
+    "sectorTags": [
+      "화학"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-10-02",
+    "failed": false
+  },
+  "101490": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260316",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260316000487",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-10-02",
+    "failed": false
   }
 }
