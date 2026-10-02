@@ -51219,5 +51219,117 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-10-01",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "MOD": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.modine.com",
+    "businessModelReportDate": "3/31/2026",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Modine Manufacturing Company Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Auto Parts:O.E.M. 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Modine Manufacturing Company Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Auto Parts:O.E.M. 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): For more than 100 years, Modine has solved the toughest thermal management challenges for mission-critical applications. Our purpose of Engineering a Cleaner, Healthier World means we are always evolving our portfolio of technologies to provide the latest heating, cooling, and ventilation solutions. Through the hard work of more than 11,000 employees worldwide, our Climate Solutions and Performance Technologies segments advance our purpose with systems that improve air quality, reduce energy and water consumption, lower harmful emissions, enable cleaner running vehicles, and use environmentally friendly refrigerants. Modine is a global company headquartered in Racine, Wisconsin (U.S.), with operations in North America, South America, Europe, and Asia.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 3,181,100천달러로 전년 대비 +23.1%입니다(결산기준 3/31/2026).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "경기소비재 (Consumer Discretionary)",
+        "Consumer Discretionary",
+        "Auto Parts:O.E.M."
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "3/31/2026",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 2674600.0,
+      "liabilities": 1471800.0,
+      "equity": 1194500.0,
+      "netIncome": 121500.0,
+      "debtRatioPct": 123.2,
+      "currentRatioPct": 194.3,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 23.1,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Consumer Discretionary",
+    "industry": "Auto Parts:O.E.M.",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-02",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "SKHY": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.skhynix.com/",
+    "businessModelReportDate": "",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "SK hynix Inc. American Depositary Shares은 Nasdaq 공식 분류상 Technology · Semiconductors 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "SK hynix Inc. American Depositary Shares은 Nasdaq 공식 분류상 Technology · Semiconductors 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): SK hynix Inc., headquartered in Korea, is the world's top-tier semiconductor supplier offering Dynamic Random Access Memory chips ('DRAM') and flash memory chips ('NAND flash') for a wide range of distinguished customers globally. The Company's shares are traded on the Korea Exchange, and the Global Depository shares are listed on the Luxembourg Stock Exchange.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "Nasdaq 연간 손익계산서에서 비교 가능한 매출을 확보하지 못했습니다.",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "기술 (Technology)",
+        "Technology",
+        "Semiconductors"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "",
+      "sectorRule": "GENERAL",
+      "equityPositive": false,
+      "profitPositive": false,
+      "leveragePass": false,
+      "liquidityPass": true,
+      "assets": null,
+      "liabilities": null,
+      "equity": null,
+      "netIncome": null,
+      "debtRatioPct": null,
+      "currentRatioPct": null,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": null,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Technology",
+    "industry": "Semiconductors",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-02",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
