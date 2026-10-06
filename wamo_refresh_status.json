@@ -42,29 +42,31 @@
   },
   "US": {
     "status": "WARNING",
-    "attemptedAt": "2026-10-06T08:21:58.126929+00:00",
-    "scheduledFor": "2026-10-05T20:20:00+00:00",
-    "nextScheduledFor": "2026-10-06T20:20:00+00:00",
+    "attemptedAt": "2026-10-06T23:50:48.868270+00:00",
+    "scheduledFor": "2026-10-06T20:20:00+00:00",
+    "nextScheduledFor": "2026-10-07T20:20:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/37398515689",
-    "moversStatus": "PASS",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/37548746525",
+    "moversStatus": "RUNNING",
     "warnings": [
+      "당일 신규수집 제외 1종목 · 종목별 날짜 확인",
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-10-06T08:24:00.813717+00:00",
-    "asOf": "2026-10-05",
+    "lastSuccessAt": "2026-10-06T23:53:17.893412+00:00",
+    "asOf": "2026-10-06",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-10-05",
-      "currentCount": 880,
-      "currentPct": 100.0,
-      "checkedAt": "2026-10-06T17:24:00+09:00",
+      "expectedSession": "2026-10-06",
+      "currentCount": 878,
+      "currentPct": 99.9,
+      "checkedAt": "2026-10-07T08:53:17+09:00",
       "warnings": [
+        "당일 신규수집 제외 1종목 · 종목별 날짜 확인",
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
       "calendar": "XNYS"
     },
-    "count": 880,
+    "count": 879,
     "error": null,
     "kis": {
       "status": "LIVE",
