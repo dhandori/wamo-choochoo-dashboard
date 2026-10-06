@@ -7,7 +7,8 @@
   },
   "US": {
     "slot": "2026-10-05T20:20:00+00:00",
-    "attempts": 1,
-    "success": false
+    "attempts": 2,
+    "success": true,
+    "lastFullSlot": "2026-10-05T20:20:00+00:00"
   }
 }
