@@ -4995,5 +4995,102 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-10-02",
     "failed": false
+  },
+  "252990": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "샘씨엔에스는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260316",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260316001120",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-10-06",
+    "failed": false
+  },
+  "327260": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "당사는 광통신 패키지, RF Power 트랜지스터용 패키지, Laser 모듈용 패키지 등 광화합물 반도체인 인듐인과 갈륨비소, RF화합물 반도체인 질화갈륨과 갈륨비소를 안전하게 트랜지스터와 전력증폭기에 안착시킬 수 있는 패키지를 제조 판매하는 사업을 영위하고 있습니다.",
+      "products": "주요 제품 등의 가격변동 추이(1) 가격 변동 추이",
+      "customers": "주요 고객으로는 I3SYSTEM(한국), SCD(이스라엘) 등이 있으며 대표적인 경쟁업체로는 Kyocera(일본), Egide(프랑스) 등이 있습니다.",
+      "revenue": "(주1) 산출기준은 당사 제품의 가격은 제품별 매출액을 판매수량으로 나누어 산출한 단순 평균가격입니다.",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": [
+        "조선",
+        "소프트웨어·플랫폼",
+        "유통·커머스",
+        "통신",
+        "전력·에너지"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260318",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001224",
+    "detailSector": "반도체 검사·테스트",
+    "sectorTags": [
+      "반도체 검사·테스트",
+      "반도체 장비",
+      "반도체 소재·부품",
+      "자동차 부품"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-10-06",
+    "failed": false
+  },
+  "006110": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "삼아알미늄는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260318",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318000860",
+    "detailSector": "1차 비철금속 제조업",
+    "sectorTags": [
+      "1차 비철금속 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-10-06",
+    "failed": false
+  },
+  "020150": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260310",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260310002974",
+    "detailSector": "전자부품 제조업",
+    "sectorTags": [
+      "전자부품 제조업"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-10-06",
+    "failed": false
   }
 }
