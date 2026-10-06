@@ -42,14 +42,29 @@
       const title = m === 'KR' ? '한국' : '미국';
       const asOf = s.asOf || p.asOf || '확인 불가';
       const late = s.nextScheduledFor && Date.now() > Date.parse(s.nextScheduledFor) + 5 * 60000;
+      const mismatch = !isMovers && s.asOf && p.asOf && s.asOf !== p.asOf;
       let label = s.status === 'FAILED' ? '갱신 실패 · 이전 데이터 유지'
         : late ? '예약시각 경과 · 새 결과 대기'
         : s.status === 'WARNING' ? '가격 갱신 완료 · 일부 항목 확인 필요'
         : s.status === 'PASS' ? '가격 갱신 완료' : '실행 상태 기록 없음';
+      if (mismatch) label = `배포 데이터 불일치 · 화면 ${p.asOf} / 실행 결과 ${s.asOf}`;
+      if (!isMovers) {
+        const titleNode = document.getElementById('healthTitle');
+        const banner = document.getElementById('healthBanner');
+        const unknown = !['PASS', 'WARNING', 'FAILED'].includes(s.status);
+        const unhealthy = mismatch || s.status === 'FAILED' || late || unknown;
+        if (titleNode) titleNode.textContent = mismatch ? '배포 데이터 불일치 · 최신 화면 확인 필요'
+          : s.status === 'FAILED' ? '갱신 실패 · 이전 데이터 표시'
+          : late ? '갱신 지연 · 새 결과 대기'
+          : unknown ? '갱신 상태 확인 불가 · 가격 기준일 확인'
+          : s.status === 'WARNING' ? '가격 갱신 완료 · 일부 항목 확인 필요'
+          : '가격 갱신 완료 · 최신성 검사 통과';
+        if (banner) banner.className = `health-banner ${unhealthy || s.status === 'WARNING' ? 'warn' : 'good'}`;
+      }
       if (isMovers && s.moversStatus === 'DEFERRED') label = 'TOP 30 기존 결과 · 전체 갱신 회차에 업데이트';
       if (isMovers && s.moversStatus === 'RUNNING') label = 'TOP 30 갱신 중 · 이전 결과 표시';
       if (isMovers && s.moversStatus === 'FAILED') label = 'TOP 30 갱신 실패 · 이전 결과 유지';
-      line(`${title} · ${label} · 가격 기준일 ${asOf}`, s.status === 'FAILED' || late ? '#ffb3a9' : '#f4d58a');
+      line(`${title} · ${label} · 가격 기준일 ${isMovers ? asOf : (p.asOf || asOf)}`, s.status === 'FAILED' || late || mismatch ? '#ffb3a9' : '#f4d58a');
       line(`예정 ${stamp(s.scheduledFor || p.scheduledFor)} · 실제 시작 ${stamp(s.attemptedAt || p.runStartedAt)} · 마지막 성공 ${stamp(s.lastSuccessAt || p.updatedAt)} · ${s.trigger || p.runTrigger || '이전 실행'}`);
       if (s.refreshMode === 'PRICE') line('장중 보강 · 가격·거래량·추세 재계산 / 기업정보·공시는 기존 자료 / TOP 30은 전체 갱신 시 갱신');
       if (!isMovers && s.moversStatus === 'RUNNING') line('가격 계산 완료 · TOP 30은 별도로 갱신 중');
@@ -152,5 +167,5 @@
   render(null);
   fetch('wamo_refresh_status.json', {cache:'no-store'})
     .then(r => { if (!r.ok) throw Error('status'); return r.json(); })
-    .then(render).catch(() => line('실행 상태를 불러오지 못했습니다. 표시된 가격 기준일을 확인하세요.', '#f4d58a'));
+    .then(render).catch(() => {render(null);line('실행 상태를 불러오지 못했습니다. 표시된 가격 기준일을 확인하세요.', '#f4d58a');});
 })();

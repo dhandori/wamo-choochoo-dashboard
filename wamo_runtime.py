@@ -81,7 +81,9 @@ def validate_freshness(payload, market, now=None):
     current = sum(s['date'] == expected and s.get('dataStatus') == 'LIVE' for s in stocks)
     pct = round(current / len(stocks) * 100, 1) if stocks else 0
     if pct < 90:
-        raise RuntimeError(f'가격 최신성 부족: 기대 거래일 {expected}, 신규수집 {current}/{len(stocks)} ({pct}%). 기존 화면 유지')
+        from collections import Counter
+        dates = dict(Counter(f"{s['date']} / {s.get('dataStatus')}" for s in stocks))
+        raise RuntimeError(f'가격 최신성 부족: 기대 거래일 {expected}, 신규수집 {current}/{len(stocks)} ({pct}%). 기존 화면 유지 · 날짜별 상태 {dates}')
     warnings = []
     meta = payload['meta']
     energy = meta.get('marketEnergy') or {}

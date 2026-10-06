@@ -187,7 +187,7 @@ def kind_sector_map():
         print("KIND sector mapping skipped:", e)
         return {}
 
-def fetch_yahoo_history(ticker: str, years=None):
+def fetch_yahoo_history(ticker: str, years=None, expected_date=None):
     """GitHub Actions에서 사용할 1순위 가격 경로.
     query1/query2를 순차 시도하고, 수정주가 비율로 OHLC를 보정합니다.
     """
@@ -262,6 +262,14 @@ def fetch_yahoo_history(ticker: str, years=None):
                 # Duplicate date 제거 후 정렬.
                 dedup = {r["date"]: r for r in rows}
                 rows = [dedup[k] for k in sorted(dedup)]
+                if expected_date:
+                    # Daily endpoints can return an old successful response or
+                    # a partial next-session bar. Neither is the requested close.
+                    rows = [row for row in rows if row['date'] <= expected_date]
+                    actual = rows[-1]['date'] if rows else '없음'
+                    if actual != expected_date:
+                        errors.append(f'{host}: 기대 거래일 {expected_date}, 응답 가격일 {actual}')
+                        break  # Try the other host instead of accepting stale HTTP 200.
                 # 신규 상장주도 후보에서 통째로 빠지지 않게 60거래일부터 허용합니다.
                 # 200일선·Stage 2·정배열은 calc_raw에서 이력 부족으로 별도 표시합니다.
                 if len(rows) < 60:

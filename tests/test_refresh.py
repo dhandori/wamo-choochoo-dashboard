@@ -21,6 +21,14 @@ def instant(value):
 
 
 class RefreshTests(unittest.TestCase):
+    def test_explicit_recovery_retries_failed_latest_close_after_twelve_hours(self):
+        slot = instant('2026-10-05T20:20')
+        state = {'US': {'slot': slot.isoformat(), 'success': False, 'attempts': 1}}
+        now = instant('2026-10-06T08:30')
+        self.assertEqual(runner.select_targets(state, now, 'US', recovery=True), [('US', slot)])
+        state['US']['success'] = True
+        self.assertEqual(runner.select_targets(state, now, 'US', recovery=True), [])
+
     def test_krx_keeps_alphanumeric_codes_and_discards_aggregate_rows(self):
         response = {'output': [{'ISU_SRT_CD': code} for code in ['005930', '0126Z0', '0220W0', '합계', '']]}
         from unittest.mock import Mock

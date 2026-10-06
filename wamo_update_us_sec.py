@@ -1201,10 +1201,12 @@ def main():
     print("2/9 미국 가격·거래량 수집")
     raw, errors, short_history_exclusions = [], [], []
     fetched = liquidity_rejected = 0
+    from wamo_runtime import expected_session
+    expected_date = expected_session('US')
 
     def task(meta):
         try:
-            rows, host = core.fetch_yahoo_history(meta["ticker"])
+            rows, host = core.fetch_yahoo_history(meta["ticker"], expected_date=expected_date)
             stock = core.calc_raw(meta, rows)
             stock["dataSource"] = "Yahoo Finance"
             stock["priceProvider"] = host

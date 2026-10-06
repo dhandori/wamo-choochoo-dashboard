@@ -30,7 +30,7 @@ def set_action_output(updated):
             stream.write(f"updated={'true' if updated else 'false'}\n")
 
 
-def select_targets(state, now, requested='auto', force=False):
+def select_targets(state, now, requested='auto', force=False, recovery=False):
     targets = []
     for market in MARKETS:
         if requested not in ('auto', 'both', market):
@@ -38,7 +38,7 @@ def select_targets(state, now, requested='auto', force=False):
         slot = latest_slot(market, now)
         entry = state.get(market, {})
         same_slot = entry.get('slot') == slot.isoformat()
-        if now - slot > timedelta(hours=12):
+        if now - slot > timedelta(hours=12) and not recovery:
             continue
         session = slot.astimezone(MARKET_TZ[market]).date().isoformat()
         if expected_session(market, now) != session:
@@ -57,7 +57,7 @@ def select_targets(state, now, requested='auto', force=False):
                 continue
             # A second DST cron candidate must not become an automatic retry.
             # Explicit manual dispatch may retry a failed close up to three times.
-            retry_limit = 3 if force else 1
+            retry_limit = 3 if force or recovery else 1
             if entry.get('attempts', 0) >= retry_limit:
                 continue
         targets.append((market, slot))
@@ -109,8 +109,11 @@ def main():
     now = datetime.now(UTC)
     event = os.getenv('GITHUB_EVENT_NAME', '')
     force = event == 'workflow_dispatch'
+    # Explicit reruns use the updated checkout and can recover the latest close
+    # even after 12 hours. Regular DST cron candidates still run only once.
+    recovery = force or int(os.getenv('GITHUB_RUN_ATTEMPT', '1')) > 1
     state, status = read_json(STATE), read_json(STATUS)
-    targets = select_targets(state, now, args.market, force)
+    targets = select_targets(state, now, args.market, force, recovery=recovery)
     print('갱신 대상:', [(market, slot.astimezone(KST).isoformat()) for market, slot in targets], flush=True)
     if args.plan or not targets:
         set_action_output(False)
