@@ -30,7 +30,7 @@
 ### Task 3: Status and delivery
 - [x] Add UI cases for running/interrupted/newer page states.
 - [x] Add timeout and periodic visible-tab status checks; preserve good payload and offer reload on mismatch.
-- [x] Run Python/JS/browser checks, independent code review, publish and inspect actual Actions/Pages state.
+- [ ] Run Python/JS/browser checks, independent code review, publish and inspect actual Actions/Pages state.
 
 ## Execution record
 - Existing clean clone at ce1c8bd, work isolated on codex/wamo-resilience-20261007.
@@ -42,3 +42,6 @@
 - Independent review: concurrent-push dirty-movers and >7-day holiday cases found; fixed with per-market finalized publication and calendar session lookup. Separate auxiliary recovery added without price recollection.
 - Local browser download returned an invalid archive. Browser smoke will run in GitHub CI; no local browser pass claimed.
 - Final publication validation remains tracked in the task result.
+
+- Local final: Python 74/74, JS 35/35. Real temporary Git remote test passed: concurrent unrelated commit preserved, both markets published, no dirty tracked outputs.
+- First GitHub CI: dashboard browser 6/6 passed; discovery test also fails on unchanged baseline because fresh_radar retains the live FAILED status. Fixed at test-only routing boundary; production snapshots and validation remain unchanged. Awaiting rerun.

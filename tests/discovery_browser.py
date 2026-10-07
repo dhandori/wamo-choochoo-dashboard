@@ -1,4 +1,4 @@
-"""Deterministic browser regression for discovery using the checked-in public snapshots."""
+"""Browser regression with test-only source states over saved public observations."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -46,6 +46,14 @@ class SourcePlan:
 def fresh_radar():
     result = deepcopy(RADAR)
     result["checkedAt"] = NOW.isoformat().replace("+00:00", "Z")
+    # This routed browser fixture models a successful response. Production
+    # snapshots may be FAILED today; copying that status makes navigation and
+    # recovery tests depend on a live vendor outage. Never write this to disk.
+    for edition in result["editions"].values():
+        assert edition.get("signals") and edition.get("industries"), "saved observations required for UI fixture"
+        edition["status"] = "PASS"
+        edition.pop("error", None)
+        edition.pop("errorCode", None)
     return result
 
 
