@@ -481,13 +481,19 @@ def test_catalog_revalidation_detail(browser, base_url):
         row for row in all_pass_signals(fresh)
         if identity_for_signal(row) in catalog_by_id
         and catalog_by_id[identity_for_signal(row)].get("technical", {}).get("ready") is True
-        and catalog_by_id[identity_for_signal(row)]["technical"].get("asOf")
-            == f"{row['as_of'][:4]}-{row['as_of'][4:6]}-{row['as_of'][6:]}"
     )
     row_id = identity_for_signal(signal)
+    # Give this one routed test record matching dates. The saved catalog and
+    # radar may now represent different sessions; that is valid production
+    # behavior, while this test specifically needs a current technical join.
+    joined_catalog = deepcopy(CATALOG)
+    joined_row = next(row for row in joined_catalog["stocks"] if row["id"] == row_id)
+    joined_row["asOf"] = joined_row["technical"]["asOf"] = (
+        f"{signal['as_of'][:4]}-{signal['as_of'][4:6]}-{signal['as_of'][6:]}"
+    )
     context, page, errors, _, _ = open_page(
         browser, base_url,
-        catalog_steps=(CATALOG, "network-error"), radar_steps=(fresh, fresh),
+        catalog_steps=(joined_catalog, "network-error"), radar_steps=(fresh, fresh),
     )
     try:
         wait_status(page, "레이더: 연결 확인 유효", "카탈로그: 연결됨")
