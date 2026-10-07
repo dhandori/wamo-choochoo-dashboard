@@ -273,12 +273,16 @@ def fetch_yahoo_history(ticker: str, years=None, expected_date=None):
                 # 신규 상장주도 후보에서 통째로 빠지지 않게 60거래일부터 허용합니다.
                 # 200일선·Stage 2·정배열은 calc_raw에서 이력 부족으로 별도 표시합니다.
                 if len(rows) < 60:
-                    raise RuntimeError(f"Yahoo 가격 이력 부족: {len(rows)}일")
+                    errors.append(f"{host}: Yahoo 가격 이력 부족: {len(rows)}일")
+                    break  # A new listing cannot acquire history by retrying.
                 return rows, host
 
             except Exception as e:
                 errors.append(f"{host} attempt {attempt+1}: {e}")
-                time.sleep(1.0 + attempt * 0.8)
+                if getattr(e, 'code', None) in (400, 401, 403, 404, 410):
+                    break
+                if attempt < 2:
+                    time.sleep(1.0 + attempt * 0.8)
 
     raise RuntimeError(compact_provider_error(" / ".join(errors[-6:])))
 

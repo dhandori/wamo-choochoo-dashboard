@@ -151,7 +151,7 @@ export function mountDiscovery() {
     knownMetric.textContent=`${model.stocks.length.toLocaleString('ko-KR')} 검색 가능 종목`;
     status.textContent=`레이더: ${statusNames[model.status.radar]} · 카탈로그: ${statusNames[model.status.catalog]}${state.loading?' · 갱신 중…':''}`;
     status.className=['current','missing'].includes(model.status.radar)?'':'discovery-warning';
-    editionStatus.textContent=`마지막 연결 확인 ${model.status.checkedAt||'기록 없음'} · ${Object.entries(model.status.editions).map(([name,value])=>`${COUNTRIES[name]||name} ${value==='PASS'?'검증 통과':value==='FAILED'?'갱신 실패':'형식 오류'}`).join(' / ')||'시장별 검증 자료 없음'}`;
+    editionStatus.textContent=`마지막 연결 확인 ${model.status.checkedAt||'기록 없음'} · ${Object.entries(model.status.editions).map(([name,value])=>`${COUNTRIES[name]||name} ${model.status.editionReasons?.[name]||(value==='PASS'?'검증 통과':value==='FAILED'?'갱신 실패':'형식 오류')}`).join(' / ')||'시장별 검증 자료 없음'}`;
     retry.disabled=state.loading; retry.textContent=state.loading?'확인 중…':'다시 확인';
     updateIndustries(model);
     const isIndustry=filters.mode==='industries';

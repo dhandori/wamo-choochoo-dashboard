@@ -82,13 +82,13 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(runner.select_targets(state, instant('2026-11-03T22:20')), [])
         self.assertEqual(runner.select_targets(state, instant('2026-11-03T22:20'), 'US', True), [])
 
-    def test_second_us_cron_does_not_retry_failed_close_automatically(self):
+    def test_second_us_cron_recovers_failed_close_automatically(self):
         slot = instant('2026-03-09T20:20')
         failed = {'US': {'slot': slot.isoformat(), 'success': False, 'attempts': 1}}
-        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US'), [])
+        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US'), [('US', slot)])
         self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US', True), [('US', slot)])
         failed['US']['attempts'] = 3
-        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US', True), [])
+        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US', True), [('US', slot)])
 
     def test_schedule_migration_deduplicates_by_market_session(self):
         legacy = {'US': {'slot': instant('2026-09-14T21:20').isoformat(),
@@ -110,9 +110,9 @@ class RefreshTests(unittest.TestCase):
         self.assertIn('fetch-depth: 1', workflow)
         self.assertIn("if: github.event_name != 'push'", workflow)
         self.assertIn("github.event_name == 'push' && 'code-check' || 'data-update'", workflow)
-        self.assertIn("steps.refresh.outputs.updated == 'true'", workflow)
-        self.assertIn('timeout-minutes: 65', workflow)
-        self.assertIn('timeout-minutes: 40', workflow)
+        self.assertIn("43 */2 * * *", workflow)
+        self.assertIn('timeout-minutes: 90', workflow)
+        self.assertIn('timeout-minutes: 75', workflow)
         # The child timeout must leave time for restore/status publication before
         # GitHub terminates the 30-minute refresh step.
         self.assertEqual(inspect.signature(runner.run_script).parameters['timeout'].default, 1500)
