@@ -282,3 +282,13 @@ test('original analysis links are limited to catalog-backed local KR/US targets'
   assert.equal(detailApi.originalDetailUrl({catalog:{country:'JP',ticker:'ALPHA',detailUrl:'javascript:alert(1)'}}),null);
   assert.equal(detailApi.originalDetailUrl({catalog:stock('US','ALPHA',{detailUrl:'javascript:alert(1)'})}),'us.html?stock=ALPHA');
 });
+
+test('upstream verification wait stays unavailable and explains why',()=>{
+  const r=radar();
+  r.editions.US={status:'FAILED',errorCode:'UPSTREAM_NOT_READY',signals:[signal('US','ALPHA')],industries:[]};
+  const model=build(undefined,r);
+  assert.equal(model.status.editionReasons?.US,'원본 가격·분석 검증 대기');
+  const row=model.stocks.find(s=>s.id==='US:ALPHA');
+  assert.equal(row.current,false);
+  assert.equal(row.technicalCurrent,false);
+});

@@ -7,6 +7,8 @@ on:
     - cron: '0 7 * * 1-5'
     - cron: '20 20 * * 1-5'
     - cron: '20 21 * * 1-5'
+    # Cheap recovery checks: completed sessions exit before provider calls.
+    - cron: '43 */2 * * *'
   workflow_dispatch:
     inputs:
       market:
@@ -32,7 +34,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 65
+    timeout-minutes: 90
     env:
       PYTHONUNBUFFERED: '1'
     steps:
@@ -71,7 +73,7 @@ jobs:
       - name: 시장별 갱신·최신성 검증·결과 저장
         id: refresh
         if: github.event_name != 'push'
-        timeout-minutes: 40
+        timeout-minutes: 75
         env:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
           KRX_ID: ${{ secrets.KRX_ID }}
@@ -86,21 +88,22 @@ jobs:
           set -euo pipefail
           market="$REQUESTED_MARKET"
           if [[ "${GITHUB_EVENT_NAME}" == 'schedule' ]]; then
-            if [[ "$EVENT_SCHEDULE" == '0 7 * * 1-5' ]]; then market='KR'; else market='US'; fi
+            if [[ "$EVENT_SCHEDULE" == '43 */2 * * *' ]]; then market='auto';
+            elif [[ "$EVENT_SCHEDULE" == '0 7 * * 1-5' ]]; then market='KR'; else market='US'; fi
           fi
           args=(--market "$market")
+          if [[ "$EVENT_SCHEDULE" == '43 */2 * * *' ]]; then args+=(--recovery); fi
           if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
           python -u wamo_run.py "${args[@]}"
-      - name: 공개 검색 카탈로그 별도 갱신·저장
-        if: success() && steps.refresh.outputs.updated == 'true' && (github.event_name == 'schedule' || inputs.publish)
-        timeout-minutes: 5
+      - name: 중단된 실행 상태 정리
+        if: always() && steps.refresh.outcome != 'skipped' && github.event_name != 'push'
+        timeout-minutes: 3
+        env:
+          PUBLISH_RESULT: ${{ inputs.publish || github.event_name == 'schedule' }}
         run: |
-          set -euo pipefail
-          python wamo_catalog.py
-          git add -- wamo_catalog.json
-          git diff --cached --quiet && exit 0
-          git commit -m 'Refresh public WAMO search catalog'
-          git push origin HEAD:main
+          args=(--finalize-interrupted)
+          if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
+          python wamo_run.py "${args[@]}"
       - name: 실패 결과 보관
         if: failure()
         uses: actions/upload-artifact@v4

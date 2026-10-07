@@ -25,8 +25,8 @@ class EarlyPublicationTests(unittest.TestCase):
                 def script(name, *args, **kwargs):
                     events.append(name)
                     if name == 'wamo_update_movers.py':
-                        self.assertEqual(published[0]['KR']['status'], 'PASS')
-                        self.assertEqual(published[0]['KR']['moversStatus'], 'RUNNING')
+                        self.assertEqual(published[1]['KR']['status'], 'PASS')
+                        self.assertEqual(published[1]['KR']['moversStatus'], 'RUNNING')
                         (root / 'movers.html').write_text('new movers')
                         if fail_movers:
                             raise subprocess.CalledProcessError(1, name)
@@ -36,9 +36,10 @@ class EarlyPublicationTests(unittest.TestCase):
                 payload = {'meta': {'asOf': '2026-09-08'}, 'stocks': [{'date': '2026-09-08'}]}
                 with patch.object(runner, 'ROOT', root), patch.object(runner, 'STATE', root / 'wamo_refresh_state.json'), patch.object(runner, 'STATUS', root / 'wamo_refresh_status.json'), patch.object(runner, 'run_script', side_effect=script), patch.object(runner, 'publish', side_effect=publish), patch.object(core, 'extract_old_payload', return_value=payload), patch.object(runtime, 'validate_freshness', return_value={'warnings': []}), patch.object(sys, 'argv', ['wamo_run.py', '--publish']), patch.dict('os.environ', {}, clear=True), patch.object(runner, 'select_targets', return_value=[('KR', runtime.datetime(2026, 9, 8, 7, tzinfo=runtime.UTC))]), contextlib.redirect_stdout(io.StringIO()):
                     runner.main()
-                self.assertEqual(events[:3], ['wamo_update_business_dart.py', 'publish', 'wamo_update_movers.py'])
+                self.assertEqual(events[:4], ['publish', 'wamo_update_business_dart.py', 'publish', 'wamo_update_movers.py'])
+                self.assertEqual(published[0]['KR']['status'], 'RUNNING')
                 self.assertEqual(published[-1]['KR']['moversStatus'], 'FAILED' if fail_movers else 'PASS')
-                self.assertEqual(published[-1]['KR']['lastSuccessAt'], published[0]['KR']['lastSuccessAt'])
+                self.assertEqual(published[-1]['KR']['lastSuccessAt'], published[1]['KR']['lastSuccessAt'])
                 if fail_movers:
                     self.assertEqual((root / 'movers.html').read_text(), 'previous movers')
                     self.assertIn('fresh prices', (root / 'index.html').read_text())

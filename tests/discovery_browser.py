@@ -1,4 +1,4 @@
-"""Deterministic browser regression for discovery using the checked-in public snapshots."""
+"""Browser regression with test-only source states over saved public observations."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -46,6 +46,14 @@ class SourcePlan:
 def fresh_radar():
     result = deepcopy(RADAR)
     result["checkedAt"] = NOW.isoformat().replace("+00:00", "Z")
+    # This routed browser fixture models a successful response. Production
+    # snapshots may be FAILED today; copying that status makes navigation and
+    # recovery tests depend on a live vendor outage. Never write this to disk.
+    for edition in result["editions"].values():
+        assert edition.get("signals") and edition.get("industries"), "saved observations required for UI fixture"
+        edition["status"] = "PASS"
+        edition.pop("error", None)
+        edition.pop("errorCode", None)
     return result
 
 
@@ -473,13 +481,19 @@ def test_catalog_revalidation_detail(browser, base_url):
         row for row in all_pass_signals(fresh)
         if identity_for_signal(row) in catalog_by_id
         and catalog_by_id[identity_for_signal(row)].get("technical", {}).get("ready") is True
-        and catalog_by_id[identity_for_signal(row)]["technical"].get("asOf")
-            == f"{row['as_of'][:4]}-{row['as_of'][4:6]}-{row['as_of'][6:]}"
     )
     row_id = identity_for_signal(signal)
+    # Give this one routed test record matching dates. The saved catalog and
+    # radar may now represent different sessions; that is valid production
+    # behavior, while this test specifically needs a current technical join.
+    joined_catalog = deepcopy(CATALOG)
+    joined_row = next(row for row in joined_catalog["stocks"] if row["id"] == row_id)
+    joined_row["asOf"] = joined_row["technical"]["asOf"] = (
+        f"{signal['as_of'][:4]}-{signal['as_of'][4:6]}-{signal['as_of'][6:]}"
+    )
     context, page, errors, _, _ = open_page(
         browser, base_url,
-        catalog_steps=(CATALOG, "network-error"), radar_steps=(fresh, fresh),
+        catalog_steps=(joined_catalog, "network-error"), radar_steps=(fresh, fresh),
     )
     try:
         wait_status(page, "레이더: 연결 확인 유효", "카탈로그: 연결됨")

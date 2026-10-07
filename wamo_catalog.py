@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
@@ -207,6 +208,15 @@ def main():
     generated_at = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
     catalog = build_catalog(payloads, generated_at)
     destination = ROOT / "wamo_catalog.json"
+    if destination.exists():
+        try:
+            previous = json.loads(destination.read_text(encoding="utf-8"))
+            comparable = dict(previous, generatedAt=generated_at)
+            if comparable == catalog:
+                print("catalog unchanged: no rewrite")
+                return
+        except (ValueError, OSError):
+            pass
     write_json(destination, catalog)
     print(
         "catalog generated:",

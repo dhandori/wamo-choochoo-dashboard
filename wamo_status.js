@@ -9,7 +9,7 @@
   const meta = data?.meta || {};
   const isMovers = !data;
   const market = meta.market === 'US' || /\/us\.html$/.test(location.pathname) ? 'US' : 'KR';
-  const scheduleLabel = '갱신예약 · 한국 16:00 KST · 미국 뉴욕 16:20 이후 (한국 05:20/06:20) · 시장별 거래일 1회';
+  const scheduleLabel = '갱신예약 · 한국 16:00 KST · 미국 뉴욕 16:20 이후 (한국 05:20/06:20) · 시장별 거래일 1회 · 실패·누락은 2시간 간격 복구 확인';
   document.querySelectorAll('small, #wamo-update-schedule, .sub b').forEach(el => {
     if (/자동갱신/.test(el.textContent || '')) el.textContent = scheduleLabel;
   });
@@ -43,7 +43,11 @@
       const asOf = s.asOf || p.asOf || '확인 불가';
       const late = s.nextScheduledFor && Date.now() > Date.parse(s.nextScheduledFor) + 5 * 60000;
       const mismatch = !isMovers && s.asOf && p.asOf && s.asOf !== p.asOf;
-      let label = s.status === 'FAILED' ? '갱신 실패 · 이전 데이터 유지'
+      const running = s.status === 'RUNNING';
+      const interrupted = running && Date.now() - Date.parse(s.attemptedAt) > 40 * 60000;
+      let label = interrupted ? '실행 중단 의심 · 자동 복구 대기'
+        : running ? '가격 갱신 중 · 이전 데이터 표시'
+        : s.status === 'FAILED' ? '갱신 실패 · 이전 데이터 유지'
         : late ? '예약시각 경과 · 새 결과 대기'
         : s.status === 'WARNING' ? '가격 갱신 완료 · 일부 항목 확인 필요'
         : s.status === 'PASS' ? '가격 갱신 완료' : '실행 상태 기록 없음';
@@ -54,6 +58,8 @@
         const unknown = !['PASS', 'WARNING', 'FAILED'].includes(s.status);
         const unhealthy = mismatch || s.status === 'FAILED' || late || unknown;
         if (titleNode) titleNode.textContent = mismatch ? '배포 데이터 불일치 · 최신 화면 확인 필요'
+          : interrupted ? '실행 중단 의심 · 자동 복구 대기'
+          : running ? '가격 갱신 중 · 이전 데이터 표시'
           : s.status === 'FAILED' ? '갱신 실패 · 이전 데이터 표시'
           : late ? '갱신 지연 · 새 결과 대기'
           : unknown ? '갱신 상태 확인 불가 · 가격 기준일 확인'
@@ -70,6 +76,12 @@
       if (!isMovers && s.moversStatus === 'RUNNING') line('가격 계산 완료 · TOP 30은 별도로 갱신 중');
       if (isMovers && s.moversCompletedAt) line(`TOP 30 완료 ${stamp(s.moversCompletedAt)}`);
       if (s.nextScheduledFor) line(`다음 예약 ${stamp(s.nextScheduledFor)} · GitHub 예약 지연은 실제 시작시각으로 확인`);
+      if (mismatch) {
+        const reload = document.createElement('button');
+        reload.type = 'button'; reload.textContent = '최신 화면 불러오기';
+        reload.addEventListener('click', () => location.reload());
+        box.append(reload);
+      }
       const warnings = s.warnings || p.freshness?.warnings || [];
       warnings.forEach(w => line(w, '#f4d58a'));
       if (s.error) line(s.error, '#ffb3a9');
@@ -165,7 +177,31 @@
     }
   }
   render(null);
-  fetch('wamo_refresh_status.json', {cache:'no-store'})
-    .then(r => { if (!r.ok) throw Error('status'); return r.json(); })
-    .then(render).catch(() => {render(null);line('실행 상태를 불러오지 못했습니다. 표시된 가격 기준일을 확인하세요.', '#f4d58a');});
+  let inFlight = false;
+  let pollTimer;
+  const refresh = async () => {
+    if (inFlight) return;
+    clearTimeout(pollTimer);
+    if (document.hidden) {
+      pollTimer = setTimeout(refresh, 60000);
+      return;
+    }
+    inFlight = true;
+    const controller = new AbortController();
+    const deadline = setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch('wamo_refresh_status.json', {cache:'no-store', signal:controller.signal});
+      if (!response.ok) throw Error('status');
+      render(await response.json());
+    } catch {
+      render(null);
+      line('실행 상태 연결 실패 · 1분 후 재확인합니다. 표시된 가격 기준일을 확인하세요.', '#f4d58a');
+    } finally {
+      clearTimeout(deadline);
+      inFlight = false;
+      pollTimer = setTimeout(refresh, 60000);
+    }
+  };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+  refresh();
 })();

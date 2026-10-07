@@ -36,13 +36,17 @@ def expected_session(market, now=None):
 
 
 def slots_near(market, now):
-    for offset in range(-7, 8):
-        day = now.date() + timedelta(days=offset)
-        if calendar(market).is_session(day.isoformat()):
-            for hour, minute in SLOTS[market]:
-                local = datetime(day.year, day.month, day.day, hour, minute,
-                                 tzinfo=MARKET_TZ[market])
-                yield local.astimezone(UTC)
+    # Search actual sessions, not ±7 calendar days: Korean holiday closures
+    # can be longer, and must not block the other market's recovery.
+    sessions = calendar(market).sessions
+    local_day = now.astimezone(MARKET_TZ[market]).date().isoformat()
+    position = sessions.searchsorted(local_day)
+    for session in sessions[max(0, position - 2):position + 3]:
+        day = session.date()
+        for hour, minute in SLOTS[market]:
+            local = datetime(day.year, day.month, day.day, hour, minute,
+                             tzinfo=MARKET_TZ[market])
+            yield local.astimezone(UTC)
 
 
 def latest_slot(market, now):

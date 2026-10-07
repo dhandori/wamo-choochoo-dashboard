@@ -42,7 +42,7 @@ export function buildModel(catalog,radar,now=Date.now(),connectionFailed=false) 
   const fresh=Number.isFinite(checked) && Number.isFinite(Number(now)) && Number(now)>=checked && Number(now)-checked<=CONNECTION_TTL;
   const catalogStatus=sourceOverride(connectionFailed,'catalog')||(catalogValid?'ready':catalog?'invalid':'missing');
   const radarStatus=sourceOverride(connectionFailed,'radar')||(!radarValid?(radar?'invalid':'missing'):fresh?'current':'stale');
-  const status={catalog:catalogStatus,radar:radarStatus,checkedAt:text(radar?.checkedAt),scope:text(radar?.scope),editions:{}};
+  const status={catalog:catalogStatus,radar:radarStatus,checkedAt:text(radar?.checkedAt),scope:text(radar?.scope),editions:{},editionReasons:{}};
   const stocks=new Map(), industries=new Map();
   if(catalogValid) for(const c of catalog.stocks) {
     const id=identity(c.country,c.symbol);
@@ -52,6 +52,8 @@ export function buildModel(catalog,radar,now=Date.now(),connectionFailed=false) 
   if(radarValid) for(const [editionName,edition] of Object.entries(radar.editions)) {
     const valid=validEdition(edition);
     status.editions[editionName]=edition?.status==='FAILED'?'FAILED':valid?edition.status:'INVALID';
+    if(edition?.errorCode==='UPSTREAM_NOT_READY') status.editionReasons[editionName]='원본 가격·분석 검증 대기';
+    else if(edition?.errorCode==='MISSING_TOKEN') status.editionReasons[editionName]='연동 인증 설정 필요';
     const current=status.radar==='current' && valid && edition.status==='PASS';
     const signals=valid && Array.isArray(edition?.signals)?edition.signals.filter(validSignal):[];
     for(const s of signals) {

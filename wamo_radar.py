@@ -1,6 +1,7 @@
 """Validated, allowlisted bridge from private radar reports to public discovery data."""
 import json
 import os
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import requests
@@ -69,44 +70,83 @@ def expected_sessions(markets, now):
 
 
 def fetch_json(path, token):
-    response = requests.get('https://api.github.com/repos/dhandori/global-high-radar/' + path,
-        headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.raw+json'},
-        timeout=60, allow_redirects=False)
-    if response.status_code != 200:
-        raise RuntimeError('Radar read failed: HTTP ' + str(response.status_code))
-    return response.json()
+    for attempt in range(3):
+        try:
+            response = requests.get('https://api.github.com/repos/dhandori/global-high-radar/' + path,
+                headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.raw+json'},
+                timeout=(5, 20), allow_redirects=False)
+        except requests.RequestException:
+            if attempt == 2:
+                raise RuntimeError('NETWORK') from None
+        else:
+            if response.status_code == 200:
+                return response.json()
+            if response.status_code not in (429, 500, 502, 503, 504) or attempt == 2:
+                raise RuntimeError('HTTP_' + str(response.status_code))
+        time.sleep(2 ** attempt)
+
+
+ERROR_LABELS = {
+    'MISSING_TOKEN': '신고가 연동 인증 설정 없음',
+    'HTTP_401': '신고가 연동 인증 만료 또는 오류',
+    'HTTP_403': '신고가 원본 접근 권한 또는 호출 제한 확인 필요',
+    'HTTP_404': '신고가 원본 파일 또는 접근 권한 확인 필요',
+    'UPSTREAM_NOT_READY': '신고가 원본의 가격·분석 검증 대기',
+    'VALIDATION': '신고가 자료 기준일·내용 검증 실패',
+    'NETWORK': '신고가 원본 연결 실패',
+}
+
+
+def save_result(dest, result, previous, now):
+    """No-op on identical output; keep a one-hour connection heartbeat."""
+    same = {k: v for k, v in result.items() if k != 'checkedAt'} == {
+        k: v for k, v in previous.items() if k != 'checkedAt'}
+    if same:
+        try:
+            if now - datetime.fromisoformat(previous['checkedAt']) < timedelta(hours=1):
+                return False
+        except (KeyError, TypeError, ValueError):
+            pass
+    write_json(dest, result)
+    return True
 
 
 def main():
     token = os.environ.get('RADAR_READ_TOKEN')
-    if not token:
-        raise SystemExit('RADAR_READ_TOKEN is not configured')
     root = Path(__file__).resolve().parent
     dest = root / 'wamo_radar.json'
     previous = json.loads(dest.read_text(encoding='utf-8')) if dest.exists() else {}
     now = datetime.now(timezone.utc)
     editions = {}
     failed = False
+    source_error = None
     try:
         # Pin every input to one immutable source commit; do not mix report versions.
+        if not token:
+            raise RuntimeError('MISSING_TOKEN')
         ref = fetch_json('git/refs/heads/main', token)['object']['sha']
-    except Exception:
+    except Exception as exc:
         ref = None
+        source_error = str(exc) if str(exc) in ERROR_LABELS else 'NETWORK'
     for edition in ('US', 'ASIA'):
         try:
             if not ref:
-                raise RuntimeError('source unavailable')
-            report = fetch_json(f'contents/reports/{edition.lower()}_latest.json?ref={ref}', token)
+                raise RuntimeError(source_error)
             status = fetch_json(f'contents/data/radar_{edition.lower()}_release_status.json?ref={ref}', token)
+            if status.get('report_ready') is not True:
+                raise RuntimeError('UPSTREAM_NOT_READY')
+            report = fetch_json(f'contents/reports/{edition.lower()}_latest.json?ref={ref}', token)
             required = {m for m in CALENDARS if m.startswith('US-') == (edition == 'US')}
             editions[edition] = public_edition(report, status, expected_sessions(required, now))
-        except Exception:
+        except Exception as exc:
             failed = True
+            code = str(exc) if str(exc) in ERROR_LABELS else 'VALIDATION'
             editions[edition] = dict(previous.get('editions', {}).get(edition, {}),
-                status='FAILED', error='신고가 자료 연결·기준일·검증 확인 실패. 이전 결과는 현재 신호가 아닙니다.')
-        print(edition, editions[edition]['status'])
-    write_json(dest, dict(schemaVersion=1, checkedAt=now.isoformat(), editions=editions,
-                         scope='확인된 종목군의 신고가 후보이며 전체 거래소 전수조사가 아닙니다.'))
+                status='FAILED', errorCode=code,
+                error=ERROR_LABELS[code] + ' · 이전 결과는 현재 신호가 아닙니다.')
+        print(edition, editions[edition]['status'], editions[edition].get('errorCode', ''))
+    save_result(dest, dict(schemaVersion=1, checkedAt=now.isoformat(), editions=editions,
+                         scope='확인된 종목군의 신고가 후보이며 전체 거래소 전수조사가 아닙니다.'), previous, now)
     for page, market in (('index.html', 'KR'), ('us.html', 'US')):
         path = root / page
         original = path.read_text(encoding='utf-8')
