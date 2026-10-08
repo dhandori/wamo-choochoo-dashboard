@@ -42,12 +42,12 @@
     "catalogStatus": "PASS"
   },
   "US": {
-    "status": "FAILED",
-    "attemptedAt": "2026-10-08T00:13:50.747590+00:00",
+    "status": "RUNNING",
+    "attemptedAt": "2026-10-08T01:05:00.061739+00:00",
     "scheduledFor": "2026-10-07T20:20:00+00:00",
     "nextScheduledFor": "2026-10-08T20:20:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/37706608171",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/37711079999",
     "moversStatus": "PASS",
     "warnings": [
       "당일 신규수집 제외 1종목 · 종목별 날짜 확인",
@@ -68,7 +68,7 @@
       "calendar": "XNYS"
     },
     "count": 879,
-    "error": "가격 갱신 또는 최신성 검사 실패 · 이전 정상 데이터 유지 · 실행 로그 확인",
+    "error": null,
     "kis": {
       "status": "LIVE",
       "connected": true,
