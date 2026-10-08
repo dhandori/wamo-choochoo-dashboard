@@ -42,12 +42,12 @@
     "catalogStatus": "PASS"
   },
   "US": {
-    "status": "WARNING",
-    "attemptedAt": "2026-10-06T23:50:48.868270+00:00",
-    "scheduledFor": "2026-10-06T20:20:00+00:00",
-    "nextScheduledFor": "2026-10-07T20:20:00+00:00",
+    "status": "RUNNING",
+    "attemptedAt": "2026-10-08T00:13:50.747590+00:00",
+    "scheduledFor": "2026-10-07T20:20:00+00:00",
+    "nextScheduledFor": "2026-10-08T20:20:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/37548746525",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/37706608171",
     "moversStatus": "PASS",
     "warnings": [
       "당일 신규수집 제외 1종목 · 종목별 날짜 확인",
