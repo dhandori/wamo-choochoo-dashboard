@@ -324,6 +324,7 @@ def fetch_naver_history(code: str, count=10000):
 
 def fetch_current_kr_history(ticker, code, expected, years=3, count=800):
     """An HTTP success with an old trading date is a provider failure too."""
+    from wamo_price_sources import validate_history
     errors = []
     for source in ('Yahoo Finance', 'NAVER Finance'):
         try:
@@ -335,7 +336,7 @@ def fetch_current_kr_history(ticker, code, expected, years=3, count=800):
             if not rows or rows[-1]['date'] != expected:
                 last = rows[-1]['date'] if rows else 'EMPTY'
                 raise RuntimeError(f'가격 날짜 지연: {last}, 기대 {expected}')
-            return rows, source, host
+            return validate_history(rows, expected), source, host
         except Exception as exc:
             errors.append(f'{source}: {exc}')
     raise RuntimeError(' || '.join(errors))

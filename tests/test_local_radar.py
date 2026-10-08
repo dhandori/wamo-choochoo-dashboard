@@ -1,4 +1,5 @@
 import unittest
+import copy
 import json
 import os
 import tempfile
@@ -10,6 +11,22 @@ from tests.test_price_sources import history
 
 
 class LocalRadarTests(unittest.TestCase):
+    def test_bad_security_is_excluded_without_blocking_verified_peers(self):
+        data=self.payload()
+        data['stocks']=[dict(copy.deepcopy(data['stocks'][0]),ticker=f'T{i}') for i in range(10)]
+        data['stocks'][0]['history'][100]['high']=90.
+        with patch.object(radar,'expected_session',return_value='2026-10-07'):
+            out=radar.local_edition(data,'US',datetime(2026,10,8,tzinfo=timezone.utc))
+        self.assertEqual(out['status'],'PASS')
+        self.assertEqual(len(out['signals']),9)
+        self.assertEqual(out['coverage']['validatedCount'],9)
+        self.assertEqual(out['coverage']['excludedCount'],1)
+        self.assertEqual(out['exclusions'][0]['symbol'],'T0')
+        data['stocks'][1]['history'][100]['high']=90.
+        with patch.object(radar,'expected_session',return_value='2026-10-07'):
+            with self.assertRaisesRegex(ValueError,'verified coverage'):
+                radar.local_edition(data,'US',datetime(2026,10,8,tzinfo=timezone.utc))
+
     def test_failed_legacy_edition_retains_only_52_week_history(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)

@@ -24,6 +24,12 @@ test('failed local fallback never retains successful edition wording',()=>{
   assert.equal(model.stocks.find(x=>x.id==='US:ALPHA').current,false);
 });
 
+test('local radar exposes securities excluded by history validation',()=>{
+  const data=radar();
+  data.editions.US={...data.editions.US,source:'WAMO_52W',coverage:{excludedCount:18}};
+  assert.match(build(undefined,data).status.editionReasons.US,/가격 이력 검증 제외 18종목/);
+});
+
 test('search normalizes case, whitespace, market names and conjunctive tokens',()=>{
   const model=build();
   for (const [query,want] of [[' 미국  alpha ',['US:ALPHA']],['한국 삼성',['KR:005930']],['005930',['KR:005930']],['US labs',['US:ALPHA']],['미국 삼성',[]]]) {
