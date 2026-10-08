@@ -187,7 +187,7 @@ def main():
         return
     now = datetime.now(UTC)
     event = os.getenv('GITHUB_EVENT_NAME', '')
-    force = event == 'workflow_dispatch'
+    force = event == 'workflow_dispatch' or int(os.getenv('GITHUB_RUN_ATTEMPT', '1')) > 1
     # Explicit reruns use the updated checkout and can recover the latest close
     # even after 12 hours. Regular DST cron candidates still run only once.
     recovery = args.recovery or force or int(os.getenv('GITHUB_RUN_ATTEMPT', '1')) > 1

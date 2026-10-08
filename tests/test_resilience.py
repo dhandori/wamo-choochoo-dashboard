@@ -13,6 +13,22 @@ def at(value):
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_operator_rerun_bypasses_automatic_retry_cooldown(self):
+        import contextlib
+        import io
+        import sys
+        now = at('2026-10-08T01:56')
+        slot = at('2026-10-07T20:20')
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'state.json').write_text(json.dumps({'US':{'slot':slot.isoformat(), 'success':False,
+                'attempts':2,'lastAttemptAt':at('2026-10-08T01:55').isoformat()}}))
+            output=io.StringIO()
+            with patch.object(runner,'STATE',root/'state.json'), patch.object(runner,'STATUS',root/'status.json'), patch.object(runner,'datetime',wraps=datetime) as clock, patch.dict('os.environ',{'GITHUB_EVENT_NAME':'schedule','GITHUB_RUN_ATTEMPT':'2'},clear=True), patch.object(sys,'argv',['wamo_run.py','--market','US','--plan']), contextlib.redirect_stdout(output):
+                clock.now.return_value=now
+                runner.main()
+            self.assertIn("('US',",output.getvalue())
+
     def test_failed_close_retries_after_cooldown(self):
         slot = at('2026-10-06T20:20')
         state = {'US': {'slot': slot.isoformat(), 'attempts': 1, 'success': False,
