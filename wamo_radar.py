@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import requests
 from wamo_runtime import write_json, patch_status_ui
+from wamo_runtime import expected_session
 
 CALENDARS = {'US-AMEX': 'XNYS', 'US-NASDAQ': 'XNYS', 'US-NYSE': 'XNYS',
              'KR-KOSPI': 'XKRX', 'KR-KOSDAQ': 'XKRX', 'JP-TSE': 'XTKS',
@@ -15,6 +16,73 @@ SIGNAL_FIELDS = ('key', 'market', 'country', 'symbol', 'name', 'currency', 'as_o
                  'classification_caveats', 'current_close', 'entry_status')
 FLAGS = ('intraday_63', 'intraday_126', 'intraday_252', 'intraday_ath',
          'close_63', 'close_126', 'close_252', 'close_ath')
+
+
+def only_52week(edition):
+    """Filter the verified upstream release and recompute its displayed counts."""
+    from collections import defaultdict
+    signals, groups = [], defaultdict(set)
+    for item in edition['signals']:
+        flags = {key: item['flags'].get(key) for key in ('intraday_252', 'close_252')}
+        if not any(value is True for value in flags.values()):
+            continue
+        signals.append({**item, 'flags': flags})
+        groups[(item['market'].split('-')[0], tuple(item.get('industry_path') or []))].add(item['symbol'])
+    industries = []
+    for item in edition['industries']:
+        count = len(groups[(item['market'], tuple(item.get('industry_path') or []))])
+        if count:
+            industries.append({**item, 'current_signal_issuers': count,
+                               'phase': '52주 신고가 관측', 'comparison_scope': '52주 신고가 · 검증 종목군'})
+    return {**edition, 'signals': signals, 'industries': industries}
+
+
+def local_edition(payload, market, now):
+    """Recompute actual 52-week highs from verified WAMO prices, no remote dependency."""
+    from collections import defaultdict
+    from wamo_price_sources import validate_history
+    expected = expected_session(market, now)
+    stocks = payload.get('stocks') or []
+    fresh = [s for s in stocks if s.get('date') == expected and s.get('dataStatus') == 'LIVE']
+    if payload.get('meta', {}).get('asOf') != expected or not stocks or len(fresh)/len(stocks) < .9:
+        raise ValueError('local prices not current')
+    signals, groups, sessions = [], defaultdict(lambda: [0, 0]), {}
+    seen = set()
+    for stock in fresh:
+        symbol = stock.get('ticker') if market == 'US' else stock.get('stock_code')
+        if not symbol or symbol in seen:
+            raise ValueError('local identity missing/duplicated')
+        seen.add(symbol)
+        rows = validate_history(stock.get('history') or [], expected)
+        if len(rows) < 252:
+            continue
+        rows = rows[-252:]
+        if abs(rows[-1]['close'] - float(stock['close'])) > .011:
+            raise ValueError('local close/history mismatch')
+        exchange = stock.get('krx_market') if market == 'KR' else ('NASDAQ' if stock.get('exchange') == 'NASDAQ' else 'AMEX' if stock.get('exchange') == 'NYSE AMERICAN' else 'NYSE')
+        code = market + '-' + exchange
+        sessions[code] = expected.replace('-', '')
+        sector = stock.get('sector') or '산업 미분류'
+        group = groups[(sector,)]
+        group[0] += 1
+        flags = dict(intraday_252=rows[-1]['high'] >= max(r['high'] for r in rows),
+                     close_252=rows[-1]['close'] >= max(r['close'] for r in rows))
+        if not any(flags.values()):
+            continue
+        group[1] += 1
+        signals.append(dict(key=code+':'+symbol, market=code, country=market,
+            symbol=symbol, name=stock.get('name') or symbol,
+            currency='KRW' if market == 'KR' else 'USD', as_of=expected.replace('-', ''),
+            industry_path=[sector], micro_verified=False, classification_status='WAMO_SECTOR',
+            classification_caveats=['WAMO 기존 업종 분류'], current_close=stock['close'],
+            entry_status='52주 신고가 · 매매판단은 별도', flags=flags))
+    industries = [dict(market=market, industry_path=list(path),
+        eligible_classified_issuers=counts[0], current_signal_issuers=counts[1],
+        micro_verified=False, phase='52주 신고가 관측', comparison_scope='WAMO 검증 종목군')
+        for path, counts in groups.items() if counts[1]]
+    return dict(status='PASS', generatedAt=now.isoformat(), sessions=sessions,
+        source='WAMO_52W', scope=f'WAMO {market} 검증 종목군 · 최근 252거래일',
+        signals=signals, industries=industries)
 
 
 def public_edition(report, status, expected):
@@ -137,16 +205,26 @@ def main():
                 raise RuntimeError('UPSTREAM_NOT_READY')
             report = fetch_json(f'contents/reports/{edition.lower()}_latest.json?ref={ref}', token)
             required = {m for m in CALENDARS if m.startswith('US-') == (edition == 'US')}
-            editions[edition] = public_edition(report, status, expected_sessions(required, now))
+            editions[edition] = only_52week(public_edition(report, status, expected_sessions(required, now)))
         except Exception as exc:
-            failed = True
             code = str(exc) if str(exc) in ERROR_LABELS else 'VALIDATION'
-            editions[edition] = dict(previous.get('editions', {}).get(edition, {}),
-                status='FAILED', errorCode=code,
-                error=ERROR_LABELS[code] + ' · 이전 결과는 현재 신호가 아닙니다.')
+            try:
+                from wamo_update_business_dart import extract_old_payload
+                market, page = ('US', 'us.html') if edition == 'US' else ('KR', 'index.html')
+                payload = extract_old_payload((root/page).read_text(encoding='utf-8'))
+                editions[edition] = local_edition(payload, market, now)
+                editions[edition]['upstreamError'] = code
+            except (ValueError, KeyError, TypeError, OSError, RuntimeError):
+                failed = True
+                prior = previous.get('editions', {}).get(edition, {})
+                retained = only_52week({**prior, 'signals': prior.get('signals') or [],
+                                       'industries': prior.get('industries') or []})
+                editions[edition] = dict(retained,
+                    status='FAILED', errorCode=code,
+                    error=ERROR_LABELS[code] + ' · 이전 결과는 현재 신호가 아닙니다.')
         print(edition, editions[edition]['status'], editions[edition].get('errorCode', ''))
     save_result(dest, dict(schemaVersion=1, checkedAt=now.isoformat(), editions=editions,
-                         scope='확인된 종목군의 신고가 후보이며 전체 거래소 전수조사가 아닙니다.'), previous, now)
+                         scope='52주 신고가 기준. 원본 대기 시 WAMO 한국·미국 검증 종목군으로 대체합니다. 대체 결과는 일본·중국·홍콩을 포함하지 않습니다.'), previous, now)
     for page, market in (('index.html', 'KR'), ('us.html', 'US')):
         path = root / page
         original = path.read_text(encoding='utf-8')

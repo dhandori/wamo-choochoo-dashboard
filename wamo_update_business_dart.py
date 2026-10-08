@@ -322,16 +322,17 @@ def fetch_naver_history(code: str, count=10000):
 
 
 
-def fetch_current_kr_history(ticker, code, expected, years=None, count=10000):
+def fetch_current_kr_history(ticker, code, expected, years=3, count=800):
     """An HTTP success with an old trading date is a provider failure too."""
     errors = []
     for source in ('Yahoo Finance', 'NAVER Finance'):
         try:
             if source == 'Yahoo Finance':
-                rows, host = fetch_yahoo_history(ticker, years=years)
+                rows, host = fetch_yahoo_history(ticker, years=years, expected_date=expected)
             else:
                 rows, host = fetch_naver_history(code, count=count), 'fchart.stock.naver.com'
-            if not rows or rows[-1]['date'] < expected:
+            rows = [row for row in rows if row['date'] <= expected]
+            if not rows or rows[-1]['date'] != expected:
                 last = rows[-1]['date'] if rows else 'EMPTY'
                 raise RuntimeError(f'가격 날짜 지연: {last}, 기대 {expected}')
             return rows, source, host
@@ -1020,6 +1021,11 @@ def sector_flow_benchmarks(raw, market_context=None):
         "message": "7·30거래일 수익률은 종목별 거래소 지수와 비교합니다. 지수 실패 시 해당 거래소 정밀계산 종목 중앙값을 대체 기준으로 명시합니다.",
     }
 
+def is_52week_high_zone(stock):
+    days = stock.get('high52WindowDays') or min(252, len(stock.get('history') or []))
+    return days >= 252 and (stock.get('high52Ratio') or 0) >= 93
+
+
 def calc_raw(meta, rows):
     closes = [r["close"] for r in rows]
     highs = [r["high"] for r in rows]
@@ -1035,13 +1041,10 @@ def calc_raw(meta, rows):
 
     high52 = max(highs[-252:])
     low52 = min(lows[-252:])
-    historical_high = max(highs)
-    historical_high_idx = max(i for i, h in enumerate(highs) if h >= historical_high * 0.999999)
     high3 = max(highs[-min(756, len(highs)):])
     idx3 = max(i for i, h in enumerate(highs) if h >= high3 * 0.999999)
     since3 = len(rows) - 1 - idx3
     high_ratio = closes[-1] / high52
-    historical_high_ratio = closes[-1] / historical_high
     alignment = alignment_history(rows)
     avg_value_50d = sum(r["close"] * r["volume"] for r in rows[-50:]) / min(50, len(rows))
     vol20 = mean_tail(vols, 20) or 1
@@ -1097,8 +1100,9 @@ def calc_raw(meta, rows):
         "volumeRatio": vol_ratio,
         "volumeTrend7": volume_trend7,
         "high52Ratio": high_ratio * 100,
-        "historicalHighRatio": historical_high_ratio * 100,
-        "historicalHighDate": rows[historical_high_idx]["date"],
+        "historicalHighRatio": None,
+        "historicalHighDate": None,
+        "highScreenBasis": "52_WEEK",
         "historyStartDate": rows[0]["date"],
         "alignment": alignment,
         "drawdown": (high_ratio - 1) * 100,
@@ -2444,7 +2448,7 @@ def consensus_enrich(raw):
             sum((
                 x.get("conditionCount", 0) >= 4,
                 bool(x.get("trendTemplate")),
-                (x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93,
+                is_52week_high_zone(x),
                 (x.get("sectorAction") or {}).get("status") == "CONFIRMED",
             )),
             x.get("conditionCount", 0),
@@ -3979,7 +3983,7 @@ def _build_sector_stats(raw, flow_benchmarks=None):
                 "rs": round(float(m.get("rsPercentile") or 0), 1),
                 "conditions": int(m.get("conditionCount") or 0),
                 "stage2": bool(m.get("trendTemplate")),
-                "highZone": bool((m.get("high52Ratio") or 0) >= 93 or (m.get("historicalHighRatio") or 0) >= 93),
+                "highZone": bool(is_52week_high_zone(m)),
             })
 
         sectors.append({
@@ -4082,7 +4086,7 @@ def _profile_is_priority(x, old_by_ticker):
         (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60)
         or x.get("trendTemplate")
         or x.get("high52Ratio",0) >= 93
-        or x.get("historicalHighRatio",0) >= 93
+        or (x.get("historicalHighRatio") or 0) >= 93
         or old.get("signal") in ("BUY","HOLD","WATCH")
     )
 
@@ -4092,7 +4096,7 @@ def _profile_priority_key(x, old_by_ticker):
         1 if not old else 0,  # truly new stock on dashboard first
         1 if (x.get("conditionCount",0) >= 4 and x.get("rsPercentile",0) >= 60) else 0,
         1 if x.get("trendTemplate") else 0,
-        1 if (x.get("high52Ratio",0) >= 93 or x.get("historicalHighRatio",0) >= 93) else 0,
+        1 if (is_52week_high_zone(x)) else 0,
         x.get("conditionCount",0),
         x.get("rsPercentile",0),
         x.get("high52Ratio",0),
@@ -4845,13 +4849,13 @@ def validate_payload_integrity(payload):
     if funnel.get("stage2") != sum(bool(x.get("trendTemplate")) for x in stocks):
         issues.append("Stage 2 후보 수 불일치")
     checks += 1
-    if funnel.get("highZone") != sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in stocks):
+    if funnel.get("highZone") != sum(is_52week_high_zone(x) for x in stocks):
         issues.append("신고가권 후보 수 불일치")
     checks += 1
     if funnel.get("tripleAxis") != sum(
         (x.get("conditionCount") or 0) >= 4
         and bool(x.get("trendTemplate"))
-        and ((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93)
+        and (is_52week_high_zone(x))
         for x in stocks
     ):
         issues.append("3축 동시충족 후보 수 불일치")
@@ -5048,7 +5052,7 @@ def main():
         if len(old_rows) >= 60:
             try:
                 x = calc_raw(meta, old_rows)
-                for key in ("historicalHighRatio", "historicalHighDate", "historyStartDate"):
+                for key in ("historyStartDate",):
                     if old.get(key) is not None:
                         x[key] = old.get(key)
                 x["dataSource"] = "이전 정상값"
@@ -5328,11 +5332,11 @@ def main():
                 "deepScanned": len(raw),
                 "growth4plus": sum(x["conditionCount"] >= 4 for x in raw),
                 "stage2": sum(bool(x["trendTemplate"]) for x in raw),
-                "highZone": sum((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93 for x in raw),
+                "highZone": sum(is_52week_high_zone(x) for x in raw),
                 "tripleAxis": sum(
                     x["conditionCount"] >= 4
                     and bool(x["trendTemplate"])
-                    and ((x.get("high52Ratio") or 0) >= 93 or (x.get("historicalHighRatio") or 0) >= 93)
+                    and (is_52week_high_zone(x))
                     for x in raw
                 ),
                 "sectorAction": sum((x.get("sectorAction") or {}).get("status") == "CONFIRMED" for x in raw),

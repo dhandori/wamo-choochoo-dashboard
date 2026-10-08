@@ -52,7 +52,8 @@ export function buildModel(catalog,radar,now=Date.now(),connectionFailed=false) 
   if(radarValid) for(const [editionName,edition] of Object.entries(radar.editions)) {
     const valid=validEdition(edition);
     status.editions[editionName]=edition?.status==='FAILED'?'FAILED':valid?edition.status:'INVALID';
-    if(edition?.errorCode==='UPSTREAM_NOT_READY') status.editionReasons[editionName]='원본 가격·분석 검증 대기';
+    if(valid && edition?.source==='WAMO_52W' && edition.status==='PASS') status.editionReasons[editionName]=editionName==='US'?'미국 52주 신고가 · WAMO 직접 계산':'한국 52주 신고가 · WAMO 직접 계산 (기타 아시아 제외)';
+    else if(edition?.errorCode==='UPSTREAM_NOT_READY') status.editionReasons[editionName]='원본 가격·분석 검증 대기';
     else if(edition?.errorCode==='MISSING_TOKEN') status.editionReasons[editionName]='연동 인증 설정 필요';
     const current=status.radar==='current' && valid && edition.status==='PASS';
     const signals=valid && Array.isArray(edition?.signals)?edition.signals.filter(validSignal):[];

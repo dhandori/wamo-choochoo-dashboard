@@ -57,7 +57,7 @@ export function mountDiscovery() {
   query.addEventListener('input',()=>{filters.query=query.value;page=1;render();});
   const country=selectControl('country','국가',[['','전체 국가'],...Object.entries(COUNTRIES)]);
   const industry=selectControl('industry','레이더 산업 경로',[['','전체 산업']]);
-  const signal=selectControl('signal','신고가 유형',[['','모든 신고가 유형'],...Object.entries(FLAGS)]);
+  const signal=selectControl('signal','신고가 유형',[['','모든 신고가 유형'],...Object.entries(FLAGS).filter(([key])=>key.endsWith('_252'))]);
   const technical=selectControl('technical','WAMO 기술 조건',[['','기술 조건 없음'],['stage2','Stage 2 핵심 7조건'],['aligned','이동평균 정배열'],['rs80','WAMO RS 백분위 ≥80']]);
   const sort=selectControl('sort','종목 정렬',[['recent','검증 상태·기준일순'],['name','이름순'],['symbol','종목코드순']]);
   const actions=el('div',null,panel,'discovery-actions');
@@ -110,7 +110,7 @@ export function mountDiscovery() {
     el('p',candidateText(row),card,row.current?'discovery-current':'discovery-muted');
     el('p',`${row.asOf||'기준일 미확인'} · ${priceText(row)}`,card,'discovery-price');
     if(row.signal) {
-      const labels=Object.entries(FLAGS).filter(([key])=>row.signal.flags[key]===true).map(([,label])=>label);
+      const labels=Object.entries(FLAGS).filter(([key])=>key.endsWith('_252')).filter(([key])=>row.signal.flags[key]===true).map(([,label])=>label);
       el('p',`${row.current?'확인 신호':'과거 확인 신호'}: ${labels.join(' / ')||'없음'}`,card);
       el('p',row.industryPath.join(' › ')||'레이더 분류 미확인',card,'discovery-muted');
       const caveats=Array.isArray(row.signal.classification_caveats)?row.signal.classification_caveats.filter(x=>typeof x==='string'):[];
@@ -145,7 +145,7 @@ export function mountDiscovery() {
     const ready=candidates.filter(row=>row.technicalCurrent).length;
     const catalogCount=model.stocks.filter(row=>row.catalog).length;
     const radarCount=model.stocks.filter(row=>row.signal).length;
-    scope.textContent=`제공 범위: WAMO KR/US 공개 스냅샷 ${catalogCount.toLocaleString('ko-KR')}종목 + 공개 레이더 후보 관측 ${radarCount}종목 (중복 제외 ${model.stocks.length.toLocaleString('ko-KR')}종목). 전체 거래소 종목 검색이 아닙니다.`;
+    scope.textContent=`제공 범위: WAMO KR/US 공개 스냅샷 ${catalogCount.toLocaleString('ko-KR')}종목 + 공개 레이더 후보 관측 ${radarCount}종목 (중복 제외 ${model.stocks.length.toLocaleString('ko-KR')}종목). 전체 거래소 종목 검색이 아닙니다. ${model.status.scope||''}`;
     currentMetric.textContent=`${candidates.length} 현재 공개 후보`;
     readyMetric.textContent=`${ready} 동일 기준일 기술 연결`;
     knownMetric.textContent=`${model.stocks.length.toLocaleString('ko-KR')} 검색 가능 종목`;
@@ -156,7 +156,7 @@ export function mountDiscovery() {
     updateIndustries(model);
     const isIndustry=filters.mode==='industries';
     signal.parentElement.hidden=isIndustry;technical.parentElement.hidden=isIndustry;sort.parentElement.hidden=isIndustry;
-    modeNote.textContent=isIndustry?'모든 신고가 유형을 합친 기업 수 비율입니다. 확인된 분류 종목군의 확산이며 전체 시장 비율이 아닙니다. 비율·기업 수순으로 표시하고, 선택 시 국가와 정확한 산업 경로의 후보로 이동합니다. 기업 수와 종목 수는 다를 수 있습니다.':filters.mode==='search'?'알고 있는 종목을 제공 범위에서 찾습니다. “공개 후보 목록에 없음”은 전체 거래소의 신고가 부재를 뜻하지 않습니다. 기술 조건을 선택하면 동일 기준일로 연결된 현재 후보만 남습니다.':'검증된 발표와 최근 3시간 이내 연결 확인을 통과한 공개 후보입니다. 신고가 유형과 기술 조건을 함께 적용할 수 있습니다. 기술 조건은 FULL·이력 준비·동일 기준일인 WAMO 관측에만 적용합니다.';
+    modeNote.textContent=isIndustry?'52주 신고가 기업 수 비율입니다. 확인된 분류 종목군의 확산이며 전체 시장 비율이 아닙니다. 비율·기업 수순으로 표시하고, 선택 시 국가와 정확한 산업 경로의 후보로 이동합니다. 기업 수와 종목 수는 다를 수 있습니다.':filters.mode==='search'?'알고 있는 종목을 제공 범위에서 찾습니다. “공개 후보 목록에 없음”은 전체 거래소의 신고가 부재를 뜻하지 않습니다. 기술 조건을 선택하면 동일 기준일로 연결된 현재 후보만 남습니다.':'검증된 발표와 최근 3시간 이내 연결 확인을 통과한 공개 후보입니다. 신고가 유형과 기술 조건을 함께 적용할 수 있습니다. 기술 조건은 FULL·이력 준비·동일 기준일인 WAMO 관측에만 적용합니다.';
     const rows=isIndustry?selectIndustries(model,filters):selectStocks(model,filters);
     const pages=Math.max(1,Math.ceil(rows.length/PAGE_SIZE)); page=Math.max(1,Math.min(page,pages));
     const start=(page-1)*PAGE_SIZE, visible=rows.slice(start,start+PAGE_SIZE);
