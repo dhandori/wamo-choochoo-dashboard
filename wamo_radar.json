@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-08T02:05:51.982822+00:00",
+  "checkedAt": "2026-10-08T02:13:58.622142+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-08T02:05:51.982822+00:00",
+      "generatedAt": "2026-10-08T02:13:58.622142+00:00",
       "sessions": {
         "US-NYSE": "20261007",
         "US-NASDAQ": "20261007",
@@ -12,6 +12,14 @@
       },
       "source": "WAMO_52W",
       "scope": "WAMO US 검증 종목군 · 최근 252거래일",
+      "coverage": {
+        "totalCount": 879,
+        "currentCount": 878,
+        "validatedCount": 878,
+        "eligible52WeekCount": 862,
+        "excludedCount": 0
+      },
+      "exclusions": [],
       "signals": [
         {
           "key": "US-NYSE:HPE",
@@ -338,2776 +346,321 @@
       "upstreamError": "UPSTREAM_NOT_READY"
     },
     "ASIA": {
-      "status": "FAILED",
-      "generatedAt": "2026-09-14T16:58:46.209644+00:00",
+      "status": "PASS",
+      "generatedAt": "2026-10-08T02:13:58.622142+00:00",
       "sessions": {
-        "CN-SH": "20260914",
-        "CN-SZ": "20260914",
-        "KR-KOSDAQ": "20260914",
-        "JP-TSE": "20260914",
-        "HK-HKEX": "20260914",
-        "KR-KOSPI": "20260914"
+        "KR-KOSPI": "20261007",
+        "KR-KOSDAQ": "20261007"
       },
-      "releaseKey": "ASIA:CN-SH=20260914|CN-SZ=20260914|HK-HKEX=20260914|JP-TSE=20260914|KR-KOSDAQ=20260914|KR-KOSPI=20260914",
-      "fingerprint": "a4971d7b074cf2143ff0f47dc823d5adfcb6cfa8d0e26f70c610b2b8d8a75f8c",
+      "source": "WAMO_52W",
+      "scope": "WAMO KR 검증 종목군 · 최근 252거래일",
+      "coverage": {
+        "totalCount": 217,
+        "currentCount": 217,
+        "validatedCount": 199,
+        "eligible52WeekCount": 198,
+        "excludedCount": 18
+      },
+      "exclusions": [
+        {
+          "symbol": "036540",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "232140",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "007660",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "095610",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "030530",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "009150",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "009830",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "047050",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "034020",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "017670",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "000720",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "204320",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "012450",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "010140",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "263750",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "009420",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "042660",
+          "reason": "HISTORY_VALIDATION"
+        },
+        {
+          "symbol": "034220",
+          "reason": "HISTORY_VALIDATION"
+        }
+      ],
       "signals": [
         {
-          "key": "SHS:601086",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "601086",
-          "name": "궈팡그룹",
-          "currency": "CNY",
-          "as_of": "20260914",
+          "key": "KR-KOSPI:192820",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "192820",
+          "name": "코스맥스",
+          "currency": "KRW",
+          "as_of": "20261007",
           "industry_path": [
-            "경기소비재",
-            "소매",
-            "백화점 [百货]",
-            "구체적 제품·공급망 확인 불가"
+            "화학"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 17.99,
-          "entry_status": "반복 등장",
+          "current_close": 308500.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": true
           }
         },
         {
-          "key": "SHS:600177",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "600177",
-          "name": "야거얼패션",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "의류·가정용 섬유",
-            "의류 [服装]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 8.44,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SHS:601199",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "601199",
-          "name": "장난수도",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "공익사업",
-            "수도사업",
-            "수도사업 [水务]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 6.79,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SHS:600674",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "600674",
-          "name": "촨터우에너지",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "공익사업",
-            "전력",
-            "수력발전 [水电]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 16.05,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SHS:600036",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "600036",
-          "name": "초상은행",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 41.83,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SHS:601328",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "601328",
-          "name": "교통은행",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "국유은행 [国有银行]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 7.62,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SHS:600919",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "600919",
-          "name": "장쑤은행",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "주식제·도시 상업은행 [股份制与城商行]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 12.55,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "SHS:600926",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "600926",
-          "name": "항저우은행",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "주식제·도시 상업은행 [股份制与城商行]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 17.69,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SHS:601838",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "601838",
-          "name": "청두은행",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "주식제·도시 상업은행 [股份制与城商行]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 20.25,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "SHS:601998",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "601998",
-          "name": "중신은행",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "주식제·도시 상업은행 [股份制与城商行]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 8.94,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SHS:601298",
-          "market": "CN-SH",
-          "country": "중국 A주",
-          "symbol": "601298",
-          "name": "칭다오항",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "항만·해운",
-            "항만 [港口]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 9.59,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:002708",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "002708",
-          "name": "광양베어링",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "자동차",
-            "자동차부품 [汽车零部件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 16.89,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:001326",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "001326",
-          "name": "롄위광전",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "조명장비",
-            "조명장비 [照明设备]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 78.95,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:002966",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "002966",
-          "name": "수저우은행",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "주식제·도시 상업은행 [股份制与城商行]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 9.35,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:300154",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "300154",
-          "name": "루이링",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "범용 장비",
-            "기타 범용 기계 [其他通用机械]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 13.74,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:301251",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "301251",
-          "name": "웨이얼가오전자",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "전자부품",
-            "인쇄회로기판",
-            "사업소개 후보: 전자회로 연결 기판"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 65.66,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:002815",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "002815",
-          "name": "충다테크",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "전자부품",
-            "전자부품 [电子元件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 21.12,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:002913",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "002913",
-          "name": "아오스캉테크",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "전자부품",
-            "전자부품 [电子元件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 76.54,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:301132",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "301132",
-          "name": "만쿤테크",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "전자부품",
-            "전자부품 [电子元件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 58.37,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:300951",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "300951",
-          "name": "보숴테크",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "전자소자",
-            "기타 전자소자 [其他电子器件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 91.95,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:301366",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "301366",
-          "name": "이보테크",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "전자소자",
-            "기타 전자소자 [其他电子器件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 62.86,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:300592",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "300592",
-          "name": "화카이이바이테크",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술·통신서비스",
-            "인터넷 상거래",
-            "기업 간 전자상거래 [电子商务B2B]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 19.78,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "SZS:300741",
-          "market": "CN-SZ",
-          "country": "중국 A주",
-          "symbol": "300741",
-          "name": "화바오",
-          "currency": "CNY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "종합 식품 [食品综合]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 21.08,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:00270",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "00270",
-          "name": "월해투자",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "공익사업",
-            "공익사업",
-            "전력·가스·수도",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 8.865,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:02388",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "02388",
-          "name": "중국은행홍콩",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 53.65,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:00023",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "00023",
-          "name": "동아은행",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "은행",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 18.99,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:00939",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "00939",
-          "name": "건설은행",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "은행",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 9.89,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:00998",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "00998",
-          "name": "중신은행",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "은행",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 8.505,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:02888",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "02888",
-          "name": "스탠다드차타드",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "은행",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 246.6,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:03328",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "03328",
-          "name": "교통은행",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "은행",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 8.16,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:03988",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "03988",
-          "name": "중국은행",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "은행",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 6.085,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:00622",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "00622",
-          "name": "위화달홀딩스",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "투자 서비스",
-            "증권",
-            "사업소개 후보: 증권 중개·투자금융"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 3.045,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "HKS:00565",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "00565",
-          "name": "금예섬유",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "부동산",
-            "부동산",
-            "개발·운영",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 4.295,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "HKS:00737",
-          "market": "HK-HKEX",
-          "country": "홍콩",
-          "symbol": "00737",
-          "name": "합화도로인프라",
-          "currency": "HKD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "운송",
-            "산업용 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 1.965,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:4588",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "4588",
-          "name": "온콜리스바이오파머",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의약품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 6160.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7803",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7803",
-          "name": "부시로드",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "기타제품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 468.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7867",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7867",
-          "name": "다카라토미",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "기타제품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3836.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7976",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7976",
-          "name": "미쓰비시연필",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "기타제품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3260.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2659",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2659",
-          "name": "산에이",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "소매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3425.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2734",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2734",
-          "name": "사라",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "소매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1242.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2782",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2782",
-          "name": "세리아",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "소매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 4795.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:7516",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7516",
-          "name": "고난상사",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "소매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 4530.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8255",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8255",
-          "name": "악시알리테일링",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "소매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1339.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:9900",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "9900",
-          "name": "사가미홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "경기소비재",
-            "소매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1175.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:9506",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "9506",
-          "name": "도호쿠전력",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "공익사업",
-            "전력·가스",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 1421.5,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:8566",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8566",
-          "name": "리코리스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "기타금융",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 6900.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7181",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7181",
-          "name": "간포생명보험",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 1788.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:5832",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "5832",
-          "name": "주긴파이낸셜그룹",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 3649.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7180",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7180",
-          "name": "규슈파이낸셜그룹",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 1630.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7184",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7184",
-          "name": "도야마다이이치은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3475.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7327",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7327",
-          "name": "다이시호쿠에쓰파이낸셜그룹",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 2660.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7381",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7381",
-          "name": "기타쿠니파이낸셜홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1309.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7384",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7384",
-          "name": "프로크레아홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 5160.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8304",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8304",
-          "name": "아오조라 은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3544.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8334",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8334",
-          "name": "군마은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 2928.5,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8341",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8341",
-          "name": "시치주시치은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 4094.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8343",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8343",
-          "name": "아키타은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 9420.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:8344",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8344",
-          "name": "야마가타은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 4965.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:8345",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8345",
-          "name": "이와테은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2692.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8346",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8346",
-          "name": "도호은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1016.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8362",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8362",
-          "name": "후쿠이은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 7650.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:8366",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8366",
-          "name": "시가은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 2907.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8387",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8387",
-          "name": "시코쿠은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 4150.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8388",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8388",
-          "name": "아와은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 10340.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8392",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8392",
-          "name": "오이타은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3080.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8393",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8393",
-          "name": "미야자키은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2711.0,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8410",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8410",
-          "name": "세븐은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 345.6,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8411",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8411",
-          "name": "미즈호파이낸셜그룹",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 8790.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8541",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8541",
-          "name": "에히메은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3320.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:8551",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8551",
-          "name": "기타닛폰은행",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 8460.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:8600",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8600",
-          "name": "도모니홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1154.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8604",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8604",
-          "name": "노무라 홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "증권·상품선물",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1675.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8628",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8628",
-          "name": "마쯔이증권",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "증권·상품선물",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1215.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:6460",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "6460",
-          "name": "세가사미홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "기계",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 3360.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2767",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2767",
-          "name": "쓰부라야필즈홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2613.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:3167",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "3167",
-          "name": "도카이홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 1359.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:7552",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "7552",
-          "name": "해피넷",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3920.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8001",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8001",
-          "name": "이토추",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2340.5,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8037",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8037",
-          "name": "가메이",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 4780.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:8131",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "8131",
-          "name": "미쓰로코그룹홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2589.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:9902",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "9902",
-          "name": "니치덴",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3175.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:9324",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "9324",
-          "name": "야스다창고",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "창고·운송지원",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2732.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2175",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2175",
-          "name": "에스엠에스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재·경기소비재",
-            "서비스",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2673.0,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2371",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2371",
-          "name": "카카쿠컴",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재·경기소비재",
-            "서비스",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 3850.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2492",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2492",
-          "name": "인포마트",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재·경기소비재",
-            "서비스",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 714.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:6027",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "6027",
-          "name": "벤고시닷컴",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재·경기소비재",
-            "서비스",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 5840.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:4365",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "4365",
-          "name": "마쓰모토유지제약",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "소재",
-            "화학",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 25400.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:6676",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "6676",
-          "name": "버펄로",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술·산업재",
-            "전기기기",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3155.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:2121",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2121",
-          "name": "믹시",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술·통신서비스",
-            "정보·통신",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3785.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:9432",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "9432",
-          "name": "NTT",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술·통신서비스",
-            "정보·통신",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 178.3,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:9434",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "9434",
-          "name": "소프트뱅크",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술·통신서비스",
-            "정보·통신",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 250.8,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:9436",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "9436",
-          "name": "오키나와 셀룰러폰",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술·통신서비스",
-            "정보·통신",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 4350.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2001",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2001",
-          "name": "닛푼",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3010.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2004",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2004",
-          "name": "쇼와산업",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 3945.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2053",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2053",
-          "name": "주부사료",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2057.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2212",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2212",
-          "name": "야마자키제빵",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 3889.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:2531",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2531",
-          "name": "다카라홀딩스",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2481.5,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "TSE:2602",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2602",
-          "name": "닛신올리오그룹",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 2113.0,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "TSE:2805",
-          "market": "JP-TSE",
-          "country": "일본",
-          "symbol": "2805",
-          "name": "에스비식품",
-          "currency": "JPY",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음",
-            "업종 원문 기준일 2026-06-30; 이번 조회일을 현재 업종 검증일로 오인하지 않음",
-            "100일 이상 오래된 보관본은 자동 분류에서 제외"
-          ],
-          "current_close": 7560.0,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "KRX:252990",
+          "key": "KR-KOSDAQ:031980",
           "market": "KR-KOSDAQ",
-          "country": "한국",
-          "symbol": "252990",
-          "name": "샘씨엔에스",
+          "country": "KR",
+          "symbol": "031980",
+          "name": "피에스케이홀딩스",
           "currency": "KRW",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "정보기술",
-            "전자부품",
-            "세라믹 기판",
-            "다층 세라믹 기판"
+            "지주회사"
           ],
-          "micro_verified": true,
-          "classification_status": "documented_product_reviewed",
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "KIND 주요제품의 회사별 최종 수정일은 공개 자료에서 확인되지 않음",
-            "제품 노출은 매출비중·주도사업·현재 주가 상승 원인의 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 16160.0,
-          "entry_status": "신규 등장",
+          "current_close": 204000.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
-            "close_252": false
+            "close_252": true
           }
         },
         {
-          "key": "KRX:055550",
-          "market": "KR-KOSPI",
-          "country": "한국",
-          "symbol": "055550",
-          "name": "신한지주",
+          "key": "KR-KOSDAQ:096530",
+          "market": "KR-KOSDAQ",
+          "country": "KR",
+          "symbol": "096530",
+          "name": "씨젠",
           "currency": "KRW",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "금융",
-            "금융지주",
-            "자회사 관리",
-            "금융자회사 투자·관리"
+            "제약·바이오"
           ],
           "micro_verified": false,
-          "classification_status": "documented_product_reviewed",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "KIND 주요제품의 회사별 최종 수정일은 공개 자료에서 확인되지 않음",
-            "제품 노출은 매출비중·주도사업·현재 주가 상승 원인의 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 115000.0,
-          "entry_status": "신규 등장",
+          "current_close": 38900.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "KR-KOSDAQ:131290",
+          "market": "KR-KOSDAQ",
+          "country": "KR",
+          "symbol": "131290",
+          "name": "티에스이",
+          "currency": "KRW",
+          "as_of": "20261007",
+          "industry_path": [
+            "반도체 검사·테스트"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 316000.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "KR-KOSPI:281820",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "281820",
+          "name": "케이씨텍",
+          "currency": "KRW",
+          "as_of": "20261007",
+          "industry_path": [
+            "메모리 반도체"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 123000.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "KR-KOSPI:096770",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "096770",
+          "name": "SK이노베이션",
+          "currency": "KRW",
+          "as_of": "20261007",
+          "industry_path": [
+            "정유"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 159600.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
             "close_252": true
           }
         },
         {
-          "key": "KRX:086790",
+          "key": "KR-KOSPI:010950",
           "market": "KR-KOSPI",
-          "country": "한국",
-          "symbol": "086790",
-          "name": "하나금융지주",
+          "country": "KR",
+          "symbol": "010950",
+          "name": "S-Oil",
           "currency": "KRW",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "금융",
-            "금융지주",
-            "종합금융",
-            "은행 등 금융자회사 지분관리"
+            "정유"
           ],
-          "micro_verified": true,
-          "classification_status": "company_verified",
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "문서에서 확인한 사업 노출이며 매출비중이나 주가 상승 원인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 140400.0,
-          "entry_status": "신규 등장",
+          "current_close": 170600.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "KR-KOSDAQ:036930",
+          "market": "KR-KOSDAQ",
+          "country": "KR",
+          "symbol": "036930",
+          "name": "주성엔지니어링",
+          "currency": "KRW",
+          "as_of": "20261007",
+          "industry_path": [
+            "메모리 반도체"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 247500.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
+          }
+        },
+        {
+          "key": "KR-KOSPI:000500",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "000500",
+          "name": "가온전선",
+          "currency": "KRW",
+          "as_of": "20261007",
+          "industry_path": [
+            "절연선 및 케이블 제조업"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 306500.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
+          }
+        },
+        {
+          "key": "KR-KOSPI:008930",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "008930",
+          "name": "한미사이언스",
+          "currency": "KRW",
+          "as_of": "20261007",
+          "industry_path": [
+            "금융"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 58100.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
             "close_252": true
@@ -3116,582 +669,95 @@
       ],
       "industries": [
         {
-          "market": "JP",
-          "industry_path": [
-            "금융",
-            "은행",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 68,
-          "current_signal_issuers": 24,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "산업재",
-            "도매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 91,
-          "current_signal_issuers": 7,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "경기소비재",
-            "소매유통",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 118,
-          "current_signal_issuers": 6,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "금융",
-            "은행",
-            "주식제·도시 상업은행 [股份制与城商行]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 35,
-          "current_signal_issuers": 5,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "정보기술·통신서비스",
-            "정보·통신",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 92,
-          "current_signal_issuers": 4,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "산업재·경기소비재",
-            "서비스",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 89,
-          "current_signal_issuers": 4,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 57,
-          "current_signal_issuers": 7,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "HK",
-          "industry_path": [
-            "금융",
-            "은행",
-            "은행",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 19,
-          "current_signal_issuers": 6,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "공익사업",
-            "전력·가스",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 18,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "정보기술",
-            "전자부품",
-            "전자부품 [电子元件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 64,
-          "current_signal_issuers": 3,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "정보기술·산업재",
-            "전기기기",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 118,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
           "market": "KR",
           "industry_path": [
-            "금융",
-            "금융지주",
-            "자회사 관리",
-            "금융자회사 투자·관리"
-          ],
-          "eligible_classified_issuers": 5,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "소재",
-            "화학",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 101,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "HK",
-          "industry_path": [
-            "산업재",
-            "운송",
-            "산업용 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 20,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "경기소비재",
-            "자동차",
-            "자동차부품 [汽车零部件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 113,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "경기소비재",
-            "기타제품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 30,
-          "current_signal_issuers": 3,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "산업재",
-            "기계",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 93,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "공익사업",
-            "전력",
-            "수력발전 [水电]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 15,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "산업재",
-            "범용 장비",
-            "기타 범용 기계 [其他通用机械]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 41,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "정보기술",
-            "전자소자",
-            "기타 전자소자 [其他电子器件]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 20,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "산업재",
-            "항만·해운",
-            "항만 [港口]",
-            "구체적 제품·공급망 확인 불가"
+            "화학"
           ],
           "eligible_classified_issuers": 10,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
-          "market": "JP",
+          "market": "KR",
           "industry_path": [
-            "건강관리",
-            "의약품",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 31,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "금융",
-            "증권·상품선물",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 19,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "정보기술",
-            "전자부품",
-            "인쇄회로기판",
-            "사업소개 후보: 전자회로 연결 기판"
-          ],
-          "eligible_classified_issuers": 21,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "경기소비재",
-            "조명장비",
-            "조명장비 [照明设备]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 7,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "공익사업",
-            "수도사업",
-            "수도사업 [水务]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 8,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "eligible_classified_issuers": 7,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "금융",
-            "은행",
-            "국유은행 [国有银行]",
-            "구체적 제품·공급망 확인 불가"
+            "지주회사"
           ],
           "eligible_classified_issuers": 5,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
-          "market": "CN",
+          "market": "KR",
           "industry_path": [
-            "정보기술·통신서비스",
-            "인터넷 상거래",
-            "기업 간 전자상거래 [电子商务B2B]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 12,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "금융",
-            "기타금융",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 20,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "eligible_classified_issuers": 2,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "JP",
-          "industry_path": [
-            "산업재",
-            "창고·운송지원",
-            "세부 제품 확인 불가",
-            "공급망 확인 불가"
+            "제약·바이오"
           ],
           "eligible_classified_issuers": 9,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "KR",
           "industry_path": [
-            "금융",
-            "금융지주",
-            "종합금융",
-            "은행 등 금융자회사 지분관리"
+            "반도체 검사·테스트"
           ],
-          "eligible_classified_issuers": 1,
+          "eligible_classified_issuers": 2,
           "current_signal_issuers": 1,
-          "micro_verified": true,
+          "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "KR",
           "industry_path": [
-            "정보기술",
-            "전자부품",
-            "세라믹 기판",
-            "다층 세라믹 기판"
+            "메모리 반도체"
           ],
-          "eligible_classified_issuers": 1,
-          "current_signal_issuers": 1,
-          "micro_verified": true,
+          "eligible_classified_issuers": 55,
+          "current_signal_issuers": 2,
+          "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
-          "market": "CN",
+          "market": "KR",
           "industry_path": [
-            "경기소비재",
-            "의류·가정용 섬유",
-            "의류 [服装]",
-            "구체적 제품·공급망 확인 불가"
+            "정유"
           ],
-          "eligible_classified_issuers": 15,
+          "eligible_classified_issuers": 2,
+          "current_signal_issuers": 2,
+          "micro_verified": false,
+          "phase": "52주 신고가 관측",
+          "comparison_scope": "WAMO 검증 종목군"
+        },
+        {
+          "market": "KR",
+          "industry_path": [
+            "절연선 및 케이블 제조업"
+          ],
+          "eligible_classified_issuers": 2,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
-          "market": "HK",
+          "market": "KR",
           "industry_path": [
-            "금융",
-            "투자 서비스",
-            "증권",
-            "사업소개 후보: 증권 중개·투자금융"
+            "금융"
           ],
-          "eligible_classified_issuers": 6,
+          "eligible_classified_issuers": 12,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "HK",
-          "industry_path": [
-            "부동산",
-            "부동산",
-            "개발·운영",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 43,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "HK",
-          "industry_path": [
-            "공익사업",
-            "공익사업",
-            "전력·가스·수도",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 21,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "HK",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "eligible_classified_issuers": 11,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "종합 식품 [食品综合]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 21,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "CN",
-          "industry_path": [
-            "경기소비재",
-            "소매",
-            "백화점 [百货]",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 16,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         }
       ],
-      "error": "신고가 원본의 가격·분석 검증 대기 · 이전 결과는 현재 신호가 아닙니다.",
-      "errorCode": "UPSTREAM_NOT_READY"
+      "upstreamError": "UPSTREAM_NOT_READY"
     }
   },
   "scope": "52주 신고가 기준. 원본 대기 시 WAMO 한국·미국 검증 종목군으로 대체합니다. 대체 결과는 일본·중국·홍콩을 포함하지 않습니다."
