@@ -42,7 +42,7 @@
     "catalogStatus": "PASS"
   },
   "US": {
-    "status": "RUNNING",
+    "status": "FAILED",
     "attemptedAt": "2026-10-08T00:13:50.747590+00:00",
     "scheduledFor": "2026-10-07T20:20:00+00:00",
     "nextScheduledFor": "2026-10-08T20:20:00+00:00",
@@ -68,7 +68,7 @@
       "calendar": "XNYS"
     },
     "count": 879,
-    "error": null,
+    "error": "가격 갱신 또는 최신성 검사 실패 · 이전 정상 데이터 유지 · 실행 로그 확인",
     "kis": {
       "status": "LIVE",
       "connected": true,
