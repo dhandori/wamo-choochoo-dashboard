@@ -1,2036 +1,269 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-08T01:59:09.906827+00:00",
+  "checkedAt": "2026-10-08T02:05:51.982822+00:00",
   "editions": {
     "US": {
-      "status": "FAILED",
-      "generatedAt": "2026-09-15T05:02:10.927520+00:00",
+      "status": "PASS",
+      "generatedAt": "2026-10-08T02:05:51.982822+00:00",
       "sessions": {
-        "US-NASDAQ": "20260914",
-        "US-NYSE": "20260914",
-        "US-AMEX": "20260914"
+        "US-NYSE": "20261007",
+        "US-NASDAQ": "20261007",
+        "US-AMEX": "20261007"
       },
-      "releaseKey": "US:US-AMEX=20260914|US-NASDAQ=20260914|US-NYSE=20260914",
-      "fingerprint": "0c01e2dcb334f245e38f9b6543201d9d78cd5d291b8d12654ecfda714b42489b",
+      "source": "WAMO_52W",
+      "scope": "WAMO US 검증 종목군 · 최근 252거래일",
       "signals": [
         {
-          "key": "NAS:IOVA",
+          "key": "US-NYSE:HPE",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "HPE",
+          "name": "Hewlett Packard Enterprise Company Common Stock",
+          "currency": "USD",
+          "as_of": "20261007",
+          "industry_path": [
+            "Technology"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 72.09,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NASDAQ:NTAP",
           "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "IOVA",
-          "name": "이오밴스 바이오테라퓨틱스",
+          "country": "US",
+          "symbol": "NTAP",
+          "name": "NetApp Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "건강관리",
-            "바이오의약품",
-            "진단물질 제외 바이오제품",
-            "구체적 제품·공급망 확인 불가"
+            "Technology"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 9.2317,
-          "entry_status": "신규 등장",
+          "current_close": 235.77,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": true
           }
         },
         {
-          "key": "NAS:TXG",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "TXG",
-          "name": "10X 지노믹스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "연구장비",
-            "실험실 분석기기",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 69.33,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:ATRC",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "ATRC",
-          "name": "아트리큐어",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의료기기",
-            "의과·치과 기구",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 55.79,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:CDNA",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "CDNA",
-          "name": "케어DX",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의료기기",
-            "특수 의료제품",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 52.47,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:NTRA",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "NTRA",
-          "name": "나테라",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의료기기",
-            "특수 의료제품",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 341.25,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:AVAH",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "AVAH",
-          "name": "애비아나 헬스케어 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의료서비스",
-            "진료·간호",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 14.5,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:LFST",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "LFST",
-          "name": "라이프스탠스 헬스 그룹",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의료서비스",
-            "진료·간호",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 13.38,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:PHVS",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "PHVS",
-          "name": "파바비스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의약품",
-            "의약품 제제",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 38.86,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:PAA",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "PAA",
-          "name": "플레인스 올 아메리칸 파이프라인",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "공익사업",
-            "가스",
-            "천연가스 공급",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 25.85,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NAS:PAGP",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "PAGP",
-          "name": "플레인스 GP 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "공익사업",
-            "가스",
-            "천연가스 공급",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 28.55,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:SLDE",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "SLDE",
-          "name": "슬라이드 인슈어런스 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "손해보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 26.5,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:ACT",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "ACT",
-          "name": "인액트 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "특수보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 50.07,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:BWIN",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "BWIN",
-          "name": "볼드윈 인슈어런스 그룹",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "특수보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 32.0,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:NUTX",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "NUTX",
-          "name": "뉴텍스 헬스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "기업서비스",
-            "사업지원",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 219.3,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:TRMD",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "TRMD",
-          "name": "TORM",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 35.5837,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:APA",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "APA",
-          "name": "APA",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 45.03,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:CHRD",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "CHRD",
-          "name": "코드 에너지",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 151.22,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NAS:DMLP",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "DMLP",
-          "name": "도체스터 미네랄스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 29.5,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NAS:CRWD",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "CRWD",
-          "name": "크라우드스트라이크 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 235.28,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:DBX",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "DBX",
-          "name": "드랍박스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 37.31,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:GEN",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "GEN",
-          "name": "젠 디지털",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 31.3566,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:KARO",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "KARO",
-          "name": "카루",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 67.23,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:OKTA",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "OKTA",
-          "name": "옥타",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 186.7325,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:RDVT",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "RDVT",
-          "name": "레드 바이올렛",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 76.29,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NAS:MTCH",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "MTCH",
-          "name": "매치 그룹",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "프로그래밍·데이터 처리",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 43.36,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:SAIC",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "SAIC",
-          "name": "사이언스 애플리케이션 인터내셔널",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "정보기술 서비스",
-            "전산·데이터 처리",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 132.01,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:VOD",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "VOD",
-          "name": "보다폰 그룹(ADR)",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "통신장비",
-            "통신기기",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 17.53,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:ZD",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "ZD",
-          "name": "지프 데이비스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "정보기술",
-            "통신장비",
-            "통신기기",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 57.36,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:STGW",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "STGW",
-          "name": "스태그웰",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "통신서비스",
-            "광고",
-            "광고서비스",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 9.3999,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NAS:LILAK",
-          "market": "US-NASDAQ",
-          "country": "미국",
-          "symbol": "LILAK",
-          "name": "리버티 라틴 아메리카 C",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "통신서비스",
-            "제공사 원문 업종",
-            "Cable & Other Pay Television Services",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 8.8,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:CNC",
+          "key": "US-NYSE:P",
           "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "CNC",
-          "name": "센틴",
+          "country": "US",
+          "symbol": "P",
+          "name": "Everpure Inc. Class A common stock",
           "currency": "USD",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "건강관리",
-            "의료기기",
-            "특수 의료제품",
-            "구체적 제품·공급망 확인 불가"
+            "Technology"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 69.0522,
-          "entry_status": "신규 등장",
+          "current_close": 152.66,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": true
           }
         },
         {
-          "key": "NYS:CON",
+          "key": "US-NYSE:MPC",
           "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "CON",
-          "name": "컨센트라 그룹 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의료기기",
-            "특수 의료제품",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 36.42,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:OSCR",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "OSCR",
-          "name": "오스카 헬스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의료기기",
-            "특수 의료제품",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 33.81,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:TEVA",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "TEVA",
-          "name": "테바 파머슈티컬 인더스트리스(ADR)",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "건강관리",
-            "의약품",
-            "바이오시밀러",
-            "사업소개 후보: 바이오시밀러 개발·공급"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 38.71,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:CRBG",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "CRBG",
-          "name": "코어브리지 파이낸셜",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 34.5,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:GNW",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "GNW",
-          "name": "젠워스 파이낸셜",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 10.589,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:KB",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "KB",
-          "name": "KB 파이낸셜 그룹(ADR)",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 132.88,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:SHG",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "SHG",
-          "name": "신한 파이낸셜 그룹(ADR)",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 84.11,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:ASIC",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "ASIC",
-          "name": "어테그리티 스페셜티 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "손해보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 27.99,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:EQH",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "EQH",
-          "name": "에퀴터블 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "특수보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 53.67,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:HGTY",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "HGTY",
-          "name": "해거티",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "금융",
-            "보험",
-            "특수보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 13.9994,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:LTC",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "LTC",
-          "name": "LTC 프라퍼티스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "부동산",
-            "부동산투자회사",
-            "리츠",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 42.65,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:EXPD",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "EXPD",
-          "name": "익스피다이터스 인터내셔널 오브 워싱턴",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "물류",
-            "종합 화물·물류",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 195.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:TNK",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "TNK",
-          "name": "티케이 탱커스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "운송 인프라",
-            "항만",
-            "사업소개 후보: 항만·터미널 운영"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 100.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:ECO",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "ECO",
-          "name": "오케아니스 에코 탱커스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 79.75,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:INSW",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "INSW",
-          "name": "인터내셔널 시웨이스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 105.2,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:LPG",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "LPG",
-          "name": "도리언 LPG",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 55.93,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:MATX",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "MATX",
-          "name": "맷슨",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 236.56,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:NAT",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "NAT",
-          "name": "노르딕 아메리칸 탱커스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 7.68,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:NMM",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "NMM",
-          "name": "나비오스 마리타임 파트너스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 93.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:TEN",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "TEN",
-          "name": "차코스 에너지 내비게이션",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 50.0,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:TK",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "TK",
-          "name": "티케이",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 14.12,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:DHT",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "DHT",
-          "name": "DHT 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "원유 운반선",
-            "초대형 원유 운반선 운항"
-          ],
-          "micro_verified": true,
-          "classification_status": "company_verified",
-          "classification_caveats": [],
-          "current_close": 22.3,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:FRO",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "FRO",
-          "name": "프론트라인",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "원유·석유제품 운반선",
-            "원유·제품 운반선 복합 운항"
-          ],
-          "micro_verified": true,
-          "classification_status": "company_verified",
-          "classification_caveats": [],
-          "current_close": 50.7995,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:DAC",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "DAC",
-          "name": "다나오스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "컨테이너 해운",
-            "사업소개 후보: 컨테이너선 운항"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 158.3,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:SFL",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "SFL",
-          "name": "SFL 코퍼레이션",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "컨테이너 해운",
-            "사업소개 후보: 컨테이너선 운항"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 13.1,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:BSM",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "BSM",
-          "name": "블랙 스톤 미네랄스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 14.8637,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:CRGY",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "CRGY",
-          "name": "크레센트 에너지",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 14.49,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:HESM",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "HESM",
-          "name": "헤스 미드스트림",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 40.9999,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:PR",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "PR",
-          "name": "퍼미언 리소시스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 23.76,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:SHEL",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "SHEL",
-          "name": "쉘(ADR)",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 96.57,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:SM",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "SM",
-          "name": "SM 에너지",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 39.03,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:WDS",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "WDS",
-          "name": "우드사이드 에너지 그룹(ADR)",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 24.2,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:EQNR",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "EQNR",
-          "name": "에퀴노르(ADR)",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "사업소개 후보: 원유 정제·석유제품 생산"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 44.54,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:SU",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "SU",
-          "name": "선코어 에너지",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "사업소개 후보: 원유 정제·석유제품 생산"
-          ],
-          "micro_verified": false,
-          "classification_status": "provider_text_candidates_not_filing_verified",
-          "classification_caveats": [
-            "사업소개 자동 문구 대응표이며 확정 공급망 분류·주된 매출사업·국가 간 선행 근거로 사용하지 않음"
-          ],
-          "current_close": 68.42,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:CVI",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "CVI",
-          "name": "CVR 에너지",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "원유 정제·석유제품 생산"
-          ],
-          "micro_verified": true,
-          "classification_status": "company_verified",
-          "classification_caveats": [
-            "문서에서 확인한 사업 노출이며 매출비중이나 주가 상승 원인을 뜻하지 않음"
-          ],
-          "current_close": 50.5,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:DK",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "DK",
-          "name": "델렉 유에스 홀딩스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "원유 정제·석유제품 생산"
-          ],
-          "micro_verified": true,
-          "classification_status": "company_verified",
-          "classification_caveats": [
-            "문서에서 확인한 사업 노출이며 매출비중이나 주가 상승 원인을 뜻하지 않음"
-          ],
-          "current_close": 74.5,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:MPC",
-          "market": "US-NYSE",
-          "country": "미국",
+          "country": "US",
           "symbol": "MPC",
-          "name": "매러선 페트롤리엄",
+          "name": "Marathon Petroleum Corporation Common Stock",
           "currency": "USD",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "원유 정제·석유제품 생산"
-          ],
-          "micro_verified": true,
-          "classification_status": "company_verified",
-          "classification_caveats": [],
-          "current_close": 399.3108,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:VLO",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "VLO",
-          "name": "발레로 에너지",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "원유 정제·석유제품 생산"
-          ],
-          "micro_verified": true,
-          "classification_status": "company_verified",
-          "classification_caveats": [],
-          "current_close": 382.9204,
-          "entry_status": "반복 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:COP",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "COP",
-          "name": "코노코필립스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "종합 석유",
-            "복합 석유사업",
-            "구체적 제품·공급망 확인 불가"
+            "Energy"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 136.67,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:CVX",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "CVX",
-          "name": "셰브론",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "종합 석유",
-            "복합 석유사업",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 212.44,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "NYS:SUN",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "SUN",
-          "name": "수노코",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "에너지",
-            "종합 석유",
-            "복합 석유사업",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 79.0266,
-          "entry_status": "신규 등장",
+          "current_close": 442.26,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": true
           }
         },
         {
-          "key": "NYS:NET",
+          "key": "US-NYSE:ABBV",
           "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "NET",
-          "name": "클라우드플레어",
+          "country": "US",
+          "symbol": "ABBV",
+          "name": "AbbVie Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
+            "Health Care"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 329.01,
-          "entry_status": "신규 등장",
+          "current_close": 271.36,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:ANET",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "ANET",
+          "name": "Arista Networks Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261007",
+          "industry_path": [
+            "Telecommunications"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 215.83,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:VLO",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "VLO",
+          "name": "Valero Energy Corporation Common Stock",
+          "currency": "USD",
+          "as_of": "20261007",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 424.1,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NASDAQ:FFIV",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "FFIV",
+          "name": "F5 Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261007",
+          "industry_path": [
+            "Telecommunications"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 466.65,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": false
           }
         },
         {
-          "key": "NYS:HNGE",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "HNGE",
-          "name": "힌지 헬스",
+          "key": "US-NASDAQ:ZBRA",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "ZBRA",
+          "name": "Zebra Technologies Corporation Class A Common Stock",
           "currency": "USD",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "정보기술",
-            "정보기술 서비스",
-            "전산·데이터 처리",
-            "구체적 제품·공급망 확인 불가"
+            "Industrials"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 95.2033,
-          "entry_status": "신규 등장",
+          "current_close": 386.05,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
             "close_252": true
           }
         },
         {
-          "key": "NYS:CHT",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "CHT",
-          "name": "중화 텔레콤(ADR)",
+          "key": "US-NASDAQ:NTNX",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "NTNX",
+          "name": "Nutanix Inc. Class A Common Stock",
           "currency": "USD",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "정보기술",
-            "통신장비",
-            "통신기기",
-            "구체적 제품·공급망 확인 불가"
+            "Technology"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 45.25,
-          "entry_status": "반복 등장",
+          "current_close": 73.42,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": true,
+            "intraday_252": false,
             "close_252": true
           }
         },
         {
-          "key": "NYS:VZ",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "VZ",
-          "name": "버라이존 커뮤니케이션스",
+          "key": "US-NASDAQ:XP",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "XP",
+          "name": "XP Inc. Class A Common Stock",
           "currency": "USD",
-          "as_of": "20260914",
+          "as_of": "20261007",
           "industry_path": [
-            "정보기술",
-            "통신장비",
-            "통신기기",
-            "구체적 제품·공급망 확인 불가"
+            "Finance"
           ],
           "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
+          "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
+            "WAMO 기존 업종 분류"
           ],
-          "current_close": 51.23,
-          "entry_status": "신고가 단계 상승",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "NYS:UTZ",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "UTZ",
-          "name": "UTZ 브랜즈",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "포장식품",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 14.23,
-          "entry_status": "반복 등장",
+          "current_close": 29.53,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": false
-          }
-        },
-        {
-          "key": "NYS:GRDN",
-          "market": "US-NYSE",
-          "country": "미국",
-          "symbol": "GRDN",
-          "name": "가디언 파머시 서비시스",
-          "currency": "USD",
-          "as_of": "20260914",
-          "industry_path": [
-            "필수소비재",
-            "의약품 유통",
-            "약국·의약품 소매",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "micro_verified": false,
-          "classification_status": "documented_exchange_or_provider_industry",
-          "classification_caveats": [
-            "출처 있는 업종 분류이며 구체적인 제품·공급망·주된 매출사업 확인을 뜻하지 않음"
-          ],
-          "current_close": 47.39,
-          "entry_status": "신규 등장",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
           }
         }
       ],
@@ -2038,454 +271,71 @@
         {
           "market": "US",
           "industry_path": [
-            "에너지",
-            "석유·가스",
-            "생산",
-            "구체적 제품·공급망 확인 불가"
+            "Technology"
           ],
-          "eligible_classified_issuers": 62,
-          "current_signal_issuers": 10,
+          "eligible_classified_issuers": 147,
+          "current_signal_issuers": 4,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "US",
           "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "패키지 소프트웨어",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 118,
-          "current_signal_issuers": 7,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "선박 운송",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 29,
-          "current_signal_issuers": 9,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "정보기술",
-            "정보기술 서비스",
-            "전산·데이터 처리",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 61,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "에너지",
-            "종합 석유",
-            "복합 석유사업",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 9,
-          "current_signal_issuers": 3,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "정보기술",
-            "통신장비",
-            "통신기기",
-            "구체적 제품·공급망 확인 불가"
+            "Energy"
           ],
           "eligible_classified_issuers": 38,
-          "current_signal_issuers": 4,
+          "current_signal_issuers": 2,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "US",
           "industry_path": [
-            "건강관리",
-            "의료기기",
-            "특수 의료제품",
-            "구체적 제품·공급망 확인 불가"
+            "Health Care"
           ],
-          "eligible_classified_issuers": 29,
-          "current_signal_issuers": 5,
+          "eligible_classified_issuers": 96,
+          "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "US",
           "industry_path": [
-            "금융",
-            "보험",
-            "특수보험",
-            "구체적 제품·공급망 확인 불가"
+            "Telecommunications"
           ],
           "eligible_classified_issuers": 18,
-          "current_signal_issuers": 4,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "원유 정제·석유제품 생산"
-          ],
-          "eligible_classified_issuers": 6,
-          "current_signal_issuers": 4,
-          "micro_verified": true,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "건강관리",
-            "의료기기",
-            "의과·치과 기구",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 37,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "산업재",
-            "기업서비스",
-            "사업지원",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 49,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "건강관리",
-            "의약품",
-            "의약품 제제",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 152,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "건강관리",
-            "의료서비스",
-            "진료·간호",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 14,
           "current_signal_issuers": 2,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "US",
           "industry_path": [
-            "공익사업",
-            "가스",
-            "천연가스 공급",
-            "구체적 제품·공급망 확인 불가"
+            "Industrials"
           ],
-          "eligible_classified_issuers": 23,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "에너지",
-            "석유제품",
-            "정유",
-            "사업소개 후보: 원유 정제·석유제품 생산"
-          ],
-          "eligible_classified_issuers": 4,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "사업소개 후보: 생명·연금 보험"
-          ],
-          "eligible_classified_issuers": 16,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "금융",
-            "보험",
-            "생명보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 10,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "금융",
-            "보험",
-            "손해보험",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 39,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "컨테이너 해운",
-            "사업소개 후보: 컨테이너선 운항"
-          ],
-          "eligible_classified_issuers": 3,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "건강관리",
-            "연구장비",
-            "실험실 분석기기",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 9,
+          "eligible_classified_issuers": 139,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "US",
           "industry_path": [
-            "산업재",
-            "물류",
-            "종합 화물·물류",
-            "구체적 제품·공급망 확인 불가"
+            "Finance"
           ],
-          "eligible_classified_issuers": 4,
+          "eligible_classified_issuers": 132,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "정보기술",
-            "소프트웨어",
-            "프로그래밍·데이터 처리",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 32,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "통신서비스",
-            "광고",
-            "광고서비스",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 4,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "통신서비스",
-            "제공사 원문 업종",
-            "Cable & Other Pay Television Services",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 9,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "필수소비재",
-            "식품",
-            "포장식품",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 14,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "필수소비재",
-            "의약품 유통",
-            "약국·의약품 소매",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 2,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "건강관리",
-            "의약품",
-            "바이오시밀러",
-            "사업소개 후보: 바이오시밀러 개발·공급"
-          ],
-          "eligible_classified_issuers": 5,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "부동산",
-            "부동산투자회사",
-            "리츠",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 103,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "산업재",
-            "운송 인프라",
-            "항만",
-            "사업소개 후보: 항만·터미널 운영"
-          ],
-          "eligible_classified_issuers": 2,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "원유 운반선",
-            "초대형 원유 운반선 운항"
-          ],
-          "eligible_classified_issuers": 1,
-          "current_signal_issuers": 1,
-          "micro_verified": true,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "산업재",
-            "해상운송",
-            "원유·석유제품 운반선",
-            "원유·제품 운반선 복합 운항"
-          ],
-          "eligible_classified_issuers": 1,
-          "current_signal_issuers": 1,
-          "micro_verified": true,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "건강관리",
-            "바이오의약품",
-            "진단물질 제외 바이오제품",
-            "구체적 제품·공급망 확인 불가"
-          ],
-          "eligible_classified_issuers": 47,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         }
       ],
-      "error": "신고가 원본의 가격·분석 검증 대기 · 이전 결과는 현재 신호가 아닙니다.",
-      "errorCode": "UPSTREAM_NOT_READY"
+      "upstreamError": "UPSTREAM_NOT_READY"
     },
     "ASIA": {
       "status": "FAILED",
