@@ -17,6 +17,7 @@ MARKETS = {
     'US': ('wamo_update_us_sec.py', 'us.html', 'us', ['wamo_us_sec_cache.json', 'wamo_kis_us_cache.json']),
 }
 SHARED = ['movers.html', 'wamo_movers_cache.json']
+RADAR_WARNING = '52주 신고가 목록 갱신 미완료 · 가격 화면은 별도 확인'
 
 
 def read_json(path):
@@ -120,6 +121,13 @@ def finalize_interrupted(do_publish=False):
             if report.get('status') == 'PASS':
                 report['status'] = 'WARNING'
             changed = True
+        if report.get('radarStatus') == 'RUNNING':
+            report['radarStatus'] = 'FAILED'
+            if RADAR_WARNING not in report.setdefault('warnings', []):
+                report['warnings'].append(RADAR_WARNING)
+            if report.get('status') == 'PASS':
+                report['status'] = 'WARNING'
+            changed = True
     if changed:
         write_json(STATE, state)
         write_json(STATUS, status)
@@ -134,22 +142,30 @@ def refresh_radar(status, markets):
     except (subprocess.SubprocessError, OSError, RuntimeError):
         print('신고가 갱신 작업 오류 · 시장별 결과 검증', flush=True)
     try:
-        editions = read_json(ROOT / 'wamo_radar.json').get('editions', {})
-    except (ValueError, OSError, AttributeError):
-        editions = {}
-    warning = '52주 신고가 목록 갱신 미완료 · 가격 화면은 별도 확인'
+        result = read_json(ROOT / 'wamo_radar.json')
+        editions = result.get('editions', {})
+        checked = datetime.fromisoformat(result.get('checkedAt', '').replace('Z', '+00:00'))
+        fresh = timedelta(0) <= datetime.now(UTC) - checked <= timedelta(hours=3)
+        if not isinstance(editions, dict):
+            raise ValueError('invalid radar editions')
+    except (ValueError, TypeError, OSError, AttributeError):
+        editions, fresh = {}, False
+    warning = RADAR_WARNING
     for market in markets:
         report = status[market]
         edition = editions.get('ASIA' if market == 'KR' else 'US') or {}
-        sessions = [day for name, day in (edition.get('sessions') or {}).items()
-                    if name.startswith(market + '-')]
+        if not isinstance(edition, dict):
+            edition = {}
+        session_map = edition.get('sessions') or {}
+        sessions = [day for name, day in session_map.items()
+                    if isinstance(name, str) and name.startswith(market + '-')] if isinstance(session_map, dict) else []
         expected = expected_session(market).replace('-', '')
-        ready = edition.get('status') == 'PASS' and bool(sessions) and all(day == expected for day in sessions)
+        ready = fresh and edition.get('status') == 'PASS' and bool(sessions) and all(day == expected for day in sessions)
         report['radarStatus'] = 'PASS' if ready else 'FAILED'
         report['warnings'] = [w for w in report.get('warnings', []) if w != warning]
         if not ready:
             report['warnings'].append(warning)
-        report['status'] = 'WARNING' if report['warnings'] else 'PASS'
+        report['status'] = 'WARNING' if report['warnings'] or any(report.get(key) == 'FAILED' for key in ('moversStatus', 'catalogStatus')) else 'PASS'
     write_json(STATUS, status)
 
 
@@ -164,7 +180,7 @@ def recover_auxiliary(state, status, now, requested, do_publish):
             continue
         retry_movers = report.get('moversStatus') in ('FAILED', 'RUNNING')
         retry_catalog = report.get('catalogStatus') == 'FAILED'
-        retry_radar = report.get('radarStatus') == 'FAILED'
+        retry_radar = report.get('radarStatus') in ('FAILED', 'RUNNING')
         if not (retry_movers or retry_catalog or retry_radar):
             continue
         try:
@@ -265,6 +281,7 @@ def main():
             warnings = list(fresh['warnings'])
             report['moversStatus'] = 'RUNNING'
             report.update(status='WARNING' if warnings else 'PASS', warnings=warnings,
+                          radarStatus='RUNNING',
                           lastSuccessAt=datetime.now(UTC).isoformat(), asOf=data['meta']['asOf'],
                           freshness=fresh, count=len(data['stocks']), error=None,
                           kis=data['meta'].get('kisMeta'))
