@@ -1,18 +1,28 @@
 import unittest
 from unittest.mock import patch
+from tests.test_price_sources import history
 import wamo_update_business_dart as core
 
 
 class CurrentHistoryTests(unittest.TestCase):
+    def test_corrupt_current_primary_uses_independent_valid_history(self):
+        bad=history()
+        bad[100]['high']=90.
+        good=history()
+        with patch.object(core,'fetch_yahoo_history',return_value=(bad,'yahoo')),patch.object(core,'fetch_naver_history',return_value=good):
+            rows,source,_=core.fetch_current_kr_history('005930.KS','005930','2026-10-07')
+        self.assertEqual(source,'NAVER Finance')
+        self.assertEqual(rows,good)
+
     def test_recovery_excludes_next_intraday_bar(self):
-        rows = [{'date':'2026-10-07'}, {'date':'2026-10-08'}]
+        rows = history('2026-10-08')
         with patch.object(core, 'fetch_yahoo_history', return_value=(rows,'yahoo')):
             result, _, _ = core.fetch_current_kr_history('005930.KS','005930','2026-10-07')
-        self.assertEqual(result, [{'date':'2026-10-07'}])
+        self.assertEqual(result[-1]['date'], '2026-10-07')
 
     def test_stale_success_falls_back_to_current_naver(self):
-        stale = [{'date': '2026-09-04'}]
-        current = [{'date': '2026-09-07'}]
+        stale = history('2026-09-04')
+        current = history('2026-09-07')
         with patch.object(core, 'fetch_yahoo_history', return_value=(stale, 'yahoo')), patch.object(core, 'fetch_naver_history', return_value=current):
             rows, source, host = core.fetch_current_kr_history('005930.KS', '005930', '2026-09-07')
         self.assertEqual(rows, current)
@@ -25,7 +35,7 @@ class CurrentHistoryTests(unittest.TestCase):
                 core.fetch_current_kr_history('005930.KS', '005930', '2026-09-07')
 
     def test_current_primary_does_not_duplicate_queries(self):
-        current = [{'date': '2026-09-07'}]
+        current = history('2026-09-07')
         with patch.object(core, 'fetch_yahoo_history', return_value=(current, 'yahoo')), patch.object(core, 'fetch_naver_history') as naver:
             self.assertEqual(core.fetch_current_kr_history('005930.KS', '005930', '2026-09-07')[0], current)
             naver.assert_not_called()

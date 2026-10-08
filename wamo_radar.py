@@ -47,18 +47,25 @@ def local_edition(payload, market, now):
     if payload.get('meta', {}).get('asOf') != expected or not stocks or len(fresh)/len(stocks) < .9:
         raise ValueError('local prices not current')
     signals, groups, sessions = [], defaultdict(lambda: [0, 0]), {}
+    exclusions, validated, eligible = [], 0, 0
     seen = set()
     for stock in fresh:
         symbol = stock.get('ticker') if market == 'US' else stock.get('stock_code')
         if not symbol or symbol in seen:
             raise ValueError('local identity missing/duplicated')
         seen.add(symbol)
-        rows = validate_history(stock.get('history') or [], expected)
+        try:
+            rows = validate_history(stock.get('history') or [], expected)
+            if abs(rows[-1]['close'] - float(stock['close'])) > .011:
+                raise ValueError('local close/history mismatch')
+        except (ValueError, KeyError, TypeError, OverflowError):
+            exclusions.append(dict(symbol=symbol, reason='HISTORY_VALIDATION'))
+            continue
+        validated += 1
         if len(rows) < 252:
             continue
+        eligible += 1
         rows = rows[-252:]
-        if abs(rows[-1]['close'] - float(stock['close'])) > .011:
-            raise ValueError('local close/history mismatch')
         exchange = stock.get('krx_market') if market == 'KR' else ('NASDAQ' if stock.get('exchange') == 'NASDAQ' else 'AMEX' if stock.get('exchange') == 'NYSE AMERICAN' else 'NYSE')
         code = market + '-' + exchange
         sessions[code] = expected.replace('-', '')
@@ -76,12 +83,17 @@ def local_edition(payload, market, now):
             industry_path=[sector], micro_verified=False, classification_status='WAMO_SECTOR',
             classification_caveats=['WAMO 기존 업종 분류'], current_close=stock['close'],
             entry_status='52주 신고가 · 매매판단은 별도', flags=flags))
+    if validated / len(stocks) < .9:
+        raise ValueError('local verified coverage below 90%')
     industries = [dict(market=market, industry_path=list(path),
         eligible_classified_issuers=counts[0], current_signal_issuers=counts[1],
         micro_verified=False, phase='52주 신고가 관측', comparison_scope='WAMO 검증 종목군')
         for path, counts in groups.items() if counts[1]]
     return dict(status='PASS', generatedAt=now.isoformat(), sessions=sessions,
         source='WAMO_52W', scope=f'WAMO {market} 검증 종목군 · 최근 252거래일',
+        coverage=dict(totalCount=len(stocks), currentCount=len(fresh), validatedCount=validated,
+                      eligible52WeekCount=eligible, excludedCount=len(exclusions)),
+        exclusions=exclusions,
         signals=signals, industries=industries)
 
 
