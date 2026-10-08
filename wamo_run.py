@@ -127,6 +127,32 @@ def finalize_interrupted(do_publish=False):
             publish([STATE.name, STATUS.name])
 
 
+def refresh_radar(status, markets):
+    """Refresh discovery after verified prices; never roll prices back for radar."""
+    try:
+        run_script('wamo_radar.py', timeout=180)
+    except (subprocess.SubprocessError, OSError, RuntimeError):
+        print('신고가 갱신 작업 오류 · 시장별 결과 검증', flush=True)
+    try:
+        editions = read_json(ROOT / 'wamo_radar.json').get('editions', {})
+    except (ValueError, OSError, AttributeError):
+        editions = {}
+    warning = '52주 신고가 목록 갱신 미완료 · 가격 화면은 별도 확인'
+    for market in markets:
+        report = status[market]
+        edition = editions.get('ASIA' if market == 'KR' else 'US') or {}
+        sessions = [day for name, day in (edition.get('sessions') or {}).items()
+                    if name.startswith(market + '-')]
+        expected = expected_session(market).replace('-', '')
+        ready = edition.get('status') == 'PASS' and bool(sessions) and all(day == expected for day in sessions)
+        report['radarStatus'] = 'PASS' if ready else 'FAILED'
+        report['warnings'] = [w for w in report.get('warnings', []) if w != warning]
+        if not ready:
+            report['warnings'].append(warning)
+        report['status'] = 'WARNING' if report['warnings'] else 'PASS'
+    write_json(STATUS, status)
+
+
 def recover_auxiliary(state, status, now, requested, do_publish):
     """Retry only failed auxiliary outputs of a completed, still-current close."""
     for market, (_, _, movers_market, _) in MARKETS.items():
@@ -138,7 +164,8 @@ def recover_auxiliary(state, status, now, requested, do_publish):
             continue
         retry_movers = report.get('moversStatus') in ('FAILED', 'RUNNING')
         retry_catalog = report.get('catalogStatus') == 'FAILED'
-        if not (retry_movers or retry_catalog):
+        retry_radar = report.get('radarStatus') == 'FAILED'
+        if not (retry_movers or retry_catalog or retry_radar):
             continue
         try:
             if now - datetime.fromisoformat(entry['auxLastAttemptAt']) < timedelta(hours=2):
@@ -169,6 +196,9 @@ def recover_auxiliary(state, status, now, requested, do_publish):
                 restore(saved)
                 report[key] = 'FAILED'
             report['status'] = 'WARNING' if report.get('warnings') or any(report.get(k) == 'FAILED' for k in ('moversStatus', 'catalogStatus')) else 'PASS'
+        if retry_radar:
+            refresh_radar(status, [market])
+            names.extend(['wamo_radar.json', *[v[1] for v in MARKETS.values()]])
         write_json(STATUS, status)
         if do_publish:
             publish(names)
@@ -287,6 +317,10 @@ def main():
     if args.publish:
         # The catalog is auxiliary; a projection failure must not roll back or
         # prevent already validated prices from being served.
+        successful = [market for market, _ in targets if state[market].get('success')]
+        if successful:
+            refresh_radar(status, successful)
+            changed.append('wamo_radar.json')
         try:
             run_script('wamo_catalog.py', timeout=120)
             changed.append('wamo_catalog.json')

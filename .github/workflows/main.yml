@@ -5,6 +5,8 @@ on:
     # KR close: 16:00 KST. US close: 16:20 New York (DST-aware).
     # wamo_run.py permits only one collection per market trading session.
     - cron: '0 7 * * 1-5'
+    # Off-hour backup if GitHub delays or misses the top-of-hour KR trigger.
+    - cron: '17 7 * * 1-5'
     - cron: '20 20 * * 1-5'
     - cron: '20 21 * * 1-5'
     # Cheap recovery checks: completed sessions exit before provider calls.
@@ -79,6 +81,7 @@ jobs:
           KRX_ID: ${{ secrets.KRX_ID }}
           KRX_PW: ${{ secrets.KRX_PW }}
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+          RADAR_READ_TOKEN: ${{ secrets.RADAR_READ_TOKEN }}
           KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
           REQUESTED_MARKET: ${{ inputs.market || 'auto' }}
@@ -89,7 +92,7 @@ jobs:
           market="$REQUESTED_MARKET"
           if [[ "${GITHUB_EVENT_NAME}" == 'schedule' ]]; then
             if [[ "$EVENT_SCHEDULE" == '43 */2 * * *' ]]; then market='auto';
-            elif [[ "$EVENT_SCHEDULE" == '0 7 * * 1-5' ]]; then market='KR'; else market='US'; fi
+            elif [[ "$EVENT_SCHEDULE" == '0 7 * * 1-5' || "$EVENT_SCHEDULE" == '17 7 * * 1-5' ]]; then market='KR'; else market='US'; fi
           fi
           args=(--market "$market")
           if [[ "$EVENT_SCHEDULE" == '43 */2 * * *' ]]; then args+=(--recovery); fi

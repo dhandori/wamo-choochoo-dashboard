@@ -99,13 +99,13 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(runner.select_targets(malformed, instant('2026-09-15T05:45'), 'US', True),
                          [('US', instant('2026-09-14T20:20'))])
 
-    def test_workflow_has_only_three_close_candidates(self):
+    def test_workflow_has_close_candidates_and_one_kr_backup(self):
         import inspect
         import re
         workflow = (runner.ROOT / '.github/workflows/main.yml').read_text()
         crons = re.findall(r"cron: '([0-9]+) ([0-9]+) \* \* 1-5'", workflow)
         actual = {(int(hour), int(minute)) for minute, hour in crons}
-        self.assertEqual(actual, {(7, 0), (20, 20), (21, 20)})
+        self.assertEqual(actual, {(7, 0), (7, 17), (20, 20), (21, 20)})
         self.assertNotIn('7,22,37,52', workflow)
         self.assertIn('fetch-depth: 1', workflow)
         self.assertIn("if: github.event_name != 'push'", workflow)

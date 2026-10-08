@@ -108,6 +108,29 @@ class PublicationTests(unittest.TestCase):
             self.assertEqual(data['editions']['US']['errorCode'], 'MISSING_TOKEN')
 
 class AuxiliaryRecoveryTests(unittest.TestCase):
+    def test_radar_refresh_follows_prices_and_marks_current_edition(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'wamo_radar.json').write_text(json.dumps({'editions':{'ASIA':{
+                'status':'PASS','sessions':{'KR-KOSPI':'20261008','KR-KOSDAQ':'20261008'}}}}))
+            status={'KR':{'status':'PASS','asOf':'2026-10-08','warnings':[]}}
+            with patch.object(runner,'ROOT',root),patch.object(runner,'STATUS',root/'status.json'),patch.object(runner,'run_script') as run,patch.object(runner,'expected_session',return_value='2026-10-08'):
+                runner.refresh_radar(status,['KR'])
+            run.assert_called_once_with('wamo_radar.py',timeout=180)
+            self.assertEqual(status['KR']['radarStatus'],'PASS')
+
+    def test_stale_radar_pass_does_not_rollback_current_prices(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'wamo_radar.json').write_text(json.dumps({'editions':{'ASIA':{
+                'status':'PASS','sessions':{'KR-KOSPI':'20261007'}}}}))
+            status={'KR':{'status':'PASS','asOf':'2026-10-08','warnings':[]}}
+            with patch.object(runner,'ROOT',root),patch.object(runner,'STATUS',root/'status.json'),patch.object(runner,'run_script',side_effect=RuntimeError('radar failed')),patch.object(runner,'expected_session',return_value='2026-10-08'):
+                runner.refresh_radar(status,['KR'])
+            self.assertEqual(status['KR']['radarStatus'],'FAILED')
+            self.assertEqual(status['KR']['status'],'WARNING')
+            self.assertEqual(status['KR']['asOf'],'2026-10-08')
+
     def test_recovery_retries_movers_without_collecting_prices(self):
         import contextlib
         import io
