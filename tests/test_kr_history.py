@@ -4,6 +4,12 @@ import wamo_update_business_dart as core
 
 
 class CurrentHistoryTests(unittest.TestCase):
+    def test_recovery_excludes_next_intraday_bar(self):
+        rows = [{'date':'2026-10-07'}, {'date':'2026-10-08'}]
+        with patch.object(core, 'fetch_yahoo_history', return_value=(rows,'yahoo')):
+            result, _, _ = core.fetch_current_kr_history('005930.KS','005930','2026-10-07')
+        self.assertEqual(result, [{'date':'2026-10-07'}])
+
     def test_stale_success_falls_back_to_current_naver(self):
         stale = [{'date': '2026-09-04'}]
         current = [{'date': '2026-09-07'}]

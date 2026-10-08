@@ -15,6 +15,15 @@ function build(c=catalog([stock('KR','005930'),stock('US','ALPHA')]), r=radar(),
   return api.buildModel(c,r,now,failed);
 }
 
+test('failed local fallback never retains successful edition wording',()=>{
+  const data=radar();
+  data.editions.US={...data.editions.US,status:'FAILED',source:'WAMO_52W'};
+  const model=build(undefined,data);
+  assert.equal(model.status.editions.US,'FAILED');
+  assert.equal(model.status.editionReasons.US,undefined);
+  assert.equal(model.stocks.find(x=>x.id==='US:ALPHA').current,false);
+});
+
 test('search normalizes case, whitespace, market names and conjunctive tokens',()=>{
   const model=build();
   for (const [query,want] of [[' 미국  alpha ',['US:ALPHA']],['한국 삼성',['KR:005930']],['005930',['KR:005930']],['US labs',['US:ALPHA']],['미국 삼성',[]]]) {

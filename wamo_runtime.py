@@ -61,6 +61,7 @@ def run_meta(market):
     event = os.getenv('GITHUB_EVENT_NAME', '')
     return {
         'market': market,
+        'highScreenBasis': '52_WEEK',
         'runTrigger': {'schedule': '예약실행', 'workflow_dispatch': '수동실행',
                        'push': '코드 반영 후 실행'}.get(event, '직접실행'),
         'runStartedAt': os.getenv('WAMO_RUN_STARTED_AT'),
@@ -108,6 +109,7 @@ def validate_freshness(payload, market, now=None):
 
 
 def patch_status_ui(html, market):
+    html = patch_52week_ui(html)
     if 'window.WAMO_OPEN_DETAIL' not in html:
         html = html.replace('function openDetail(x){',
             "window.WAMO_OPEN_DETAIL = ticker => { const stock = data.stocks.find(s => s.ticker === ticker); if (!stock) return false; openDetail(stock); return true; };\nfunction openDetail(x){", 1)
@@ -129,6 +131,29 @@ def patch_status_ui(html, market):
     marker = '<script src="wamo_status.js" defer></script>'
     if marker not in html:
         html = html.replace('</body>', marker + '\n</body>')
+    return html
+
+
+def patch_52week_ui(html):
+    """Keep existing pages/templates on the user's 52-week-only screen."""
+    html = html.replace('52주 또는 역사적 고점 대비 7% 이내', '52주 고점 대비 7% 이내 · 252거래일 이상')
+    html = html.replace('52주 또는 역사적 신고가권', '52주 신고가권')
+    html = html.replace('현재가가 52주 또는 전체 수집이력 고점의 93% 이상', '252거래일 이상 · 현재가가 52주 고점의 93% 이상')
+    html = re.sub(r'<details><summary>역사적 신고가권</summary>.*?</details>',
+        '<details><summary>52주 신고가권</summary><p>최근 252거래일 고점에서 7% 이내인 종목을 선별합니다. 252거래일 미만의 신규 상장주는 이 선별에서 제외합니다. 추세 지표에는 최근 약 3년의 가격을 사용합니다.</p></details>', html, flags=re.S)
+    html = html.replace('52주 고점 또는 전체 수집이력의 역사적 고점 중 하나라도 현재가가 7% 이내면 해당합니다. 목록에는 52주·역사적·둘 다를 구분해 표시합니다.',
+        '최근 252거래일 고점 대비 현재가가 7% 이내인 종목입니다. 실제 신고가 돌파와 고점 부근 후보를 구분합니다.')
+    html = html.replace('역사적 고점比', '52주 고점까지 거리')
+    html = html.replace("return {h52:(x.high52Ratio||0)>=93,hist:(x.historicalHighRatio||0)>=93};",
+        "return {h52:(x.high52WindowDays||Math.min(252,(x.history||[]).length))>=252&&(x.high52Ratio||0)>=93,hist:false};")
+    html = html.replace("    if(h.h52&&h.hist) return '52주·역사적';\n", '')
+    html = html.replace("    if(h.hist) return '역사적';\n", '')
+    html = html.replace("$('#dHistoricalHigh').textContent=x.historicalHighRatio==null?'—':`${fmt(x.historicalHighRatio,1)}%`;",
+        "$('#dHistoricalHigh').textContent=x.high52Ratio==null?'—':`${fmt(Math.max(0,100-x.high52Ratio),1)}%`;")
+    html = html.replace("$('#dHistoryRange').textContent=x.historyStartDate?`${x.historyStartDate}부터 · 고점 ${x.historicalHighDate||'—'}`:'전체 이력 갱신 필요';",
+        "$('#dHistoryRange').textContent=highDays<252?'252거래일 미만 · 신고가 선별 제외':'최근 252거래일 장중 고점 기준';")
+    html = html.replace('Math.max(b.high52Ratio||0,b.historicalHighRatio||0)-Math.max(a.high52Ratio||0,a.historicalHighRatio||0)',
+        '(b.high52Ratio||0)-(a.high52Ratio||0)')
     return html
 
 

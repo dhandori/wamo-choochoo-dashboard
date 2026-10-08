@@ -22,6 +22,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import wamo_update_business_dart as core
+from wamo_price_sources import us_router
 
 
 ROOT = Path(__file__).resolve().parent
@@ -938,7 +939,7 @@ def enrich_sec(raw):
     priority = sorted(raw, key=lambda x: (
         1 if x.get("conditionCount", 0) >= 4 else 0,
         1 if x.get("trendTemplate") else 0,
-        1 if max(x.get("high52Ratio", 0), x.get("historicalHighRatio", 0)) >= 93 else 0,
+        1 if core.is_52week_high_zone(x) else 0,
         x.get("rsPercentile", 0), x.get("market_cap_usd", 0),
     ), reverse=True)
     selected = []
@@ -1138,12 +1139,15 @@ def validate_us_payload(payload):
         if not sec or (stock.get("sectorAction") or {}).get("status") != core._stock_sector_action_overlay(stock, sec).get("status"):
             issues.append(f"{stock.get('ticker')}: 섹터액션 불일치")
     funnel = (payload.get("meta") or {}).get("universeFunnel") or {}
+    # Older published snapshots retain their original QA definition until the
+    # next validated collection. All new snapshots declare the 52-week schema.
+    high_zone = core.is_52week_high_zone if payload.get('meta', {}).get('highScreenBasis') == '52_WEEK' else lambda x: max(x.get('high52Ratio') or 0, x.get('historicalHighRatio') or 0) >= 93
     expected = {
         "deepScanned": len(stocks),
         "growth4plus": sum(x.get("conditionCount", 0) >= 4 for x in stocks),
         "stage2": sum(bool(x.get("trendTemplate")) for x in stocks),
-        "highZone": sum(max(x.get("high52Ratio", 0), x.get("historicalHighRatio", 0)) >= 93 for x in stocks),
-        "tripleAxis": sum(x.get("conditionCount", 0) >= 4 and x.get("trendTemplate") and max(x.get("high52Ratio", 0), x.get("historicalHighRatio", 0)) >= 93 for x in stocks),
+        "highZone": sum(high_zone(x) for x in stocks),
+        "tripleAxis": sum(x.get("conditionCount", 0) >= 4 and x.get("trendTemplate") and high_zone(x) for x in stocks),
         "sectorAction": sum((x.get("sectorAction") or {}).get("status") == "CONFIRMED" for x in stocks),
     }
     for key, value in expected.items():
@@ -1179,6 +1183,17 @@ def validate_us_payload(payload):
     }
 
 
+def stock_from_history(meta, result):
+    stock = core.calc_raw(meta, result.rows)
+    stock.update(dataSource=result.source, priceProvider=result.provider,
+                 priceAdjustment=result.adjustment,
+                 historyScope='FULL_PROVIDER_HISTORY' if result.full_history else 'AVAILABLE_WINDOW')
+    if not result.full_history:
+        stock['historicalHighRatio'] = None
+        stock['historicalHighDate'] = None
+    return stock
+
+
 def main():
     if not US_HTML.exists():
         raise SystemExit("us.html을 찾지 못했습니다.")
@@ -1203,19 +1218,16 @@ def main():
     fetched = liquidity_rejected = 0
     from wamo_runtime import expected_session
     expected_date = expected_session('US')
+    prices = us_router(core.fetch_yahoo_history)
 
     def task(meta):
         try:
-            rows, host = core.fetch_yahoo_history(meta["ticker"], expected_date=expected_date)
-            stock = core.calc_raw(meta, rows)
-            stock["dataSource"] = "Yahoo Finance"
-            stock["priceProvider"] = host
-            return stock
+            return stock_from_history(meta, prices.fetch(meta, expected_date))
         except Exception as first:
             old = old_by_ticker.get(meta["ticker"], {}) if old_live else {}
             if len(old.get("history") or []) >= 60:
                 stock = core.calc_raw(meta, old["history"])
-                for key in ("historicalHighRatio", "historicalHighDate", "historyStartDate"):
+                for key in ("historyStartDate", "historyScope", "priceAdjustment"):
                     if old.get(key) is not None:
                         stock[key] = old[key]
                 stock["dataSource"] = "이전 미국 정상값"
@@ -1250,6 +1262,9 @@ def main():
                 print("  price", i, "/", len(futures))
     if len(raw) < 50:
         raise RuntimeError(f"미국 정상 계산 종목이 너무 적어 us.html을 덮어쓰지 않습니다: {len(raw)}")
+    print('가격 경로별 수집 결과:', json.dumps(prices.summary(), ensure_ascii=False), flush=True)
+    # Abort before slow auxiliary collection if no source can supply this close.
+    core.validate_freshness({'stocks': raw, 'meta': {}}, 'US')
 
     print("3/9 RS·Stage 2·볼린저 시장에너지")
     rs_values = [x["rsBlend"] for x in raw]
@@ -1361,8 +1376,8 @@ def main():
         "marketCapPass": len(listed), "liquidityPass": len(raw), "deepScanned": len(raw),
         "growth4plus": sum(x["conditionCount"] >= 4 for x in raw),
         "stage2": sum(bool(x["trendTemplate"]) for x in raw),
-        "highZone": sum(max(x.get("high52Ratio", 0), x.get("historicalHighRatio", 0)) >= 93 for x in raw),
-        "tripleAxis": sum(x["conditionCount"] >= 4 and x["trendTemplate"] and max(x.get("high52Ratio", 0), x.get("historicalHighRatio", 0)) >= 93 for x in raw),
+        "highZone": sum(core.is_52week_high_zone(x) for x in raw),
+        "tripleAxis": sum(x["conditionCount"] >= 4 and x["trendTemplate"] and core.is_52week_high_zone(x) for x in raw),
         "sectorAction": sum((x.get("sectorAction") or {}).get("status") == "CONFIRMED" for x in raw),
         "buy": sum(x["signal"] in ("BUY", "HOLD") for x in raw),
         "liquidityThresholdUSD": MIN_AVG_VALUE_50D_USD,
@@ -1380,11 +1395,14 @@ def main():
             "marketDirection": {"US": market}, "marketEnergy": energy,
             "dataHealth": {
                 "liveCount": live_count, "cachedCount": cached_count, "staleCount": stale_count,
+                "priceSources": prices.summary(),
+                "limitedHistoryCount": sum(x.get("historyScope") == "AVAILABLE_WINDOW" for x in raw),
                 "failedCount": len(errors), "priceAttemptedCount": len(candidates), "priceFetchedCount": fetched,
                 "priceCoveragePct": coverage, "liquidityRejectedCount": liquidity_rejected,
                 "excludedInstrumentCount": excluded_by_name, "shortHistoryCount": sum((x.get("historyTradingDays") or 0) < 260 for x in raw),
                 "shortHistoryExcludedCount": len(short_history_exclusions),
-                "sourceCounts": {"Yahoo Finance": sum(x.get("dataSource") == "Yahoo Finance" for x in raw), "이전 미국 정상값": sum(x.get("dataSource") == "이전 미국 정상값" for x in raw)},
+                "sourceCounts": {source: sum(x.get('dataSource') == source for x in raw)
+                                 for source in sorted({x.get('dataSource') for x in raw})},
                 "dartConnected": bool(sec_meta.get("effectiveConnected")),
                 "secConnected": bool(sec_meta.get("connected")),
                 "secFallbackConnected": bool(sec_meta.get("fallbackConnected")),
