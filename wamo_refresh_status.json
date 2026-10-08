@@ -1,22 +1,26 @@
 {
   "KR": {
-    "status": "RUNNING",
+    "status": "WARNING",
     "attemptedAt": "2026-10-08T08:03:35.884100+00:00",
     "scheduledFor": "2026-10-08T07:00:00+00:00",
     "nextScheduledFor": "2026-10-12T07:00:00+00:00",
     "trigger": "예약실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/37738579581",
-    "moversStatus": "PASS",
-    "warnings": [],
-    "lastSuccessAt": "2026-10-07T13:59:12.807849+00:00",
-    "asOf": "2026-10-07",
+    "moversStatus": "RUNNING",
+    "warnings": [
+      "당일 신규수집 제외 7종목 · 종목별 날짜 확인"
+    ],
+    "lastSuccessAt": "2026-10-08T08:11:00.062477+00:00",
+    "asOf": "2026-10-08",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-10-07",
-      "currentCount": 217,
-      "currentPct": 100.0,
-      "checkedAt": "2026-10-07T22:59:12+09:00",
-      "warnings": [],
+      "expectedSession": "2026-10-08",
+      "currentCount": 210,
+      "currentPct": 96.8,
+      "checkedAt": "2026-10-08T17:11:00+09:00",
+      "warnings": [
+        "당일 신규수집 제외 7종목 · 종목별 날짜 확인"
+      ],
       "calendar": "XKRX"
     },
     "count": 217,
