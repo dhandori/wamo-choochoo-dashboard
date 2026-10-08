@@ -271,7 +271,7 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
     <div class="hero-side">
       <div class="mini-stat axis growth"><span>① 이세무사 성장주 기준 후보</span><b id="statGrowth">—</b><small>6조건 중 4개 이상</small></div>
       <div class="mini-stat axis stage"><span>② 미너비니 Stage 2</span><b id="statStage2">—</b><small>추세 템플릿 8조건 · RS70은 8번째</small></div>
-      <div class="mini-stat axis high"><span>③ 신고가권</span><b id="statHighZone">—</b><small>52주 또는 역사적 고점 대비 7% 이내</small></div>
+      <div class="mini-stat axis high"><span>③ 신고가권</span><b id="statHighZone">—</b><small>52주 고점 대비 7% 이내 · 252거래일 이상</small></div>
       <div class="mini-stat axis sector-action"><span>④ 섹터액션</span><b id="statSectorAction">—</b><small>신고가와 무관한 7·30일 동반강세</small></div>
     </div>
   </section>
@@ -342,8 +342,8 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
   <div class="filter-grid primary-axes">
     <button class="tab filter-card growth active" data-tab="six"><span>① 이세무사 성장주</span><b id="qGrowth">—</b><small>장기추세·고점·낙폭·20개월선·정배열 등 6개 중 4개 이상</small></button>
     <button class="tab filter-card stage" data-tab="stage2"><span>② 미너비니 Stage 2</span><b id="qStage2">—</b><small>추세 템플릿 8조건(차트 7 + RS 70) 전부 충족</small></button>
-    <button class="tab filter-card high" data-tab="high"><span>③ 신고가권</span><b id="qHighZone">—</b><small>현재가가 52주 또는 전체 수집이력 고점의 93% 이상</small></button>
-    <button class="tab filter-card triple" data-tab="triple"><span>④ 3축 동시충족</span><b id="qTriple">—</b><small>이세무사 4/6 이상 + Stage 2 + 52주 또는 역사적 신고가권</small></button>
+    <button class="tab filter-card high" data-tab="high"><span>③ 신고가권</span><b id="qHighZone">—</b><small>252거래일 이상 · 현재가가 52주 고점의 93% 이상</small></button>
+    <button class="tab filter-card triple" data-tab="triple"><span>④ 3축 동시충족</span><b id="qTriple">—</b><small>이세무사 4/6 이상 + Stage 2 + 52주 신고가권</small></button>
     <button class="tab filter-card sector-action" data-tab="sectoraction"><span>⑤ 섹터액션</span><b id="qSectorAction">—</b><small>섹터 선택 → 소속 종목 → 종목 상세의 3단계 탐색</small></button>
     <button id="marketEnergyMenu" class="tab filter-card energy" data-tab="energy" type="button"><span>⑥ 시장에너지</span><b id="qEnergy">—</b><small>볼린저 상단 돌파 종목수 · 5일 평균과 확산 기울기</small></button>
   </div>
@@ -592,7 +592,7 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
       <details><summary>CAGR · 연평균복합성장률</summary><p>여러 해 동안의 성장률을 “매년 같은 속도로 성장했다고 가정했을 때의 평균 성장률”로 바꾼 값입니다. 예를 들어 EPS가 3년 동안 100→200으로 늘었다면 단순 평균이 아니라 복리 기준 성장 속도를 계산합니다.</p></details>
       <details><summary>ROE · 자기자본이익률</summary><p><strong>Return on Equity</strong>. 주주가 넣어둔 자기자본 100원으로 몇 원의 순이익을 냈는지 봅니다. ROE 20%라면 자기자본 100원당 약 20원의 이익을 냈다는 뜻입니다.</p></details>
       <details><summary>52주 고점比</summary><p>현재 주가가 최근 252거래일 최고가의 몇 % 수준인지 나타냅니다. 98%라면 최고가보다 약 2% 아래입니다. 상장 후 252거래일이 지나지 않은 신규 종목은 실제 확보된 상장 이후 이력의 고점을 사용하고 ‘짧은 이력’으로 표시합니다.</p></details>
-      <details><summary>역사적 신고가권</summary><p>Yahoo Finance 또는 네이버가 제공하는 <strong>상장 이후 전체 수정주가 이력</strong>의 최고가와 현재가를 비교합니다. 현재가가 그 고점의 93% 이상, 즉 고점 대비 7% 이내면 역사적 신고가권으로 분류합니다. 화면에는 실제 수집 시작일도 함께 표시합니다.</p></details>
+      <details><summary>52주 신고가권</summary><p>최근 252거래일 고점에서 7% 이내인 종목을 선별합니다. 252거래일 미만의 신규 상장주는 이 선별에서 제외합니다. 추세 지표에는 최근 약 3년의 가격을 사용합니다.</p></details>
       <details><summary>고점 낙폭 · Drawdown</summary><p>최근 고점에서 현재가까지 얼마나 떨어졌는지입니다. -20%라면 고점 대비 현재 주가가 20% 낮습니다. 상승 추세 주도주인지, 큰 조정에 들어갔는지를 볼 때 사용합니다.</p></details>
       <details><summary>이동평균선 · MA</summary><p>최근 일정 기간의 평균 주가를 선으로 표시한 것입니다. MA20은 최근 20거래일 평균, MA200은 최근 200거래일 평균입니다. 짧은 평균선이 긴 평균선 위에 차례로 놓이면 상승 추세가 강하다고 해석합니다.</p></details>
       <details><summary>정배열·준비기간</summary><p>현재가 &gt; MA20 &gt; MA60 &gt; MA120 &gt; MA200 순서면 정배열입니다. 처음에는 MA200을 계산할 수 있게 된 날부터 최초 정배열 도달일까지, 이후에는 정배열 이탈일부터 다시 회복한 날까지를 <strong>준비기간</strong>으로 표시합니다. 잠깐 깨졌다 회복한 경우도 빼지 않고 이탈·회복 날짜와 준비기간(주·거래일)을 함께 기록합니다.</p></details>
@@ -630,7 +630,7 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
         <div><b>기술적 강세 신규/유지</b><span>미너비니 Stage 2 + 이세무사 성장주 6조건 5개 이상 + RS 70 이상이 겹친 상태를 신규와 유지로 구분합니다.</span></div>
         <div><b>이세무사 성장주 기준 후보</b><span>이세무사 성장주 6조건 중 4개 이상을 만족한 종목입니다. 미너비니 Stage 2 진입 여부를 추가 확인합니다.</span></div>
         <div><b>미너비니 Stage 2</b><span>차트 추세조건 7개와 8번째 조건인 RS 70 이상을 모두 충족한 본격 상승추세 구간입니다. RS는 IBD 유료지수가 아니라 이 화면 비교군의 가격수익률 백분위 대체치이며, 상세창에서 VCP·피봇·거래량 고갈을 별도로 확인합니다.</span></div>
-        <div><b>신고가권</b><span>52주 고점 또는 전체 수집이력의 역사적 고점 중 하나라도 현재가가 7% 이내면 해당합니다. 목록에는 52주·역사적·둘 다를 구분해 표시합니다.</span></div>
+        <div><b>신고가권</b><span>최근 252거래일 고점 대비 현재가가 7% 이내인 종목입니다. 실제 신고가 돌파와 고점 부근 후보를 구분합니다.</span></div>
         <div><b>RS</b><span>비교 종목 가운데 상대적으로 얼마나 강한지 나타내는 순위입니다. 90이면 상위 약 10% 수준입니다.</span></div>
         <div><b>CAN SLIM 보조</b><span>C·A·N·S·L·M 6개를 자동판정합니다. I(기관 후원)는 수급 데이터를 사용하지 않으므로 점수에서 제외합니다.</span></div>
         <div><b>섹터액션</b><span>신고가와 무관한 네 번째 독립 후보 기준입니다. 같은 사업군 3개 이상이 7일 또는 30일 동안 시장보다 넓게 강하면 해당합니다.</span></div>
@@ -664,7 +664,7 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
       <div class="dcard"><div class="k">이세무사 성장주 6조건</div><div class="v" id="dCond">—</div></div>
       <div class="dcard"><div class="k">미너비니 Stage 2</div><div class="v" id="dStage">—</div></div>
       <div class="dcard"><div class="k">52주 고점比</div><div class="v" id="dHigh">—</div><small id="dHighNote" class="muted">—</small></div>
-      <div class="dcard"><div class="k">역사적 고점比</div><div class="v" id="dHistoricalHigh">—</div><small id="dHistoryRange" class="muted">—</small></div>
+      <div class="dcard"><div class="k">52주 고점까지 거리</div><div class="v" id="dHistoricalHigh">—</div><small id="dHistoryRange" class="muted">—</small></div>
       <div class="dcard"><div class="k">거래량</div><div class="v" id="dVol">—</div></div>
       <div class="dcard"><div class="k">오닐식 RS</div><div class="v" id="dOneilRS">—</div></div>
       <div class="dcard"><div class="k">당일 등락</div><div class="v" id="dDay">—</div></div>
@@ -991,7 +991,7 @@ window.WAMO_DATA = {"meta":{"market":"KR","runTrigger":"예약실행","runStarte
     return `<span class="cs-badge ${klass}">${csSummaryText(x)}</span>`;
   }
   function highZoneParts(x){
-    return {h52:(x.high52Ratio||0)>=93,hist:(x.historicalHighRatio||0)>=93};
+    return {h52:(x.high52WindowDays||Math.min(252,(x.history||[]).length))>=252&&(x.high52Ratio||0)>=93,hist:false};
   }
   function isHighZone(x){const h=highZoneParts(x);return h.h52||h.hist;}
   function isStage2Candidate(x){return !!x.trendTemplate&&(x.rsPercentile||0)>=70;}
@@ -999,9 +999,7 @@ window.WAMO_DATA = {"meta":{"market":"KR","runTrigger":"예약실행","runStarte
   function isSectorAction(x){return (x.sectorAction||{}).status==='CONFIRMED';}
   function highZoneLabel(x){
     const h=highZoneParts(x);
-    if(h.h52&&h.hist) return '52주·역사적';
     if(h.h52) return '52주';
-    if(h.hist) return '역사적';
     return '해당 없음';
   }
   function axisCount(x){return Number((x.conditionCount||0)>=4)+Number(isStage2Candidate(x))+Number(isHighZone(x))+Number(isSectorAction(x));}
@@ -1287,7 +1285,7 @@ window.WAMO_DATA = {"meta":{"market":"KR","runTrigger":"예약실행","runStarte
         if(sortMode==='rs') return (b.rsPercentile||0)-(a.rsPercentile||0);
         if(sortMode==='conditions') return (b.conditionCount||0)-(a.conditionCount||0)||(b.score||0)-(a.score||0);
         if(sortMode==='alignment') return Number(!!(b.alignment||{}).isAligned)-Number(!!(a.alignment||{}).isAligned)||((b.alignment||{}).currentTradingDays||0)-((a.alignment||{}).currentTradingDays||0);
-        if(sortMode==='high') return Math.max(b.high52Ratio||0,b.historicalHighRatio||0)-Math.max(a.high52Ratio||0,a.historicalHighRatio||0);
+        if(sortMode==='high') return (b.high52Ratio||0)-(a.high52Ratio||0);
         if(sortMode==='score') return (b.score||0)-(a.score||0);
         if(activeTab==='canslim'){
           const ap=(a.canSlim&&a.canSlim.passCount)||0, bp=(b.canSlim&&b.canSlim.passCount)||0;
@@ -1297,7 +1295,7 @@ window.WAMO_DATA = {"meta":{"market":"KR","runTrigger":"예약실행","runStarte
         }
         if(activeTab==='six') return (b.conditionCount||0)-(a.conditionCount||0)||Number(!!b.trendTemplate)-Number(!!a.trendTemplate)||(b.score||0)-(a.score||0);
         if(activeTab==='stage2'){const vr={BREAKOUT:3,READY:2,WATCH:1,NONE:0,INSUFFICIENT:0};return (vr[(b.vcp||{}).status]||0)-(vr[(a.vcp||{}).status]||0)||(b.rsPercentile||0)-(a.rsPercentile||0)||(b.score||0)-(a.score||0)}
-        if(activeTab==='high') return Number(highZoneParts(b).h52&&highZoneParts(b).hist)-Number(highZoneParts(a).h52&&highZoneParts(a).hist)||Math.max(b.high52Ratio||0,b.historicalHighRatio||0)-Math.max(a.high52Ratio||0,a.historicalHighRatio||0);
+        if(activeTab==='high') return Number(highZoneParts(b).h52&&highZoneParts(b).hist)-Number(highZoneParts(a).h52&&highZoneParts(a).hist)||(b.high52Ratio||0)-(a.high52Ratio||0);
         if(activeTab==='triple') return Number(highZoneParts(b).h52&&highZoneParts(b).hist)-Number(highZoneParts(a).h52&&highZoneParts(a).hist)||(b.conditionCount||0)-(a.conditionCount||0)||(b.rsPercentile||0)-(a.rsPercentile||0)||(b.score||0)-(a.score||0);
         if(activeTab==='sectoraction'){
           const flowRank={BOTH:3,NEW_7D:2,PERSISTENT_30D:1};
@@ -1499,8 +1497,8 @@ function openDetail(x){
     const highDays=x.high52WindowDays||Math.min(252,(x.history||[]).length);
     $('#dHighNote').textContent=highDays<252?`신규 상장 · 보유 이력 ${highDays}거래일 고점 기준`:'최근 252거래일 고점 기준';
     $('#dHighNote').classList.toggle('short-history-note',highDays<252);
-    $('#dHistoricalHigh').textContent=x.historicalHighRatio==null?'—':`${fmt(x.historicalHighRatio,1)}%`;
-    $('#dHistoryRange').textContent=x.historyStartDate?`${x.historyStartDate}부터 · 고점 ${x.historicalHighDate||'—'}`:'전체 이력 갱신 필요';
+    $('#dHistoricalHigh').textContent=x.high52Ratio==null?'—':`${fmt(Math.max(0,100-x.high52Ratio),1)}%`;
+    $('#dHistoryRange').textContent=highDays<252?'252거래일 미만 · 신고가 선별 제외':'최근 252거래일 장중 고점 기준';
     $('#dVol').textContent=`${fmt(x.volumeRatio,1)}x`;
     $('#dCond').textContent=`${x.conditionCount}/6`; $('#dStage').textContent=x.trendTemplate?'YES':'NO'; $('#dDay').textContent=signed(x.chg1d); $('#dRet7').textContent=signed(x.ret7); $('#dRet30').textContent=signed(x.ret30);
     renderDetailSectorFlow(x);
