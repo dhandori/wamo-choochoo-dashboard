@@ -83,6 +83,7 @@
       "message": "미국 한국투자 시세 20/20종목 신규 확인 · 업종 15 · 이전값 0 · 실패 0 · 미조회 0"
     },
     "moversCompletedAt": "2026-10-06T23:53:26.740506+00:00",
-    "refreshMode": "FULL"
+    "refreshMode": "FULL",
+    "catalogStatus": "PASS"
   }
 }
