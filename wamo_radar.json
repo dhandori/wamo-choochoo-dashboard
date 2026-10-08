@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-08T02:13:58.622142+00:00",
+  "checkedAt": "2026-10-08T08:16:47.913433+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-08T02:13:58.622142+00:00",
+      "generatedAt": "2026-10-08T08:16:47.913433+00:00",
       "sessions": {
         "US-NYSE": "20261007",
         "US-NASDAQ": "20261007",
@@ -347,118 +347,22 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-08T02:13:58.622142+00:00",
+      "generatedAt": "2026-10-08T08:16:47.913433+00:00",
       "sessions": {
-        "KR-KOSPI": "20261007",
-        "KR-KOSDAQ": "20261007"
+        "KR-KOSDAQ": "20261008",
+        "KR-KOSPI": "20261008"
       },
       "source": "WAMO_52W",
       "scope": "WAMO KR 검증 종목군 · 최근 252거래일",
       "coverage": {
         "totalCount": 217,
-        "currentCount": 217,
-        "validatedCount": 199,
-        "eligible52WeekCount": 198,
-        "excludedCount": 18
+        "currentCount": 210,
+        "validatedCount": 210,
+        "eligible52WeekCount": 209,
+        "excludedCount": 0
       },
-      "exclusions": [
-        {
-          "symbol": "036540",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "232140",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "007660",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "095610",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "030530",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "009150",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "009830",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "047050",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "034020",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "017670",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "000720",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "204320",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "012450",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "010140",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "263750",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "009420",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "042660",
-          "reason": "HISTORY_VALIDATION"
-        },
-        {
-          "symbol": "034220",
-          "reason": "HISTORY_VALIDATION"
-        }
-      ],
+      "exclusions": [],
       "signals": [
-        {
-          "key": "KR-KOSPI:192820",
-          "market": "KR-KOSPI",
-          "country": "KR",
-          "symbol": "192820",
-          "name": "코스맥스",
-          "currency": "KRW",
-          "as_of": "20261007",
-          "industry_path": [
-            "화학"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 308500.0,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
         {
           "key": "KR-KOSDAQ:031980",
           "market": "KR-KOSDAQ",
@@ -466,7 +370,7 @@
           "symbol": "031980",
           "name": "피에스케이홀딩스",
           "currency": "KRW",
-          "as_of": "20261007",
+          "as_of": "20261008",
           "industry_path": [
             "지주회사"
           ],
@@ -475,53 +379,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 204000.0,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "KR-KOSDAQ:096530",
-          "market": "KR-KOSDAQ",
-          "country": "KR",
-          "symbol": "096530",
-          "name": "씨젠",
-          "currency": "KRW",
-          "as_of": "20261007",
-          "industry_path": [
-            "제약·바이오"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 38900.0,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "KR-KOSDAQ:131290",
-          "market": "KR-KOSDAQ",
-          "country": "KR",
-          "symbol": "131290",
-          "name": "티에스이",
-          "currency": "KRW",
-          "as_of": "20261007",
-          "industry_path": [
-            "반도체 검사·테스트"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 316000.0,
+          "current_close": 209500.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -535,7 +393,7 @@
           "symbol": "281820",
           "name": "케이씨텍",
           "currency": "KRW",
-          "as_of": "20261007",
+          "as_of": "20261008",
           "industry_path": [
             "메모리 반도체"
           ],
@@ -544,10 +402,10 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 123000.0,
+          "current_close": 123500.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": true,
+            "intraday_252": false,
             "close_252": true
           }
         },
@@ -558,7 +416,7 @@
           "symbol": "096770",
           "name": "SK이노베이션",
           "currency": "KRW",
-          "as_of": "20261007",
+          "as_of": "20261008",
           "industry_path": [
             "정유"
           ],
@@ -567,7 +425,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 159600.0,
+          "current_close": 160300.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
@@ -575,68 +433,22 @@
           }
         },
         {
-          "key": "KR-KOSPI:010950",
+          "key": "KR-KOSPI:003160",
           "market": "KR-KOSPI",
           "country": "KR",
-          "symbol": "010950",
-          "name": "S-Oil",
+          "symbol": "003160",
+          "name": "디아이",
           "currency": "KRW",
-          "as_of": "20261007",
+          "as_of": "20261008",
           "industry_path": [
-            "정유"
+            "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 170600.0,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "KR-KOSDAQ:036930",
-          "market": "KR-KOSDAQ",
-          "country": "KR",
-          "symbol": "036930",
-          "name": "주성엔지니어링",
-          "currency": "KRW",
-          "as_of": "20261007",
-          "industry_path": [
-            "메모리 반도체"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 247500.0,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "KR-KOSPI:000500",
-          "market": "KR-KOSPI",
-          "country": "KR",
-          "symbol": "000500",
-          "name": "가온전선",
-          "currency": "KRW",
-          "as_of": "20261007",
-          "industry_path": [
-            "절연선 및 케이블 제조업"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 306500.0,
+          "current_close": 42150.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -650,7 +462,7 @@
           "symbol": "008930",
           "name": "한미사이언스",
           "currency": "KRW",
-          "as_of": "20261007",
+          "as_of": "20261008",
           "industry_path": [
             "금융"
           ],
@@ -659,11 +471,11 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 58100.0,
+          "current_close": 54900.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": false,
-            "close_252": true
+            "intraday_252": true,
+            "close_252": false
           }
         }
       ],
@@ -671,9 +483,9 @@
         {
           "market": "KR",
           "industry_path": [
-            "화학"
+            "메모리 반도체"
           ],
-          "eligible_classified_issuers": 10,
+          "eligible_classified_issuers": 56,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
@@ -693,43 +505,10 @@
         {
           "market": "KR",
           "industry_path": [
-            "제약·바이오"
-          ],
-          "eligible_classified_issuers": 9,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
-        },
-        {
-          "market": "KR",
-          "industry_path": [
-            "반도체 검사·테스트"
-          ],
-          "eligible_classified_issuers": 2,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
-        },
-        {
-          "market": "KR",
-          "industry_path": [
-            "메모리 반도체"
-          ],
-          "eligible_classified_issuers": 55,
-          "current_signal_issuers": 2,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
-        },
-        {
-          "market": "KR",
-          "industry_path": [
             "정유"
           ],
           "eligible_classified_issuers": 2,
-          "current_signal_issuers": 2,
+          "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
           "comparison_scope": "WAMO 검증 종목군"
@@ -737,9 +516,9 @@
         {
           "market": "KR",
           "industry_path": [
-            "절연선 및 케이블 제조업"
+            "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외"
           ],
-          "eligible_classified_issuers": 2,
+          "eligible_classified_issuers": 1,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
