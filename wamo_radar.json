@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-09T16:22:58.026758+00:00",
+  "checkedAt": "2026-10-09T21:05:25.938345+00:00",
   "editions": {
     "US": {
-      "status": "PASS",
+      "status": "FAILED",
       "generatedAt": "2026-10-09T16:22:58.026758+00:00",
       "sessions": {
         "US-NYSE": "20261008",
@@ -400,7 +400,7 @@
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -411,7 +411,7 @@
           "current_signal_issuers": 6,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -422,7 +422,7 @@
           "current_signal_issuers": 4,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -433,7 +433,7 @@
           "current_signal_issuers": 2,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -444,7 +444,7 @@
           "current_signal_issuers": 2,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -455,14 +455,16 @@
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         }
       ],
-      "upstreamError": "UPSTREAM_NOT_READY"
+      "upstreamError": "UPSTREAM_NOT_READY",
+      "errorCode": "UPSTREAM_NOT_READY",
+      "error": "신고가 원본의 가격·분석 검증 대기 · 이전 결과는 현재 신호가 아닙니다."
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-09T16:22:58.026758+00:00",
+      "generatedAt": "2026-10-09T21:05:25.938345+00:00",
       "sessions": {
         "KR-KOSDAQ": "20261008",
         "KR-KOSPI": "20261008"
