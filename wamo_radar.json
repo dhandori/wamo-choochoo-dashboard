@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-09T21:05:25.938345+00:00",
+  "checkedAt": "2026-10-10T01:02:17.552489+00:00",
   "editions": {
     "US": {
       "status": "FAILED",
@@ -464,7 +464,7 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-09T21:05:25.938345+00:00",
+      "generatedAt": "2026-10-10T01:02:17.552489+00:00",
       "sessions": {
         "KR-KOSDAQ": "20261008",
         "KR-KOSPI": "20261008"
