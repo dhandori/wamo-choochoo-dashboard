@@ -46,24 +46,24 @@
     "catalogStatus": "PASS"
   },
   "US": {
-    "status": "RUNNING",
+    "status": "WARNING",
     "attemptedAt": "2026-10-10T06:21:27.215329+00:00",
     "scheduledFor": "2026-10-09T20:20:00+00:00",
     "nextScheduledFor": "2026-10-12T20:20:00+00:00",
     "trigger": "예약실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/38030614922",
-    "moversStatus": "PASS",
+    "moversStatus": "RUNNING",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-10-08T21:29:05.317165+00:00",
-    "asOf": "2026-10-08",
+    "lastSuccessAt": "2026-10-10T06:23:05.236096+00:00",
+    "asOf": "2026-10-09",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-10-08",
+      "expectedSession": "2026-10-09",
       "currentCount": 879,
       "currentPct": 100.0,
-      "checkedAt": "2026-10-09T06:29:05+09:00",
+      "checkedAt": "2026-10-10T15:23:05+09:00",
       "warnings": [
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
@@ -80,13 +80,13 @@
       "cachedCount": 0,
       "skippedCount": 0,
       "errors": [],
-      "industryCount": 15,
+      "industryCount": 12,
       "forwardMetricsConnected": false,
-      "message": "미국 한국투자 시세 20/20종목 신규 확인 · 업종 15 · 이전값 0 · 실패 0 · 미조회 0"
+      "message": "미국 한국투자 시세 20/20종목 신규 확인 · 업종 12 · 이전값 0 · 실패 0 · 미조회 0"
     },
     "moversCompletedAt": "2026-10-08T21:29:14.170392+00:00",
     "refreshMode": "FULL",
     "catalogStatus": "PASS",
-    "radarStatus": "PASS"
+    "radarStatus": "RUNNING"
   }
 }
