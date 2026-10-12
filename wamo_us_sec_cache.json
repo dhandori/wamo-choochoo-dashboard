@@ -51611,5 +51611,173 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-10-10",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "GMAB": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.genmab.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Genmab A/S ADS은 Nasdaq 공식 분류상 Health Care · Biotechnology: Pharmaceutical Preparations 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Genmab A/S ADS은 Nasdaq 공식 분류상 Health Care · Biotechnology: Pharmaceutical Preparations 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Genmab is an international biotechnology company dedicated to improving the lives of people with cancer and other serious diseases through innovative antibody medicines. For over 25 years, its passionate, innovative and collaborative team has advanced a broad range of antibody-based therapeutic formats, including bispecific antibodies, antibody-drug conjugates (ADCs), immune-modulating antibodies and other next-generation modalities. Genmab's science powers eight approved antibody medicines, and the company is advancing a strong late-stage clinical pipeline, including wholly owned programs, with the goal of delivering transformative medicines to patients. Established in 1999, Genmab is headquartered in Copenhagen, Denmark, with international presence across North America, Europe and Asia Pacific.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 3,720,000천달러로 전년 대비 +19.2%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "헬스케어 (Health Care)",
+        "Health Care",
+        "Biotechnology: Pharmaceutical Preparations"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 12873000.0,
+      "liabilities": 7026000.0,
+      "equity": 5847000.0,
+      "netIncome": 963000.0,
+      "debtRatioPct": 120.2,
+      "currentRatioPct": 202.2,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 19.2,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Health Care",
+    "industry": "Biotechnology: Pharmaceutical Preparations",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-12",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "SNAP": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.snap.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Snap Inc. Class A Common Stock은 Nasdaq 공식 분류상 Technology · Computer Software: Programming, Data Processing 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Snap Inc. Class A Common Stock은 Nasdaq 공식 분류상 Technology · Computer Software: Programming, Data Processing 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Snap Inc. is a technology company. We believe the camera presents the greatest opportunity to improve the way people live and communicate. Snap contributes to human progress by empowering people to express themselves, live in the moment, learn about the world, and have fun together. Snap Inc. operates Snapchat, a visual messaging app that enhances your relationships with friends, family, and the world, and Specs Inc., a wholly-owned subsidiary dedicated to making computing more human, in addition to Bitmoji, Saturn, and other digital services. For more information, visit snap.com.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 5,931,447천달러로 전년 대비 +10.6%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "기술 (Technology)",
+        "Technology",
+        "Computer Software: Programming, Data Processing"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": false,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 7677802.0,
+      "liabilities": 5396307.0,
+      "equity": 2281495.0,
+      "netIncome": -460489.0,
+      "debtRatioPct": 236.5,
+      "currentRatioPct": 356.3,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 10.6,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Technology",
+    "industry": "Computer Software: Programming, Data Processing",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-12",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "ESTC": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.elastic.co",
+    "businessModelReportDate": "4/30/2026",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Elastic N.V. Ordinary Shares은 Nasdaq 공식 분류상 Technology · Computer Software: Prepackaged Software 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Elastic N.V. Ordinary Shares은 Nasdaq 공식 분류상 Technology · Computer Software: Prepackaged Software 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Elastic (NYSE: ESTC) integrates its deep expertise in search technology with artificial intelligence to help everyone transform all of their data into answers, actions, and outcomes. Elasticsearch, which is the foundation for its search, observability, and security solutions, is used by thousands of companies, including more than 75% of the Fortune 100. Learn more at elastic.co.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 1,739,331천달러로 전년 대비 +17.3%입니다(결산기준 4/30/2026).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "기술 (Technology)",
+        "Technology",
+        "Computer Software: Prepackaged Software"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "4/30/2026",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 3152676.0,
+      "liabilities": 1876176.0,
+      "equity": 1276500.0,
+      "netIncome": 367766.0,
+      "debtRatioPct": 147.0,
+      "currentRatioPct": 167.9,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 17.3,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Technology",
+    "industry": "Computer Software: Prepackaged Software",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-12",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
