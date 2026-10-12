@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-12T16:17:44.026276+00:00",
+  "checkedAt": "2026-10-12T23:05:45.459609+00:00",
   "editions": {
     "US": {
-      "status": "PASS",
+      "status": "FAILED",
       "generatedAt": "2026-10-12T16:17:44.026276+00:00",
       "sessions": {
         "US-NASDAQ": "20261009",
@@ -883,7 +883,7 @@
           "current_signal_issuers": 6,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -894,7 +894,7 @@
           "current_signal_issuers": 12,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -905,7 +905,7 @@
           "current_signal_issuers": 7,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -916,7 +916,7 @@
           "current_signal_issuers": 3,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -927,7 +927,7 @@
           "current_signal_issuers": 3,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -938,7 +938,7 @@
           "current_signal_issuers": 4,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         },
         {
           "market": "US",
@@ -949,14 +949,16 @@
           "current_signal_issuers": 2,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
+          "comparison_scope": "52주 신고가 · 검증 종목군"
         }
       ],
-      "upstreamError": "UPSTREAM_NOT_READY"
+      "upstreamError": "UPSTREAM_NOT_READY",
+      "errorCode": "UPSTREAM_NOT_READY",
+      "error": "신고가 원본의 가격·분석 검증 대기 · 이전 결과는 현재 신호가 아닙니다."
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-12T16:17:44.026276+00:00",
+      "generatedAt": "2026-10-12T23:05:45.459609+00:00",
       "sessions": {
         "KR-KOSPI": "20261012",
         "KR-KOSDAQ": "20261012"
