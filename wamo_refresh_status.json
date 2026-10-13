@@ -53,7 +53,7 @@
     "nextScheduledFor": "2026-10-14T20:20:00+00:00",
     "trigger": "예약실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/38471224200",
-    "moversStatus": "RUNNING",
+    "moversStatus": "PASS",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
@@ -85,7 +85,7 @@
       "forwardMetricsConnected": false,
       "message": "미국 한국투자 시세 20/20종목 신규 확인 · 업종 16 · 이전값 0 · 실패 0 · 미조회 0"
     },
-    "moversCompletedAt": "2026-10-12T23:14:13.413202+00:00",
+    "moversCompletedAt": "2026-10-13T21:33:35.247782+00:00",
     "refreshMode": "FULL",
     "catalogStatus": "PASS",
     "radarStatus": "RUNNING"
