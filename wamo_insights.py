@@ -64,6 +64,25 @@ def catalysts(raw):
     return result
 
 
+def naver_url(market, symbol, exchange=None):
+    """Conservative Reuters identifier mapping for verified Naver destinations."""
+    if market == 'KR':
+        return f'https://m.stock.naver.com/domestic/stock/{symbol}/total' if re.fullmatch(r'[A-Z0-9]{6}', symbol) else None
+    venue = str(exchange or '').strip().upper()
+    suffix = {'NASDAQ': '.O', 'NYSE': ''}.get(venue)
+    if venue in {'AMEX', 'NYSEAMERICAN', 'NYSE AMERICAN'}:
+        code = {'IMO': 'IMO', 'EQX': 'EQX', 'CBOE': 'CBOE.K'}.get(symbol)
+        return f'https://m.stock.naver.com/worldstock/stock/{code}/total' if code else None
+    if suffix is None:
+        return None
+    classes = {'BRK-A': 'BRKa', 'BRK.A': 'BRKa', 'BRK-B': 'BRKb', 'BRK.B': 'BRKb'}
+    if symbol in classes:
+        code = classes[symbol] if venue == 'NYSE' else None
+    else:
+        code = symbol + suffix if re.fullmatch(r'[A-Z][A-Z0-9]{0,19}', symbol) else None
+    return f'https://m.stock.naver.com/worldstock/stock/{code}/total' if code else None
+
+
 def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
@@ -102,6 +121,7 @@ def project(stock,market,asof):
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),'volumeRatio':volume,
             'rs':number(stock.get('rsPercentile')),'stage2':stock.get('stage2Core'),
             'source':stock.get('dataSource') or stock.get('priceProvider') or 'verified local history',
+            'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),
             'detailUrl':('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
             'chartUrl':'https://finance.yahoo.com/quote/'+quote(str(ticker))+'/',
             'sparkline':[r['close'] for r in rows[-60:]],'catalysts':catalysts(stock.get('catalysts')),'moverReasons':reasons}
