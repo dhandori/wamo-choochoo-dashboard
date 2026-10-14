@@ -73,7 +73,8 @@ function stat(label, value, cls = '') {
 }
 function detail(s) {
   const d = $('detail');
-  d.replaceChildren(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), el('h2', s.name), el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
+  const heading = el('h2', s.name); heading.id = 'stock-detail-title';
+  d.replaceChildren(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), heading, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
   const quote = el('div', null, 'detail-quote');
   quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), naverLink(s, true)); d.append(quote);
   const chart = el('section', null, 'chart-panel');
@@ -196,7 +197,7 @@ function renderMeta(m) {
     let n = b.querySelector('.tab-count');
     if (!n) { n = el('span', null, 'tab-count'); b.append(n); }
     const count = counts[b.dataset.tab].toLocaleString();
-    n.textContent = b.dataset.tab === 'industries' ? `강세 ${count}` : count;
+    n.textContent = b.dataset.tab === 'industries' ? `강세 ${count}` : b.dataset.tab === 'near' ? `10% 내 ${count}` : count;
     b.title = `${countCriteria[b.dataset.tab]} · ${count}`;
     b.setAttribute('aria-label', `${b.firstChild.textContent} · ${b.title}`);
   });

@@ -28,7 +28,7 @@ with sync_playwright() as p:
             near=[s for s in rows if s['highDistancePct'] is not None and s['highDistancePct']<=10]
             expect(page.locator('#pagination')).to_contain_text(f'{len(near)}종목')
             if near:
-                page.locator('.stock-link:visible').first.click();expect(page.locator('#drawer')).to_be_visible()
+                page.locator('.stock-link:visible').first.click();expect(page.get_by_role('dialog',name=sorted(near,key=lambda s:s['highDistancePct'])[0]['name'],exact=True)).to_be_visible()
                 expect(page.locator('#detail')).to_contain_text('가격 출처')
                 expect(page.locator('.detail-chart')).to_be_visible()
                 drawer_link=page.locator('#detail .naver-primary')
@@ -60,6 +60,7 @@ with sync_playwright() as p:
             expect(page.locator('#search')).to_have_value('')
             expect(page.get_by_role('button',name='이전',exact=True)).to_be_disabled()
             if width<=390:
+                expect(page.locator('[data-tab=near] .tab-count')).to_contain_text(f'10% 내 {len(near):,}')
                 expect(page.locator('.stock-cards')).to_be_visible()
                 expect(page.locator('.table-wrap')).to_be_hidden()
             if page.locator('.rail-group').count():
