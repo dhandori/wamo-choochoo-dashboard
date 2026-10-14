@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-14T07:49:21.174587+00:00",
+  "checkedAt": "2026-10-14T08:13:06.080099+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-14T07:49:21.174587+00:00",
+      "generatedAt": "2026-10-14T08:13:06.080099+00:00",
       "sessions": {
         "US-NYSE": "20261013",
         "US-NASDAQ": "20261013",
@@ -967,11 +967,11 @@
       "upstreamError": "UPSTREAM_NOT_READY"
     },
     "ASIA": {
-      "status": "FAILED",
-      "generatedAt": "2026-10-14T03:21:22.788219+00:00",
+      "status": "PASS",
+      "generatedAt": "2026-10-14T08:13:06.080099+00:00",
       "sessions": {
-        "KR-KOSDAQ": "20261013",
-        "KR-KOSPI": "20261013"
+        "KR-KOSPI": "20261014",
+        "KR-KOSDAQ": "20261014"
       },
       "source": "WAMO_52W",
       "scope": "WAMO KR 검증 종목군 · 최근 252거래일",
@@ -985,36 +985,13 @@
       "exclusions": [],
       "signals": [
         {
-          "key": "KR-KOSDAQ:031980",
-          "market": "KR-KOSDAQ",
-          "country": "KR",
-          "symbol": "031980",
-          "name": "피에스케이홀딩스",
-          "currency": "KRW",
-          "as_of": "20261013",
-          "industry_path": [
-            "지주회사"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 216000.0,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
           "key": "KR-KOSPI:028670",
           "market": "KR-KOSPI",
           "country": "KR",
           "symbol": "028670",
           "name": "팬오션",
           "currency": "KRW",
-          "as_of": "20261013",
+          "as_of": "20261014",
           "industry_path": [
             "해운"
           ],
@@ -1023,10 +1000,33 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 6550.0,
+          "current_close": 7240.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "KR-KOSPI:096770",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "096770",
+          "name": "SK이노베이션",
+          "currency": "KRW",
+          "as_of": "20261014",
+          "industry_path": [
+            "정유"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 162500.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
             "close_252": true
           }
         },
@@ -1037,7 +1037,7 @@
           "symbol": "131290",
           "name": "티에스이",
           "currency": "KRW",
-          "as_of": "20261013",
+          "as_of": "20261014",
           "industry_path": [
             "반도체 검사·테스트"
           ],
@@ -1046,26 +1046,15 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 328500.0,
+          "current_close": 317000.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": false,
-            "close_252": true
+            "intraday_252": true,
+            "close_252": false
           }
         }
       ],
       "industries": [
-        {
-          "market": "KR",
-          "industry_path": [
-            "지주회사"
-          ],
-          "eligible_classified_issuers": 5,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
-        },
         {
           "market": "KR",
           "industry_path": [
@@ -1075,7 +1064,18 @@
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
+        },
+        {
+          "market": "KR",
+          "industry_path": [
+            "정유"
+          ],
+          "eligible_classified_issuers": 2,
+          "current_signal_issuers": 1,
+          "micro_verified": false,
+          "phase": "52주 신고가 관측",
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "KR",
@@ -1086,12 +1086,10 @@
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         }
       ],
-      "upstreamError": "UPSTREAM_NOT_READY",
-      "errorCode": "UPSTREAM_NOT_READY",
-      "error": "신고가 원본의 가격·분석 검증 대기 · 이전 결과는 현재 신호가 아닙니다."
+      "upstreamError": "UPSTREAM_NOT_READY"
     }
   },
   "scope": "52주 신고가 기준. 원본 대기 시 WAMO 한국·미국 검증 종목군으로 대체합니다. 대체 결과는 일본·중국·홍콩을 포함하지 않습니다."
