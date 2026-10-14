@@ -1,11 +1,11 @@
 {
   "KR": {
-    "status": "WARNING",
-    "attemptedAt": "2026-10-13T07:04:18.070912+00:00",
-    "scheduledFor": "2026-10-13T07:00:00+00:00",
-    "nextScheduledFor": "2026-10-14T07:00:00+00:00",
+    "status": "RUNNING",
+    "attemptedAt": "2026-10-14T07:59:40.527066+00:00",
+    "scheduledFor": "2026-10-14T07:00:00+00:00",
+    "nextScheduledFor": "2026-10-15T07:00:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/38360340835",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/38531969331",
     "moversStatus": "PASS",
     "warnings": [
       "당일 신규수집 제외 7종목 · 종목별 날짜 확인"
