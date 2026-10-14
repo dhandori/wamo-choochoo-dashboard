@@ -5,7 +5,7 @@
       "items": []
     },
     "KR:204270": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "온디바이스 AI·폴더블폰 기대…스마트폰 부품주 들썩 - 핀포인트뉴스",
@@ -229,7 +229,7 @@
       ]
     },
     "US:PS": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "Bill Ackman Says He Wasn’t Blaming Retail Investors For PSUS Stock’s Post-IPO Tumble: ‘I Was Simply Explaining…’ - Stocktwits",
@@ -240,14 +240,14 @@
         {
           "title": "Pershing Square Inc. (PS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
           "url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBPYkxIRkJFWEFrcHl0b1ZLdm9GZHFJSnk1ajN4TGk5YXkwMkVSR3k5dWJxZ2c2dk1FY0gtLUJ2Szh6Mk8yRXdoRlJxQ0xMNlU?oc=5",
-          "date": "2026-10-14T08:02:59+00:00",
+          "date": "2026-10-14T00:05:11+00:00",
           "publisher": "Yahoo! Finance Canada"
         },
         {
-          "title": "Is Pershing Square (PS) Fully Valued After Its Dividend Update And Citi Downgrade? - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPZ1BhSW96bzE2SmZRXzQ1MmRJMmRLVzJBWkNlNlRUemdEMmhDQm1qQkRJNXFUamRpS284b19IX19GRkxienU1V2JmTlZSZDRiUGtta2dxajV0bmIzc3VsZGcwaDFLQWUtbTdXa2ZDVGNIT0pScFZGdFlaTDdTNGVZR2k2SlVpdHZTZllsbU9WelFlaERFaXpSR2ZfT0Y?oc=5",
-          "date": "2026-10-13T23:17:07+00:00",
-          "publisher": "Yahoo Finance"
+          "title": "Pershing Square Inc. (PS) stock price, news, quote and history - Yahoo Finance Singapore",
+          "url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE93TVhCZW84MHFJSm1YYUJfcjNYWVJkam5pa1FramVfRW1ROEgxRUc2WFJwVVNMdEh6UUlMdnhYbXB0R1ljN2h4VEZERTkydHc?oc=5",
+          "date": "2026-10-13T23:43:20+00:00",
+          "publisher": "Yahoo Finance Singapore"
         }
       ]
     },
@@ -275,8 +275,14 @@
       ]
     },
     "US:SMMT": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
+        {
+          "title": "Advanced Micro Devices, Inc. (AMD) Stock Forecasts - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNcTZzYjRhYkN4OFRPZ2gtSk1rbjBiRmZ0bXlrVl91dGVVQkJNVXpxaUNnTHo0WWEzb1ZIcWZ6VndoWElmNTc1MHlUUmh0YzhhM3BFNG53ZjB6SFBiTmlDTGF0T2N6aFJTWHNLdml5ekVCMWpZcjFiX0pST0d5T2xyRi1nUG4xbE96QTg2QjVQcw?oc=5",
+          "date": "2026-10-14T13:01:30+00:00",
+          "publisher": "Yahoo Finance"
+        },
         {
           "title": "Angel Studios, Inc. (ANGX) Stock Forecasts - Yahoo Finance",
           "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPZGRNa01GeVEzS29hQlptSUNZbE01ek1wUDNQd2lqMGltVzg4NF9HdmJVMkZuckZ5VzkxcTlFU1lXcC1mUlYxZmNKUTBJYmViRGE0MDZtYl9KMnNCM3JPcFZJdXB6bTlMYnd2bWp3TlRmUHBHUXdfdGtrMW1LVlRwLXlJVXVwb1pXQVNObg?oc=5",
@@ -288,32 +294,20 @@
           "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNbHJGTWxqRjl1d0g1UHU4ZktXZEtKdkp1U2UxM3dKMDdfY01lY3NMTnZ0SHFkMm5hVGZFakZXU1R1M0JydzNtcGlhbzhnWmQwSDBZYUJLV1NCWHl1UUdjclZDbnB1dkt4ZHNtREJ1SGJGQXRSYWdSYkFvRk1iNTBPa0J5M0hDdHh4ZUpHYUF6R3Y2REZ5c2tFV3k0ZWJXOHAwOUE?oc=5",
           "date": "2026-10-14T10:04:00+00:00",
           "publisher": "Yahoo Finance"
-        },
-        {
-          "title": "Liquidia Settles All United Therapeutics Litigation for $380.7 Million, Keeps Yutrepia on Market - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQV0dWRXpuLWk5WEs2ZzVCMlhyZW41bjJnMjhPVTR1SE5JejR4cDBTbHNiMGc4a2lVcXVJdV9PQlFmeUdJQVlHRjBXUE9oMjZfdnJYb3FZRi1VVjF5dERoMWpIend4cTlRaUJObWZCWk5LWlQ3VHRZb2hLWm9zLUxrNzl5bG5hQ0owQjVJYmI1UF9HU1dRUmJ1LWxuQ3NqNEJOcW1vbHVsQk5jV2Rm?oc=5",
-          "date": "2026-10-14T09:47:46+00:00",
-          "publisher": "Yahoo Finance"
         }
       ]
     },
     "US:BNTX": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": []
     },
     "US:QNT": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
-        {
-          "title": "Xanadu Quantum Technologies Limited (XNDU) Stock Price, News, Quote & History - Yahoo! Finance Canada",
-          "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE81cTR4ekFyazV0TDNNa3BKUFBTVUdWeEtXT3B5SXlHNGw4VnFMQXBfMlg5WVBNRkRJcHdEN2hBNGh0VlJ3WlRrUVVia0JKZHRTWWc?oc=5",
-          "date": "2026-10-13T19:55:23+00:00",
-          "publisher": "Yahoo! Finance Canada"
-        },
         {
           "title": "Quantinuum Inc. (QNT) Stock Price, News, Quote & History - Yahoo! Finance Canada",
           "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFB0OUptUzdJVVBPVFJpYzVRZTRoUjgtNGVQWVhCcHJFTHNfemxlZ19yUXlfMzIxZzZ1TmE5QWdUQUpxMWYyWURYSEFuRHZZUXBu?oc=5",
-          "date": "2026-10-13T12:38:16+00:00",
+          "date": "2026-10-13T16:20:06+00:00",
           "publisher": "Yahoo! Finance Canada"
         },
         {
@@ -321,16 +315,22 @@
           "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1halBycnBVRVVOazU2R1lsdkFOT3hvNFAzalFtREwxamVfUExxUkp4ZVlWMGtNeWF4SW5uUGNBUlM3WU9EcF9jYVRvbURROS15cXc?oc=5",
           "date": "2026-10-13T12:05:19+00:00",
           "publisher": "Yahoo! Finance Canada"
+        },
+        {
+          "title": "Quantinuum (NASDAQ:QNT) Reaches New 1-Year Low - What's Next? - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPck0yX2RHMFJmanE1WmNZSlBkcXJ6NTUxall4R1Y4MjZGdHhiWk51dllncXRaSWhYeGp5Mk5qTU0xNUhxSEVfZGRLeTZpOUEzaHMyNEQyY3pZeV96elRJazdKS2E0WnlXU2JBdVF5RTRTbXZYZkt3bEw2ZkNIbFVKeHlPaV9kVFhxaVY4MGpDb2RRNVZ1ZHNyb3MzTlAtelJjaUpOVkdkVWowUUlZWjV2amItb3FYQQ?oc=5",
+          "date": "2026-10-13T07:33:55+00:00",
+          "publisher": "MarketBeat"
         }
       ]
     },
     "US:FN": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "Cipher Digital Led All Losers With a 13% Slide at Tuesday's Close - 24/7 Wall St.",
           "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPbXpqaU13U0hndk1ueTlLLU5xWUlFVVdMTlBJaHdvbGpxcUpoVkliOEdqTXNJSXlZOHFSQ005SWNCS0U1UVBnazdMVzBPeHFWODVxdG1LVVF5YnZhTW9ZNUU0d0gzeG1iOFJ2Mnp1ZGxGVEpDdGlGam5XQXNnMDROei03WmEtTDNDUU1KYWR3bHNqZzZ2RHhxem90OHUwVVZYcnhrTVoyemJscGNuQ1g3ZXZOc1NhSEI0RWFOeWpKbXQtc3JZdU5MazEyNXRnYXc?oc=5",
-          "date": "2026-10-14T03:14:35+00:00",
+          "date": "2026-10-13T20:16:21+00:00",
           "publisher": "24/7 Wall St."
         },
         {
@@ -348,8 +348,14 @@
       ]
     },
     "US:AMAT": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
+        {
+          "title": "Applied Materials Inc Stock (AMAT) Moved Down by 3.42% on Oct 14: Key Drivers Unveiled - TradingKey",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPang5ZjR3ZUtsbjVDQmprRTZsY05yS0YxVl9pRFBqQXNfaTR2enI4YjlCaWZRcWprbnZpeG9DQXozSlpBbWRVeWdCV3VDMXBkdWpqZnJjRGdGWTE5UFNQLTEzU0pJMGtpX2ZfTzlsR0x0Q1ptYUtlZ3pYZFRFd09PWkRMZUNFOWR5Y1hF?oc=5",
+          "date": "2026-10-14T16:15:36+00:00",
+          "publisher": "TradingKey"
+        },
         {
           "title": "Applied Materials, Inc. Tokenized Stock price today, AMATx to USD chart, marketcap and volume - CryptoSlate",
           "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1POUhIUUlyV0xITTlNUVpScEpENXhqTktKbU1MRE9NQmlUWm40TVpaY0hNMkc0U3ZCcG5UR2R5eUJXQmJKTUdiZzkxYWd5X1B5amp5MDNfSnBlMDZ1eTBRM1dub2JmbWlYSzJJM1JXVVAxYkRNM21n?oc=5",
@@ -361,17 +367,11 @@
           "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPTmJvX3Y1eGNkaTlBNXM3UmpvaWo4c3NjQkFrcXJTakxmQnl5cGxId2FUVlVrdFBMeGJOWkRST180cl9QRnBNMF9Wc3pPa245ZWh6QkJzNmZKNEpLYU41M0NpNEw3a3VSYnhvZ2lreklhalFQemhWUDRCQU53Wm1mZkpqYU85OWpTbWs2RXc0VDBCU0FCTUVlX0Zlbng5UWRoRG5wRGFMNkt5eVFUbS0tVDdPUGhGb0k?oc=5",
           "date": "2026-10-13T21:23:51+00:00",
           "publisher": "GuruFocus"
-        },
-        {
-          "title": "Applied Materials Stocks Fall 5.7% Although Evercore Backs Its EPIC Strategy - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNNE5SamVFUzg0aGdSUkp4dUtCM2J5bklDQXpGV1gxZWVybUlncG5KRlJzdXZaUFFaaTdVc3RrdmNTeEhIUTZpWkJROFNmWGt2clpKNTlnR3JTaHVZMU5meEp2N0lsdHFUSENIWG1CZ0N2VExpaExoVWFhRFNiMmF3SGJWRGQ1U0xXcGhUTkFSQ0tCSjVTV0JOUVZ5RFI?oc=5",
-          "date": "2026-10-13T21:15:50+00:00",
-          "publisher": "Yahoo Finance"
         }
       ]
     },
     "US:CDW": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "CDW Stock is Up 7 Days in a Row, Will the Run Continue? - AskTraders.com",
@@ -394,7 +394,7 @@
       ]
     },
     "US:WIT": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "Wipro Allots 88,280 Equity Shares under Employee Stock Option Plans - PSU Connect",
@@ -417,53 +417,34 @@
       ]
     },
     "US:AUR": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
-      "items": [
-        {
-          "title": "Aurora Innovation (NASDAQ:AUR) Stock Bumped Down to Strong Sell by Zacks Research - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxPMnhQRjRPVnYwRUJ6VEc0RHJydFlZN1ZfYjcyMzZBaEZzWEpwM1NJSXRlR1lpVlFqNy1fOTNKZ2pFdGpNY0dna2ExWEFDZWRXNmtFX0lRWi1qSTBlb3JxLXhnQ3AzZDlnV2tZQ1NQNmp3ajdzYWdXWUZHU3RPTEYzSW51WWY2N3NaMVhCZWxjU0ZBSjRVc3E4WmdBNnhaWnNNYjB1WXZhMGY3TTQ2WDBvbUJKT1FNbzNaR25DQ3NuVk1Pajhjc08wYkNnTFA0TUFVTklrTDN4b0M?oc=5",
-          "date": "2026-10-14T11:23:48+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "Mobileye Global Inc. (MBLY) stock price, news, quote and history - Yahoo Finance UK",
-          "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5TaFBpbkpGcF9Hb2hhTWgyRkhRRlBsTUN1LXIyV3psd2ZzZVpvS3pEdG5BNnVCNGRqTVBxSXQtd1VZV0JWdnQxZ0QyWGdGc01uLUE?oc=5",
-          "date": "2026-10-14T09:54:13+00:00",
-          "publisher": "Yahoo Finance UK"
-        },
-        {
-          "title": "Why Is AUR Stock Soaring Today? - Stocktwits",
-          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxON1g1RHR4c2MxZ3JjeUs2UUxPVFZUZHF3QnlJVS1xd3lRZHdYaTZVSFhvc3kwQjllREttejJJbnd3ZEtqWWk1VkhlaURrcjk0QU5OcjBaN21pSk9Ea2JCZHRCck16WDczMXBnemFtakk4cGZ1M1ZrOWVQOFdIY25lbmE5SnRHOVdEUFJ3b0tiMHFRdmpvenNkdXN3?oc=5",
-          "date": "2026-10-14T06:32:47+00:00",
-          "publisher": "Stocktwits"
-        }
-      ]
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
+      "items": []
     },
     "US:JNJ": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
-          "title": "Johnson & Johnson Analysis: Is J&J Headed Higher? - Johnson & Johnson (NYSE:JNJ) - Benzinga",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQT3RFakh0b1o4MEFzWjZBZC1qX0ltTXpuM2ZwMFFQd0sxc3VCcE9USHZrenVZZDFEdDhqTGtJeXZ5MHA0MTc1WE8wS1ZXT3REUEpXRk1nLVF3WnNxelE3SU9mWDI3ZzVYVHdITWQzOTNaVDlTT0h3YThBTlNyQ1pjYkc1c0w5LWRncWd1ZDVuc1ZpTlVFR0c5SEkzZ1ZwT3c5cmdBSVhOWWgyRUdsajZkSm5WUV9zQVlZU19qeA?oc=5",
-          "date": "2026-10-14T13:21:23+00:00",
+          "title": "Johnson & Johnson Q3 Sets 'Negative Tone For Broader Pharma Sector': Analysts - Benzinga",
+          "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOSC1IUE9XdzBVRmppMVdEcmppckk3SEUzSEE0aVdHNFNCdzFwaGxNSFVCOXFqeTMyT1VLZlJqMXFjemdDS0VJVjJmMk1hdjZNVkZPcDMyZVk5NzRsSnlMTDZLaE1pZUNrdjd5U1ZrQUJPcXB0YllRZ2NnbGtIeVJrcUd1RlhveDI3Y1d0SkJXQzdZM2l3Y0cwMlF0OWI2U21RQ2tFRzNoWXdCdTczWEJ3OU9fWGxqTkptMUZnQmlucjFrWTVDYVB3U0M3bkhHekJRcmV1aEZ0SDJlOEROYk15Uw?oc=5",
+          "date": "2026-10-14T17:45:55+00:00",
           "publisher": "Benzinga"
         },
         {
-          "title": "The Open Question Under Johnson & Johnson Stock’s Price - Trefis",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQN0RnaGY4MmdicTBCeHRuNmYxUThSeTVyVUMxYzNCdEE5VVo5VnZEb2gwS3FjSVh2WEVzR2gzQlRoWm95WHhIWkN5VVB0T1lXXzFFcDNTNWl6MFBvWWJmdk5lQ040NHFQUzlPVk1STVI2RXU5eVB5c3JKZjVlZnQwdVVrVkdkME0xcV9JRkhvZGw3TFVwVmZZdHhZNzdTYUpac21lNQ?oc=5",
-          "date": "2026-10-14T12:17:35+00:00",
-          "publisher": "Trefis"
+          "title": "These Analysts Cut Their Forecasts On Johnson & Johnson After Q3 Results - Benzinga",
+          "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQU1F6ZXduVWNSaGVXNVdBcDRzX1FleFl1OTVvZnVfc2RrckVZVHVRRFVIdUt5Z25EWFlPVjE2Rm5hSjRPV3BpZG5LSVMwbkhxNU5URDc0dVJ0c1VZWTlqS3RuM2I1cDluRFoteG5nV3c1eldkWnRHTGszWGdXNWJHeExtMDRPamtCaVhqNEl1c1JoUE45WnJMTXBZdFR4QVU2S1ZLWWRnakxGQkYyYlNOTXBOeFA4ZFl4WW4wM2Z6b2NoSzVSSFVVYnFyal9nRVNCZmkwcUVWMEp6OXJyNkE?oc=5",
+          "date": "2026-10-14T17:06:01+00:00",
+          "publisher": "Benzinga"
         },
         {
-          "title": "Johnson & Johnson (JNJ) Stock Dropped, What Is Behind The Latest Attention? - Simply Wall Street",
-          "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQdGlIUU1fOHJtN1FsanZfYUd1bjAyVG5rRm41WnVCZ2JWM1Z3VkJKZ2c0cFBwMEN4LWVzNm9Pa3hFOVotNmFUQ2VwVFg1Nmhhbm4zdnFFZ2ptRWRXd0FSbGtDWmZNaW1ibktmQjBSMkExVmprYUROQUNRUkVkZTA2R3B1Y0lqbkNWY05sbWFETDRVUll4WE9seHRWM3FnWXBFMUNTQ1BWRUotZlQtREFRTmdzU2dNR3UtbmNPZXNJS0tKN1B2ZGZmUEZBdlhJTTNBa2xLNTdKZ3NnUU1wWHfSAeMBQVVfeXFMTWxwUU82ZE5oNHFMUm5rdmdRcHU0VFQxS1lNTV9EOHZCZU1QSGxqdXZpZ1pFY01sWlVNYml0OGtvVlpXclVRc1NEc242MGRVWXVyNVd0OGtOSUJsUktzeDBVZGhBZkMxVHdKcTVGdV9OZVpaNnJOSDJGNjQwYVNYOWRXX3ZGQWxuNGNUd2Z6Z0tkZkVxNnhEVEZEWXdCVU9KR2owRjVLazBLT2NpV3d3N2ZYZ084NHprR0t1V3BLdEs0bkY1WXp4b1lHVmtFWTdNeXZ5ZFN0SXNYTkMwbXhXYV8zam8?oc=5",
-          "date": "2026-10-14T11:57:02+00:00",
-          "publisher": "Simply Wall Street"
+          "title": "Johnson and Johnson Stock Plunges 6% As Medical Device Sales Miss Wall Street Forecasts - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPSTJfN3pNVGhkOV9nMmc2MTFYbU52WS12TnhTZjJ0Vk80TUkzRU1GWjJ1b1c3SWFTcEt4dUZ4VUFhWndZSWF4U2E5SmhRX2FOVUQ5QkhuRC1XdkVhbUljTXo1eEd6VFRXYVNkMUFGcTNKQjlDS2JJS1kwUHdwcnVUN0JrZUM4OFZQSXlOSEREYWVuNUxlb2VZOFRNRWI?oc=5",
+          "date": "2026-10-14T13:48:53+00:00",
+          "publisher": "Yahoo Finance"
         }
       ]
     },
     "US:PCVX": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "Wall Street Analysts Think Vaxcyte (PCVX) Could Surge 75.6%: Read This Before Placing a Bet - Zacks Investment Research",
@@ -486,30 +467,30 @@
       ]
     },
     "US:C": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
-          "title": "Citigroup, Inc. (C) Stock Forecasts - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPRXFxOVI1d3dWX3dBbUptVVYxbjNlSGFPOWQtT3A0MUNTNlo0X3BZMlBsUU1mNHN1TW40Rk0zZmx2YmM5MTI0cEdxektCaklTalBhR2NjQXpHUXRGRjNZVnNrZVlCUVJSb1VZbUowMHZkSEVueGdVeFIxakFYclBsZnp6U3ZzUkpmY0E?oc=5",
-          "date": "2026-10-14T12:17:10+00:00",
-          "publisher": "Yahoo Finance"
+          "title": "Citigroup Earnings: Tapering Optimism (Rating Downgrade) (NYSE:C) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNdFZUbXRxdUpicVN6a2hFZDc1bkROSzRlMWFPWV8tNkFyZ3Q3ektLR0VXSG1KUjVPSzRzZEtfTzFTeWdKWnFxSnpZeEpsbkxwT3UzVEtuSklkN09DTXM5LU02aEo4X0wxM3BINXlrZHpJY0l5c0Q3S2t5WWJqcFhIMFVLTmlPRUItU2YyVVFGOGcyZW82Mjc5cl93?oc=5",
+          "date": "2026-10-14T18:14:06+00:00",
+          "publisher": "Seeking Alpha"
         },
         {
-          "title": "Citigroup reports third-quarter growth and Citigroup stock costs EUR 111.84 - ad-hoc-news.de",
-          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNZy1VeVdnRzFGcGF3eC1pMGdxQXVkbHlCTFVuQWVHaVdFME5zTVJ2T09SLVNrOVl2eUl0cktPSVhEakNvLVFkVmVxeUJzd1lsd3NzZTZtZENWV3RqMHA2REZhTkxZa0VpRHhzOE1mNFQwd3U4emZzT3hGdklPb3pxd01xa21HWjNoeUNTb19EZWtTa2lITDlHME9vc0pLM1AzRmwtZ2RaSHVpWU92Mzg2dVktOV91cTQ4bE5WemU4RmREZFpyTDVUUzhyWQ?oc=5",
-          "date": "2026-10-14T08:08:17+00:00",
-          "publisher": "ad-hoc-news.de"
+          "title": "Citigroup Announces 13-Month Autocallable Notes Linked to Morgan Stanley Stock (MS) - Kalkine Media",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNWFJBM1c5OW0yZV90NWpKTXc1N1YtcHVveE1fNUlrWkJfZXQ2N0ZCZW85dTlnV2ltX08xRl9BaXRNa19jOXFMclZNMWZsWHByZ2pEeW92UC1BOTFkZG5OYzNmTTE4T3hZT09PaVBVSnVKZGU4TFRVMFJ1T3hQeWp3Y3VsSExlMTZmRFRHWUtvbDRGejhRNmNuOFVQWXd4SWc2QUtrTDM3ZG9FYm0xV1ZCelRXX1JxOG1kMF9xUzVTUW02M2xFZTln?oc=5",
+          "date": "2026-10-14T17:26:11+00:00",
+          "publisher": "Kalkine Media"
         },
         {
-          "title": "37,363 Citigroup Inc. $C Shares Acquired by B. Riley Wealth Advisors Inc. - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQR3djR2Z1QTJpTlBESjVXeTgyV2JscXhFR2lyUHhYMUxIOGNjVkY1XzVOOXNobFZiZi0xd25yTGQxQlAxQWxrUFJyMzUzbnBHNUtBVVdxXzc0OWhPa2ttdTIzSnJBM0ZSdHllWktadnhRSnBNYzlZeXZhaFFBa1ktUzFGd1FJNndEQWxsYVFuVEpfb0IteFdsODR6NU9DNHRHWkpBa0tDUFI5VE5tVjY2S214bGdSMGRZR2NIUFdoYVZJY21RcWhORg?oc=5",
-          "date": "2026-10-14T07:10:54+00:00",
-          "publisher": "MarketBeat"
+          "title": "Citigroup Analysts Slash Their Forecasts Following Q3 Results - Benzinga",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQRkpmaVlUUDFvVzVucnVwLW0zVmJvTmJYN2hiYnBKSy1ES2VlOTZENjNWLU1qQ2lzakhyaHJGZmNFX0VIMVhJb1plWlBWTGxfZGN6TFYyQUJDWTVNQW56aFQ5N0J4NXB5eDlpWV9LMDg5NHI2S3l5Tld0X19VZURnOXFhT0RuMXNrRERFc0ZqNEF4emtiOE8wWjViaGNyaWdpRzVoZ1IxQ3JNM3ZmbHlaQ05BTDRwRmhoNXJHUEFNa2U4RlEzSFk4V3FQUm5UU3Iydmc?oc=5",
+          "date": "2026-10-14T17:11:05+00:00",
+          "publisher": "Benzinga"
         }
       ]
     },
     "KR:356860": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "티엘비 주가, 10월 14일 46,350원 8.04% 하락 - 톱스타뉴스",
@@ -532,7 +513,7 @@
       ]
     },
     "KR:028670": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "팬오션 10.53% 올라 7240원 마감 - 비건뉴스",
@@ -555,7 +536,7 @@
       ]
     },
     "KR:001450": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "현대해상 11.02% 하락…4만2400원 마감 - 비건뉴스",
@@ -578,7 +559,7 @@
       ]
     },
     "KR:067310": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "[오늘의 주목주] '깜짝 실적 기대감' HMM 주가 5%대 올라, 코스피 외국인·기관 순매도에 6000선 약보합 마감 - 비즈니스포스트",
@@ -601,7 +582,7 @@
       ]
     },
     "KR:008930": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "한미사이언스 지분 30% 확보 신동국···주담대 4320억, 주가 흐름에 촉각 - 시사저널e",
@@ -624,7 +605,7 @@
       ]
     },
     "KR:128940": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "한미약품, 에페 출시 임박했는데 주가는 - 비즈트리뷴",
@@ -647,7 +628,7 @@
       ]
     },
     "KR:036540": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "SFA반도체 주가, 10월 14일 애프터마켓 10,400원 8.13% 하락 - 톱스타뉴스",
@@ -656,21 +637,21 @@
           "publisher": "톱스타뉴스"
         },
         {
-          "title": "SFA반도체 6.89% 내려…매출 회복과 적자 축소 과제 - 잡포스트",
-          "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1Wei1RTzF2SjJPUTlOUGo5bkU0N2FGMlhzbnNvczZXLVZWSmFQQTZGRTRMbHBucUUwQ3NySUIwQlhSVXNDdXRjRFBYQjZiQk9jSU9LaUdXak1nMVlpUUtQY2tZNGpNREp0czVEdjFB0gFyQVVfeXFMTUFBNF9mYWNSSnpZd1BQRWRLYXRSZ3oyVXBpWlZWdlpnUnR2ZmVuU25aV2d5bjBsZS1kbS1Kanc4THpHUnU2VnhpRFpZZF85aDNBXy1kNVJaOVlYZWwwOGlwZThfTGpJa2FyRUNkbHVFT1l3?oc=5",
-          "date": "2026-10-14T05:28:29+00:00",
-          "publisher": "잡포스트"
-        },
-        {
           "title": "SFA반도체, 영업적자 탈출과 수익성 개선이 주가 상승의 핵심 변수 - 증권일보",
           "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTFAxd2JMcUUwVmF4Z29sak56U0JpbTFXV0tCWDJLb3BzWkdmRExwYm1CY1NueXRPQW1LMkRPNGRYUDRuQlJTOExWbnZLQzl6aVp3SGFoUm4tNm1zdEJCNGFiQw?oc=5",
           "date": "2026-10-13T23:30:00+00:00",
           "publisher": "증권일보"
+        },
+        {
+          "title": "SFA반도체 주가, 10월 13일 애프터마켓 11,400원 5.17% 상승 - 톱스타뉴스",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5paGJ2d3I5dXZDM0Q4VlZQSVNtM2RSclo2WHlaVkhlWTJjb0RQdEstdHJBa0lQU2NmYWRHU2M2OG55RUpPZ3NSS0hJdkFwWlp6MlBvUGlIU0cxampkRC1jWGlDVmJjaE5Kc3hmOFJfdUh6QQ?oc=5",
+          "date": "2026-10-13T07:06:48+00:00",
+          "publisher": "톱스타뉴스"
         }
       ]
     },
     "KR:089030": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "테크윙 주가, 10월 14일 애프터마켓 49,350원 8.78% 하락 - 톱스타뉴스",
@@ -693,7 +674,7 @@
       ]
     },
     "KR:403870": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "HPSP 주가, 10월 14일 장중 57,900원 6.01% 하락 - 톱스타뉴스",
@@ -716,7 +697,7 @@
       ]
     },
     "KR:089970": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "브이엠 주가, 10월 14일 애프터마켓 55,900원 8.51% 하락 - 톱스타뉴스",
@@ -739,7 +720,7 @@
       ]
     },
     "KR:095610": {
-      "checkedAt": "2026-10-14T13:52:39.555913+00:00",
+      "checkedAt": "2026-10-14T18:45:21.771446+00:00",
       "items": [
         {
           "title": "두산테스나 주가, 10월 14일 장중 127,600원 4.06% 하락 - 톱스타뉴스",
@@ -762,5 +743,5 @@
       ]
     }
   },
-  "checkedAt": "2026-10-14T13:52:39.555913+00:00"
+  "checkedAt": "2026-10-14T18:45:21.771446+00:00"
 }
