@@ -1207,7 +1207,8 @@ def main():
         _save_cache({})
 
     print("1/9 미국 상장기업 목록 수집")
-    listed, excluded_by_name = fetch_us_universe()
+    from wamo_universe_recovery import load_universe
+    listed, excluded_by_name, universe_recovery = load_universe(fetch_us_universe, old_payload, 'US')
     # 정적 GitHub Pages의 용량·모바일 속도를 지키기 위해 시총순 최대 900개만
     # 가격 정밀계산한다. 이 제한은 화면과 메타데이터에도 명시한다.
     candidates = listed[:MAX_PRICE_UNIVERSE]
@@ -1392,6 +1393,7 @@ def main():
             "asOf": asof, "updatedAt": datetime.now(KST).isoformat(timespec="minutes"),
             "source": "Nasdaq stock screener/company profile/annual financials + Yahoo Finance price + SEC EDGAR 우선",
             "universeCount": len(listed), "eligibleUniverseCount": len(listed), "successCount": len(raw), "errorCount": len(errors),
+            "universeRecovery": universe_recovery,
             "marketDirection": {"US": market}, "marketEnergy": energy,
             "dataHealth": {
                 "liveCount": live_count, "cachedCount": cached_count, "staleCount": stale_count,

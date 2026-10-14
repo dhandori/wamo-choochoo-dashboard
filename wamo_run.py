@@ -17,6 +17,7 @@ MARKETS = {
     'US': ('wamo_update_us_sec.py', 'us.html', 'us', ['wamo_us_sec_cache.json', 'wamo_kis_us_cache.json']),
 }
 SHARED = ['movers.html', 'wamo_movers_cache.json']
+INSIGHTS = ['radar.html', 'wamo_insights.json']
 RADAR_WARNING = '52주 신고가 목록 갱신 미완료 · 가격 화면은 별도 확인'
 
 
@@ -86,6 +87,17 @@ def restore(saved):
 def run_script(script, args=(), env=None, timeout=1500):
     subprocess.run([sys.executable, '-u', script, *args], cwd=ROOT, env=env,
                    timeout=timeout, check=True)
+
+
+def refresh_insights():
+    """Project prices locally, independently of optional network enrichments."""
+    try:
+        from wamo_publish_insights import publish_snapshot
+        publish_snapshot(ROOT)
+        return INSIGHTS
+    except (OSError, ValueError, TypeError, KeyError, RuntimeError):
+        print('레이더 생성 미완료 · 이전 검증 자료 유지', flush=True)
+        return []
 
 
 def publish(names):
@@ -216,6 +228,7 @@ def recover_auxiliary(state, status, now, requested, do_publish):
             refresh_radar(status, [market])
             names.extend(['wamo_radar.json', *[v[1] for v in MARKETS.values()]])
         write_json(STATUS, status)
+        names.extend(refresh_insights())
         if do_publish:
             publish(names)
 
@@ -303,8 +316,10 @@ def main():
         path.write_text(patch_status_ui(path.read_text(encoding='utf-8'), market), encoding='utf-8')
         write_json(STATE, state)
         write_json(STATUS, status)
+        insight_files = refresh_insights()
+        changed.extend(insight_files)
         if args.publish:
-            publish([page, *caches, STATE.name, STATUS.name])
+            publish([page, *caches, STATE.name, STATUS.name, *insight_files])
         if entry['success']:
             movers_saved = snapshot(SHARED)
             try:
@@ -351,6 +366,12 @@ def main():
                 if status[market]['status'] == 'PASS':
                     status[market]['status'] = 'WARNING'
             write_json(STATUS, status)
+        try:
+            run_script('wamo_news.py', timeout=120)
+            changed.append('wamo_news.json')
+        except (subprocess.SubprocessError, OSError):
+            print('관련 헤드라인 연결 미완료 · 가격 자료는 정상 유지', flush=True)
+        changed.extend(refresh_insights())
         publish(changed)
     set_action_output(any(state[market].get('success') for market, _ in targets))
     if failures:

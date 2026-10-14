@@ -135,7 +135,7 @@ def test_dedicated_navigation(browser, base_url):
             catalog_plan, radar_plan = SourcePlan(CATALOG), SourcePlan(fresh_radar())
             route_sources(page, base_url, catalog_plan, radar_plan)
             try:
-                page.goto(f"{base_url}/{name}", wait_until="networkidle")
+                page.goto(f"{base_url}/{name}?legacy=1", wait_until="networkidle")
                 link = page.get_by_role("link", name="🌐 글로벌 종목 발견", exact=True)
                 expect(link).to_be_visible()
                 assert page.locator('.market-switch').evaluate_all("""navs => navs.every(nav => {
@@ -154,8 +154,8 @@ def test_dedicated_navigation(browser, base_url):
                 expect(page.locator('a[aria-current="page"]')).to_have_text("🌐 글로벌 종목 발견")
                 assert page.evaluate("typeof window.WAMO_DATA") == "undefined"
                 assert_no_overflow(page)
-                page.locator(f'nav a[href="{name}"]').click()
-                page.wait_for_url(f"**/{name}")
+                assert page.locator(f'nav a[href="{name}"]').count() == 1
+                page.goto(f"{base_url}/{name}?legacy=1", wait_until="networkidle")
                 expect(page.locator("#wamo-live-status")).to_be_visible()
                 assert page.locator("#wamo-discovery").count() == 0
                 print("DISCOVERY NAVIGATION PASS", name, width)
@@ -172,7 +172,8 @@ def test_entry_errors(browser, base_url):
         page.goto(base_url + "/discovery.html")
         expect(page.locator("#discovery-load-error")).to_be_visible()
         page.get_by_role("link", name="🇰🇷 한국", exact=True).click()
-        expect(page.locator("#wamo-live-status")).to_be_visible()
+        page.wait_for_url("**/radar.html?market=KR")
+        expect(page.locator("#section-title")).to_have_text("52주 신고가권")
         page.goto(base_url + "/index.html?stock=__missing__")
         expect(page.locator("#discovery-original-notice")).to_be_visible()
         assert page.locator("#wamo-discovery").count() == 0

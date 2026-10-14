@@ -45,7 +45,7 @@ with tempfile.TemporaryDirectory() as folder:
                 errors = []
                 page.on('pageerror', lambda error: errors.append(str(error)))
                 page.route('**/*', lambda route: route.continue_() if route.request.url.startswith('http://127.0.0.1:') else route.abort())
-                page.goto(f'http://127.0.0.1:{server.server_port}/{name}', wait_until='networkidle', timeout=60000)
+                page.goto(f'http://127.0.0.1:{server.server_port}/{name}?legacy=1', wait_until='networkidle', timeout=60000)
                 page.locator('#wamo-live-status').wait_for()
                 assert not errors, (name, width, errors)
                 assert page.locator('a[href="kkangto.html"]').count() == 0
