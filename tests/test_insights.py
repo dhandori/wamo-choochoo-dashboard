@@ -1,7 +1,7 @@
 import copy
 import unittest
 from datetime import datetime, timedelta, timezone
-from wamo_insights import build_insights
+from wamo_insights import build_insights, naver_url
 
 NOW = datetime(2026, 10, 14, 1, tzinfo=timezone.utc)
 DAY = '2026-10-13'
@@ -15,6 +15,18 @@ def payload(*stocks):
 class InsightsTests(unittest.TestCase):
     def build(self,*stocks,previous=None, now=NOW):
         return build_insights({'US':payload(*stocks)},now,previous)['markets']['US']
+    def test_naver_projection_verified_exchange_mapping(self):
+        cases = [('KR','005930',None,'domestic/stock/005930'), ('KR','0126Z0',None,'domestic/stock/0126Z0'), ('US','MSFT','NASDAQ','worldstock/stock/MSFT.O'), ('US','PSX','NYSE','worldstock/stock/PSX'), ('US','BRK-B','NYSE','worldstock/stock/BRKb'), ('US','BRK.A','NYSE','worldstock/stock/BRKa'), ('US','IMO','NYSE AMERICAN','worldstock/stock/IMO'), ('US','EQX','AMEX','worldstock/stock/EQX'), ('US','CBOE','NYSE AMERICAN','worldstock/stock/CBOE.K')]
+        for market, symbol, exchange, path in cases:
+            self.assertEqual(naver_url(market,symbol,exchange),f'https://m.stock.naver.com/{path}/total')
+        for symbol, exchange in [('MSFT',None),('ABC','UNKNOWN'),('FOO-B','NYSE'),('BRK-B','NASDAQ'),('TEST','AMEX')]:
+            self.assertIsNone(naver_url('US',symbol,exchange))
+        s=stock('MSFT'); s['exchange']='NASDAQ'
+        projected=self.build(s)['stocks'][0]
+        self.assertEqual(projected['naverUrl'],'https://m.stock.naver.com/worldstock/stock/MSFT.O/total')
+        self.assertEqual(projected['exchange'],'NASDAQ')
+        self.assertIn('legacy=1',projected['detailUrl'])
+
     def test_boundary_and_breakout_are_distinct(self):
         stocks=self.build(stock(),stock('NEW',101))['stocks']
         self.assertEqual(stocks[0]['highDistancePct'],10)
