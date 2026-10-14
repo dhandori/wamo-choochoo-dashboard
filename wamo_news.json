@@ -741,7 +741,283 @@
           "publisher": "머니투데이"
         }
       ]
+    },
+    "US:BSP": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Bending Spoons stock soars on new Berkshire Hathaway investment - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOVFBFNi1sMW5LRzJsT3hudVYyZ0hlQnluX21CdEFOa3dIUXRzdFVTMVNwVFlyYV9mSXR6ekRKQjVacEdxMG05cUNuREtPYmIzSUY4ZFdGTmJ3OWJLZ0xCSlRLMV9XOXM1ZlJSbmtPUGhHZnhhU3BwTi1fY3NpRkxubHpVRnlCcW4zTVhZMERFZEMwWXJvYVZ3dzZpTkk4bEgycUlTX1ZYdzF2dDQ1dlRBRFUzOU4zOE9FMUZLOA?oc=5",
+          "date": "2026-10-14T20:11:59+00:00",
+          "publisher": "Yahoo Finance"
+        },
+        {
+          "title": "Warren Buffett's Berkshire Hathaway Just Bet Nearly $1 Billion on This IPO Stock (Hint: It's Not SpaceX) - The Motley Fool",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOTXJ4SlhmZWdFaVFPUzFCc2hGWVNnMkRCQllrdUdkOXptaDFZUHJKVnNyT3dkOW9iWTF0LV9WdUxCYVZCV1VTQ21UVlc3NDJ0WTZMRUt4R1hDZjRMcU83c3A5bVRvSkJYc0xWUG40dS1icDJLNm9ZRHFuTnJPRlNxZUktVXhqZzBJbVEzalU1OTZTUi15TGVDeA?oc=5",
+          "date": "2026-10-14T20:07:32+00:00",
+          "publisher": "The Motley Fool"
+        },
+        {
+          "title": "Why Are Traders Hedging Bending Spoons (NASDAQ:BSP) After Rally? - Kalkine Media",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOejc0c3VqcmYyRDEycUxEWTRsc2plclN3eTVDY01FZWVZd2dIVnNJRV9GNlpLUmliRFJ2U0xLM3hqWTB2cnQyRVdxcnl2Yk9DUnpmQ2U4a2M4dVB4NlAwTDdUYldSVGhNaUYzYzhwektIa2VGZnhQNHgwRkpmS18ybHlKYUdITW1OdGotWER3bjM0MlJXZGpTVzdWM0lEdXp5X0plaUE2ZDNBUQ?oc=5",
+          "date": "2026-10-14T18:33:00+00:00",
+          "publisher": "Kalkine Media"
+        }
+      ]
+    },
+    "US:DELL": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Dell Technologies Inc (DELL) Shares Fall 11.3% -- GF Value Says Still Overvalued - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPd0xrZmNFbHV2dGp1SEdCM1pRWjZXV3ZQZzJ0bVdfa3ZDcFpXMlRZcnlNMlVrYzZBcnJoZGItMWpYRFBLRVdLcURKbDVuLWttOGFNU0JMT0xiZjNyMlo0TDFQNVdJRlRMazM2V05WSGxZWmZYcWR4OXBBem5OOGVUUV96R3RIWFV0cGJsV3lkaVpIMk9oSjdoWXlHUkZqU0dhOFpVTGZiNnVacjNzSG5zN2p3?oc=5",
+          "date": "2026-10-14T21:59:02+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Dell Technologies (NYSE:DELL) Stock: Insider Silver Lake Partners Iv, L.P. Sells 48,654 Shares - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxNQnJyVHNZY0RYc19qLXg1bmFFSFhVZFlnUmxoeG9pWVptVS1QczRfRng4QUMyeXowY3pTWGdDTVZ6RnpOLUFLRFQtdGIwRnQya3dBemd4TzF0R09mLUpSS1dOdzVfUkR2Mkp2bElPOXpRTlB4Q2s1bkppc3FqS2hqM1dwd0lDMzJKUkpFNTkzNHFvdW9IaVRmT2NhdHZZdmRVNUo3S2RRRWVjVzdHeVBvYmRKNzlzWHk1OV9HLWFOQzRqNmdSMHNlczBIVHk0dTB6NzdTcnZ2VjhUbWF3R2t4em1Maw?oc=5",
+          "date": "2026-10-14T21:50:48+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "Dell Technologies (NYSE:DELL) Stock Falls 11.6% After Insider Selling - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPYzc2M0d1cDhPQ3NyVmJsZ0dPbUF6b0hZRUgxRnNnMDNCWHBrMGdKZWNOTXU1OVZUZ3BmTnU3LXNmWjFFS3hJcVJmNDdIZG8wbVRySWZlZ2stZmU5b0c3Y2tuOXdLMmt4NnNZTm9lYzExVjBqOE5sSS1EU0prWjY2OVYtNlB0ZVRMem9wZkZ0OEFjOEJkTTJjVEVwX3VWbHpLbGRDM3Z3ZmFlbW10bENMRVkyVkp0VWhvajA5OVFSWFIyYWs?oc=5",
+          "date": "2026-10-14T21:50:48+00:00",
+          "publisher": "MarketBeat"
+        }
+      ]
+    },
+    "US:SKYD": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Skydance plunges 24% on warrant distribution (SKYD:NYSE) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOWVV2NmNGMlBwcmdWejZ3SHJtbVk2REpEcEpzTGNqTXpJcklQcXlCMlR0SFBvRUFmZFVOc2FIcThwLVFNcjRLbmdVLVg3a3BDVmZNVFB5YzV6Vi0xazRpLUFjYjZmeThzMkllZzQ1aHBkNTNCNWtOVUpsa0RFeWVsckd4c3FQaW1Q?oc=5",
+          "date": "2026-10-14T20:34:01+00:00",
+          "publisher": "Seeking Alpha"
+        },
+        {
+          "title": "Skydance Shares Drop as 471 Million Warrants Begin Trading Separately After Warner Bros. Deal - BigGo Finance",
+          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5mcTgweDdIem9DWnlXajJzTXkxWG9DWHFERTZsYXhUeHhyYlUtb2hESHZqS0FMZloydEFDeE9XZGphQkNacUc3NXRYcUdPeExqc3haaWhqMlNzdE56OXJaU0JIRU5QWlByWDhIYm5qdER6ZGQxSlE?oc=5",
+          "date": "2026-10-14T20:25:00+00:00",
+          "publisher": "BigGo Finance"
+        },
+        {
+          "title": "Skydance sinks 26% after issuing 471M stock warrants - Breakingthenews.net",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPeVRHMEZjekRLSE5Oc2s3N2xlQ2haOFc1bF8tZkc3ZTRqSXNHLWVMdW1vNThQejFHNi12b0xKdUlvN0ktS0Yyb1U2V1ZBeDAxVTFKZFZvQWFUZzFOM1gyb2ZmSzFCUjJwa2NaajdfWlkweTBIUmRFRHhxOEFVS0VicV9ibUFxYkxXeXJpbHRQemtOTE4wMDd6aEhfY1U?oc=5",
+          "date": "2026-10-14T17:35:00+00:00",
+          "publisher": "Breakingthenews.net"
+        }
+      ]
+    },
+    "US:DOCN": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Why Did DigitalOcean (NYSE:DOCN) Fall Across the S&P 500? - Kalkine Media",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNRlg2Y0dfMEtDaW1zbzRXQVlmWXJjeWNuSXVfaVNhUjM4OWxkbkxOYk9FeFE0MXZ4MnBpM1pMSll0UXhNLTRuNWtrWDZoQUE3QlRYX3Y3aXpDOVpFVVBzNnhqSjQtVlkxLXZGTElILXhBdDVUa0lOaG5YQkZBVGNERzdfT24tTVc2eGxFdWNoOFcxSHdVMHNoRUZTUVc4Um8?oc=5",
+          "date": "2026-10-14T18:37:00+00:00",
+          "publisher": "Kalkine Media"
+        },
+        {
+          "title": "DigitalOcean (NYSE:DOCN) Shares Down 8.5% - What's Next? - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOUE9sb3NsZ2h2ME80dGxkbW1QNEJUZVVtbTVYNkVNc1BTckl0YkZuTHhuM05GSy1USVhLSUJRNkxrU2ZhVzNfVDA5eTNuNXZyU05GWHVpZF93V0xCS3FUUFZ4YVhVTjA1bWpaNTV5RjdjX1JQWjdmT1pSOFhOTFpwREtfYjJxTklOSEM1d0ltN09qNFNqbS1lM2t6SFRuaXk0YUphRnZ3dG0xMElN?oc=5",
+          "date": "2026-10-14T17:06:20+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "DigitalOcean Expected to Deliver Strong Q3 Beat, Raise Full-Year Growth Guidance, Oppenheimer Says - www.marketscreener.com",
+          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxOTktXdlpFTm5MVllqbmxQRmtHS3YtZkR2Z0xfOXhzcDlXTkd4dk9uWlNxZ3hRQjFmT2swTkdFbk5NSnhVV2pyOWRHLWI1OVQyYXBwaFlWSzNWTlNPWkgtMjUweDUxb19YaE43NUE3X3NCTU5MbUIzMkhBR0tTcnVMNFhZMTNqcVhmYlRWeGtlVXFaamQyQWw4N0pERllCb282M0FSakNtZk1DUkh3Qmc0c3c4UnBjVEZLWExGLUtaREpDR3BLRktZYVFPdWFLWGRoNXlDZktUbHh6YXc2cXgtUDhSVQ?oc=5",
+          "date": "2026-10-14T15:49:34+00:00",
+          "publisher": "www.marketscreener.com"
+        }
+      ]
+    },
+    "US:IREN": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "IREN Limited's AI Pivot Gains Traction—But Can Its Data Centers Deliver? - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPZ3NmZEJoMnF5c1R3QkFMQVBGZlV0UEFkTWpYTk4wNFhRdmJ6bXg3MWptemN2OWQ0ZmZodEdKbjNyYXRnc1owWkgzMVdCNXlyV3ZfX25oQmp1aVVRSjNfbUpVakRPWFRYZkh3TUc1QS1SZFJISjg2Nzl6R2FMUzBfWkJnNVFKaEpiMzNlaDdxSGFsc092cHFod0FJNFVTN1hxazJ3LXpBZXh4QQ?oc=5",
+          "date": "2026-10-14T17:59:35+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "Cipher Digital Falls 5% as $850M Zero-Coupon Note Pricing Extends Slide; Applied Digital Declines 6%, IREN Drops 4% - 24/7 Wall St.",
+          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxPMTN2ZmVKTlFrRXhYQmpEelhOMEs5TDRCcXRsRGtZT0pGREhobzlyYnA1bklaelZCUHRycm1GLTlPRmtyRjNRa0JDbjZGb3pMTllUMTZ6MkdyMmE1NHNoZUppSXdTSmJ2dXR1aklwQ25sa1gzTGlNYUlodWY3dFAzcEx2VTNvZUZSUzZPSXhxY1dFN1o1NnpubWN4RkhLNWszRlVLTmV6UFpQQzUyLTVVbFJST3dYdURESGtIcy1DRHk3UVMyQ09WenNkcnBPQ2NDc3BmOFN1TWp2VTNob3ZRS1NzR1pRWXl4?oc=5",
+          "date": "2026-10-14T13:39:00+00:00",
+          "publisher": "24/7 Wall St."
+        },
+        {
+          "title": "IREN Slides 5% as Anthropic Cloud Report Buzz Fades; Core Scientific Falls 3% - 24/7 Wall St.",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNY1JSVkFJWnZZUi1lRE1OOFFwZGRxSjdfTGhRMGZmMEY4U0haRTJ4V210X1dJRWxHVnFDbktQQnlmNE4wcFFpdWNsamhPZmRqaVI0VjhycWFoVXcyaGt5Q3h0R2t5UDlJNVpfNjR5b3FyTXBSNGhjN2hta2YyOGRLallUMkNDVE9uc0dyMHF4NnRyQU1oRVgxcFRsQV9PcS10ejR2R3ItT1kwdXFQSXZjNmV2ZXhUQi1obGc?oc=5",
+          "date": "2026-10-13T13:48:00+00:00",
+          "publisher": "24/7 Wall St."
+        }
+      ]
+    },
+    "US:CRWV": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Key CRWV $65 Support Breaks as CoreWeave Inc. Stock Slides Following Capital Raise Announcement - FXLeaders",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQcUYtRDBQYjNfOVN5UHJ6b3V5WjBEUFRpdjZ6QlhWMlBXZTVCOEZWMVR4ZXVSSkE4dUF2QlF6MXMyRkkzVEUzRUJwNjhsZWs1MS1LQmM5aTUwUFAwd3dhSmVfZFhTaEp3NlY1dTBpbEItWVpZVXdvVFNvVjhLQWN6cTd4Rk1ydXJ1QlRKUUdyTWRFZ0o1RjJyazYzZkg0UzQybVVmcmkzYUxGNG42b1lwUEpYT00tenhzRjBMX2RicUtzRHNEZHFtLUIwbUpOcWJjaHc?oc=5",
+          "date": "2026-10-14T23:00:29+00:00",
+          "publisher": "FXLeaders"
+        },
+        {
+          "title": "Jim Cramer Calls CoreWeave the \"Real Deal,\" but the Stock Crashed 15% the Very Next Day. Should You Buy the Dip? - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNd1FEM3M5N09DOHB2MXA0dHF1MHVyWWp1a090MGRYalhHbTRUemVRWTZneDFCbUJncnRHLWRsaU93SWxSTUVFblNnNjRrUEd1ZjdxdmNQbUJZQTJvdGN2cEIyR0JtMy1RU0lFYmt3bzNyMkttR3VNUGJOVUd3RDFGVllCYU9oY1FjMVQ5NnlNQmdEM1hxemhKLUVKQXc?oc=5",
+          "date": "2026-10-14T21:50:00+00:00",
+          "publisher": "Yahoo Finance"
+        },
+        {
+          "title": "CoreWeave drops 15% on worries about borrowing for AI buildout (CRWV:NASDAQ) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPU1BxYzZqNFRxU3F6TkRqNDV5dXVERHFYRnJfbnJnbWtCMDNOczhWTDN4Y0lraVRITTNsRlRvQW1MM1F1SUVDTXRBbmZ5WnFfaXBmM0VGWnhGendWeF9zeFA1WnVzT2pXS2h3TjFGTEF3cm9oRXAxNDVaRWZRVXlfaTdlVWpnYWpDR09ydUNZTVFHQjZTa3VvR1F4bURsRm16?oc=5",
+          "date": "2026-10-14T21:01:58+00:00",
+          "publisher": "Seeking Alpha"
+        }
+      ]
+    },
+    "US:U": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "A Look at Unity Software Inc (U) After 11.2% Decline -- GF Value $26.62 vs Price $41.40 - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPa0dsNEVfa2lqa2x1TFlJOG1vdV9qX2dRb2NwN04tTUM0V2ZXcjhlWEJ1SzJ1WWRxWkxDNVE3cjBYZzdQMFhlNUgtekF3bGUtRDdsNm10SzRPZGE4aWUzQ2pXd21UMGZJLWFnOGhtWjl5WHZ1ZkRiOXozekhLRnRHX1Z4Q1dSell0NHk2dzdSd055Tk05T1JvRmZUdmNFQnJuWkp5YVZmMEtTUGQzSUJ3TjdJZk5sQQ?oc=5",
+          "date": "2026-10-14T22:33:56+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Here's Why Unity Software Inc. (U) Fell More Than Broader Market - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQLS14TVVXbHp4T09JZU1IR0pkWUttMjVfYTBwTXQzSk14RW96Mi02bVI5NmV3TU14TWNBQjZGT2piU18zMW9zNWhPSGNiamZhbDc0Z3pxT3FodVNpYm1VTG9yTXVRV0l4ZWFGZ0FoNWtpUlVYTE96bEszN2h3TjY0eVNvS3JCcFJWV2pkWGgwRW1NWTBzS0hhaA?oc=5",
+          "date": "2026-10-14T20:50:03+00:00",
+          "publisher": "Yahoo Finance"
+        },
+        {
+          "title": "What Explains Unity Software (NYSE:U) Stock's Latest Decline? - Kalkine Media",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNa3RZSnR3TERFN2lNWTNYUmtwNDVvSVRzNFBnQzFMelRzWXJPSjFmNnkxbExRcmZqQ0xfRnd0d1VqeWRkQ3l4Y3VidklQbEZUWVItWFNMcEZCa2tEbDlwUUtndmFDbm5Seld4YVc5RFV0QWVoZmZHaUtWVWk2ejFmSnFSYW1pSjQ1aElJSTdaRU9RLUpsVDJPSTRFcEZQTUx3cjNV?oc=5",
+          "date": "2026-10-14T19:28:00+00:00",
+          "publisher": "Kalkine Media"
+        }
+      ]
+    },
+    "US:INIO": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Innio (NASDAQ:INIO) Sets New 1-Year Low Following Analyst Downgrade - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPV1BRZkx6bzY1emNpZW56WURqazlMdzhNY1BzRDFER2xFOXFxVGswRkhKV2JkYTNwdThfODNTNm1xUkVYdFd1SU5HSndYeEFCSDRsMlRZNnowLTZOcDNmakJ4NHB1OURYWlluQmdBM1FRem03Sk9ZOEhKSWdVNl9VY1BZTWh0SHRZZDJUQXVwZ21ZLUdMQTVjbDVKUHVQY2d0OVNMbVE1NFk2dGdFWlFGVlZqUU15WTA4ei1ETGlSMzlGR28?oc=5",
+          "date": "2026-10-14T17:55:51+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "INNIO to Announce Third-Quarter 2026 Financial Results on October 27, 2026 - www.marketscreener.com",
+          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNYXdLQzRSVDkzMkNsVDlPRzA2NFhZd3lGQUpyUFJnOTZqYXBNRTFyS0hma2JmZzhiQWJmOUZPX3lERHFKclNnZEMzeGpBVEdzWWFLSzNMWUxadnRHT3FxemtnMU1WeFpyenZIM2tvb1NTWEMtT3pMNTctWDMzTmpCc0VTOExyR254YUtqcXRPUHR0OC1PS2hOdERQc2xqcC05TXlIU0FBejhicERWU2dxSGt3VGlocUtYNWE4cTRudlpkYWRC?oc=5",
+          "date": "2026-10-14T12:31:05+00:00",
+          "publisher": "www.marketscreener.com"
+        },
+        {
+          "title": "Morgan Stanley Adjusts Price Target on INNIO to $40 From $47, Keeps Overweight Rating - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNYkNtSjI2OGZsUFpzWGk1bDhKQmFCbXE5VjJyNFJwc1F0ZzFzR2R1bzFKbXJ1bG9PNkRKeGZQMS1qQWF5cDBCczdZRGd3VmQ4MFlpZGs1UFNKRlpSM3EyUWJoUlE2UFlOMjN0UExFdmdmZWtuTTJDMWpYc3FNblNNMFVNeE9DOF9idzk4UEhVeTZJQTJQS1NmVTNSSFZhdmpxUmc?oc=5",
+          "date": "2026-10-14T12:20:18+00:00",
+          "publisher": "Yahoo Finance"
+        }
+      ]
+    },
+    "US:TTMI": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "TTM Technologies (NASDAQ:TTMI) Shares Down 9.5% - Here's Why - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOLUp1bEpZWHhnVm9WaDlzVTViX2NtLWpYVEpFbVEzQnhjY2ZXUEhjYlA5ZEp2ekx4ZUFUQjNOWlFlZ1VZSEVySjZkYmRoeEF4UzNZVEhkSTBSSzBVczdMTVZOeHFySXNvLWpIYTRRd0tpcU1WSU1vMXV2ckEwUWZFbzhXRkg4TGVpU29jMzZpbFJ4aUhTSlFZQ25zd0RvTGtFNWNrOHE1dnpzY1Z4Y0dxUGo5NA?oc=5",
+          "date": "2026-10-14T18:53:51+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "Quarterly results are due before the market opens Oct. 22. TTM Technologies hosts a call at 8:30 a.m. - Stock Titan",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQM0pmLUx3MDQ4S3RvaUZkdThTS2hqbjdZNjJLX0ZidHZ5djZkUGgzWDBFY0VGVXpyQkZYbEdFcVJuNlJibDRsUXl0U29PUzVVRF9CQXp4UkRHaDB5QnMwRi1Hc0tyZTVWY1U0OTJnNV93ejFwYkZlSjJ2SUF0RDc4cTJNNVlLQ1hQUXAwX2UxS2VwRzB2RkZuUE85X1RNd1JPVzNIbWlaSEJjZVFxMHVtMU9ZM1hYZHAwc1hUTmVR?oc=5",
+          "date": "2026-10-14T11:17:00+00:00",
+          "publisher": "Stock Titan"
+        },
+        {
+          "title": "TTMI Stock Slides As AI Expansion Spending Ramps Up - StocksToTrade",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1NbTM5X2NULUFhakgxbVJCdGpIZnEtSm55dXhSdnJXWE5SbGx1SFdwdFlLQzdyZGdCN3I4OG9rOGNpaksydHJjSEF1NTBXYmdYX0k4eW5YYTVKY2dBS0dsYTVUa1dqZTZZRmpMdEpVVzZqX2RhakVXLUZKeWhNZw?oc=5",
+          "date": "2026-10-13T20:47:00+00:00",
+          "publisher": "StocksToTrade"
+        }
+      ]
+    },
+    "US:CIEN": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Ciena Corporation (CIEN) Shares Drop 10.19% Amid Sector Weakness on October 14, 2026 - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOUkRyUk9KdERMLTRlWC0xanBla05tTzBSR2RJN3p0d2xfek0zdE5MamNseU5fS1ZZRzlWNnRjQWVjOXhCellsaGFHNFJMeTBJbVNoUm1PbFVuNllLYVNOYjJDX0RXaENjRzJBN3lSdnprX3psbnNPRmRkUVYzVjNrYXc4TkswS0xmc3FjNUd1Q2dpU1JxSFJMTk5LbjJwMEtfQjdzRXhLNUNQUDNtQ2J6R2RsSG80bS1seEE?oc=5",
+          "date": "2026-10-14T22:26:18+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Ciena (NYSE:CIEN) Stock Price Down 10.4% Following Insider Selling - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQY1pOM0tXS1dWcHdmM1l6cUpCbHZCdDFNSWVCYjZGeDcwcURsWjdUeDBqZmdhWEhaM0NBdUpZS2ZOc1RkMlhWcy1PUjNBN3BlYnJac011MGNLMEVqNTFsVXl5RWtGcUhualpQOG1ON0s3aFdveHFQTEs4Mlc3aW5BQjNwdWE0b1hEc0t5T3JwS0FUQUk4RW5ORThEMkM2WUo1NzVlZFNITjd2eDVFcGtTdGVDZjJPM2xEcnE2TUxYZw?oc=5",
+          "date": "2026-10-14T21:06:38+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "Ciena slides 10% amid multi-session losing streak (CIEN:NYSE) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQb1BJd1R2RktyMm5YWFdmVWkyRVJlT0tZX1ZmbXZGd2NERXk1ckx2elVubzhzMVpMOHJoQkE4c3pXU29KNndlTGpQTXJNakdoUmpIT1l2WXZKdWlsTWZ3SFN0cUFFVkxDS0R6aEQwRlIxbGY4dE8yUWhHOVEwOEFvNW1tRmJPT1E4Ymt2eW9MVnF2ZjNGZzFzU01n?oc=5",
+          "date": "2026-10-14T20:51:54+00:00",
+          "publisher": "Seeking Alpha"
+        }
+      ]
+    },
+    "US:HUT": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Hut 8 Corp (HUT) Shares Fall 10.4% -- GF Value Says Still Overvalued - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOcDhwd3JWNk1KYmxUc0VIdVN1ZXYzMlNBekJ3LVZhcG1rcVJTRTlQT1paT3JQX1lSaThZUXFGMV9ZS3ZkOG1aNlJmUlJDbVFOU3BZVUNZM2xsazZIcDhMLTRLLUJaV0ZkazUxdWpybng4b1Q2ek5xeHllaUszTXRnV0hOM1d1UjI5aEUzaFMwNXdQVmMwRTNLVDJaajQ3QmV0TGc?oc=5",
+          "date": "2026-10-14T23:02:06+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Shares of Oracle, neoclouds drop on CoreWeave debt concerns - SiliconANGLE",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOLXhITUJkSDZPOUE5T01hdUFyMGdBT0N0bWFPd2hIYVN4djJ2Q2gzWWJNZTQ2ajc3NkNJSGM2VkhHQ21KT1QyRnRINDZMWTF1SGJoVnE5Z0psaHFCajBZdDlwNTc0REV3RXE2NDA0dW5rbFVZVDVWN2VoVVJLZ0dicHR6dnd3OU5obkVBMTlMb0JSNlkyMXdIVXp0WQ?oc=5",
+          "date": "2026-10-14T22:20:00+00:00",
+          "publisher": "SiliconANGLE"
+        },
+        {
+          "title": "Hut 8 Slides as Risk-Off Trade Hits Crypto Miners - Quiver Quantitative",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOV0dvRmtKdHFQeHlhanRlVFNZUTFJT3IzZEVuR2NkQ0p5R1F5N1g2VjE4b0c3Nm5JdW9OQ2xyd2o1M1RLTHlwbmY0RFJnTWIyX29XQkZ3NjItVm9Oa3pLZllrT3V1dEZMbTVGaXFZUVJGYUlmZ09MYW5pNG55MTFZMy1yV3BkeU5Ca2c?oc=5",
+          "date": "2026-10-14T17:36:00+00:00",
+          "publisher": "Quiver Quantitative"
+        }
+      ]
+    },
+    "US:NBIS": {
+      "checkedAt": "2026-10-14T23:18:19.553534+00:00",
+      "items": [
+        {
+          "title": "Nebius Group (NBIS) Shares Drop 10% Amid Tech Sell-Off; P/S Rati - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNcHNibzhBZ0xiSENVX2ZzY2VUOEJ4QUJrNGladDVHUjAyaU9ONTFNeU5vSDRiM24zRmRMenV2X1NnME1adlEzX19yRzRWMXBpZjB6VWFkX3NwM05iX1NjRzNCUEFidF81bUlTNUdiaTVkRE9nbFBPbldMb2Z5Tk02bThpbktfQzRuNGxMWHNhOEJ0cHIyWFpsd1hNbWlYOW9HNzZxdWVPU3ZVNHpZUHhUQVJKX0ZETnpSR0lIRWxB?oc=5",
+          "date": "2026-10-14T22:26:18+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Nebius Group declines 10% amid tech sell-off (NBIS:NASDAQ) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQMWY2MU9GMVF0VWRnRDVlRXhObnNuQUZGZlJlVzhGUk12b1FWREJDZ25NRzlfbFpwakdtSEY2MC1lNGhxSzN5WE12TGpyaENETnEzWFl4eExLZTgzU3FJY1ZwQXlmTVZqY3NKM1JoWW5zUzBYRlhIOGNtaGVpc28wX1VPMEg3dXhz?oc=5",
+          "date": "2026-10-14T21:32:06+00:00",
+          "publisher": "Seeking Alpha"
+        },
+        {
+          "title": "Nebius Group (NASDAQ:NBIS) Stock Falls 10.1% Following Insider Selling - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPUndjZS1JUzF1dE8waENXOF9JTW5ENHVCZENlUDRIOC1YcUEzWjBpUnpTc3VZVjV6U3pGaXFQWkFoZXpIQ0d5Y3p6OU1OQUw0ZllaeWN5eHlYb29mRUo3N3ZLVTJCYjVWSmhBWjRqbGNBNVBTM3diMmFPQkIzekZTTzlvelZ2aGdkU0dldm1WYlV4YlVjOVVYWnhLSTFRbVpFbmJqWGY4VjFyeDJHYlJyZjVZWm1EdnNRTWZ1M1A5b3ZERnJh?oc=5",
+          "date": "2026-10-14T21:06:39+00:00",
+          "publisher": "MarketBeat"
+        }
+      ]
     }
   },
-  "checkedAt": "2026-10-14T22:25:14.215579+00:00"
+  "checkedAt": "2026-10-14T23:18:19.553534+00:00"
 }

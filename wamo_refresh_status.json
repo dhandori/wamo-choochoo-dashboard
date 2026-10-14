@@ -88,6 +88,6 @@
     "moversCompletedAt": "2026-10-14T23:18:09.969929+00:00",
     "refreshMode": "FULL",
     "catalogStatus": "PASS",
-    "radarStatus": "RUNNING"
+    "radarStatus": "PASS"
   }
 }
