@@ -1,5 +1,16 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {selectStocks,acceptSnapshot,validSnapshot,refreshSnapshot,marketStatus,safeUrl,createRefresher} from '../radar/model.mjs';
 const stock=(id,patch={})=>({id,name:id,symbol:id,industry:'Test',asOf:'2026-10-13',close:100,changePct:1,return5d:2,highDistancePct:5,volumeRatio:1,rs:80,...patch});const m={asOf:'2026-10-13',status:'CURRENT',nextScheduledFor:'2026-10-14T00:00:00Z',stocks:[stock('near'),stock('high',{intradayHigh52:true,highDistancePct:0}),stock('fall',{changePct:-8,highDistancePct:40,volumeRatio:2})],industries:[],warnings:[],expectedSession:'2026-10-13',source:'verified',movers:[],coverage:{total:3,valid:3,excluded:0,eligible52w:3}};const snap={schemaVersion:1,generatedAt:'2026-10-14T00:00:00Z',markets:{KR:m,US:m}};
+test('market cap sorts actual values in both directions with missing values last',()=>{
+ const stocks=[stock('missing',{marketCap:null}),stock('large',{marketCap:1e12}),stock('old-schema'),stock('small',{marketCap:9e9}),stock('medium',{marketCap:1e10})];
+ assert.deepEqual(selectStocks({...m,stocks},{sort:'marketCap'}).map(s=>s.id),['large','medium','small','missing','old-schema']);
+ assert.deepEqual(selectStocks({...m,stocks},{sort:'marketCapAsc'}).map(s=>s.id),['small','medium','large','missing','old-schema']);
+ assert.deepEqual(selectStocks({...m,stocks},{sort:'marketCap',query:'small'}).map(s=>s.id),['small']);
+ assert.equal(stocks[0].id,'missing');
+});
+test('market cap remains optional for older snapshots but must be positive if supplied',()=>{
+ for(const cap of [null,undefined,1e12])assert.equal(validSnapshot({...snap,markets:{...snap.markets,KR:{...m,stocks:m.stocks.map(s=>({...s,marketCap:cap}))}}}),true);
+ for(const cap of [0,-1,NaN,Infinity,true,'1000'])assert.equal(validSnapshot({...snap,markets:{...snap.markets,KR:{...m,stocks:m.stocks.map(s=>({...s,marketCap:cap}))}}}),false);
+});
 test('near boundary is distinct from actual new highs',()=>{assert.equal(selectStocks(m).length,2);assert.deepEqual(selectStocks(m,{tab:'high'}).map(s=>s.id),['high']);assert.equal(selectStocks({...m,stocks:[stock('boundary',{highDistancePct:10}),stock('outside',{highDistancePct:10.01})]}).length,1);});
 test('downside and volume movers outside near highs remain visible',()=>{assert.equal(selectStocks(m,{tab:'movers',mode:'down'})[0].id,'fall');assert.equal(selectStocks(m,{tab:'movers',mode:'volume'})[0].id,'fall');});
 test('malformed data and older responses retain verified content',()=>{assert.equal(acceptSnapshot(snap,{}),snap);assert.equal(acceptSnapshot(snap,{...snap,generatedAt:'2026-10-12T00:00:00Z'}),snap);assert.equal(validSnapshot({...snap,markets:{KR:{...m,stocks:[stock('bad',{close:NaN})]},US:m}}),false);const old={...snap,generatedAt:'2026-10-15T00:00:00Z',markets:{KR:{...m,asOf:'2026-10-12',stocks:[stock('old',{asOf:'2026-10-12'})],coverage:{total:1,valid:1,excluded:0,eligible52w:1}},US:m}};assert.equal(acceptSnapshot(snap,old).markets.KR.asOf,m.asOf);});

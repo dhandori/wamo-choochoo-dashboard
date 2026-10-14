@@ -30,6 +30,7 @@ with sync_playwright() as p:
             if near:
                 page.locator('.stock-link:visible').first.click();expect(page.get_by_role('dialog',name=sorted(near,key=lambda s:s['highDistancePct'])[0]['name'],exact=True)).to_be_visible()
                 expect(page.locator('#detail')).to_contain_text('가격 출처')
+                expect(page.locator('#detail .stat').filter(has_text='시가총액')).to_contain_text('원' if market=='KR' else '달러')
                 expect(page.locator('.detail-chart')).to_be_visible()
                 drawer_link=page.locator('#detail .naver-primary')
                 if drawer_link.count():
@@ -39,6 +40,18 @@ with sync_playwright() as p:
                 assert not page.locator('#detail a[href*=legacy]').count()
                 page.screenshot(path=str(OUT/f'radar-{market}-{width}-drawer.png'),full_page=False)
                 page.locator('#close-drawer').click()
+                currency='원' if market=='KR' else '달러'
+                for sort,reverse in [('marketCap',True),('marketCapAsc',False)]:
+                    page.get_by_role('combobox',name='정렬',exact=True).select_option(sort)
+                    ordered=sorted(near,key=lambda s:s['marketCap'],reverse=reverse)[:30]
+                    assert page.locator('.stock-link:visible').evaluate_all('(els)=>els.map(e=>e.title)')==[s['name'] for s in ordered]
+                    cap=page.locator('.market-cap:visible').first
+                    expect(cap).to_have_attribute('title',f'{ordered[0]["marketCap"]:,.0f} {currency}')
+                    expect(cap).not_to_have_text('미제공')
+                page.screenshot(path=str(OUT/f'radar-{market}-{width}-market-cap.png'),full_page=False)
+                if width<=390:expect(page.locator('.card-cap').first).to_contain_text(currency)
+                else:expect(page.get_by_role('columnheader',name=f'시총 ({currency})',exact=True)).to_be_visible()
+                page.get_by_role('combobox',name='정렬',exact=True).select_option('default')
             page.locator('[data-tab=high]').click()
             highs=[s for s in rows if s['intradayHigh52'] or s['closeHigh52']]
             expect(page.locator('#pagination')).to_contain_text(f'{len(highs)}종목')

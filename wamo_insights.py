@@ -114,7 +114,9 @@ def project(stock,market,asof):
         prior=max(r[key] for r in rows[-252:-1]); latest=rows[-1][key]
         return latest>prior+max(abs(prior)*1e-8,1e-8)
     ticker=stock.get('ticker') or symbol
+    market_cap=number(stock.get('market_cap_krw' if market=='KR' else 'market_cap_usd'))
     return {'id':f'{market}:{symbol}','symbol':symbol,'ticker':ticker,'name':stock.get('name') or symbol,'market':market,
+            'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
             'industry':name.strip(),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,

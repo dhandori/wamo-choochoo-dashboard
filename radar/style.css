@@ -72,6 +72,9 @@ th:first-child, td:first-child { text-align: left; width: 27%; }
 .spark { width: 65px; height: 28px; }
 .signal { color: var(--blue); font-size: 10px; margin-top: 5px; white-space: normal; }
 .stock-cards { display: none; }
+.market-cap { font-variant-numeric: tabular-nums; }
+.card-cap { display: flex; align-items: baseline; gap: 5px; margin-top: 7px; font-size: 11px; color: var(--muted); }
+.card-cap .market-cap { font-size: 13px; color: var(--text); }
 .industry-rail { align-self: start; margin-top: 27px; padding: 17px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; min-width: 0; }
 .industry-rail[hidden] { display: none; }
 .industry-rail h3 { margin: 5px 0 2px; }.rail-caption { font-size: 10px; margin-bottom: 10px; }
