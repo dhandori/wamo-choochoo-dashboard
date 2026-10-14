@@ -81,7 +81,9 @@ def project(stock,market,asof):
     if len(rows)>=51:
         avg=sum(r['volume'] for r in rows[-51:-1])/50
         volume=round(rows[-1]['volume']/avg,6) if avg>0 else None
-    classification=next(((stock[k],k) for k in ('industry','industryEn','sector') if isinstance(stock.get(k),str) and stock[k].strip()),('Unclassified','unknown'))
+    # US display labels can be translated selectively; group by one source taxonomy.
+    classification_keys=('industryEn','industry','sector') if market=='US' else ('industry','industryEn','sector')
+    classification=next(((stock[k],k) for k in classification_keys if isinstance(stock.get(k),str) and stock[k].strip()),('Unclassified','unknown'))
     name,classification_source=classification
     reasons=[]
     change=ret(1)
