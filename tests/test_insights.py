@@ -42,6 +42,13 @@ class InsightsTests(unittest.TestCase):
         self.assertTrue(groups['Chips']['confirmed'])
         self.assertFalse(groups['Other']['confirmed'])
         self.assertEqual(groups['Chips']['members'],['US:A','US:B','US:C'])
+    def test_translated_labels_do_not_split_the_same_us_industry(self):
+        a=stock('A',industry='Oil & Gas Production');a['industryEn']='Oil & Gas Production'
+        b=stock('B',industry='석유·가스 (Oil & Gas Production)');b['industryEn']='Oil & Gas Production'
+        result=self.build(a,b)
+        self.assertEqual(len(result['industries']),1)
+        self.assertEqual(result['industries'][0]['memberCount'],2)
+        self.assertEqual(result['stocks'][1]['industrySource'],'industryEn')
     def test_downside_mover_away_from_highs(self):
         m=self.build(stock(close=72))
         self.assertIn('US:AAA',[s['id'] for s in m['movers']])
