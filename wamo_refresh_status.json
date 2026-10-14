@@ -47,12 +47,12 @@
     "radarStatus": "PASS"
   },
   "US": {
-    "status": "WARNING",
-    "attemptedAt": "2026-10-13T21:31:43.703466+00:00",
-    "scheduledFor": "2026-10-13T20:20:00+00:00",
-    "nextScheduledFor": "2026-10-14T20:20:00+00:00",
+    "status": "RUNNING",
+    "attemptedAt": "2026-10-14T23:16:19.555865+00:00",
+    "scheduledFor": "2026-10-14T20:20:00+00:00",
+    "nextScheduledFor": "2026-10-15T20:20:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/38471224200",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/38652993384",
     "moversStatus": "PASS",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
