@@ -91,6 +91,9 @@ def validate_freshness(payload, market, now=None):
         raise RuntimeError(f'가격 최신성 부족: 기대 거래일 {expected}, 신규수집 {current}/{len(stocks)} ({pct}%). 기존 화면 유지 · 날짜별 상태 {dates}')
     warnings = []
     meta = payload['meta']
+    universe_recovery = meta.get('universeRecovery') or {}
+    if universe_recovery.get('status') == 'CACHED_UNIVERSE':
+        warnings.append(universe_recovery.get('warning') or '이전 종목 목록으로 새 가격 조회 · 신규 편입 종목 제외')
     energy = meta.get('marketEnergy') or {}
     if energy.get('status') != 'LIVE':
         warnings.append('시장 에너지 확인 불가: ' + str(energy.get('fallbackReason') or energy.get('regimeNote') or '자료 없음'))
@@ -110,6 +113,10 @@ def validate_freshness(payload, market, now=None):
 
 def patch_status_ui(html, market):
     html = patch_52week_ui(html)
+    # The compact radar is the default; retain all bookmarked stock details.
+    if 'id="wamo-radar-entry"' not in html:
+        redirect = '<script id="wamo-radar-entry">(()=>{const q=new URLSearchParams(location.search);if(!q.has("stock")&&q.get("legacy")!=="1"&&/(?:\\/|\\/index\\.html|\\/us\\.html)$/.test(location.pathname)){location.replace("radar.html?market=' + market + '");}})();</script>'
+        html = html.replace('</head>', redirect + '\n</head>', 1)
     if 'window.WAMO_OPEN_DETAIL' not in html:
         html = html.replace('function openDetail(x){',
             "window.WAMO_OPEN_DETAIL = ticker => { const stock = data.stocks.find(s => s.ticker === ticker); if (!stock) return false; openDetail(stock); return true; };\nfunction openDetail(x){", 1)

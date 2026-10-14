@@ -5,7 +5,7 @@ on:
     - cron: '25 * * * *'
   push:
     branches: [main, 'codex/radar-integration']
-    paths: ['wamo_radar.py', 'wamo_catalog.py', '.github/workflows/radar-sync.yml']
+    paths: ['wamo_radar.py', 'wamo_catalog.py', 'wamo_insights.py', 'wamo_publish_insights.py', 'radar.template.html', 'radar/**', '.github/workflows/radar-sync.yml']
 permissions:
   contents: write
 concurrency:
@@ -26,6 +26,14 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements.txt
       - run: python -m unittest discover -s tests -p test_radar_bridge.py -v
+      - name: Build independent market radar from verified price histories
+        run: python wamo_publish_insights.py
+      - name: Update optional related headlines
+        continue-on-error: true
+        timeout-minutes: 3
+        run: python wamo_news.py
+      - name: Embed available related headlines
+        run: python wamo_publish_insights.py
       - name: Import only validated public candidate and industry fields
         env:
           RADAR_READ_TOKEN: ${{ secrets.RADAR_READ_TOKEN }}
@@ -42,7 +50,8 @@ jobs:
           test -f wamo_radar.json || exit 0
           git config user.name wamo-dashboard-bot
           git config user.email actions@users.noreply.github.com
-          git add -- wamo_radar.json wamo_catalog.json index.html us.html
+          git add -- wamo_radar.json wamo_catalog.json wamo_insights.json radar.html index.html us.html
+          if test -f wamo_news.json; then git add -- wamo_news.json; fi
           git diff --cached --quiet && exit 0
           git commit -m 'Refresh validated global discovery results'
           git pull --rebase origin "$TARGET_BRANCH"

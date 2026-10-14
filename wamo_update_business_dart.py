@@ -5009,10 +5009,13 @@ def main():
     old_market_energy = (old_payload.get("meta") or {}).get("marketEnergy") or {}
 
     print("1/11 코스피·코스닥 시가총액 목록 수집")
-    listed = fetch_market_summary(0, ".KS", "KOSPI") + fetch_market_summary(1, ".KQ", "KOSDAQ")
+    from wamo_universe_recovery import load_universe
+    listed, _, universe_recovery = load_universe(
+        lambda: fetch_market_summary(0, ".KS", "KOSPI") + fetch_market_summary(1, ".KQ", "KOSDAQ"),
+        old_payload, 'KR')
     sector_map = kind_sector_map()
     for r in listed:
-        r["sector"] = sector_map.get(r["stock_code"], "KRX 업종 미분류")
+        r["sector"] = sector_map.get(r["stock_code"], r.get("sector") or "KRX 업종 미분류")
         r["instrumentType"] = classify_instrument(r.get("name"))
 
     # ETF·ETN과 스팩은 기업의 재무·사업·Stage 2 기준으로 평가하면 왜곡된다.
@@ -5301,6 +5304,7 @@ def main():
             "updatedAt": datetime.now(KST).isoformat(timespec="minutes"),
             "source": "Yahoo Finance price + NAVER market-cap/fallback + KRX KIND + OpenDART official fundamentals/disclosures + DART business narrative + FnGuide auxiliary consensus for selected candidates",
             "universeCount": len(listed),
+            "universeRecovery": universe_recovery,
             "eligibleUniverseCount": len(company_universe),
             "successCount": len(raw),
             "errorCount": len(errors),
