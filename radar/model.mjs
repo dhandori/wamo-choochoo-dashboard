@@ -15,7 +15,8 @@ export function validSnapshot(x) {
   const ids=new Set(m.stocks.map(s=>s?.id));
   if(ids.size!==m.stocks.length)return false;
   const validStock=s=>s && text(s.id) && text(s.name) && text(s.symbol) && text(s.industry) && s.asOf===m.asOf && numeric(s.close)&&s.close>0 && ['changePct','return5d','return20d','high52','highDistancePct','volumeRatio','rs'].every(key=>optionalNumber(s[key])) && (s.highDistancePct==null||s.highDistancePct>=0) && (s.volumeRatio==null||s.volumeRatio>=0) && ['intradayHigh52','closeHigh52','stage2'].every(key=>s[key]==null||typeof s[key]==='boolean') && (s.sparkline==null||Array.isArray(s.sparkline)&&s.sparkline.every(n=>numeric(n)&&n>0)) && ['catalysts','news'].every(key=>s[key]==null||Array.isArray(s[key])&&s[key].every(a=>a&&text(a.title)&&text(a.url)&&(a.date==null||day(a.date)||(key==='news'&&timestamp(a.date))))) && (s.moverReasons==null||Array.isArray(s.moverReasons)&&s.moverReasons.every(text));
-  if(!m.stocks.every(validStock)||!m.movers.every(s=>validStock(s)&&ids.has(s.id)))return false;
+  const validCap=s=>s.marketCap==null||numeric(s.marketCap)&&s.marketCap>0;
+  if(!m.stocks.every(s=>validStock(s)&&validCap(s))||!m.movers.every(s=>validStock(s)&&validCap(s)&&ids.has(s.id)))return false;
   const groupIds=new Set();
   return m.industries.every(g=>{
    if(!g||!text(g.id)||groupIds.has(g.id)||!text(g.name)||typeof g.confirmed!=='boolean')return false;
@@ -48,6 +49,11 @@ export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',
  if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
  if(industry) rows=rows.filter(s=>industry.members.includes(s.id));
  const key=sort==='default'?(tab==='near'?'highDistancePct':tab==='movers'?'absolute':'return5d'):sort;
+ if(key==='marketCap'||key==='marketCapAsc')return rows.sort((a,b)=>{
+  const aValid=numeric(a.marketCap)&&a.marketCap>0,bValid=numeric(b.marketCap)&&b.marketCap>0;
+  if(aValid!==bValid)return aValid?-1:1;
+  return aValid?(key==='marketCapAsc'?a.marketCap-b.marketCap:b.marketCap-a.marketCap):0;
+ });
  rows.sort((a,b)=>key==='name'?a.name.localeCompare(b.name): key==='absolute'?Math.abs(b.changePct||0)-Math.abs(a.changePct||0):key==='highDistancePct'?(a[key]??Infinity)-(b[key]??Infinity):(b[key]??-Infinity)-(a[key]??-Infinity));return rows;
 }
 export function marketStatus(m,now=Date.now()) {const deadline=Date.parse(m.verifiedThrough||m.nextScheduledFor);return m.status!=='UNAVAILABLE'&&Number.isFinite(deadline)&&now>deadline+90*60000?'STALE':m.status;}

@@ -15,6 +15,20 @@ def payload(*stocks):
 class InsightsTests(unittest.TestCase):
     def build(self,*stocks,previous=None, now=NOW):
         return build_insights({'US':payload(*stocks)},now,previous)['markets']['US']
+    def test_market_cap_uses_market_currency_without_conversion(self):
+        s=stock('005930');s.update(market_cap_krw=400_000_000_000_000,market_cap_usd=12_000_000_000)
+        result=build_insights({'KR':payload(s),'US':payload(s)},NOW)
+        self.assertEqual(result['markets']['KR']['stocks'][0]['marketCap'],400_000_000_000_000)
+        self.assertEqual(result['markets']['US']['stocks'][0]['marketCap'],12_000_000_000)
+        s['market_cap_usd']='12000000000'
+        self.assertEqual(self.build(s)['stocks'][0]['marketCap'],12_000_000_000)
+
+    def test_missing_or_invalid_market_cap_does_not_drop_prices(self):
+        for value in (None,0,-1,True,float('nan'),float('inf'),'not available'):
+            s=stock();s.update(market_cap_usd=value,market_cap_krw=999_000_000)
+            result=self.build(s)
+            self.assertEqual(result['coverage']['valid'],1)
+            self.assertIsNone(result['stocks'][0]['marketCap'])
     def test_naver_projection_verified_exchange_mapping(self):
         cases = [('KR','005930',None,'domestic/stock/005930'), ('KR','0126Z0',None,'domestic/stock/0126Z0'), ('US','MSFT','NASDAQ','worldstock/stock/MSFT.O'), ('US','PSX','NYSE','worldstock/stock/PSX'), ('US','BRK-B','NYSE','worldstock/stock/BRKb'), ('US','BRK.A','NYSE','worldstock/stock/BRKa'), ('US','IMO','NYSE AMERICAN','worldstock/stock/IMO'), ('US','EQX','AMEX','worldstock/stock/EQX'), ('US','CBOE','NYSE AMERICAN','worldstock/stock/CBOE.K')]
         for market, symbol, exchange, path in cases:

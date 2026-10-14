@@ -1,4 +1,4 @@
-import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher } from './model.mjs';
+import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher } from './model.mjs?v=20261014-4';
 
 const $ = id => document.getElementById(id);
 const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1 };
@@ -10,6 +10,18 @@ const tone = n => n > 0 ? 'up' : n < 0 ? 'down' : 'neutral';
 const distance = s => numeric(s.highDistancePct) ? `${fmt(s.highDistancePct)}%` : '—';
 const volume = s => numeric(s.volumeRatio) ? `${fmt(s.volumeRatio, 2)}×` : '—';
 const price = s => `${s.market === 'KR' ? '₩' : '$'}${fmt(s.close, s.market === 'KR' ? 0 : 2)}`;
+const capCurrency = () => state.market === 'KR' ? '원' : '달러';
+function marketCap(s, withCurrency = false) {
+  const cap = s.marketCap;
+  if (!numeric(cap) || cap <= 0) return '미제공';
+  const unit = cap >= 1e12 ? [1e12, '조'] : cap >= 1e8 ? [1e8, '억'] : cap >= 1e4 ? [1e4, '만'] : [1, ''];
+  return `${fmt(cap / unit[0], unit[0] === 1 ? 0 : 2)}${unit[1]}${withCurrency ? (s.market === 'KR' ? ' 원' : ' 달러') : ''}`;
+}
+function capNode(s, tag = 'span') {
+  const node = el(tag, marketCap(s), 'market-cap');
+  node.title = numeric(s.marketCap) && s.marketCap > 0 ? `${fmt(s.marketCap, 0)} ${s.market === 'KR' ? '원' : '달러'}` : '시가총액 미제공';
+  return node;
+}
 
 function el(tag, text, cls) {
   const node = document.createElement(tag);
@@ -80,7 +92,7 @@ function detail(s) {
   const chart = el('section', null, 'chart-panel');
   chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true)); d.append(chart);
   const grid = el('div', null, 'detail-grid');
-  [['5일 수익률', pct(s.return5d), tone(s.return5d)], ['20일 수익률', pct(s.return20d), tone(s.return20d)],
+  [['시가총액', marketCap(s, true)], ['5일 수익률', pct(s.return5d), tone(s.return5d)], ['20일 수익률', pct(s.return20d), tone(s.return20d)],
     ['52주 고점 거리', numeric(s.highDistancePct) ? distance(s) : '이력 부족'], ['52주 장중 고점', fmt(s.high52, 2)],
     ['상대 거래량', volume(s)], ['RS', fmt(s.rs, 0)], ['Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '미제공']]
     .forEach(([label, value, cls]) => grid.append(stat(label, value, cls)));
@@ -107,12 +119,12 @@ function table(rows) {
   if (!rows.length) return el('div', '조건에 맞는 종목이 없습니다. 필터를 조정해 보세요.', 'empty');
   const pageRows = rows.slice((state.page - 1) * 30, state.page * 30);
   const wrap = el('div', null, 'table-wrap'), table = el('table'), head = el('thead'), tr = el('tr');
-  ['종목 / 산업', '종가', '당일', '5일', '고점까지', '거래량 배수', 'RS', '60일', '바로가기'].forEach(t => tr.append(el('th', t)));
+  ['종목 / 산업', `시총 (${capCurrency()})`, '종가', '당일', '5일', '고점까지', '거래량 배수', 'RS', '60일', '바로가기'].forEach(t => { const th = el('th', t); th.scope = 'col'; tr.append(th); });
   head.append(tr); table.append(head); const body = el('tbody');
   pageRows.forEach(s => {
     const row = el('tr'), name = el('td'); name.append(stockButton(s));
     if (state.tab === 'high' || state.tab === 'movers') name.append(el('span', signals(s).join(' · '), 'signal'));
-    row.append(name, el('td', price(s)), el('td', pct(s.changePct), tone(s.changePct)), el('td', pct(s.return5d), tone(s.return5d)), el('td', distance(s)), el('td', volume(s)), el('td', fmt(s.rs, 0)));
+    row.append(name, capNode(s, 'td'), el('td', price(s)), el('td', pct(s.changePct), tone(s.changePct)), el('td', pct(s.return5d), tone(s.return5d)), el('td', distance(s)), el('td', volume(s)), el('td', fmt(s.rs, 0)));
     const chart = el('td'); chart.append(spark(s)); const link = el('td'); link.append(naverLink(s)); row.append(chart, link); body.append(row);
   });
   table.append(body); wrap.append(table);
@@ -121,7 +133,8 @@ function table(rows) {
     const card = el('article', null, 'stock-card'), top = el('div', null, 'stock-card-top'); top.append(stockButton(s), naverLink(s));
     const quote = el('div', null, 'card-quote'); quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), spark(s));
     const stats = el('div', null, 'card-stats'); stats.append(stat('5일', pct(s.return5d), tone(s.return5d)), stat('고점까지', distance(s)), stat('거래량 배수', volume(s)), stat('RS', fmt(s.rs, 0)));
-    card.append(top, quote, stats);
+    const cap = el('div', null, 'card-cap'); cap.append(el('span', '시총'), capNode(s), el('span', capCurrency()));
+    card.append(top, cap, quote, stats);
     if (state.tab === 'high' || state.tab === 'movers') card.append(el('div', signals(s).join(' · '), 'signal'));
     cards.append(card);
   });
@@ -174,7 +187,7 @@ function renderControls() {
   } else {
     const options = el('div', null, 'filter-group'); checkbox('rs', 'RS ≥80', options); checkbox('stage', 'Stage 2', options); controls.append(options);
     const select = el('select'); select.setAttribute('aria-label', '정렬');
-    [['default', '기본 정렬'], ['changePct', '당일 상승률'], ['absolute', '당일 절대 변동'], ['return5d', '5일 수익률'], ['volumeRatio', '거래량 배수'], ['rs', 'RS'], ['name', '종목명']].forEach(([value, text]) => { const o = el('option', text); o.value = value; o.selected = state.sort === value; select.append(o); });
+    [['default', '기본 정렬'], ['marketCap', '시총 큰 순'], ['marketCapAsc', '시총 작은 순'], ['changePct', '당일 상승률'], ['absolute', '당일 절대 변동'], ['return5d', '5일 수익률'], ['volumeRatio', '거래량 배수'], ['rs', 'RS'], ['name', '종목명']].forEach(([value, text]) => { const o = el('option', text); o.value = value; o.selected = state.sort === value; select.append(o); });
     select.onchange = () => change('sort', select.value); controls.append(select);
   }
   if (['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'confirmed'].some(key => state[key] !== defaults[key])) {
