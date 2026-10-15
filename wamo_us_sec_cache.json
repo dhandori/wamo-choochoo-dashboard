@@ -51779,5 +51779,173 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-10-12",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "CHT": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "http://www.cht.com.tw",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Chunghwa Telecom Co. Ltd.은 Nasdaq 공식 분류상 Telecommunications · Telecommunications Equipment 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Chunghwa Telecom Co. Ltd.은 Nasdaq 공식 분류상 Telecommunications · Telecommunications Equipment 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Chunghwa Telecom (TAIEX 2412, NYSE: CHT) (' Chunghwa' or'the Company') is Taiwan's largest integrated telecommunications services company that provides fixed-line, mobile, broadband, and internet services. The Company also provides information and communication technology services to corporate customers with its big data, information security, cloud computing and IDC capabilities, and is expanding its business into innovative technology services such as IoT, AI, etc. Chunghwa has been actively and continuously implemented environmental, social and governance (ESG) initiatives with the goal to achieve sustainability and has won numerous international and domestic awards and recognitions for its ESG commitments and best practices.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 7,515,000천달러로 전년 대비 +7.1%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "통신 (Telecommunications)",
+        "Telecommunications",
+        "Telecommunications Equipment"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 17049000.0,
+      "liabilities": 4367000.0,
+      "equity": 12225000.0,
+      "netIncome": 1289000.0,
+      "debtRatioPct": 35.7,
+      "currentRatioPct": 144.8,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 7.1,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Telecommunications",
+    "industry": "Telecommunications Equipment",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-15",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "GGB": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www2.gerdau.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Gerdau S.A. Common Stock은 Nasdaq 공식 분류상 Industrials · Steel/Iron Ore 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Gerdau S.A. Common Stock은 Nasdaq 공식 분류상 Industrials · Steel/Iron Ore 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Gerdau SA produces steel and steel products. The company operates in civil construction, agriculture, automotive, iron ore, exports, research and development, and home steel products sectors. It offers products such as nails, rebar, columns, billets, slabs, tribar tutor, mechanical construction bars, reinforced steel locks. The company's geographical segment includes Brazil Operations; North America Operations; South America Operations as well as Special Steel Operations. It derives most of the revenue from the Brazil Operations segment.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 12,748,489천달러로 전년 대비 +17.5%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "산업재 (Industrials)",
+        "Industrials",
+        "Steel/Iron Ore"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 14907281.0,
+      "liabilities": 5089591.0,
+      "equity": 9778803.0,
+      "netIncome": 258851.0,
+      "debtRatioPct": 52.0,
+      "currentRatioPct": 289.3,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 17.5,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Industrials",
+    "industry": "Steel/Iron Ore",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-15",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "SSL": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.sasol.com",
+    "businessModelReportDate": "6/30/2026",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Sasol Ltd. American Depositary Shares은 Nasdaq 공식 분류상 Energy · Oil & Gas Production 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Sasol Ltd. American Depositary Shares은 Nasdaq 공식 분류상 Energy · Oil & Gas Production 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Sasol International Chemicals manufactures and markets a broad, state-of-the-art portfolio of specialty and commodity chemicals for a wide range of applications and industries. Our unique chemistry provides the building blocks for a more sustainable future and is used by more than 4,000 customers in 80 countries in countless products that improve the quality of life for people around the world. Sasol International Chemicals is a business of Sasol Limited and manages its Northern Hemisphere chemicals business, its people, and its stakeholders, with end-to-end accountability for safe operations, profit and loss, technology and innovation, and delivering more sustainable solutions for our customers.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 16,603,000천달러로 전년 대비 +18.4%입니다(결산기준 6/30/2026).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "에너지 (Energy)",
+        "Energy",
+        "Oil & Gas Production"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "6/30/2026",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 22198000.0,
+      "liabilities": 11823000.0,
+      "equity": 9949000.0,
+      "netIncome": 882000.0,
+      "debtRatioPct": 118.8,
+      "currentRatioPct": 178.8,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 18.4,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Energy",
+    "industry": "Oil & Gas Production",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-15",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
