@@ -131,12 +131,12 @@
   },
   "003490": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:42+09:00",
+    "checkedAt": "2026-10-15T21:09:37+09:00",
     "status": "LIVE",
-    "price": 30000.0,
-    "per": 14.21,
+    "price": 29200.0,
+    "per": 13.83,
     "eps": 2111.0,
-    "pbr": 1.01,
+    "pbr": 0.98,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:11:46+09:00",
@@ -261,15 +261,15 @@
   },
   "086790": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-09-16T21:39:26+09:00",
+    "checkedAt": "2026-10-15T21:10:05+09:00",
     "status": "LIVE",
-    "price": 137200.0,
-    "per": 9.72,
+    "price": 124000.0,
+    "per": 8.79,
     "eps": 14110.0,
-    "pbr": 0.83,
+    "pbr": 0.75,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
-      "checkedAt": "2026-09-15T21:37:47+09:00",
+      "checkedAt": "2026-10-15T21:10:07+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
         "2023.12",
@@ -330,7 +330,7 @@
     "currency": "KRW",
     "industry": "금융",
     "high52": 142500.0,
-    "low52": 84000.0
+    "low52": 84500.0
   },
   "001450": {
     "source": "한국투자증권 Open API",
@@ -431,15 +431,15 @@
   },
   "008930": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-08T17:10:43+09:00",
+    "checkedAt": "2026-10-15T21:10:10+09:00",
     "status": "LIVE",
-    "price": 54000.0,
-    "per": 31.2,
+    "price": 44250.0,
+    "per": 25.56,
     "eps": 1731.0,
-    "pbr": 3.8,
+    "pbr": 3.12,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
-      "checkedAt": "2026-10-06T17:34:00+09:00",
+      "checkedAt": "2026-10-15T21:10:12+09:00",
       "status": "EMPTY",
       "periods": [],
       "mappingStatus": "UNVERIFIED",
@@ -454,12 +454,12 @@
   },
   "031980": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:07+09:00",
+    "checkedAt": "2026-10-15T21:09:28+09:00",
     "status": "LIVE",
-    "price": 208000.0,
-    "per": 48.92,
+    "price": 179700.0,
+    "per": 42.26,
     "eps": 4252.0,
-    "pbr": 8.86,
+    "pbr": 7.65,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:11:37+09:00",
@@ -702,12 +702,12 @@
   },
   "010950": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:27+09:00",
+    "checkedAt": "2026-10-15T21:09:33+09:00",
     "status": "LIVE",
-    "price": 161800.0,
-    "per": 106.59,
+    "price": 159700.0,
+    "per": 105.2,
     "eps": 1518.0,
-    "pbr": 2.12,
+    "pbr": 2.09,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:12:21+09:00",
@@ -832,7 +832,7 @@
   },
   "192820": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:22+09:00",
+    "checkedAt": "2026-10-15T21:09:26+09:00",
     "status": "LIVE",
     "price": 282000.0,
     "per": 26.01,
@@ -1115,12 +1115,12 @@
   },
   "005830": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:40+09:00",
+    "checkedAt": "2026-10-15T21:09:39+09:00",
     "status": "LIVE",
-    "price": 185000.0,
-    "per": 7.32,
+    "price": 187000.0,
+    "per": 7.4,
     "eps": 25263.0,
-    "pbr": 1.03,
+    "pbr": 1.04,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:12:12+09:00",
@@ -1212,12 +1212,12 @@
   },
   "028670": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:05+09:00",
+    "checkedAt": "2026-10-15T21:09:22+09:00",
     "status": "LIVE",
-    "price": 7170.0,
-    "per": 12.71,
+    "price": 6730.0,
+    "per": 11.93,
     "eps": 564.0,
-    "pbr": 0.67,
+    "pbr": 0.63,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:11:29+09:00",
@@ -1337,17 +1337,17 @@
     },
     "currency": "KRW",
     "industry": "운송·창고",
-    "high52": 7370.0,
-    "low52": 3555.0
+    "high52": 7830.0,
+    "low52": 3600.0
   },
   "138040": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:35+09:00",
+    "checkedAt": "2026-10-15T21:09:35+09:00",
     "status": "LIVE",
-    "price": 130500.0,
-    "per": 10.28,
+    "price": 129900.0,
+    "per": 10.23,
     "eps": 12698.0,
-    "pbr": 2.13,
+    "pbr": 2.12,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:12:52+09:00",
@@ -1638,16 +1638,16 @@
   },
   "021240": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:25+09:00",
+    "checkedAt": "2026-10-15T21:09:20+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "일반서비스",
     "high52": 109200.0,
     "low52": 68800.0,
-    "price": 103300.0,
-    "per": 12.07,
+    "price": 106800.0,
+    "per": 12.48,
     "eps": 8558.0,
-    "pbr": 2.02,
+    "pbr": 2.09,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:12:30+09:00",
@@ -1779,16 +1779,16 @@
   },
   "096770": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:09+09:00",
+    "checkedAt": "2026-10-15T21:09:24+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "화학",
     "high52": 165400.0,
     "low52": 87700.0,
-    "price": 162600.0,
+    "price": 154100.0,
     "per": null,
     "eps": -21056.0,
-    "pbr": 1.25,
+    "pbr": 1.19,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:12:17+09:00",
@@ -2339,16 +2339,16 @@
   },
   "096530": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:16+09:00",
+    "checkedAt": "2026-10-15T21:09:31+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "제약",
     "high52": 40450.0,
     "low52": 21700.0,
-    "price": 36400.0,
-    "per": 39.39,
+    "price": 35400.0,
+    "per": 38.31,
     "eps": 924.0,
-    "pbr": 1.65,
+    "pbr": 1.61,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:11:55+09:00",
@@ -3236,16 +3236,16 @@
   },
   "281820": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:29+09:00",
+    "checkedAt": "2026-10-15T21:09:48+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "의료·정밀기기",
     "high52": 134100.0,
     "low52": 35100.0,
-    "price": 111600.0,
-    "per": 43.29,
+    "price": 95900.0,
+    "per": 37.2,
     "eps": 2578.0,
-    "pbr": 4.15,
+    "pbr": 3.57,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:12:04+09:00",
@@ -3637,16 +3637,16 @@
   },
   "033780": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:18+09:00",
+    "checkedAt": "2026-10-15T21:09:17+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "음식료·담배",
     "high52": 192400.0,
     "low52": 132100.0,
-    "price": 181900.0,
-    "per": 20.27,
+    "price": 189800.0,
+    "per": 21.15,
     "eps": 8973.0,
-    "pbr": 2.03,
+    "pbr": 2.12,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T01:12:48+09:00",
@@ -3767,16 +3767,16 @@
   },
   "006400": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:33+09:00",
+    "checkedAt": "2026-10-15T21:09:50+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "전기·전자",
     "high52": 723000.0,
-    "low52": 209500.0,
-    "price": 590000.0,
+    "low52": 217500.0,
+    "price": 525000.0,
     "per": null,
     "eps": -8325.0,
-    "pbr": 2.17,
+    "pbr": 1.93,
     "label": "현재가 조회 응답 · Forward 지표 아님",
     "estimate": {
       "checkedAt": "2026-10-13T16:11:48+09:00",
@@ -3897,7 +3897,7 @@
   },
   "011200": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-14T17:06:12+09:00",
+    "checkedAt": "2026-10-15T21:09:41+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "운송·창고",
@@ -4023,6 +4023,419 @@
         }
       ],
       "vendorDateRaw": "20260824"
+    }
+  },
+  "086450": {
+    "source": "한국투자증권 Open API",
+    "checkedAt": "2026-10-15T21:09:44+09:00",
+    "status": "LIVE",
+    "currency": "KRW",
+    "industry": "제약",
+    "high52": 31250.0,
+    "low52": 16260.0,
+    "price": 24200.0,
+    "per": 16.58,
+    "eps": 1460.0,
+    "pbr": 1.64,
+    "label": "현재가 조회 응답 · Forward 지표 아님",
+    "estimate": {
+      "checkedAt": "2026-10-15T21:09:46+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
+    }
+  },
+  "032640": {
+    "source": "한국투자증권 Open API",
+    "checkedAt": "2026-10-15T21:09:52+09:00",
+    "status": "LIVE",
+    "currency": "KRW",
+    "industry": "통신",
+    "high52": 18800.0,
+    "low52": 13810.0,
+    "price": 15050.0,
+    "per": 12.46,
+    "eps": 1208.0,
+    "pbr": 0.72,
+    "label": "현재가 조회 응답 · Forward 지표 아님",
+    "estimate": {
+      "checkedAt": "2026-10-15T21:09:54+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 143726.0,
+          "data2": 146252.0,
+          "data3": 154517.0,
+          "data4": 154183.0,
+          "data5": 159385.0
+        },
+        {
+          "data1": 34.0,
+          "data2": 18.0,
+          "data3": 57.0,
+          "data4": -2.0,
+          "data5": 34.0
+        },
+        {
+          "data1": 9980.0,
+          "data2": 8631.0,
+          "data3": 8921.0,
+          "data4": 11854.0,
+          "data5": 12407.0
+        },
+        {
+          "data1": -77.0,
+          "data2": -135.0,
+          "data3": 34.0,
+          "data4": 329.0,
+          "data5": 47.0
+        },
+        {
+          "data1": 6228.0,
+          "data2": 3745.0,
+          "data3": 5239.0,
+          "data4": 7677.0,
+          "data5": 8377.0
+        },
+        {
+          "data1": -61.0,
+          "data2": -399.0,
+          "data3": 399.0,
+          "data4": 465.0,
+          "data5": 91.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 35693.0,
+          "data2": 35269.0,
+          "data3": 35892.0,
+          "data4": 39126.0,
+          "data5": 42161.0
+        },
+        {
+          "data1": 14490.0,
+          "data2": 8710.0,
+          "data3": 12210.0,
+          "data4": 18095.0,
+          "data5": 19738.0
+        },
+        {
+          "data1": -61.0,
+          "data2": -399.0,
+          "data3": 402.0,
+          "data4": 482.0,
+          "data5": 91.0
+        },
+        {
+          "data1": 71.0,
+          "data2": 119.0,
+          "data3": 121.0,
+          "data4": 82.0,
+          "data5": 76.0
+        },
+        {
+          "data1": 32.0,
+          "data2": 31.0,
+          "data3": 35.0,
+          "data4": 33.0,
+          "data5": 30.0
+        },
+        {
+          "data1": 75.0,
+          "data2": 44.0,
+          "data3": 60.0,
+          "data4": 84.0,
+          "data5": 86.0
+        },
+        {
+          "data1": 1295.0,
+          "data2": 1248.0,
+          "data3": 1171.0,
+          "data4": 1026.0,
+          "data5": 991.0
+        },
+        {
+          "data1": 41.0,
+          "data2": 31.0,
+          "data3": 34.0,
+          "data4": 45.0,
+          "data5": 47.0
+        }
+      ],
+      "vendorDateRaw": "20260806"
+    }
+  },
+  "078600": {
+    "source": "한국투자증권 Open API",
+    "checkedAt": "2026-10-15T21:09:57+09:00",
+    "status": "LIVE",
+    "currency": "KRW",
+    "industry": "전기·전자",
+    "high52": 183300.0,
+    "low52": 58900.0,
+    "price": 107700.0,
+    "per": 80.67,
+    "eps": 1335.0,
+    "pbr": 6.43,
+    "label": "현재가 조회 응답 · Forward 지표 아님",
+    "estimate": {
+      "checkedAt": "2026-10-15T21:09:59+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12E",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 1850.0,
+          "data2": 2193.0,
+          "data3": 2510.0,
+          "data4": 3114.0,
+          "data5": 3587.0
+        },
+        {
+          "data1": 63.0,
+          "data2": 186.0,
+          "data3": 145.0,
+          "data4": 241.0,
+          "data5": 152.0
+        },
+        {
+          "data1": 62.0,
+          "data2": 294.0,
+          "data3": 230.0,
+          "data4": 308.0,
+          "data5": 423.0
+        },
+        {
+          "data1": -481.0,
+          "data2": 3728.0,
+          "data3": -218.0,
+          "data4": 339.0,
+          "data5": 374.0
+        },
+        {
+          "data1": 7.0,
+          "data2": 369.0,
+          "data3": 209.0,
+          "data4": 220.0,
+          "data5": 324.0
+        },
+        {
+          "data1": -304.0,
+          "data2": 52047.0,
+          "data3": -432.0,
+          "data4": 48.0,
+          "data5": 476.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 152.0,
+          "data2": 410.0,
+          "data3": 390.0,
+          "data4": 473.0,
+          "data5": 594.0
+        },
+        {
+          "data1": 470.0,
+          "data2": 24770.0,
+          "data3": 13973.0,
+          "data4": 14648.0,
+          "data5": 21622.0
+        },
+        {
+          "data1": -299.0,
+          "data2": 51702.0,
+          "data3": -436.0,
+          "data4": 48.0,
+          "data5": 476.0
+        },
+        {
+          "data1": 18383.0,
+          "data2": 302.0,
+          "data3": 529.0,
+          "data4": 505.0,
+          "data5": 342.0
+        },
+        {
+          "data1": 990.0,
+          "data2": 340.0,
+          "data3": 362.0,
+          "data4": 296.0,
+          "data5": 229.0
+        },
+        {
+          "data1": 5.0,
+          "data2": 193.0,
+          "data3": 82.0,
+          "data4": 70.0,
+          "data5": 86.0
+        },
+        {
+          "data1": 1635.0,
+          "data2": 1706.0,
+          "data3": 1309.0,
+          "data4": 1221.0,
+          "data5": 1145.0
+        },
+        {
+          "data1": 7.0,
+          "data2": 51.0,
+          "data3": 32.0,
+          "data4": 41.0,
+          "data5": 55.0
+        }
+      ],
+      "vendorDateRaw": "20251117"
+    }
+  },
+  "131970": {
+    "source": "한국투자증권 Open API",
+    "checkedAt": "2026-10-15T21:10:01+09:00",
+    "status": "LIVE",
+    "currency": "KRW",
+    "industry": "일반서비스",
+    "high52": 196900.0,
+    "low52": 40500.0,
+    "price": 116000.0,
+    "per": 60.96,
+    "eps": 1903.0,
+    "pbr": 5.1,
+    "label": "현재가 조회 응답 · Forward 지표 아님",
+    "estimate": {
+      "checkedAt": "2026-10-15T21:10:03+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 3387.0,
+          "data2": 3731.0,
+          "data3": 3039.0,
+          "data4": 3332.0,
+          "data5": 4972.0
+        },
+        {
+          "data1": 220.0,
+          "data2": 102.0,
+          "data3": -186.0,
+          "data4": 96.0,
+          "data5": 492.0
+        },
+        {
+          "data1": 608.0,
+          "data2": 379.0,
+          "data3": -9.0,
+          "data4": 333.0,
+          "data5": 1100.0
+        },
+        {
+          "data1": -95.0,
+          "data2": -376.0,
+          "data3": -1025.0,
+          "data4": -36404.0,
+          "data5": 2302.0
+        },
+        {
+          "data1": 491.0,
+          "data2": 368.0,
+          "data3": 15.0,
+          "data4": 289.0,
+          "data5": 898.0
+        },
+        {
+          "data1": -62.0,
+          "data2": -251.0,
+          "data3": -959.0,
+          "data4": 18153.0,
+          "data5": 2104.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 2286.0,
+          "data2": 2267.0,
+          "data3": 1662.0,
+          "data4": 1897.0,
+          "data5": 3309.0
+        },
+        {
+          "data1": 28530.0,
+          "data2": 19120.0,
+          "data3": 780.0,
+          "data4": 15029.0,
+          "data5": 46639.0
+        },
+        {
+          "data1": -74.0,
+          "data2": -330.0,
+          "data3": -959.0,
+          "data4": 18267.0,
+          "data5": 2103.0
+        },
+        {
+          "data1": 205.0,
+          "data2": 131.0,
+          "data3": 6821.0,
+          "data4": 950.0,
+          "data5": 306.0
+        },
+        {
+          "data1": 54.0,
+          "data2": 32.0,
+          "data3": 69.0,
+          "data4": 161.0,
+          "data5": 97.0
+        },
+        {
+          "data1": 138.0,
+          "data2": 87.0,
+          "data3": 3.0,
+          "data4": 64.0,
+          "data5": 177.0
+        },
+        {
+          "data1": 891.0,
+          "data2": 800.0,
+          "data3": 610.0,
+          "data4": 854.0,
+          "data5": 968.0
+        },
+        {
+          "data1": 40.0,
+          "data2": 26.0,
+          "data3": -1.0,
+          "data4": 30.0,
+          "data5": 70.0
+        }
+      ],
+      "vendorDateRaw": "20260823"
     }
   }
 }
