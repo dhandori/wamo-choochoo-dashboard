@@ -81,6 +81,29 @@ with sync_playwright() as p:
                 expect(page.get_by_role('button',name='← 전체 산업')).to_be_visible()
                 expect(page.locator('.stock-link:visible').first).to_be_visible()
                 page.locator('[data-tab=near]').click()
+            page.locator('[data-tab=ai]').click()
+            expect(page.locator('#section-title')).to_have_text('AI 섹터')
+            expect(page.locator('.ai-sector-card')).to_have_count(8)
+            expect(page.locator('#industry-rail')).to_be_hidden()
+            page.get_by_role('button',name='20일',exact=True).click()
+            expect(page.locator('.ai-card-return').first).to_contain_text('20일 중앙값')
+            page.get_by_role('combobox',name='AI 분야',exact=True).select_option('optics')
+            page.locator('#search').fill('010170' if market=='KR' else 'AVGO')
+            expect(page.locator('.stock-link:visible')).to_have_count(1)
+            expect(page.locator('.stock-link:visible')).to_contain_text('광통신')
+            page.get_by_role('button',name='필터 초기화',exact=True).click()
+            page.get_by_role('combobox',name='AI 종목 조건',exact=True).select_option('down')
+            names=page.locator('.stock-link:visible').evaluate_all('(els)=>els.map(e=>e.title)')
+            assert all(next(s for s in rows if s['name']==name)['changePct']<=-3 for name in names)
+            page.get_by_role('button',name='필터 초기화',exact=True).click()
+            page.get_by_role('combobox',name='정렬',exact=True).select_option('marketCap')
+            names=page.locator('.stock-link:visible').evaluate_all('(els)=>els.map(e=>e.title)')
+            caps=[next(s for s in rows if s['name']==name)['marketCap'] for name in names]
+            assert caps==sorted(caps,reverse=True)
+            page.screenshot(path=str(OUT/f'radar-{market}-{width}-ai.png'),full_page=False)
+            dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
+            assert dimensions['scroll']<=dimensions['client'],dimensions
+            page.locator('[data-tab=near]').click()
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
             assert dimensions['scroll']<=dimensions['client'],dimensions
             assert not errors,errors
@@ -107,6 +130,8 @@ with sync_playwright() as p:
         page.get_by_role('button',name='데이터 확인',exact=True).click()
         expect(page.locator('.stock-link:visible').first).to_be_visible()
         page.locator('[data-tab=movers]').click();expect(page.locator('.stock-link:visible').first).to_be_visible()
+        page.locator('[data-tab=ai]').click();expect(page.locator('.stock-link:visible').first).to_be_visible()
+        expect(page.locator('.ai-sector-card')).to_have_count(8)
         assert not errors,errors
         context.close();print('RADAR RETENTION PASS',failure)
     context=browser.new_context();page=context.new_page()
@@ -118,6 +143,14 @@ with sync_playwright() as p:
     expect(page.get_by_role('button',name='데이터 확인',exact=True)).to_be_enabled()
     expect(page.locator('.stock-link:visible').first).to_be_visible()
     context.close();print('RADAR MANUAL REFRESH PASS')
+    context=browser.new_context();page=context.new_page()
+    page.goto(base+'/radar.html?market=US&tab=ai',wait_until='networkidle')
+    expect(page.locator('#section-title')).to_have_text('AI 섹터')
+    page.locator('[data-market=KR]').click()
+    expect(page.locator('#section-title')).to_have_text('AI 섹터')
+    expect(page.locator('#date-info')).to_contain_text(DATA['markets']['KR']['asOf'])
+    assert 'tab=ai' in page.url
+    context.close();print('RADAR AI DEEP LINK AND MARKET SWITCH PASS')
     for name,market in [('index.html','KR'),('us.html','US')]:
         page=browser.new_page()
         page.goto(base+'/'+name,wait_until='domcontentloaded');page.wait_for_url(f'**/radar.html?market={market}')

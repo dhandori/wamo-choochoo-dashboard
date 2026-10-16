@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>WAMO | 데일리 마켓 레이더</title>
   <meta name="description" content="한국과 미국 시장의 52주 신고가권, 당일 신고가, 산업 동반 강세와 특징주">
-  <link rel="stylesheet" href="./radar/style.css?v=20261014-4">
+  <link rel="stylesheet" href="./radar/style.css?v=20261016-1">
 </head>
 <body>
   <div class="shell">
@@ -21,13 +21,14 @@
     <div id="metrics" class="metrics" aria-label="전체 스크리닝 대상 집계"></div>
     <details class="disclosure"><summary id="coverage-summary">데이터 범위와 기준</summary><div id="coverage-detail"></div></details>
     <nav class="tabs" aria-label="분석 화면">
-      <button data-tab="near">52주 신고가권</button><button data-tab="high">당일 신고가</button><button data-tab="industries">인더스트리 액션</button><button data-tab="movers">특징주</button>
+      <button data-tab="near">52주 신고가권</button><button data-tab="high">당일 신고가</button><button data-tab="industries">인더스트리 액션</button><button data-tab="movers">특징주</button><button data-tab="ai">AI 섹터</button>
     </nav>
     <section class="workspace">
       <div class="section-head">
         <div><h2 id="section-title"></h2><p id="section-description"></p></div>
         <label class="search"><span class="sr-only">종목 검색</span><input id="search" placeholder="종목명 · 티커 · 산업 검색" type="search"></label>
       </div>
+      <section id="ai-overview" class="ai-overview" aria-label="AI 분야별 흐름" hidden></section>
       <div id="controls" class="controls"></div>
       <div class="scanner-layout">
         <div class="primary"><div id="result-summary" class="result-summary"></div><div id="content" aria-live="polite"></div><div id="pagination" class="pagination"></div></div>
@@ -38,6 +39,6 @@
   </div>
   <dialog id="drawer" aria-labelledby="stock-detail-title"><button id="close-drawer" class="close" aria-label="상세 닫기">×</button><div id="detail"></div></dialog>
   <!--WAMO_INSIGHTS-->
-  <script type="module" src="./radar/view.js?v=20261014-4"></script>
+  <script type="module" src="./radar/view.js?v=20261016-1"></script>
 </body>
 </html>
