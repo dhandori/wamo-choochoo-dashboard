@@ -38,3 +38,15 @@ test('AI classifications do not inherit erroneous Korean industries or duplicate
  assert.deepEqual(model.selectStocks(korean,{tab:'ai',aiSector:'power'}).map(s=>s.symbol),['010120']);
  assert.deepEqual(model.selectStocks({stocks:[stock('GOOG'),stock('GOOGL')]},{tab:'ai'}).map(s=>s.symbol),['GOOGL']);
 });
+
+test('60-day sector medians exclude unavailable values and count overlapping names once',()=>{
+ const stocks=[stock('NVDA',{return60d:20}),stock('AVGO',{return60d:-10}),stock('MSFT',{return60d:null}),stock('AMD'),stock('MU',{return60d:NaN})];
+ const a=model.aiOverview({stocks},'US');
+ assert.equal(a.total.medianReturn60d,5);
+ assert.equal(a.total.return60dCount,2);
+ assert.equal(a.groups.find(g=>g.id==='hardware').medianReturn60d,5);
+ assert.equal(a.groups.find(g=>g.id==='optics').medianReturn60d,-10);
+ assert.equal(a.groups.find(g=>g.id==='bigtech').medianReturn60d,null);
+ assert.equal(a.groups.find(g=>g.id==='bigtech').return60dCount,0);
+ assert.deepEqual(model.selectStocks({stocks:stocks.slice(0,4)},{tab:'ai',sort:'return60d'}).map(s=>s.symbol),['NVDA','AVGO','MSFT','AMD']);
+});
