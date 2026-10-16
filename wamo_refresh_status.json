@@ -47,27 +47,25 @@
     "radarStatus": "PASS"
   },
   "US": {
-    "status": "RUNNING",
+    "status": "WARNING",
     "attemptedAt": "2026-10-16T21:40:06.108886+00:00",
     "scheduledFor": "2026-10-16T20:20:00+00:00",
     "nextScheduledFor": "2026-10-19T20:20:00+00:00",
     "trigger": "예약실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/38970864576",
-    "moversStatus": "PASS",
+    "moversStatus": "RUNNING",
     "warnings": [
-      "당일 신규수집 제외 2종목 · 종목별 날짜 확인",
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
     ],
-    "lastSuccessAt": "2026-10-15T21:46:07.999656+00:00",
-    "asOf": "2026-10-15",
+    "lastSuccessAt": "2026-10-16T21:41:37.437067+00:00",
+    "asOf": "2026-10-16",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-10-15",
-      "currentCount": 877,
-      "currentPct": 99.8,
-      "checkedAt": "2026-10-16T06:46:07+09:00",
+      "expectedSession": "2026-10-16",
+      "currentCount": 879,
+      "currentPct": 100.0,
+      "checkedAt": "2026-10-17T06:41:37+09:00",
       "warnings": [
-        "당일 신규수집 제외 2종목 · 종목별 날짜 확인",
         "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
       ],
       "calendar": "XNYS"
@@ -90,6 +88,6 @@
     "moversCompletedAt": "2026-10-15T21:46:19.457378+00:00",
     "refreshMode": "FULL",
     "catalogStatus": "PASS",
-    "radarStatus": "PASS"
+    "radarStatus": "RUNNING"
   }
 }
