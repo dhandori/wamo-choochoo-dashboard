@@ -133,9 +133,12 @@ with sync_playwright() as p:
             page.evaluate('window.scrollTo(0,0)')
             page.screenshot(path=str(OUT/f'radar-{market}-{width}.png'),full_page=False)
             first_y=page.locator('.stock-link:visible').first.bounding_box()['y']
-            print('FIRST STOCK Y',market,width,round(first_y))
-            if width==1440:assert first_y<520,first_y
-            else:assert first_y<580,first_y
+            # A legitimate freshness notice adds height after the session cutoff.
+            # Keep the original content-density budget without hiding that notice.
+            notice_height=page.locator('#notice').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginTop)+parseFloat(getComputedStyle(node).marginBottom)')
+            print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height))
+            if width==1440:assert first_y-notice_height<520,first_y
+            else:assert first_y-notice_height<580,first_y
             context.close()
             print('RADAR INTERACTION PASS',market,width)
     for failure in ('offline','invalid'):
