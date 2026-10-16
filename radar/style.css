@@ -196,3 +196,16 @@ table { font-size: 13px; }
   .card-stats .stat span { font-size: 11px; }
   .card-stats .stat strong { font-size: 14px; }
 }
+
+/* Term help shares the label's typography and never shifts the layout. */
+.term-help.term-help { display: inline; min-width: 0; min-height: 0; padding: 2px 0; border: 0; border-radius: 2px; background: transparent; color: inherit; font: inherit; text-align: inherit; text-decoration: underline dotted #71849c; text-underline-offset: 4px; cursor: help; }
+.term-help.term-help:hover, .term-help[aria-describedby] { color: var(--text); text-decoration-color: var(--green); }
+.checkbox-help { display: inline-flex; align-items: center; }
+.checkbox-help .checkbox-control { padding-right: 3px; }
+.term-help.term-help-icon { display: inline-flex; justify-content: center; align-items: center; min-width: 24px; min-height: 24px; padding: 0; font-size: 11px; color: var(--muted); text-decoration: none; }
+.term-help-icon::first-letter { font-weight: 600; }
+.ai-heading-help { margin-left: 12px; font-size: 11px; font-weight: 400; color: var(--muted); }
+.term-tooltip { position: fixed; z-index: 1000; width: 310px; max-width: calc(100vw - 24px); overflow-y: auto; padding: 14px 16px; border: 1px solid #526b87; border-radius: 9px; background: #1b2a3e; color: var(--text); box-shadow: 0 8px 30px #0008; font: 12px/1.7 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; white-space: normal; text-align: left; overflow-wrap: anywhere; }
+.term-tooltip[hidden] { display: none; }
+.term-tooltip > strong { display: block; margin: 0 0 5px; color: #d8e9ff; font-size: 13px; }
+.term-tooltip > p { margin: 0; color: #c1cede; font-size: 12px; line-height: 1.8; }

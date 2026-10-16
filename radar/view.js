@@ -1,4 +1,5 @@
 import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED } from './model.mjs?v=20261016-3';
+import { helpLabel, helpButton, closeHelp } from './help.js?v=20261016-4';
 
 const $ = id => document.getElementById(id);
 const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d' };
@@ -91,9 +92,11 @@ function stockButton(s) {
   return b;
 }
 function stat(label, value, cls = '') {
-  const box = el('div', null, 'stat'); box.append(el('span', label), el('strong', value, cls)); return box;
+  const box = el('div', null, 'stat'), caption = el('span'); caption.append(helpLabel(label));
+  box.append(caption, el('strong', value, cls)); return box;
 }
 function detail(s) {
+  closeHelp();
   const d = $('detail');
   const heading = el('h2', s.name); heading.id = 'stock-detail-title';
   d.replaceChildren(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), heading, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
@@ -132,7 +135,7 @@ function table(rows) {
   const pageRows = rows.slice((state.page - 1) * 30, state.page * 30);
   const longDays=['60d','120d','200d'].includes(state.aiPeriod)?parseInt(state.aiPeriod,10):60,longKey=`return${longDays}d`;
   const wrap = el('div', null, 'table-wrap'), table = el('table'), head = el('thead'), tr = el('tr');
-  [state.tab==='ai'?'종목 / AI 연결 분야':'종목 / 산업', `시총 (${capCurrency()})`, '종가', '당일', '5일', ...(state.tab==='ai'?['20일',`${longDays}일`]:[]), '고점까지', '거래량 배수', 'RS', '60일 추이', '바로가기'].forEach(t => { const th = el('th', t); th.scope = 'col'; tr.append(th); });
+  [state.tab==='ai'?'종목 / AI 연결 분야':'종목 / 산업', `시총 (${capCurrency()})`, '종가', '당일', '5일', ...(state.tab==='ai'?['20일',`${longDays}일`]:[]), '고점까지', '거래량 배수', 'RS', '60일 추이', '바로가기'].forEach(t => { const th = el('th'); th.scope = 'col'; th.setAttribute('aria-label', t); th.append(helpLabel(t)); tr.append(th); });
   head.append(tr); table.append(head); const body = el('tbody');
   pageRows.forEach(s => {
     const row = el('tr'), name = el('td'); name.append(stockButton(s));
@@ -182,7 +185,8 @@ function renderRail(m) {
 }
 function checkbox(key, text, parent) {
   const label = el('label', null, 'checkbox-control'), input = el('input'); input.type = 'checkbox'; input.checked = state[key]; input.onchange = () => change(key, input.checked);
-  label.append(input, document.createTextNode(` ${text}`)); parent.append(label);
+  label.append(input, document.createTextNode(` ${text}`));
+  const wrap = el('div', null, 'checkbox-help'); wrap.append(label, helpButton(text, key, true)); parent.append(wrap);
 }
 function resetFilters() {
   for (const key of ['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'confirmed', 'page','aiSector','aiSignal','aiPeriod']) state[key] = defaults[key];
@@ -193,7 +197,7 @@ function renderControls() {
   if (state.industry) controls.append(button('← 전체 산업', false, () => { state.industry = null; state.page = 1; render(); }));
   const group = el('div', null, 'filter-group');
   if (state.tab === 'near') {
-    group.append(el('span', '고점 거리', 'filter-label')); [5, 10, 15].forEach(v => group.append(button(`${v}% 이내`, state.distance === v, () => change('distance', v))));
+    const label = el('span', null, 'filter-label'); label.append(helpLabel('고점 거리')); group.append(label); [5, 10, 15].forEach(v => group.append(button(`${v}% 이내`, state.distance === v, () => change('distance', v))));
   }
   if (state.tab === 'high') [['either', '모두'], ['intraday', '장중 고점'], ['close', '종가 고점']].forEach(([v, text]) => group.append(button(text, state.high === v, () => change('high', v))));
   if (state.tab === 'movers') [['all', '전체'], ['up', '상승 ≥3%'], ['down', '하락 ≤−3%'], ['volume', '거래량 ≥1.5×']].forEach(([v, text]) => group.append(button(text, state.mode === v, () => change('mode', v))));
@@ -226,6 +230,7 @@ function renderAI(m) {
   const [period,key,countKey]=periods[state.aiPeriod];
   const top=el('div',null,'ai-heading'),caption=el('div');
   caption.append(el('h3','AI 분야별 흐름'),el('p','현재 시장의 전체 AI 대상 · 아래 종목 필터와 독립 · 카드 선택으로 분야 좁히기'));
+  const medianHelp=el('span',null,'ai-heading-help');medianHelp.append(helpLabel('중앙값'));caption.querySelector('h3').append(medianHelp);
   const toggles=el('div',null,'filter-group');toggles.setAttribute('aria-label','AI 분야 비교 기간');
   Object.entries(periods).forEach(([v,[label]])=>{const b=button(label,state.aiPeriod===v,()=>change('aiPeriod',v));b.setAttribute('aria-pressed',String(state.aiPeriod===v));toggles.append(b);});
   top.append(caption,toggles);panel.append(top);
@@ -272,10 +277,10 @@ function renderMeta(m) {
     b.setAttribute('aria-label', `${b.firstChild.textContent} · ${b.title}`);
   });
   $('metrics').replaceChildren();
-  [['52주 신고가권', near.length, '고점 대비 10% 이내'], ['당일 신고가', highs.length, '장중 또는 종가 경신'], ['산업 동반 강세', groups.length, '확인된 그룹'], ['특징주', moves.length, '상승 · 하락 · 거래량']].forEach(([label, value, sub]) => { const box = el('div', null, 'metric'); box.append(el('span', label), el('strong', value.toLocaleString()), el('small', sub)); $('metrics').append(box); });
+  [['52주 신고가권', near.length, '고점 대비 10% 이내'], ['당일 신고가', highs.length, '장중 또는 종가 경신'], ['산업 동반 강세', groups.length, '확인된 그룹'], ['특징주', moves.length, '상승 · 하락 · 거래량']].forEach(([label, value, sub]) => { const box = el('div', null, 'metric'), caption=el('span'); caption.append(helpLabel(label)); box.append(caption, el('strong', value.toLocaleString()), el('small', sub)); $('metrics').append(box); });
   if(state.tab==='ai'){
     $('metrics').replaceChildren();
-    [['AI 관찰 종목',`${ai.count}`,`관리 목록 ${ai.catalogCount}종목`],['당일 상승 비율',numeric(ai.advancingPct)?`${fmt(ai.advancingPct,0)}%`:'—',`유효 ${ai.changeCount}종목 중 ${ai.advancingCount}종목`],['AI 신고가권',`${ai.nearHighCount}`,`52주 비교 ${ai.eligible52w}종목 · 10% 이내`],['AI 당일 신고가',`${ai.newHighCount}`,'장중 또는 종가 · 중복 제외']].forEach(([label,value,sub])=>{const box=el('div',null,'metric');box.append(el('span',label),el('strong',value),el('small',sub));$('metrics').append(box);});
+    [['AI 관찰 종목',`${ai.count}`,`관리 목록 ${ai.catalogCount}종목`],['당일 상승 비율',numeric(ai.advancingPct)?`${fmt(ai.advancingPct,0)}%`:'—',`유효 ${ai.changeCount}종목 중 ${ai.advancingCount}종목`],['AI 신고가권',`${ai.nearHighCount}`,`52주 비교 ${ai.eligible52w}종목 · 10% 이내`],['AI 당일 신고가',`${ai.newHighCount}`,'장중 또는 종가 · 중복 제외']].forEach(([label,value,sub])=>{const box=el('div',null,'metric'),caption=el('span');caption.append(helpLabel(label));box.append(caption,el('strong',value),el('small',sub));$('metrics').append(box);});
   }
   $('metrics').setAttribute('aria-label',state.tab==='ai'?'전체 AI 관찰 목록 집계':'전체 스크리닝 대상 집계');
   $('coverage-summary').textContent = `전체 스크리닝 ${m.coverage.valid}종목 · 52주 비교 ${m.coverage.eligible52w}종목${m.coverage.excluded ? ' · 제외 ' + m.coverage.excluded + '종목' : ''} · 데이터 기준`;
@@ -284,6 +289,7 @@ function renderMeta(m) {
   m.warnings.forEach(w => $('coverage-detail').append(el('p', w)));
 }
 function render() {
+  closeHelp();
   if (!snapshot) {
     $('content').replaceChildren(el('div', '검증된 가격 데이터를 불러오는 중입니다.', 'empty'));
     const retry = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); retry.className = 'refresh-button'; $('date-info').replaceChildren(retry); return;
@@ -325,6 +331,7 @@ document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
 function syncUrl(){const url=new URL(location.href);url.searchParams.set('market',state.market);url.searchParams.set('tab',state.tab);history.replaceState(null,'',url);}
 $('search').oninput = e => change('query', e.target.value);
 $('close-drawer').onclick = () => $('drawer').close();
+$('drawer').addEventListener('close', closeHelp);
 $('drawer').onclick = e => { if (e.target === $('drawer')) $('drawer').close(); };
 try { const embedded = JSON.parse($('wamo-snapshot')?.textContent || 'null'); if (validSnapshot(embedded)) snapshot = embedded; } catch {}
 try { snapshot = acceptSnapshot(snapshot, JSON.parse(localStorage.getItem('wamo-verified-v1') || 'null')); } catch {}

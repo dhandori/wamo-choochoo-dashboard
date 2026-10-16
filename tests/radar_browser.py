@@ -13,17 +13,44 @@ class Quiet(SimpleHTTPRequestHandler):
 server=ThreadingHTTPServer(('127.0.0.1',0),partial(Quiet,directory=str(ROOT)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
 base=f'http://127.0.0.1:{server.server_port}'
+def check_help_bounds(page):
+    box=page.get_by_role('tooltip').bounding_box()
+    assert box and box['x']>=0 and box['y']>=0,box
+    assert box['x']+box['width']<=page.viewport_size['width'],box
+    assert box['y']+box['height']<=page.viewport_size['height'],box
+    assert page.get_by_role('tooltip').evaluate('(e)=>e.contains(document.elementFromPoint(e.getBoundingClientRect().x+e.clientWidth/2,e.getBoundingClientRect().y+e.clientHeight/2))')
+
 with sync_playwright() as p:
     browser=p.chromium.launch()
     for width in (1440,390,360):
         for market in ('KR','US'):
-            context=browser.new_context(viewport={'width':width,'height':1000})
+            context=browser.new_context(viewport={'width':width,'height':1000},has_touch=width<760)
             page=context.new_page(); errors=[]
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.route('**/*',lambda route:route.continue_() if route.request.url.startswith(base) else route.abort())
             page.goto(f'{base}/radar.html?market={market}',wait_until='networkidle')
             expect(page.locator('#date-info')).to_contain_text(DATA['markets'][market]['asOf'])
             expect(page.locator('#section-title')).to_have_text('52주 신고가권')
+            rs_help=page.locator('#controls [data-help=rs]')
+            if width==1440:
+                rs_help.hover();expect(page.get_by_role('tooltip')).to_contain_text('RSI')
+                page.mouse.move(0,0);expect(page.get_by_role('tooltip')).not_to_be_visible()
+                rs_help.focus();expect(page.get_by_role('tooltip')).to_be_visible()
+                expect(rs_help).to_have_attribute('aria-describedby','term-tooltip')
+                page.keyboard.press('Escape');expect(page.get_by_role('tooltip')).not_to_be_visible()
+                rs_help.click()
+            else:rs_help.tap()
+            expect(page.get_by_role('tooltip')).to_contain_text('5일 수익률 20%')
+            expect(page.get_by_role('checkbox',name='RS ≥80')).not_to_be_checked()
+            check_help_bounds(page)
+            page.screenshot(path=str(OUT/f'radar-{market}-{width}-help.png'),full_page=False)
+            if width==1440:rs_help.click()
+            else:rs_help.tap()
+            expect(page.get_by_role('tooltip')).not_to_be_visible()
+            page.locator('#controls [data-help=stage]').click()
+            expect(page.get_by_role('tooltip')).to_contain_text('20거래일 전')
+            expect(page.get_by_role('checkbox',name='Stage 2',exact=True)).not_to_be_checked()
+            page.locator('#search').click();expect(page.get_by_role('tooltip')).not_to_be_visible()
             rows=DATA['markets'][market]['stocks']
             near=[s for s in rows if s['highDistancePct'] is not None and s['highDistancePct']<=10]
             expect(page.locator('#pagination')).to_contain_text(f'{len(near)}종목')
@@ -38,6 +65,13 @@ with sync_playwright() as p:
                     assert drawer_link.get_attribute('target')=='_blank'
                     assert 'noopener' in drawer_link.get_attribute('rel')
                 assert not page.locator('#detail a[href*=legacy]').count()
+                page.locator('#detail [data-help=volume]').click()
+                expect(page.get_by_role('tooltip')).to_contain_text('이전 50거래일')
+                check_help_bounds(page)
+                page.screenshot(path=str(OUT/f'radar-{market}-{width}-drawer-help.png'),full_page=False)
+                page.keyboard.press('Escape')
+                expect(page.get_by_role('tooltip')).not_to_be_visible()
+                expect(page.locator('#drawer')).to_be_visible()
                 page.screenshot(path=str(OUT/f'radar-{market}-{width}-drawer.png'),full_page=False)
                 page.locator('#close-drawer').click()
                 currency='원' if market=='KR' else '달러'
@@ -172,7 +206,11 @@ with sync_playwright() as p:
     context=browser.new_context();page=context.new_page()
     page.goto(base+'/radar.html?market=US&tab=ai',wait_until='networkidle')
     expect(page.locator('#section-title')).to_have_text('AI 섹터')
+    page.locator('#ai-overview [data-help=median]').click()
+    expect(page.get_by_role('tooltip')).to_contain_text('가운데 두 값의 평균')
+    expect(page.locator('[data-ai-sector=all]')).to_have_attribute('aria-pressed','true')
     page.get_by_role('button',name='200일',exact=True).click()
+    expect(page.get_by_role('tooltip')).not_to_be_visible()
     page.locator('[data-market=KR]').click()
     expect(page.get_by_role('button',name='200일',exact=True)).to_have_attribute('aria-pressed','true')
     expect(page.locator('#section-title')).to_have_text('AI 섹터')
