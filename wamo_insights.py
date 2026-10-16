@@ -118,7 +118,7 @@ def project(stock,market,asof):
     return {'id':f'{market}:{symbol}','symbol':symbol,'ticker':ticker,'name':stock.get('name') or symbol,'market':market,
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
             'industry':name.strip(),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,
-            'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'high52':high,
+            'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),'volumeRatio':volume,
             'rs':number(stock.get('rsPercentile')),'stage2':stock.get('stage2Core'),

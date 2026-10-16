@@ -53,6 +53,16 @@ class InsightsTests(unittest.TestCase):
         m=self.build(stock(count=40))
         self.assertEqual(m['coverage']['eligible52w'],0)
         self.assertIsNone(m['stocks'][0]['high52'])
+    def test_60_day_return_requires_61_closes_and_uses_trading_observations(self):
+        s=stock(close=90,count=61)
+        start=datetime(2026,7,21)
+        sessions=[start+timedelta(days=i) for i in range(85) if (start+timedelta(days=i)).weekday()<5]
+        for row,session in zip(s['history'],sessions):row['date']=session.date().isoformat()
+        s['history'][0]['close']=75
+        self.assertEqual(self.build(s)['stocks'][0].get('return60d'),20)
+        short=self.build(stock(count=60))['stocks'][0]
+        self.assertIn('return60d',short)
+        self.assertIsNone(short['return60d'])
     def test_stale_row_and_corrupt_histories_excluded(self):
         stale=stock('OLD'); stale['date']='2026-10-12'
         broken=stock('BAD'); broken['history'][-2]['date']='garbage'
