@@ -99,23 +99,90 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(runner.select_targets(malformed, instant('2026-09-15T05:45'), 'US', True),
                          [('US', instant('2026-09-14T20:20'))])
 
-    def test_workflow_has_close_candidates_and_one_kr_backup(self):
+    def test_workflow_has_close_candidates_and_both_market_recovery_windows(self):
         import inspect
         import re
         workflow = (runner.ROOT / '.github/workflows/main.yml').read_text()
         crons = re.findall(r"cron: '([0-9]+) ([0-9]+) \* \* 1-5'", workflow)
         actual = {(int(hour), int(minute)) for minute, hour in crons}
-        self.assertEqual(actual, {(7, 0), (7, 17), (20, 20), (21, 20)})
+        self.assertEqual(actual, {(7, 0), (20, 20), (21, 20)})
+        self.assertIn("11,41 0-3,7-13,20-23 * * *", workflow)
         self.assertNotIn('7,22,37,52', workflow)
         self.assertIn('fetch-depth: 1', workflow)
         self.assertIn("if: github.event_name != 'push'", workflow)
         self.assertIn("github.event_name == 'push' && 'code-check' || 'data-update'", workflow)
         self.assertIn("43 */2 * * *", workflow)
+        self.assertIn('queue: max', workflow)
         self.assertIn('timeout-minutes: 90', workflow)
         self.assertIn('timeout-minutes: 75', workflow)
         # The child timeout must leave time for restore/status publication before
         # GitHub terminates the 30-minute refresh step.
         self.assertEqual(inspect.signature(runner.run_script).parameters['timeout'].default, 1500)
+
+    def test_radar_sync_recovers_missing_close_before_rebuilding_screen(self):
+        workflow = (runner.ROOT / '.github/workflows/radar-sync.yml').read_text()
+        command = 'python -u wamo_run.py --market auto --recovery --publish'
+        self.assertIn(command, workflow)
+        self.assertLess(workflow.index(command), workflow.index('run: python wamo_publish_insights.py'))
+        # The alternate trigger needs the same provider access and write lock.
+        for name in ('OPENDART_API_KEY', 'KRX_ID', 'KRX_PW', 'KIS_APP_KEY', 'KIS_APP_SEC', 'SEC_USER_AGENT'):
+            self.assertIn(name + ':', workflow)
+        self.assertIn('group: wamo-data-update', workflow)
+        self.assertIn('queue: max', workflow)
+        self.assertIn("if: github.ref == 'refs/heads/main'", workflow)
+        self.assertIn('python wamo_run.py --finalize-interrupted --publish', workflow)
+
+    def test_workflow_routes_recovery_triggers_to_both_markets(self):
+        import os
+        import subprocess
+        import textwrap
+        workflow = (runner.ROOT / '.github/workflows/main.yml').read_text()
+        body = workflow.split('          set -euo pipefail\n', 1)[1].split('      - name:', 1)[0]
+        body = textwrap.dedent(body).replace('python -u wamo_run.py "${args[@]}"', 'printf "%s\\n" "${args[@]}"')
+        for schedule, market, recovery in [
+            ('0 7 * * 1-5', 'KR', False), ('20 20 * * 1-5', 'US', False),
+            ('20 21 * * 1-5', 'US', False), ('43 */2 * * *', 'auto', True),
+            ('11,41 0-3,7-13,20-23 * * *', 'auto', True),
+        ]:
+            with self.subTest(schedule=schedule):
+                env = dict(os.environ, REQUESTED_MARKET='auto', GITHUB_EVENT_NAME='schedule',
+                           EVENT_SCHEDULE=schedule, PUBLISH_RESULT='true')
+                result = subprocess.run(['bash', '-euc', body], env=env, check=True, capture_output=True, text=True)
+                self.assertEqual(result.stdout.splitlines(), ['--market', market, *(['--recovery'] if recovery else []), '--publish'])
+
+    def test_radar_recovery_does_not_skip_a_delayed_us_close(self):
+        # New York close arrives on the next Korean calendar day. Even a late
+        # retry must select that actual session, not relabel an older close.
+        for today, previous, retry in [
+            ('2026-10-15T20:20', '2026-10-14T20:20', '2026-10-16T02:41'),
+            ('2026-11-03T21:20', '2026-11-02T21:20', '2026-11-04T02:41'),
+        ]:
+            with self.subTest(today=today):
+                slot = instant(today)
+                state = {'US': {'slot': instant(previous).isoformat(), 'success': True}}
+                self.assertEqual(runner.select_targets(state, instant(retry), 'US', recovery=True), [('US', slot)])
+                state['US'] = {'slot': slot.isoformat(), 'success': True}
+                self.assertEqual(runner.select_targets(state, instant(retry), 'US', recovery=True), [])
+
+    def test_repeated_price_failures_never_defer_a_retry_beyond_thirty_minutes(self):
+        for market, timestamp in [('KR', '2026-10-16T07:00'), ('US', '2026-10-15T20:20')]:
+            slot = instant(timestamp)
+            for attempts in (1, 2, 4, 8):
+                with self.subTest(market=market, attempts=attempts):
+                    state = {market: {'slot': slot.isoformat(), 'success': False,
+                                      'attempts': attempts, 'lastAttemptAt': slot.isoformat()}}
+                    self.assertEqual(runner.select_targets(state, slot + timedelta(minutes=29), market, recovery=True), [])
+                    self.assertEqual(runner.select_targets(state, slot + timedelta(minutes=30), market, recovery=True), [(market, slot)])
+
+    def test_missed_october_16_close_is_recovered_by_later_radar_trigger_only_once(self):
+        # On Oct 16 the 19:57 Radar Sync rebuilt Oct 15 prices without collecting.
+        # Route that trigger through the real session selector, then deduplicate.
+        state = {'KR': {'slot': instant('2026-10-15T07:00').isoformat(), 'success': True},
+                 'US': {'slot': instant('2026-10-15T20:20').isoformat(), 'success': True}}
+        slot = instant('2026-10-16T07:00')
+        self.assertEqual(runner.select_targets(state, instant('2026-10-16T10:57'), recovery=True), [('KR', slot)])
+        state['KR'] = {'slot': slot.isoformat(), 'success': True}
+        self.assertEqual(runner.select_targets(state, instant('2026-10-16T11:52'), recovery=True), [])
 
     def test_all_published_schedule_labels_match_daily_close_workflow(self):
         files = ['READ_ME_FIRST.txt', 'wamo_update_movers.py', 'wamo_status.js']
