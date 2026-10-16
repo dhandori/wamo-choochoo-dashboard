@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-16T09:58:12.248101+00:00",
+  "checkedAt": "2026-10-16T11:56:34.319081+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-16T09:58:12.248101+00:00",
+      "generatedAt": "2026-10-16T11:56:34.319081+00:00",
       "sessions": {
         "US-NYSE": "20261015",
         "US-NASDAQ": "20261015",
@@ -1357,19 +1357,19 @@
       "upstreamError": "UPSTREAM_NOT_READY"
     },
     "ASIA": {
-      "status": "FAILED",
-      "generatedAt": "2026-10-16T04:45:25.486003+00:00",
+      "status": "PASS",
+      "generatedAt": "2026-10-16T11:56:34.319081+00:00",
       "sessions": {
-        "KR-KOSPI": "20261015",
-        "KR-KOSDAQ": "20261015"
+        "KR-KOSDAQ": "20261016",
+        "KR-KOSPI": "20261016"
       },
       "source": "WAMO_52W",
       "scope": "WAMO KR 검증 종목군 · 최근 252거래일",
       "coverage": {
-        "totalCount": 212,
-        "currentCount": 205,
-        "validatedCount": 205,
-        "eligible52WeekCount": 204,
+        "totalCount": 216,
+        "currentCount": 209,
+        "validatedCount": 209,
+        "eligible52WeekCount": 208,
         "excludedCount": 0
       },
       "exclusions": [],
@@ -1381,7 +1381,7 @@
           "symbol": "033780",
           "name": "KT&G",
           "currency": "KRW",
-          "as_of": "20261015",
+          "as_of": "20261016",
           "industry_path": [
             "담배 제조업"
           ],
@@ -1390,34 +1390,34 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 189800.0,
+          "current_close": 191400.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": false,
+            "intraday_252": true,
             "close_252": true
           }
         },
         {
-          "key": "KR-KOSPI:028670",
+          "key": "KR-KOSPI:021240",
           "market": "KR-KOSPI",
           "country": "KR",
-          "symbol": "028670",
-          "name": "팬오션",
+          "symbol": "021240",
+          "name": "코웨이",
           "currency": "KRW",
-          "as_of": "20261015",
+          "as_of": "20261016",
           "industry_path": [
-            "해운"
+            "그외 기타 개인 서비스업"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 6680.0,
+          "current_close": 109400.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
-            "close_252": false
+            "close_252": true
           }
         }
       ],
@@ -1431,23 +1431,21 @@
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         },
         {
           "market": "KR",
           "industry_path": [
-            "해운"
+            "그외 기타 개인 서비스업"
           ],
-          "eligible_classified_issuers": 2,
+          "eligible_classified_issuers": 1,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
-          "comparison_scope": "52주 신고가 · 검증 종목군"
+          "comparison_scope": "WAMO 검증 종목군"
         }
       ],
-      "upstreamError": "UPSTREAM_NOT_READY",
-      "errorCode": "UPSTREAM_NOT_READY",
-      "error": "신고가 원본의 가격·분석 검증 대기 · 이전 결과는 현재 신호가 아닙니다."
+      "upstreamError": "UPSTREAM_NOT_READY"
     }
   },
   "scope": "52주 신고가 기준. 원본 대기 시 WAMO 한국·미국 검증 종목군으로 대체합니다. 대체 결과는 일본·중국·홍콩을 포함하지 않습니다."
