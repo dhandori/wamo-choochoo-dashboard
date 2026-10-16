@@ -63,6 +63,15 @@ class InsightsTests(unittest.TestCase):
         short=self.build(stock(count=60))['stocks'][0]
         self.assertIn('return60d',short)
         self.assertIsNone(short['return60d'])
+    def test_long_returns_use_exact_120_and_200_session_boundaries(self):
+        for days in (120,200):
+            with self.subTest(days=days):
+                s=stock(close=90,count=days+1)
+                s['history'][0]['close']=75
+                self.assertEqual(self.build(s)['stocks'][0].get(f'return{days}d'),20)
+                short=self.build(stock(count=days))['stocks'][0]
+                self.assertIn(f'return{days}d',short)
+                self.assertIsNone(short[f'return{days}d'])
     def test_stale_row_and_corrupt_histories_excluded(self):
         stale=stock('OLD'); stale['date']='2026-10-12'
         broken=stock('BAD'); broken['history'][-2]['date']='garbage'

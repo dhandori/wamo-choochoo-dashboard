@@ -1,5 +1,5 @@
-import {aiMembership, aiSearchText} from './ai.mjs?v=20261016-2';
-export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261016-2';
+import {aiMembership, aiSearchText} from './ai.mjs?v=20261016-3';
+export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261016-3';
 export const numeric = x => typeof x === 'number' && Number.isFinite(x);
 const day = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10)===value;
 const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));
@@ -16,7 +16,7 @@ export function validSnapshot(x) {
   if(!c || !['total','valid','excluded','eligible52w'].every(key=>count(c[key])) || c.valid!==m.stocks.length || c.valid+c.excluded!==c.total || c.eligible52w>c.valid)return false;
   const ids=new Set(m.stocks.map(s=>s?.id));
   if(ids.size!==m.stocks.length)return false;
-  const validStock=s=>s && text(s.id) && text(s.name) && text(s.symbol) && text(s.industry) && s.asOf===m.asOf && numeric(s.close)&&s.close>0 && ['changePct','return5d','return20d','return60d','high52','highDistancePct','volumeRatio','rs'].every(key=>optionalNumber(s[key])) && (s.highDistancePct==null||s.highDistancePct>=0) && (s.volumeRatio==null||s.volumeRatio>=0) && ['intradayHigh52','closeHigh52','stage2'].every(key=>s[key]==null||typeof s[key]==='boolean') && (s.sparkline==null||Array.isArray(s.sparkline)&&s.sparkline.every(n=>numeric(n)&&n>0)) && ['catalysts','news'].every(key=>s[key]==null||Array.isArray(s[key])&&s[key].every(a=>a&&text(a.title)&&text(a.url)&&(a.date==null||day(a.date)||(key==='news'&&timestamp(a.date))))) && (s.moverReasons==null||Array.isArray(s.moverReasons)&&s.moverReasons.every(text));
+  const validStock=s=>s && text(s.id) && text(s.name) && text(s.symbol) && text(s.industry) && s.asOf===m.asOf && numeric(s.close)&&s.close>0 && ['changePct','return5d','return20d','return60d','return120d','return200d','high52','highDistancePct','volumeRatio','rs'].every(key=>optionalNumber(s[key])) && (s.highDistancePct==null||s.highDistancePct>=0) && (s.volumeRatio==null||s.volumeRatio>=0) && ['intradayHigh52','closeHigh52','stage2'].every(key=>s[key]==null||typeof s[key]==='boolean') && (s.sparkline==null||Array.isArray(s.sparkline)&&s.sparkline.every(n=>numeric(n)&&n>0)) && ['catalysts','news'].every(key=>s[key]==null||Array.isArray(s[key])&&s[key].every(a=>a&&text(a.title)&&text(a.url)&&(a.date==null||day(a.date)||(key==='news'&&timestamp(a.date))))) && (s.moverReasons==null||Array.isArray(s.moverReasons)&&s.moverReasons.every(text));
   const validCap=s=>s.marketCap==null||numeric(s.marketCap)&&s.marketCap>0;
   if(!m.stocks.every(s=>validStock(s)&&validCap(s))||!m.movers.every(s=>validStock(s)&&validCap(s)&&ids.has(s.id)))return false;
   const groupIds=new Set();
@@ -44,7 +44,7 @@ export function acceptSnapshot(current, incoming) {
  }
  return {...incoming,markets};
 }
-export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',aiSector='all',aiSignal='all'}={}) {
+export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',aiSector='all',aiSignal='all',aiPeriod='5d'}={}) {
  let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
  if(tab==='ai') {
   rows=rows.filter(s=>{const member=aiMembership(s);return member&&(aiSector==='all'||member.sectors.includes(aiSector));});
@@ -58,7 +58,8 @@ export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',
  if(tab==='high') rows=rows.filter(s=>high==='intraday'?s.intradayHigh52===true:high==='close'?s.closeHigh52===true:s.intradayHigh52===true||s.closeHigh52===true);
  if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
  if(industry) rows=rows.filter(s=>industry.members.includes(s.id));
- const key=sort==='default'?(tab==='near'?'highDistancePct':tab==='movers'?'absolute':'return5d'):sort;
+ const periodKey=aiPeriod==='1d'?'changePct':['5d','20d','60d','120d','200d'].includes(aiPeriod)?`return${aiPeriod}`:'return5d';
+ const key=sort==='default'?(tab==='near'?'highDistancePct':tab==='movers'?'absolute':tab==='ai'?periodKey:'return5d'):sort;
  if(key==='marketCap'||key==='marketCapAsc')return rows.sort((a,b)=>{
   const aValid=numeric(a.marketCap)&&a.marketCap>0,bValid=numeric(b.marketCap)&&b.marketCap>0;
   if(aValid!==bValid)return aValid?-1:1;
