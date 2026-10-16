@@ -2249,6 +2249,122 @@
         }
       ],
       "vendorDateRaw": "20260518"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:54:43+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 947.0,
+          "data2": 2155.0,
+          "data3": 2078.0,
+          "data4": 2924.0,
+          "data5": 3883.0
+        },
+        {
+          "data1": 301.0,
+          "data2": 1275.0,
+          "data3": -36.0,
+          "data4": 408.0,
+          "data5": 328.0
+        },
+        {
+          "data1": 270.0,
+          "data2": 885.0,
+          "data3": 734.0,
+          "data4": 1120.0,
+          "data5": 1474.0
+        },
+        {
+          "data1": 596.0,
+          "data2": 2281.0,
+          "data3": -170.0,
+          "data4": 526.0,
+          "data5": 316.0
+        },
+        {
+          "data1": 427.0,
+          "data2": 958.0,
+          "data3": 917.0,
+          "data4": 1287.0,
+          "data5": 1625.0
+        },
+        {
+          "data1": 48.0,
+          "data2": 1244.0,
+          "data3": -43.0,
+          "data4": 403.0,
+          "data5": 263.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 316.0,
+          "data2": 945.0,
+          "data3": 803.0,
+          "data4": 1191.0,
+          "data5": 1548.0
+        },
+        {
+          "data1": 20550.0,
+          "data2": 44440.0,
+          "data3": 42520.0,
+          "data4": 59677.0,
+          "data5": 75345.0
+        },
+        {
+          "data1": 37.0,
+          "data2": 1163.0,
+          "data3": -43.0,
+          "data4": 404.0,
+          "data5": 263.0
+        },
+        {
+          "data1": 131.0,
+          "data2": 86.0,
+          "data3": 109.0,
+          "data4": 203.0,
+          "data5": 161.0
+        },
+        {
+          "data1": 149.0,
+          "data2": 70.0,
+          "data3": 100.0,
+          "data4": 197.0,
+          "data5": 151.0
+        },
+        {
+          "data1": 137.0,
+          "data2": 248.0,
+          "data3": 196.0,
+          "data4": 231.0,
+          "data5": 239.0
+        },
+        {
+          "data1": 176.0,
+          "data2": 190.0,
+          "data3": 155.0,
+          "data4": 261.0,
+          "data5": 153.0
+        },
+        {
+          "data1": 10100.0,
+          "data2": 2506.0,
+          "data3": 1779.0,
+          "data4": 2942.0,
+          "data5": 4795.0
+        }
+      ],
+      "vendorDateRaw": "20260518"
     }
   },
   "181710": {
@@ -2373,6 +2489,15 @@
     },
     "2026-10-13": {
       "checkedAt": "2026-10-13T01:11:33+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:11+09:00",
       "status": "EMPTY",
       "periods": [],
       "mappingStatus": "UNVERIFIED",
@@ -3077,6 +3202,122 @@
         }
       ],
       "vendorDateRaw": "20260826"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:28+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 357267.0,
+          "data2": 366370.0,
+          "data3": 342470.0,
+          "data4": 473967.0,
+          "data5": 586680.0
+        },
+        {
+          "data1": -158.0,
+          "data2": 25.0,
+          "data3": -65.0,
+          "data4": 384.0,
+          "data5": 238.0
+        },
+        {
+          "data1": 13546.0,
+          "data2": 4222.0,
+          "data3": 2356.0,
+          "data4": 58853.0,
+          "data5": 70603.0
+        },
+        {
+          "data1": -602.0,
+          "data2": -688.0,
+          "data3": -442.0,
+          "data4": 23977.0,
+          "data5": 200.0
+        },
+        {
+          "data1": 9488.0,
+          "data2": -1930.0,
+          "data3": 1770.0,
+          "data4": 42784.0,
+          "data5": 51895.0
+        },
+        {
+          "data1": -549.0,
+          "data2": -1203.0,
+          "data3": -1917.0,
+          "data4": 23178.0,
+          "data5": 213.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 20737.0,
+          "data2": 11741.0,
+          "data3": 10426.0,
+          "data4": 69695.0,
+          "data5": 81648.0
+        },
+        {
+          "data1": 81490.0,
+          "data2": -16590.0,
+          "data3": 15190.0,
+          "data4": 366953.0,
+          "data5": 445109.0
+        },
+        {
+          "data1": -549.0,
+          "data2": -1204.0,
+          "data3": -1916.0,
+          "data4": 23158.0,
+          "data5": 213.0
+        },
+        {
+          "data1": 85.0,
+          "data2": 0.0,
+          "data3": 546.0,
+          "data4": 35.0,
+          "data5": 29.0
+        },
+        {
+          "data1": 57.0,
+          "data2": 105.0,
+          "data3": 150.0,
+          "data4": 27.0,
+          "data5": 22.0
+        },
+        {
+          "data1": 108.0,
+          "data2": -22.0,
+          "data3": 20.0,
+          "data4": 397.0,
+          "data5": 348.0
+        },
+        {
+          "data1": 1387.0,
+          "data2": 1812.0,
+          "data3": 1988.0,
+          "data4": 1547.0,
+          "data5": 1101.0
+        },
+        {
+          "data1": 57.0,
+          "data2": 15.0,
+          "data3": 9.0,
+          "data4": 232.0,
+          "data5": 309.0
+        }
+      ],
+      "vendorDateRaw": "20260826"
     }
   },
   "192820": {
@@ -3662,6 +3903,122 @@
     },
     "2026-10-13": {
       "checkedAt": "2026-10-13T01:11:42+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 17775.0,
+          "data2": 21661.0,
+          "data3": 23988.0,
+          "data4": 29957.0,
+          "data5": 35881.0
+        },
+        {
+          "data1": 111.0,
+          "data2": 219.0,
+          "data3": 107.0,
+          "data4": 249.0,
+          "data5": 198.0
+        },
+        {
+          "data1": 1157.0,
+          "data2": 1754.0,
+          "data3": 1958.0,
+          "data4": 2529.0,
+          "data5": 3093.0
+        },
+        {
+          "data1": 1179.0,
+          "data2": 516.0,
+          "data3": 116.0,
+          "data4": 292.0,
+          "data5": 223.0
+        },
+        {
+          "data1": 571.0,
+          "data2": 858.0,
+          "data3": 1231.0,
+          "data4": 1725.0,
+          "data5": 2089.0
+        },
+        {
+          "data1": 1741.0,
+          "data2": 502.0,
+          "data3": 434.0,
+          "data4": 402.0,
+          "data5": 211.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 1751.0,
+          "data2": 2442.0,
+          "data3": 2699.0,
+          "data4": 3376.0,
+          "data5": 3960.0
+        },
+        {
+          "data1": 50360.0,
+          "data2": 75620.0,
+          "data3": 108470.0,
+          "data4": 152071.0,
+          "data5": 184138.0
+        },
+        {
+          "data1": 1740.0,
+          "data2": 502.0,
+          "data3": 434.0,
+          "data4": 402.0,
+          "data5": 211.0
+        },
+        {
+          "data1": 251.0,
+          "data2": 197.0,
+          "data3": 150.0,
+          "data4": 111.0,
+          "data5": 91.0
+        },
+        {
+          "data1": 105.0,
+          "data2": 98.0,
+          "data3": 101.0,
+          "data4": 79.0,
+          "data5": 65.0
+        },
+        {
+          "data1": 121.0,
+          "data2": 205.0,
+          "data3": 239.0,
+          "data4": 278.0,
+          "data5": 273.0
+        },
+        {
+          "data1": 3343.0,
+          "data2": 2800.0,
+          "data3": 2471.0,
+          "data4": 2306.0,
+          "data5": 1964.0
+        },
+        {
+          "data1": 36.0,
+          "data2": 39.0,
+          "data3": 42.0,
+          "data4": 54.0,
+          "data5": 81.0
+        }
+      ],
+      "vendorDateRaw": "20260812"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:54:58+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
         "2023.12",
@@ -5171,6 +5528,122 @@
         }
       ],
       "vendorDateRaw": "20260827"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:02+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 43610.0,
+          "data2": 51612.0,
+          "data3": 54329.0,
+          "data4": 69000.0,
+          "data5": 67387.0
+        },
+        {
+          "data1": -321.0,
+          "data2": 183.0,
+          "data3": 53.0,
+          "data4": 270.0,
+          "data5": -23.0
+        },
+        {
+          "data1": 3859.0,
+          "data2": 4712.0,
+          "data3": 4919.0,
+          "data4": 6771.0,
+          "data5": 6936.0
+        },
+        {
+          "data1": -511.0,
+          "data2": 221.0,
+          "data3": 44.0,
+          "data4": 376.0,
+          "data5": 24.0
+        },
+        {
+          "data1": 2450.0,
+          "data2": 2681.0,
+          "data3": 3014.0,
+          "data4": 4568.0,
+          "data5": 4744.0
+        },
+        {
+          "data1": -638.0,
+          "data2": 94.0,
+          "data3": 124.0,
+          "data4": 516.0,
+          "data5": 39.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 8761.0,
+          "data2": 9402.0,
+          "data3": 10126.0,
+          "data4": 12277.0,
+          "data5": 12674.0
+        },
+        {
+          "data1": 4580.0,
+          "data2": 5020.0,
+          "data3": 5640.0,
+          "data4": 8546.0,
+          "data5": 8875.0
+        },
+        {
+          "data1": -639.0,
+          "data2": 96.0,
+          "data3": 124.0,
+          "data4": 515.0,
+          "data5": 39.0
+        },
+        {
+          "data1": 82.0,
+          "data2": 66.0,
+          "data3": 68.0,
+          "data4": 70.0,
+          "data5": 67.0
+        },
+        {
+          "data1": 39.0,
+          "data2": 48.0,
+          "data3": 54.0,
+          "data4": 58.0,
+          "data5": 54.0
+        },
+        {
+          "data1": 53.0,
+          "data2": 52.0,
+          "data3": 53.0,
+          "data4": 75.0,
+          "data5": 72.0
+        },
+        {
+          "data1": 666.0,
+          "data2": 817.0,
+          "data3": 896.0,
+          "data4": 949.0,
+          "data5": 864.0
+        },
+        {
+          "data1": 31.0,
+          "data2": 35.0,
+          "data3": 23.0,
+          "data4": 27.0,
+          "data5": 28.0
+        }
+      ],
+      "vendorDateRaw": "20260827"
     }
   },
   "138040": {
@@ -5196,6 +5669,16 @@
     },
     "2026-10-13": {
       "checkedAt": "2026-10-13T01:12:52+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": [],
+      "vendorDateRaw": "20260212"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:06+09:00",
       "status": "EMPTY",
       "periods": [],
       "mappingStatus": "UNVERIFIED",
@@ -5630,6 +6113,15 @@
     },
     "2026-10-13": {
       "checkedAt": "2026-10-13T01:12:30+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:54:54+09:00",
       "status": "EMPTY",
       "periods": [],
       "mappingStatus": "UNVERIFIED",
@@ -6744,6 +7236,122 @@
         }
       ],
       "vendorDateRaw": "20260514"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:15+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 772885.0,
+          "data2": 742696.0,
+          "data3": 802961.0,
+          "data4": 934431.0,
+          "data5": 882615.0
+        },
+        {
+          "data1": -10.0,
+          "data2": -39.0,
+          "data3": 81.0,
+          "data4": 164.0,
+          "data5": -55.0
+        },
+        {
+          "data1": 19039.0,
+          "data2": 3557.0,
+          "data3": 4487.0,
+          "data4": 58114.0,
+          "data5": 48970.0
+        },
+        {
+          "data1": -514.0,
+          "data2": -813.0,
+          "data3": 261.0,
+          "data4": 11952.0,
+          "data5": -157.0
+        },
+        {
+          "data1": 2563.0,
+          "data2": -22600.0,
+          "data3": -33479.0,
+          "data4": 12719.0,
+          "data5": 8302.0
+        },
+        {
+          "data1": -837.0,
+          "data2": -9819.0,
+          "data3": 481.0,
+          "data4": -1380.0,
+          "data5": -347.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 39339.0,
+          "data2": 28103.0,
+          "data3": 36841.0,
+          "data4": 89218.0,
+          "data5": 80796.0
+        },
+        {
+          "data1": 28080.0,
+          "data2": -215310.0,
+          "data3": -215020.0,
+          "data4": 75564.0,
+          "data5": 49304.0
+        },
+        {
+          "data1": -841.0,
+          "data2": -8668.0,
+          "data3": -1.0,
+          "data4": -1351.0,
+          "data5": -348.0
+        },
+        {
+          "data1": 500.0,
+          "data2": 0.0,
+          "data3": 0.0,
+          "data4": 176.0,
+          "data5": 269.0
+        },
+        {
+          "data1": 98.0,
+          "data2": 225.0,
+          "data3": 154.0,
+          "data4": 56.0,
+          "data5": 63.0
+        },
+        {
+          "data1": 12.0,
+          "data2": -96.0,
+          "data3": -144.0,
+          "data4": 58.0,
+          "data5": 38.0
+        },
+        {
+          "data1": 1693.0,
+          "data2": 1788.0,
+          "data3": 1902.0,
+          "data4": 1847.0,
+          "data5": 1430.0
+        },
+        {
+          "data1": 17.0,
+          "data2": 2.0,
+          "data3": 3.0,
+          "data4": 41.0,
+          "data5": 41.0
+        }
+      ],
+      "vendorDateRaw": "20260514"
     }
   },
   "036930": {
@@ -7619,6 +8227,15 @@
       "forwardMetricsConnected": false,
       "output2": [],
       "output3": []
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:54:39+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
     }
   },
   "001820": {
@@ -7959,6 +8576,15 @@
       "forwardMetricsConnected": false,
       "output2": [],
       "output3": []
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:36+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
     }
   },
   "036540": {
@@ -8126,6 +8752,87 @@
     },
     "2026-10-13": {
       "checkedAt": "2026-10-13T01:12:26+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 4167.0,
+          "data2": 4005.0,
+          "data3": 3674.0,
+          "data4": 5290.0,
+          "data5": 8005.0
+        },
+        {
+          "data1": -404.0,
+          "data2": -39.0,
+          "data3": -83.0,
+          "data4": 440.0,
+          "data5": 513.0
+        },
+        {
+          "data1": -133.0,
+          "data2": -0.0,
+          "data3": -196.0,
+          "data4": 15.0,
+          "data5": 868.0
+        },
+        {
+          "data1": -1211.0,
+          "data2": -998.0,
+          "data3": 632037.0,
+          "data4": -1075.0,
+          "data5": 57789.0
+        },
+        {
+          "data1": -129.0,
+          "data2": 213.0,
+          "data3": -190.0,
+          "data4": 30.0,
+          "data5": 612.0
+        },
+        {
+          "data1": -1301.0,
+          "data2": -2652.0,
+          "data3": -1893.0,
+          "data4": -1157.0,
+          "data5": 19496.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 323.0,
+          "data2": 454.0,
+          "data3": 195.0,
+          "data4": 446.0,
+          "data5": 1332.0
+        },
+        {
+          "data1": -790.0,
+          "data2": 1300.0,
+          "data3": -1160.0,
+          "data4": 182.0,
+          "data5": 3730.0
+        },
+        {
+          "data1": -1302.0,
+          "data2": -2646.0,
+          "data3": -1892.0,
+          "data4": -1157.0,
+          "data5": 19496.0
+        }
+      ],
+      "vendorDateRaw": "20260731"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:32+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
         "2023.12",
@@ -8858,6 +9565,15 @@
       "forwardMetricsConnected": false,
       "output2": [],
       "output3": []
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:24+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
     }
   },
   "281820": {
@@ -8872,6 +9588,15 @@
     },
     "2026-10-13": {
       "checkedAt": "2026-10-13T01:12:04+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:19+09:00",
       "status": "EMPTY",
       "periods": [],
       "mappingStatus": "UNVERIFIED",
@@ -9213,6 +9938,122 @@
   "033780": {
     "2026-10-13": {
       "checkedAt": "2026-10-13T01:12:48+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 58626.0,
+          "data2": 59088.0,
+          "data3": 65797.0,
+          "data4": 69986.0,
+          "data5": 73273.0
+        },
+        {
+          "data1": 2.0,
+          "data2": 8.0,
+          "data3": 114.0,
+          "data4": 64.0,
+          "data5": 47.0
+        },
+        {
+          "data1": 11673.0,
+          "data2": 11888.0,
+          "data3": 13437.0,
+          "data4": 15328.0,
+          "data5": 16572.0
+        },
+        {
+          "data1": -79.0,
+          "data2": 18.0,
+          "data3": 130.0,
+          "data4": 141.0,
+          "data5": 81.0
+        },
+        {
+          "data1": 9027.0,
+          "data2": 11657.0,
+          "data3": 10901.0,
+          "data4": 13371.0,
+          "data5": 13846.0
+        },
+        {
+          "data1": -111.0,
+          "data2": 291.0,
+          "data3": -65.0,
+          "data4": 227.0,
+          "data5": 36.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 14084.0,
+          "data2": 14391.0,
+          "data3": 16363.0,
+          "data4": 18702.0,
+          "data5": 19975.0
+        },
+        {
+          "data1": 78430.0,
+          "data2": 104550.0,
+          "data3": 102200.0,
+          "data4": 129954.0,
+          "data5": 133380.0
+        },
+        {
+          "data1": -76.0,
+          "data2": 333.0,
+          "data3": -22.0,
+          "data4": 272.0,
+          "data5": 26.0
+        },
+        {
+          "data1": 111.0,
+          "data2": 102.0,
+          "data3": 139.0,
+          "data4": 142.0,
+          "data5": 139.0
+        },
+        {
+          "data1": 67.0,
+          "data2": 85.0,
+          "data3": 101.0,
+          "data4": 100.0,
+          "data5": 93.0
+        },
+        {
+          "data1": 98.0,
+          "data2": 127.0,
+          "data3": 118.0,
+          "data4": 140.0,
+          "data5": 137.0
+        },
+        {
+          "data1": 374.0,
+          "data2": 488.0,
+          "data3": 520.0,
+          "data4": 489.0,
+          "data5": 464.0
+        },
+        {
+          "data1": 255.0,
+          "data2": 282.0,
+          "data3": 181.0,
+          "data4": 200.0,
+          "data5": 234.0
+        }
+      ],
+      "vendorDateRaw": "20260818"
+    },
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:54:49+09:00",
       "status": "RESPONSE_AVAILABLE_UNMAPPED",
       "periods": [
         "2023.12",
@@ -9927,6 +10768,146 @@
         }
       ],
       "vendorDateRaw": "20260823"
+    }
+  },
+  "068270": {
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:43+09:00",
+      "status": "RESPONSE_AVAILABLE_UNMAPPED",
+      "periods": [
+        "2023.12",
+        "2024.12",
+        "2025.12",
+        "2026.12E",
+        "2027.12E"
+      ],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [
+        {
+          "data1": 21764.0,
+          "data2": 35573.0,
+          "data3": 41625.0,
+          "data4": 56447.0,
+          "data5": 66118.0
+        },
+        {
+          "data1": -47.0,
+          "data2": 634.0,
+          "data3": 170.0,
+          "data4": 356.0,
+          "data5": 171.0
+        },
+        {
+          "data1": 6515.0,
+          "data2": 4920.0,
+          "data3": 11685.0,
+          "data4": 18900.0,
+          "data5": 22571.0
+        },
+        {
+          "data1": 7.0,
+          "data2": -245.0,
+          "data3": 1375.0,
+          "data4": 618.0,
+          "data5": 194.0
+        },
+        {
+          "data1": 5356.0,
+          "data2": 4227.0,
+          "data3": 10296.0,
+          "data4": 15996.0,
+          "data5": 18517.0
+        },
+        {
+          "data1": -4.0,
+          "data2": -211.0,
+          "data3": 1436.0,
+          "data4": 554.0,
+          "data5": 158.0
+        }
+      ],
+      "output3": [
+        {
+          "data1": 8973.0,
+          "data2": 9103.0,
+          "data3": 14560.0,
+          "data4": 21920.0,
+          "data5": 25975.0
+        },
+        {
+          "data1": 32923.0,
+          "data2": 16457.0,
+          "data3": 44488.0,
+          "data4": 69880.0,
+          "data5": 80950.0
+        },
+        {
+          "data1": 44.0,
+          "data2": -500.0,
+          "data3": 1703.0,
+          "data4": 571.0,
+          "data5": 158.0
+        },
+        {
+          "data1": 537.0,
+          "data2": 1046.0,
+          "data3": 388.0,
+          "data4": 254.0,
+          "data5": 219.0
+        },
+        {
+          "data1": 318.0,
+          "data2": 437.0,
+          "data3": 290.0,
+          "data4": 190.0,
+          "data5": 160.0
+        },
+        {
+          "data1": 51.0,
+          "data2": 25.0,
+          "data3": 59.0,
+          "data4": 90.0,
+          "data5": 97.0
+        },
+        {
+          "data1": 165.0,
+          "data2": 198.0,
+          "data3": 287.0,
+          "data4": 280.0,
+          "data5": 255.0
+        },
+        {
+          "data1": 674.0,
+          "data2": 65.0,
+          "data3": 155.0,
+          "data4": 197.0,
+          "data5": 230.0
+        }
+      ],
+      "vendorDateRaw": "20260728"
+    }
+  },
+  "006110": {
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:49+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
+    }
+  },
+  "229640": {
+    "2026-10-16": {
+      "checkedAt": "2026-10-16T20:55:54+09:00",
+      "status": "EMPTY",
+      "periods": [],
+      "mappingStatus": "UNVERIFIED",
+      "forwardMetricsConnected": false,
+      "output2": [],
+      "output3": []
     }
   }
 }
