@@ -1,3 +1,5 @@
+import {aiMembership, aiSearchText} from './ai.mjs?v=20261016-1';
+export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261016-1';
 export const numeric = x => typeof x === 'number' && Number.isFinite(x);
 const day = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10)===value;
 const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));
@@ -42,8 +44,16 @@ export function acceptSnapshot(current, incoming) {
  }
  return {...incoming,markets};
 }
-export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default'}={}) {
- let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
+export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',aiSector='all',aiSignal='all'}={}) {
+ let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
+ if(tab==='ai') {
+  rows=rows.filter(s=>{const member=aiMembership(s);return member&&(aiSector==='all'||member.sectors.includes(aiSector));});
+  if(aiSignal==='near')rows=rows.filter(s=>numeric(s.highDistancePct)&&s.highDistancePct<=10);
+  if(aiSignal==='high')rows=rows.filter(s=>s.intradayHigh52===true||s.closeHigh52===true);
+  if(aiSignal==='up')rows=rows.filter(s=>numeric(s.changePct)&&s.changePct>=3);
+  if(aiSignal==='down')rows=rows.filter(s=>numeric(s.changePct)&&s.changePct<=-3);
+  if(aiSignal==='volume')rows=rows.filter(s=>numeric(s.volumeRatio)&&s.volumeRatio>=1.5);
+ }
  if(tab==='near') rows=rows.filter(s=>numeric(s.highDistancePct)&&s.highDistancePct<=distance);
  if(tab==='high') rows=rows.filter(s=>high==='intraday'?s.intradayHigh52===true:high==='close'?s.closeHigh52===true:s.intradayHigh52===true||s.closeHigh52===true);
  if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
