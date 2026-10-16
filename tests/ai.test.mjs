@@ -50,3 +50,15 @@ test('60-day sector medians exclude unavailable values and count overlapping nam
  assert.equal(a.groups.find(g=>g.id==='bigtech').return60dCount,0);
  assert.deepEqual(model.selectStocks({stocks:stocks.slice(0,4)},{tab:'ai',sort:'return60d'}).map(s=>s.symbol),['NVDA','AVGO','MSFT','AMD']);
 });
+
+test('long-period comparison uses valid medians and selected-period default ranking',()=>{
+ for(const days of [120,200]){
+  const stocks=[stock('NVDA',{[`return${days}d`]:-10}),stock('AVGO',{[`return${days}d`]:30}),stock('MSFT',{[`return${days}d`]:null})];
+  const a=model.aiOverview({stocks},'US');
+  assert.equal(a.total[`medianReturn${days}d`],10);
+  assert.equal(a.total[`return${days}dCount`],2);
+  assert.equal(a.groups.find(g=>g.id==='bigtech')[`medianReturn${days}d`],null);
+  assert.deepEqual(model.selectStocks({stocks},{tab:'ai',aiPeriod:`${days}d`}).map(s=>s.symbol),['AVGO','NVDA','MSFT']);
+  assert.deepEqual(model.selectStocks({stocks},{tab:'ai',aiPeriod:`${days}d`,sort:'name'}).map(s=>s.symbol),['AVGO','MSFT','NVDA']);
+ }
+});

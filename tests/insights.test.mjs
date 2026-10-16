@@ -1,8 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {selectStocks,acceptSnapshot,validSnapshot,refreshSnapshot,marketStatus,safeUrl,createRefresher} from '../radar/model.mjs';
 const stock=(id,patch={})=>({id,name:id,symbol:id,industry:'Test',asOf:'2026-10-13',close:100,changePct:1,return5d:2,highDistancePct:5,volumeRatio:1,rs:80,...patch});const m={asOf:'2026-10-13',status:'CURRENT',nextScheduledFor:'2026-10-14T00:00:00Z',stocks:[stock('near'),stock('high',{intradayHigh52:true,highDistancePct:0}),stock('fall',{changePct:-8,highDistancePct:40,volumeRatio:2})],industries:[],warnings:[],expectedSession:'2026-10-13',source:'verified',movers:[],coverage:{total:3,valid:3,excluded:0,eligible52w:3}};const snap={schemaVersion:1,generatedAt:'2026-10-14T00:00:00Z',markets:{KR:m,US:m}};
-test('60-day returns are optional for old snapshots and reject malformed values',()=>{
- for(const value of [undefined,null,0,-25,125])assert.equal(validSnapshot({...snap,markets:{...snap.markets,KR:{...m,stocks:m.stocks.map(s=>({...s,return60d:value}))}}}),true);
- for(const value of [NaN,Infinity,true,'20'])assert.equal(validSnapshot({...snap,markets:{...snap.markets,KR:{...m,stocks:m.stocks.map(s=>({...s,return60d:value}))}}}),false);
+test('long returns are optional for old snapshots and reject malformed values',()=>{
+ for(const key of ['return60d','return120d','return200d']){
+  for(const value of [undefined,null,0,-25,125])assert.equal(validSnapshot({...snap,markets:{...snap.markets,KR:{...m,stocks:m.stocks.map(s=>({...s,[key]:value}))}}}),true);
+  for(const value of [NaN,Infinity,true,'20'])assert.equal(validSnapshot({...snap,markets:{...snap.markets,KR:{...m,stocks:m.stocks.map(s=>({...s,[key]:value}))}}}),false);
+ }
 });
 test('market cap sorts actual values in both directions with missing values last',()=>{
  const stocks=[stock('missing',{marketCap:null}),stock('large',{marketCap:1e12}),stock('old-schema'),stock('small',{marketCap:9e9}),stock('medium',{marketCap:1e10})];

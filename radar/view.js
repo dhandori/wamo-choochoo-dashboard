@@ -1,4 +1,4 @@
-import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED } from './model.mjs?v=20261016-2';
+import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED } from './model.mjs?v=20261016-3';
 
 const $ = id => document.getElementById(id);
 const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d' };
@@ -35,7 +35,14 @@ function button(text, active, action) {
   b.type = 'button'; b.onclick = action;
   return b;
 }
-function change(key, value) { state[key] = value; state.page = 1; render(); }
+function change(key, value) {
+  state[key] = value; state.page = 1;
+  if(state.tab==='ai') {
+    if(key==='sort'&&/^return(60|120|200)d$/.test(value))state.aiPeriod=value.slice(6);
+    if(key==='aiPeriod'&&/^return(5|20|60|120|200)d$/.test(state.sort))state.sort='default';
+  }
+  render();
+}
 function safeLink(text, url, cls) {
   const safe = safeUrl(url);
   if (!safe) return el('span', text, `${cls || ''} unavailable`);
@@ -97,7 +104,7 @@ function detail(s) {
   const chart = el('section', null, 'chart-panel');
   chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true)); d.append(chart);
   const grid = el('div', null, 'detail-grid');
-  [['시가총액', marketCap(s, true)], ['5일 수익률', pct(s.return5d), tone(s.return5d)], ['20일 수익률', pct(s.return20d), tone(s.return20d)], ['60일 수익률', pct(s.return60d), tone(s.return60d)],
+  [['시가총액', marketCap(s, true)], ['5일 수익률', pct(s.return5d), tone(s.return5d)], ['20일 수익률', pct(s.return20d), tone(s.return20d)], ['60일 수익률', pct(s.return60d), tone(s.return60d)], ['120일 수익률', pct(s.return120d), tone(s.return120d)], ['200일 수익률', pct(s.return200d), tone(s.return200d)],
     ['52주 고점 거리', numeric(s.highDistancePct) ? distance(s) : '이력 부족'], ['52주 장중 고점', fmt(s.high52, 2)],
     ['상대 거래량', volume(s)], ['RS', fmt(s.rs, 0)], ['Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '미제공']]
     .forEach(([label, value, cls]) => grid.append(stat(label, value, cls)));
@@ -123,14 +130,15 @@ function detail(s) {
 function table(rows) {
   if (!rows.length) return el('div', '조건에 맞는 종목이 없습니다. 필터를 조정해 보세요.', 'empty');
   const pageRows = rows.slice((state.page - 1) * 30, state.page * 30);
+  const longDays=['60d','120d','200d'].includes(state.aiPeriod)?parseInt(state.aiPeriod,10):60,longKey=`return${longDays}d`;
   const wrap = el('div', null, 'table-wrap'), table = el('table'), head = el('thead'), tr = el('tr');
-  [state.tab==='ai'?'종목 / AI 연결 분야':'종목 / 산업', `시총 (${capCurrency()})`, '종가', '당일', '5일', ...(state.tab==='ai'?['20일','60일']:[]), '고점까지', '거래량 배수', 'RS', '60일 추이', '바로가기'].forEach(t => { const th = el('th', t); th.scope = 'col'; tr.append(th); });
+  [state.tab==='ai'?'종목 / AI 연결 분야':'종목 / 산업', `시총 (${capCurrency()})`, '종가', '당일', '5일', ...(state.tab==='ai'?['20일',`${longDays}일`]:[]), '고점까지', '거래량 배수', 'RS', '60일 추이', '바로가기'].forEach(t => { const th = el('th', t); th.scope = 'col'; tr.append(th); });
   head.append(tr); table.append(head); const body = el('tbody');
   pageRows.forEach(s => {
     const row = el('tr'), name = el('td'); name.append(stockButton(s));
     if (['high','movers','ai'].includes(state.tab)) name.append(el('span', signals(s).join(' · '), 'signal'));
     row.append(name, capNode(s, 'td'), el('td', price(s)), el('td', pct(s.changePct), tone(s.changePct)), el('td', pct(s.return5d), tone(s.return5d)));
-    if(state.tab==='ai')row.append(el('td',pct(s.return20d),tone(s.return20d)),el('td',pct(s.return60d),tone(s.return60d)));
+    if(state.tab==='ai')row.append(el('td',pct(s.return20d),tone(s.return20d)),el('td',pct(s[longKey]),tone(s[longKey])));
     row.append(el('td', distance(s)), el('td', volume(s)), el('td', fmt(s.rs, 0)));
     const chart = el('td'); chart.append(spark(s)); const link = el('td'); link.append(naverLink(s)); row.append(chart, link); body.append(row);
   });
@@ -140,7 +148,7 @@ function table(rows) {
     const card = el('article', null, 'stock-card'), top = el('div', null, 'stock-card-top'); top.append(stockButton(s), naverLink(s));
     const quote = el('div', null, 'card-quote'); quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), spark(s));
     const stats = el('div', null, 'card-stats'); stats.append(stat('5일', pct(s.return5d), tone(s.return5d)), stat('고점까지', distance(s)), stat('거래량 배수', volume(s)), stat('RS', fmt(s.rs, 0)));
-    if(state.tab==='ai')stats.append(stat('20일',pct(s.return20d),tone(s.return20d)),stat('60일',pct(s.return60d),tone(s.return60d)));
+    if(state.tab==='ai')stats.append(stat('20일',pct(s.return20d),tone(s.return20d)),stat(`${longDays}일`,pct(s[longKey]),tone(s[longKey])));
     const cap = el('div', null, 'card-cap'); cap.append(el('span', '시총'), capNode(s), el('span', capCurrency()));
     card.append(top, cap, quote, stats);
     if (['high','movers','ai'].includes(state.tab)) card.append(el('div', signals(s).join(' · '), 'signal'));
@@ -203,7 +211,7 @@ function renderControls() {
   } else {
     const options = el('div', null, 'filter-group'); checkbox('rs', 'RS ≥80', options); checkbox('stage', 'Stage 2', options); controls.append(options);
     const select = el('select'); select.setAttribute('aria-label', '정렬');
-    [['default', '기본 정렬'], ['marketCap', '시총 큰 순'], ['marketCapAsc', '시총 작은 순'], ['changePct', '당일 상승률'], ['absolute', '당일 절대 변동'], ['return5d', '5일 수익률'], ['return20d','20일 수익률'], ...(state.tab==='ai'?[['return60d','60일 수익률']]:[]), ['volumeRatio', '거래량 배수'], ['rs', 'RS'], ['name', '종목명']].forEach(([value, text]) => { const o = el('option', text); o.value = value; o.selected = state.sort === value; select.append(o); });
+    [['default', state.tab==='ai'?'선택 기간 수익률':'기본 정렬'], ['marketCap', '시총 큰 순'], ['marketCapAsc', '시총 작은 순'], ['changePct', '당일 상승률'], ['absolute', '당일 절대 변동'], ['return5d', '5일 수익률'], ['return20d','20일 수익률'], ...(state.tab==='ai'?[['return60d','60일 수익률'],['return120d','120일 수익률'],['return200d','200일 수익률']]:[]), ['volumeRatio', '거래량 배수'], ['rs', 'RS'], ['name', '종목명']].forEach(([value, text]) => { const o = el('option', text); o.value = value; o.selected = state.sort === value; select.append(o); });
     select.onchange = () => change('sort', select.value); controls.append(select);
   }
   if (['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'confirmed','aiSector','aiSignal','aiPeriod'].some(key => state[key] !== defaults[key])) {
@@ -214,7 +222,7 @@ function renderAI(m) {
   const panel=$('ai-overview');if(!panel)return;panel.replaceChildren();panel.hidden=state.tab!=='ai';
   if(panel.hidden)return;
   const overview=aiOverview(m,state.market),t=overview.total;
-  const periods={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','medianReturn5d','return5dCount'],'20d':['20일','medianReturn20d','return20dCount'],'60d':['60일','medianReturn60d','return60dCount']};
+  const periods={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','medianReturn5d','return5dCount'],'20d':['20일','medianReturn20d','return20dCount'],'60d':['60일','medianReturn60d','return60dCount'],'120d':['120일','medianReturn120d','return120dCount'],'200d':['200일','medianReturn200d','return200dCount']};
   const [period,key,countKey]=periods[state.aiPeriod];
   const top=el('div',null,'ai-heading'),caption=el('div');
   caption.append(el('h3','AI 분야별 흐름'),el('p','현재 시장의 전체 AI 대상 · 아래 종목 필터와 독립 · 카드 선택으로 분야 좁히기'));
@@ -235,7 +243,7 @@ function renderAI(m) {
   });panel.append(grid);
   const disclosure=el('details',null,'ai-method');disclosure.append(el('summary',`분류·집계 기준 · 관리 목록 ${t.catalogCount}종목 중 ${t.count}종목 표시${overview.missing.length?` · 미포함 ${overview.missing.length}`:''}`));
   disclosure.append(el('p','AI 사업·공급망 연결성을 기준으로 따로 관리하는 관찰 목록입니다. AI 매출 비중이나 투자 매력도 순위가 아니며, 전력·장비·S/W에는 간접 노출 기업도 포함됩니다. 시장의 모든 AI 종목을 포괄하지 않습니다.'));
-  disclosure.append(el('p','분야별 수익률은 유효한 종목 수익률의 중앙값으로, 시가총액 가중 지수 수익률이 아닙니다. 여러 분야에 속한 기업은 각 분야에 표시하되 AI 전체에서는 한 번만 집계합니다. Alphabet은 GOOGL만 사용합니다. 5·20·60일은 거래일 기준으로, 해당 거래일 전 종가 대비 수익률입니다. 60일 수익률에는 종가 61개가 필요하며, 이력이 부족한 종목은 해당 기간의 집계에서 제외합니다. 데이터 없는 값은 0으로 계산하지 않습니다.'));
+  disclosure.append(el('p','분야별 수익률은 유효한 종목 수익률의 중앙값으로, 시가총액 가중 지수 수익률이 아닙니다. 여러 분야에 속한 기업은 각 분야에 표시하되 AI 전체에서는 한 번만 집계합니다. Alphabet은 GOOGL만 사용합니다. 5·20·60·120·200일은 거래일 기준으로, 해당 거래일 전 종가 대비 수익률입니다. 200일 수익률에는 종가 201개가 필요하며, 이력이 부족한 종목은 해당 기간의 집계에서 제외합니다. 현재 관찰 목록 기준의 과거 수익률로 당시 구성 종목의 지수 수익률이나 200일 이동평균선과는 다릅니다. 데이터 없는 값은 0으로 계산하지 않습니다.'));
   disclosure.append(el('p',`가격은 기존 시장 데이터와 함께 갱신합니다. 신규 AI 관련 기업은 관리 목록에 추가해야 하며 자동 편입되지 않습니다. 목록 점검일 ${AI_REVIEWED}.`));
   if(overview.missing.length)disclosure.append(el('p',`현재 가격 데이터 미포함: ${overview.missing.map(s=>s.symbol).join(', ')}. 기존 스크리닝 대상 밖이거나 검증 가격이 없는 경우이며 집계에서 제외합니다.`));
   const refs=el('p','분류 범위 참고: ');
@@ -307,8 +315,8 @@ function render() {
   }
 }
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
-  const tab=state.tab==='ai'?'ai':'near';
-  Object.assign(state, { ...defaults, market: b.dataset.market,tab }); $('search').value = '';
+  const tab=state.tab==='ai'?'ai':'near',aiPeriod=state.aiPeriod;
+  Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod }); $('search').value = '';
   syncUrl(); render();
 });
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
