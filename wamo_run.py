@@ -62,7 +62,10 @@ def select_targets(state, now, requested='auto', force=False, recovery=False):
             attempted = entry.get('lastAttemptAt')
             if attempted and not force:
                 try:
-                    delay = min(360, 30 * 2 ** min(max(int(entry.get('attempts', 1)) - 1, 0), 4))
+                    # A recovered provider must not wait up to six more hours
+                    # just because earlier attempts failed. Limit collection
+                    # to once per 30 minutes until this close is verified.
+                    delay = 30
                     if now < datetime.fromisoformat(attempted) + timedelta(minutes=delay):
                         continue
                 except (TypeError, ValueError, OverflowError):
