@@ -51,6 +51,31 @@ class PriceSourceTests(unittest.TestCase):
             with self.subTest(rows=rows[-1]), self.assertRaises(ValueError):
                 p.validate_history(rows, '2026-10-07')
 
+    def test_a_few_bad_old_bars_are_repaired_not_fatal(self):
+        p = self.sources()
+        rows = history()
+        rows[10].update(high=98)            # close above high
+        rows[20].update(low=0)              # zero low
+        rows[30].update(close=float('nan')) # unusable close: dropped
+        repairs = {}
+        checked = p.validate_history(rows, '2026-10-07', repairs, repair=True)
+        with self.assertRaises(ValueError):
+            p.validate_history(rows, '2026-10-07')  # strict by default
+        self.assertEqual(repairs, {'repaired': 2, 'dropped': 1})
+        self.assertEqual(len(checked), len(rows) - 1)
+        bar = next(r for r in checked if r['date'] == rows[10]['date'])
+        self.assertGreaterEqual(bar['high'], bar['close'])
+        bar = next(r for r in checked if r['date'] == rows[20]['date'])
+        self.assertGreater(bar['low'], 0)
+
+    def test_widespread_bad_bars_still_reject_the_history(self):
+        p = self.sources()
+        rows = history()
+        for r in rows[:40]:
+            r.update(high=50)
+        with self.assertRaisesRegex(ValueError, 'invalid OHLCV bounds'):
+            p.validate_history(rows, '2026-10-07', repair=True)
+
     def test_next_intraday_bar_is_removed(self):
         p = self.sources()
         rows = p.validate_history(history('2026-10-08'), '2026-10-07')

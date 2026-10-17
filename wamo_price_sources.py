@@ -25,10 +25,37 @@ class PriceHistory:
     adjustment: str = 'PROVIDER_REPORTED'
 
 
-def validate_history(rows, expected):
-    """Reject corrupt/stale data, and exclude a newer unfinished session."""
+def _number(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return float('nan')
+
+
+def _valid_bar(v):
+    return (all(math.isfinite(x) for x in v.values())
+            and 0 < v['low'] <= v['close'] * 1.000001
+            and v['high'] * 1.000001 >= v['close']
+            and v['high'] >= v['low'] and v['volume'] >= 0)
+
+
+# A provider's adjusted history can carry a few inconsistent old bars (e.g. an
+# unadjusted high/low around a corporate action). One such bar used to discard
+# an actively traded stock for weeks. Older bars are repaired within a budget;
+# the latest session itself must still be fully valid.
+MAX_REPAIR_SHARE = 0.10
+MIN_REPAIR_BUDGET = 5
+
+
+def validate_history(rows, expected, repairs=None, repair=False):
+    """Reject corrupt/stale data, and exclude a newer unfinished session.
+
+    With ``repair=True`` a few inconsistent older bars are repaired instead of
+    rejecting the whole history (the latest session must still be valid). Pass a
+    dict as ``repairs`` to receive how many bars were repaired or dropped.
+    """
     date.fromisoformat(expected)
-    checked, seen = [], set()
+    parsed, seen = [], set()
     for row in rows:
         day = row.get('date', '')
         if date.fromisoformat(day).isoformat() != day or day in seen:
@@ -36,17 +63,38 @@ def validate_history(rows, expected):
         seen.add(day)
         if day > expected:
             continue
-        values = {key: float(row[key]) for key in ('close', 'high', 'low', 'volume')}
-        if not all(math.isfinite(v) for v in values.values()):
-            raise ValueError('non-finite OHLCV')
-        if not (0 < values['low'] <= values['close'] * 1.000001
-                and values['high'] * 1.000001 >= values['close']
-                and values['high'] >= values['low'] and values['volume'] >= 0):
-            raise ValueError('invalid OHLCV bounds')
-        checked.append(dict(date=day, **values))
-    checked.sort(key=lambda r: r['date'])
-    if not checked or checked[-1]['date'] != expected:
-        raise ValueError(f"기대 거래일 {expected}, 응답 가격일 {checked[-1]['date'] if checked else '없음'}")
+        parsed.append(dict(date=day, **{key: _number(row.get(key)) for key in ('close', 'high', 'low', 'volume')}))
+    parsed.sort(key=lambda r: r['date'])
+    if not parsed or parsed[-1]['date'] != expected:
+        raise ValueError(f"기대 거래일 {expected}, 응답 가격일 {parsed[-1]['date'] if parsed else '없음'}")
+    latest = parsed[-1]
+    if not all(math.isfinite(latest[k]) for k in ('close', 'high', 'low', 'volume')):
+        raise ValueError('non-finite OHLCV')
+    if not _valid_bar({k: latest[k] for k in ('close', 'high', 'low', 'volume')}):
+        raise ValueError('invalid OHLCV bounds')
+    checked, repaired, dropped = [], 0, 0
+    for bar in parsed[:-1]:
+        values = {k: bar[k] for k in ('close', 'high', 'low', 'volume')}
+        if _valid_bar(values):
+            checked.append(bar)
+            continue
+        close = values['close']
+        if not math.isfinite(close) or close <= 0:
+            dropped += 1
+            continue
+        high = values['high'] if math.isfinite(values['high']) and values['high'] > 0 else close
+        low = values['low'] if math.isfinite(values['low']) and values['low'] > 0 else close
+        volume = values['volume'] if math.isfinite(values['volume']) and values['volume'] >= 0 else 0.0
+        checked.append(dict(date=bar['date'], close=close, high=max(high, close, low),
+                            low=min(low, close, high), volume=volume))
+        repaired += 1
+    checked.append(latest)
+    budget = max(MIN_REPAIR_BUDGET, int(len(parsed) * MAX_REPAIR_SHARE)) if repair else 0
+    if repaired + dropped > budget:
+        raise ValueError(f'invalid OHLCV bounds ({repaired + dropped}일 이상치)')
+    if isinstance(repairs, dict):
+        repairs['repaired'] = repairs.get('repaired', 0) + repaired
+        repairs['dropped'] = repairs.get('dropped', 0) + dropped
     if len(checked) < 60:
         raise ValueError(f'가격 이력 부족: {len(checked)}일')
     return checked

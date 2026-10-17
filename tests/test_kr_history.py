@@ -14,6 +14,24 @@ class CurrentHistoryTests(unittest.TestCase):
         self.assertEqual(source,'NAVER Finance')
         self.assertEqual(rows,good)
 
+    def test_both_providers_with_one_bad_old_bar_use_repaired_history(self):
+        bad_y, bad_n = history(), history()
+        bad_y[100]['high'] = 90.
+        bad_n[50]['low'] = 0.
+        with patch.object(core,'fetch_yahoo_history',return_value=(bad_y,'yahoo')),patch.object(core,'fetch_naver_history',return_value=bad_n):
+            rows,source,_=core.fetch_current_kr_history('012450.KS','012450','2026-10-07')
+        self.assertEqual(source,'Yahoo Finance')
+        self.assertEqual(rows[-1]['date'],'2026-10-07')
+        self.assertGreaterEqual(rows[100]['high'], rows[100]['close'])
+
+    def test_bad_latest_bar_is_never_repaired(self):
+        bad_y, bad_n = history(), history()
+        bad_y[-1]['high'] = 90.
+        bad_n[-1]['low'] = 0.
+        with patch.object(core,'fetch_yahoo_history',return_value=(bad_y,'yahoo')),patch.object(core,'fetch_naver_history',return_value=bad_n):
+            with self.assertRaises(RuntimeError):
+                core.fetch_current_kr_history('012450.KS','012450','2026-10-07')
+
     def test_recovery_excludes_next_intraday_bar(self):
         rows = history('2026-10-08')
         with patch.object(core, 'fetch_yahoo_history', return_value=(rows,'yahoo')):
