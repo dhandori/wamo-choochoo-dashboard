@@ -497,6 +497,12 @@ def main():
         alert_files = send_alerts(refreshed) if refreshed else []
         if alert_files:
             publish(alert_files)
+        # The other market's trend may still lag (e.g. first deploy).
+        stale = trend_stale_markets()
+        if stale:
+            trend_files = build_trend(stale)
+            if trend_files:
+                publish(trend_files)
     set_action_output(any(state[market].get('success') for market, _ in targets))
     if failures:
         raise SystemExit('갱신 실패: ' + ', '.join(failures))
