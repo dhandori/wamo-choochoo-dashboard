@@ -1,6 +1,6 @@
 import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261017-1';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261017-1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261017-3';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261017-4';
 import { runnerButton, initRunner } from './runner.js?v=20261017-2';
 import { loadChartData, stockSeries, priceChart, rsChart } from './chart.js?v=20261017-3';
 

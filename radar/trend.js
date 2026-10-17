@@ -178,14 +178,16 @@ function emptyBox(text) { return el('div', text, 'empty'); }
 
 function rsSection(b, openStock) {
   const r = b.rsLeaders || {}, wrap = el('div');
-  wrap.append(help(r.note || ''));
+  wrap.append(help((r.note || '') + ' 최근 5거래일 안에 RS선 신고가를 찍은 종목이고, 표시의 "오늘/며칠 전"이 그 날짜예요.'));
   const items = r.items || [];
   if (!items.length) return wrap.append(emptyBox('오늘은 RS선 신고가 종목이 없어요.')), wrap;
   const list = el('div', null, 'tr-list');
   items.forEach(x => {
     const row = el('article', null, 'tr-row');
     const main = el('div', null, 'tr-row-main'); main.append(stockName(x, openStock));
-    const tag = el('span', x.leading ? '주가보다 먼저' : '주가와 함께', `tr-tag ${x.leading ? 'lead' : ''}`);
+    const when = x.rsLineHigh ? '오늘' : `${x.rsHighDaysAgo}일 전`;
+    const tag = el('span', `${x.leading ? '주가보다 먼저' : '주가와 함께'} · ${when}`, `tr-tag ${x.leading ? 'lead' : ''}`);
+    tag.title = `RS선 1년 신고가: ${when}`;
     const facts = el('div', null, 'tr-facts');
     [['종가 변화', pct(x.changePct), tone(x.changePct)], ['고점까지', isNum(x.highDistancePct) ? `${fmt(x.highDistancePct)}%` : '—'], ['RS 순위', fmt(x.rs, 0)], ['단계', x.stage ? `Stage ${x.stage}` : '—']]
       .forEach(([k, v, c]) => { const f = el('span'); f.append(el('small', k), el('b', v, c)); facts.append(f); });
