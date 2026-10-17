@@ -346,8 +346,10 @@ function renderMeta(m) {
   m.warnings.forEach(w => $('coverage-detail').append(el('p', w)));
 }
 function renderChanges(m) {
-  const panel=$('session-changes');panel.replaceChildren();panel.hidden=state.tab==='industries'&&!state.industry;
-  const filter=$('signal-filter');filter.replaceChildren();
+  const panel=$('session-changes'),filter=$('signal-filter');
+  // A cached prior template may load these assets before the next snapshot build.
+  if(!panel||!filter)return;
+  panel.replaceChildren();panel.hidden=state.tab==='industries'&&!state.industry;filter.replaceChildren();
   if(panel.hidden)return;
   checkbox('newOnly','새로 포착만',filter);filter.querySelector('input').disabled=!hasComparison(m);
   if(!hasComparison(m)){
