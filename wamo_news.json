@@ -392,12 +392,18 @@
       ]
     },
     "US:AUR": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
+        {
+          "title": "BC-Most Active Stocks - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQNXBZSkkxaTMxbUd2eGRFNlltdFV5eHJPcE5fSUdaM3dnX0lxWEFCU2R6aVJ6andVMHEzSy1aYnhnMnk0ZmVUWlliS3MtVWhOdFhlaGh6OHpzQlJmT3pPa05FV0NEVjlaS29rTnR5WGZkVXdEbHYyRjhTRV9vZEVuTmRVYW9WRThad0tXNXZuTQ?oc=5",
+          "date": "2026-10-16T14:30:17+00:00",
+          "publisher": "Yahoo Finance"
+        },
         {
           "title": "Better Home & Finance Holding Company (BETRW) Stock Price, News, Quote & History - Yahoo! Finance Canada",
           "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE9nd083X3lRdzBVZXROWHpQY29kcFZIVjlVMzAzdnM2aVBzaHJDMDB1RG94UG1qUzZZY1lteHUwc0xRSzktMzNpVUFkOThpUXNfMlM0?oc=5",
-          "date": "2026-10-16T14:04:17+00:00",
+          "date": "2026-10-16T14:24:33+00:00",
           "publisher": "Yahoo! Finance Canada"
         },
         {
@@ -405,12 +411,6 @@
           "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNemtVNk5lcnBBQjE5YVp4LUt5dmhaNkJjeklCTHJZQ3FpbEFEZFZaY1k2VWVkekU5eUJ3dmU4WXRmSmtqdDhXakNsV05QaklHczhiYTFnYmltRFJSUF9WNlFQN0daRHZzMU5tQU0teF9mWnQya3lYTEhlLXliNkdzcHdlQUNXaDFocG1xb256bjBHRlJxcU45TFdud2dUdVFsWUJuTlJPM084WmFzdEVkX29fM0otMFFHbTZrSU9hTHdDRzd6bWdTRk9lU1Nld290?oc=5",
           "date": "2026-10-16T06:23:42+00:00",
           "publisher": "MarketBeat"
-        },
-        {
-          "title": "Aurora Innovation, Inc. Class A Actuals & Estimates (HAN:77F) - TradingView",
-          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQNGpLUmdOWk9FTHJ2THhjNUl0dHZ6RzZSOHNPX1BNQnpFbC16R0dwdVBtNGNZbjF4Z2staDB1ZjlHSENWQ3BvNi1XZU1XeFhVbGRmMmt2bW5hLVNPd1kyUnhBWU5iUHNadkNJYU9zTVdVdHQxSnpWWnRVTU82SW93bA?oc=5",
-          "date": "2026-10-16T06:17:59+00:00",
-          "publisher": "TradingView"
         }
       ]
     },
@@ -668,7 +668,7 @@
       ]
     },
     "KR:403870": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "자동 진행 기능이 있다면? 슬롯 헌터 무료 스핀 설정 확인 - Calgary Roughnecks",
@@ -737,7 +737,7 @@
       ]
     },
     "US:BSP": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "Why Bending Spoons Stock Soared 27% This Week - The Motley Fool",
@@ -806,7 +806,7 @@
       ]
     },
     "US:DOCN": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "DigitalOcean Holdings Inc (DOCN) Shares Fall 9.8% -- GF Value Sa - GuruFocus",
@@ -829,13 +829,13 @@
       ]
     },
     "US:IREN": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
-          "title": "IREN LIMITED (IREN) Stock forecasts - Yahoo Finance Australia",
-          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNY0pya1ROcm1EME1lSGFrSlFVcE45T2tLQkU4dWxuOXFZOWRQS0JlaDBPQ2ZraXNhcE80TzZrdGF1b2ZaNmFHeHVhRVJkZVNUWHpjdU4xb3J2SDFvRWhCaWJ1OC1ndUctTjIxdWJ2Mmktb3p6SUhiSklhaDNoQmV1WXI4b3ljTm52UlB6Q2ZMYWQ?oc=5",
-          "date": "2026-10-16T21:46:13+00:00",
-          "publisher": "Yahoo Finance Australia"
+          "title": "IREN LIMITED (IREN) Stock forecasts - Yahoo Finance UK",
+          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPSjVZZTVXREVhVm9KOWRZZFFjZ2MzY0NVVkRNUVJXUW1feGRVZU5QclJzTUVaUnAyb2k4RHJ0bjRpWWxlQkFhV2h4WnVJXzhOaHlONnNuUVV4UDg1NnBYYm45N0RFN0lTQWMtTGx2SEN3RlFkSkJEdnV6S3FXSVpfaFVZaFN3RGF0a2hTcjZHMng?oc=5",
+          "date": "2026-10-16T04:30:28+00:00",
+          "publisher": "Yahoo Finance UK"
         },
         {
           "title": "IREN LIMITED (IREN) Stock Forecasts - Yahoo Finance",
@@ -852,8 +852,14 @@
       ]
     },
     "US:CRWV": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
+        {
+          "title": "CoreWeave Stock Faces A Debt Funding Test - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPUEp6QTBfWnVuZkxiT2FIWEdmSTJ1MTkzRjV1TUllT0RwcHR3VWx1UFVlc0g1ZHNvNzFneUY2LXRLTXpqeFk2blotczB6RDEwQWFnNVJfRFV5RVBOdVZaeWtFei1EU2tZUW14MVdCOTFQTkY5TnVPU2VZX0h0WkxmTmhtNW0zQTVaM2dNckRKYlp6S0dnd2ZCdEVVeHNPQ3k2?oc=5",
+          "date": "2026-10-17T05:18:00+00:00",
+          "publisher": "Yahoo Finance"
+        },
         {
           "title": "CoreWeave stock plunges 12%, but Wall Street analyst says buy the dip - Yahoo Finance",
           "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQWmtPUUxmSDY5MzZlTFZNbmN3OEl5NUEzNk42VnFqUXJzSmtTT0wzejFHRkkydUVRdDdycnlHaVVGUnk3NUVLMl9VYWlzczFWdE1qR1VydVJleWtScklzczRRU1RNcUNDbW5ndmV1WENtWWtxOGFQb3c1RFZRQVZxa2hrbi1ET2J5Vy1IcjVLVGlycGNzeVloejEyemQ?oc=5",
@@ -861,16 +867,10 @@
           "publisher": "Yahoo Finance"
         },
         {
-          "title": "CoreWeave's CEO sold nearly $1 billion of stock since IPO, filings show - Reuters",
-          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQZlBOc3YwWlJVZ3JMc2tSUmd4aGdLVERla2dYZ2Y0OUpfUW5uVkJCTlRBSGFZN3RXdS1GQ3lHdktFdjFSRm5qYUNhUVhFWmkySzJxT3dFcHpwMXR4UXg1YXdUOWVWZVZQMDV2MWxHdW1mQ3dJcm5uU3FKcVFDTGktZEstcXY0LUZnUFFjcVdxVllrQjVPS1RGLWkwV2FZOWVIRV9LYmNFZVVmTjVFM3FVcW5ZR1NJUzZsYkE?oc=5",
-          "date": "2026-10-16T20:40:13+00:00",
-          "publisher": "Reuters"
-        },
-        {
-          "title": "Bank of America Has Blunt Message on CoreWeave Stock After Selloff - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOb3dLNFlWVldtVVQ5QTNvU2NaMWdwWldqY3EtREw4RDZtRXhBOXVtZXFodl93eEZnZHRaZmZUTk9NMWdhWDZ2MENpLUhPUWdIdnZLMVJZYUY4eXRFbkRmQVUwWTJqdWMzSGdMT04yVjRaUjlDdlhFbnJjV2sxUWRaZVBHMjlFcUk3bUo3TFgzeG01c2FMbldTR3FRVGF6RFk1V2xB?oc=5",
-          "date": "2026-10-16T18:30:50+00:00",
-          "publisher": "Yahoo Finance"
+          "title": "CoreWeave Stock Wipeout Exposes Divide Between AI Fear and Greed - Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOU0FsY1ltSGx1ZGhyc0hFUHgzM2VTUW5LNWY1alhzZnJsR3JXanFycnNFOVdtSGhST0lFTlNfUFJxNERyMzBvaXFubjAxMmkybzUzVERmblo1V0xVNzBkMUFrcTVDMldSZUFQM3VMYjRXemV2V21BRnM0YU9KTm1RMk9fTDZwcGpnTFB4M0hNb0JBRjFSWnhPMUVRcmdhcnpCLVExNk9jaFZZTWVzWTFjSXJEWk8yUQ?oc=5",
+          "date": "2026-10-16T22:04:48+00:00",
+          "publisher": "Bloomberg.com"
         }
       ]
     },
@@ -990,7 +990,7 @@
       ]
     },
     "US:NBIS": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "Nebius Group N.V. (NBIS) Stock Forecasts - Yahoo Finance",
@@ -1036,7 +1036,7 @@
       ]
     },
     "KR:319660": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "자동 진행 기능이 있다면? 슬롯 헌터 무료 스핀 설정 확인 - Calgary Roughnecks",
@@ -1082,7 +1082,7 @@
       ]
     },
     "KR:131290": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "“삼전닉스 대신 뭐 살까요”…여의도서 꼽은 중소형주 유망 종목 - 매일경제",
@@ -1442,7 +1442,7 @@
       ]
     },
     "KR:003160": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "디아이 주가, 10월 16일 애프터마켓 40,300원 9.21% 상승 - 톱스타뉴스",
@@ -1465,14 +1465,8 @@
       ]
     },
     "KR:252990": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
-        {
-          "title": "게임별로 달라지는 용어를 풀어보는 토토 본사 직원 - Calgary Roughnecks",
-          "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNWjJ5LWZxSUdjY3JWRG9JMlBLYTV4RWZEdy1hU3YzVnFxZ2luNlM3NzVIZjRhZ1pLYVNjMmVrNGlwWHdXVDFvdDF1VmI0dUhXM1JmRmlnUDVsbFg5NDVDSEMteVRQRG5sZVYwaXRHLVJ5cEd5R3RELTh6YjV6OXdvYTFWWVp0TnNCRWNvSEtoa3R5M3loeURuNjVjdnFYTUpIOUNjMlVNTDR0OFZCZHFfblZVRnZQWHVxUWRrSFpLT0MwUDZKUWhVcmtCak9ONVpEQ19z?oc=5",
-          "date": "2026-10-16T18:19:07+00:00",
-          "publisher": "Calgary Roughnecks"
-        },
         {
           "title": "샘씨엔에스(252990)눌릴때마다 물량 모아둘 기회로 보이며 이후 전망 및 대응전략. - 씽크풀 AI",
           "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9qZFdQbjdHMU1OTjdQQlFmam9TMVc1QVkxWDRzWUFRcnpURUtOQ1VkaG5vN1lWMmRJNGpQVnNGZzZoX0s5am01ZS1XVXVFUG9EN2Nic3ktdkJUV1NB?oc=5",
@@ -1484,11 +1478,17 @@
           "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE12d3RJck94aGIxY2ZHcWtERmd4Y0s2V3JFT016c3hxWF9OMk11QzlqU29tM2ZlMnp1OVlZY0xBLXRyUmRRZ1RFbi1rRHVwaU9CTlhTSmE4bjhMMUFDcnEwLTNSMkJoTVNGVkZDQUJKbTQ5NmhTQ1cw0gF3QVVfeXFMTXZ3dElyT3hoYjFjZkdxa0RGZ3hjSzZXckVPTXpzeHFYX04yTXVDOWpTb20zZmUyenU5WVljTEEtdHJSZFFnVEVuLWtEdXBpT0JOWFNKYThuOEwxQUNycTAtM1IyQmhNU0ZWRkNBQkptNDk2aFNDVzA?oc=5",
           "date": "2026-10-16T07:03:07+00:00",
           "publisher": "핀포인트뉴스"
+        },
+        {
+          "title": "엑시콘·한미반도체 주가 파죽지세…AI 반도체 투자 확대에 소부장주 들썩 - 핀포인트뉴스",
+          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE04bXdhZHVNNXprVGVlRVpFUlN1LWRiYmQ5cEo4Nkpudy1tbkFUNzdVeThmRlJTaXkwU3otZEFmSnVJZWJVSlZibUpQdWRoNWdqR3BtaW41UVVlNU5qT0puY1g2QXdjU0RCcmQtQzlmYmIxT05HcWNN0gF3QVVfeXFMTThtd2FkdU01emtUZWVFWkVSU3UtZGJiZDlwSjg2Sm53LW1uQVQ3N1V5OGZGUlNpeTBTei1kQWZKdUllYlVKVmJtSlB1ZGg1Z2pHcG1pbjVRVWU1TmpPSm5jWDZBd2NTREJyZC1DOWZiYjFPTkdxY00?oc=5",
+          "date": "2026-10-16T04:29:12+00:00",
+          "publisher": "핀포인트뉴스"
         }
       ]
     },
     "KR:226950": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "[주식] 리브스메드, 수술 로봇 '스타크' 허가 목표...상한가 직행 - 히트뉴스",
@@ -1511,7 +1511,7 @@
       ]
     },
     "KR:087010": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "소리가 꺼져 있어도 이해할 수 있을까? isa 슬롯 표시 방식 - Calgary Roughnecks",
@@ -1534,7 +1534,7 @@
       ]
     },
     "KR:006110": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "[특징주] 삼아알미늄, ESS 사이클·반발매수 기대…17%대 상승 - 아주경제",
@@ -1543,21 +1543,21 @@
           "publisher": "아주경제"
         },
         {
+          "title": "[특징주] 에이피알, 해외 매출 성장 기대에 8%대 급등 - 아주경제",
+          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFB0NHV5NVd6TFJqTjVOOFJCSXRSREJMWXctclAwVXNKLS1TSFdmZjQxdFNnTkh4bE9fQTdzNS1nWFE2RG03SEx2dVpnTTNJZTVwX0Rib3NrZnNOUdIBWEFVX3lxTE1ibjdTanBaYUNZUmM4QmhTam9LbzZrU2VHbUJTQlhMODZ4ai1qNkljVG9jQzNhQmZ5NlVyOTR3SjI4SHN5bVZmTTVCWkFTNlpCeXFvZ0tyaEc?oc=5",
+          "date": "2026-10-16T02:15:56+00:00",
+          "publisher": "아주경제"
+        },
+        {
           "title": "특징주, 삼아알미늄-비철금속 테마 상승세에 12.01% ↑ - 매일경제 마켓",
           "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE10ek5fTkY3WGIyRHVVM1c5dHk5YTNueFQ0TlRkZnZyR19SbGE1SmNZWVB1RVZFX0ktSHk5Ry1UQ25PUE44d1JCSDB2TzdTc0ZTbUE?oc=5",
           "date": "2026-10-16T01:36:28+00:00",
           "publisher": "매일경제 마켓"
-        },
-        {
-          "title": "2026.10.15.(목) 증권사리포트 \"KT&G - 이럴 때 생각나는 담배\" - 네이버 프리미엄콘텐츠",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQblhaVzlydDRQbUJ2YkxyeUZFSHJrUUlGM2VyWVg3czZHN2pmYkJnOGc0TDRZNjFkcFhBMjFZSmRFSjJIZDNmWTJ3eGRnWTNsRjc0UXNVU28zRGdmdzBzNEdqMEJ0ZG5zbDhzUlBIREU1cVExWDZKeWlibFFkb2tqU2Nn?oc=5",
-          "date": "2026-10-15T03:36:24+00:00",
-          "publisher": "네이버 프리미엄콘텐츠"
         }
       ]
     },
     "KR:290650": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "엘앤씨바이오 주가, 10월 16일 애프터마켓 70,100원 23.63% 상승 - 톱스타뉴스",
@@ -1580,7 +1580,7 @@
       ]
     },
     "KR:080220": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "제주반도체 주가 5,200원 상승 후 장마감 - 아시아뉴스통신",
@@ -1603,7 +1603,7 @@
       ]
     },
     "KR:042700": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "10월 2주차 한미반도체 주가 하락세 딛고 상승 마감 - 톱스타뉴스",
@@ -1626,8 +1626,14 @@
       ]
     },
     "KR:196170": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
+        {
+          "title": "알테오젠, 올해 영업이익 131% 증가 전망…판매 마일스톤이 성장 견인 - 핀포인트뉴스",
+          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBqeTVjTFpGUnFyVmUzSkNabV8wclNPYk5BYy1QOTVwQ1RRTllXYjhELUp0djdfS1AwMmZYYjVua3BVTW4xRnB5Y0FNMjlyRElublozWDN0aXdMY1NjbGRldUExQTNJbnJlZ0JzakxEUlViTk3SAXdBVV95cUxOUVpDaTFSNG92cGY4X0lrdFJEbjN3QkozQXJZN2ZIVEFCbGY1TGMxWjJXYTBENjZOaW15anRidUlIcXBhSHdIUUVGaFczVEJYYS0yWXU1ZXM2WHNhMHJyWHlWRFBNbVotMklWREZaeHFTZmtjMXAtMA?oc=5",
+          "date": "2026-10-17T04:42:09+00:00",
+          "publisher": "핀포인트뉴스"
+        },
         {
           "title": "최근 5거래일 알테오젠 주가 20만원대 등락 끝에 상승세 전환 - 톱스타뉴스",
           "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFB4VEM3TXRRS05ReWt2Zl9iTkRhTkFjZkRGZkFyTDBvVWVqWnI0Nk1HVnAtQ25GbVBUdTZhOGFCUlBjZUFISklxcTY0Sl9CM1dnRFlXMzlkLV9TQWRuVm1DM1lSbk9LRkRrV2N0MzZEaGZWZw?oc=5",
@@ -1639,18 +1645,18 @@
           "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE0zX2tkYXdMTVJhN2xCUXlQWkJCMUNmRWNvQ29zNDU4d3FyWjVvWVhZc3J2UjloMGNOR21kMUszc3NkdzBhX2pHUFJWLXlXVUZQUERDRXVDY09ONmZDcTQ0b2lkSk5aVDhI?oc=5",
           "date": "2026-10-16T23:23:00+00:00",
           "publisher": "CBC뉴스"
-        },
-        {
-          "title": "알테오젠, 6거래일 연속 하락 끊고 반등…주말 이후 흐름 주목 - CBC뉴스",
-          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5QZUh6ZTFPZkR5aG92bEY0UVprczZkbmxrbmEzOTdjbV9OVlB2TlpON25EeEU5Nk9lWE1MUzhUaHNCTEJsS2g3QkNQbF9VV3Zwdjlpa3k3LUp6UVlldTVUdXBncUpJX2li?oc=5",
-          "date": "2026-10-16T15:22:00+00:00",
-          "publisher": "CBC뉴스"
         }
       ]
     },
     "US:TLK": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
+        {
+          "title": "PT Telekomunikasi Indonesia, Tbk Stock 12‑Month Price Target Raised to $18.98, Implies 72% Upside - TradingView",
+          "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxNcF9xd2gydDF1RHFMMXhpeTBBbXB5bkpwUjRVY2hMYU9FYlZzdTZBU0c0ZUhPeS1hYmNfRzhJLVJNZmU3dnVJMVVRTkNrMEgtLUF3Wkg4cFc0VHdtQU9LbllBdF9mODZHTUxveGFWVmM3MkNfclNhWUxvQVgyTjdqNEJRWGpnMXdxLWduaFJ2MDNZZFJKb0kyaDhCY0NXZlRSbVgzVHdyWUpIYXJPTmtvV2FMeFkzeG9QR2h0QzN0VHpJVnJlbmhoOXE2Z25VUWs5Y3NIdGQ5WlVHWmNDbEtOZzZmRjd6VzJKV0pv?oc=5",
+          "date": "2026-10-17T04:20:00+00:00",
+          "publisher": "TradingView"
+        },
         {
           "title": "BC-Select Stock Indices - Yahoo Finance",
           "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQLUR2cXVGUWZJeXlNN2RfRkNnWEF0UmJMZUx3SW9tX1NtNk5VeWNRbHFCanhOY0xYbEEyblUycnBQTzZ0M2Z4MlZaOVFTSk5kNloyamtsOEVPQkVWc01IQWpwZjh5dnJkTlpHbUtVUm9EQmdCeVVYRm1hVlNIQ0JaWEsxak9RMDBaaHZvQ01raTgxdWNzUHgwX3hYTQ?oc=5",
@@ -1662,17 +1668,11 @@
           "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOZ3RfSy1RcV96RWhGSlJDenJfYTM3LWdvRmU1LVIwRzRmX3dGd0FyeV9mMFJvVGJ6b1h0M1l6ZkJ2RHRmT0RvSk5aOWI1Y1RJY3BrbC1JWDdOR2JWc3B1VGU2ZUxGbnJHRUZCdlN4LTc5WW85cTVHdG5XZk8xeFhHenozX1dZSTVjTGhmNlh5Y0dQb1J1VDNzSFQtS1lwVVhMLXc?oc=5",
           "date": "2026-10-16T20:17:22+00:00",
           "publisher": "Yahoo Finance"
-        },
-        {
-          "title": "CoreWeave Stock Slips as AI Debt Concerns Persist - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNUW9SbnlTeFdFOTY4UWQzaTFHaGMwSXRZSHdIeVlnaWwwSFdEbzVFUW5ESmRvY1E0bld3eDJpcW9XclVaeGYxczU4cmZGUldkS19rTnBOeXFYcDc5Q0RacS10a0lLaEN5bU5ydjBzV1Q5dnBXa0RoaGE3SUlMOFVEY3dUa2pxZzJWVEpRclJReXNBazJjQnJJbFp3?oc=5",
-          "date": "2026-10-16T15:46:59+00:00",
-          "publisher": "Yahoo Finance"
         }
       ]
     },
     "US:FROG": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "JFrog Ltd (FROG) Shares Fall 10.8% -- What GF Score of 68 Tells Investors - GuruFocus",
@@ -1695,7 +1695,7 @@
       ]
     },
     "US:CBRS": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "Cerebras Systems (NASDAQ:CBRS) Shares Down 10.5% - Should You Sell? - MarketBeat",
@@ -1718,12 +1718,12 @@
       ]
     },
     "US:SMCI": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "Is Super Micro Computer Inc (SMCI) a Bargain After 9.9% Drop? GF Value Says Undervalued - GuruFocus",
           "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPbjdFRXdoX2xvZmNVS0xfWk5HVHlSWGRVS0w5Smw4TWJNU3FidGZYYmh5RzVoaUhaLXVITjU4dHdzRU1vVkJ3RXcxaHlleGV3d25qX29pMHJwN3l6V01HLUN6bndHaDU4TnFaTGlkRWgwVndtWEh4cFVOMF9jbDFWeloxNnl4Zk50ZVl3NXhzSjBwNW1YS1VCMlVvbzJWS2lBWHJXS3ZEbXJ6bWtobUlSbjFpZzhYRWRBOW9VODJB?oc=5",
-          "date": "2026-10-16T22:30:49+00:00",
+          "date": "2026-10-16T22:34:31+00:00",
           "publisher": "GuruFocus"
         },
         {
@@ -1733,15 +1733,15 @@
           "publisher": "GuruFocus"
         },
         {
-          "title": "Super Micro Computer falls 10%, extending slide amid CFO change (SMCI:NASDAQ) - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOdDEwTy1hVFQ2ZG5hS0tyVmhuYi1rVG9UMmtGZGNXUEwzd01nMEZZcUxiYnpzV3NhZ0Vtb204XzFYQ0oyLXREZGIwQ1VabHRtR3JJVWJhZFBVUE1Iek5zMnYtNElvcEJYSUtHUUs2R1RkQU9VNUJtS056X2ktNG1SeEZmZWFxLXZZUUpsUHJubmJ5SXdENVVkT2ZSMmNPTUto?oc=5",
-          "date": "2026-10-16T20:53:38+00:00",
-          "publisher": "Seeking Alpha"
+          "title": "Super Micro Computer names Mark Long CFO after nearly two‑year search - Mugglehead Investment Magazine",
+          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1BdExMdFo0Sk1LMHpmT0wxY0dmd2tIQTV1WTlseXhGaGRhcWotbFhFNHhtOVFXTFpvNUNPRGFCWFJacEpQaVRlbjlLMmxuTU0xbFhWdU5ZUDNOaC1ocWdTaC1uQ2hiOG5fV1QtOEtQR2t2VFRMOURqdE5R?oc=5",
+          "date": "2026-10-16T21:07:07+00:00",
+          "publisher": "Mugglehead Investment Magazine"
         }
       ]
     },
     "US:TWLO": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "Twilio (TWLO) Shares Drop Nearly 11% Amid Tech Sell-Off on October 16, 2026 - GuruFocus",
@@ -1764,7 +1764,7 @@
       ]
     },
     "US:OKTA": {
-      "checkedAt": "2026-10-17T03:36:39.700549+00:00",
+      "checkedAt": "2026-10-17T05:44:29.559995+00:00",
       "items": [
         {
           "title": "Okta Inc (OKTA) Shares Fall 10.2% -- GF Value Says Still Overval - GuruFocus",
@@ -1787,5 +1787,5 @@
       ]
     }
   },
-  "checkedAt": "2026-10-17T03:38:24.022999+00:00"
+  "checkedAt": "2026-10-17T05:44:29.559995+00:00"
 }

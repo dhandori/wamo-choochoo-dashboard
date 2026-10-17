@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-17T03:38:31.917583+00:00",
+  "checkedAt": "2026-10-17T05:44:38.589754+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-17T03:38:31.917583+00:00",
+      "generatedAt": "2026-10-17T05:44:38.589754+00:00",
       "sessions": {
         "US-NYSE": "20261016",
         "US-NASDAQ": "20261016",
@@ -1472,7 +1472,7 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-17T03:38:31.917583+00:00",
+      "generatedAt": "2026-10-17T05:44:38.589754+00:00",
       "sessions": {
         "KR-KOSDAQ": "20261016",
         "KR-KOSPI": "20261016"
