@@ -215,9 +215,23 @@ with sync_playwright() as p:
             # A legitimate freshness notice adds height after the session cutoff.
             # Keep the original content-density budget without hiding that notice.
             notice_height=page.locator('#notice').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginTop)+parseFloat(getComputedStyle(node).marginBottom)')
-            print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height))
-            if width==1440:assert first_y-notice_height<520,first_y
-            else:assert first_y-notice_height<580,first_y
+            # The market-weather strip is a deliberate always-on summary; budget the rest.
+            weather_height=page.locator('#weather').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginBottom)')
+            if width<760:assert weather_height<=110,weather_height
+            else:assert weather_height<=80,weather_height
+            print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
+            if width==1440:assert first_y-notice_height-weather_height<520,first_y
+            else:assert first_y-notice_height-weather_height<580,first_y
+            if (ROOT/'wamo_trend.json').exists():
+                page.locator('[data-tab=trend]').click()
+                expect(page.locator('#section-title')).to_have_text('추세 신호')
+                expect(page.locator('.tr-weather-detail')).to_be_visible()
+                for label in ('팔 때 경고','신호 성적표','실적발표 임박','RS선 선행 신고가'):
+                    page.locator('.tr-subtabs button',has_text=label).click()
+                dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
+                assert dimensions['scroll']<=dimensions['client'],dimensions
+                page.screenshot(path=str(OUT/f'radar-{market}-{width}-trend.png'),full_page=False)
+                assert not errors,errors
             context.close()
             print('RADAR INTERACTION PASS',market,width)
     for failure in ('offline','invalid'):

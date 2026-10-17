@@ -32,7 +32,81 @@ def set_action_output(updated):
             stream.write(f"updated={'true' if updated else 'false'}\n")
 
 
-def select_targets(state, now, requested='auto', force=False, recovery=False):
+class PartialRegression(RuntimeError):
+    """A missing-stock rerun produced fewer current prices than before."""
+
+
+PARTIAL_AUTO_RETRIES = 2
+PARTIAL_RETRY_GAP = timedelta(hours=2)
+
+
+def missing_count(entry, report=None):
+    """Stocks not refreshed in the completed close (state, or older status files)."""
+    if entry.get('missingCount') is not None:
+        return int(entry.get('missingCount') or 0)
+    report = report or {}
+    fresh = report.get('freshness') or {}
+    try:
+        if fresh.get('expectedSession') and report.get('asOf') == fresh.get('expectedSession'):
+            return max(0, int(report.get('count')) - int(fresh.get('currentCount')))
+    except (TypeError, ValueError):
+        pass
+    return 0
+
+
+def partial_rerun_due(entry, now, force=False, recovery=False, report=None):
+    """Whether a completed close with missing stocks should be collected again."""
+    if not entry.get('success') or missing_count(entry, report) <= 0:
+        return False
+    if force:
+        return True
+    if not recovery or int(entry.get('partialAttempts') or 0) >= PARTIAL_AUTO_RETRIES:
+        return False
+    try:
+        return now >= datetime.fromisoformat(entry['lastAttemptAt']) + PARTIAL_RETRY_GAP
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return True
+
+
+def build_trend(markets):
+    """Optional trend signals; never blocks or rolls back verified prices."""
+    try:
+        from wamo_trend import build, OUTPUTS
+        build(ROOT, markets=tuple(markets))
+        return [name for name in OUTPUTS if (ROOT / name).exists()]
+    except Exception as exc:  # noqa: BLE001
+        print(f'추세 신호 생성 미완료 · 가격 자료는 정상 유지: {type(exc).__name__}', flush=True)
+        return []
+
+
+def send_alerts(markets):
+    try:
+        from wamo_alerts import send_for_markets
+        return send_for_markets(ROOT, markets)
+    except Exception as exc:  # noqa: BLE001
+        print(f'알림 전송 미완료: {type(exc).__name__}', flush=True)
+        return []
+
+
+def trend_stale_markets():
+    """Markets whose trend file is missing or behind the verified price page."""
+    try:
+        trend = read_json(ROOT / 'wamo_trend.json').get('markets', {})
+    except (OSError, ValueError, AttributeError):
+        trend = {}
+    stale = []
+    for market, (_, page, _, _) in MARKETS.items():
+        try:
+            from wamo_update import extract_old_payload
+            asof = (extract_old_payload((ROOT / page).read_text(encoding='utf-8')).get('meta') or {}).get('asOf')
+            if asof and (trend.get(market) or {}).get('asOf') != asof:
+                stale.append(market)
+        except OSError:
+            continue
+    return stale
+
+
+def select_targets(state, now, requested='auto', force=False, recovery=False, status=None):
     targets = []
     for market in MARKETS:
         if requested not in ('auto', 'both', market):
@@ -53,6 +127,10 @@ def select_targets(state, now, requested='auto', force=False, recovery=False):
             except (TypeError, ValueError, OverflowError):
                 pass
         if completed_session == session:
+            # A "successful" close can still miss a few stocks. Re-collect those
+            # on a manual run, or automatically at most twice, 2 hours apart.
+            if partial_rerun_due(entry, now, force, recovery, (status or {}).get(market)):
+                targets.append((market, slot))
             continue
         if same_slot:
             if entry.get('success'):
@@ -254,20 +332,40 @@ def main():
     # even after 12 hours. Regular DST cron candidates still run only once.
     recovery = args.recovery or force or int(os.getenv('GITHUB_RUN_ATTEMPT', '1')) > 1
     state, status = read_json(STATE), read_json(STATUS)
-    targets = select_targets(state, now, args.market, force, recovery=recovery)
+    targets = select_targets(state, now, args.market, force, recovery=recovery, status=status)
     print('갱신 대상:', [(market, slot.astimezone(KST).isoformat()) for market, slot in targets], flush=True)
     if args.plan or not targets:
         if not args.plan and recovery:
             recover_auxiliary(state, status, now, args.market, args.publish)
+        if not args.plan:
+            # Trend signals are derived locally; catch up if a page moved on
+            # without them (first deploy, or an earlier optional failure).
+            stale = trend_stale_markets()
+            if stale:
+                names = build_trend(stale)
+                if names:
+                    # Also re-render the radar page so template updates appear.
+                    names.extend(refresh_insights())
+                if names and args.publish:
+                    publish(names)
+                    alert_files = send_alerts(stale)
+                    if alert_files:
+                        publish(alert_files)
         set_action_output(False)
         return
     changed = ['wamo_refresh_state.json', 'wamo_refresh_status.json', *SHARED]
     failures = []
+    refreshed = []
     for market, slot in targets:
         script, page, movers_market, caches = MARKETS[market]
-        old_entry = state.get(market, {})
+        old_entry = dict(state.get(market, {}))
+        old_report = dict(status.get(market, {}))
         same = old_entry.get('slot') == slot.isoformat()
+        old_missing = missing_count(old_entry, old_report)
+        partial_rerun = bool(same and old_entry.get('success') and old_missing > 0)
         entry = {'slot': slot.isoformat(), 'attempts': old_entry.get('attempts', 0) + 1 if same else 1, 'success': False}
+        if partial_rerun:
+            entry['partialAttempts'] = int(old_entry.get('partialAttempts') or 0) + 1
         start = datetime.now(UTC)
         entry['lastAttemptAt'] = start.isoformat()
         env = dict(os.environ, WAMO_RUN_STARTED_AT=start.isoformat(),
@@ -294,6 +392,9 @@ def main():
             from wamo_runtime import validate_freshness
             data = core.extract_old_payload((ROOT / page).read_text(encoding='utf-8'))
             fresh = validate_freshness(data, market)
+            missing = max(0, len(data['stocks']) - int(fresh.get('currentCount', len(data['stocks']))))
+            if partial_rerun and missing > old_missing:
+                raise PartialRegression(missing)
             warnings = list(fresh['warnings'])
             report['moversStatus'] = 'RUNNING'
             report.update(status='WARNING' if warnings else 'PASS', warnings=warnings,
@@ -303,15 +404,30 @@ def main():
                           kis=data['meta'].get('kisMeta'))
             entry['success'] = True
             entry['lastFullSlot'] = slot.isoformat()
+            entry['missingCount'] = missing
+            if partial_rerun:
+                report['partialRerun'] = f"누락 종목 재수집 · {old_missing} → {missing}종목"
             changed.extend([page, *caches])
-        except (subprocess.SubprocessError, RuntimeError, ValueError, KeyError, OSError) as exc:
+            refreshed.append(market)
+        except (PartialRegression, subprocess.SubprocessError, RuntimeError, ValueError, KeyError, OSError) as exc:
             restore(saved)
-            report['status'] = 'FAILED'
-            # Child process logs contain the provider's diagnostic; don't copy
-            # arbitrary exception bodies or authentication responses into the site.
-            report['error'] = '가격 갱신 또는 최신성 검사 실패 · 이전 정상 데이터 유지 · 실행 로그 확인'
-            failures.append(market)
-            print(f'{market} FAILED: {type(exc).__name__}', flush=True)
+            if partial_rerun:
+                # The earlier close was already verified and published. Keep it,
+                # record the attempt and stop after the retry budget.
+                entry = {**old_entry, 'lastAttemptAt': entry['lastAttemptAt'],
+                         'partialAttempts': entry['partialAttempts'], 'missingCount': old_missing}
+                note = ('누락 종목 재수집 결과가 이전보다 나빠 이전 결과 유지' if isinstance(exc, PartialRegression)
+                        else '누락 종목 재수집 실패 · 이전 정상 데이터 유지')
+                report = {**old_report, 'partialRerun': note,
+                          'warnings': [w for w in old_report.get('warnings', []) if not w.startswith('누락 종목 재수집')] + [note]}
+                print(f'{market} 누락 재수집 미반영: {type(exc).__name__}', flush=True)
+            else:
+                report['status'] = 'FAILED'
+                # Child process logs contain the provider's diagnostic; don't copy
+                # arbitrary exception bodies or authentication responses into the site.
+                report['error'] = '가격 갱신 또는 최신성 검사 실패 · 이전 정상 데이터 유지 · 실행 로그 확인'
+                failures.append(market)
+                print(f'{market} FAILED: {type(exc).__name__}', flush=True)
         state[market], status[market] = entry, report
         print(market, report['status'], '가격 기준일', report.get('asOf'), flush=True)
         # Publish each validated market before slow optional movers or the other market.
@@ -321,9 +437,11 @@ def main():
         write_json(STATUS, status)
         insight_files = refresh_insights()
         changed.extend(insight_files)
+        trend_files = build_trend([market]) if market in refreshed else []
+        changed.extend(trend_files)
         if args.publish:
-            publish([page, *caches, STATE.name, STATUS.name, *insight_files])
-        if entry['success']:
+            publish([page, *caches, STATE.name, STATUS.name, *insight_files, *trend_files])
+        if market in refreshed:
             movers_saved = snapshot(SHARED)
             try:
                 run_script('wamo_update_movers.py', ['--market', movers_market], env, timeout=600)
@@ -346,7 +464,7 @@ def main():
         changed.append(page)
     write_json(STATE, state)
     write_json(STATUS, status)
-    summary = '\n'.join(f"- {m}: {status[m]['status']} · 가격 기준일 {status[m].get('asOf', '확인 불가')} · 예약 {status[m]['scheduledFor']}" for m, _ in targets)
+    summary = '\n'.join(f"- {m}: {status[m].get('status')} · 가격 기준일 {status[m].get('asOf', '확인 불가')} · 예약 {status[m].get('scheduledFor', '확인 불가')}" for m, _ in targets)
     if os.getenv('GITHUB_STEP_SUMMARY'):
         Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(summary + '\n', encoding='utf-8')
     if args.publish:
@@ -376,6 +494,9 @@ def main():
             print('관련 헤드라인 연결 미완료 · 가격 자료는 정상 유지', flush=True)
         changed.extend(refresh_insights())
         publish(changed)
+        alert_files = send_alerts(refreshed) if refreshed else []
+        if alert_files:
+            publish(alert_files)
     set_action_output(any(state[market].get('success') for market, _ in targets))
     if failures:
         raise SystemExit('갱신 실패: ' + ', '.join(failures))
