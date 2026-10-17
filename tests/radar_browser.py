@@ -262,6 +262,17 @@ with sync_playwright() as p:
     expect(page.locator('#date-info')).to_contain_text(DATA['markets']['KR']['asOf'])
     assert 'tab=ai' in page.url
     context.close();print('RADAR AI DEEP LINK AND MARKET SWITCH PASS')
+    context=browser.new_context();page=context.new_page();errors=[]
+    page.on('pageerror',lambda error:errors.append(str(error)))
+    page.goto(base+'/radar.html',wait_until='networkidle')
+    page.evaluate("document.querySelector('#session-changes').remove();document.querySelector('#signal-filter').remove()")
+    page.locator('[data-tab=ai]').click()
+    expect(page.locator('.ai-sector-card')).to_have_count(8)
+    expect(page.locator('.stock-link:visible').first).to_be_visible()
+    page.locator('[data-tab=near]').click()
+    expect(page.locator('.stock-link:visible').first).to_be_visible()
+    assert not errors,errors
+    context.close();print('RADAR PREVIOUS TEMPLATE RETENTION PASS')
     for name,market in [('index.html','KR'),('us.html','US')]:
         page=browser.new_page()
         page.goto(base+'/'+name,wait_until='domcontentloaded');page.wait_for_url(f'**/radar.html?market={market}')
