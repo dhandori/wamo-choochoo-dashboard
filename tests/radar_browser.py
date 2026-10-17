@@ -146,7 +146,7 @@ with sync_playwright() as p:
                 old=prior.get(s['id'],{})
                 return (s.get('highDistancePct') is not None and old.get('highDistancePct') is not None and s['highDistancePct']<=10<old['highDistancePct']) or (s.get('rs') is not None and old.get('rs') is not None and s['rs']>=80>old['rs']) or (s.get('stage2') is True and old.get('stage2') is False)
             if prior:
-                page.locator('#controls [data-help=newOnly]').click()
+                page.locator('#signal-filter [data-help=newOnly]').click()
                 expect(page.get_by_role('tooltip')).to_contain_text('직전 거래일')
                 expect(page.get_by_role('checkbox',name='새로 포착만')).not_to_be_checked()
                 page.keyboard.press('Escape')

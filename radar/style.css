@@ -236,8 +236,10 @@ table { font-size: 13px; }
 .change-badges { display: flex; flex-wrap: wrap; gap: 4px; }
 .change-badges:empty { display: none; }
 .change-badge { margin-top: 5px; color: #b2cef3; border: 1px solid #3b5575; background: #1b2c42; border-radius: 4px; padding: 1px 5px; font-size: 9px; line-height: 1.6; white-space: nowrap; }
-.list-meta { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 12px; }
-.list-meta .result-summary { margin-bottom: 8px; }
+.list-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 12px; }
+.result-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 0 10px; margin-bottom: 8px; }
+.result-tools .result-summary { margin: 0; }
+.result-tools .checkbox-control { min-height: 26px; padding: 2px 0; font-size: 10px; }
 .session-changes { margin: 0 0 8px; font-size: 11px; color: var(--muted); }
 .session-changes[hidden] { display: none; }
 .session-changes summary { cursor: pointer; padding: 3px 0; }
@@ -257,6 +259,7 @@ table { font-size: 13px; }
   .ai-toolbar { display: block; }.ai-toolbar > span { display: none; }
   .ai-toolbar .filter-group { flex-wrap: nowrap; gap: 5px; }
   .ai-toolbar button { flex: 1; padding: 5px 7px; }
+  .heatmap-note::before { content: '↔ 좌우로 밀어 전체 기간 확인'; display: block; margin-bottom: 3px; color: var(--text); }
   .session-changes summary > span { margin-right: 8px; }.change-dates { font-size: 9px; }
   .exit-item { align-items: flex-start; }.exit-item span { max-width: 55%; text-align: right; }
   .controls .filter-group:has(input) { gap: 2px; }

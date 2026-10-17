@@ -231,8 +231,7 @@ function renderControls() {
   if (state.tab === 'industries' && !state.industry) {
     checkbox('confirmed', '확인된 그룹만', controls);
   } else {
-    const options = el('div', null, 'filter-group'); checkbox('rs', 'RS ≥80', options); checkbox('stage', 'Stage 2', options); checkbox('newOnly','새로 포착만',options); controls.append(options);
-    const newInput=options.querySelector('.checkbox-help:last-child input');newInput.disabled=!hasComparison(snapshot.markets[state.market]);
+    const options = el('div', null, 'filter-group'); checkbox('rs', 'RS ≥80', options); checkbox('stage', 'Stage 2', options); controls.append(options);
     const select = el('select'); select.setAttribute('aria-label', '정렬');
     [['default', state.tab==='ai'?'선택 기간 수익률':'기본 정렬'], ['marketCap', '시총 큰 순'], ['marketCapAsc', '시총 작은 순'], ['changePct', '당일 상승률'], ['absolute', '당일 절대 변동'], ['return5d', '5일 수익률'], ['return20d','20일 수익률'], ...(state.tab==='ai'?[['return60d','60일 수익률'],['return120d','120일 수익률'],['return200d','200일 수익률']]:[]), ['volumeRatio', '거래량 배수'], ['rs', 'RS'], ['name', '종목명']].forEach(([value, text]) => { const o = el('option', text); o.value = value; o.selected = state.sort === value; select.append(o); });
     select.onchange = () => change('sort', select.value); controls.append(select);
@@ -348,7 +347,9 @@ function renderMeta(m) {
 }
 function renderChanges(m) {
   const panel=$('session-changes');panel.replaceChildren();panel.hidden=state.tab==='industries'&&!state.industry;
+  const filter=$('signal-filter');filter.replaceChildren();
   if(panel.hidden)return;
+  checkbox('newOnly','새로 포착만',filter);filter.querySelector('input').disabled=!hasComparison(m);
   if(!hasComparison(m)){
     panel.append(el('summary','전일 변화 · 비교 자료 대기'),el('p',`직전 거래일 ${m.comparison?.expectedSession||'—'} 자료가 확인되면 표시합니다. 자료 누락을 신규 진입이나 이탈로 계산하지 않습니다.`));return;
   }
