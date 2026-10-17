@@ -1,5 +1,7 @@
 import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261017-1';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261017-1';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261017-2';
+import { runnerButton, initRunner } from './runner.js?v=20261017-2';
 
 const $ = id => document.getElementById(id);
 const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false };
@@ -7,7 +9,7 @@ const PERIODS={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','med
 const CHANGE_LABELS={near:'신고가권 진입',rs:'RS 80 돌파',stage:'Stage 2 진입'};
 const EXIT_LABELS={near:'신고가권 이탈',rs:'RS 80 하회',stage:'Stage 2 이탈'};
 const params = new URLSearchParams(location.search);
-const state = { ...defaults, market: params.get('market') === 'US' ? 'US' : 'KR', tab: ['near','high','industries','movers','ai'].includes(params.get('tab'))?params.get('tab'):'near' };
+const state = { ...defaults, market: params.get('market') === 'US' ? 'US' : 'KR', tab: ['near','high','industries','movers','ai','trend'].includes(params.get('tab'))?params.get('tab'):'near' };
 let snapshot = null, refreshFailed = false, refreshing = false;
 const fmt = (n, d = 1) => numeric(n) ? n.toLocaleString('ko-KR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—';
 const pct = n => numeric(n) ? `${n > 0 ? '+' : ''}${fmt(n)}%` : '—';
@@ -319,12 +321,12 @@ function renderMeta(m) {
   if (refreshFailed) messages.push('가격 파일을 다시 확인하지 못해 마지막 검증 데이터를 유지합니다.');
   $('notice').hidden = messages.length === 0; $('notice').textContent = messages.join(' ');
   $('date-info').replaceChildren(el('span', `${m.asOf || '미제공'} 거래일 종가`, 'session-date'), el('span', ({ CURRENT: '최신 거래일', PARTIAL: '일부 제외', STALE: '지난 거래일', UNAVAILABLE: '데이터 없음' })[status], `badge status-${status.toLowerCase()}`));
-  const refreshButton = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); refreshButton.className = 'refresh-button'; refreshButton.disabled = refreshing; $('date-info').append(refreshButton);
+  const refreshButton = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); refreshButton.className = 'refresh-button'; refreshButton.disabled = refreshing; $('date-info').append(refreshButton, runnerButton(state.market));
   const near = m.stocks.filter(s => numeric(s.highDistancePct) && s.highDistancePct <= 10), highs = m.stocks.filter(s => s.intradayHigh52 === true || s.closeHigh52 === true);
   const groups = m.industries.filter(g => g.confirmed), moves = selectStocks(m, { tab: 'movers' });
   const ai=aiOverview(m,state.market).total;
-  const counts = { near: near.length, high: highs.length, industries: groups.length, movers: moves.length,ai:ai.count };
-  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 신고가', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'검증 가격이 있는 AI 관련 종목 · 중복 제외' };
+  const counts = { near: near.length, high: highs.length, industries: groups.length, movers: moves.length,ai:ai.count,trend:trendTabLabel(state.market) };
+  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 신고가', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'검증 가격이 있는 AI 관련 종목 · 중복 제외',trend:'시장 날씨 · RS선 · 팔 때 경고 · 실적발표 · 신호 성적표' };
   document.querySelectorAll('[data-tab]').forEach(b => {
     let n = b.querySelector('.tab-count');
     if (!n) { n = el('span', null, 'tab-count'); b.append(n); }
@@ -339,7 +341,8 @@ function renderMeta(m) {
     $('metrics').replaceChildren();
     [['AI 관찰 종목',`${ai.count}`,`관리 목록 ${ai.catalogCount}종목`],['당일 상승 비율',numeric(ai.advancingPct)?`${fmt(ai.advancingPct,0)}%`:'—',`유효 ${ai.changeCount}종목 중 ${ai.advancingCount}종목`],['AI 신고가권',`${ai.nearHighCount}`,`52주 비교 ${ai.eligible52w}종목 · 10% 이내`],['AI 당일 신고가',`${ai.newHighCount}`,'장중 또는 종가 · 중복 제외']].forEach(([label,value,sub])=>{const box=el('div',null,'metric'),caption=el('span');caption.append(helpLabel(label));box.append(caption,el('strong',value),el('small',sub));$('metrics').append(box);});
   }
-  $('metrics').setAttribute('aria-label',state.tab==='ai'?'전체 AI 관찰 목록 집계':'전체 스크리닝 대상 집계');
+  if(state.tab==='trend')renderTrendMetrics($('metrics'),state.market);
+  $('metrics').setAttribute('aria-label',state.tab==='ai'?'전체 AI 관찰 목록 집계':state.tab==='trend'?'추세 신호 요약':'전체 스크리닝 대상 집계');
   $('coverage-summary').textContent = `전체 스크리닝 ${m.coverage.valid}종목 · 52주 비교 ${m.coverage.eligible52w}종목${m.coverage.excluded ? ' · 제외 ' + m.coverage.excluded + '종목' : ''} · 데이터 기준`;
   const computed = new Date(snapshot.generatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
   $('coverage-detail').replaceChildren(el('p', `가격 출처: ${m.source} | 대상 ${m.coverage.total} · 유효 ${m.coverage.valid} · 제외 ${m.coverage.excluded}`), el('p', `가격 거래일 ${m.asOf || '—'} · 화면 계산 ${computed} KST (실시간 가격 아님)`), el('p', `예상 최근 거래일 ${m.expectedSession} · 다음 갱신 ${new Date(m.nextScheduledFor).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST`), el('p', '고점 거리: 최근 252개 거래일 장중 고점 대비 종가의 거리. 당일 신고가: 이전 251개 관측치 고점을 초과(동률 제외). 거래량: 당일 / 이전 50거래일 평균. RS·Stage 2는 선택 조건입니다.'), el('p', '산업 동반 강세 기준: 서로 다른 3종목 이상, 당일 상승 2종목 이상, 5일 상승 2종목 이상이면서 전체의 50% 이상, 5일 수익률 중앙값 양수, 신고가권 2종목 이상 또는 거래량 1.5배 이상 2종목 이상. 미분류 그룹 제외.'));
@@ -374,7 +377,10 @@ function render() {
   const m = snapshot.markets[state.market];
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
-  renderMeta(m); renderControls(); renderRail(m);renderAI(m);renderChanges(m);
+  renderMeta(m); renderWeather($('weather'), state.market, openTrend);
+  const search=$('search').closest('.search'); if(search) search.hidden=state.tab==='trend';
+  if (state.tab === 'trend') { renderTrendTab(); return; }
+  renderControls(); renderRail(m);renderAI(m);renderChanges(m);
   const labels = { near: ['52주 신고가권', '252거래일 고점에 가까운 종목 · 당일 경신은 별도 탭에서 확인'], high: ['당일 신고가', '표시된 거래일에 이전 251개 관측치 고점을 실제로 넘긴 종목'], industries: ['인더스트리 액션', '여러 종목의 동반 강세 우선 · 5일 중앙값 순'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망과 서비스의 흐름 · 상승·하락 모두 포함 · 한국/미국 전환 가능'] };
   $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();
@@ -397,8 +403,28 @@ function render() {
     if(state.tab!=='ai'){const jump = el('a', '산업 흐름 보기 ↓', 'rail-jump'); jump.href = '#industry-rail'; $('result-summary').append(jump);}
   }
 }
+function openTrend() {
+  Object.assign(state, { tab: 'trend', rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1, sort: 'default' }); $('search').value = ''; syncUrl(); render();
+  $('section-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function openStockById(id) {
+  const s = snapshot?.markets?.[state.market]?.stocks?.find(x => x.id === id);
+  if (s) detail(s);
+  else { $('notice').hidden = false; $('notice').textContent = '이 종목은 오늘 레이더 목록에 없어 상세 화면을 열 수 없어요.'; }
+}
+function renderTrendTab() {
+  $('controls').replaceChildren(); $('pagination').replaceChildren();
+  const rail = $('industry-rail'); rail.replaceChildren(); rail.hidden = true;
+  const ai = $('ai-overview'); if (ai) { ai.replaceChildren(); ai.hidden = true; }
+  const changes = $('session-changes'); if (changes) { changes.replaceChildren(); changes.hidden = true; }
+  $('signal-filter')?.replaceChildren();
+  $('result-summary').textContent = '';
+  $('section-title').textContent = '추세 신호';
+  $('section-description').textContent = '지금 사도 되는 시장인지, 어떤 종목이 지수보다 강한지, 어떤 종목이 꺾이고 있는지 한눈에 봅니다';
+  renderTrend($('content'), state.market, { openStock: openStockById, rerender: render });
+}
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
-  const tab=state.tab==='ai'?'ai':'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
+  const tab=['ai','trend'].includes(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
   Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod,aiView }); $('search').value = '';
   syncUrl(); render();
 });
@@ -420,8 +446,11 @@ const performRefresh = createRefresher(() => snapshot, ({ snapshot: next, failed
 });
 function refresh() {
   refreshing = true; updateRefreshButton();
+  loadTrend(true).then(() => render());
   return performRefresh().finally(() => { refreshing = false; updateRefreshButton(); });
 }
+initRunner({ done: async () => { await refresh(); await loadTrend(true); render(); },
+  marketStatus: market => snapshot?.markets?.[market] ? marketStatus(snapshot.markets[market]) : null });
 function updateRefreshButton() {
   document.querySelectorAll('.refresh-button').forEach(b => { b.disabled = refreshing; b.textContent = refreshing ? '확인 중…' : '데이터 확인'; });
 }
