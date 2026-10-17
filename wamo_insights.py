@@ -8,10 +8,11 @@ import re
 import tempfile
 from collections import defaultdict
 from datetime import date, datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from statistics import median
 from urllib.parse import quote, urlparse
-from wamo_runtime import expected_session, next_slot
+from wamo_runtime import calendar, expected_session, next_slot
 
 
 def number(value):
@@ -83,6 +84,62 @@ def naver_url(market, symbol, exchange=None):
     return f'https://m.stock.naver.com/worldstock/stock/{code}/total' if code else None
 
 
+@lru_cache(maxsize=32)
+def recent_sessions(market, asof):
+    sessions = calendar(market).sessions
+    if not asof or not calendar(market).is_session(asof):
+        return ()
+    end = sessions.get_loc(asof) + 1
+    return tuple(d.date().isoformat() for d in sessions[max(0, end-55):end])
+
+
+def trend_position(rows, market, asof):
+    sessions = recent_sessions(market, asof)
+    def above(offset):
+        count = 50 + offset
+        if len(rows) < count or len(sessions) < count:
+            return None
+        if tuple(r['date'] for r in rows[-count:]) != sessions[-count:]:
+            return None
+        window = rows[-count:-offset] if offset else rows[-50:]
+        return window[-1]['close'] > sum(r['close'] for r in window) / 50
+    return {'aboveMa50': above(0), 'aboveMa50Ago5': above(5)}
+
+
+def comparison_snapshot(market, asof, previous=None, baseline=None):
+    """Keep one actual prior session, including across same-session rebuilds.
+
+    Never infer a transition from a missing symbol, missing value, or skipped day.
+    The dated seed is a one-time migration from previously published snapshots.
+    """
+    sessions = recent_sessions(market, asof)
+    expected = sessions[-2] if len(sessions) >= 2 else None
+    result = {'expectedSession': expected, 'asOf': None, 'stocks': []}
+    if not expected:
+        return result
+    previous = previous or {}
+    candidates = [previous, previous.get('comparison') or {}, baseline or {}]
+    for candidate in candidates:
+        if candidate.get('asOf') != expected or not isinstance(candidate.get('stocks'), list):
+            continue
+        stocks = []; seen = set()
+        for s in candidate['stocks']:
+            if not isinstance(s, dict): continue
+            ident = s.get('id')
+            if not isinstance(ident, str) or not ident.startswith(market+':') or ident in seen: continue
+            if s.get('asOf', expected) != expected: continue
+            distance = number(s.get('highDistancePct')); rs = number(s.get('rs'))
+            stocks.append({'id': ident, 'highDistancePct': distance if distance is not None and distance >= 0 else None,
+                           'rs': rs if rs is not None and 0 <= rs <= 100 else None,
+                           'stage2': s.get('stage2') if isinstance(s.get('stage2'), bool) else None})
+            seen.add(ident)
+        if stocks:
+            result.update(asOf=expected, stocks=stocks)
+            if candidate.get('sourceRevision'): result['sourceRevision'] = candidate['sourceRevision']
+            break
+    return result
+
+
 def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
@@ -122,6 +179,7 @@ def project(stock,market,asof):
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),'volumeRatio':volume,
             'rs':number(stock.get('rsPercentile')),'stage2':stock.get('stage2Core'),
+            **trend_position(rows,market,asof),
             'source':stock.get('dataSource') or stock.get('priceProvider') or 'verified local history',
             'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),
             'detailUrl':('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
@@ -149,7 +207,7 @@ def industries(stocks,market):
     return result
 
 
-def build_insights(payloads,now,previous=None):
+def build_insights(payloads,now,previous=None,baseline=None):
     if isinstance(now,str):now=datetime.fromisoformat(now.replace('Z','+00:00'))
     if now.tzinfo is None:now=now.replace(tzinfo=timezone.utc)
     result={'schemaVersion':1,'generatedAt':now.isoformat(),'markets':{}}
@@ -184,7 +242,8 @@ def build_insights(payloads,now,previous=None):
             m={'asOf':asof if stocks else None,'expectedSession':expected,'status':('STALE' if asof!=expected else 'PARTIAL' if excluded else 'CURRENT') if stocks else 'UNAVAILABLE',
                'nextScheduledFor':scheduled,'source':meta.get('source') or 'verified local history',
                'coverage':{'total':len(raw),'valid':len(stocks),'excluded':excluded,'eligible52w':sum(s['high52'] is not None for s in stocks)},
-               'stocks':stocks,'industries':industries(stocks,market),'movers':[s for s in stocks if s['moverReasons']],'warnings':warnings}
+               'stocks':stocks,'industries':industries(stocks,market),'movers':[s for s in stocks if s['moverReasons']],'warnings':warnings,
+               'comparison':comparison_snapshot(market,asof if stocks else None,previous_market,((baseline or {}).get('markets') or {}).get(market))}
         result['markets'][market]=m
     return result
 

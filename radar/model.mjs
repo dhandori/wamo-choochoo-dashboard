@@ -1,11 +1,33 @@
-import {aiMembership, aiSearchText} from './ai.mjs?v=20261016-3';
-export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261016-3';
+import {aiMembership, aiSearchText} from './ai.mjs?v=20261017-1';
+export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261017-1';
 export const numeric = x => typeof x === 'number' && Number.isFinite(x);
 const day = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10)===value;
 const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));
 const count = value => Number.isInteger(value) && value>=0;
 const text = value => typeof value==='string' && value.trim().length>0;
 const optionalNumber = value => value==null || numeric(value);
+export function hasComparison(m) {
+ const c=m.comparison;
+ return Boolean(c && day(c.asOf) && c.asOf===c.expectedSession && c.asOf<m.asOf && Array.isArray(c.stocks));
+}
+const comparisonIndexes=new WeakMap();
+export function priorSignal(m,s) {
+ if(!hasComparison(m))return null;
+ if(!comparisonIndexes.has(m.comparison))comparisonIndexes.set(m.comparison,new Map(m.comparison.stocks.map(row=>[row.id,row])));
+ return comparisonIndexes.get(m.comparison).get(s.id)||null;
+}
+export function signalChanges(s,prior,distance=10) {
+ const entered=[],exited=[],comparable=[];
+ if(!prior||prior.id!==s.id)return {entered,exited,comparable};
+ const criteria=[['near','highDistancePct',v=>numeric(v)&&v>=0,v=>v<=distance],['rs','rs',v=>numeric(v)&&v>=0&&v<=100,v=>v>=80],['stage','stage2',v=>typeof v==='boolean',v=>v]];
+ for(const [key,field,valid,passes] of criteria){
+  if(!valid(s[field])||!valid(prior[field]))continue;
+  comparable.push(key);
+  if(passes(s[field])&&!passes(prior[field]))entered.push(key);
+  if(!passes(s[field])&&passes(prior[field]))exited.push(key);
+ }
+ return {entered,exited,comparable};
+}
 export function validSnapshot(x) {
  if (!x || x.schemaVersion!==1 || !timestamp(x.generatedAt) || !x.markets) return false;
  return ['KR','US'].every(k=> {
@@ -16,9 +38,14 @@ export function validSnapshot(x) {
   if(!c || !['total','valid','excluded','eligible52w'].every(key=>count(c[key])) || c.valid!==m.stocks.length || c.valid+c.excluded!==c.total || c.eligible52w>c.valid)return false;
   const ids=new Set(m.stocks.map(s=>s?.id));
   if(ids.size!==m.stocks.length)return false;
+  const comparison=m.comparison;
+  if(comparison!=null && (!comparison || typeof comparison!=='object' || (comparison.expectedSession!=null&&!day(comparison.expectedSession)) || !Array.isArray(comparison.stocks) ||
+     (comparison.asOf==null?comparison.stocks.length!==0:!hasComparison(m)) || new Set(comparison.stocks.map(s=>s?.id)).size!==comparison.stocks.length ||
+     !comparison.stocks.every(s=>s&&text(s.id)&&['highDistancePct','rs'].every(k=>optionalNumber(s[k]))&&(s.highDistancePct==null||s.highDistancePct>=0)&&(s.rs==null||s.rs>=0&&s.rs<=100)&&(s.stage2==null||typeof s.stage2==='boolean'))))return false;
   const validStock=s=>s && text(s.id) && text(s.name) && text(s.symbol) && text(s.industry) && s.asOf===m.asOf && numeric(s.close)&&s.close>0 && ['changePct','return5d','return20d','return60d','return120d','return200d','high52','highDistancePct','volumeRatio','rs'].every(key=>optionalNumber(s[key])) && (s.highDistancePct==null||s.highDistancePct>=0) && (s.volumeRatio==null||s.volumeRatio>=0) && ['intradayHigh52','closeHigh52','stage2'].every(key=>s[key]==null||typeof s[key]==='boolean') && (s.sparkline==null||Array.isArray(s.sparkline)&&s.sparkline.every(n=>numeric(n)&&n>0)) && ['catalysts','news'].every(key=>s[key]==null||Array.isArray(s[key])&&s[key].every(a=>a&&text(a.title)&&text(a.url)&&(a.date==null||day(a.date)||(key==='news'&&timestamp(a.date))))) && (s.moverReasons==null||Array.isArray(s.moverReasons)&&s.moverReasons.every(text));
   const validCap=s=>s.marketCap==null||numeric(s.marketCap)&&s.marketCap>0;
-  if(!m.stocks.every(s=>validStock(s)&&validCap(s))||!m.movers.every(s=>validStock(s)&&validCap(s)&&ids.has(s.id)))return false;
+  const validTrend=s=>['aboveMa50','aboveMa50Ago5'].every(key=>s[key]==null||typeof s[key]==='boolean');
+  if(!m.stocks.every(s=>validStock(s)&&validCap(s)&&validTrend(s))||!m.movers.every(s=>validStock(s)&&validCap(s)&&validTrend(s)&&ids.has(s.id)))return false;
   const groupIds=new Set();
   return m.industries.every(g=>{
    if(!g||!text(g.id)||groupIds.has(g.id)||!text(g.name)||typeof g.confirmed!=='boolean')return false;
@@ -44,7 +71,7 @@ export function acceptSnapshot(current, incoming) {
  }
  return {...incoming,markets};
 }
-export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',aiSector='all',aiSignal='all',aiPeriod='5d'}={}) {
+export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
  let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
  if(tab==='ai') {
   rows=rows.filter(s=>{const member=aiMembership(s);return member&&(aiSector==='all'||member.sectors.includes(aiSector));});
@@ -58,6 +85,7 @@ export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',
  if(tab==='high') rows=rows.filter(s=>high==='intraday'?s.intradayHigh52===true:high==='close'?s.closeHigh52===true:s.intradayHigh52===true||s.closeHigh52===true);
  if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
  if(industry) rows=rows.filter(s=>industry.members.includes(s.id));
+ if(newOnly)rows=rows.filter(s=>signalChanges(s,priorSignal(m,s),tab==='near'?distance:10).entered.length>0);
  const periodKey=aiPeriod==='1d'?'changePct':['5d','20d','60d','120d','200d'].includes(aiPeriod)?`return${aiPeriod}`:'return5d';
  const key=sort==='default'?(tab==='near'?'highDistancePct':tab==='movers'?'absolute':tab==='ai'?periodKey:'return5d'):sort;
  if(key==='marketCap'||key==='marketCapAsc')return rows.sort((a,b)=>{

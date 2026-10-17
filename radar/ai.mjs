@@ -62,7 +62,11 @@ function summarize(stocks) {
   const values=key=>stocks.map(s=>s[key]).filter(numeric);
   const med=key=>{const a=values(key).sort((a,b)=>a-b),n=a.length;return n?(a[Math.floor((n-1)/2)]+a[Math.floor(n/2)])/2:null;};
   const changeCount=values('changePct').length, advancingCount=stocks.filter(s=>numeric(s.changePct)&&s.changePct>0).length;
+  const trend=stocks.filter(s=>typeof s.aboveMa50==='boolean'),trendAbove=trend.filter(s=>s.aboveMa50).length;
+  const pairs=trend.filter(s=>typeof s.aboveMa50Ago5==='boolean');
   return {count:stocks.length,changeCount,advancingCount,advancingPct:changeCount?advancingCount/changeCount*100:null,
+    trendCount:trend.length,trendAbove,trendPct:trend.length?trendAbove*100/trend.length:null,
+    trendPairCount:pairs.length,trendDelta:pairs.length?pairs.reduce((n,s)=>n+Number(s.aboveMa50)-Number(s.aboveMa50Ago5),0)*100/pairs.length:null,
     medianChangePct:med('changePct'),medianReturn5d:med('return5d'),medianReturn20d:med('return20d'),medianReturn60d:med('return60d'),medianReturn120d:med('return120d'),medianReturn200d:med('return200d'),
     return5dCount:values('return5d').length,return20dCount:values('return20d').length,return60dCount:values('return60d').length,return120dCount:values('return120d').length,return200dCount:values('return200d').length,
     nearHighCount:stocks.filter(s=>numeric(s.highDistancePct)&&s.highDistancePct<=10).length,
