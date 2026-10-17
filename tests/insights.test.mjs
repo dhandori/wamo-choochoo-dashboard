@@ -1,5 +1,17 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {selectStocks,acceptSnapshot,validSnapshot,refreshSnapshot,marketStatus,safeUrl,createRefresher} from '../radar/model.mjs';
 const stock=(id,patch={})=>({id,name:id,symbol:id,industry:'Test',asOf:'2026-10-13',close:100,changePct:1,return5d:2,highDistancePct:5,volumeRatio:1,rs:80,...patch});const m={asOf:'2026-10-13',status:'CURRENT',nextScheduledFor:'2026-10-14T00:00:00Z',stocks:[stock('near'),stock('high',{intradayHigh52:true,highDistancePct:0}),stock('fall',{changePct:-8,highDistancePct:40,volumeRatio:2})],industries:[],warnings:[],expectedSession:'2026-10-13',source:'verified',movers:[],coverage:{total:3,valid:3,excluded:0,eligible52w:3}};const snap={schemaVersion:1,generatedAt:'2026-10-14T00:00:00Z',markets:{KR:m,US:m}};
+test('comparison validation keeps legacy snapshots valid and rejects invalid baseline dates or values',()=>{
+ const valid={asOf:'2026-10-12',expectedSession:'2026-10-12',stocks:[{id:'near',rs:79,stage2:false,highDistancePct:15}]};
+ const withComparison=comparison=>({...snap,markets:{...snap.markets,US:{...m,comparison}}});
+ assert.equal(validSnapshot(withComparison(valid)),true);
+ assert.equal(validSnapshot(withComparison({asOf:null,expectedSession:'2026-10-12',stocks:[]})),true);
+ for(const comparison of [{...valid,asOf:'2026-10-13'},{...valid,asOf:'2026-10-09'},{...valid,stocks:[valid.stocks[0],valid.stocks[0]]},{...valid,stocks:[{id:'near',rs:'79'}]},{...valid,stocks:[{id:'near',stage2:0}]}])assert.equal(validSnapshot(withComparison(comparison)),false);
+ for(const key of ['aboveMa50','aboveMa50Ago5']){
+  const candidate=value=>({...snap,markets:{...snap.markets,US:{...m,stocks:m.stocks.map(s=>({...s,[key]:value}))}}});
+  for(const value of [null,undefined,true,false])assert.equal(validSnapshot(candidate(value)),true);
+  for(const value of ['true',1,NaN])assert.equal(validSnapshot(candidate(value)),false);
+ }
+});
 test('long returns are optional for old snapshots and reject malformed values',()=>{
  for(const key of ['return60d','return120d','return200d']){
   for(const value of [undefined,null,0,-25,125])assert.equal(validSnapshot({...snap,markets:{...snap.markets,KR:{...m,stocks:m.stocks.map(s=>({...s,[key]:value}))}}}),true);

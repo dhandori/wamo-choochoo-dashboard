@@ -16,8 +16,11 @@ def collect_snapshot(root, now=None):
         except (OSError,ValueError):payloads[market]={}
     try:previous=json.loads((root/'wamo_insights.json').read_text(encoding='utf-8'))
     except (OSError,ValueError):previous=None
+    # Dated, source-referenced migration seed; ignored after its exact next session.
+    try:baseline=json.loads((root/'radar/signal-baseline.json').read_text(encoding='utf-8'))
+    except (OSError,ValueError):baseline=None
     current_time = now or datetime.now(timezone.utc)
-    result = build_insights(payloads, current_time, previous)
+    result = build_insights(payloads, current_time, previous, baseline)
     try:
         from wamo_news import attach_news
         cache = json.loads((root/'wamo_news.json').read_text(encoding='utf-8'))

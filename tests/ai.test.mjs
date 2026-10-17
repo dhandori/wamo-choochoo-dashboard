@@ -5,6 +5,39 @@ import * as model from '../radar/model.mjs';
 const stock=(symbol,patch={})=>({id:`US:${symbol}`,market:'US',symbol,name:symbol,industry:'Unreliable source industry',changePct:1,return5d:2,return20d:3,highDistancePct:4,marketCap:100,...patch});
 const m={stocks:[stock('NVDA',{changePct:-5,highDistancePct:40}),stock('MSFT'),stock('AVGO'),stock('KO',{industry:'AI software'})]};
 
+test('trend breadth uses a paired cohort for its five-session change',()=>{
+ const stocks=[stock('NVDA',{aboveMa50:true,aboveMa50Ago5:false}),stock('AVGO',{aboveMa50:false,aboveMa50Ago5:false}),stock('MSFT',{aboveMa50:true,aboveMa50Ago5:null}),stock('AMD',{aboveMa50:null,aboveMa50Ago5:true})];
+ const a=model.aiOverview({stocks:[...stocks,stocks[0]]},'US');
+ assert.equal(a.total.trendCount,3);
+ assert.equal(a.total.trendAbove,2);
+ assert.equal(a.total.trendPct,200/3);
+ assert.equal(a.total.trendPairCount,2);
+ assert.equal(a.total.trendDelta,50);
+ assert.equal(a.groups.find(g=>g.id==='optics').trendPct,0);
+ assert.equal(a.groups.find(g=>g.id==='bigtech').trendDelta,null);
+ assert.equal(a.groups.find(g=>g.id==='security').trendPct,null);
+});
+
+test('transitions require actual prior values, respect the near boundary and ignore missing names',()=>{
+ const current=stock('NVDA',{highDistancePct:5,rs:80,stage2:true});
+ const prior={id:current.id,highDistancePct:10.1,rs:79.9,stage2:false};
+ assert.deepEqual(model.signalChanges(current,prior,10).entered,['near','rs','stage']);
+ assert.deepEqual(model.signalChanges(current,{...prior,highDistancePct:8},5).entered,['near','rs','stage']);
+ assert.deepEqual(model.signalChanges(current,{...prior,highDistancePct:10},10).entered,['rs','stage']);
+ assert.deepEqual(model.signalChanges(current,null).entered,[]);
+ assert.deepEqual(model.signalChanges(current,{...prior,highDistancePct:null,rs:null,stage2:null}).entered,[]);
+ assert.deepEqual(model.signalChanges(prior,current).exited,['near','rs','stage']);
+});
+
+test('new-only filter intersects current filters and rejects a stale comparison',()=>{
+ const stocks=[stock('NVDA',{rs:81}),stock('MSFT',{rs:90}),stock('AVGO',{rs:99})];
+ const comparison={asOf:'2026-10-15',expectedSession:'2026-10-15',stocks:[{id:'US:NVDA',rs:79},{id:'US:MSFT',rs:90}]};
+ const market={asOf:'2026-10-16',stocks,comparison};
+ assert.deepEqual(model.selectStocks(market,{tab:'ai',newOnly:true}).map(s=>s.symbol),['NVDA']);
+ assert.deepEqual(model.selectStocks(market,{tab:'ai',newOnly:true,query:'MSFT'}),[]);
+ assert.deepEqual(model.selectStocks({...market,comparison:{...comparison,asOf:'2026-10-14'}},{tab:'ai',newOnly:true}),[]);
+});
+
 test('AI selection uses explicit identifiers and includes declining names away from highs',()=>{
  assert.deepEqual(model.selectStocks(m,{tab:'ai'}).map(s=>s.symbol).sort(),['AVGO','MSFT','NVDA']);
  assert.deepEqual(model.selectStocks(m,{tab:'ai',aiSignal:'down'}).map(s=>s.symbol),['NVDA']);
