@@ -236,12 +236,14 @@ table { font-size: 13px; }
 .change-badges { display: flex; flex-wrap: wrap; gap: 4px; }
 .change-badges:empty { display: none; }
 .change-badge { margin-top: 5px; color: #b2cef3; border: 1px solid #3b5575; background: #1b2c42; border-radius: 4px; padding: 1px 5px; font-size: 9px; line-height: 1.6; white-space: nowrap; }
-.session-changes { margin: 0 0 10px; font-size: 11px; color: var(--muted); }
+.list-meta { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 12px; }
+.list-meta .result-summary { margin-bottom: 8px; }
+.session-changes { margin: 0 0 8px; font-size: 11px; color: var(--muted); }
 .session-changes[hidden] { display: none; }
 .session-changes summary { cursor: pointer; padding: 3px 0; }
 .session-changes summary > span { margin-right: 12px; }
 .change-count { color: var(--blue); }.exit-count { color: #c4b6b9; }.change-dates { font-variant-numeric: tabular-nums; font-size: 10px; }
-.session-changes[open] { border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; background: #111c29; }
+.session-changes[open] { flex-basis: 100%; order: 1; border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; background: #111c29; }
 .changes-guide { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 8px; font-size: 10px; }
 .session-changes p { font-size: 10px; }
 .exit-list { max-height: 230px; overflow-y: auto; margin-top: 8px; }
