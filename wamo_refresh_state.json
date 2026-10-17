@@ -2,9 +2,11 @@
   "KR": {
     "slot": "2026-10-16T07:00:00+00:00",
     "attempts": 4,
-    "success": false,
+    "success": true,
     "partialAttempts": 3,
-    "lastAttemptAt": "2026-10-17T14:25:02.963434+00:00"
+    "lastAttemptAt": "2026-10-17T14:25:02.963434+00:00",
+    "lastFullSlot": "2026-10-16T07:00:00+00:00",
+    "missingCount": 0
   },
   "US": {
     "slot": "2026-10-16T20:20:00+00:00",

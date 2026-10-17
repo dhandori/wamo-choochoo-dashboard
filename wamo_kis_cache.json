@@ -454,7 +454,7 @@
   },
   "031980": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:18:47+09:00",
+    "checkedAt": "2026-10-17T23:26:59+09:00",
     "status": "LIVE",
     "price": 199400.0,
     "per": 46.9,
@@ -679,7 +679,7 @@
   },
   "131290": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:02+09:00",
+    "checkedAt": "2026-10-17T23:27:14+09:00",
     "status": "LIVE",
     "price": 294000.0,
     "per": 85.07,
@@ -702,7 +702,7 @@
   },
   "010950": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:11+09:00",
+    "checkedAt": "2026-10-17T23:27:23+09:00",
     "status": "LIVE",
     "price": 154100.0,
     "per": 101.52,
@@ -832,7 +832,7 @@
   },
   "192820": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:18:56+09:00",
+    "checkedAt": "2026-10-17T23:27:08+09:00",
     "status": "LIVE",
     "price": 296500.0,
     "per": 27.34,
@@ -1212,7 +1212,7 @@
   },
   "028670": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:18:58+09:00",
+    "checkedAt": "2026-10-17T23:27:10+09:00",
     "status": "LIVE",
     "price": 6660.0,
     "per": 11.81,
@@ -1342,7 +1342,7 @@
   },
   "138040": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:00+09:00",
+    "checkedAt": "2026-10-17T23:27:12+09:00",
     "status": "LIVE",
     "price": 129700.0,
     "per": 10.21,
@@ -1638,7 +1638,7 @@
   },
   "021240": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:18:54+09:00",
+    "checkedAt": "2026-10-17T23:27:06+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "일반서비스",
@@ -1779,7 +1779,7 @@
   },
   "096770": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:05+09:00",
+    "checkedAt": "2026-10-17T23:27:17+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "화학",
@@ -2339,7 +2339,7 @@
   },
   "096530": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:18:45+09:00",
+    "checkedAt": "2026-10-17T23:26:57+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "제약",
@@ -2610,7 +2610,7 @@
   },
   "003160": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:15+09:00",
+    "checkedAt": "2026-10-17T23:27:27+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "의료·정밀기기",
@@ -2633,7 +2633,7 @@
   },
   "036540": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:13+09:00",
+    "checkedAt": "2026-10-17T23:27:25+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "전기·전자",
@@ -3213,7 +3213,7 @@
   },
   "252990": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:09+09:00",
+    "checkedAt": "2026-10-17T23:27:21+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "전기·전자",
@@ -3236,7 +3236,7 @@
   },
   "281820": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:07+09:00",
+    "checkedAt": "2026-10-17T23:27:19+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "의료·정밀기기",
@@ -3637,7 +3637,7 @@
   },
   "033780": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:18:52+09:00",
+    "checkedAt": "2026-10-17T23:27:04+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "음식료·담배",
@@ -3897,7 +3897,7 @@
   },
   "011200": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:18:49+09:00",
+    "checkedAt": "2026-10-17T23:27:01+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "운송·창고",
@@ -4027,7 +4027,7 @@
   },
   "086450": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:17+09:00",
+    "checkedAt": "2026-10-17T23:27:30+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "제약",
@@ -4050,7 +4050,7 @@
   },
   "032640": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:22+09:00",
+    "checkedAt": "2026-10-17T23:27:34+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "통신",
@@ -4440,7 +4440,7 @@
   },
   "068270": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:20+09:00",
+    "checkedAt": "2026-10-17T23:27:32+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "제약",
@@ -4570,7 +4570,7 @@
   },
   "006110": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:24+09:00",
+    "checkedAt": "2026-10-17T23:27:36+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "금속",
@@ -4593,7 +4593,7 @@
   },
   "229640": {
     "source": "한국투자증권 Open API",
-    "checkedAt": "2026-10-17T23:19:26+09:00",
+    "checkedAt": "2026-10-17T23:27:38+09:00",
     "status": "LIVE",
     "currency": "KRW",
     "industry": "금융",
