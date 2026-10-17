@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-16T21:41:55Z",
+  "generatedAt": "2026-10-17T14:15:38Z",
   "markets": {
     "KR": {
       "asOf": "2026-10-16",
@@ -1432,39 +1432,6 @@
       }
     },
     {
-      "id": "KR:443060",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "443060",
-      "ticker": "443060.KS",
-      "name": "HD현대마린솔루션",
-      "sector": "메모리 반도체",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 211500.0,
-      "detailUrl": "index.html?stock=443060.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 60.9,
-        "ma50": 216884.65,
-        "ma150": 211947.13,
-        "ma200": 204143.77,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:323280",
       "country": "KR",
       "market": "KR-KOSDAQ",
@@ -1492,6 +1459,39 @@
           "200일선 상승": true,
           "50일선>150·200일선": false,
           "주가>50일선": true,
+          "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:443060",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "443060",
+      "ticker": "443060.KS",
+      "name": "HD현대마린솔루션",
+      "sector": "메모리 반도체",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 211500.0,
+      "detailUrl": "index.html?stock=443060.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 60.9,
+        "ma50": 216884.65,
+        "ma150": 211947.13,
+        "ma200": 204143.77,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
@@ -1729,39 +1729,6 @@
       }
     },
     {
-      "id": "KR:003550",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "003550",
-      "ticker": "003550.KS",
-      "name": "LG",
-      "sector": "금융",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 103200.0,
-      "detailUrl": "index.html?stock=003550.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 64.1,
-        "ma50": 111567.37,
-        "ma150": 104221.27,
-        "ma200": 99878.94,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:001820",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -1824,6 +1791,39 @@
           "주가>50일선": false,
           "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": true
+        }
+      }
+    },
+    {
+      "id": "KR:003550",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "003550",
+      "ticker": "003550.KS",
+      "name": "LG",
+      "sector": "금융",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 103200.0,
+      "detailUrl": "index.html?stock=003550.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 64.1,
+        "ma50": 111567.37,
+        "ma150": 104221.27,
+        "ma200": 99878.94,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
         }
       }
     },
@@ -1977,39 +1977,6 @@
       }
     },
     {
-      "id": "KR:018260",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "018260",
-      "ticker": "018260.KS",
-      "name": "삼성에스디에스",
-      "sector": "AI·클라우드·IT서비스",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 199900.0,
-      "detailUrl": "index.html?stock=018260.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 61.8,
-        "ma50": 223148.0,
-        "ma150": 201591.33,
-        "ma200": 194588.51,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:357780",
       "country": "KR",
       "market": "KR-KOSDAQ",
@@ -2036,6 +2003,39 @@
           "150일선>200일선": true,
           "200일선 상승": true,
           "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:018260",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "018260",
+      "ticker": "018260.KS",
+      "name": "삼성에스디에스",
+      "sector": "AI·클라우드·IT서비스",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 199900.0,
+      "detailUrl": "index.html?stock=018260.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 61.8,
+        "ma50": 223148.0,
+        "ma150": 201591.33,
+        "ma200": 194588.51,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
@@ -2266,39 +2266,6 @@
       }
     },
     {
-      "id": "KR:014680",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "014680",
-      "ticker": "014680.KS",
-      "name": "한솔케미칼",
-      "sector": "메모리 반도체",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 232500.0,
-      "detailUrl": "index.html?stock=014680.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 68.8,
-        "ma50": 223018.0,
-        "ma150": 255810.19,
-        "ma200": 258367.33,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": true,
-          "50일선>150·200일선": false,
-          "주가>50일선": true,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:047050",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -2332,34 +2299,34 @@
       }
     },
     {
-      "id": "KR:000100",
+      "id": "KR:014680",
       "country": "KR",
       "market": "KR-KOSPI",
-      "symbol": "000100",
-      "ticker": "000100.KS",
-      "name": "유한양행",
-      "sector": "제약·바이오",
+      "symbol": "014680",
+      "ticker": "014680.KS",
+      "name": "한솔케미칼",
+      "sector": "메모리 반도체",
       "asOf": "2026-10-16",
       "currency": "KRW",
-      "close": 80400.0,
-      "detailUrl": "index.html?stock=000100.KS",
+      "close": 232500.0,
+      "detailUrl": "index.html?stock=014680.KS",
       "source": "Yahoo Finance",
       "technical": {
         "ready": true,
         "asOf": "2026-10-16",
         "stage2": false,
         "aligned": false,
-        "rsPercentile": 81.2,
-        "ma50": 78724.0,
-        "ma150": 82408.0,
-        "ma200": 89078.03,
+        "rsPercentile": 68.8,
+        "ma50": 223018.0,
+        "ma150": 255810.19,
+        "ma200": 258367.33,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": false,
-          "200일선 상승": false,
+          "200일선 상승": true,
           "50일선>150·200일선": false,
           "주가>50일선": true,
-          "52주 저점 대비 +30%": false,
+          "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
       }
@@ -2431,6 +2398,39 @@
       }
     },
     {
+      "id": "KR:000100",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "000100",
+      "ticker": "000100.KS",
+      "name": "유한양행",
+      "sector": "제약·바이오",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 80400.0,
+      "detailUrl": "index.html?stock=000100.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 81.2,
+        "ma50": 78724.0,
+        "ma150": 82408.0,
+        "ma200": 89078.03,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": true,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
       "id": "KR:030200",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -2497,6 +2497,31 @@
       }
     },
     {
+      "id": "KR:178320",
+      "country": "KR",
+      "market": "KR-KOSDAQ",
+      "symbol": "178320",
+      "ticker": "178320.KQ",
+      "name": "서진시스템",
+      "sector": "전력·전기장비",
+      "asOf": "2026-10-07",
+      "currency": "KRW",
+      "close": 41300.0,
+      "detailUrl": "index.html?stock=178320.KQ",
+      "source": "이전 정상값",
+      "technical": {
+        "ready": false,
+        "asOf": "2026-10-07",
+        "stage2": null,
+        "aligned": null,
+        "rsPercentile": null,
+        "ma50": null,
+        "ma150": null,
+        "ma200": null,
+        "checks": {}
+      }
+    },
+    {
       "id": "KR:078930",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -2523,64 +2548,6 @@
           "150일선>200일선": true,
           "200일선 상승": true,
           "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
-      "id": "KR:178320",
-      "country": "KR",
-      "market": "KR-KOSDAQ",
-      "symbol": "178320",
-      "ticker": "178320.KQ",
-      "name": "서진시스템",
-      "sector": "전력·전기장비",
-      "asOf": "2026-10-07",
-      "currency": "KRW",
-      "close": 41300.0,
-      "detailUrl": "index.html?stock=178320.KQ",
-      "source": "이전 정상값",
-      "technical": {
-        "ready": false,
-        "asOf": "2026-10-07",
-        "stage2": null,
-        "aligned": null,
-        "rsPercentile": null,
-        "ma50": null,
-        "ma150": null,
-        "ma200": null,
-        "checks": {}
-      }
-    },
-    {
-      "id": "KR:095340",
-      "country": "KR",
-      "market": "KR-KOSDAQ",
-      "symbol": "095340",
-      "ticker": "095340.KQ",
-      "name": "ISC",
-      "sector": "유통",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 160800.0,
-      "detailUrl": "index.html?stock=095340.KQ",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 57.6,
-        "ma50": 175622.0,
-        "ma150": 194410.0,
-        "ma200": 180229.76,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
@@ -2621,32 +2588,32 @@
       }
     },
     {
-      "id": "KR:175330",
+      "id": "KR:095340",
       "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "175330",
-      "ticker": "175330.KS",
-      "name": "JB금융지주",
-      "sector": "금융지주",
+      "market": "KR-KOSDAQ",
+      "symbol": "095340",
+      "ticker": "095340.KQ",
+      "name": "ISC",
+      "sector": "유통",
       "asOf": "2026-10-16",
       "currency": "KRW",
-      "close": 26850.0,
-      "detailUrl": "index.html?stock=175330.KS",
+      "close": 160800.0,
+      "detailUrl": "index.html?stock=095340.KQ",
       "source": "Yahoo Finance",
       "technical": {
         "ready": true,
         "asOf": "2026-10-16",
         "stage2": false,
         "aligned": false,
-        "rsPercentile": 43.8,
-        "ma50": 29146.49,
-        "ma150": 27686.04,
-        "ma200": 27367.23,
+        "rsPercentile": 57.6,
+        "ma50": 175622.0,
+        "ma150": 194410.0,
+        "ma200": 180229.76,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": true,
           "200일선 상승": true,
-          "50일선>150·200일선": true,
+          "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
@@ -2687,6 +2654,39 @@
       }
     },
     {
+      "id": "KR:175330",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "175330",
+      "ticker": "175330.KS",
+      "name": "JB금융지주",
+      "sector": "금융지주",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 26850.0,
+      "detailUrl": "index.html?stock=175330.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 43.8,
+        "ma50": 29146.49,
+        "ma150": 27686.04,
+        "ma200": 27367.23,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
       "id": "KR:062040",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -2720,39 +2720,6 @@
       }
     },
     {
-      "id": "KR:055550",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "055550",
-      "ticker": "055550.KS",
-      "name": "신한지주",
-      "sector": "금융지주",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 93400.0,
-      "detailUrl": "index.html?stock=055550.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 24.3,
-        "ma50": 106938.0,
-        "ma150": 100375.42,
-        "ma200": 96487.49,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": true
-        }
-      }
-    },
-    {
       "id": "KR:322000",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -2779,39 +2746,6 @@
           "150일선>200일선": true,
           "200일선 상승": true,
           "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
-      "id": "KR:028050",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "028050",
-      "ticker": "028050.KS",
-      "name": "삼성E&A",
-      "sector": "석유화학",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 43600.0,
-      "detailUrl": "index.html?stock=028050.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 53.0,
-        "ma50": 48098.0,
-        "ma150": 46664.33,
-        "ma200": 42296.36,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
@@ -2885,39 +2819,6 @@
       }
     },
     {
-      "id": "KR:058470",
-      "country": "KR",
-      "market": "KR-KOSDAQ",
-      "symbol": "058470",
-      "ticker": "058470.KQ",
-      "name": "리노공업",
-      "sector": "메모리 반도체",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 70800.0,
-      "detailUrl": "index.html?stock=058470.KQ",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 66.0,
-        "ma50": 70404.0,
-        "ma150": 88718.0,
-        "ma200": 86985.65,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": false,
-          "주가>50일선": true,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:347700",
       "country": "KR",
       "market": "KR-KOSDAQ",
@@ -2944,6 +2845,39 @@
           "150일선>200일선": true,
           "200일선 상승": true,
           "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:028050",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "028050",
+      "ticker": "028050.KS",
+      "name": "삼성E&A",
+      "sector": "석유화학",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 43600.0,
+      "detailUrl": "index.html?stock=028050.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 53.0,
+        "ma50": 48098.0,
+        "ma150": 46664.33,
+        "ma200": 42296.36,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
@@ -2984,6 +2918,39 @@
       }
     },
     {
+      "id": "KR:058470",
+      "country": "KR",
+      "market": "KR-KOSDAQ",
+      "symbol": "058470",
+      "ticker": "058470.KQ",
+      "name": "리노공업",
+      "sector": "메모리 반도체",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 70800.0,
+      "detailUrl": "index.html?stock=058470.KQ",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 66.0,
+        "ma50": 70404.0,
+        "ma150": 88718.0,
+        "ma200": 86985.65,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": false,
+          "주가>50일선": true,
+          "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
       "id": "KR:103590",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -3013,6 +2980,39 @@
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:055550",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "055550",
+      "ticker": "055550.KS",
+      "name": "신한지주",
+      "sector": "금융지주",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 93400.0,
+      "detailUrl": "index.html?stock=055550.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 24.3,
+        "ma50": 106938.0,
+        "ma150": 100375.42,
+        "ma200": 96487.49,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": true
         }
       }
     },
@@ -3479,39 +3479,6 @@
       }
     },
     {
-      "id": "KR:064400",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "064400",
-      "ticker": "064400.KS",
-      "name": "LG씨엔에스",
-      "sector": "AI·클라우드·IT서비스",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 65200.0,
-      "detailUrl": "index.html?stock=064400.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 59.5,
-        "ma50": 71442.14,
-        "ma150": 72715.0,
-        "ma200": 70873.65,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:007340",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -3540,6 +3507,39 @@
           "50일선>150·200일선": true,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:064400",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "064400",
+      "ticker": "064400.KS",
+      "name": "LG씨엔에스",
+      "sector": "AI·클라우드·IT서비스",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 65200.0,
+      "detailUrl": "index.html?stock=064400.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 59.5,
+        "ma50": 71442.14,
+        "ma150": 72715.0,
+        "ma200": 70873.65,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -3644,39 +3644,6 @@
       }
     },
     {
-      "id": "KR:066570",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "066570",
-      "ticker": "066570.KS",
-      "name": "LG전자",
-      "sector": "반도체 장비",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 169700.0,
-      "detailUrl": "index.html?stock=066570.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 34.0,
-        "ma50": 198639.99,
-        "ma150": 181651.08,
-        "ma200": 162335.67,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:093370",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -3710,34 +3677,34 @@
       }
     },
     {
-      "id": "KR:326030",
+      "id": "KR:066570",
       "country": "KR",
       "market": "KR-KOSPI",
-      "symbol": "326030",
-      "ticker": "326030.KS",
-      "name": "SK바이오팜",
-      "sector": "자연과학 및 공학 연구개발업",
+      "symbol": "066570",
+      "ticker": "066570.KS",
+      "name": "LG전자",
+      "sector": "반도체 장비",
       "asOf": "2026-10-16",
       "currency": "KRW",
-      "close": 73300.0,
-      "detailUrl": "index.html?stock=326030.KS",
+      "close": 169700.0,
+      "detailUrl": "index.html?stock=066570.KS",
       "source": "Yahoo Finance",
       "technical": {
         "ready": true,
         "asOf": "2026-10-16",
         "stage2": false,
         "aligned": false,
-        "rsPercentile": 50.7,
-        "ma50": 81232.0,
-        "ma150": 88528.0,
-        "ma200": 95930.5,
+        "rsPercentile": 34.0,
+        "ma50": 198639.99,
+        "ma150": 181651.08,
+        "ma200": 162335.67,
         "checks": {
           "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
           "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
+          "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
       }
@@ -3842,31 +3809,6 @@
       }
     },
     {
-      "id": "KR:0126Z0",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "0126Z0",
-      "ticker": "0126Z0.KS",
-      "name": "삼성에피스홀딩스",
-      "sector": "지주회사",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 331500.0,
-      "detailUrl": "index.html?stock=0126Z0.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": false,
-        "asOf": "2026-10-16",
-        "stage2": null,
-        "aligned": null,
-        "rsPercentile": null,
-        "ma50": null,
-        "ma150": null,
-        "ma200": null,
-        "checks": {}
-      }
-    },
-    {
       "id": "KR:080220",
       "country": "KR",
       "market": "KR-KOSDAQ",
@@ -3895,6 +3837,39 @@
           "50일선>150·200일선": true,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:326030",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "326030",
+      "ticker": "326030.KS",
+      "name": "SK바이오팜",
+      "sector": "자연과학 및 공학 연구개발업",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 73300.0,
+      "detailUrl": "index.html?stock=326030.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 50.7,
+        "ma50": 81232.0,
+        "ma150": 88528.0,
+        "ma200": 95930.5,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -3930,6 +3905,31 @@
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
+      }
+    },
+    {
+      "id": "KR:0126Z0",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "0126Z0",
+      "ticker": "0126Z0.KS",
+      "name": "삼성에피스홀딩스",
+      "sector": "지주회사",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 331500.0,
+      "detailUrl": "index.html?stock=0126Z0.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": false,
+        "asOf": "2026-10-16",
+        "stage2": null,
+        "aligned": null,
+        "rsPercentile": null,
+        "ma50": null,
+        "ma150": null,
+        "ma200": null,
+        "checks": {}
       }
     },
     {
@@ -4156,39 +4156,6 @@
       }
     },
     {
-      "id": "KR:011780",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "011780",
-      "ticker": "011780.KS",
-      "name": "금호석유화학",
-      "sector": "타이어",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 113500.0,
-      "detailUrl": "index.html?stock=011780.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 45.6,
-        "ma50": 121700.0,
-        "ma150": 125553.33,
-        "ma200": 128091.23,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:022100",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -4210,6 +4177,39 @@
         "ma50": 20864.8,
         "ma150": 25864.82,
         "ma200": 28107.79,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:011780",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "011780",
+      "ticker": "011780.KS",
+      "name": "금호석유화학",
+      "sector": "타이어",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 113500.0,
+      "detailUrl": "index.html?stock=011780.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 45.6,
+        "ma50": 121700.0,
+        "ma150": 125553.33,
+        "ma200": 128091.23,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": false,
@@ -4288,39 +4288,6 @@
       }
     },
     {
-      "id": "KR:035420",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "035420",
-      "ticker": "035420.KS",
-      "name": "NAVER",
-      "sector": "인터넷 플랫폼",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 180000.0,
-      "detailUrl": "index.html?stock=035420.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 44.7,
-        "ma50": 206156.0,
-        "ma150": 210412.0,
-        "ma200": 220004.28,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:042700",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -4382,6 +4349,39 @@
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:035420",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "035420",
+      "ticker": "035420.KS",
+      "name": "NAVER",
+      "sector": "인터넷 플랫폼",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 180000.0,
+      "detailUrl": "index.html?stock=035420.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 44.7,
+        "ma50": 206156.0,
+        "ma150": 210412.0,
+        "ma200": 220004.28,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -4453,39 +4453,6 @@
       }
     },
     {
-      "id": "KR:278470",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "278470",
-      "ticker": "278470.KS",
-      "name": "에이피알",
-      "sector": "화장품 브랜드",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 325500.0,
-      "detailUrl": "index.html?stock=278470.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 23.8,
-        "ma50": 377750.0,
-        "ma150": 377026.12,
-        "ma200": 347130.73,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:377300",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -4539,6 +4506,39 @@
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:278470",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "278470",
+      "ticker": "278470.KS",
+      "name": "에이피알",
+      "sector": "화장품 브랜드",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 325500.0,
+      "detailUrl": "index.html?stock=278470.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 23.8,
+        "ma50": 377750.0,
+        "ma150": 377026.12,
+        "ma200": 347130.73,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
       }
@@ -4610,39 +4610,6 @@
       }
     },
     {
-      "id": "KR:251270",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "251270",
-      "ticker": "251270.KS",
-      "name": "넷마블",
-      "sector": "IT서비스·소프트웨어",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 34550.0,
-      "detailUrl": "index.html?stock=251270.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 63.7,
-        "ma50": 36368.0,
-        "ma150": 41755.67,
-        "ma200": 44089.31,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:047040",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -4671,6 +4638,39 @@
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:251270",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "251270",
+      "ticker": "251270.KS",
+      "name": "넷마블",
+      "sector": "IT서비스·소프트웨어",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 34550.0,
+      "detailUrl": "index.html?stock=251270.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 63.7,
+        "ma50": 36368.0,
+        "ma150": 41755.67,
+        "ma200": 44089.31,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -5006,39 +5006,6 @@
       }
     },
     {
-      "id": "KR:035720",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "035720",
-      "ticker": "035720.KS",
-      "name": "카카오",
-      "sector": "게임",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 31850.0,
-      "detailUrl": "index.html?stock=035720.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 42.8,
-        "ma50": 35485.0,
-        "ma150": 40225.0,
-        "ma200": 44806.49,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:051910",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -5138,6 +5105,39 @@
       }
     },
     {
+      "id": "KR:035720",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "035720",
+      "ticker": "035720.KS",
+      "name": "카카오",
+      "sector": "게임",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 31850.0,
+      "detailUrl": "index.html?stock=035720.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 42.8,
+        "ma50": 35485.0,
+        "ma150": 40225.0,
+        "ma200": 44806.49,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
       "id": "KR:204320",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -5159,39 +5159,6 @@
         "ma50": 48777.0,
         "ma150": 51821.67,
         "ma200": 53870.25,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
-      "id": "KR:015760",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "015760",
-      "ticker": "015760.KS",
-      "name": "한국전력",
-      "sector": "전력·전기장비",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 28600.0,
-      "detailUrl": "index.html?stock=015760.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 32.2,
-        "ma50": 32016.0,
-        "ma150": 37781.67,
-        "ma200": 42303.65,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": false,
@@ -5270,31 +5237,31 @@
       }
     },
     {
-      "id": "KR:138930",
+      "id": "KR:015760",
       "country": "KR",
       "market": "KR-KOSPI",
-      "symbol": "138930",
-      "ticker": "138930.KS",
-      "name": "BNK금융지주",
-      "sector": "금융지주",
+      "symbol": "015760",
+      "ticker": "015760.KS",
+      "name": "한국전력",
+      "sector": "전력·전기장비",
       "asOf": "2026-10-16",
       "currency": "KRW",
-      "close": 14600.0,
-      "detailUrl": "index.html?stock=138930.KS",
+      "close": 28600.0,
+      "detailUrl": "index.html?stock=015760.KS",
       "source": "Yahoo Finance",
       "technical": {
         "ready": true,
         "asOf": "2026-10-16",
         "stage2": false,
         "aligned": false,
-        "rsPercentile": 28.9,
-        "ma50": 15291.91,
-        "ma150": 16787.59,
-        "ma200": 16810.54,
+        "rsPercentile": 32.2,
+        "ma50": 32016.0,
+        "ma150": 37781.67,
+        "ma200": 42303.65,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": false,
-          "200일선 상승": true,
+          "200일선 상승": false,
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": false,
@@ -5336,34 +5303,34 @@
       }
     },
     {
-      "id": "KR:082920",
+      "id": "KR:138930",
       "country": "KR",
-      "market": "KR-KOSDAQ",
-      "symbol": "082920",
-      "ticker": "082920.KQ",
-      "name": "비츠로셀",
-      "sector": "일차전지 및 이차전지 제조업",
+      "market": "KR-KOSPI",
+      "symbol": "138930",
+      "ticker": "138930.KS",
+      "name": "BNK금융지주",
+      "sector": "금융지주",
       "asOf": "2026-10-16",
       "currency": "KRW",
-      "close": 24100.0,
-      "detailUrl": "index.html?stock=082920.KQ",
+      "close": 14600.0,
+      "detailUrl": "index.html?stock=138930.KS",
       "source": "Yahoo Finance",
       "technical": {
         "ready": true,
         "asOf": "2026-10-16",
         "stage2": false,
         "aligned": false,
-        "rsPercentile": 22.0,
-        "ma50": 29239.0,
-        "ma150": 37802.67,
-        "ma200": 33407.01,
+        "rsPercentile": 28.9,
+        "ma50": 15291.91,
+        "ma150": 16787.59,
+        "ma200": 16810.54,
         "checks": {
           "주가>150·200일선": false,
-          "150일선>200일선": true,
+          "150일선>200일선": false,
           "200일선 상승": true,
           "50일선>150·200일선": false,
           "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -5397,6 +5364,39 @@
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:082920",
+      "country": "KR",
+      "market": "KR-KOSDAQ",
+      "symbol": "082920",
+      "ticker": "082920.KQ",
+      "name": "비츠로셀",
+      "sector": "일차전지 및 이차전지 제조업",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 24100.0,
+      "detailUrl": "index.html?stock=082920.KQ",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 22.0,
+        "ma50": 29239.0,
+        "ma150": 37802.67,
+        "ma200": 33407.01,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
       }
@@ -5534,39 +5534,6 @@
       }
     },
     {
-      "id": "KR:259960",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "259960",
-      "ticker": "259960.KS",
-      "name": "크래프톤",
-      "sector": "IT서비스·소프트웨어",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 194100.0,
-      "detailUrl": "index.html?stock=259960.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 35.9,
-        "ma50": 214522.0,
-        "ma150": 236514.0,
-        "ma200": 238104.1,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:336260",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -5633,34 +5600,34 @@
       }
     },
     {
-      "id": "KR:000150",
+      "id": "KR:259960",
       "country": "KR",
       "market": "KR-KOSPI",
-      "symbol": "000150",
-      "ticker": "000150.KS",
-      "name": "두산",
-      "sector": "반도체 장비",
+      "symbol": "259960",
+      "ticker": "259960.KS",
+      "name": "크래프톤",
+      "sector": "IT서비스·소프트웨어",
       "asOf": "2026-10-16",
       "currency": "KRW",
-      "close": 1024000.0,
-      "detailUrl": "index.html?stock=000150.KS",
+      "close": 194100.0,
+      "detailUrl": "index.html?stock=259960.KS",
       "source": "Yahoo Finance",
       "technical": {
         "ready": true,
         "asOf": "2026-10-16",
         "stage2": false,
         "aligned": false,
-        "rsPercentile": 14.6,
-        "ma50": 1261300.13,
-        "ma150": 1358367.98,
-        "ma200": 1241902.98,
+        "rsPercentile": 35.9,
+        "ma50": 214522.0,
+        "ma150": 236514.0,
+        "ma200": 238104.1,
         "checks": {
           "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
+          "150일선>200일선": false,
+          "200일선 상승": false,
           "50일선>150·200일선": false,
           "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -5760,6 +5727,39 @@
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:000150",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "000150",
+      "ticker": "000150.KS",
+      "name": "두산",
+      "sector": "반도체 장비",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 1024000.0,
+      "detailUrl": "index.html?stock=000150.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 14.6,
+        "ma50": 1261300.13,
+        "ma150": 1358367.98,
+        "ma200": 1241902.97,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
       }
@@ -6054,39 +6054,6 @@
       }
     },
     {
-      "id": "KR:071050",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "071050",
-      "ticker": "071050.KS",
-      "name": "한국금융지주",
-      "sector": "금융지주",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 151800.0,
-      "detailUrl": "index.html?stock=071050.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 7.6,
-        "ma50": 185940.0,
-        "ma150": 217902.67,
-        "ma200": 213073.26,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:012330",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -6108,6 +6075,39 @@
         "ma50": 429730.0,
         "ma150": 476026.67,
         "ma200": 463957.5,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:071050",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "071050",
+      "ticker": "071050.KS",
+      "name": "한국금융지주",
+      "sector": "금융지주",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 151800.0,
+      "detailUrl": "index.html?stock=071050.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 7.6,
+        "ma50": 185940.0,
+        "ma150": 217902.67,
+        "ma200": 213073.26,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": true,
@@ -6146,39 +6146,6 @@
           "150일선>200일선": true,
           "200일선 상승": true,
           "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
-      "id": "KR:402340",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "402340",
-      "ticker": "402340.KS",
-      "name": "SK스퀘어",
-      "sector": "금융",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 784000.0,
-      "detailUrl": "index.html?stock=402340.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 3.9,
-        "ma50": 1050540.0,
-        "ma150": 1040518.97,
-        "ma200": 899908.35,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": true,
-          "200일선 상승": true,
-          "50일선>150·200일선": true,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
@@ -6318,34 +6285,34 @@
       }
     },
     {
-      "id": "KR:141080",
+      "id": "KR:402340",
       "country": "KR",
-      "market": "KR-KOSDAQ",
-      "symbol": "141080",
-      "ticker": "141080.KQ",
-      "name": "리가켐바이오",
-      "sector": "자연과학 및 공학 연구개발업",
+      "market": "KR-KOSPI",
+      "symbol": "402340",
+      "ticker": "402340.KS",
+      "name": "SK스퀘어",
+      "sector": "금융",
       "asOf": "2026-10-16",
       "currency": "KRW",
-      "close": 68300.0,
-      "detailUrl": "index.html?stock=141080.KQ",
+      "close": 784000.0,
+      "detailUrl": "index.html?stock=402340.KS",
       "source": "Yahoo Finance",
       "technical": {
         "ready": true,
         "asOf": "2026-10-16",
         "stage2": false,
         "aligned": false,
-        "rsPercentile": 8.1,
-        "ma50": 91640.0,
-        "ma150": 137050.0,
-        "ma200": 147349.0,
+        "rsPercentile": 3.9,
+        "ma50": 1050540.0,
+        "ma150": 1040518.97,
+        "ma200": 899908.35,
         "checks": {
           "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
+          "150일선>200일선": true,
+          "200일선 상승": true,
+          "50일선>150·200일선": true,
           "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
+          "52주 저점 대비 +30%": true,
           "52주 고점 25% 이내": false
         }
       }
@@ -6384,6 +6351,39 @@
       }
     },
     {
+      "id": "KR:141080",
+      "country": "KR",
+      "market": "KR-KOSDAQ",
+      "symbol": "141080",
+      "ticker": "141080.KQ",
+      "name": "리가켐바이오",
+      "sector": "자연과학 및 공학 연구개발업",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 68300.0,
+      "detailUrl": "index.html?stock=141080.KQ",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 8.1,
+        "ma50": 91640.0,
+        "ma150": 137050.0,
+        "ma200": 147349.0,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
       "id": "KR:042660",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -6405,39 +6405,6 @@
         "ma50": 83260.0,
         "ma150": 104461.33,
         "ma200": 111540.0,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
-      "id": "KR:010130",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "010130",
-      "ticker": "010130.KS",
-      "name": "고려아연",
-      "sector": "1차 비철금속 제조업",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 946000.0,
-      "detailUrl": "index.html?stock=010130.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 29.9,
-        "ma50": 1161067.83,
-        "ma150": 1289505.54,
-        "ma200": 1360617.56,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": false,
@@ -6478,6 +6445,39 @@
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:010130",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "010130",
+      "ticker": "010130.KS",
+      "name": "고려아연",
+      "sector": "1차 비철금속 제조업",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 946000.0,
+      "detailUrl": "index.html?stock=010130.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 29.9,
+        "ma50": 1161067.83,
+        "ma150": 1289505.54,
+        "ma200": 1360617.56,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -6549,39 +6549,6 @@
       }
     },
     {
-      "id": "KR:064350",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "064350",
-      "ticker": "064350.KS",
-      "name": "현대로템",
-      "sector": "메모리 반도체",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 96900.0,
-      "detailUrl": "index.html?stock=064350.KS",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 6.2,
-        "ma50": 125592.0,
-        "ma150": 172694.64,
-        "ma200": 181977.55,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:011070",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -6615,6 +6582,39 @@
       }
     },
     {
+      "id": "KR:064350",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "064350",
+      "ticker": "064350.KS",
+      "name": "현대로템",
+      "sector": "메모리 반도체",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 96900.0,
+      "detailUrl": "index.html?stock=064350.KS",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 6.2,
+        "ma50": 125592.0,
+        "ma150": 172694.64,
+        "ma200": 181977.55,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
       "id": "KR:009540",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -6636,6 +6636,39 @@
         "ma50": 345020.0,
         "ma150": 379083.33,
         "ma200": 389940.0,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:329180",
+      "country": "KR",
+      "market": "KR-KOSPI",
+      "symbol": "329180",
+      "ticker": "329180.KS",
+      "name": "HD현대중공업",
+      "sector": "메모리 반도체",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 351500.0,
+      "detailUrl": "index.html?stock=329180.KS",
+      "source": "NAVER Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 8.6,
+        "ma50": 450290.0,
+        "ma150": 536253.33,
+        "ma200": 544925.0,
         "checks": {
           "주가>150·200일선": false,
           "150일선>200일선": false,
@@ -6676,39 +6709,6 @@
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": true,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
-      "id": "KR:329180",
-      "country": "KR",
-      "market": "KR-KOSPI",
-      "symbol": "329180",
-      "ticker": "329180.KS",
-      "name": "HD현대중공업",
-      "sector": "메모리 반도체",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 351500.0,
-      "detailUrl": "index.html?stock=329180.KS",
-      "source": "NAVER Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 8.6,
-        "ma50": 450290.0,
-        "ma150": 536253.33,
-        "ma200": 544925.0,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
           "52주 고점 25% 이내": false
         }
       }
@@ -6945,39 +6945,6 @@
       }
     },
     {
-      "id": "KR:145020",
-      "country": "KR",
-      "market": "KR-KOSDAQ",
-      "symbol": "145020",
-      "ticker": "145020.KQ",
-      "name": "휴젤",
-      "sector": "메모리 반도체",
-      "asOf": "2026-10-16",
-      "currency": "KRW",
-      "close": 179100.0,
-      "detailUrl": "index.html?stock=145020.KQ",
-      "source": "Yahoo Finance",
-      "technical": {
-        "ready": true,
-        "asOf": "2026-10-16",
-        "stage2": false,
-        "aligned": false,
-        "rsPercentile": 13.2,
-        "ma50": 227352.0,
-        "ma150": 244194.0,
-        "ma200": 245693.0,
-        "checks": {
-          "주가>150·200일선": false,
-          "150일선>200일선": false,
-          "200일선 상승": false,
-          "50일선>150·200일선": false,
-          "주가>50일선": false,
-          "52주 저점 대비 +30%": false,
-          "52주 고점 25% 이내": false
-        }
-      }
-    },
-    {
       "id": "KR:267270",
       "country": "KR",
       "market": "KR-KOSPI",
@@ -7003,6 +6970,39 @@
           "주가>150·200일선": false,
           "150일선>200일선": true,
           "200일선 상승": true,
+          "50일선>150·200일선": false,
+          "주가>50일선": false,
+          "52주 저점 대비 +30%": false,
+          "52주 고점 25% 이내": false
+        }
+      }
+    },
+    {
+      "id": "KR:145020",
+      "country": "KR",
+      "market": "KR-KOSDAQ",
+      "symbol": "145020",
+      "ticker": "145020.KQ",
+      "name": "휴젤",
+      "sector": "메모리 반도체",
+      "asOf": "2026-10-16",
+      "currency": "KRW",
+      "close": 179100.0,
+      "detailUrl": "index.html?stock=145020.KQ",
+      "source": "Yahoo Finance",
+      "technical": {
+        "ready": true,
+        "asOf": "2026-10-16",
+        "stage2": false,
+        "aligned": false,
+        "rsPercentile": 13.2,
+        "ma50": 227352.0,
+        "ma150": 244194.0,
+        "ma200": 245693.0,
+        "checks": {
+          "주가>150·200일선": false,
+          "150일선>200일선": false,
+          "200일선 상승": false,
           "50일선>150·200일선": false,
           "주가>50일선": false,
           "52주 저점 대비 +30%": false,
