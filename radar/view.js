@@ -1,7 +1,8 @@
 import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261017-1';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261017-1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261017-2';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261017-3';
 import { runnerButton, initRunner } from './runner.js?v=20261017-2';
+import { loadChartData, stockSeries, priceChart, rsChart } from './chart.js?v=20261017-3';
 
 const $ = id => document.getElementById(id);
 const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false };
@@ -110,8 +111,14 @@ function stat(label, value, cls = '') {
   const box = el('div', null, 'stat'), caption = el('span'); caption.append(helpLabel(label));
   box.append(caption, el('strong', value, cls)); return box;
 }
+// Wait briefly for the chart data so the drawer does not jump after opening.
 function detail(s) {
   closeHelp();
+  const market = s.market || state.market;
+  const timeout = new Promise(resolve => setTimeout(() => resolve(undefined), 1500));
+  Promise.race([loadChartData(market), timeout]).then(data => renderDetail(s, data));
+}
+function renderDetail(s, data) {
   const d = $('detail');
   const heading = el('h2', s.name); heading.id = 'stock-detail-title';
   d.replaceChildren(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), heading, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
@@ -121,6 +128,7 @@ function detail(s) {
   quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), naverLink(s, true)); d.append(quote);
   const chart = el('section', null, 'chart-panel');
   chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true)); d.append(chart);
+  if (data !== null) fillDetailChart(chart, s, data);
   const grid = el('div', null, 'detail-grid');
   [['시가총액', marketCap(s, true)], ['5일 수익률', pct(s.return5d), tone(s.return5d)], ['20일 수익률', pct(s.return20d), tone(s.return20d)], ['60일 수익률', pct(s.return60d), tone(s.return60d)], ['120일 수익률', pct(s.return120d), tone(s.return120d)], ['200일 수익률', pct(s.return200d), tone(s.return200d)],
     ['52주 고점 거리', numeric(s.highDistancePct) ? distance(s) : '이력 부족'], ['52주 장중 고점', fmt(s.high52, 2)],
@@ -149,6 +157,28 @@ function detail(s) {
   evidence.append(el('p', '공시·헤드라인과 가격 움직임의 인과관계는 확인되지 않았습니다.', 'evidence-note')); d.append(evidence);
   d.append(el('p', `가격 출처: ${s.source} · 산업 분류: ${s.industrySource}`, 'source-note'));
   $('drawer').showModal(); $('drawer').scrollTop = 0;
+}
+let chartDays = 60;
+function fillDetailChart(panel, s, ready) {
+  const market = s.market || state.market;
+  const apply = data => {
+    const series = data && stockSeries(data, s.symbol);
+    if (!series || !panel.isConnected) return;
+    const draw = () => {
+      const head = el('div', null, 'chart-head');
+      head.append(el('div', `최근 ${chartDays}거래일 · 종가 · 이동평균선 · 거래량`, 'chart-caption'));
+      const toggle = el('div', null, 'chart-toggle');
+      [[60, '3개월'], [120, '6개월']].forEach(([n, label]) => toggle.append(button(label, chartDays === n, () => { chartDays = n; draw(); })));
+      head.append(toggle);
+      const body = [head, priceChart(series, { market, days: chartDays })];
+      if (chartDays > series.closes.length - 199) body.push(el('p', `200일선은 저장된 가격 이력(${series.closes.length}거래일) 한계로 최근 ${series.closes.length - 199}거래일만 그려져요.`, 'chart-note'));
+      const rs = rsChart(series, { days: chartDays });
+      if (rs) body.push(rs);
+      panel.replaceChildren(...body);
+    };
+    draw();
+  };
+  if (ready) apply(ready); else loadChartData(market).then(apply);
 }
 function table(rows) {
   if (!rows.length) return el('div', '조건에 맞는 종목이 없습니다. 필터를 조정해 보세요.', 'empty');

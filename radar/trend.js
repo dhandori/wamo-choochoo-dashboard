@@ -1,3 +1,4 @@
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261017-3';
 // Trend-following view: market weather, RS-line leaders, sell warnings,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -11,6 +12,7 @@ const tone = n => n > 0 ? 'up' : n < 0 ? 'down' : 'neutral';
 function el(tag, text, cls) { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; }
 function btn(text, active, action, cls = '') { const b = el('button', text, `${active ? 'active ' : ''}${cls}`.trim()); b.type = 'button'; b.onclick = action; return b; }
 const block = market => data?.markets?.[market] || null;
+const md = d => `${+d.slice(5, 7)}/${+d.slice(8, 10)}`;
 
 export function loadTrend(force = false) {
   if (loading) return loading;
@@ -26,24 +28,6 @@ export function loadTrend(force = false) {
 export function trendTabLabel(market) {
   const b = block(market);
   return b ? (LIGHT[b.weather?.level] || '—') : failed ? '대기' : '…';
-}
-
-function svgLine(series, { width = 220, height = 54, color = 'var(--green)', min, max, extra = [] } = {}) {
-  const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
-  svg.setAttribute('viewBox', `0 0 ${width} ${height}`); svg.setAttribute('class', 'tr-svg'); svg.setAttribute('aria-hidden', 'true');
-  const all = [series, ...extra.map(e => e.series)].flat().filter(isNum);
-  if (all.length < 2) return svg;
-  const lo = min ?? Math.min(...all), hi = max ?? Math.max(...all), span = hi - lo || 1;
-  const path = (vals, stroke, dash) => {
-    const pts = vals.map((v, i) => isNum(v) ? `${(i / (vals.length - 1)) * width},${height - 3 - ((v - lo) / span) * (height - 6)}` : null).filter(Boolean);
-    const p = document.createElementNS(ns, 'polyline');
-    p.setAttribute('points', pts.join(' ')); p.setAttribute('fill', 'none'); p.setAttribute('stroke', stroke);
-    p.setAttribute('stroke-width', '1.6'); p.setAttribute('stroke-linejoin', 'round'); if (dash) p.setAttribute('stroke-dasharray', '3 3');
-    svg.append(p);
-  };
-  extra.forEach(e => path(e.series, e.color, e.dash));
-  path(series, color);
-  return svg;
 }
 
 function help(text) { const s = el('p', text, 'tr-help'); return s; }
@@ -77,8 +61,12 @@ export function renderWeather(container, market, onOpen) {
   const dist = w.distribution || {}, br = w.breadth || {}, hl = w.highsLows || {}, idx = b.index || {};
   const chip = (label, value, score) => { const c = el('span', null, `tr-chip ${score > 0 ? 'good' : score < 0 ? 'bad' : ''}`); c.append(el('small', label), el('b', value)); chips.append(c); };
   const score = key => (w.factors || []).find(f => f.key === key)?.score ?? 0;
-  chip(idx.label || '지수', `${pct(idx.changePct)} · ${idx.aboveMa50 ? '50일선 위' : '50일선 아래'}`, score('index'));
-  chip('분산일', dist.status === 'OK' ? `${dist.count} / 25일` : '자료 없음', score('distribution'));
+  const idx2 = b.index2, dist2 = idx2?.distribution;
+  const arrow = d => ({ up: '↗', flat: '→', down: '↘' })[d] || '·';
+  chip('지수', [idx, idx2].filter(Boolean).map(i => `${i.label} ${pct(i.changePct)}`).join(' · '), score('index'));
+  chip('이평선 기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '), score('slope'));
+  const dcount = [dist, dist2].filter(d => d?.status === 'OK').map(d => d.count);
+  chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일` : '자료 없음', score('distribution'));
   chip('50일선 위 종목', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
   chip('신고가 · 신저가', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히 보기 →', false, onOpen, 'tr-more');
@@ -109,19 +97,32 @@ function weatherDetail(b) {
   });
   const grid = el('div', null, 'tr-cards');
   // Index
-  const idx = b.index || {}, c1 = el('article', null, 'tr-card');
-  c1.append(el('h3', idx.label || '지수'), el('div', null, 'tr-big'));
-  c1.querySelector('.tr-big').append(el('b', fmt(idx.close, 2)), el('span', pct(idx.changePct), tone(idx.changePct)));
-  c1.append(el('p', `50일선 ${idx.aboveMa50 ? '위' : '아래'} · 200일선 ${idx.aboveMa200 ? '위' : '아래'} · 200일선 ${idx.ma200Rising ? '오르는 중' : '내려가는 중'}`));
-  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : '지수가 50일선 위에 있으면 단기 추세가 살아 있다는 뜻이에요.'));
+  const idx = b.index || {}, idx2 = b.index2, c1 = el('article', null, 'tr-card');
+  c1.append(el('h3', idx2 ? `지수 추세 (${idx.label} · ${idx2.label})` : (idx.label || '지수')));
+  [idx, idx2].filter(Boolean).forEach(i => {
+    const line = el('div', null, 'tr-index-line');
+    const big = el('div', null, 'tr-big'); big.append(el('b', fmt(i.close, 2)), el('span', pct(i.changePct), tone(i.changePct)));
+    const word = d => ({ up: '↗ 상승', flat: '→ 평평', down: '↘ 하락' })[d] || '—';
+    const sl = (v, d, back) => d ? `${word(d)} (${v > 0 ? '+' : ''}${fmt(v)}% / ${back}일)` : '계산 불가';
+    line.append(el('small', i.label), big,
+      el('p', `가격: 50일선 ${i.aboveMa50 ? '위' : '아래'} · 200일선 ${i.aboveMa200 ? '위' : '아래'}`),
+      el('p', `기울기: 50일선 ${sl(i.ma50Slope, i.ma50Dir, 10)} · 200일선 ${sl(i.ma200Slope, i.ma200Dir, 20)}`, 'tr-slope'));
+    c1.append(line);
+  });
+  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : '가격: 두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평).'));
   // Distribution days
   const dist = w.distribution || {}, c2 = el('article', null, 'tr-card');
   c2.append(el('h3', '분산일 (기관이 판 흔적)'));
-  if (dist.status === 'OK') {
-    const big = el('div', null, 'tr-big'); big.append(el('b', `${dist.count}`), el('span', '/ 최근 25거래일')); c2.append(big);
-    const dots = el('div', null, 'tr-dots');
-    (dist.days || []).forEach(d => { const s = el('span', null, `tr-d ${d.distribution ? (d.expired ? 'expired' : 'hit') : ''}`); s.title = `${d.date} ${pct(d.changePct)}${d.distribution ? d.expired ? ' · 분산일(지워짐)' : ' · 분산일' : ''}`; dots.append(s); });
-    c2.append(dots);
+  const distRows = [[idx.label, dist], [idx2?.label, idx2?.distribution]].filter(([, d]) => d?.status === 'OK');
+  if (distRows.length) {
+    distRows.forEach(([label, d]) => {
+      const big = el('div', null, 'tr-big'); big.append(el('b', `${d.count}`), el('span', `${distRows.length > 1 ? label + ' · ' : ''}최근 25거래일`)); c2.append(big);
+      const dots = el('div', null, 'tr-dots');
+      (d.days || []).forEach(x => { const s = el('span', null, `tr-d ${x.distribution ? (x.expired ? 'expired' : 'hit') : ''}`); s.title = `${x.date} ${pct(x.changePct)}${x.distribution ? x.expired ? ' · 분산일(지워짐)' : ' · 분산일' : ''}`; dots.append(s); });
+      c2.append(dots);
+      const days = d.days || [];
+      if (days.length) { const ax = el('div', null, 'tr-dots-axis'); ax.append(el('span', md(days[0].date)), el('span', '빨강 = 분산일 · 테두리 = 지워진 분산일'), el('span', md(days.at(-1).date))); c2.append(ax); }
+    });
   } else c2.append(el('p', '자료 없음'));
   c2.append(help(dist.note || ''));
   // Breadth
@@ -130,8 +131,10 @@ function weatherDetail(b) {
   if (br.status === 'OK') {
     const big = el('div', null, 'tr-big'); big.append(el('b', `${fmt(br.above50Pct, 0)}%`), el('span', `5일 ${br.above50Change5d > 0 ? '+' : ''}${fmt(br.above50Change5d, 0)}%p`, tone(br.above50Change5d))); c3.append(big);
     const s = br.series || [];
-    c3.append(svgLine(s.map(p => p.above50), { min: 0, max: 100, extra: [{ series: s.map(p => p.above200), color: '#7f93ad', dash: true }] }));
-    c3.append(el('small', `초록 실선: 50일선 위 · 회색 점선: 200일선 위 (${fmt(br.above200Pct, 0)}%) · 최근 ${s.length}거래일`, 'tr-legend'));
+    c3.append(lineChart(s, { lines: [{ key: 'above50', label: '50일선 위', color: 'var(--green)' }, { key: 'above200', label: '200일선 위', color: '#9aacc3', dash: true }] }));
+    const lg = el('div', null, 'pc-legend small');
+    [['var(--green)', `50일선 위 ${fmt(br.above50Pct, 0)}%`, ''], ['#9aacc3', `200일선 위 ${fmt(br.above200Pct, 0)}%`, 'dash']].forEach(([c, t, cls]) => { const k = el('span', null, `pc-key ${cls}`); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
+    c3.append(lg);
   } else c3.append(el('p', '자료 없음'));
   c3.append(help('60% 넘으면 건강, 40% 아래면 약한 시장이에요. 지수는 오르는데 이 비율이 떨어지면 소수 대형주만 끌고 가는 장이에요.'));
   // Highs vs lows
@@ -139,20 +142,36 @@ function weatherDetail(b) {
   c4.append(el('h3', '신고가 vs 신저가'));
   if (hl.status === 'OK') {
     const big = el('div', null, 'tr-big'); big.append(el('b', `${hl.newHighs}`, 'up'), el('span', '·'), el('b', `${hl.newLows}`, 'down')); c4.append(big);
-    const bars = el('div', null, 'tr-hl');
-    const top = Math.max(1, ...(hl.series || []).map(p => Math.max(p.newHighs, p.newLows)));
-    (hl.series || []).forEach(p => {
-      const col = el('div', null, 'tr-hl-col'); col.title = `${p.date} 신고가 ${p.newHighs} · 신저가 ${p.newLows}`;
-      const up = el('span', null, 'tr-hl-up'), dn = el('span', null, 'tr-hl-dn');
-      up.style.height = `${p.newHighs / top * 100}%`; dn.style.height = `${p.newLows / top * 100}%`;
-      col.append(up, dn, el('small', p.date.slice(5))); bars.append(col);
-    });
-    c4.append(bars);
+    c4.append(mirrorBars(hl.series || [], { upKey: 'newHighs', downKey: 'newLows', upLabel: '신고가', downLabel: '신저가' }));
+    const lg = el('div', null, 'pc-legend small');
+    [['var(--green)', '위: 신고가 종목 수'], ['var(--red)', '아래: 신저가 종목 수']].forEach(([c, t]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
+    c4.append(lg);
   } else c4.append(el('p', '자료 없음'));
-  c4.append(help('위(초록)는 1년 중 가장 높은 가격을 새로 쓴 종목 수, 아래(빨강)는 가장 낮은 가격을 새로 쓴 종목 수예요.'));
+  c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교해요.'));
   grid.append(c1, c2, c3, c4);
   wrap.append(factors, grid);
   return wrap;
+}
+
+const MINI_MA = MA.filter(m => m.n === 50 || m.n === 200);
+function miniChart(item) {
+  const box = el('div', null, 'tr-mini'); box.dataset.symbol = item.symbol;
+  box.append(el('span', '차트 불러오는 중…', 'tr-mini-wait'));
+  return box;
+}
+function miniLegend() {
+  const lg = el('div', null, 'pc-legend small');
+  [['#eaf0f8', '종가'], ...MINI_MA.map(m => [m.color, m.label])].forEach(([c, t]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
+  lg.append(el('span', '최근 60거래일 · 오른쪽 숫자는 가격 · 이름을 누르면 큰 차트', 'pc-hint'));
+  return lg;
+}
+function fillMiniCharts(content, market) {
+  loadChartData(market).then(data => {
+    content.querySelectorAll('.tr-mini[data-symbol]').forEach(box => {
+      const series = data && stockSeries(data, box.dataset.symbol);
+      box.replaceChildren(series ? priceChart(series, { market, days: 60, compact: true, mas: MINI_MA }) : el('span', '차트 자료 없음', 'tr-mini-wait'));
+    });
+  });
 }
 
 function emptyBox(text) { return el('div', text, 'empty'); }
@@ -170,15 +189,11 @@ function rsSection(b, openStock) {
     const facts = el('div', null, 'tr-facts');
     [['종가 변화', pct(x.changePct), tone(x.changePct)], ['고점까지', isNum(x.highDistancePct) ? `${fmt(x.highDistancePct)}%` : '—'], ['RS 순위', fmt(x.rs, 0)], ['단계', x.stage ? `Stage ${x.stage}` : '—']]
       .forEach(([k, v, c]) => { const f = el('span'); f.append(el('small', k), el('b', v, c)); facts.append(f); });
-    const chart = el('div', null, 'tr-mini');
-    const price = x.priceSpark || [], plo = Math.min(...price), phi = Math.max(...price);
-    chart.append(svgLine(x.rsSpark || [], { width: 150, height: 40, min: 0, max: 100, extra: [{ series: price.map(v => (v - plo) / ((phi - plo) || 1) * 100), color: '#7f93ad', dash: true }] }));
-    chart.title = '초록: RS선 · 회색 점선: 주가 (최근 60거래일)';
     main.append(tag);
-    row.append(main, facts, chart);
+    row.append(main, facts, miniChart(x));
     list.append(row);
   });
-  wrap.append(el('small', '초록 선 = RS선(지수 대비 강도), 회색 점선 = 주가. 최근 60거래일 모양입니다.', 'tr-legend'), list);
+  wrap.append(miniLegend(), list);
   return wrap;
 }
 
@@ -199,10 +214,11 @@ function sellSection(b, openStock, rerender) {
       .forEach(([k, v, c]) => { const f = el('span'); f.append(el('small', k), el('b', v, c)); facts.append(f); });
     const reasons = el('ul', null, 'tr-reasons');
     x.reasons.forEach(r => { const li = el('li'); li.append(el('b', r.label), el('span', r.detail)); reasons.append(li); });
-    row.append(main, facts, reasons);
+    const side = el('div', null, 'tr-side'); side.append(reasons, miniChart(x));
+    row.append(main, facts, side);
     list.append(row);
   });
-  wrap.append(list);
+  wrap.append(miniLegend(), list);
   return wrap;
 }
 
@@ -284,5 +300,6 @@ export function renderTrend(content, market, { openStock, rerender }) {
   if (subtab === 'earnings') body.append(earningsSection(b, openStock));
   if (subtab === 'score') body.append(scoreSection(b, openStock));
   content.append(body);
+  fillMiniCharts(body, market);
   content.append(el('p', `${b.asOf} 종가 기준 · 계산 ${new Date(b.builtAt || data.generatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST · 지수 ${b.index?.source || '—'} · 대상 ${b.universe}종목 · 투자 권유가 아니라 확인용 신호예요.`, 'tr-foot'));
 }

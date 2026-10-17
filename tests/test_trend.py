@@ -72,6 +72,46 @@ class TrendMathTests(unittest.TestCase):
         few_highs = trend.weather(good_idx, dist, br, {'status': 'OK', 'newHighs': 2, 'newLows': 0, 'denominator': 500}, False)
         self.assertEqual([f['score'] for f in few_highs['factors'] if f['key'] == 'highsLows'], [0])
 
+    def test_index_pullback_is_neutral_and_secondary_index_counts(self):
+        dist = {'status': 'OK', 'count': 1}
+        br = {'status': 'OK', 'above50Pct': 50}
+        hl = {'status': 'OK', 'newHighs': 0, 'newLows': 0, 'denominator': 500}
+        def score(primary, secondary=None, d=dist):
+            w = trend.weather(primary, d, br, hl, False, secondary)
+            return {f['key']: f['score'] for f in w['factors']}, w
+        up = {'aboveMa50': True, 'aboveMa200': True, 'label': 'S&P 500'}
+        pullback = {'aboveMa50': False, 'aboveMa200': True, 'label': '나스닥'}
+        broken = {'aboveMa50': False, 'aboveMa200': False, 'label': '나스닥'}
+        self.assertEqual(score({**pullback, 'label': 'S&P 500'})[0]['index'], 0)
+        self.assertEqual(score(up)[0]['index'], 1)
+        self.assertEqual(score(up, pullback)[0]['index'], 0)
+        s, w = score(up, broken)
+        self.assertEqual(s['index'], -1)
+        self.assertIn('나스닥 200일선 아래', next(f['text'] for f in w['factors'] if f['key'] == 'index'))
+        heavy = {**up, 'distribution': {'status': 'OK', 'count': 7}}
+        s, w = score(up, heavy)
+        self.assertEqual(s['distribution'], -1)
+        self.assertIn('S&P 500 1번', next(f['text'] for f in w['factors'] if f['key'] == 'distribution'))
+
+    def test_moving_average_slope_direction_and_score(self):
+        up = [100 + i * 0.3 for i in range(260)]
+        down = [300 - i * 0.3 for i in range(260)]
+        flat = [100.0] * 260
+        self.assertEqual(trend.ma_slope(up, 50)[1], 'up')
+        self.assertEqual(trend.ma_slope(down, 200)[1], 'down')
+        self.assertEqual(trend.ma_slope(flat, 200), (0.0, 'flat'))
+        dist = {'status': 'OK', 'count': 1}
+        br = {'status': 'OK', 'above50Pct': 50}
+        hl = {'status': 'OK', 'newHighs': 0, 'newLows': 0, 'denominator': 500}
+        def slope_score(i, j=None):
+            w = trend.weather(i, dist, br, hl, False, j)
+            return next(f['score'] for f in w['factors'] if f['key'] == 'slope')
+        rising = {**trend.index_trend([{'date': f'd{k}', 'close': c} for k, c in enumerate(up)]), 'label': 'A'}
+        falling = {**trend.index_trend([{'date': f'd{k}', 'close': c} for k, c in enumerate(down)]), 'label': 'B'}
+        self.assertEqual(slope_score(rising), 1)
+        self.assertEqual(slope_score(falling), -1)
+        self.assertEqual(slope_score(rising, falling), -1)
+
     def test_heavy_fifty_day_break_and_sell_warning(self):
         closes = [100 + i * 0.5 for i in range(259)] + [180.0]
         volumes = [1000] * 259 + [5000]

@@ -27,6 +27,9 @@ SIGNAL_LOG = 'wamo_signal_log.json'
 EARNINGS_CACHE = 'wamo_earnings_cache.json'
 PAGES = {'KR': 'index.html', 'US': 'us.html'}
 INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500')}
+# Growth-heavy second index: market weather needs both (O'Neil watches both).
+SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥')}
+TREND_VERSION = 2
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -348,38 +351,101 @@ def highs_lows(universe, sessions=10):
             'series': series, 'note': '최근 252거래일 장중 고가·저가를 새로 넘은 종목 수입니다.'}
 
 
+# Slope of a moving average: its % change over a lookback, then a direction.
+# 50-day over 10 sessions (±0.5%), 200-day over 20 sessions (±0.3%).
+SLOPE_RULES = {50: (10, 0.5), 200: (20, 0.3)}
+
+
+def ma_slope(closes, n):
+    lookback, band = SLOPE_RULES[n]
+    now, before = sma(closes, n, len(closes)), sma(closes, n, len(closes) - lookback)
+    if now is None or before is None or not before:
+        return None, None
+    change = (now / before - 1) * 100
+    return round(change, 2), 'up' if change > band else 'down' if change < -band else 'flat'
+
+
 def index_trend(bench):
     closes = [r['close'] for r in bench]
     n = len(closes)
     ma50, ma200 = sma(closes, 50, n), sma(closes, 200, n)
     ma200_prev = sma(closes, 200, n - 20)
     chg = (closes[-1] / closes[-2] - 1) * 100 if n >= 2 else None
+    s50, d50 = ma_slope(closes, 50)
+    s200, d200 = ma_slope(closes, 200)
     return {'close': rnd(closes[-1]), 'changePct': rnd(chg), 'ma50': rnd(ma50), 'ma200': rnd(ma200),
             'aboveMa50': None if ma50 is None else closes[-1] > ma50,
             'aboveMa200': None if ma200 is None else closes[-1] > ma200,
             'ma200Rising': None if ma200 is None or ma200_prev is None else ma200 > ma200_prev,
+            'ma50Slope': s50, 'ma50Dir': d50, 'ma200Slope': s200, 'ma200Dir': d200,
             'date': bench[-1]['date']}
 
 
-def weather(idx, dist, br, hl, synthetic):
+DIR_WORD = {'up': '상승', 'flat': '평평', 'down': '하락'}
+
+
+def _slope_state(i):
+    d50, d200 = i.get('ma50Dir'), i.get('ma200Dir')
+    if not d50 or not d200:
+        return None, ''
+    if d50 == 'up' and d200 == 'up':
+        score = 1
+    elif d200 == 'down' or (d50 == 'down' and d200 != 'up'):
+        score = -1
+    else:
+        score = 0
+    return score, f'50일선 {DIR_WORD[d50]}({i["ma50Slope"]:+.1f}%) · 200일선 {DIR_WORD[d200]}({i["ma200Slope"]:+.1f}%)'
+
+
+def _index_state(i):
+    if i.get('aboveMa50') is None:
+        return None, '이동평균선 계산 불가'
+    if i['aboveMa50'] and i.get('aboveMa200'):
+        return 1, '50·200일선 위'
+    if not i.get('aboveMa200'):
+        return -1, '200일선 아래'
+    # Above the 200-day but below the 50-day: a pullback inside an uptrend.
+    return 0, '50일선 아래 · 200일선 위'
+
+
+def weather(idx, dist, br, hl, synthetic, secondary=None):
     factors = []
 
     def add(key, label, score, text):
         factors.append({'key': key, 'label': label, 'score': score, 'text': text})
 
-    if idx.get('aboveMa50') is None:
+    indexes = [idx] + ([secondary] if secondary and secondary.get('aboveMa50') is not None else [])
+    states = [(i.get('label') or '지수', *_index_state(i)) for i in indexes]
+    known = [st for _, st, _ in states if st is not None]
+    if not known:
         add('index', '지수 추세', 0, '지수 이동평균선을 계산할 수 없습니다.')
-    elif idx['aboveMa50'] and idx.get('aboveMa200'):
-        add('index', '지수 추세', 1, '지수가 50일선과 200일선 위에 있어요.')
-    elif not idx.get('aboveMa200'):
-        add('index', '지수 추세', -1, '지수가 200일선 아래로 내려갔어요.')
     else:
-        add('index', '지수 추세', 0 if idx['aboveMa50'] else -1,
-            '지수가 50일선 아래예요. 200일선 위라 큰 추세는 아직 살아 있어요.' if not idx['aboveMa50'] else '지수가 50일선 위예요.')
-    if dist.get('status') == 'OK':
-        c = dist['count']
+        score = -1 if -1 in known else 1 if all(k == 1 for k in known) else 0
+        if len(states) == 1:
+            text = {1: '지수가 50일선과 200일선 위에 있어요.', -1: '지수가 200일선 아래로 내려갔어요.',
+                    0: '지수가 50일선 아래예요. 200일선 위라 큰 추세는 아직 살아 있어요.'}[known[0]]
+        else:
+            text = ' · '.join(f'{label} {desc}' for label, _, desc in states)
+            text += {1: ' — 둘 다 상승 추세예요.', -1: ' — 200일선 아래로 내려간 지수가 있어요.',
+                     0: ' — 큰 추세는 살아 있지만 단기 힘이 빠졌어요.'}[score]
+        add('index', '지수 추세', score, text)
+    slopes = [(i.get('label') or '지수', *_slope_state(i)) for i in indexes]
+    known_s = [st for _, st, _ in slopes if st is not None]
+    if known_s:
+        score = -1 if -1 in known_s else 1 if all(k == 1 for k in known_s) else 0
+        text = ' / '.join(f'{label}: {desc}' if len(slopes) > 1 else desc for label, st, desc in slopes if st is not None)
+        text += {1: ' — 이평선이 모두 위를 향해요.', -1: ' — 이평선이 아래를 향하기 시작했어요.',
+                 0: ' — 기울기가 꺾이거나 평평해졌어요.'}[score]
+        add('slope', '이평선 기울기', score, text)
+    dists = [(idx.get('label') or '지수', dist)]
+    if secondary and (secondary.get('distribution') or {}).get('status') == 'OK':
+        dists.append((secondary.get('label'), secondary['distribution']))
+    counted = [(label, d['count']) for label, d in dists if d.get('status') == 'OK']
+    if counted:
+        c = max(n for _, n in counted)
+        detail = ' · '.join(f'{label} {n}번' for label, n in counted) if len(counted) > 1 else f'{counted[0][1]}번'
         add('distribution', '분산일', -1 if c >= 6 else 0 if c >= 4 else 1,
-            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {c}번 있었어요.' + (' 6번 이상은 경고 신호예요.' if c >= 6 else ''))
+            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail} 있었어요.' + (' 6번 이상은 경고 신호예요.' if c >= 6 else ''))
     if br.get('status') == 'OK':
         p = br['above50Pct']
         add('breadth', '시장 체력', 1 if p >= 60 else -1 if p < 40 else 0,
@@ -667,6 +733,37 @@ def upcoming_earnings(cache, universe, asof, horizon=14):
     return out
 
 
+# ---------------------------------------------------------------- charts
+CHART_DAYS = 260      # closes kept per stock (moving averages need 200 + window)
+CHART_VOLUME_DAYS = 120
+
+
+def chart_payload(universe, bench, asof, market):
+    """Compact per-stock daily closes for the detail chart (loaded on demand)."""
+    dates = [r['date'] for r in bench][-CHART_DAYS:]
+    if len(dates) < 60 or dates[-1] != asof:
+        dates = sorted({r['date'] for s in universe for r in s['rows']})[-CHART_DAYS:]
+    digits = 0 if market == 'KR' else 2
+    stocks = {}
+    for s in universe:
+        by_date = {r['date']: r for r in s['rows']}
+        first = next((k for k, d in enumerate(dates) if d in by_date), None)
+        if first is None:
+            continue
+        closes, volumes, last = [], [], None
+        for d in dates[first:]:
+            r = by_date.get(d)
+            if r:
+                last = r
+            closes.append(round(last['close'], digits) if digits else int(round(last['close'])))
+            volumes.append(int(r['volume']) if r else 0)
+        stocks[s['symbol']] = {'s': first, 'c': closes, 'v': volumes[-CHART_VOLUME_DAYS:]}
+    bench_by_date = {r['date']: r['close'] for r in bench}
+    return {'asOf': asof, 'dates': dates,
+            'bench': [round(bench_by_date[d], 2) if d in bench_by_date else None for d in dates],
+            'stocks': stocks}
+
+
 # --------------------------------------------------------------- build
 def read_json(path, default):
     try:
@@ -705,7 +802,20 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
             bench = None
     if not bench:
         bench, synthetic, source = synthetic_benchmark(universe), True, '스크리닝 종목 동일가중 중앙값(대체)'
-    idx = index_trend(bench)
+    idx = {**index_trend(bench), 'label': label if not synthetic else '종목 중앙값 지수'}
+    secondary = None
+    sym2, label2 = SECONDARY[market]
+    bench2 = (load_fixture(market + '2') if os.getenv('WAMO_INDEX_FIXTURE') else None)
+    if bench2 is None and fetch_network and not os.getenv('WAMO_INDEX_FIXTURE'):
+        try:
+            bench2 = index_fetcher(sym2)
+        except Exception as exc:  # noqa: BLE001
+            print(f'{market} 보조지수 {label2} 실패 · 주지수만 사용: {exc}', flush=True)
+    if bench2:
+        bench2 = [r for r in bench2 if r['date'] <= asof]
+        if bench2 and bench2[-1]['date'] == asof and len(bench2) >= 200:
+            secondary = {**index_trend(bench2), 'symbol': sym2, 'label': label2,
+                         'source': 'Yahoo Finance ' + sym2, 'distribution': distribution_days(bench2)}
     dist = distribution_days(bench) if not synthetic else {
         'status': 'UNAVAILABLE', 'count': None, 'window': 25, 'days': [],
         'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'}
@@ -724,11 +834,14 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
                     'total': len(upcoming), 'fetchedAt': earnings_cache.get('fetchedAt'), 'newCalls': calls,
                     'source': 'Nasdaq 실적 일정 (공개 자료)',
                     'note': '발표 날짜는 회사 사정으로 바뀔 수 있어요. 발표 전후로 주가가 크게 움직일 수 있어요.'}
+    charts = chart_payload(universe, bench, asof, market)
+    charts['benchLabel'] = idx['label']
     return {
-        'asOf': asof, 'universe': len(universe),
+        'asOf': asof, 'universe': len(universe), 'version': TREND_VERSION,
+        'index2': secondary,
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},
-        'weather': {**weather(idx, dist, br, hl, synthetic), 'distribution': dist, 'breadth': br, 'highsLows': hl},
+        'weather': {**weather(idx, dist, br, hl, synthetic, secondary), 'distribution': dist, 'breadth': br, 'highsLows': hl},
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
                       'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),
@@ -736,7 +849,7 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
                          'note': '최근 20거래일 안에 상승 추세였던 종목만 봐요. 경고는 팔라는 명령이 아니라 확인하라는 신호예요.'},
         'earnings': earnings,
         'scorecard': scorecard(book),
-    }, earnings_cache
+    }, earnings_cache, charts
 
 
 def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
@@ -749,7 +862,8 @@ def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
     built = []
     for market in markets:
         try:
-            block, earnings_cache = build_market(root, market, log, earnings_cache, fetch_network)
+            block, earnings_cache, charts = build_market(root, market, log, earnings_cache, fetch_network)
+            write_json(root / f'wamo_chart_{market}.json', charts, compact=True)
             block['builtAt'] = now.isoformat()
             result['markets'][market] = block
             built.append(market)
@@ -766,7 +880,7 @@ def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
     return result, built
 
 
-OUTPUTS = [OUTPUT, SIGNAL_LOG, EARNINGS_CACHE]
+OUTPUTS = [OUTPUT, SIGNAL_LOG, EARNINGS_CACHE, 'wamo_chart_KR.json', 'wamo_chart_US.json']
 
 
 if __name__ == '__main__':

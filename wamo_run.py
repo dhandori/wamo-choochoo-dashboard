@@ -99,7 +99,9 @@ def trend_stale_markets():
         try:
             from wamo_update import extract_old_payload
             asof = (extract_old_payload((ROOT / page).read_text(encoding='utf-8')).get('meta') or {}).get('asOf')
-            if asof and (trend.get(market) or {}).get('asOf') != asof:
+            block = trend.get(market) or {}
+            from wamo_trend import TREND_VERSION
+            if asof and (block.get('asOf') != asof or block.get('version') != TREND_VERSION):
                 stale.append(market)
         except OSError:
             continue

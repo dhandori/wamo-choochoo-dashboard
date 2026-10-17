@@ -65,6 +65,9 @@ with sync_playwright() as p:
                     assert drawer_link.get_attribute('target')=='_blank'
                     assert 'noopener' in drawer_link.get_attribute('rel')
                 assert not page.locator('#detail a[href*=legacy]').count()
+                # The drawer now holds a taller chart; scroll first (help closes on scroll), as a user would.
+                page.locator('#detail [data-help=volume]').scroll_into_view_if_needed()
+                page.wait_for_timeout(250)
                 page.locator('#detail [data-help=volume]').click()
                 expect(page.get_by_role('tooltip')).to_contain_text('이전 50거래일')
                 check_help_bounds(page)
