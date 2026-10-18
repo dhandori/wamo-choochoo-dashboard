@@ -1,8 +1,8 @@
 import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261017-1';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261017-1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261018-1';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab } from './trend.js?v=20261018-2';
 import { runnerButton, initRunner } from './runner.js?v=20261017-2';
-import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261018-1';
+import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261018-2';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
 let cardObserver = null;
@@ -460,15 +460,24 @@ function render() {
     const rows = selectStocks(m, { ...state, tab: state.industry ? 'industry' : state.tab }), pages = Math.max(1, Math.ceil(rows.length / 30));
     state.page = Math.min(state.page, pages); content.append(table(rows));
     $('result-summary').textContent = `${rows.length}종목 · ${state.newOnly?'새로 포착된 종목 · 현재 조건 적용':'현재 조건 적용'}${state.industry ? ' · 선택 산업 구성원' : ''}${state.tab==='ai'?` · ${AI_SECTORS.find(g=>g.id===state.aiSector)?.name||'AI 전체'} · 중복 제외`:''}`;
-    const prev = button('이전', false, () => { state.page--; render(); }), next = button('다음', false, () => { state.page++; render(); });
+    const toList = () => { const t = $('section-title'); const top = t?.getBoundingClientRect().top ?? 0; if (top < 0) window.scrollTo({ top: window.scrollY + top - 8, behavior: 'instant' }); };
+    const prev = button('이전', false, () => { state.page--; render(); toList(); }), next = button('다음', false, () => { state.page++; render(); toList(); });
     prev.disabled = state.page <= 1; next.disabled = state.page >= pages;
     pagination.append(prev, el('span', `${rows.length}종목 · ${state.page} / ${pages}`), next);
     if(state.tab!=='ai'){const jump = el('a', '산업 흐름 보기 ↓', 'rail-jump'); jump.href = '#industry-rail'; $('result-summary').append(jump);}
   }
 }
 function openTrend() {
+  setSubtab('weather');
   Object.assign(state, { tab: 'trend', rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1, sort: 'default' }); $('search').value = ''; syncUrl(); render();
-  $('section-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  keepTabsInView();
+}
+// After switching tabs from far down the page, bring the tab bar back into view
+// instead of leaving the reader in the middle of a different list.
+function keepTabsInView() {
+  const tabs = document.querySelector('.tabs'); if (!tabs) return;
+  const top = tabs.getBoundingClientRect().top;
+  if (top < 0) window.scrollTo({ top: window.scrollY + top - 8, behavior: 'instant' });
 }
 function openStockById(id) {
   const s = snapshot?.markets?.[state.market]?.stocks?.find(x => x.id === id);
@@ -484,7 +493,7 @@ function renderTrendTab() {
   $('result-summary').textContent = '';
   $('section-title').textContent = '추세 신호';
   $('section-description').textContent = '지금 사도 되는 시장인지, 어떤 종목이 지수보다 강한지, 어떤 종목이 꺾이고 있는지 한눈에 봅니다';
-  renderTrend($('content'), state.market, { openStock: openStockById, rerender: render });
+  renderTrend($('content'), state.market, { openStock: openStockById, onSubtab: syncUrl });
 }
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
   const tab=['ai','trend'].includes(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
@@ -492,9 +501,19 @@ document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
   syncUrl(); render();
 });
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
+  if (b.dataset.tab === 'trend' && state.tab !== 'trend') setSubtab('weather');
   Object.assign(state, { tab: b.dataset.tab, rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1, sort: 'default' }); $('search').value = '';syncUrl(); render();
+  keepTabsInView();
 });
-function syncUrl(){const url=new URL(location.href);url.searchParams.set('market',state.market);url.searchParams.set('tab',state.tab);history.replaceState(null,'',url);}
+// Floating "맨 위로" button for long lists.
+(() => {
+  const up = el('button', '↑', 'to-top'); up.type = 'button'; up.setAttribute('aria-label', '맨 위로'); up.hidden = true;
+  up.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.body.append(up);
+  let ticking = false;
+  window.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { up.hidden = window.scrollY < 900; ticking = false; }); }, { passive: true });
+})();
+function syncUrl(){const url=new URL(location.href);url.searchParams.set('market',state.market);url.searchParams.set('tab',state.tab);if(state.tab==='trend')url.searchParams.set('sub',getSubtab());else url.searchParams.delete('sub');history.replaceState(null,'',url);}
 $('search').oninput = e => change('query', e.target.value);
 $('close-drawer').onclick = () => $('drawer').close();
 $('drawer').addEventListener('close', closeHelp);

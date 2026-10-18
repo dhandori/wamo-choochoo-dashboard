@@ -1,9 +1,14 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261018-1';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261018-2';
 // Trend-following view: market weather, RS-line leaders, sell warnings,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
-const SUBTABS = [['rs', 'RS선 선행 신고가'], ['sell', '팔 때 경고'], ['earnings', '실적발표 임박'], ['score', '신호 성적표']];
-let data = null, loading = null, failed = false, subtab = 'rs', sellFilter = 'HIGH';
+// [key, full label, short label for phones]
+const SUBTABS = [['weather', '시장 날씨', '날씨'], ['rs', 'RS선 선행 신고가', 'RS선'], ['sell', '팔 때 경고', '팔 때'], ['earnings', '실적발표 임박', '실적'], ['score', '신호 성적표', '성적표']];
+const SUB_KEYS = SUBTABS.map(([k]) => k);
+let data = null, loading = null, failed = false, sellFilter = 'HIGH';
+let subtab = SUB_KEYS.includes(new URLSearchParams(location.search).get('sub')) ? new URLSearchParams(location.search).get('sub') : 'weather';
+export const getSubtab = () => subtab;
+export function setSubtab(key) { if (SUB_KEYS.includes(key)) subtab = key; }
 
 const isNum = n => typeof n === 'number' && Number.isFinite(n);
 const fmt = (n, d = 1) => isNum(n) ? n.toLocaleString('ko-KR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—';
@@ -296,24 +301,47 @@ function scoreSection(b, openStock) {
   return wrap;
 }
 
-export function renderTrend(content, market, { openStock, rerender }) {
+export function renderTrend(content, market, { openStock, onSubtab }) {
   content.replaceChildren();
   const b = block(market);
   if (!b) {
     content.append(emptyBox(failed ? '추세 자료를 불러오지 못했어요. 다음 자동 갱신 뒤 다시 확인해 주세요.' : '추세 자료를 불러오는 중이에요.'));
     return;
   }
-  content.append(weatherDetail(b));
+  // The sub-navigation sticks to the top; switching only redraws the body below it.
+  const anchor = el('div', null, 'tr-anchor');
   const seg = el('nav', null, 'tr-subtabs'); seg.setAttribute('aria-label', '추세 신호 보기');
-  const counts = { rs: b.rsLeaders?.leadingCount ?? 0, sell: b.sellWarnings?.highCount ?? 0, earnings: b.earnings?.status === 'OK' ? (b.earnings.upcoming || []).filter(x => x.inTrend).length : '—', score: b.scorecard?.eventCount ?? 0 };
-  SUBTABS.forEach(([k, label]) => { const t = btn('', subtab === k, () => { subtab = k; rerender(); }); t.append(el('span', label), el('span', `${counts[k]}`, 'tab-count')); seg.append(t); });
-  content.append(seg);
+  const counts = {
+    weather: ({ GREEN: '공격 가능', YELLOW: '조심', RED: '현금 확대' })[b.weather?.level] || '—',
+    rs: b.rsLeaders?.leadingCount ?? 0,
+    sell: b.sellWarnings?.highCount ?? 0,
+    earnings: b.earnings?.status === 'OK' ? (b.earnings.upcoming || []).filter(x => x.inTrend).length : '—',
+    score: b.scorecard?.eventCount ?? 0,
+  };
   const body = el('section', null, 'tr-body');
-  if (subtab === 'rs') body.append(rsSection(b, openStock));
-  if (subtab === 'sell') body.append(sellSection(b, openStock, rerender));
-  if (subtab === 'earnings') body.append(earningsSection(b, openStock));
-  if (subtab === 'score') body.append(scoreSection(b, openStock));
-  content.append(body);
-  fillMiniCharts(body, market);
+  const draw = () => {
+    seg.querySelectorAll('button').forEach(t => { const on = t.dataset.sub === subtab; t.classList.toggle('active', on); t.setAttribute('aria-pressed', String(on)); });
+    body.replaceChildren();
+    if (subtab === 'weather') body.append(weatherDetail(b));
+    if (subtab === 'rs') body.append(rsSection(b, openStock));
+    if (subtab === 'sell') body.append(sellSection(b, openStock, draw));
+    if (subtab === 'earnings') body.append(earningsSection(b, openStock));
+    if (subtab === 'score') body.append(scoreSection(b, openStock));
+    fillMiniCharts(body, market);
+  };
+  SUBTABS.forEach(([k, label, short]) => {
+    const t = btn('', false, () => {
+      if (subtab === k) return;
+      subtab = k; draw(); onSubtab?.(k);
+      // Keep the reader where they were: bar at the top, new content right under it.
+      const top = anchor.getBoundingClientRect().top;
+      if (top < 0) window.scrollTo({ top: window.scrollY + top, behavior: 'instant' });
+    });
+    t.dataset.sub = k;
+    t.append(el('span', label, 'lbl-full'), el('span', short, 'lbl-short'), el('span', `${counts[k]}`, `tab-count ${k === 'weather' ? 'weather-' + (b.weather?.level || 'UNKNOWN').toLowerCase() : ''}`));
+    seg.append(t);
+  });
+  content.append(anchor, seg, body);
+  draw();
   content.append(el('p', `${b.asOf} 종가 기준 · 계산 ${new Date(b.builtAt || data.generatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST · 지수 ${b.index?.source || '—'} · 대상 ${b.universe}종목 · 투자 권유가 아니라 확인용 신호예요.`, 'tr-foot'));
 }

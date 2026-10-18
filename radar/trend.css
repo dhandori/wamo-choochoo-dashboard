@@ -57,10 +57,17 @@
 .tr-dots-axis { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; color: var(--ink-3); margin: -1px 0 6px; }
 .tr-dots-axis span:nth-child(2) { color: #6f839c; text-align: center; }
 
-.tr-subtabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
-.tr-subtabs button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 600; }
-.tr-subtabs .tab-count { display: inline; margin: 0; font-size: 10.5px; color: var(--muted); }
-.tr-subtabs button.active .tab-count { color: inherit; }
+.tr-anchor { height: 0; }
+.tr-subtabs { position: sticky; top: 0; z-index: 6; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; margin: 12px 0 14px; padding: 6px; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--line); border-radius: 12px; }
+.tr-subtabs button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 46px; padding: 5px 6px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 12.5px; font-weight: 650; }
+.tr-subtabs button:hover:not(.active) { background: #172333; color: var(--text); }
+.tr-subtabs button.active { background: #1d3b33; color: #c5ffec; box-shadow: inset 0 0 0 1px #2f6f5d; }
+.tr-subtabs .lbl-short { display: none; }
+.tr-subtabs .tab-count { display: block; margin: 0; font-size: 11px; font-weight: 500; color: var(--muted); }
+.tr-subtabs button.active .tab-count { color: #9fe3cc; }
+.tr-subtabs .tab-count.weather-red { color: var(--red); } .tr-subtabs .tab-count.weather-yellow { color: var(--amber); } .tr-subtabs .tab-count.weather-green { color: var(--green); }
+.tr-body { min-height: calc(100vh - 70px); }
+.tr-body > .tr-weather-detail { margin-top: 0; }
 .tr-sub { font-size: 11.5px; }
 .tr-seg { display: flex; gap: 6px; margin: 8px 0 10px; }
 .tr-seg button { font-size: 11px; min-height: 34px; padding: 5px 11px; }
@@ -238,8 +245,11 @@ body[data-view="trend"] #controls, body[data-view="trend"] .list-meta, body[data
   .tr-cards, .tr-score-grid { grid-template-columns: minmax(0, 1fr); }
   .tr-card { min-height: 0; padding: 13px 14px; }
   .tr-help { margin-top: 4px !important; }
-  .tr-subtabs { display: grid; grid-template-columns: 1fr 1fr; }
-  .tr-subtabs button { min-height: 40px; padding: 6px 8px; }
+  .tr-subtabs { gap: 2px; padding: 4px; margin: 10px -4px 12px; border-radius: 11px; }
+  .tr-subtabs button { min-height: 44px; padding: 4px 2px; font-size: 12.5px; letter-spacing: -.3px; }
+  .tr-subtabs .lbl-full { display: none; }
+  .tr-subtabs .lbl-short { display: block; }
+  .tr-subtabs .tab-count { font-size: 10.5px; }
 
   /* Signal rows: name on top, four numbers in a line, chart full width. */
   .tr-row, .tr-row.sev-high, .tr-row.sev-mid { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 12px; }
@@ -276,3 +286,8 @@ body[data-view="trend"] #controls, body[data-view="trend"] .list-meta, body[data
   .stock-card.has-chart .card-quote .spark { display: none; }
   .stock-card .card-quote { margin: 8px 0 4px; }
 }
+
+/* Back to top */
+.to-top { position: fixed; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 20; width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; border: 1px solid #41526a; background: #172333e6; color: var(--text); font-size: 18px; box-shadow: 0 6px 18px #0009; backdrop-filter: blur(6px); }
+.to-top[hidden] { display: none; }
+dialog[open] ~ .to-top { display: none; }

@@ -233,8 +233,16 @@ with sync_playwright() as p:
                 page.locator('[data-tab=trend]').click()
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
                 expect(page.locator('.tr-weather-detail')).to_be_visible()
-                for label in ('팔 때 경고','신호 성적표','실적발표 임박','RS선 선행 신고가'):
-                    page.locator('.tr-subtabs button',has_text=label).click()
+                for key in ('sell','score','earnings','rs','weather'):
+                    page.locator(f'.tr-subtabs button[data-sub={key}]').click()
+                    assert f'sub={key}' in page.url,page.url
+                # Switching sub-tabs far down the page keeps the bar on screen (no jump to the top).
+                page.locator('.tr-subtabs button[data-sub=rs]').click()
+                page.evaluate('window.scrollBy(0,2000)'); page.wait_for_timeout(200)
+                page.locator('.tr-subtabs button[data-sub=score]').click(); page.wait_for_timeout(200)
+                bar=page.locator('.tr-subtabs').bounding_box()
+                assert -1<=bar['y']<=2,bar
+                page.locator('.tr-subtabs button[data-sub=weather]').click()
                 dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
                 assert dimensions['scroll']<=dimensions['client'],dimensions
                 page.screenshot(path=str(OUT/f'radar-{market}-{width}-trend.png'),full_page=False)
