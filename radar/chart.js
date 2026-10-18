@@ -1,11 +1,13 @@
 // Price charts with axes, moving averages, volume and a hover readout.
 // Data: wamo_chart_{KR,US}.json (loaded once per market, on first use).
 const NS = 'http://www.w3.org/2000/svg';
+// Colours validated for the dark chart surface (dataviz validator); 150-day is
+// also dashed so it never relies on colour alone.
 export const MA = [
-  { n: 20, color: '#f2c66d', label: '20일선' },
-  { n: 50, color: '#6fb7ff', label: '50일선' },
-  { n: 150, color: '#c79bff', label: '150일선' },
-  { n: 200, color: '#ff8f8f', label: '200일선' },
+  { n: 20, color: '#c98500', label: '20일선' },
+  { n: 50, color: '#3987e5', label: '50일선' },
+  { n: 150, color: '#199e70', label: '150일선', dash: true },
+  { n: 200, color: '#d55181', label: '200일선' },
 ];
 const cache = new Map();
 
@@ -142,6 +144,7 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
   // Legend with latest MA values and direction
   const legend = el('div', null, 'pc-legend');
   const item = (color, label, value, dir, cls = '') => {
+    // cls 'dash' draws a dashed key to match the dashed line.
     const s = el('span', null, `pc-key ${cls}`); const sw = el('i'); sw.style.background = color;
     s.append(sw, el('b', label)); if (value) s.append(el('span', value));
     if (dir) s.append(el('em', `${ARROW[dir.dir]} ${dir.pct > 0 ? '+' : ''}${dir.pct.toFixed(1)}%`, `dir-${dir.dir}`));
@@ -151,7 +154,7 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
   maSeries.forEach(m => {
     const v = m.values[n - 1];
     const [back, band] = SLOPE[m.n] || [10, 0.5];
-    item(m.color, m.label, v == null ? '이력 부족' : fmtPrice(v, market), v == null ? null : slope(m.values, back, band));
+    item(m.color, m.label, v == null ? '이력 부족' : fmtPrice(v, market), v == null ? null : slope(m.values, back, band), m.dash ? 'dash' : '');
   });
   if (!compact) wrap.append(legend);
 

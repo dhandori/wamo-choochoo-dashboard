@@ -220,8 +220,12 @@ with sync_playwright() as p:
             notice_height=page.locator('#notice').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginTop)+parseFloat(getComputedStyle(node).marginBottom)')
             # The market-weather strip is a deliberate always-on summary; budget the rest.
             weather_height=page.locator('#weather').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginBottom)')
-            if width<760:assert weather_height<=110,weather_height
+            if width<760:assert weather_height<=165,weather_height
             else:assert weather_height<=80,weather_height
+            # Phone tabs wrap into two rows so every tab stays visible; budget the extra row.
+            tabs_extra=max(0,page.locator('.tabs').evaluate('(n)=>n.getBoundingClientRect().height')-56)
+            legend_extra=page.locator('.card-legend').first.evaluate('(n)=>n.offsetParent?n.getBoundingClientRect().height+8:0') if page.locator('.card-legend').count() else 0
+            weather_height+=tabs_extra+legend_extra
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
             if width==1440:assert first_y-notice_height-weather_height<520,first_y
             else:assert first_y-notice_height-weather_height<580,first_y

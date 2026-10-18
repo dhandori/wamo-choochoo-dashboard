@@ -1,4 +1,4 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261017-3';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261018-1';
 // Trend-following view: market weather, RS-line leaders, sell warnings,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -59,18 +59,30 @@ export function renderWeather(container, market, onOpen) {
   const text = el('div', w.advice || '', 'tr-weather-text');
   const chips = el('div', null, 'tr-chips');
   const dist = w.distribution || {}, br = w.breadth || {}, hl = w.highsLows || {}, idx = b.index || {};
-  const chip = (label, value, score) => { const c = el('span', null, `tr-chip ${score > 0 ? 'good' : score < 0 ? 'bad' : ''}`); c.append(el('small', label), el('b', value)); chips.append(c); };
-  const score = key => (w.factors || []).find(f => f.key === key)?.score ?? 0;
+  const score = key => (w.factors || []).find(f => f.key === key)?.score;
+  const VERDICT = { 1: '좋음', 0: '보통', '-1': '나쁨' };
+  const chip = (label, full, short, sc) => {
+    const c = el('span', null, `tr-chip ${sc > 0 ? 'good' : sc < 0 ? 'bad' : sc === 0 ? 'mid' : ''}`);
+    c.title = `${label}: ${full}${sc == null ? '' : ` (${VERDICT[sc]})`}`;
+    c.setAttribute('aria-label', c.title);
+    c.append(el('i', null, 'tr-chip-dot'), el('small', label), el('b', full, 'v-full'), el('b', short, 'v-short'));
+    chips.append(c);
+  };
   const idx2 = b.index2, dist2 = idx2?.distribution;
   const arrow = d => ({ up: '↗', flat: '→', down: '↘' })[d] || '·';
-  chip('지수', [idx, idx2].filter(Boolean).map(i => `${i.label} ${pct(i.changePct)}`).join(' · '), score('index'));
-  chip('이평선 기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '), score('slope'));
+  const si = score('index'), ss = score('slope');
+  chip('지수', [idx, idx2].filter(Boolean).map(i => `${i.label} ${pct(i.changePct)}`).join(' · '),
+    { 1: '이평선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
+  chip('기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '),
+    { 1: '상승', 0: '꺾임', '-1': '하락' }[ss] ?? '—', ss);
   const dcount = [dist, dist2].filter(d => d?.status === 'OK').map(d => d.count);
-  chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일` : '자료 없음', score('distribution'));
-  chip('50일선 위 종목', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
-  chip('신고가 · 신저가', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', score('highsLows'));
-  const more = btn('자세히 보기 →', false, onOpen, 'tr-more');
-  container.append(head, text, chips, more);
+  chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
+  chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
+  chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
+  const more = btn('자세히', false, onOpen, 'tr-more');
+  more.setAttribute('aria-label', '시장 날씨 자세히 보기');
+  head.append(more);
+  container.append(head, text, chips);
 }
 
 // --------------------------------------------------------------- metrics

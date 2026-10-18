@@ -1,8 +1,37 @@
 import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261017-1';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261017-1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261017-4';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend } from './trend.js?v=20261018-1';
 import { runnerButton, initRunner } from './runner.js?v=20261017-2';
-import { loadChartData, stockSeries, priceChart, rsChart } from './chart.js?v=20261017-3';
+import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261018-1';
+const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
+const phone = () => window.matchMedia('(max-width: 760px)').matches;
+let cardObserver = null;
+function cardLegend() {
+  const lg = el('div', null, 'pc-legend small card-legend');
+  [['#eaf0f8', '종가'], ...CARD_MA.map(m => [m.color, m.label])].forEach(([c, t]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
+  lg.append(el('span', '최근 60거래일', 'pc-hint'));
+  return lg;
+}
+// Phone cards: swap the tiny sparkline for an axis chart when the card scrolls into view.
+function fillCardCharts(root) {
+  if (!phone()) return;
+  cardObserver?.disconnect();
+  const boxes = [...root.querySelectorAll('.card-chart[data-symbol]')];
+  if (!boxes.length) return;
+  const market = state.market;
+  cardObserver = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).map(e => e.target);
+    if (!visible.length) return;
+    visible.forEach(b => cardObserver.unobserve(b));
+    loadChartData(market).then(data => visible.forEach(box => {
+      const series = data && stockSeries(data, box.dataset.symbol);
+      if (!series || !box.isConnected) return;
+      box.replaceChildren(priceChart(series, { market, days: 60, compact: true, mas: CARD_MA }));
+      box.closest('.stock-card')?.classList.add('has-chart');
+    }));
+  }, { rootMargin: '400px 0px' });
+  boxes.forEach(b => cardObserver.observe(b));
+}
 
 const $ = id => document.getElementById(id);
 const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false };
@@ -166,7 +195,7 @@ function fillDetailChart(panel, s, ready) {
     if (!series || !panel.isConnected) return;
     const draw = () => {
       const head = el('div', null, 'chart-head');
-      head.append(el('div', `최근 ${chartDays}거래일 · 종가 · 이동평균선 · 거래량`, 'chart-caption'));
+      head.append(el('div', `일봉 · 최근 ${chartDays}거래일`, 'chart-caption'));
       const toggle = el('div', null, 'chart-toggle');
       [[60, '3개월'], [120, '6개월']].forEach(([n, label]) => toggle.append(button(label, chartDays === n, () => { chartDays = n; draw(); })));
       head.append(toggle);
@@ -203,11 +232,14 @@ function table(rows) {
     const stats = el('div', null, 'card-stats'); stats.append(stat('5일', pct(s.return5d), tone(s.return5d)), stat('고점까지', distance(s)), stat('거래량 배수', volume(s)), stat('RS', fmt(s.rs, 0)));
     if(state.tab==='ai')stats.append(stat('20일',pct(s.return20d),tone(s.return20d)),stat(`${longDays}일`,pct(s[longKey]),tone(s[longKey])));
     const cap = el('div', null, 'card-cap'); cap.append(el('span', '시총'), capNode(s), el('span', capCurrency()));
-    card.append(top, cap, quote, stats);
+    const chartBox = el('div', null, 'card-chart'); chartBox.dataset.symbol = s.symbol;
+    card.append(top, cap, quote, chartBox, stats);
     if (['high','movers','ai'].includes(state.tab)) card.append(el('div', signals(s).join(' · '), 'signal'));
     cards.append(card);
   });
-  const container = el('div'); container.append(wrap, cards); return container;
+  const container = el('div'); container.append(wrap, cardLegend(), cards);
+  requestAnimationFrame(() => fillCardCharts(container));
+  return container;
 }
 const rankGroups = (a, b) => Number(b.confirmed) - Number(a.confirmed) || Number(b.memberCount >= 3) - Number(a.memberCount >= 3) || (b.medianReturn5d ?? -Infinity) - (a.medianReturn5d ?? -Infinity) || b.nearHighCount - a.nearHighCount;
 function openIndustry(g) {
@@ -407,6 +439,7 @@ function render() {
   const m = snapshot.markets[state.market];
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
+  document.body.dataset.view = state.tab;
   renderMeta(m); renderWeather($('weather'), state.market, openTrend);
   const search=$('search').closest('.search'); if(search) search.hidden=state.tab==='trend';
   if (state.tab === 'trend') { renderTrendTab(); return; }
