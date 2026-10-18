@@ -2,76 +2,96 @@
   "001450": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "고객에게 보험상품을 판매해 보험료를 받고 위험을 인수하는 금융사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널을 통해 판매합니다.",
-      "revenue": "보험료에서 보험금·사업비를 뺀 보험손익과 채권·주식 등 자산운용 수익으로 돈을 법니다.",
-      "drivers": "손해율 하락, 신계약 증가, 금리·운용수익률 개선, 비용 효율화가 핵심입니다.",
-      "segments": []
+      "summary": "현대해상은 자동차·장기·일반보험을 판매하는 손해보험사입니다.",
+      "products": "자동차보험, 장기 보장성보험, 일반보험",
+      "customers": "개인과 기업 보험계약자",
+      "revenue": "보험료에서 보험금·사업비를 뺀 보험손익과 보험자산 운용수익으로 돈을 법니다.",
+      "drivers": "손해율, 보험료율, 신계약 성장, CSM, 금리·운용수익률",
+      "segments": [
+        "손해보험"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260312",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260312001448",
-    "detailSector": "보험",
+    "detailSector": "손해보험",
     "sectorTags": [
-      "보험"
+      "손해보험"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "현대해상은 자동차·장기·일반보험을 판매하는 손해보험사입니다."
   },
   "161890": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "화학 소재·원료·제품을 생산해 다른 제조업체나 소비자에게 공급하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "전자·자동차·건설·생활소비재 등 다양한 제조업체가 주요 고객입니다.",
-      "revenue": "판매물량 × 제품가격에서 원재료·에너지 비용을 뺀 스프레드가 핵심입니다.",
-      "drivers": "제품가격, 원재료 가격, 가동률, 증설·수급 사이클이 중요합니다.",
-      "segments": []
+      "summary": "한국콜마는 화장품 ODM/OEM이 핵심인 제조업체입니다. 고객 브랜드 대신 제품을 개발·제형화·생산해 납품하며, 연결 기준으로 제약·H&B와 화장품 용기 사업도 보유합니다.",
+      "products": "스킨케어·선케어·메이크업 등 화장품 ODM/OEM, 전문의약품·H&B, 화장품 용기",
+      "customers": "국내외 화장품 브랜드사와 제약·헬스케어 유통채널",
+      "revenue": "화장품은 고객 주문량×납품단가가 기본 구조이고, 제약·H&B·용기 제품 매출이 연결 실적에 더해집니다.",
+      "drivers": "인디·글로벌 브랜드 수주, 선케어 등 고부가 제품 믹스, 해외 고객 확대, 공장 가동률, 원재료비",
+      "segments": [
+        "화장품 ODM/OEM",
+        "전문의약품·H&B",
+        "화장품 용기"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001196",
-    "detailSector": "화학",
+    "detailSector": "화장품 ODM/OEM",
     "sectorTags": [
-      "화학"
+      "화장품 ODM/OEM",
+      "K-뷰티"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "한국콜마는 화장품 ODM/OEM이 핵심인 제조업체입니다. 고객 브랜드 대신 제품을 개발·제형화·생산해 납품하며, 연결 기준으로 제약·H&B와 화장품 용기 사업도 보유합니다."
   },
   "181710": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "기업·소비자에게 소프트웨어, 플랫폼, 데이터 또는 IT 서비스를 제공하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "기업·공공기관·개인 사용자가 주요 고객입니다.",
-      "revenue": "구독료, 라이선스, 광고, 거래수수료, 구축·운영비 등 반복 매출이 핵심입니다.",
-      "drivers": "사용자·고객 수 증가, ARPU, 재계약률, 클라우드 비용과 영업레버리지가 중요합니다.",
-      "segments": []
+      "summary": "NHN은 게임을 기반으로 결제·광고, 커머스, 클라우드·IT, 콘텐츠 사업을 함께 하는 인터넷·IT 그룹입니다.",
+      "products": "한게임 등 게임, PAYCO·결제/광고, 커머스 솔루션, NHN Cloud·Dooray 등",
+      "customers": "게임 이용자, 온라인 가맹점·기업, 공공·기업 IT 고객",
+      "revenue": "게임 아이템·서비스 매출, 결제/광고 수수료, 커머스·클라우드 사용료와 구축비가 주요 수익원입니다.",
+      "drivers": "게임 흥행, 결제 거래액, 클라우드/GPU 인프라 가동률, 기업 고객 증가",
+      "segments": [
+        "게임",
+        "결제·광고",
+        "커머스",
+        "클라우드·IT",
+        "콘텐츠"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001525",
-    "detailSector": "IT서비스·소프트웨어",
+    "detailSector": "게임",
     "sectorTags": [
-      "IT서비스·소프트웨어"
+      "게임",
+      "AI·클라우드·IT서비스"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "NHN은 게임을 기반으로 결제·광고, 커머스, 클라우드·IT, 콘텐츠 사업을 함께 하는 인터넷·IT 그룹입니다."
   },
   "055550": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "신한지주는 은행·증권·카드·보험 등 금융계열사를 보유·관리하는 금융지주회사입니다.",
-      "products": "은행·증권·카드·보험·자산관리 등 자회사 금융서비스",
-      "customers": "직접 영업보다 자회사들이 개인·기업·기관 고객에게 금융서비스를 제공합니다.",
-      "revenue": "자회사 이익이 연결 실적에 반영되고, 지주회사는 배당·브랜드·용역 등에서도 수익을 얻습니다.",
-      "drivers": "핵심 자회사 순이자마진·대손비용·비이자이익, 자본비율, 자회사 배당과 주주환원이 중요합니다.",
+      "summary": "신한지주는 신한은행을 중심으로 카드·증권·보험·자산운용을 보유한 종합 금융지주입니다.",
+      "products": "은행, 카드, 증권, 보험, 자산관리 서비스",
+      "customers": "개인·기업·기관 금융고객",
+      "revenue": "순이자이익과 카드·증권·보험 등 비은행 계열사의 수수료·운용이익이 핵심입니다.",
+      "drivers": "NIM, 대출 성장, 대손비용, 비은행 이익, CET1과 주주환원",
       "segments": [
-        "금융지주"
+        "은행",
+        "카드",
+        "증권",
+        "보험"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
@@ -83,103 +103,124 @@
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "신한지주는 신한은행을 중심으로 카드·증권·보험·자산운용을 보유한 종합 금융지주입니다."
   },
   "078930": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "자금을 조달해 대출·투자하고 금융서비스를 제공하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "개인, 중소기업, 대기업 등 예금·대출·결제·자산관리 고객이 핵심입니다.",
-      "revenue": "예대금리차에서 나오는 이자이익과 카드·자산관리·IB 등 수수료이익으로 돈을 법니다.",
-      "drivers": "대출 성장, 순이자마진, 대손비용, 연체율, 수수료 수익 증가가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "GS는 GS에너지와 GS리테일 등을 핵심 축으로 보유하는 지주회사입니다. 에너지 계열을 통해 정유·발전 사업에 간접 노출됩니다.",
+      "products": "GS에너지, GS리테일, GS EPS·GS E&R·GS글로벌 등 주요 계열사 지분",
+      "customers": "직접 제품을 파는 회사라기보다 자회사·관계회사 가치와 배당을 보유하는 구조입니다.",
+      "revenue": "계열사 배당금, 지분법이익, 브랜드·용역 수익 등이 지주회사 실적의 핵심입니다.",
+      "drivers": "GS칼텍스 정제마진, 발전 전력가격·연료비, GS리테일 실적, 자회사 배당·자산가치",
+      "segments": [
+        "지주회사",
+        "에너지·발전",
+        "리테일"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318000836",
-    "detailSector": "금융",
+    "detailSector": "지주회사",
     "sectorTags": [
-      "금융"
+      "지주회사"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "GS는 GS에너지와 GS리테일 등을 핵심 축으로 보유하는 지주회사입니다. 에너지 계열을 통해 정유·발전 사업에 간접 노출됩니다."
   },
   "010950": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "석유 정제품 제조업 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
-      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
-      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "S-Oil은 원유를 정제해 휘발유·경유·항공유를 만들고 석유화학·윤활기유 제품도 판매하는 정유회사입니다.",
+      "products": "휘발유·경유·항공유, 석유화학 제품, 윤활기유",
+      "customers": "국내외 주유·산업·항공·석유화학 고객",
+      "revenue": "원유 매입가격과 석유제품 판매가격의 차이인 정제마진, 석유화학·윤활기유 스프레드가 이익의 핵심입니다.",
+      "drivers": "정제마진, 유가·재고평가, 가동률, 석유화학 스프레드, 신규 설비 램프업",
+      "segments": [
+        "정유",
+        "석유화학",
+        "윤활기유"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260320",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260320000559",
-    "detailSector": "석유 정제품 제조업",
+    "detailSector": "정유",
     "sectorTags": [
-      "석유 정제품 제조업"
+      "정유",
+      "석유화학"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "S-Oil은 원유를 정제해 휘발유·경유·항공유를 만들고 석유화학·윤활기유 제품도 판매하는 정유회사입니다."
   },
   "241710": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "화학 소재·원료·제품을 생산해 다른 제조업체나 소비자에게 공급하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "전자·자동차·건설·생활소비재 등 다양한 제조업체가 주요 고객입니다.",
-      "revenue": "판매물량 × 제품가격에서 원재료·에너지 비용을 뺀 스프레드가 핵심입니다.",
-      "drivers": "제품가격, 원재료 가격, 가동률, 증설·수급 사이클이 중요합니다.",
-      "segments": []
+      "summary": "코스메카코리아는 화장품 브랜드를 대신해 제품을 기획·개발·생산하는 ODM/OEM 업체입니다.",
+      "products": "스킨케어·메이크업·선케어 등 화장품 ODM/OEM",
+      "customers": "국내외 화장품 브랜드사; 미국에서는 잉글우드랩 등을 통해 고객 기반을 보유합니다.",
+      "revenue": "브랜드사의 주문량×납품단가가 매출의 핵심이며, 생산 가동률과 제품 믹스가 마진을 좌우합니다.",
+      "drivers": "북미·글로벌 고객 수주, 인디브랜드 성장, 공장 가동률, 고마진 제품 비중",
+      "segments": [
+        "화장품 ODM/OEM",
+        "북미 생산"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003595",
-    "detailSector": "화학",
+    "detailSector": "화장품 ODM/OEM",
     "sectorTags": [
-      "화학"
+      "화장품 ODM/OEM",
+      "K-뷰티"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "코스메카코리아는 화장품 브랜드를 대신해 제품을 기획·개발·생산하는 ODM/OEM 업체입니다."
   },
   "161390": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "한국타이어앤테크놀로지는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "summary": "한국타이어앤테크놀로지는 승용차·SUV·트럭용 타이어를 개발·생산해 완성차와 교체용 시장에 판매합니다.",
+      "products": "신차용(OE)·교체용(RE) 타이어, 고인치·전기차용 타이어",
+      "customers": "글로벌 완성차 업체, 타이어 유통망·딜러와 소비자",
+      "revenue": "타이어 판매량×판매단가가 핵심이며 고인치·프리미엄 제품 비중이 수익성에 영향을 줍니다.",
+      "drivers": "글로벌 자동차 생산·교체수요, 고인치/EV 타이어 믹스, 천연고무·합성고무 가격, 환율",
       "segments": [
-        "메모리 반도체"
+        "타이어"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318000959",
-    "detailSector": "고무제품 제조업",
+    "detailSector": "타이어",
     "sectorTags": [
-      "고무제품 제조업"
+      "타이어"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "한국타이어앤테크놀로지는 승용차·SUV·트럭용 타이어를 개발·생산해 완성차와 교체용 시장에 판매합니다."
   },
   "009420": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "의약품·바이오 제품을 연구개발하고 생산·판매하거나 기술을 이전하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "병원·약국·유통사·글로벌 제약사 등이 주요 고객 또는 파트너입니다.",
-      "revenue": "제품 판매, 위탁생산, 기술이전 계약금·마일스톤·로열티에서 수익을 냅니다.",
-      "drivers": "허가·임상 성과, 처방·판매량 증가, 신제품 출시, 생산능력 확대가 중요합니다.",
-      "segments": []
+      "summary": "한올바이오파마는 의약품을 판매하면서 자가면역·안과 등 바이오 신약 파이프라인을 개발하는 제약·바이오 회사입니다.",
+      "products": "전문의약품·일반의약품, 자가면역·안과 신약 후보물질",
+      "customers": "병원·약국·의약품 유통사와 글로벌 제약 파트너",
+      "revenue": "국내 의약품 판매와 신약 기술이전 계약금·마일스톤·로열티가 주요 수익원입니다.",
+      "drivers": "임상 결과, 글로벌 파트너 개발 진척, 허가·마일스톤, 기존 의약품 판매 성장",
+      "segments": [
+        "의약품",
+        "바이오 신약"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
@@ -188,30 +229,35 @@
     "sectorTags": [
       "제약·바이오"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "한올바이오파마는 의약품을 판매하면서 자가면역·안과 등 바이오 신약 파이프라인을 개발하는 제약·바이오 회사입니다."
   },
   "131290": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
-      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
-      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "티에스이는 반도체 검사 공정에 쓰이는 테스트 인터페이스 부품과 검사 솔루션을 공급합니다.",
+      "products": "프로브카드, 테스트 소켓, 인터페이스 보드 등 반도체 검사 부품",
+      "customers": "메모리·비메모리 반도체 제조사와 후공정 테스트 업체",
+      "revenue": "고객 공정·칩 규격에 맞춘 검사부품 납품과 교체 수요에서 매출이 발생합니다.",
+      "drivers": "반도체 테스트 물량, 고사양 칩 전환, 신규 고객 채택, 소모성 부품 교체주기",
+      "segments": [
+        "반도체 테스트 인터페이스"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318000738",
-    "detailSector": "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외",
+    "detailSector": "반도체 검사·테스트",
     "sectorTags": [
-      "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외"
+      "반도체 검사·테스트",
+      "반도체 소재·부품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "티에스이는 반도체 검사 공정에 쓰이는 테스트 인터페이스 부품과 검사 솔루션을 공급합니다."
   },
   "006340": {
     "schemaVersion": 9,
@@ -234,12 +280,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260331",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003244",
-    "detailSector": "반도체 검사·테스트",
+    "detailSector": "전력기기·전선",
     "sectorTags": [
-      "반도체 검사·테스트",
-      "반도체 장비",
-      "반도체 소재·부품",
-      "자동차 부품"
+      "전력기기·전선"
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
@@ -248,13 +291,16 @@
   "086790": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "하나금융지주는 은행·증권·카드·보험 등 금융계열사를 보유·관리하는 금융지주회사입니다.",
-      "products": "은행·증권·카드·보험·자산관리 등 자회사 금융서비스",
-      "customers": "직접 영업보다 자회사들이 개인·기업·기관 고객에게 금융서비스를 제공합니다.",
-      "revenue": "자회사 이익이 연결 실적에 반영되고, 지주회사는 배당·브랜드·용역 등에서도 수익을 얻습니다.",
-      "drivers": "핵심 자회사 순이자마진·대손비용·비이자이익, 자본비율, 자회사 배당과 주주환원이 중요합니다.",
+      "summary": "하나금융지주는 하나은행을 중심으로 카드·증권·보험·자산운용사를 거느린 금융지주회사입니다.",
+      "products": "은행 대출·예금, 카드, 증권·IB, 보험·자산관리",
+      "customers": "개인·기업·기관 금융고객",
+      "revenue": "은행 순이자이익과 카드·증권·자산관리 수수료, 계열사 이익이 핵심입니다.",
+      "drivers": "대출 성장, 순이자마진(NIM), 대손비용, 비이자이익, 자본비율·주주환원",
       "segments": [
-        "금융지주"
+        "은행",
+        "카드",
+        "증권·IB",
+        "보험·자산관리"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
@@ -266,80 +312,97 @@
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "하나금융지주는 하나은행을 중심으로 카드·증권·보험·자산운용사를 거느린 금융지주회사입니다."
   },
   "073240": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "고무제품 제조업 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
-      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
-      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "금호타이어는 승용차·SUV·트럭용 타이어를 생산해 신차용과 교체용 시장에 판매합니다.",
+      "products": "승용차·SUV·트럭 타이어, 전기차용 타이어",
+      "customers": "완성차 업체와 글로벌 타이어 유통망·소비자",
+      "revenue": "타이어 판매량×ASP가 매출의 핵심이며 공장 가동률과 제품 믹스가 이익률을 좌우합니다.",
+      "drivers": "판매량, 고인치·EV 타이어 비중, 원재료 가격, 생산능력·가동률, 환율",
+      "segments": [
+        "타이어"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260317",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260317000836",
-    "detailSector": "고무제품 제조업",
+    "detailSector": "타이어",
     "sectorTags": [
-      "고무제품 제조업"
+      "타이어"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "금호타이어는 승용차·SUV·트럭용 타이어를 생산해 신차용과 교체용 시장에 판매합니다."
   },
   "058610": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "산업용 기계·장비·전기제품을 제조해 기업 고객에게 공급하는 B2B 제조업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "제조공장, 건설·에너지·반도체 등 설비투자를 하는 기업이 주요 고객입니다.",
-      "revenue": "장비·부품 판매와 설치·유지보수 서비스에서 매출을 올립니다.",
-      "drivers": "고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다.",
-      "segments": []
+      "summary": "에스피지는 정밀 기어드모터와 감속기를 만드는 모션제어 부품 업체입니다.",
+      "products": "AC/DC 기어드모터, 정밀감속기, 산업·로봇용 모터",
+      "customers": "가전·산업자동화·로봇·물류장비 제조사",
+      "revenue": "모터·감속기 출하량×판매단가가 매출의 핵심이며 고정밀 제품 비중이 마진을 좌우합니다.",
+      "drivers": "로봇·자동화 수요, 정밀감속기 고객 인증, 제품 믹스, 원재료비",
+      "segments": [
+        "기어드모터",
+        "정밀감속기"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318000411",
-    "detailSector": "전력·전기장비",
+    "detailSector": "로봇·모션",
     "sectorTags": [
-      "전력·전기장비"
+      "로봇·모션"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "에스피지는 정밀 기어드모터와 감속기를 만드는 모션제어 부품 업체입니다."
   },
   "006360": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "주택·건축·토목·플랜트 프로젝트를 수주해 설계·시공하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "정부·공공기관, 시행사, 기업, 주택 수요자가 주요 발주처입니다.",
-      "revenue": "수주한 공사의 진행률에 따라 공사매출을 인식하고 개발사업에서는 분양이익도 얻습니다.",
-      "drivers": "신규 수주, 원가율, 공사 진행률, 분양률과 미분양, 자재비가 핵심입니다.",
-      "segments": []
+      "summary": "GS건설은 주택·건축, 인프라, 플랜트 등을 수주해 설계·시공하는 종합 건설사입니다.",
+      "products": "아파트·건축물, 토목·인프라, 플랜트·신사업",
+      "customers": "주택 수요자, 시행사, 기업, 정부·공공기관",
+      "revenue": "수주한 공사의 진행률에 따라 매출을 인식하고 주택 개발·분양에서 이익을 냅니다.",
+      "drivers": "신규 수주, 주택 분양률, 원가율, 공사손실 충당금, 해외 플랜트 수익성",
+      "segments": [
+        "주택·건축",
+        "인프라",
+        "플랜트"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260701",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260701000624",
-    "detailSector": "건설",
+    "detailSector": "플랜트 EPC",
     "sectorTags": [
-      "건설"
+      "플랜트 EPC",
+      "건설·주택"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "GS건설은 주택·건축, 인프라, 플랜트 등을 수주해 설계·시공하는 종합 건설사입니다."
   },
   "068270": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "의약품·바이오 제품을 연구개발하고 생산·판매하거나 기술을 이전하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "병원·약국·유통사·글로벌 제약사 등이 주요 고객 또는 파트너입니다.",
-      "revenue": "제품 판매, 위탁생산, 기술이전 계약금·마일스톤·로열티에서 수익을 냅니다.",
-      "drivers": "허가·임상 성과, 처방·판매량 증가, 신제품 출시, 생산능력 확대가 중요합니다.",
-      "segments": []
+      "summary": "셀트리온은 항체 바이오시밀러를 개발·생산하고 글로벌 시장에 판매하는 바이오제약 회사입니다.",
+      "products": "램시마 계열 등 바이오시밀러와 신약·후속 파이프라인",
+      "customers": "글로벌 병원·의약품 유통사·보험자·환자 시장",
+      "revenue": "바이오의약품 판매량×가격이 핵심이며 자체 판매망 확대와 고마진 제품 믹스가 중요합니다.",
+      "drivers": "신제품 허가·출시, 미국·유럽 점유율, 가격 경쟁, 생산수율, 직판 비중",
+      "segments": [
+        "바이오시밀러",
+        "신약"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
@@ -348,61 +411,77 @@
     "sectorTags": [
       "제약·바이오"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "셀트리온은 항체 바이오시밀러를 개발·생산하고 글로벌 시장에 판매하는 바이오제약 회사입니다."
   },
   "475150": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "주택·건축·토목·플랜트 프로젝트를 수주해 설계·시공하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "정부·공공기관, 시행사, 기업, 주택 수요자가 주요 발주처입니다.",
-      "revenue": "수주한 공사의 진행률에 따라 공사매출을 인식하고 개발사업에서는 분양이익도 얻습니다.",
-      "drivers": "신규 수주, 원가율, 공사 진행률, 분양률과 미분양, 자재비가 핵심입니다.",
-      "segments": []
+      "summary": "SK이터닉스는 태양광·풍력·ESS·연료전지 발전자산을 개발·운영하고 전력중개까지 확장하는 신재생에너지 사업자입니다.",
+      "products": "태양광·육상/해상풍력, ESS, 연료전지, 전력중개·VPP",
+      "customers": "전력시장, 장기 전력구매 고객, 발전사업 투자자·산업체",
+      "revenue": "발전 전력 판매, REC·장기계약, 개발·EPC·운영 수익과 ESS·전력거래 수익이 핵심입니다.",
+      "drivers": "신규 발전소 상업운전, 발전량·전력가격, 프로젝트 파이프라인, 금융비용, 미국 ESS 확대",
+      "segments": [
+        "태양광",
+        "풍력",
+        "ESS",
+        "연료전지",
+        "VPP"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260316",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260316001520",
-    "detailSector": "건설",
+    "detailSector": "신재생에너지",
     "sectorTags": [
-      "건설"
+      "신재생에너지"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "SK이터닉스는 태양광·풍력·ESS·연료전지 발전자산을 개발·운영하고 전력중개까지 확장하는 신재생에너지 사업자입니다."
   },
   "204320": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "완성차 또는 자동차 부품을 개발·생산해 판매하는 제조업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "완성차 업체, 딜러·소비자 또는 1차 협력사가 주요 고객입니다.",
-      "revenue": "차량·부품 출하량 × 판매단가가 핵심이며 고사양 제품 비중이 수익성에 영향을 줍니다.",
-      "drivers": "완성차 생산량, 신차 사이클, 전기차 믹스, 원재료·환율이 중요합니다.",
-      "segments": []
+      "summary": "HL만도는 제동·조향·현가와 ADAS 등 자동차 핵심 시스템을 완성차 업체에 공급하는 부품사입니다.",
+      "products": "브레이크, 스티어링, 서스펜션, ADAS·전동화 부품",
+      "customers": "글로벌 완성차 제조사",
+      "revenue": "완성차 생산량×부품 탑재단가가 매출을 결정하고 전장·ADAS 비중이 수익성에 영향을 줍니다.",
+      "drivers": "고객 생산량, 신규 수주, ADAS·전동화 믹스, 원재료비, 환율",
+      "segments": [
+        "샤시 부품",
+        "ADAS"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318000883",
-    "detailSector": "자동차·부품",
+    "detailSector": "자동차 부품",
     "sectorTags": [
-      "자동차·부품"
+      "자동차 부품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "HL만도는 제동·조향·현가와 ADAS 등 자동차 핵심 시스템을 완성차 업체에 공급하는 부품사입니다."
   },
   "017670": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "산업용 기계·장비·전기제품을 제조해 기업 고객에게 공급하는 B2B 제조업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "제조공장, 건설·에너지·반도체 등 설비투자를 하는 기업이 주요 고객입니다.",
-      "revenue": "장비·부품 판매와 설치·유지보수 서비스에서 매출을 올립니다.",
-      "drivers": "고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다.",
-      "segments": []
+      "summary": "SK텔레콤은 이동통신을 기반으로 AI·데이터센터·기업용 ICT 사업을 확대하는 통신회사입니다.",
+      "products": "5G/LTE 이동통신, 초고속·기업 통신, 데이터센터·AI 서비스",
+      "customers": "개인 이동통신 가입자와 기업·공공기관",
+      "revenue": "월 통신요금과 기업 통신·데이터센터·AI 서비스 사용료가 핵심입니다.",
+      "drivers": "가입자 ARPU, 해지율, 마케팅비, 데이터센터 가동률, AI B2B 매출",
+      "segments": [
+        "이동통신",
+        "AI·데이터센터",
+        "B2B"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260430",
@@ -411,85 +490,99 @@
     "sectorTags": [
       "통신"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "SK텔레콤은 이동통신을 기반으로 AI·데이터센터·기업용 ICT 사업을 확대하는 통신회사입니다."
   },
   "064760": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "기타 비금속 광물제품 제조업 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
-      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
-      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "티씨케이는 반도체 공정용 SiC·흑연 부품을 만드는 기능성 세라믹 소재·부품 업체입니다.",
+      "products": "고순도 흑연 부품, SiC/TaC 코팅 부품, CVD SiC 링·샤워헤드·더미웨이퍼",
+      "customers": "반도체·LED·웨이퍼 제조장비 업체와 반도체 생산라인",
+      "revenue": "식각·증착 등 공정장비에 들어가는 소모성 고순도 부품을 납품하고 교체 수요에서 반복 매출이 발생합니다.",
+      "drivers": "반도체 가동률, 식각 공정 강도, NAND 적층·첨단공정 투자, 신규 고객 인증, 소모품 교체주기",
+      "segments": [
+        "SiC 부품",
+        "고순도 흑연"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260310",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260310002891",
-    "detailSector": "기타 비금속 광물제품 제조업",
+    "detailSector": "반도체 소재·부품",
     "sectorTags": [
-      "기타 비금속 광물제품 제조업"
+      "반도체 소재·부품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "티씨케이는 반도체 공정용 SiC·흑연 부품을 만드는 기능성 세라믹 소재·부품 업체입니다."
   },
   "088350": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "고객에게 보험상품을 판매해 보험료를 받고 위험을 인수하는 금융사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널을 통해 판매합니다.",
-      "revenue": "보험료에서 보험금·사업비를 뺀 보험손익과 채권·주식 등 자산운용 수익으로 돈을 법니다.",
-      "drivers": "손해율 하락, 신계약 증가, 금리·운용수익률 개선, 비용 효율화가 핵심입니다.",
-      "segments": []
+      "summary": "한화생명은 사망·건강·연금·저축성 상품 등을 판매하는 생명보험사입니다.",
+      "products": "보장성보험, 연금·저축성보험, 변액보험 등",
+      "customers": "개인 보험계약자와 기업 단체보험 고객",
+      "revenue": "보험계약 서비스마진과 투자수익이 핵심이며 신계약 가치와 자본건전성이 중요합니다.",
+      "drivers": "신계약 CSM, 보장성 상품 판매, 해지율, 금리, 자본비율",
+      "segments": [
+        "생명보험"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260331",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003585",
-    "detailSector": "보험",
+    "detailSector": "생명보험",
     "sectorTags": [
-      "보험"
+      "생명보험"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "한화생명은 사망·건강·연금·저축성 상품 등을 판매하는 생명보험사입니다."
   },
   "098460": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "고영의 사업보고서에서 확인되는 주요 사업영역은 HBM입니다.",
-      "products": "사업보고서에서 확인되는 주요 사업영역: HBM",
-      "customers": "제조공장, 건설·에너지·반도체 등 설비투자를 하는 기업이 주요 고객입니다.",
-      "revenue": "장비·부품 판매와 설치·유지보수 서비스에서 매출을 올립니다.",
-      "drivers": "고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다.",
+      "summary": "고영은 전자·반도체 생산라인의 불량을 3차원으로 측정하는 검사장비 업체입니다.",
+      "products": "3D SPI(납도포 검사), 3D AOI(부품 검사), 반도체 패키징 검사장비",
+      "customers": "글로벌 전자제품·자동차전장·반도체/OSAT 제조사",
+      "revenue": "생산라인용 검사장비 판매와 소프트웨어·서비스에서 매출이 발생합니다.",
+      "drivers": "전자·반도체 CAPEX, 첨단패키징 검사 수요, 신규 장비 채택, 고객 라인 증설",
       "segments": [
-        "HBM"
+        "3D 검사장비",
+        "반도체 패키징 검사"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260312",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260312000804",
-    "detailSector": "특수 목적용 기계 제조업",
+    "detailSector": "반도체 검사·테스트",
     "sectorTags": [
-      "특수 목적용 기계 제조업"
+      "반도체 검사·테스트",
+      "반도체 장비",
+      "반도체 소재·부품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "고영은 전자·반도체 생산라인의 불량을 3차원으로 측정하는 검사장비 업체입니다."
   },
   "316140": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "우리금융지주는 은행·증권·카드·보험 등 금융계열사를 보유·관리하는 금융지주회사입니다.",
-      "products": "은행·증권·카드·보험·자산관리 등 자회사 금융서비스",
-      "customers": "직접 영업보다 자회사들이 개인·기업·기관 고객에게 금융서비스를 제공합니다.",
-      "revenue": "자회사 이익이 연결 실적에 반영되고, 지주회사는 배당·브랜드·용역 등에서도 수익을 얻습니다.",
-      "drivers": "핵심 자회사 순이자마진·대손비용·비이자이익, 자본비율, 자회사 배당과 주주환원이 중요합니다.",
+      "summary": "우리금융지주는 우리은행을 중심으로 증권·카드·캐피탈 등 금융계열사를 보유한 금융지주입니다.",
+      "products": "은행 대출·예금, 카드, 증권·IB, 캐피탈 등",
+      "customers": "개인·기업·기관 금융고객",
+      "revenue": "은행 순이자이익과 비은행 계열사의 수수료·운용이익이 핵심입니다.",
+      "drivers": "NIM, 대출 성장, 대손비용, 비은행 이익, 자본비율·주주환원",
       "segments": [
-        "금융지주"
+        "은행",
+        "증권",
+        "카드·캐피탈"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
@@ -501,7 +594,8 @@
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "우리금융지주는 우리은행을 중심으로 증권·카드·캐피탈 등 금융계열사를 보유한 금융지주입니다."
   },
   "140860": {
     "schemaVersion": 9,
@@ -516,9 +610,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260319",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260319000022",
-    "detailSector": "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외",
+    "detailSector": "기타",
     "sectorTags": [
-      "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
@@ -527,39 +621,42 @@
   "028050": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "삼성E&A는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "summary": "삼성E&A는 석유화학·정유·가스·산업설비 플랜트를 설계·조달·시공(EPC)하는 엔지니어링 회사입니다.",
+      "products": "정유·석유화학·가스·산업·환경 플랜트 EPC",
+      "customers": "중동·아시아 등 글로벌 에너지·화학·산업 기업",
+      "revenue": "수주 프로젝트의 진행률에 따라 매출을 인식하며 설계·조달·시공 마진이 핵심입니다.",
+      "drivers": "신규 수주, 수주잔고, 프로젝트 원가율, 중동 CAPEX, 공정 지연·클레임",
       "segments": [
-        "메모리 반도체"
+        "플랜트 EPC"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260311",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260311003927",
-    "detailSector": "건축기술, 엔지니어링 및 관련 기술 서비스업",
+    "detailSector": "석유화학",
     "sectorTags": [
-      "건축기술, 엔지니어링 및 관련 기술 서비스업"
+      "석유화학",
+      "플랜트 EPC"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "삼성E&A는 석유화학·정유·가스·산업설비 플랜트를 설계·조달·시공(EPC)하는 엔지니어링 회사입니다."
   },
   "005930": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "삼성전자는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "summary": "삼성전자는 메모리·파운드리·시스템반도체와 스마트폰·TV·가전, 디스플레이 등 전자제품을 만드는 글로벌 종합 전자회사입니다.",
+      "products": "DRAM·NAND·HBM, 파운드리, 스마트폰, TV·가전, 디스플레이",
+      "customers": "데이터센터·전자기기 기업과 전세계 소비자",
+      "revenue": "반도체와 완제품의 출하량×ASP가 핵심이며 사업부별 사이클과 제품 믹스가 이익을 좌우합니다.",
+      "drivers": "메모리 가격·HBM 경쟁력, 파운드리 수율, 스마트폰 판매, AI 서버 수요, CAPEX·원가",
       "segments": [
-        "메모리 반도체",
-        "자동차 부품",
-        "완성차",
-        "전력·에너지"
+        "메모리",
+        "파운드리",
+        "모바일",
+        "가전·TV",
+        "디스플레이"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
@@ -567,67 +664,75 @@
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003699",
     "detailSector": "메모리 반도체",
     "sectorTags": [
-      "메모리 반도체",
-      "반도체 소재·부품"
+      "메모리 반도체"
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "삼성전자는 메모리·파운드리·시스템반도체와 스마트폰·TV·가전, 디스플레이 등 전자제품을 만드는 글로벌 종합 전자회사입니다."
   },
   "005830": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "고객에게 보험상품을 판매해 보험료를 받고 위험을 인수하는 금융사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널을 통해 판매합니다.",
-      "revenue": "보험료에서 보험금·사업비를 뺀 보험손익과 채권·주식 등 자산운용 수익으로 돈을 법니다.",
-      "drivers": "손해율 하락, 신계약 증가, 금리·운용수익률 개선, 비용 효율화가 핵심입니다.",
-      "segments": []
+      "summary": "DB손해보험은 자동차·장기·일반보험을 판매하는 손해보험사입니다.",
+      "products": "자동차보험, 장기 보장성보험, 일반보험",
+      "customers": "개인·기업 보험계약자",
+      "revenue": "보험손익과 보험자산 운용수익으로 돈을 법니다.",
+      "drivers": "손해율, 신계약 성장, CSM, 사업비, 금리·운용수익률",
+      "segments": [
+        "손해보험"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260331",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003904",
-    "detailSector": "보험",
+    "detailSector": "손해보험",
     "sectorTags": [
-      "보험"
+      "손해보험"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "DB손해보험은 자동차·장기·일반보험을 판매하는 손해보험사입니다."
   },
   "086280": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "현대글로비스는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "summary": "현대글로비스는 완성차 물류·해운과 자동차 유통, CKD 부품 공급을 담당하는 종합 물류회사입니다.",
+      "products": "완성차 해상운송(PCTC), 육상물류, CKD, 중고차·유통",
+      "customers": "현대차그룹을 포함한 글로벌 완성차·부품·화주 기업",
+      "revenue": "운송물량×운임, 물류 계약, CKD·유통 매출이 핵심입니다.",
+      "drivers": "완성차 수출물량, PCTC 운임, 비계열 고객 확대, 환율, 선대 공급",
       "segments": [
-        "메모리 반도체"
+        "물류",
+        "해운",
+        "CKD·유통"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001205",
-    "detailSector": "운송",
+    "detailSector": "해운",
     "sectorTags": [
-      "운송"
+      "해운",
+      "물류"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "현대글로비스는 완성차 물류·해운과 자동차 유통, CKD 부품 공급을 담당하는 종합 물류회사입니다."
   },
   "175330": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "JB금융지주는 은행·증권·카드·보험 등 금융계열사를 보유·관리하는 금융지주회사입니다.",
-      "products": "은행·증권·카드·보험·자산관리 등 자회사 금융서비스",
-      "customers": "직접 영업보다 자회사들이 개인·기업·기관 고객에게 금융서비스를 제공합니다.",
-      "revenue": "자회사 이익이 연결 실적에 반영되고, 지주회사는 배당·브랜드·용역 등에서도 수익을 얻습니다.",
-      "drivers": "핵심 자회사 순이자마진·대손비용·비이자이익, 자본비율, 자회사 배당과 주주환원이 중요합니다.",
+      "summary": "JB금융지주는 전북은행·광주은행 등을 중심으로 캐피탈 등 계열사를 보유한 지방금융지주입니다.",
+      "products": "은행 대출·예금, 캐피탈·금융 서비스",
+      "customers": "지역 개인·중소기업과 전국 금융고객",
+      "revenue": "은행 순이자이익과 캐피탈 등 비은행 수익이 핵심입니다.",
+      "drivers": "NIM, 대출 성장, 연체율·대손비용, 자본비율, 배당·주주환원",
       "segments": [
-        "금융지주"
+        "은행",
+        "캐피탈"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
@@ -639,72 +744,86 @@
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "JB금융지주는 전북은행·광주은행 등을 중심으로 캐피탈 등 계열사를 보유한 지방금융지주입니다."
   },
   "079550": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "무기 및 총포탄 제조업 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
-      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
-      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "LIG디펜스앤에어로스페이스는 유도무기·감시정찰·지휘통제·항공전자 등 첨단 방산체계를 개발·생산하는 방산업체입니다.",
+      "products": "정밀유도무기(PGM), 감시정찰(AEW), 지휘통제·통신(C4I), 항공전자·전자전 등",
+      "customers": "대한민국 정부·방위사업청과 해외 정부·방산 고객",
+      "revenue": "장기 방산 수주 계약의 개발·양산·정비 매출이 핵심이며 수출 비중 확대가 성장동력입니다.",
+      "drivers": "국내 방위력개선 수주, 중동·미국 등 수출, 수주잔고, 개발비·양산 원가",
+      "segments": [
+        "정밀유도무기",
+        "감시정찰",
+        "C4I",
+        "항공전자"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260323",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001211",
-    "detailSector": "무기 및 총포탄 제조업",
+    "detailSector": "방산",
     "sectorTags": [
-      "무기 및 총포탄 제조업"
+      "방산"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "LIG디펜스앤에어로스페이스는 유도무기·감시정찰·지휘통제·항공전자 등 첨단 방산체계를 개발·생산하는 방산업체입니다."
   },
   "267250": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "자금을 조달해 대출·투자하고 금융서비스를 제공하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "개인, 중소기업, 대기업 등 예금·대출·결제·자산관리 고객이 핵심입니다.",
-      "revenue": "예대금리차에서 나오는 이자이익과 카드·자산관리·IB 등 수수료이익으로 돈을 법니다.",
-      "drivers": "대출 성장, 순이자마진, 대손비용, 연체율, 수수료 수익 증가가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "HD현대는 조선·해양, 에너지, 건설기계 등 핵심 계열사를 지배하는 지주회사입니다.",
+      "products": "HD한국조선해양 계열 조선, 에너지, 건설기계 계열사 지분",
+      "customers": "지주회사로서 직접 소비자 매출보다 계열사 지분가치·배당·브랜드 수익이 중요합니다.",
+      "revenue": "자회사 배당·지분법이익과 브랜드·용역 수익이 핵심입니다.",
+      "drivers": "조선 수주·선가, 정유마진, 건설기계 경기, 자회사 배당·자본정책",
+      "segments": [
+        "지주회사",
+        "조선",
+        "에너지",
+        "건설기계"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260320",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260320000872",
-    "detailSector": "금융",
+    "detailSector": "지주회사",
     "sectorTags": [
-      "금융"
+      "지주회사"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "HD현대는 조선·해양, 에너지, 건설기계 등 핵심 계열사를 지배하는 지주회사입니다."
   },
   "028670": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "팬오션는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "summary": "팬오션은 벌크선을 중심으로 원자재를 운송하는 해운회사입니다.",
+      "products": "철광석·석탄·곡물 등 드라이벌크 운송, 일부 탱커·컨테이너 등",
+      "customers": "글로벌 원자재 생산·무역·철강·발전·곡물 기업",
+      "revenue": "운송물량×운임이 핵심이며 보유선·용선 비용 차이가 이익률을 좌우합니다.",
+      "drivers": "BDI 등 벌크 운임, 중국 원자재 수요, 선박 공급, 유가·용선료",
       "segments": [
-        "메모리 반도체"
+        "드라이벌크 해운"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260319",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260319001097",
-    "detailSector": "운송",
+    "detailSector": "해운",
     "sectorTags": [
-      "운송"
+      "해운"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "팬오션은 벌크선을 중심으로 원자재를 운송하는 해운회사입니다."
   },
   "282330": {
     "schemaVersion": 9,
@@ -723,19 +842,23 @@
     "sectorTags": [
       "유통"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "032640": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "산업용 기계·장비·전기제품을 제조해 기업 고객에게 공급하는 B2B 제조업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "제조공장, 건설·에너지·반도체 등 설비투자를 하는 기업이 주요 고객입니다.",
-      "revenue": "장비·부품 판매와 설치·유지보수 서비스에서 매출을 올립니다.",
-      "drivers": "고객 설비투자, 수주잔고, 가동률, 고사양 장비 믹스가 중요합니다.",
-      "segments": []
+      "summary": "LG유플러스는 이동통신·초고속인터넷·IPTV와 기업용 통신·IDC 서비스를 제공하는 통신회사입니다.",
+      "products": "5G/LTE, 인터넷·IPTV, 기업 네트워크, IDC·솔루션",
+      "customers": "개인 가입자와 기업·공공기관",
+      "revenue": "월 통신요금과 기업용 네트워크·데이터센터 사용료가 반복 매출을 만듭니다.",
+      "drivers": "가입자·ARPU, 해지율, 마케팅비, IDC 수요, 기업사업 성장",
+      "segments": [
+        "이동통신",
+        "홈미디어",
+        "B2B·IDC"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260313",
@@ -744,19 +867,23 @@
     "sectorTags": [
       "통신"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "LG유플러스는 이동통신·초고속인터넷·IPTV와 기업용 통신·IDC 서비스를 제공하는 통신회사입니다."
   },
   "271560": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "식품·음료를 개발·생산해 유통채널과 소비자에게 판매하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "대형마트·편의점·온라인몰·외식업체와 최종 소비자가 주요 고객입니다.",
-      "revenue": "제품 판매량 × 판매단가가 매출의 핵심이고 브랜드력과 유통망이 마진을 좌우합니다.",
-      "drivers": "판매량, 가격 인상, 원재료비, 신제품·해외매출 비중이 중요합니다.",
-      "segments": []
+      "summary": "오리온은 초코파이·스낵·비스킷 등을 한국·중국·베트남·러시아 등에서 생산·판매하는 식품회사입니다.",
+      "products": "파이, 스낵, 비스킷, 캔디 등 제과제품",
+      "customers": "대형마트·편의점·온라인·도매 유통망과 최종 소비자",
+      "revenue": "제품 판매량×판매단가가 핵심이며 현지 생산·유통망과 브랜드력이 마진을 좌우합니다.",
+      "drivers": "해외 판매 성장, 가격 인상, 원재료비, 신제품, 중국·베트남 소비경기",
+      "segments": [
+        "제과",
+        "해외 식품"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
@@ -765,9 +892,10 @@
     "sectorTags": [
       "식품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "오리온은 초코파이·스낵·비스킷 등을 한국·중국·베트남·러시아 등에서 생산·판매하는 식품회사입니다."
   },
   "241560": {
     "schemaVersion": 9,
@@ -782,81 +910,79 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260319",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260319001265",
-    "detailSector": "특수 목적용 기계 제조업",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "특수 목적용 기계 제조업"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "105560": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "자금을 조달해 대출·투자하고 금융서비스를 제공하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "개인, 중소기업, 대기업 등 예금·대출·결제·자산관리 고객이 핵심입니다.",
-      "revenue": "예대금리차에서 나오는 이자이익과 카드·자산관리·IB 등 수수료이익으로 돈을 법니다.",
-      "drivers": "대출 성장, 순이자마진, 대손비용, 연체율, 수수료 수익 증가가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "KB금융은 KB국민은행을 중심으로 증권·보험·카드 등 비은행 사업을 함께 보유한 금융지주입니다.",
+      "products": "은행, 증권, 손해보험, 카드, 자산운용",
+      "customers": "개인·기업·기관 금융고객",
+      "revenue": "순이자이익과 증권·보험·카드 등 비은행 수익이 핵심입니다.",
+      "drivers": "NIM, 대출 성장, 대손비용, 비은행 이익, CET1·자사주·배당",
+      "segments": [
+        "은행",
+        "증권",
+        "보험",
+        "카드"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260429",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260429801135",
-    "detailSector": "금융",
+    "detailSector": "손해보험",
     "sectorTags": [
-      "금융"
+      "손해보험"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "KB금융은 KB국민은행을 중심으로 증권·보험·카드 등 비은행 사업을 함께 보유한 금융지주입니다."
   },
   "483650": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "달바글로벌는 화장품 ODM/OEM이 핵심입니다. 고객 브랜드 대신 제품을 개발·제형화·생산해 납품합니다. 자회사·계열사를 통해 H&B 사업도 함께 영위합니다.",
-      "products": "스킨케어·선케어·메이크업 등 화장품의 처방·제형 개발과 생산, 그리고 H&B",
-      "customers": "국내외 화장품 브랜드사가 핵심 고객입니다. 브랜드사는 기획·마케팅·판매를 맡고 회사는 연구개발과 생산을 담당합니다.",
-      "revenue": "화장품 부문은 고객 주문량 × 납품단가가 기본 매출 구조입니다. 수주와 가동률이 높아질수록 고정비가 분산돼 수익성이 개선될 수 있습니다. 제약·H&B·용기 사업의 제품 매출도 연결 실적에 더해집니다.",
-      "drivers": "신규·글로벌 브랜드 수주, 해외 고객 확대, 고부가 제품 믹스, 공장 가동률, 원재료비와 신규 생산능력이 핵심입니다.",
+      "summary": "달바글로벌은 d'Alba를 중심으로 화장품을 개발·브랜딩해 글로벌 소비자에게 판매하는 K-뷰티 브랜드 회사입니다.",
+      "products": "화이트 트러플 기반 스킨케어·미스트·선케어, 이너뷰티·홈뷰티 제품",
+      "customers": "미국·일본·한국 등 온라인·오프라인 유통채널의 최종 소비자",
+      "revenue": "자체 브랜드 제품 판매가 핵심이며 해외 매출 비중과 채널 확장이 성장의 핵심입니다.",
+      "drivers": "미국·일본 등 해외 침투율, 히트제품 지속성, 선케어 시즌성, 광고 효율, 유통망 확대",
       "segments": [
-        "H&B",
-        "소프트웨어·플랫폼",
-        "유통·커머스",
-        "식품·음료",
-        "바이오·신약",
-        "전력·에너지"
+        "d'Alba 화장품",
+        "이너뷰티",
+        "홈뷰티"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260407",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260407001978",
-    "detailSector": "화장품 ODM/OEM",
+    "detailSector": "화장품 브랜드",
     "sectorTags": [
-      "화장품 ODM/OEM",
-      "K-뷰티 유통",
-      "미용의료·의료기기",
-      "제약·바이오"
+      "화장품 브랜드",
+      "K-뷰티"
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "달바글로벌은 d'Alba를 중심으로 화장품을 개발·브랜딩해 글로벌 소비자에게 판매하는 K-뷰티 브랜드 회사입니다."
   },
   "138040": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "메리츠금융지주는 은행·증권·카드·보험 등 금융계열사를 보유·관리하는 금융지주회사입니다.",
-      "products": "은행·증권·카드·보험·자산관리 등 자회사 금융서비스",
-      "customers": "직접 영업보다 자회사들이 개인·기업·기관 고객에게 금융서비스를 제공합니다.",
-      "revenue": "자회사 이익이 연결 실적에 반영되고, 지주회사는 배당·브랜드·용역 등에서도 수익을 얻습니다.",
-      "drivers": "핵심 자회사 순이자마진·대손비용·비이자이익, 자본비율, 자회사 배당과 주주환원이 중요합니다.",
+      "summary": "메리츠금융지주는 메리츠화재와 메리츠증권을 중심으로 보험·증권 사업을 보유한 금융그룹입니다.",
+      "products": "손해보험, 증권·IB·트레이딩·자산관리",
+      "customers": "보험계약자, 개인·기관 투자자, 기업금융 고객",
+      "revenue": "보험손익·운용수익과 증권의 IB·트레이딩·수수료 수익이 핵심입니다.",
+      "drivers": "보험 CSM·손해율, 증권 운용손익·부동산 익스포저, 자본배분·자사주",
       "segments": [
-        "조선",
-        "소프트웨어·플랫폼",
-        "보험",
-        "은행",
-        "바이오·신약",
-        "전력·에너지"
+        "손해보험",
+        "증권"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
@@ -868,28 +994,32 @@
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "메리츠금융지주는 메리츠화재와 메리츠증권을 중심으로 보험·증권 사업을 보유한 금융그룹입니다."
   },
   "036570": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "기업·소비자에게 소프트웨어, 플랫폼, 데이터 또는 IT 서비스를 제공하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "기업·공공기관·개인 사용자가 주요 고객입니다.",
-      "revenue": "구독료, 라이선스, 광고, 거래수수료, 구축·운영비 등 반복 매출이 핵심입니다.",
-      "drivers": "사용자·고객 수 증가, ARPU, 재계약률, 클라우드 비용과 영업레버리지가 중요합니다.",
-      "segments": []
+      "summary": "NC는 리니지 등 게임 IP를 개발·운영하고 PC·모바일 게임에서 수익을 내는 게임회사입니다.",
+      "products": "MMORPG 등 PC·모바일 게임과 게임 IP",
+      "customers": "한국·아시아·북미 등 게임 이용자",
+      "revenue": "게임 내 아이템·패스·콘텐츠 결제와 신작 매출이 핵심입니다.",
+      "drivers": "신작 흥행, 기존 IP 이용자 유지, 글로벌 출시, 마케팅·개발비 효율",
+      "segments": [
+        "게임"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001448",
-    "detailSector": "IT서비스·소프트웨어",
+    "detailSector": "게임",
     "sectorTags": [
-      "IT서비스·소프트웨어"
+      "게임"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "NC는 리니지 등 게임 IP를 개발·운영하고 PC·모바일 게임에서 수익을 내는 게임회사입니다."
   },
   "192820": {
     "schemaVersion": 9,
@@ -908,93 +1038,110 @@
     "sectorTags": [
       "화학"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "011780": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "화학 소재·원료·제품을 생산해 다른 제조업체나 소비자에게 공급하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "전자·자동차·건설·생활소비재 등 다양한 제조업체가 주요 고객입니다.",
-      "revenue": "판매물량 × 제품가격에서 원재료·에너지 비용을 뺀 스프레드가 핵심입니다.",
-      "drivers": "제품가격, 원재료 가격, 가동률, 증설·수급 사이클이 중요합니다.",
-      "segments": []
+      "summary": "금호석유화학은 합성고무·합성수지·정밀화학 등 석유화학 제품을 생산하는 소재회사입니다.",
+      "products": "합성고무, 합성수지, 페놀유도체·정밀화학, 에너지 등",
+      "customers": "타이어·자동차·가전·산업재 제조사",
+      "revenue": "제품 판매가격과 원재료 가격의 차이인 스프레드와 판매물량이 이익을 좌우합니다.",
+      "drivers": "합성고무·수지 스프레드, 타이어 수요, 원재료 가격, 가동률·증설",
+      "segments": [
+        "합성고무",
+        "합성수지",
+        "화학"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001268",
-    "detailSector": "화학",
+    "detailSector": "석유화학",
     "sectorTags": [
-      "화학"
+      "석유화학"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "금호석유화학은 합성고무·합성수지·정밀화학 등 석유화학 제품을 생산하는 소재회사입니다."
   },
   "278470": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "화학 소재·원료·제품을 생산해 다른 제조업체나 소비자에게 공급하는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "전자·자동차·건설·생활소비재 등 다양한 제조업체가 주요 고객입니다.",
-      "revenue": "판매물량 × 제품가격에서 원재료·에너지 비용을 뺀 스프레드가 핵심입니다.",
-      "drivers": "제품가격, 원재료 가격, 가동률, 증설·수급 사이클이 중요합니다.",
-      "segments": []
+      "summary": "에이피알은 메디큐브를 중심으로 화장품과 홈뷰티 디바이스를 글로벌 소비자에게 직접 판매하는 뷰티테크 회사입니다.",
+      "products": "메디큐브 화장품·AGE-R 뷰티 디바이스, 기타 뷰티·라이프스타일 브랜드",
+      "customers": "한국·미국·일본 등 온라인·오프라인 최종 소비자",
+      "revenue": "자체 브랜드 제품 판매가 핵심이며 디바이스와 화장품의 교차판매·재구매가 수익성을 높입니다.",
+      "drivers": "미국·일본 등 해외 성장, 신제품 히트, 디바이스 보급대수, 화장품 재구매, 마케팅 효율",
+      "segments": [
+        "화장품",
+        "홈뷰티 디바이스"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260323",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001257",
-    "detailSector": "화학",
+    "detailSector": "화장품 브랜드",
     "sectorTags": [
-      "화학"
+      "화장품 브랜드"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "에이피알은 메디큐브를 중심으로 화장품과 홈뷰티 디바이스를 글로벌 소비자에게 직접 판매하는 뷰티테크 회사입니다."
   },
   "003490": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "사람이나 화물을 운송하고 운임을 받는 사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "화주·여행객·물류기업이 주요 고객입니다.",
-      "revenue": "운송량 × 운임이 핵심 매출이며 연료비와 선박·항공기 가동률이 수익성에 영향을 줍니다.",
-      "drivers": "운임, 물동량, 유가, 환율, 공급능력과 가동률이 중요합니다.",
-      "segments": []
+      "summary": "대한항공은 국제·국내 여객과 항공화물 운송을 주력으로 하고 항공우주·정비 사업도 보유합니다.",
+      "products": "여객 운송, 화물 운송, 항공우주·MRO 서비스",
+      "customers": "여행객, 글로벌 화주·물류기업, 정부·항공우주 고객",
+      "revenue": "여객수×운임과 화물량×운임이 핵심이며 항공우주·정비 매출이 더해집니다.",
+      "drivers": "국제선 수요, 여객·화물 운임, 유가, 환율, 공급좌석·기재 효율",
+      "segments": [
+        "항공여객",
+        "항공화물",
+        "항공우주"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001125",
-    "detailSector": "운송",
+    "detailSector": "항공",
     "sectorTags": [
-      "운송"
+      "항공"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "대한항공은 국제·국내 여객과 항공화물 운송을 주력으로 하고 항공우주·정비 사업도 보유합니다."
   },
   "000810": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "고객에게 보험상품을 판매해 보험료를 받고 위험을 인수하는 금융사업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널을 통해 판매합니다.",
-      "revenue": "보험료에서 보험금·사업비를 뺀 보험손익과 채권·주식 등 자산운용 수익으로 돈을 법니다.",
-      "drivers": "손해율 하락, 신계약 증가, 금리·운용수익률 개선, 비용 효율화가 핵심입니다.",
-      "segments": []
+      "summary": "삼성화재는 자동차·장기·일반보험을 판매하는 대형 손해보험사입니다.",
+      "products": "자동차보험, 장기 보장성보험, 기업 일반보험",
+      "customers": "개인·기업 보험계약자",
+      "revenue": "보험손익과 보험자산 운용수익으로 돈을 법니다.",
+      "drivers": "손해율, 신계약 CSM, 사업비, 금리·운용수익률, 자본정책",
+      "segments": [
+        "손해보험"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003992",
-    "detailSector": "보험",
+    "detailSector": "손해보험",
     "sectorTags": [
-      "보험"
+      "손해보험"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "삼성화재는 자동차·장기·일반보험을 판매하는 대형 손해보험사입니다."
   },
   "139130": {
     "schemaVersion": 9,
@@ -1022,12 +1169,16 @@
   "033780": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "담배 제조업 업종에서 제품·서비스를 개발·공급하는 기업입니다.",
-      "products": "핵심 제품·서비스 세부 확인 필요",
-      "customers": "주요 고객과 판매채널은 회사별 사업보고서에서 확인합니다.",
-      "revenue": "제품·서비스 판매량과 판매단가, 계약·수수료 구조가 매출을 결정합니다.",
-      "drivers": "수요 증가, 가격·제품 믹스, 가동률과 비용 구조가 실적을 좌우합니다.",
-      "segments": []
+      "summary": "KT&G는 담배를 중심으로 전자담배(NGP), 건강기능식품·홍삼, 부동산 등 사업을 보유한 소비재 그룹입니다.",
+      "products": "궐련담배, 전자담배·스틱, 홍삼·건강기능식품, 일부 부동산 사업",
+      "customers": "국내외 담배 소비자와 건강기능식품 소비자",
+      "revenue": "담배 판매량×가격이 핵심이고 해외 담배·NGP와 건강기능식품 매출이 성장축입니다.",
+      "drivers": "해외 담배 판매, NGP 침투율, 가격·믹스, 환율, 원재료·마케팅비",
+      "segments": [
+        "담배",
+        "NGP",
+        "건강기능식품"
+      ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
@@ -1038,7 +1189,8 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "KT&G는 담배를 중심으로 전자담배(NGP), 건강기능식품·홍삼, 부동산 등 사업을 보유한 소비재 그룹입니다."
   },
   "279570": {
     "schemaVersion": 9,
@@ -1058,12 +1210,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260323",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001560",
-    "detailSector": "통신",
+    "detailSector": "보험",
     "sectorTags": [
-      "통신",
-      "편의점·리테일"
+      "보험"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1126,7 +1277,7 @@
     "sectorTags": [
       "보험"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1146,11 +1297,8 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260708",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260708000478",
-    "detailSector": "반도체 검사·테스트",
+    "detailSector": "로봇·모션",
     "sectorTags": [
-      "반도체 검사·테스트",
-      "반도체 소재·부품",
-      "통신",
       "로봇·모션"
     ],
     "sectorConfidence": "HIGH",
@@ -1160,16 +1308,14 @@
   "196170": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "알테오젠는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260323",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001596",
     "detailSector": "자연과학 및 공학 연구개발업",
@@ -1178,7 +1324,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "323280": {
     "schemaVersion": 9,
@@ -1198,14 +1348,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260323",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323000642",
-    "detailSector": "증권",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "증권",
-      "반도체 검사·테스트",
-      "반도체 장비",
-      "반도체 소재·부품"
+      "기계·장비"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1222,11 +1369,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260706",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260706000276",
-    "detailSector": "통신",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "통신"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1243,27 +1390,25 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001359",
-    "detailSector": "일반 목적용 기계 제조업",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "일반 목적용 기계 제조업"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "307950": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "현대오토에버는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001324",
     "detailSector": "IT서비스·소프트웨어",
@@ -1272,7 +1417,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "003550": {
     "schemaVersion": 9,
@@ -1291,7 +1440,7 @@
     "sectorTags": [
       "금융"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1312,7 +1461,7 @@
     "sectorTags": [
       "금융"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1356,7 +1505,7 @@
     "sectorTags": [
       "화학"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1373,11 +1522,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260309",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260309001878",
-    "detailSector": "자동차·부품",
+    "detailSector": "자동차 부품",
     "sectorTags": [
-      "자동차·부품"
+      "자동차 부품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1398,7 +1547,7 @@
     "sectorTags": [
       "화학"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1415,11 +1564,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813000486",
-    "detailSector": "특수 목적용 기계 제조업",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "특수 목적용 기계 제조업"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1436,11 +1585,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001118",
-    "detailSector": "특수 목적용 기계 제조업",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "특수 목적용 기계 제조업"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1461,23 +1610,21 @@
     "sectorTags": [
       "금융"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "036930": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "주성엔지니어링는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002613",
     "detailSector": "특수 목적용 기계 제조업",
@@ -1486,7 +1633,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "375500": {
     "schemaVersion": 9,
@@ -1501,11 +1652,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003447",
-    "detailSector": "건설",
+    "detailSector": "플랜트 EPC",
     "sectorTags": [
-      "건설"
+      "플랜트 EPC"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
     "failed": false
   },
@@ -1526,23 +1677,21 @@
     "sectorTags": [
       "금융"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "012450": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "한화에어로스페이스는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003198",
     "detailSector": "운송",
@@ -1551,7 +1700,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "006400": {
     "schemaVersion": 9,
@@ -1566,27 +1719,25 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003578",
-    "detailSector": "일차전지 및 이차전지 제조업",
+    "detailSector": "이차전지",
     "sectorTags": [
-      "일차전지 및 이차전지 제조업"
+      "이차전지"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "222800": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "심텍는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001430",
     "detailSector": "전자부품 제조업",
@@ -1595,21 +1746,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "103590": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "일진전기는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260811",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260811000431",
     "detailSector": "절연선 및 케이블 제조업",
@@ -1618,21 +1771,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "084370": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "유진테크는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003622",
     "detailSector": "특수 목적용 기계 제조업",
@@ -1641,7 +1796,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "021240": {
     "schemaVersion": 9,
@@ -1667,16 +1826,14 @@
   "003230": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "삼양식품는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003053",
     "detailSector": "식품",
@@ -1685,21 +1842,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "319660": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "피에스케이는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814000731",
     "detailSector": "특수 목적용 기계 제조업",
@@ -1708,21 +1867,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "009540": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HD한국조선해양는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002569",
     "detailSector": "금융",
@@ -1731,7 +1892,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-15",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "028260": {
     "schemaVersion": 9,
@@ -1750,23 +1915,21 @@
     "sectorTags": [
       "유통"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-15",
     "failed": false
   },
   "089970": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "브이엠는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001486",
     "detailSector": "특수 목적용 기계 제조업",
@@ -1775,21 +1938,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "010170": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "대한광통신는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002121",
     "detailSector": "절연선 및 케이블 제조업",
@@ -1798,7 +1963,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "240810": {
     "schemaVersion": 9,
@@ -1813,11 +1982,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001845",
-    "detailSector": "특수 목적용 기계 제조업",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "특수 목적용 기계 제조업"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
@@ -1838,7 +2007,7 @@
     "sectorTags": [
       "금융"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
@@ -1855,11 +2024,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004047",
-    "detailSector": "사진장비 및 광학기기 제조업",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "사진장비 및 광학기기 제조업"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
@@ -1876,11 +2045,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003088",
-    "detailSector": "전력·전기장비",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "전력·전기장비"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
@@ -1897,11 +2066,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003691",
-    "detailSector": "일반 목적용 기계 제조업",
+    "detailSector": "기계·장비",
     "sectorTags": [
-      "일반 목적용 기계 제조업"
+      "기계·장비"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
@@ -1922,32 +2091,34 @@
     "sectorTags": [
       "금융"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
   "166090": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "하나머티리얼즈는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001255",
-    "detailSector": "반도체",
+    "detailSector": "기타",
     "sectorTags": [
-      "반도체"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "298040": {
     "schemaVersion": 9,
@@ -1983,27 +2154,25 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003509",
-    "detailSector": "반도체",
+    "detailSector": "메모리 반도체",
     "sectorTags": [
-      "반도체"
+      "메모리 반도체"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-17",
     "failed": false
   },
   "267270": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HD건설기계는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004300",
     "detailSector": "특수 목적용 기계 제조업",
@@ -2012,21 +2181,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "281820": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "케이씨텍는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001393",
     "detailSector": "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외",
@@ -2035,21 +2206,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "062040": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "산일전기는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003544",
     "detailSector": "전력·전기장비",
@@ -2058,7 +2231,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "067310": {
     "schemaVersion": 9,
@@ -2105,16 +2282,14 @@
   "080220": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "제주반도체는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001713",
     "detailSector": "반도체",
@@ -2123,21 +2298,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "011070": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "LG이노텍는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001879",
     "detailSector": "전자부품 제조업",
@@ -2146,7 +2323,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "001740": {
     "schemaVersion": 9,
@@ -2161,9 +2342,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002753",
-    "detailSector": "유통",
+    "detailSector": "기타",
     "sectorTags": [
-      "유통"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
@@ -2186,23 +2367,21 @@
     "sectorTags": [
       "자동차·부품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
   "042700": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "한미반도체는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003665",
     "detailSector": "특수 목적용 기계 제조업",
@@ -2211,21 +2390,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "353200": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "대덕전자는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001620",
     "detailSector": "전자부품 제조업",
@@ -2234,7 +2415,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "031980": {
     "schemaVersion": 9,
@@ -2283,16 +2468,14 @@
   "322000": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HD현대에너지솔루션는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002295",
     "detailSector": "반도체",
@@ -2301,7 +2484,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "000500": {
     "schemaVersion": 9,
@@ -2369,34 +2556,27 @@
   "440110": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "파두는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체",
-        "파운드리",
-        "건설·플랜트",
-        "소프트웨어·플랫폼",
-        "유통·커머스",
-        "통신",
-        "전력·에너지"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001260",
-    "detailSector": "증권",
+    "detailSector": "반도체",
     "sectorTags": [
-      "증권",
-      "메모리 반도체",
-      "반도체 검사·테스트",
-      "반도체 장비"
+      "반도체"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "004170": {
     "schemaVersion": 9,
@@ -2571,16 +2751,14 @@
   "089030": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "테크윙는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001211",
     "detailSector": "특수 목적용 기계 제조업",
@@ -2589,21 +2767,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "002380": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "KCC는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001150",
     "detailSector": "화학",
@@ -2612,7 +2792,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "272210": {
     "schemaVersion": 9,
@@ -2656,14 +2840,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002901",
-    "detailSector": "자동차 부품",
+    "detailSector": "IT서비스·소프트웨어",
     "sectorTags": [
-      "자동차 부품",
-      "통신",
-      "로봇·모션",
-      "물류"
+      "IT서비스·소프트웨어"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
     "failed": false
   },
@@ -2680,60 +2861,53 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004145",
-    "detailSector": "증권",
+    "detailSector": "자연과학 및 공학 연구개발업",
     "sectorTags": [
-      "증권",
-      "제약·바이오",
-      "게임",
-      "인터넷 플랫폼"
+      "자연과학 및 공학 연구개발업"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
     "failed": false
   },
   "347700": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "스피어는 화장품 ODM/OEM이 핵심입니다. 고객 브랜드 대신 제품을 개발·제형화·생산해 납품합니다. 자회사·계열사를 통해 전문의약품 사업도 함께 영위합니다.",
-      "products": "스킨케어·선케어·메이크업 등 화장품의 처방·제형 개발과 생산, 그리고 전문의약품",
-      "customers": "국내외 화장품 브랜드사가 핵심 고객입니다. 브랜드사는 기획·마케팅·판매를 맡고 회사는 연구개발과 생산을 담당합니다.",
-      "revenue": "화장품 부문은 고객 주문량 × 납품단가가 기본 매출 구조입니다. 수주와 가동률이 높아질수록 고정비가 분산돼 수익성이 개선될 수 있습니다. 제약·H&B·용기 사업의 제품 매출도 연결 실적에 더해집니다.",
-      "drivers": "신규·글로벌 브랜드 수주, 해외 고객 확대, 고부가 제품 믹스, 공장 가동률, 원재료비와 신규 생산능력이 핵심입니다.",
+      "summary": "스피어는 우주발사체에 사용되는 고성능 특수합금 소재를 조달·가공·공급하는 우주항공 공급망 전문기업입니다. 2025년 합병과 사명 변경을 거쳐 기존 디지털 헬스케어 중심에서 우주항공 소재 중심으로 사업구조를 전환했습니다.",
+      "products": "우주발사체 엔진·노즐 등에 쓰이는 니켈계 특수합금과 관련 공급망 관리 서비스",
+      "customers": "글로벌 민간 우주발사체·우주항공 기업과 특수소재 수요처",
+      "revenue": "외주 생산망을 활용해 고객 규격에 맞는 특수합금을 조달·가공·공급하고 납품대금에서 수익을 냅니다.",
+      "drivers": "글로벌 우주 발사 횟수, 장기 공급계약, 특수합금 조달가격, 납기·품질 관리, 니켈 공급망과 운전자금",
       "segments": [
-        "전문의약품",
-        "2차전지",
-        "건설·플랜트",
-        "소프트웨어·플랫폼",
-        "보험",
-        "유통·커머스",
-        "식품·음료"
+        "우주항공 특수합금",
+        "공급망 관리",
+        "니켈 소재"
       ]
     },
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003121",
-    "detailSector": "화장품 ODM/OEM",
+    "detailSector": "우주항공 소재·공급망",
     "sectorTags": [
-      "화장품 ODM/OEM",
-      "K-뷰티"
+      "우주항공",
+      "특수합금",
+      "공급망"
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelEasy": "스피어는 우주발사체에 사용되는 고성능 특수합금 소재를 조달·가공·공급하는 우주항공 공급망 전문기업입니다. 2025년 합병과 사명 변경을 거쳐 기존 디지털 헬스케어 중심에서 우주항공 소재 중심으로 사업구조를 전환했습니다."
   },
   "454910": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "두산로보틱스는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003345",
     "detailSector": "특수 목적용 기계 제조업",
@@ -2742,7 +2916,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "095340": {
     "schemaVersion": 9,
@@ -2768,25 +2946,27 @@
   "097230": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HJ중공업는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260812",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260812000297",
-    "detailSector": "건설",
+    "detailSector": "기타",
     "sectorTags": [
-      "건설"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "032820": {
     "schemaVersion": 9,
@@ -2812,16 +2992,14 @@
   "034020": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "두산에너빌리티는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003782",
     "detailSector": "일반 목적용 기계 제조업",
@@ -2830,21 +3008,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "357780": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "솔브레인는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003813",
     "detailSector": "화학",
@@ -2853,7 +3033,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "128940": {
     "schemaVersion": 9,
@@ -2894,27 +3078,25 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002436",
-    "detailSector": "제약·바이오",
+    "detailSector": "자연과학 및 공학 연구개발업",
     "sectorTags": [
-      "제약·바이오"
+      "자연과학 및 공학 연구개발업"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
     "failed": false
   },
   "078600": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "대주전자재료는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814000559",
     "detailSector": "전자부품 제조업",
@@ -2923,21 +3105,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "329180": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HD현대중공업는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002879",
     "detailSector": "선박 및 보트 건조업",
@@ -2946,21 +3130,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "443060": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HD현대마린솔루션는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001752",
     "detailSector": "건축기술, 엔지니어링 및 관련 기술 서비스업",
@@ -2969,7 +3155,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "007660": {
     "schemaVersion": 9,
@@ -2995,25 +3185,27 @@
   "000270": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "기아는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003932",
     "detailSector": "자동차·부품",
     "sectorTags": [
       "자동차·부품"
     ],
-    "sectorConfidence": "LOW",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "088980": {
     "schemaVersion": 9,
@@ -3021,25 +3213,23 @@
     "lastError": "목록:정기공시 검색 실패 013 조회된 데이타가 없습니다.",
     "retryAfter": "2026-08-20",
     "updatedAt": "2026-08-17",
-    "detailSector": "신탁업 및 집합투자업",
+    "detailSector": "기타",
     "sectorTags": [
-      "신탁업 및 집합투자업"
+      "기타"
     ],
     "sectorConfidence": "LOW"
   },
   "403870": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HPSP는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004015",
     "detailSector": "특수 목적용 기계 제조업",
@@ -3048,21 +3238,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "047810": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "한국항공우주는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003309",
     "detailSector": "운송",
@@ -3071,7 +3263,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "082740": {
     "schemaVersion": 9,
@@ -3097,25 +3293,27 @@
   "195870": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "해성디에스는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003884",
-    "detailSector": "전자부품 제조업",
+    "detailSector": "기타",
     "sectorTags": [
-      "전자부품 제조업"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "047050": {
     "schemaVersion": 9,
@@ -3185,16 +3383,14 @@
   "267260": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HD현대일렉트릭는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003228",
     "detailSector": "전력·전기장비",
@@ -3203,7 +3399,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "010140": {
     "schemaVersion": 9,
@@ -3250,16 +3450,14 @@
   "058470": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "리노공업는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814000445",
     "detailSector": "전자부품 제조업",
@@ -3268,7 +3466,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "039490": {
     "schemaVersion": 9,
@@ -3294,16 +3496,14 @@
   "007810": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "코리아써키트는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002394",
     "detailSector": "전자부품 제조업",
@@ -3312,7 +3512,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "218410": {
     "schemaVersion": 9,
@@ -3390,9 +3594,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003091",
-    "detailSector": "금융",
+    "detailSector": "반도체",
     "sectorTags": [
-      "금융"
+      "반도체"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
@@ -3487,16 +3691,14 @@
   "014680": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "한솔케미칼는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001414",
     "detailSector": "화학",
@@ -3505,7 +3707,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-17",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "006800": {
     "schemaVersion": 9,
@@ -3547,12 +3753,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002988",
-    "detailSector": "증권",
+    "detailSector": "자연과학 및 공학 연구개발업",
     "sectorTags": [
-      "증권",
-      "제약·바이오"
+      "자연과학 및 공학 연구개발업"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "LOW",
     "updatedAt": "2026-08-18",
     "failed": false
   },
@@ -3601,16 +3806,14 @@
   "183300": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "코미코는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003614",
     "detailSector": "특수 목적용 기계 제조업",
@@ -3619,21 +3822,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-18",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "336260": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "두산퓨얼셀는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001645",
     "detailSector": "전력·전기장비",
@@ -3642,7 +3847,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-18",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "023530": {
     "schemaVersion": 9,
@@ -3687,7 +3896,7 @@
     "sectorTags": [
       "제약·바이오"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-18",
     "failed": false
   },
@@ -3712,14 +3921,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001345",
-    "detailSector": "증권",
+    "detailSector": "제약·바이오",
     "sectorTags": [
-      "증권",
-      "건설·주택",
-      "미용의료·의료기기",
       "제약·바이오"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-08-18",
     "failed": false
   },
@@ -3768,16 +3974,14 @@
   "323410": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "카카오뱅크는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002834",
     "detailSector": "금융",
@@ -3786,7 +3990,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-19",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "010130": {
     "schemaVersion": 9,
@@ -3822,9 +4030,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001301",
-    "detailSector": "통신",
+    "detailSector": "기타",
     "sectorTags": [
-      "통신"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-19",
@@ -3833,16 +4041,14 @@
   "298380": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "에이비엘바이오는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260811",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260811000637",
     "detailSector": "제약·바이오",
@@ -3851,7 +4057,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-19",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "042660": {
     "schemaVersion": 9,
@@ -3877,16 +4087,14 @@
   "004020": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "현대제철는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003379",
     "detailSector": "1차 철강 제조업",
@@ -3895,7 +4103,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-19",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "237690": {
     "schemaVersion": 9,
@@ -3937,13 +4149,11 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260323",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001381",
-    "detailSector": "제약·바이오",
+    "detailSector": "기타",
     "sectorTags": [
-      "제약·바이오",
-      "인터넷 플랫폼",
-      "통신"
+      "기타"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "LOW",
     "updatedAt": "2026-08-20",
     "failed": false
   },
@@ -3971,16 +4181,14 @@
   "007340": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "DN오토모티브는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260312",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260312001285",
     "detailSector": "일차전지 및 이차전지 제조업",
@@ -3989,7 +4197,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-20",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "141080": {
     "schemaVersion": 9,
@@ -4059,16 +4271,14 @@
   "000250": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "삼천당제약는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003598",
     "detailSector": "제약·바이오",
@@ -4077,7 +4287,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-20",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "015760": {
     "schemaVersion": 9,
@@ -4183,9 +4397,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002794",
-    "detailSector": "유통",
+    "detailSector": "기타",
     "sectorTags": [
-      "유통"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-21",
@@ -4194,16 +4408,14 @@
   "034220": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "LG디스플레이는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001005",
     "detailSector": "전자부품 제조업",
@@ -4212,21 +4424,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-21",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "352820": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "하이브는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004127",
     "detailSector": "오디오물 출판 및 원판 녹음업",
@@ -4235,21 +4449,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-21",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "064350": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "현대로템는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002977",
     "detailSector": "운송",
@@ -4258,7 +4474,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-21",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "000880": {
     "schemaVersion": 9,
@@ -4273,9 +4493,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003062",
-    "detailSector": "금융",
+    "detailSector": "화학",
     "sectorTags": [
-      "금융"
+      "화학"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-21",
@@ -4305,25 +4525,27 @@
   "071970": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "HD현대마린엔진는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002726",
-    "detailSector": "일반 목적용 기계 제조업",
+    "detailSector": "기타",
     "sectorTags": [
-      "일반 목적용 기계 제조업"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "214150": {
     "schemaVersion": 9,
@@ -4338,9 +4560,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814004072",
-    "detailSector": "의료용 기기 제조업",
+    "detailSector": "기타",
     "sectorTags": [
-      "의료용 기기 제조업"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
@@ -4349,16 +4571,14 @@
   "950160": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "코오롱티슈진는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002470",
     "detailSector": "제약·바이오",
@@ -4367,7 +4587,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "103140": {
     "schemaVersion": 9,
@@ -4435,16 +4659,14 @@
   "145020": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "휴젤는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001402",
     "detailSector": "제약·바이오",
@@ -4453,7 +4675,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "000100": {
     "schemaVersion": 9,
@@ -4468,9 +4694,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260312",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260312001236",
-    "detailSector": "의료용 기기 제조업",
+    "detailSector": "제약·바이오",
     "sectorTags": [
-      "의료용 기기 제조업"
+      "제약·바이오"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
@@ -4563,16 +4789,14 @@
   "018880": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "한온시스템는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260813",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260813001074",
     "detailSector": "일반 목적용 기계 제조업",
@@ -4581,21 +4805,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "086520": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "에코프로는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002690",
     "detailSector": "금융",
@@ -4604,7 +4830,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "008770": {
     "schemaVersion": 9,
@@ -4619,9 +4849,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001955",
-    "detailSector": "유통",
+    "detailSector": "기타",
     "sectorTags": [
-      "유통"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
@@ -4630,16 +4860,14 @@
   "450080": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "에코프로머티는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814001623",
     "detailSector": "일차전지 및 이차전지 제조업",
@@ -4648,21 +4876,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "247540": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "에코프로비엠는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814002535",
     "detailSector": "일차전지 및 이차전지 제조업",
@@ -4671,30 +4901,36 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "035900": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "JYP Ent.는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260814",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260814003204",
-    "detailSector": "오디오물 출판 및 원판 녹음업",
+    "detailSector": "기타",
     "sectorTags": [
-      "오디오물 출판 및 원판 녹음업"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-25",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "232140": {
     "schemaVersion": 9,
@@ -4720,16 +4956,14 @@
   "204270": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "제이앤티씨는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260323",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001603",
     "detailSector": "전자부품 제조업",
@@ -4738,21 +4972,23 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-08-31",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "022100": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "포스코DX는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260417",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260417000431",
     "detailSector": "건축기술, 엔지니어링 및 관련 기술 서비스업",
@@ -4761,7 +4997,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-09-03",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "0126Z0": {
     "schemaVersion": 9,
@@ -4828,11 +5068,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260319",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260319000680",
-    "detailSector": "우주항공 소재·공급망",
+    "detailSector": "제약·바이오",
     "sectorTags": [
-      "우주항공",
-      "특수합금",
-      "공급망"
+      "제약·바이오"
     ],
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-09-16",
@@ -4862,34 +5100,27 @@
   "356860": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "티엘비는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체",
-        "HBM",
-        "건설·플랜트",
-        "소프트웨어·플랫폼",
-        "유통·커머스",
-        "통신",
-        "전력·에너지"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260320",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260320000683",
-    "detailSector": "메모리 반도체",
+    "detailSector": "기타",
     "sectorTags": [
-      "메모리 반도체",
-      "반도체 검사·테스트",
-      "반도체 장비",
-      "반도체 소재·부품"
+      "기타"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "LOW",
     "updatedAt": "2026-10-02",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "003160": {
     "schemaVersion": 9,
@@ -4946,9 +5177,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260604",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260604000337",
-    "detailSector": "전자부품 제조업",
+    "detailSector": "기타",
     "sectorTags": [
-      "전자부품 제조업"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-10-02",
@@ -4988,9 +5219,9 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260316",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260316000487",
-    "detailSector": "전자부품 제조업",
+    "detailSector": "기타",
     "sectorTags": [
-      "전자부품 제조업"
+      "기타"
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-10-02",
@@ -4999,16 +5230,14 @@
   "252990": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "샘씨엔에스는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260316",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260316001120",
     "detailSector": "전자부품 제조업",
@@ -5017,7 +5246,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-10-06",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "327260": {
     "schemaVersion": 9,
@@ -5038,30 +5271,25 @@
     "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001224",
-    "detailSector": "반도체 검사·테스트",
+    "detailSector": "반도체",
     "sectorTags": [
-      "반도체 검사·테스트",
-      "반도체 장비",
-      "반도체 소재·부품",
-      "자동차 부품"
+      "반도체"
     ],
-    "sectorConfidence": "HIGH",
+    "sectorConfidence": "MEDIUM",
     "updatedAt": "2026-10-06",
     "failed": false
   },
   "006110": {
     "schemaVersion": 9,
     "businessProfile": {
-      "summary": "삼아알미늄는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
-      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
-      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
-      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
-      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
-      "segments": [
-        "메모리 반도체"
-      ]
+      "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+      "products": "확인 필요",
+      "customers": "확인 필요",
+      "revenue": "확인 필요",
+      "drivers": "확인 필요",
+      "segments": []
     },
-    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelSource": "기존 자동설명 검증 보류 · KRX 업종만 유지",
     "businessModelReportDate": "20260318",
     "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318000860",
     "detailSector": "1차 비철금속 제조업",
@@ -5070,7 +5298,11 @@
     ],
     "sectorConfidence": "LOW",
     "updatedAt": "2026-10-06",
-    "failed": false
+    "failed": false,
+    "businessModelPreviousSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelEasy": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+    "businessModelDataStatus": "DEGRADED",
+    "classificationReviewRequired": true
   },
   "020150": {
     "schemaVersion": 9,

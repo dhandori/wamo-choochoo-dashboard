@@ -15,7 +15,7 @@ const REPO = repoSlug();
 const WORKFLOW_URL = `https://github.com/${REPO}/actions/workflows/main.yml`;
 const API = `https://api.github.com/repos/${REPO}/actions/workflows/main.yml/runs?event=workflow_dispatch&per_page=5`;
 
-let status = null, statusAt = 0, statusTimer = null, pollTimer = null, onDone = () => {}, getMarketStatus = () => null;
+let status = null, statusAt = 0, statusTimer = null, pollTimer = null, onDone = () => {}, getMarketStatus = () => null, getAppliedState = () => null;
 let gh = { etag: null, runs: null, limited: false };
 let pending = readPending();
 
@@ -59,7 +59,7 @@ function phaseFor(market) {
   return null;
 }
 
-const LABEL = { waiting: '실행 확인 대기', queued: '실행 대기', running: '수집 중', applying: '완료 · 반영 중', done: '완료', failed: '실패' };
+const LABEL = { waiting: '실행 확인 대기', queued: '실행 대기', running: '수집 중', applying: '완료 · 반영 중', done: '완료', unchanged: '새 결과 없음', failed: '실패' };
 
 export function runnerButton(market) {
   const box = el('span', null, 'run-now'); box.dataset.market = market;
@@ -81,9 +81,10 @@ function paint(box) {
     if (p.market === market && pending) box.append(cancelLink());
     return;
   }
-  if (p && p.phase === 'done') {
-    b.disabled = true; b.textContent = '✓ 갱신 완료'; b.classList.add('ok'); box.append(b);
+  if (p && ['done', 'unchanged'].includes(p.phase)) {
+    b.disabled = true; b.textContent = p.phase === 'done' ? '✓ 갱신 완료' : '실행 완료 · 새 결과 없음'; if (p.phase === 'done') b.classList.add('ok'); box.append(b);
     if (p.note) box.append(el('span', p.note, 'run-reason'));
+    if (p.phase === 'unchanged' && p.runUrl) box.append(linkTo(p.runUrl, '실행 기록'));
     return;
   }
   if (p && p.phase === 'failed') {
@@ -123,9 +124,9 @@ function openDialog(market, reason) {
   const go = el('button', 'GitHub 실행창 열기', 'run-go'); go.type = 'button';
   const cancel = el('button', '닫기'); cancel.type = 'button'; cancel.onclick = () => d.close();
   go.onclick = async () => {
-    const existing = await activeRun();
+    const existing = await activeRun(market);
     if (existing) {
-      savePending({ market, at: Date.now(), phase: existing.status === 'in_progress' ? 'running' : 'queued', runId: existing.id, runUrl: existing.html_url });
+      savePending({ market, at: Date.now(), phase: existing.status === 'in_progress' ? 'running' : 'queued', runId: existing.id, runUrl: existing.html_url, startedAt: parse(existing.run_started_at || existing.created_at) });
       d.close(); repaint(); schedulePoll(5000); return;
     }
     window.open(WORKFLOW_URL, '_blank', 'noopener');
@@ -151,9 +152,21 @@ async function fetchRuns() {
   } catch { return null; }
 }
 
-async function activeRun() {
+function targetsMarket(run, market) {
+  const match = /^WAMO · (KR|US|both) · 게시$/.exec(run.display_title || '');
+  return !!match && (match[1] === market || match[1] === 'both') && (!run.head_branch || run.head_branch === 'main');
+}
+function selectRun(runs, request, report) {
+  if (request.runId) return (runs || []).find(r => String(r.id) === String(request.runId)) || null;
+  // Published per-market run identity also supports older workflow titles.
+  const reportIsNew = (parse(report.attemptedAt) || 0) >= request.at;
+  return (runs || []).filter(r => (parse(r.created_at) || 0) >= request.at &&
+    (targetsMarket(r, request.market) || (reportIsNew && report.runUrl === r.html_url)))
+    .sort((a, b) => parse(a.created_at) - parse(b.created_at))[0] || null;
+}
+async function activeRun(market) {
   const runs = await fetchRuns();
-  return (runs || []).find(r => ['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(r.status)) || null;
+  return (runs || []).find(r => targetsMarket(r, market) && ['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(r.status)) || null;
 }
 
 async function fetchStatus() {
@@ -169,7 +182,7 @@ async function poll() {
   if (!pending) return;
   if (document.hidden) return schedulePoll(60000);
   const age = Date.now() - pending.at;
-  if (pending.phase === 'done') {
+  if (['done', 'unchanged'].includes(pending.phase)) {
     if (Date.now() - (pending.doneAt || pending.at) > 10 * 60000) savePending(null);
     repaint(); if (pending) schedulePoll(60000); return;
   }
@@ -186,8 +199,7 @@ async function poll() {
   if (checkGithub) {
     const runs = await fetchRuns();
     pending.lastGh = Date.now();
-    run = (runs || []).filter(r => Date.parse(r.created_at) >= pending.at - 120000).sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))[0]
-      || (pending.runId && (runs || []).find(r => r.id === pending.runId)) || null;
+    run = selectRun(runs, pending, s);
   }
   let next = { ...pending };
   if (run) {
@@ -196,23 +208,37 @@ async function poll() {
     else next.phase = run.status === 'in_progress' ? 'running' : 'queued';
   }
   const attempted = parse(s.attemptedAt), success = parse(s.lastSuccessAt);
-  if (s.status === 'RUNNING' && attempted && attempted >= pending.at - 120000) next.phase = 'running';
-  if (success && success >= pending.at - 60000 && s.status !== 'RUNNING') next.phase = 'applying';
-  if (next.phase === 'applying') {
+  const started = pending.startedAt || pending.at;
+  const matchedReport = next.runId && s.runUrl === next.runUrl && attempted >= started - 5000;
+  if (run?.status === 'completed' && run.conclusion !== 'success') { next.phase = 'failed'; next.failedAt = Date.now(); }
+  else if (matchedReport && s.status === 'RUNNING') next.phase = 'running';
+  else if (matchedReport && s.status === 'FAILED') { next.phase = 'failed'; next.failedAt = Date.now(); }
+  else if (matchedReport && ['PASS', 'WARNING'].includes(s.status) && success >= attempted) {
+    next.phase = 'applying';
     await onDone();
-    const finished = run && run.status === 'completed';
-    if (!refreshReason(pending.market) || (success && success >= pending.at - 60000) || finished) {
-      next.phase = 'done'; next.doneAt = Date.now();
-      next.note = s.partialRerun || (refreshReason(pending.market) ? `실행은 끝났지만 아직 ${refreshReason(pending.market)}` : '');
+    const applied = getAppliedState(pending.market);
+    const f = s.freshness || {};
+    const verified = f.expectedSession && s.asOf === f.expectedSession && Number(f.currentCount) >= Number(s.count);
+    if (verified && !refreshReason(pending.market) && applied && applied.status === 'CURRENT'
+      && applied.asOf === s.asOf && parse(applied.generatedAt) >= success) {
+      next.phase = 'done'; next.doneAt = Date.now(); next.note = s.partialRerun || '';
     }
+  } else if (run?.status === 'completed' && run.conclusion === 'success') {
+    // The workflow can intentionally skip a market already collected today.
+    // Allow publication time before reporting that no new result appeared.
+    next.completedSeenAt = pending.completedSeenAt || Date.now();
+    if (Date.now() - next.completedSeenAt >= 90000) {
+      next.phase = 'unchanged'; next.doneAt = Date.now();
+      next.note = refreshReason(pending.market) || '이 시장의 새 수집 결과가 없습니다. 실행 기록을 확인하세요.';
+    } else next.phase = 'applying';
   }
   savePending(next);
   repaint();
   schedulePoll(next.phase === 'waiting' ? 20000 : 30000);
 }
 
-export function initRunner({ done, marketStatus }) {
-  onDone = done || onDone; getMarketStatus = marketStatus || getMarketStatus;
+export function initRunner({ done, marketStatus, appliedState }) {
+  onDone = done || onDone; getMarketStatus = marketStatus || getMarketStatus; getAppliedState = appliedState || getAppliedState;
   const tick = async () => { if (!document.hidden) { await fetchStatus(); repaint(); } clearTimeout(statusTimer); statusTimer = setTimeout(tick, 60000); };
   tick();
   if (pending) schedulePoll(3000);

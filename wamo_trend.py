@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from statistics import median
 import json
 import math
@@ -35,7 +36,7 @@ HORIZONS = (5, 20, 60)
 SIGNALS = {
     'high52': {'label': '52주 신고가 돌파', 'side': 'buy',
                'why': '20거래일 만에 처음으로 종가가 52주 최고 종가를 넘은 날'},
-    'stage2': {'label': 'Stage 2 진입', 'side': 'buy',
+    'stage2': {'label': '이평선 상승 정렬 진입', 'side': 'buy',
                'why': '이동평균선이 상승 정렬로 바뀐 첫날 (10거래일 안에 같은 신호 없음)'},
     'rsLead': {'label': 'RS선 선행 신고가', 'side': 'buy',
                'why': '주가는 고점 아래인데 지수 대비 강도(RS선)가 먼저 52주 신고가'},
@@ -212,7 +213,7 @@ def build_universe(payload, market):
         out.append({'id': f'{market}:{symbol}', 'symbol': symbol, 'ticker': stock.get('ticker') or symbol,
                     'name': stock.get('name') or symbol, 'industry': industry_of(stock, market),
                     'marketCap': cap, 'rows': rows, 'closes': [r['close'] for r in rows],
-                    'rsPercentile': num(stock.get('oneilRsPercentile')) or num(stock.get('rsPercentile')),
+                    'rsPercentile': num(stock.get('rsPercentile')),
                     'vcp': stock.get('vcp') if isinstance(stock.get('vcp'), dict) else None})
     return asof, out
 
@@ -324,7 +325,7 @@ def breadth(universe, sessions=60):
     ago5 = series[-6] if len(series) >= 6 else None
     ago20 = series[-21] if len(series) >= 21 else None
     return {'status': 'OK', 'above50Pct': last['above50'], 'above200Pct': last['above200'],
-            'denominator50': last['n'],
+            'denominator50': last['n'], 'above50Count': by_date[last['date']][0],
             'above50Change5d': rnd(last['above50'] - ago5['above50'], 1) if ago5 else None,
             'above50Change20d': rnd(last['above50'] - ago20['above50'], 1) if ago20 else None,
             'series': [{'date': p['date'], 'above50': p['above50'], 'above200': p['above200']} for p in series]}
@@ -448,8 +449,8 @@ def weather(idx, dist, br, hl, synthetic, secondary=None):
             f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail} 있었어요.' + (' 6번 이상은 경고 신호예요.' if c >= 6 else ''))
     if br.get('status') == 'OK':
         p = br['above50Pct']
-        add('breadth', '시장 체력', 1 if p >= 60 else -1 if p < 40 else 0,
-            f'전체 종목 중 {p:.0f}%가 50일선 위에 있어요.')
+        add('breadth', '추세 확산도', 1 if p >= 60 else -1 if p < 40 else 0,
+            f"스크리닝 {br.get('denominator50', '—')}종목 중 {br.get('above50Count', '—')}종목({p:.0f}%)이 50일선 위입니다.")
     if hl.get('status') == 'OK':
         h, l, n = hl['newHighs'], hl['newLows'], max(1, hl.get('denominator') or 1)
         # A handful of new highs in a large universe is not broad leadership.
@@ -463,11 +464,11 @@ def weather(idx, dist, br, hl, synthetic, secondary=None):
     if measured < 2:
         level, label, advice = 'UNKNOWN', '판단 보류', '자료가 부족해서 시장 날씨를 정하지 못했어요.'
     elif total >= 2:
-        level, label, advice = 'GREEN', '공격 가능', '추세가 좋아요. 신고가 돌파 종목을 적극적으로 볼 때예요.'
+        level, label, advice = 'GREEN', '상승 우세', '지수 추세와 확산 지표가 대체로 양호합니다.'
     elif total <= -2:
-        level, label, advice = 'RED', '현금 비중 확대', '시장이 약해요. 새로 사기보다 지키는 게 먼저예요.'
+        level, label, advice = 'RED', '하락 우세', '지수 추세와 확산 지표가 약합니다. 추세 이탈 여부를 확인하세요.'
     else:
-        level, label, advice = 'YELLOW', '조심', '좋고 나쁜 신호가 섞여 있어요. 사더라도 조금씩, 확실한 종목만요.'
+        level, label, advice = 'YELLOW', '혼조', '상승과 하락 신호가 혼재합니다. 개별 종목과 지수 흐름을 함께 확인하세요.'
     if synthetic:
         advice += ' (지수 자료가 없어 화면 속 종목들의 중앙값으로 대신 계산했어요.)'
     return {'level': level, 'label': label, 'advice': advice, 'score': total, 'factors': factors}
@@ -496,7 +497,7 @@ def analyze_stocks(universe, bench):
         rs_ago = pct_ago.get(s['id'])
         base = {'id': s['id'], 'symbol': s['symbol'], 'name': s['name'], 'industry': s['industry'],
                 'close': rnd(closes[i], 4), 'changePct': rnd(chg), 'highDistancePct': rnd(dist),
-                'rs': rs_now if rs_now is not None else s['rsPercentile'], 'stage': stage,
+                'rs': s['rsPercentile'], 'rs12m': rs_now, 'stage': stage,
                 'marketCap': s['marketCap']}
         s['stage'] = stage
         s['highDistancePct'] = dist
@@ -541,14 +542,14 @@ def analyze_stocks(universe, bench):
                                     'detail': f'{when} 50일선 아래로 내려갔어요.'})
                 break
         if stage == 4:
-            reasons.append({'code': 'STAGE4', 'severity': 3, 'label': 'Stage 4 (하락 단계)',
+            reasons.append({'code': 'STAGE4', 'severity': 3, 'label': '이평 추세 하락',
                             'detail': '200일선 아래이고 200일선도 내려가는 중이에요.'})
         elif stage == 3 and recent_stage2:
-            reasons.append({'code': 'STAGE3', 'severity': 1, 'label': 'Stage 3 (고점 다지기)',
-                            'detail': '상승 정렬이 무너지고 200일선 상승이 멈추고 있어요.'})
+            reasons.append({'code': 'STAGE3', 'severity': 1, 'label': '이평 추세 약화',
+                            'detail': '종가가 50일선 아래이거나, 50일선이 150일선 아래로 내려가 상승 정렬이 약해졌습니다.'})
         if rs_now is not None and rs_ago is not None and rs_ago - rs_now >= 20 and rs_now < 70:
-            reasons.append({'code': 'RS_DROP', 'severity': 1, 'label': 'RS 급락',
-                            'detail': f'상대강도 순위가 5거래일 만에 {rs_ago:.0f} → {rs_now:.0f}로 떨어졌어요.'})
+            reasons.append({'code': 'RS_DROP', 'severity': 1, 'label': '12개월 RS 하락',
+                            'detail': f'12개월 수익률 기반 상대강도 순위가 5거래일 만에 {rs_ago:.0f} → {rs_now:.0f}로 떨어졌어요.'})
         if n > 6 and aligned(closes, i - 5) and aligned(closes, i) is False:
             reasons.append({'code': 'ALIGN', 'severity': 1, 'label': '정배열 붕괴',
                             'detail': '주가 > 20일 > 60일 > 120일 > 200일선 순서가 이번 주에 깨졌어요.'})
@@ -717,7 +718,7 @@ def upcoming_earnings(cache, universe, asof, horizon=14):
     for d, rows in sorted((cache.get('days') or {}).items()):
         day = date.fromisoformat(d)
         until = (day - start).days
-        if until <= 0 or until > horizon:
+        if until < 0 or until > horizon:
             continue
         for r in rows:
             s = by_symbol.get(r['symbol']) or by_symbol.get(r['symbol'].replace('.', '-'))
@@ -781,7 +782,7 @@ def write_json(path, value, compact=False):
     tmp.replace(path)
 
 
-def build_market(root, market, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index):
+def build_market(root, market, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index, now=None):
     payload = extract_old_payload((root / PAGES[market]).read_text(encoding='utf-8'))
     asof, universe = build_universe(payload, market)
     if not asof or len(universe) < 30:
@@ -826,12 +827,13 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
     earnings = {'status': 'UNAVAILABLE', 'upcoming': [],
                 'note': '한국은 실적발표 예정일을 한곳에서 공식으로 모아 주는 자료가 없어 아직 표시하지 않아요. 공시(DART) 탭에서 확인하세요.'}
     if market == 'US':
+        calendar_date = (now or datetime.now(timezone.utc)).astimezone(ZoneInfo('America/New_York')).date().isoformat()
         calls = 0
         if fetch_network:
-            earnings_cache, calls = refresh_earnings_cache(earnings_cache, asof)
-        upcoming = upcoming_earnings(earnings_cache, universe, asof)
-        earnings = {'status': 'OK' if earnings_cache.get('days') else 'UNAVAILABLE', 'upcoming': upcoming[:80],
-                    'total': len(upcoming), 'fetchedAt': earnings_cache.get('fetchedAt'), 'newCalls': calls,
+            earnings_cache, calls = refresh_earnings_cache(earnings_cache, calendar_date)
+        upcoming = upcoming_earnings(earnings_cache, universe, calendar_date)
+        earnings = {'status': 'OK' if earnings_cache.get('days') else 'UNAVAILABLE', 'upcoming': upcoming, 'calendarAsOf': calendar_date, 'timeZone': 'America/New_York',
+                    'total': len(upcoming), 'inTrendCount': sum(x['inTrend'] for x in upcoming), 'fetchedAt': earnings_cache.get('fetchedAt'), 'newCalls': calls,
                     'source': 'Nasdaq 실적 일정 (공개 자료)',
                     'note': '발표 날짜는 회사 사정으로 바뀔 수 있어요. 발표 전후로 주가가 크게 움직일 수 있어요.'}
     charts = chart_payload(universe, bench, asof, market)
@@ -842,10 +844,10 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},
         'weather': {**weather(idx, dist, br, hl, synthetic, secondary), 'distribution': dist, 'breadth': br, 'highsLows': hl},
-        'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
+        'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders,
                       'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),
-                         'items': warnings[:80],
+                         'items': warnings,
                          'note': '최근 20거래일 안에 상승 추세였던 종목만 봐요. 경고는 팔라는 명령이 아니라 확인하라는 신호예요.'},
         'earnings': earnings,
         'scorecard': scorecard(book),
@@ -862,7 +864,7 @@ def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
     built = []
     for market in markets:
         try:
-            block, earnings_cache, charts = build_market(root, market, log, earnings_cache, fetch_network)
+            block, earnings_cache, charts = build_market(root, market, log, earnings_cache, fetch_network, now=now)
             write_json(root / f'wamo_chart_{market}.json', charts, compact=True)
             block['builtAt'] = now.isoformat()
             result['markets'][market] = block

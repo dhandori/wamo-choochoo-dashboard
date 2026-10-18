@@ -973,12 +973,12 @@ def enrich_sec(raw):
             stock.update(old)
             stock["secStatus"] = "CACHED"
             cached_count += 1
+        elif not fast and len(nasdaq_selected) < NASDAQ_PROFILE_TARGET_MAX:
+            nasdaq_selected.append((stock, symbol))
         elif old.get("secStatus") in ("NASDAQ_FALLBACK", "NASDAQ_CACHED"):
             stock.update(old)
             stock["secStatus"] = "NASDAQ_CACHED"
             nasdaq_cached_count += 1
-        elif not fast and len(nasdaq_selected) < NASDAQ_PROFILE_TARGET_MAX:
-            nasdaq_selected.append((stock, symbol))
         else:
             _apply_sec_pending_profile(
                 stock,
@@ -1006,10 +1006,15 @@ def enrich_sec(raw):
                         stock.update(enriched)
                         cache[symbol] = enriched
                     except Exception as fallback_exc:
-                        _apply_sec_pending_profile(
-                            stock, "ERROR",
-                            "이번 갱신에서 SEC와 Nasdaq 회사정보를 모두 확보하지 못했습니다.",
-                        )
+                        if prior.get("secStatus") in ("NASDAQ_FALLBACK", "NASDAQ_CACHED"):
+                            stock.update(prior)
+                            stock["secStatus"] = "NASDAQ_CACHED"
+                            nasdaq_cached_count += 1
+                        else:
+                            _apply_sec_pending_profile(
+                                stock, "ERROR",
+                                "이번 갱신에서 SEC와 Nasdaq 회사정보를 모두 확보하지 못했습니다.",
+                            )
                         errors.append({"ticker": symbol, "provider": "Nasdaq fallback", "error": core.compact_provider_error(str(fallback_exc))})
                 errors.append({"ticker": symbol, "error": core.compact_provider_error(str(exc))})
             if i % 10 == 0 or i == len(futures):
@@ -1038,6 +1043,15 @@ def enrich_sec(raw):
                     errors.append({"ticker": symbol, "provider": "Nasdaq", "error": core.compact_provider_error(str(exc))})
                 if i % 20 == 0 or i == len(futures):
                     print("  Nasdaq profile", i, "/", len(futures))
+    for stock in raw:
+        if stock.get("secStatus") in ("NASDAQ_CACHED", "NASDAQ_FALLBACK"):
+            try:
+                age = (date.today() - date.fromisoformat(str(stock.get("profileFetchedAt"))[:10])).days
+            except (TypeError, ValueError):
+                age = None
+            stock["profileAgeDays"] = age
+            stock["profileIsStale"] = age is None or age >= NASDAQ_PROFILE_CACHE_DAYS
+            stock["profileStatus"] = "STALE" if stock["profileIsStale"] else "CACHED" if stock["secStatus"] == "NASDAQ_CACHED" else "LIVE"
     _save_cache(cache)
     sec_usable = sum(x.get("secStatus") in ("LIVE", "CACHED") for x in raw)
     nasdaq_usable = sum(x.get("secStatus") in ("NASDAQ_FALLBACK", "NASDAQ_CACHED") for x in raw)

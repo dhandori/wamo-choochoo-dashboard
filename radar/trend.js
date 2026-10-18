@@ -1,11 +1,13 @@
 import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261018-2';
 // Trend-following view: market weather, RS-line leaders, sell warnings,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
-const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
+const LIGHT = { GREEN: '상승 우세', YELLOW: '혼조', RED: '하락 우세', UNKNOWN: '판단 보류' };
 // [key, full label, short label for phones]
-const SUBTABS = [['weather', '시장 날씨', '날씨'], ['rs', 'RS선 선행 신고가', 'RS선'], ['sell', '팔 때 경고', '팔 때'], ['earnings', '실적발표 임박', '실적'], ['score', '신호 성적표', '성적표']];
+const SUBTABS = [['weather', '시장 국면', '시장 국면'], ['rs', 'RS선 신고가', 'RS선'], ['sell', '추세 이탈 경고', '이탈 경고'], ['earnings', '실적 일정', '실적 일정'], ['score', '신호 통계', '신호 통계']];
 const SUB_KEYS = SUBTABS.map(([k]) => k);
 let data = null, loading = null, failed = false, sellFilter = 'HIGH';
+const listPages = new Map();
+const PAGE_SIZE = 30;
 let subtab = SUB_KEYS.includes(new URLSearchParams(location.search).get('sub')) ? new URLSearchParams(location.search).get('sub') : 'weather';
 export const getSubtab = () => subtab;
 export function setSubtab(key) { if (SUB_KEYS.includes(key)) subtab = key; }
@@ -52,7 +54,7 @@ export function renderWeather(container, market, onOpen) {
     container.hidden = !failed && !data;
     if (failed || data) {
       container.className = 'tr-weather level-unknown';
-      container.append(el('span', null, 'tr-dot'), el('div', '시장 날씨 자료를 준비하고 있어요. 다음 자동 갱신 때 채워집니다.', 'tr-weather-text'));
+      container.append(el('span', null, 'tr-dot'), el('div', '시장 국면 자료를 준비하고 있어요. 다음 자동 갱신 때 채워집니다.', 'tr-weather-text'));
     }
     return;
   }
@@ -60,7 +62,7 @@ export function renderWeather(container, market, onOpen) {
   container.hidden = false;
   container.className = `tr-weather level-${(w.level || 'UNKNOWN').toLowerCase()}`;
   const head = el('div', null, 'tr-weather-head');
-  head.append(el('span', null, 'tr-dot'), el('span', '시장 날씨', 'tr-weather-kicker'), el('strong', w.label || '판단 보류'));
+  head.append(el('span', null, 'tr-dot'), el('span', '시장 국면', 'tr-weather-kicker'), el('strong', LIGHT[w.level] || '판단 보류'));
   const text = el('div', w.advice || '', 'tr-weather-text');
   const chips = el('div', null, 'tr-chips');
   const dist = w.distribution || {}, br = w.breadth || {}, hl = w.highsLows || {}, idx = b.index || {};
@@ -85,7 +87,7 @@ export function renderWeather(container, market, onOpen) {
   chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
   chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히', false, onOpen, 'tr-more');
-  more.setAttribute('aria-label', '시장 날씨 자세히 보기');
+  more.setAttribute('aria-label', '시장 국면 자세히 보기');
   head.append(more);
   container.append(head, text, chips);
 }
@@ -95,12 +97,12 @@ export function renderTrendMetrics(container, market) {
   const b = block(market);
   container.replaceChildren();
   const add = (label, value, sub) => { const box = el('div', null, 'metric'); box.append(el('span', label), el('strong', value), el('small', sub)); container.append(box); };
-  if (!b) { add('시장 날씨', '—', '자료 준비 중'); return; }
-  add('시장 날씨', LIGHT[b.weather?.level] || '—', `점수 ${b.weather?.score ?? '—'} · ${b.asOf} 종가`);
+  if (!b) { add('시장 국면', '—', '자료 준비 중'); return; }
+  add('시장 국면', LIGHT[b.weather?.level] || '—', `점수 ${b.weather?.score ?? '—'} · ${b.asOf} 종가`);
   add('RS선 선행 신고가', `${b.rsLeaders?.leadingCount ?? 0}`, `RS선 신고가 전체 ${b.rsLeaders?.count ?? 0}종목`);
   add('강한 경고', `${b.sellWarnings?.highCount ?? 0}`, `주의 포함 ${b.sellWarnings?.count ?? 0}종목`);
-  const up = b.earnings?.upcoming || [];
-  add('실적발표 14일 내', b.earnings?.status === 'OK' ? `${b.earnings.total ?? up.length}` : '—', b.earnings?.status === 'OK' ? `추세 종목 ${up.filter(x => x.inTrend).length}` : market === 'KR' ? '한국은 미제공' : '일정 자료 대기');
+  const up = currentEarnings(b.earnings);
+  add('실적 일정 · 14일 내', b.earnings?.status === 'OK' ? `${up.length}` : '—', b.earnings?.status === 'OK' ? `추세 종목 ${up.filter(x => x.inTrend).length}` : market === 'KR' ? '한국은 미제공' : '일정 자료 대기');
 }
 
 // ------------------------------------------------------------ detail view
@@ -129,7 +131,7 @@ function weatherDetail(b) {
   c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : '가격: 두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평).'));
   // Distribution days
   const dist = w.distribution || {}, c2 = el('article', null, 'tr-card');
-  c2.append(el('h3', '분산일 (기관이 판 흔적)'));
+  c2.append(el('h3', '분산일 · 거래량 증가 하락일'));
   const distRows = [[idx.label, dist], [idx2?.label, idx2?.distribution]].filter(([, d]) => d?.status === 'OK');
   if (distRows.length) {
     distRows.forEach(([label, d]) => {
@@ -144,7 +146,7 @@ function weatherDetail(b) {
   c2.append(help(dist.note || ''));
   // Breadth
   const br = w.breadth || {}, c3 = el('article', null, 'tr-card');
-  c3.append(el('h3', '시장 체력 (50일선 위 종목 비율)'));
+  c3.append(el('h3', '추세 확산도 · 50일선 위 비율'));
   if (br.status === 'OK') {
     const big = el('div', null, 'tr-big'); big.append(el('b', `${fmt(br.above50Pct, 0)}%`), el('span', `5일 ${br.above50Change5d > 0 ? '+' : ''}${fmt(br.above50Change5d, 0)}%p`, tone(br.above50Change5d))); c3.append(big);
     const s = br.series || [];
@@ -153,7 +155,7 @@ function weatherDetail(b) {
     [['var(--green)', `50일선 위 ${fmt(br.above50Pct, 0)}%`, ''], ['#9aacc3', `200일선 위 ${fmt(br.above200Pct, 0)}%`, 'dash']].forEach(([c, t, cls]) => { const k = el('span', null, `pc-key ${cls}`); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
     c3.append(lg);
   } else c3.append(el('p', '자료 없음'));
-  c3.append(help('60% 넘으면 건강, 40% 아래면 약한 시장이에요. 지수는 오르는데 이 비율이 떨어지면 소수 대형주만 끌고 가는 장이에요.'));
+  c3.append(help(`스크리닝 ${br.denominator50 ?? '—'}종목 중 ${br.above50Count ?? '—'}종목이 50일선 위입니다. 전체 상장시장 비율이 아닙니다. 60% 이상은 확산 양호, 40% 미만은 확산 약화로 구분합니다.`));
   // Highs vs lows
   const hl = w.highsLows || {}, c4 = el('article', null, 'tr-card');
   c4.append(el('h3', '신고가 vs 신저가'));
@@ -193,10 +195,12 @@ function fillMiniCharts(content, market) {
 
 function emptyBox(text) { return el('div', text, 'empty'); }
 
-function rsSection(b, openStock) {
+function rsSection(b, openStock, rerender) {
   const r = b.rsLeaders || {}, wrap = el('div');
-  wrap.append(help((r.note || '') + ' 최근 5거래일 안에 RS선 신고가를 찍은 종목이고, 표시의 "오늘/며칠 전"이 그 날짜예요.'));
-  const items = r.items || [];
+  wrap.append(help('최근 5거래일 내 지수 대비 RS선이 52주 고점을 경신한 종목입니다. RS 점수는 상세 화면과 같은 5·20·60일 수익률 순위입니다. 이평 추세는 50·150·200일선 정렬이며, 52주 고·저점 조건을 포함한 Stage 2와 구분합니다.'));
+  const all = r.items || [];
+  const pageKey = `${b.asOf}:${b.universe}:rs`;
+  const items = pageSlice(all, pageKey);
   if (!items.length) return wrap.append(emptyBox('오늘은 RS선 신고가 종목이 없어요.')), wrap;
   const list = el('div', null, 'tr-list');
   items.forEach(x => {
@@ -206,13 +210,13 @@ function rsSection(b, openStock) {
     const tag = el('span', `${x.leading ? '주가보다 먼저' : '주가와 함께'} · ${when}`, `tr-tag ${x.leading ? 'lead' : ''}`);
     tag.title = `RS선 1년 신고가: ${when}`;
     const facts = el('div', null, 'tr-facts');
-    [['종가 변화', pct(x.changePct), tone(x.changePct)], ['고점까지', isNum(x.highDistancePct) ? `${fmt(x.highDistancePct)}%` : '—'], ['RS 순위', fmt(x.rs, 0)], ['단계', x.stage ? `Stage ${x.stage}` : '—']]
+    [['당일', pct(x.changePct), tone(x.changePct)], ['고점까지', isNum(x.highDistancePct) ? `${fmt(x.highDistancePct)}%` : '—'], ['RS', fmt(x.rs, 0)], ['이평 추세', ({1:'중립',2:'상승 정렬',3:'약화',4:'하락'})[x.stage] || '—']]
       .forEach(([k, v, c]) => { const f = el('span'); f.append(el('small', k), el('b', v, c)); facts.append(f); });
     main.append(tag);
     row.append(main, facts, miniChart(x));
     list.append(row);
   });
-  wrap.append(miniLegend(), list);
+  wrap.append(listPager(all, pageKey, rerender), miniLegend(), list, listPager(all, pageKey, rerender));
   return wrap;
 }
 
@@ -222,14 +226,16 @@ function sellSection(b, openStock, rerender) {
   const filters = el('div', null, 'tr-seg');
   [['HIGH', `강한 경고 ${s.highCount ?? 0}`], ['ALL', `전체 ${s.count ?? 0}`]].forEach(([k, t]) => filters.append(btn(t, sellFilter === k, () => { sellFilter = k; rerender(); })));
   wrap.append(filters);
-  const items = (s.items || []).filter(x => sellFilter === 'ALL' || x.severity === 'HIGH');
+  const all = (s.items || []).filter(x => sellFilter === 'ALL' || x.severity === 'HIGH');
+  const pageKey = `${b.asOf}:${b.universe}:sell:${sellFilter}`;
+  const items = pageSlice(all, pageKey);
   if (!items.length) return wrap.append(emptyBox('조건에 맞는 경고가 없어요.')), wrap;
   const list = el('div', null, 'tr-list');
   items.forEach(x => {
     const row = el('article', null, `tr-row sev-${x.severity.toLowerCase()}`);
     const main = el('div', null, 'tr-row-main'); main.append(stockName(x, openStock), el('span', x.severity === 'HIGH' ? '강한 경고' : '주의', `tr-tag ${x.severity === 'HIGH' ? 'bad' : 'warn'}`));
     const facts = el('div', null, 'tr-facts');
-    [['종가 변화', pct(x.changePct), tone(x.changePct)], ['고점까지', isNum(x.highDistancePct) ? `${fmt(x.highDistancePct)}%` : '—'], ['RS 순위', fmt(x.rs, 0)]]
+    [['종가 변화', pct(x.changePct), tone(x.changePct)], ['고점까지', isNum(x.highDistancePct) ? `${fmt(x.highDistancePct)}%` : '—'], ['RS', fmt(x.rs, 0)]]
       .forEach(([k, v, c]) => { const f = el('span'); f.append(el('small', k), el('b', v, c)); facts.append(f); });
     const reasons = el('ul', null, 'tr-reasons');
     x.reasons.forEach(r => { const li = el('li'); li.append(el('b', r.label), el('span', r.detail)); reasons.append(li); });
@@ -237,14 +243,43 @@ function sellSection(b, openStock, rerender) {
     row.append(main, facts, side);
     list.append(row);
   });
-  wrap.append(miniLegend(), list);
+  wrap.append(listPager(all, pageKey, rerender), miniLegend(), list, listPager(all, pageKey, rerender));
   return wrap;
+}
+
+export function earningsDayDistance(date, now = new Date(), timeZone = 'America/New_York') {
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now);
+  const get = type => parts.find(p => p.type === type).value;
+  const today = `${get('year')}-${get('month')}-${get('day')}`;
+  return Math.round((Date.parse(`${date}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86400000);
+}
+export function currentEarnings(earnings, now = new Date()) {
+  return (earnings?.upcoming || []).map(x => ({ ...x, daysUntil: earningsDayDistance(x.date, now, earnings.timeZone || 'America/New_York') }))
+    .filter(x => x.daysUntil >= 0 && x.daysUntil <= 14);
+}
+function pageSlice(items, key) {
+  const page = Math.min(listPages.get(key) || 1, Math.max(1, Math.ceil(items.length / PAGE_SIZE)));
+  listPages.set(key, page);
+  return items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+}
+function listPager(items, key, rerender) {
+  const page = listPages.get(key) || 1, pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const nav = el('nav', null, 'tr-pagination'); nav.setAttribute('aria-label', '신호 목록 페이지');
+  const range = el('span', `${items.length}종목 · ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, items.length)} 표시`, 'tr-page-range');
+  range.tabIndex = -1; range.setAttribute('role', 'status'); range.setAttribute('aria-live', 'polite'); nav.append(range);
+  if (pages > 1) {
+    const go = next => { listPages.set(key, next); rerender(); document.querySelector('.tr-body .tr-page-range')?.focus({ preventScroll: true }); const anchor = document.querySelector('.tr-anchor'); if (anchor?.getBoundingClientRect().top < 0) anchor.scrollIntoView({ block: 'start' }); };
+    const prev = btn('이전', false, () => go(page - 1)), next = btn('다음', false, () => go(page + 1));
+    prev.disabled = page === 1; next.disabled = page === pages;
+    nav.append(prev, el('b', `${page} / ${pages}`), next);
+  }
+  return nav;
 }
 
 function earningsSection(b, openStock) {
   const e = b.earnings || {}, wrap = el('div');
-  wrap.append(help(e.note || ''));
-  const items = e.upcoming || [];
+  wrap.append(help(`발표일과 D-day는 미국 동부 날짜 기준입니다. ${e.note || ''}`));
+  const items = currentEarnings(e);
   if (e.status !== 'OK') return wrap.append(emptyBox(e.note || '실적 일정 자료가 없어요.')), wrap;
   if (!items.length) return wrap.append(emptyBox('앞으로 14일 안에 실적을 발표하는 화면 속 종목이 없어요.')), wrap;
   const byDate = new Map();
@@ -252,23 +287,26 @@ function earningsSection(b, openStock) {
   const list = el('div', null, 'tr-cal');
   for (const [date, rows] of byDate) {
     const day = el('section', null, 'tr-cal-day');
-    const head = el('header'); head.append(el('b', `D-${rows[0].daysUntil}`), el('span', date)); day.append(head);
-    rows.sort((a, c) => Number(c.inTrend) - Number(a.inTrend)).forEach(x => {
+    const head = el('header'); head.append(el('b', rows[0].daysUntil === 0 ? 'D-DAY' : `D-${rows[0].daysUntil}`), el('span', date), el('small', `${rows.length}종목`)); day.append(head);
+    const more = el('details', null, 'tr-cal-more');
+    more.append(el('summary', `나머지 ${Math.max(0, rows.length - 6)}종목 보기`));
+    rows.sort((a, c) => Number(c.inTrend) - Number(a.inTrend)).forEach((x, i) => {
       const row = el('div', null, `tr-cal-row ${x.inTrend ? 'trend' : ''}`);
       row.append(stockName(x, openStock), el('span', x.time, 'tr-time'));
       if (x.inTrend) row.append(el('span', '추세 종목', 'tr-tag lead'));
-      day.append(row);
+      (i < 6 ? day : more).append(row);
     });
+    if (rows.length > 6) day.append(more);
     list.append(day);
   }
-  wrap.append(list);
+  wrap.append(el('p', `${items.length}종목 · ${byDate.size}개 발표일 · 추세 종목 ${items.filter(x => x.inTrend).length}`, 'tr-list-summary'), list);
   if (e.fetchedAt) wrap.append(el('small', `${e.source} · 확인 ${new Date(e.fetchedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST`, 'tr-legend'));
   return wrap;
 }
 
 function scoreSection(b, openStock) {
   const sc = b.scorecard || {}, wrap = el('div');
-  wrap.append(help(sc.note || ''));
+  wrap.append(help((sc.note || '') + ' 30건 미만은 소표본으로 표시하며, 수익률·성공 비율을 일반화하기 어렵습니다.'));
   if (sc.status !== 'OK') return wrap.append(emptyBox('아직 기록된 신호가 없어요. 매일 자동으로 쌓입니다.')), wrap;
   wrap.append(el('p', `${sc.since} 부터 신호 ${sc.eventCount}건 기록 · 5·20·60거래일이 지나야 해당 칸이 채워져요.`, 'tr-sub'));
   const grid = el('div', null, 'tr-score-grid');
@@ -280,7 +318,7 @@ function scoreSection(b, openStock) {
     t.append(head);
     ['5', '20', '60'].forEach(h => {
       const st = s.stats?.[h] || { n: 0 }, tr = el('tr');
-      tr.append(el('td', `${h}거래일`), el('td', `${st.n}`));
+      tr.append(el('td', `${h}거래일`), el('td', `${st.n}${st.n > 0 && st.n < 30 ? ' · 소표본' : ''}`, st.n > 0 && st.n < 30 ? 'tr-small-sample' : ''));
       if (!st.n) tr.append(el('td', '쌓이는 중', 'muted'), el('td', '—'), el('td', '—'));
       else tr.append(el('td', pct(st.avg), tone(st.avg)), el('td', `${fmt(st.hitRate, 0)}%`), el('td', pct(st.avgExcess), tone(st.avgExcess)));
       t.append(tr);
@@ -312,10 +350,10 @@ export function renderTrend(content, market, { openStock, onSubtab }) {
   const anchor = el('div', null, 'tr-anchor');
   const seg = el('nav', null, 'tr-subtabs'); seg.setAttribute('aria-label', '추세 신호 보기');
   const counts = {
-    weather: ({ GREEN: '공격 가능', YELLOW: '조심', RED: '현금 확대' })[b.weather?.level] || '—',
-    rs: b.rsLeaders?.leadingCount ?? 0,
+    weather: ({ GREEN: '상승 우세', YELLOW: '혼조', RED: '하락 우세' })[b.weather?.level] || '—',
+    rs: b.rsLeaders?.count ?? 0,
     sell: b.sellWarnings?.highCount ?? 0,
-    earnings: b.earnings?.status === 'OK' ? (b.earnings.upcoming || []).filter(x => x.inTrend).length : '—',
+    earnings: b.earnings?.status === 'OK' ? currentEarnings(b.earnings).length : '—',
     score: b.scorecard?.eventCount ?? 0,
   };
   const body = el('section', null, 'tr-body');
@@ -323,7 +361,7 @@ export function renderTrend(content, market, { openStock, onSubtab }) {
     seg.querySelectorAll('button').forEach(t => { const on = t.dataset.sub === subtab; t.classList.toggle('active', on); t.setAttribute('aria-pressed', String(on)); });
     body.replaceChildren();
     if (subtab === 'weather') body.append(weatherDetail(b));
-    if (subtab === 'rs') body.append(rsSection(b, openStock));
+    if (subtab === 'rs') body.append(rsSection(b, openStock, draw));
     if (subtab === 'sell') body.append(sellSection(b, openStock, draw));
     if (subtab === 'earnings') body.append(earningsSection(b, openStock));
     if (subtab === 'score') body.append(scoreSection(b, openStock));

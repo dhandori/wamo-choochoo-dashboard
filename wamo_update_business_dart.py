@@ -2864,7 +2864,7 @@ def _make_business_profile(section, sector):
 
 
 
-PROFILE_SCHEMA_VERSION = 9
+PROFILE_SCHEMA_VERSION = 10
 
 def _fetch_naver_company_overview(code):
     """Company-specific overview from NAVER Finance.
@@ -2954,10 +2954,104 @@ def _detected_segments(t):
             out.append(label)
     return out[:7]
 
+# Company identities reviewed as memory manufacturers; a customer, market, or
+# equipment-supplier mention is not evidence that the reporting company makes memory.
+_MEMORY_MANUFACTURERS = {"삼성전자", "SK하이닉스", "에스케이하이닉스"}
+
+
+def _primary_business_text(name, text):
+    """Use statements attributed to this company, excluding market/peer discussion.
+
+    Deliberately conservative: absent an attributed business statement, the upstream
+    KRX industry is preferable to an inferred company business.
+    """
+    sentences = re.split(r"(?<=[.!?。])\s+|[\r\n]+", str(text or ""))
+    subject = re.compile(r"^(?:당사(?:는|의|가)?|우리\s*회사(?:는|의)?|동사(?:는|의)?|"
+                         + re.escape(str(name or "__unknown__")) + r"(?:은|는|의|가))")
+    business = ("사업", "제조", "생산", "판매", "서비스", "개발", "공급", "영위", "제품")
+    own_clauses = []
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if not subject.search(sentence):
+            continue
+        # A reporting-company subject does not attribute every later clause to
+        # that company: "we sell food and monitor Samsung's NAND investment".
+        # Use the first own-business clause only; uncertain mixed attribution
+        # falls back to the upstream industry rather than a peer's industry.
+        clause = re.split(r"(?:하며|하고|이며|이고|하지만|반면에?|그리고|또한)\s*|[,;]", sentence, maxsplit=1)[0]
+        clause = re.split(r"\s+(?:\S+의|고객사|경쟁사|타사|전방산업)(?:\s|$)", clause, maxsplit=1)[0]
+        if any(word in clause for word in ("참고", "동향", "시장규모", "업황", "전망")):
+            continue
+        if any(word in clause for word in business):
+            own_clauses.append(clause)
+    return " ".join(own_clauses)
+
+
+def _memory_manufacturer(name, text):
+    # Do not turn generic DRAM/NAND text into an assertion of primary business.
+    # Other manufacturers require manual verification rather than a keyword guess.
+    return str(name or "").replace(" ", "") in _MEMORY_MANUFACTURERS
+
+
+def _legacy_memory_template(profile):
+    summary = str((profile or {}).get("summary") or "")
+    return "DRAM·NAND 등 메모리 반도체" in summary and any(
+        word in summary for word in ("핵심입니다", "사업이 핵심"))
+
+
+def repair_business_classification(stock, fixed_profiles=None):
+    """Deterministic, price-independent migration of existing company records.
+
+    Mutates only business/classification fields. Existing filing URL/date remain
+    attached as provenance, never presented as a new verified extraction.
+    """
+    before = json.dumps(stock, ensure_ascii=False, sort_keys=True)
+    name = stock.get("name") or ""
+    code = str(stock.get("stock_code") or stock.get("ticker") or "").split(".")[0]
+    profile = stock.get("businessProfile") or {}
+    fixed = _reviewed_profile_override(code) or (fixed_profiles or {}).get(code)
+    if isinstance(fixed, dict) and fixed.get("summary") and not (
+        _legacy_memory_template(fixed) and not _memory_manufacturer(name, "")):
+        if profile != fixed:
+            for current, previous in (("businessModelSource", "businessModelPreviousSource"),
+                                      ("businessModelUrl", "businessModelPreviousUrl"),
+                                      ("businessModelReportDate", "businessModelPreviousReportDate")):
+                if current in stock:
+                    stock.setdefault(previous, stock[current])
+            stock["businessModelSource"] = "WAMO 검수 고정 DB"
+            # These identify the prior extraction, not the replacement text.
+            stock.pop("businessModelUrl", None)
+            stock.pop("businessModelReportDate", None)
+            stock.pop("classificationReviewRequired", None)
+            if stock.get("businessModelDataStatus") == "DEGRADED":
+                stock["businessModelDataStatus"] = "REVIEWED"
+        profile = fixed
+        stock["businessProfile"] = dict(fixed)
+        stock["businessModelEasy"] = fixed["summary"]
+    if _legacy_memory_template(profile) and not _memory_manufacturer(name, ""):
+        stock.setdefault("businessModelPreviousSource", stock.get("businessModelSource"))
+        stock["businessProfile"] = profile = {
+            "summary": "기존 자동 사업설명에서 타사·산업 언급 혼입 가능성이 확인되어 재검증 중입니다.",
+            "products": "확인 필요", "customers": "확인 필요", "revenue": "확인 필요",
+            "drivers": "확인 필요", "segments": [],
+        }
+        stock["businessModelEasy"] = profile["summary"]
+        stock["businessModelSource"] = "기존 자동설명 검증 보류 · KRX 업종만 유지"
+        stock["businessModelDataStatus"] = "DEGRADED"
+        stock["classificationReviewRequired"] = True
+    upstream = stock.get("krxSector") or ""
+    # Never reuse the previously inferred sector as an upstream classification.
+    detail, tags, confidence = _fixed_profile_detail_sector(name, upstream, profile)
+    stock.update(detailSector=detail, sector=detail, sectorTags=tags, sectorConfidence=confidence)
+    return before != json.dumps(stock, ensure_ascii=False, sort_keys=True)
+
+
 def _profile_from_business_summary(name, sector, bullets):
-    t = " ".join(bullets or [])
+    t = _primary_business_text(name, " ".join(bullets or []))
     tpl = _sector_profile_template(sector)
     segs = _detected_segments(t)
+    if not _memory_manufacturer(name, t):
+        segs = [segment for segment in segs if segment != "메모리 반도체"]
 
     # Cosmetics ODM: highly specific model.
     if "화장품" in t and _contains_any(t, ["odm","oem"]):
@@ -2988,7 +3082,7 @@ def _profile_from_business_summary(name, sector, bullets):
             "segments": segs or ["보험"],
         }
 
-    if _contains_any(t, ["dram","nand","메모리 반도체"]):
+    if _memory_manufacturer(name, t) and _contains_any(t, ["dram","nand","메모리 반도체"]):
         return {
             "summary": f"{name}는 DRAM·NAND 등 메모리 반도체를 생산·판매하는 사업이 핵심입니다.",
             "products": "DRAM·NAND와 HBM 등 고부가 메모리 제품",
@@ -3196,10 +3290,12 @@ def _best_sentence(section, weighted_words, bad_words=None):
     return ranked[0][2] if ranked else ""
 
 def _profile_from_dart_report(name, sector, report_text):
-    section = _business_section_robust(report_text)
-    whole = re.sub(r"\s+", " ", section)
+    section = _primary_business_text(name, _business_section_robust(report_text))
+    whole = section
     tpl = _sector_profile_template(sector)
     segs = _detected_segments(whole)
+    if not _memory_manufacturer(name, whole):
+        segs = [segment for segment in segs if segment != "메모리 반도체"]
 
     # High-confidence business-model special cases.
     head = whole[:25000].lower()
@@ -3266,7 +3362,7 @@ def _profile_from_dart_report(name, sector, report_text):
             "segments": segs or ["보험"],
         }
 
-    if _contains_any(whole, ["dram", "nand", "메모리 반도체"]):
+    if _memory_manufacturer(name, whole) and _contains_any(whole, ["dram", "nand", "메모리 반도체"]):
         return {
             "summary": f"{name}는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
             "products": "DRAM·NAND와 HBM 등 메모리 반도체",
@@ -3339,15 +3435,10 @@ def _fixed_profile_detail_sector(name, krx_sector, profile):
     """Classify the reviewed fixed profile with the same taxonomy used for DART text."""
     if not isinstance(profile, dict):
         return _normalize_krx_sector(krx_sector), [_normalize_krx_sector(krx_sector)], "LOW"
-    text = " ".join([
-        str(profile.get("summary") or ""),
-        str(profile.get("products") or ""),
-        str(profile.get("customers") or ""),
-        str(profile.get("revenue") or ""),
-        str(profile.get("drivers") or ""),
-        " ".join(str(x) for x in (profile.get("segments") or [])),
-    ])
-    return _detail_sector_from_business(name, krx_sector, text)
+    text = " ".join(str(profile.get(key) or "") for key in ("summary", "products"))
+    if _legacy_memory_template(profile) and not _memory_manufacturer(name, text):
+        text = ""
+    return _detail_sector_from_business(name, krx_sector, text, attributed=True)
 
 def _reviewed_profile_override(code):
     """Small, auditable overrides for material business conversions."""
@@ -3670,12 +3761,12 @@ def _normalize_krx_sector(s):
             return label
     return s if s and s != "KRX 업종 미분류" else "기타"
 
-def _detail_sector_from_business(name, krx_sector, report_text):
+def _detail_sector_from_business(name, krx_sector, report_text, attributed=False):
     """Primary business-sector taxonomy from DART narrative.
     Order matters: narrow sectors before broad sectors.
     """
     n = str(name or "")
-    t = re.sub(r"\s+", " ", str(report_text or "")).lower()
+    t = re.sub(r"\s+", " ", str(report_text or "") if attributed else _primary_business_text(name, report_text)).lower()
     k = str(krx_sector or "").lower()
 
     if _is_etf_name(n):
@@ -3689,6 +3780,9 @@ def _detail_sector_from_business(name, krx_sector, report_text):
     }
     if n in reviewed_overrides:
         return reviewed_overrides[n]
+
+    if _memory_manufacturer(n, t):
+        return "메모리 반도체", ["메모리 반도체"], "HIGH"
 
     # Holding companies must not be mistaken for operating subsidiaries.
     head = t[:25000]
@@ -3784,6 +3878,8 @@ def _detail_sector_from_business(name, krx_sector, report_text):
 
     tags = []
     for label, must_any, support_any in narrow:
+        if label == "메모리 반도체" and not _memory_manufacturer(n, t):
+            continue
         if label in ("화장품 ODM/OEM", "K-뷰티 유통", "화장품 브랜드") and not beauty_core:
             continue
         if label == "자동차 부품" and not auto_core:
@@ -4128,7 +4224,8 @@ def profile_enrich(raw, old_by_ticker=None):
         covered = 0
         fields = ("krxSector", "detailSector", "sector", "sectorTags", "sectorConfidence",
                   "businessProfile", "businessModelEasy", "businessModelSource",
-                  "businessModelReportDate", "businessModelUrl")
+                  "businessModelReportDate", "businessModelUrl", "classificationReviewRequired",
+                  "businessModelPreviousSource", "businessModelPreviousUrl", "businessModelPreviousReportDate")
         for x in raw:
             old = old_by_ticker.get(x.get("ticker"), {})
             for key in fields:
@@ -4136,7 +4233,13 @@ def profile_enrich(raw, old_by_ticker=None):
                     x[key] = old[key]
             x.setdefault("detailSector", _normalize_krx_sector(x.get("sector")))
             x["sector"] = x["detailSector"]
-            x["businessModelDataStatus"] = "CACHED" if old.get("businessProfile") else "NOT_TARGET"
+            x["businessModelDataStatus"] = (
+                "DEGRADED" if old.get("classificationReviewRequired") or old.get("businessModelDataStatus") == "DEGRADED"
+                else "CACHED" if old.get("businessProfile") else "NOT_TARGET"
+            )
+            if _legacy_memory_template(x.get("businessProfile")) and not _memory_manufacturer(x.get("name"), ""):
+                x.setdefault("krxSector", old.get("krxSector") or "")
+                repair_business_classification(x)
             covered += bool(old.get("businessProfile"))
         return {"status": "CACHED", "targetCount": 0, "coveredCount": covered,
                 "fetchedCount": 0, "source": "OpenDART 기존자료",
@@ -4147,8 +4250,8 @@ def profile_enrich(raw, old_by_ticker=None):
 
     if not DART_KEY:
         for x in raw:
-            x["krxSector"] = x.get("sector")
-            x["detailSector"] = _normalize_krx_sector(x.get("sector"))
+            x["krxSector"] = x.get("krxSector") or x.get("sector")
+            x["detailSector"] = _normalize_krx_sector(x.get("krxSector"))
             x["sector"] = x["detailSector"]
         return {
             "status":"NO_KEY","targetCount":0,"coveredCount":0,"fetchedCount":0,
@@ -4174,7 +4277,7 @@ def profile_enrich(raw, old_by_ticker=None):
     retry_wait = 0
 
     for x in raw:
-        original_sector = x.get("sector")
+        original_sector = x.get("krxSector") or x.get("sector")
         x["krxSector"] = original_sector
 
         if _is_etf_name(x.get("name")):
@@ -4202,6 +4305,12 @@ def profile_enrich(raw, old_by_ticker=None):
             x["dartCorpCode"] = corp
 
         old = cache.get(code) or cache.get(x.get("ticker")) or {}
+        for candidate in (old, old_stock):
+            if candidate.get("businessProfile"):
+                candidate.setdefault("name", x.get("name"))
+                candidate.setdefault("stock_code", code)
+                candidate.setdefault("krxSector", original_sector)
+                repair_business_classification(candidate, fixed_db)
         fresh = False
         try:
             d = date.fromisoformat(str(old.get("updatedAt")))
@@ -4216,6 +4325,8 @@ def profile_enrich(raw, old_by_ticker=None):
             fresh = False
 
         fixed = _reviewed_profile_override(code) or fixed_db.get(str(code))
+        if isinstance(fixed, dict) and _legacy_memory_template(fixed) and not _memory_manufacturer(x.get("name"), ""):
+            fixed = None
         if isinstance(fixed, dict) and fixed.get("summary"):
             detail, tags, confidence = _fixed_profile_detail_sector(
                 x.get("name"), original_sector, fixed
@@ -4231,6 +4342,10 @@ def profile_enrich(raw, old_by_ticker=None):
             continue
 
         if fresh:
+            for key in ("businessModelDataStatus", "classificationReviewRequired", "businessModelPreviousSource",
+                        "businessModelPreviousUrl", "businessModelPreviousReportDate"):
+                if key in old:
+                    x[key] = old[key]
             x["businessProfile"] = old["businessProfile"]
             x["businessModelEasy"] = old["businessProfile"].get("summary") or ""
             x["businessModelSource"] = old.get("businessModelSource") or "OpenDART 사업보고서 직접추출"
@@ -4252,19 +4367,23 @@ def profile_enrich(raw, old_by_ticker=None):
             # The profile cache may be older than the normal 180-day refresh window,
             # or only embedded in yesterday's index. It is still verified DART text
             # and is safer than deleting it or replacing it with a made-up template.
+            prior_record = {}
             prior_profile = None
             prior_source = None
             prior_report_date = None
             prior_url = None
             if isinstance(old.get("businessProfile"), dict) and not old.get("failed"):
+                prior_record = old
                 prior_profile = old.get("businessProfile")
                 prior_source = old.get("businessModelSource") or "OpenDART 사업보고서 직접추출"
                 prior_report_date = old.get("businessModelReportDate")
                 prior_url = old.get("businessModelUrl")
             elif (
                 isinstance(old_stock.get("businessProfile"), dict)
-                and str(old_stock.get("businessModelSource", "")).startswith("OpenDART")
+                and (str(old_stock.get("businessModelSource", "")).startswith("OpenDART")
+                     or old_stock.get("classificationReviewRequired"))
             ):
+                prior_record = old_stock
                 prior_profile = old_stock.get("businessProfile")
                 prior_source = old_stock.get("businessModelSource")
                 prior_report_date = old_stock.get("businessModelReportDate")
@@ -4279,7 +4398,14 @@ def profile_enrich(raw, old_by_ticker=None):
                 x["businessModelSource"] = prior_source
                 x["businessModelReportDate"] = prior_report_date
                 x["businessModelUrl"] = prior_url
-                x["businessModelDataStatus"] = "CACHED_DART_OUTAGE"
+                for key in ("classificationReviewRequired", "businessModelPreviousSource",
+                            "businessModelPreviousUrl", "businessModelPreviousReportDate"):
+                    if key in prior_record:
+                        x[key] = prior_record[key]
+                x["businessModelDataStatus"] = (
+                    "DEGRADED" if prior_record.get("classificationReviewRequired") or prior_record.get("businessModelDataStatus") == "DEGRADED"
+                    else "CACHED_DART_OUTAGE"
+                )
                 x["detailSector"] = detail
                 x["sectorTags"] = tags
                 x["sectorConfidence"] = confidence

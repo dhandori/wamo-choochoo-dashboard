@@ -1,4 +1,5 @@
 name: WAMO 자동갱신
+run-name: WAMO · ${{ inputs.market || 'auto' }} · ${{ (inputs.publish || github.event_name == 'schedule') && '게시' || '검증' }}
 
 on:
   schedule:

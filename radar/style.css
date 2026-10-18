@@ -269,3 +269,57 @@ table { font-size: 13px; }
 .term-tooltip[hidden] { display: none; }
 .term-tooltip > strong { display: block; margin: 0 0 5px; color: #d8e9ff; font-size: 13px; }
 .term-tooltip > p { margin: 0; color: #c1cede; font-size: 12px; line-height: 1.8; }
+
+/* Reading hierarchy: compact context, clear controls, stable numeric columns. */
+:root { --muted: #a8b7ca; }
+.shell { padding-top: 18px; }
+.intro { margin: 16px 0 14px; }
+.tabs { gap: 12px; margin-bottom: 20px; }
+.tabs button { padding: 12px 16px; border-radius: 8px 8px 0 0; font-size: 13px; }
+.tabs button.active { background: #163029; }
+.tabs button:hover:not(.active) { background: #162130; }
+.section-head p, .controls button, .controls select, .checkbox-control, .filter-label { font-size: 12px; }
+.controls { gap: 10px; margin: 14px 0 12px; }
+.result-summary, .pagination, .disclosure { font-size: 12px; }
+.metric small, .stock-link small, .signal { font-size: 11px; }
+.stock-link strong { font-size: 13px; }
+th { font-size: 11px; font-weight: 600; }
+td { padding: 12px 10px; }
+.stock-link:hover strong { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+.table-wrap { scrollbar-color: #53647b var(--panel); }
+.metric strong { font-size: clamp(20px, 1.75vw, 27px); }
+.ai-card-description { font-size: 11px; }
+.ai-card-title span { white-space: nowrap; }
+.ai-coverage { display: block; padding: 0 8px 4px; color: var(--muted); font-size: 11px; font-weight: 400; }
+.ai-missing { color: #e9ca82; font-size: 11px; }
+.ai-sector-card small { font-size: 11px; }
+body[data-view="trend"] #metrics { display: none; }
+body[data-view="trend"] .disclosure { margin-top: 6px; }
+@media (min-width: 761px) {
+  .table-wrap td:first-child, .table-wrap th:first-child { position: sticky; left: 0; z-index: 1; background: var(--panel); box-shadow: 1px 0 var(--line); }
+  .table-wrap tr:hover td:first-child { background: #192839; }
+}
+@media (max-width: 760px) {
+  .shell { padding: 12px 14px; }
+  .brand span { letter-spacing: 1px; font-size: 9px; }
+  .intro { margin: 13px 0; }
+  .metrics { gap: 7px; }
+  .metric { padding: 11px 12px; gap: 5px; }
+  .metric strong { font-size: 23px; }
+  .metric small { font-size: 11px; }
+  .section-head { gap: 12px; }
+  .section-head p { line-height: 1.6; }
+  .search, .search input { width: 100%; }
+  .controls select { max-width: 100%; }
+  .ai-grid { grid-auto-columns: minmax(240px, 82%); }
+  .ai-card-description { min-height: 0; }
+  .ai-heading p, .ai-method { font-size: 11px; }
+  .stock-card { padding: 16px; }
+  .card-stats { row-gap: 14px; }
+  .stat span { font-size: 11px; }
+  dialog { padding: 20px; max-height: 92dvh; }
+  .close { position: sticky; top: 0; z-index: 5; background: var(--panel); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; }
+}

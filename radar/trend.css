@@ -291,3 +291,46 @@ body[data-view="trend"] #controls, body[data-view="trend"] .list-meta, body[data
 .to-top { position: fixed; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 20; width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; border: 1px solid #41526a; background: #172333e6; color: var(--text); font-size: 18px; box-shadow: 0 6px 18px #0009; backdrop-filter: blur(6px); }
 .to-top[hidden] { display: none; }
 dialog[open] ~ .to-top { display: none; }
+
+/* Consistent signal lists and readable supporting information. */
+.tr-help { font-size: 12px; color: #abbacf; line-height: 1.75; max-width: 1100px; }
+.tr-pagination { display: flex; align-items: center; gap: 10px; padding: 10px 0; color: var(--muted); font-size: 12px; }
+.tr-pagination > span { margin-right: auto; }
+.tr-pagination button { min-height: 36px; padding: 5px 12px; }
+.tr-pagination b { font-weight: 500; color: var(--text); white-space: nowrap; }
+.tr-stock small, .tr-facts small, .tr-time { font-size: 11px; }
+.tr-stock strong { font-size: 14px; }
+.tr-facts b { font-size: 14px; }
+.tr-row { gap: 18px; padding: 16px; }
+.tr-reasons { font-size: 12px; line-height: 1.65; }
+.tr-reasons li { gap: 10px; }
+.tr-cal { align-items: start; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.tr-cal-day { padding: 15px; }
+.tr-cal-day header small { margin-left: auto; color: var(--muted); font-size: 11px; }
+.tr-cal-row { padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.tr-cal-row:not(.trend) { opacity: 1; }
+.tr-cal-row .tr-stock strong { font-size: 13px; }
+.tr-cal-row .tr-stock small { white-space: normal; }
+.tr-cal-more summary { cursor: pointer; padding: 12px 0 4px; color: var(--blue); font-size: 12px; }
+.tr-list-summary { font-size: 12px; margin: 12px 0; }
+.tr-small-sample { color: #e9ca82; }
+.tr-score-table th { font-size: 11px; }
+.tr-score-table td { font-size: 12px; }
+.tr-foot { font-size: 11px; line-height: 1.7; }
+.tr-subtabs { top: 0; box-shadow: 0 7px 18px #050a1350; }
+.tr-subtabs button.active { box-shadow: inset 0 -2px var(--green); }
+@media (max-width: 760px) {
+  .tr-cal { grid-template-columns: minmax(0, 1fr); }
+  .tr-subtabs button { font-size: 12px; min-height: 50px; }
+  .tr-row { padding: 14px; gap: 12px; }
+  .tr-facts small { font-size: 11px; }
+  .tr-reasons { font-size: 12px; }
+  .tr-cal-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .tr-cal-row > .tr-tag { grid-column: 1 / -1; justify-self: start; }
+  .tr-score { overflow-x: auto; }
+  .tr-score-table { min-width: 330px; }
+  .run-now .run-reason { display: block; max-width: 280px; }
+  .tr-pagination { gap: 8px; flex-wrap: wrap; }
+  .tr-pagination > span { flex-basis: 100%; }
+  .tr-pagination button { min-height: 42px; }
+}
