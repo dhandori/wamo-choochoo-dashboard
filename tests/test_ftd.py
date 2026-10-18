@@ -144,6 +144,23 @@ class FTDTests(unittest.TestCase):
         rows=recovery(); rows[-1].update(close=101,high=101.3,volume=100)
         self.assertEqual(self.run_signal(rows)['phase'],'OUTSIDE')
 
+    def test_recovering_prior_peak_after_ftd_completes_the_turn(self):
+        rows=recovery(); n=len(rows)
+        prices=[r['close'] for r in rows]+[93,95,97,99,100.5,101,102]
+        extended=rows_for(prices); extended[n-1]['volume']=130
+        result=self.run_signal(extended)
+        self.assertEqual(result['phase'],'OUTSIDE')
+        self.assertIsNone(result['ftd'])
+        self.assertIsNone(result['rally'])
+        self.assertEqual(result['lastFtd']['date'],extended[n-1]['date'])
+        self.assertEqual(result['lastFtd']['recoveredDate'],extended[n+4]['date'])
+        self.assertEqual([e['type'] for e in result['events']][-2:],['FTD','UPTREND'])
+
+    def test_ftd_day_itself_above_peak_stays_confirmed_that_day(self):
+        rows=recovery(); rows[-1].update(close=101,high=101.3,volume=130)
+        result=self.run_signal(rows)
+        self.assertEqual(result['phase'],'CONFIRMED')
+
     def test_new_correction_replaces_old_confirmed_cycle(self):
         rows=recovery(); n=len(rows)
         # A new advance well above the old bottom, followed by a new decline.
@@ -185,7 +202,7 @@ class DurableHistoryTests(unittest.TestCase):
     def test_ftd_does_not_disappear_when_provider_window_rolls(self):
         import wamo_ftd
         original=recovery()
-        prices=[r['close'] for r in original]+[96+i*.05 for i in range(400)]
+        prices=[r['close'] for r in original]+[96+(i%20)*.05 for i in range(400)]
         full=rows_for(prices);full[len(original)-1]['volume']=130
         merge=getattr(wamo_ftd,'merge_history',None)
         self.assertIsNotNone(merge,'Durable FTD history missing')

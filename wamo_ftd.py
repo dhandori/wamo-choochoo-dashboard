@@ -13,6 +13,7 @@ POLICY = {
     'correction': '종가가 50일선 아래이고, 최근 63거래일 최고 종가 대비 8% 이상 하락. 또는 5% 이상 하락하며 50일선이 10거래일 전보다 하락.',
     'confirmation': '하락 국면 이후 첫 상승 마감일을 Day 1로 계산. 그날 장중 저가를 지킨 상태에서 Day 4~7에 +1.7% 이상 상승하고 전일보다 거래량 증가.',
     'failure': '반등 Day 1 장중 저가 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가는 경고로 구분.',
+    'completion': 'FTD 이후 종가가 하락 전 고점을 다시 넘으면 상승 전환 완료로 보고 추적을 끝냅니다. 그 FTD는 이력으로만 남깁니다.',
     'note': 'WAMO 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승 지속을 보장하지 않습니다.',
     'sources': [
         {'title': 'IBD · 반등 시도와 Day 4 이후 FTD', 'url': 'https://www.investors.com/how-to-invest/how-to-invest-in-stocks-in-market-correction-follow-through-day/'},
@@ -60,7 +61,7 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
     if sessions is not None and [r['date'] for r in rows]!=[d for d in sessions if rows[0]['date']<=d<=asof]:
         return unavailable('거래일 이력이 누락되어 반등 일수를 확정할 수 없습니다.')
     closes=[r['close'] for r in rows]
-    events=[]; cycle=None; rally=None; ftd=None; phase='OUTSIDE'; prev_gate=False
+    events=[]; cycle=None; rally=None; ftd=None; last_ftd=None; phase='OUTSIDE'; prev_gate=False
 
     def event(kind, row, **extra):
         events.append(dict(type=kind, date=row['date'], close=row['close'], **extra))
@@ -109,6 +110,12 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
             # unconfirmed attempt into a new high and flag a later bull-market day.
             if ftd is None and r['close']>=cycle['peak']:
                 event('RECOVERED',r); cycle=rally=None; phase='OUTSIDE'
+            # After an FTD, a close back above the pre-correction peak completes
+            # the turn. Keep the FTD as history; never show it as "valid" for months.
+            elif ftd and r['date']>ftd['date'] and r['close']>=cycle['peak']:
+                last_ftd=dict(ftd, rallyDate=rally['date'], recoveredDate=r['date'], peak=cycle['peak'])
+                event('UPTREND',r,ftdDate=ftd['date'],peak=cycle['peak'])
+                cycle=rally=ftd=None; phase='OUTSIDE'
         prev_gate=gate
         result['series'].append(dict(date=r['date'],close=r['close'],low=r['low'],volume=r['volume'],
                                      ma50=round(ma,4),phase=phase))
@@ -119,6 +126,8 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
                   ftd=ftd,events=events[-60:],series=result['series'][-140:])
     if ftd:
         result['ftdAge']=sum(r['date']>ftd['date'] for r in rows)
+    elif last_ftd and cycle is None:
+        result['lastFtd']=dict(last_ftd, age=sum(r['date']>last_ftd['date'] for r in rows))
     if expected and asof!=expected:
         result.update(status='STALE',note=f'{asof}까지의 과거 판정입니다. 최근 마감 거래일 {expected} 자료를 기다립니다.')
     return result

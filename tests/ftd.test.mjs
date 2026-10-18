@@ -15,6 +15,6 @@ test('warning takes priority while the other index is confirmed',()=>{
 });
 test('rally and ordinary bull-market states stay distinct',()=>{
   assert.equal(ftdSummary(block(index('OUTSIDE'),index('RALLY')),session),'반등');
-  assert.equal(ftdSummary(block(index('OUTSIDE'),index('OUTSIDE')),session),'비대상');
-  assert.equal(ftdSummary(block(index('CORRECTION')),session),'관찰');
+  assert.equal(ftdSummary(block(index('OUTSIDE'),index('OUTSIDE')),session),'해당 없음');
+  assert.equal(ftdSummary(block(index('CORRECTION')),session),'하락장');
 });
