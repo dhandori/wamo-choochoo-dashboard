@@ -29,7 +29,7 @@ PAGES = {'KR': 'index.html', 'US': 'us.html'}
 INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500')}
 # Growth-heavy second index: market weather needs both (O'Neil watches both).
 SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥')}
-TREND_VERSION = 2
+TREND_VERSION = 3
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -246,6 +246,8 @@ def fetch_index(symbol, days=420, opener=None):
                 data = json.loads(resp.read().decode('utf-8'))
             res = (data.get('chart') or {}).get('result') or []
             r0 = res[0]
+            if r0.get('meta', {}).get('symbol') != symbol:
+                raise ValueError('index symbol mismatch')
             ts = r0.get('timestamp') or []
             quote = ((r0.get('indicators') or {}).get('quote') or [{}])[0]
             tz = r0.get('meta', {}).get('exchangeTimezoneName')
@@ -257,7 +259,10 @@ def fetch_index(symbol, days=420, opener=None):
                     continue
                 v = num((quote.get('volume') or [None] * len(ts))[i])
                 d = datetime.fromtimestamp(t + offset, tz=timezone.utc).date().isoformat()
-                rows.append({'date': d, 'close': c, 'volume': v})
+                def field(key):
+                    values = quote.get(key) or []
+                    return num(values[i]) if i < len(values) else None
+                rows.append({'date': d, 'close': c, 'high': field('high'), 'low': field('low'), 'volume': v})
             if len(rows) < 120:
                 raise ValueError('short index history')
             return rows
@@ -834,10 +839,42 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
                     'total': len(upcoming), 'fetchedAt': earnings_cache.get('fetchedAt'), 'newCalls': calls,
                     'source': 'Nasdaq 실적 일정 (공개 자료)',
                     'note': '발표 날짜는 회사 사정으로 바뀔 수 있어요. 발표 전후로 주가가 크게 움직일 수 있어요.'}
+    from wamo_ftd import for_market, merge_history, valid_num, fetch_naver_index, repair_korean_history
+    from wamo_runtime import expected_session
+    expected = expected_session(market)
+    ftd_indexes = []
+    ftd_history = read_json(root / "wamo_ftd_history.json", {})
+    for sym, name, raw, is_synthetic in [(symbol, label, bench, synthetic), (sym2, label2, bench2, False)]:
+        repaired_dates = []
+        if raw and not is_synthetic:
+            raw = merge_history(raw, ftd_history.get(sym, []))
+        if market == 'KR' and raw and not is_synthetic and fetch_network:
+            if any(not all(valid_num(r.get(k)) for k in ('close','high','low','volume')) for r in raw):
+                try:
+                    raw, repaired_dates = repair_korean_history(raw, sym, fetch_naver_index(sym))
+                except Exception as exc:
+                    print(f'{sym} FTD 보완 자료 검증 실패: {type(exc).__name__}', flush=True)
+        combined = merge_history(raw or [], ftd_history.get(sym, [])) if not is_synthetic else raw
+        signal = for_market(combined or [], market, asof, synthetic=is_synthetic, expected=expected)
+        if signal["status"] == "OK":
+            ftd_history[sym] = [r for r in combined if r["date"] <= asof]
+        signal.update(symbol=sym, label=name, source='Yahoo Finance ' + sym,
+                      sourceUrl='https://finance.yahoo.com/quote/' + urllib.parse.quote(sym, safe='') + '/history/',
+                      volumeNote='Yahoo 제공 지수 거래량 · ETF 거래량을 사용하지 않음')
+        archived_repairs = [d for d in ftd_history.get('_repairs', {}).get(sym, []) if any(r['date']==d for r in (combined or []))]
+        repaired_dates = sorted(set(repaired_dates + archived_repairs))
+        if repaired_dates:
+            ftd_history.setdefault('_repairs', {})[sym] = repaired_dates
+            signal.update(source='Yahoo Finance + 네이버 KRX 지수 교차검증',
+                          repairedDates=repaired_dates,
+                          repairSourceUrl='https://m.stock.naver.com/domestic/index/' + {'^KS11':'KOSPI','^KQ11':'KOSDAQ'}[sym] + '/total')
+        ftd_indexes.append(signal)
+    write_json(root / "wamo_ftd_history.json", ftd_history, compact=True)
     charts = chart_payload(universe, bench, asof, market)
     charts['benchLabel'] = idx['label']
     return {
         'asOf': asof, 'universe': len(universe), 'version': TREND_VERSION,
+        'ftd': {'indexes': ftd_indexes},
         'index2': secondary,
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},
@@ -880,7 +917,7 @@ def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
     return result, built
 
 
-OUTPUTS = [OUTPUT, SIGNAL_LOG, EARNINGS_CACHE, 'wamo_chart_KR.json', 'wamo_chart_US.json']
+OUTPUTS = [OUTPUT, SIGNAL_LOG, EARNINGS_CACHE, 'wamo_ftd_history.json', 'wamo_chart_KR.json', 'wamo_chart_US.json']
 
 
 if __name__ == '__main__':

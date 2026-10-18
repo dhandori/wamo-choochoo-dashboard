@@ -1,6 +1,7 @@
+import { renderFTD, ftdSummary } from './ftd.js?v=20261018-1';
 import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261017-1';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261017-1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab } from './trend.js?v=20261018-2';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261018-ftd1';
 import { runnerButton, initRunner } from './runner.js?v=20261017-2';
 import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261018-2';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
@@ -39,7 +40,7 @@ const PERIODS={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','med
 const CHANGE_LABELS={near:'신고가권 진입',rs:'RS 80 돌파',stage:'Stage 2 진입'};
 const EXIT_LABELS={near:'신고가권 이탈',rs:'RS 80 하회',stage:'Stage 2 이탈'};
 const params = new URLSearchParams(location.search);
-const state = { ...defaults, market: params.get('market') === 'US' ? 'US' : 'KR', tab: ['near','high','industries','movers','ai','trend'].includes(params.get('tab'))?params.get('tab'):'near' };
+const state = { ...defaults, market: params.get('market') === 'US' ? 'US' : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd'].includes(params.get('tab'))?params.get('tab'):'near' };
 let snapshot = null, refreshFailed = false, refreshing = false;
 const fmt = (n, d = 1) => numeric(n) ? n.toLocaleString('ko-KR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—';
 const pct = n => numeric(n) ? `${n > 0 ? '+' : ''}${fmt(n)}%` : '—';
@@ -387,8 +388,8 @@ function renderMeta(m) {
   const near = m.stocks.filter(s => numeric(s.highDistancePct) && s.highDistancePct <= 10), highs = m.stocks.filter(s => s.intradayHigh52 === true || s.closeHigh52 === true);
   const groups = m.industries.filter(g => g.confirmed), moves = selectStocks(m, { tab: 'movers' });
   const ai=aiOverview(m,state.market).total;
-  const counts = { near: near.length, high: highs.length, industries: groups.length, movers: moves.length,ai:ai.count,trend:trendTabLabel(state.market) };
-  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 신고가', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'검증 가격이 있는 AI 관련 종목 · 중복 제외',trend:'시장 날씨 · RS선 · 팔 때 경고 · 실적발표 · 신호 성적표' };
+  const counts = { near: near.length, high: highs.length, industries: groups.length, movers: moves.length,ai:ai.count,trend:trendTabLabel(state.market),ftd:ftdSummary(trendBlock(state.market),m.expectedSession,trendLoadFailed()||marketStatus(m)==='STALE') };
+  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 신고가', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'검증 가격이 있는 AI 관련 종목 · 중복 제외',trend:'시장 날씨 · RS선 · 팔 때 경고 · 실적발표 · 신호 성적표',ftd:'지수별 하락 국면 → 반등 → FTD → 유지·실패' };
   document.querySelectorAll('[data-tab]').forEach(b => {
     let n = b.querySelector('.tab-count');
     if (!n) { n = el('span', null, 'tab-count'); b.append(n); }
@@ -441,8 +442,8 @@ function render() {
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
   document.body.dataset.view = state.tab;
   renderMeta(m); renderWeather($('weather'), state.market, openTrend);
-  const search=$('search').closest('.search'); if(search) search.hidden=state.tab==='trend';
-  if (state.tab === 'trend') { renderTrendTab(); return; }
+  const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd'].includes(state.tab);
+  if (['trend','ftd'].includes(state.tab)) { renderTrendTab(); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
   const labels = { near: ['52주 신고가권', '252거래일 고점에 가까운 종목 · 당일 경신은 별도 탭에서 확인'], high: ['당일 신고가', '표시된 거래일에 이전 251개 관측치 고점을 실제로 넘긴 종목'], industries: ['인더스트리 액션', '여러 종목의 동반 강세 우선 · 5일 중앙값 순'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망과 서비스의 흐름 · 상승·하락 모두 포함 · 한국/미국 전환 가능'] };
   $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = labels[state.tab][1];
@@ -491,12 +492,19 @@ function renderTrendTab() {
   const changes = $('session-changes'); if (changes) { changes.replaceChildren(); changes.hidden = true; }
   $('signal-filter')?.replaceChildren();
   $('result-summary').textContent = '';
+  if (state.tab === 'ftd') {
+    $('section-title').textContent = '시장 전환·FTD';
+    $('section-description').textContent = 'Follow-Through Day · 하락 추세 이후의 반등 확인';
+    const m=snapshot.markets[state.market];
+    renderFTD($('content'),state.market,trendBlock(state.market),{expected:m.expectedSession,failed:trendLoadFailed()||marketStatus(m)==='STALE'});
+    return;
+  }
   $('section-title').textContent = '추세 신호';
   $('section-description').textContent = '지금 사도 되는 시장인지, 어떤 종목이 지수보다 강한지, 어떤 종목이 꺾이고 있는지 한눈에 봅니다';
   renderTrend($('content'), state.market, { openStock: openStockById, onSubtab: syncUrl });
 }
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
-  const tab=['ai','trend'].includes(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
+  const tab=['ai','trend','ftd'].includes(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
   Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod,aiView }); $('search').value = '';
   syncUrl(); render();
 });

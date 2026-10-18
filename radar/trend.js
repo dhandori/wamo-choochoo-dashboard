@@ -345,3 +345,7 @@ export function renderTrend(content, market, { openStock, onSubtab }) {
   draw();
   content.append(el('p', `${b.asOf} 종가 기준 · 계산 ${new Date(b.builtAt || data.generatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST · 지수 ${b.index?.source || '—'} · 대상 ${b.universe}종목 · 투자 권유가 아니라 확인용 신호예요.`, 'tr-foot'));
 }
+
+// Read-only access for the separate FTD workspace.
+export const trendBlock = market => block(market);
+export const trendLoadFailed = () => failed;
