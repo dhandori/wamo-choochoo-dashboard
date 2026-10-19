@@ -259,7 +259,10 @@ function table(rows) {
   requestAnimationFrame(() => fillCardCharts(container));
   return container;
 }
-const rankGroups = (a, b) => Number(b.confirmed) - Number(a.confirmed) || Number(b.memberCount >= 3) - Number(a.memberCount >= 3) || (b.medianReturn5d ?? -Infinity) - (a.medianReturn5d ?? -Infinity) || b.nearHighCount - a.nearHighCount;
+// 3종목 미만 그룹은 보통 숨기지만, 2차전지 대장(삼성SDI·LG엔솔)만 있는 '배터리 셀'은 꼭 보여 준다.
+const ALWAYS_SHOW = new Set(['배터리 셀']);
+const bigEnough = g => g.memberCount >= 3 || (ALWAYS_SHOW.has(g.name) && g.memberCount >= 2);
+const rankGroups = (a, b) => Number(b.confirmed) - Number(a.confirmed) || Number(bigEnough(b)) - Number(bigEnough(a)) || (b.medianReturn5d ?? -Infinity) - (a.medianReturn5d ?? -Infinity) || b.nearHighCount - a.nearHighCount;
 // 산업 흐름 칸: 당일 / 5일 / 20일 중앙값. 기본은 당일 — 오늘 돈이 들어온 산업이 먼저 보여야 한다.
 const RAIL_PERIODS = { '1d': ['당일', 'medianChangePct', 'changePct'], '5d': ['5일', 'medianReturn5d', 'return5d'], '20d': ['20일', 'medianReturn20d', 'return20d'] };
 const RAIL_STORE = 'wamo-rail-period';
@@ -286,9 +289,9 @@ function renderRail(m) {
   const seg = el('div', null, 'rail-seg'); seg.setAttribute('aria-label', '산업 흐름 기간');
   Object.entries(RAIL_PERIODS).forEach(([key, [label]]) => { const b = button(label, railPeriod === key, () => { railPeriod = key; try { localStorage.setItem(RAIL_STORE, key); } catch {} renderRail(m); }); b.setAttribute('aria-pressed', String(railPeriod === key)); seg.append(b); });
   head.append(seg);
-  rail.append(el('div', 'INDUSTRY FLOW', 'eyebrow'), head, el('p', `${RAIL_PERIODS[railPeriod][0]} 수익률 중앙값 순 · 3종목 이상 그룹`, 'rail-caption'));
+  rail.append(el('div', 'INDUSTRY FLOW', 'eyebrow'), head, el('p', `${RAIL_PERIODS[railPeriod][0]} 수익률 중앙값 순 · 3종목 이상 그룹 + 배터리 셀`, 'rail-caption'));
   const value = g => railValue(m, g, railPeriod);
-  const groups = m.industries.filter(g => g.memberCount >= 3 && numeric(value(g)))
+  const groups = m.industries.filter(g => bigEnough(g) && numeric(value(g)))
     .sort((a, b) => value(b) - value(a) || Number(b.confirmed) - Number(a.confirmed) || b.nearHighCount - a.nearHighCount).slice(0, 6);
   const scale = Math.max(1, ...groups.map(g => Math.abs(value(g) || 0)));
   if (!groups.length) rail.append(el('p', '비교 가능한 산업 그룹이 없습니다.'));
