@@ -29,7 +29,7 @@ PAGES = {'KR': 'index.html', 'US': 'us.html'}
 INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500')}
 # Growth-heavy second index: market weather needs both (O'Neil watches both).
 SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥')}
-TREND_VERSION = 3
+TREND_VERSION = 4
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -870,11 +870,20 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
                           repairSourceUrl='https://m.stock.naver.com/domestic/index/' + {'^KS11':'KOSPI','^KQ11':'KOSDAQ'}[sym] + '/total')
         ftd_indexes.append(signal)
     write_json(root / "wamo_ftd_history.json", ftd_history, compact=True)
+    try:
+        from wamo_leaders import analyze as analyze_leadership
+        leadership = {'status': 'OK', **analyze_leadership(universe, bench, market, ftd_indexes)}
+        if synthetic:
+            leadership['note'] = '지수 자료가 없어 RS선은 화면 속 종목 중앙값 지수와 비교했습니다.'
+    except Exception as exc:  # noqa: BLE001 - optional module never blocks the rest
+        print(f'{market} 선도주·선도업종 계산 실패: {type(exc).__name__}: {exc}', flush=True)
+        leadership = {'status': 'UNAVAILABLE', 'note': '선도주·선도업종 계산에 실패했습니다. 다음 갱신 때 다시 계산합니다.'}
     charts = chart_payload(universe, bench, asof, market)
     charts['benchLabel'] = idx['label']
     return {
         'asOf': asof, 'universe': len(universe), 'version': TREND_VERSION,
         'ftd': {'indexes': ftd_indexes},
+        'leadership': leadership,
         'index2': secondary,
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},

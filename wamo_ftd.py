@@ -8,11 +8,15 @@ from datetime import date
 import math
 
 POLICY = {
-    'version': 1, 'gainPct': 1.7, 'minRallyDay': 4, 'maxRallyDay': 7, 'peakWindow': 63,
+    'version': 2, 'gainPct': 1.7, 'minRallyDay': 4, 'preferredMaxRallyDay': 7, 'peakWindow': 63,
     'deepDrawdownPct': 8, 'fallingMaDrawdownPct': 5, 'maDays': 50, 'slopeDays': 10,
+    'distributionDropPct': 0.2, 'postFtdWindow': 10, 'postFtdDistributionWarn': 3,
+    'strongGainPct': 2.0, 'volumeAvgDays': 50,
     'correction': '종가가 50일선 아래이고, 최근 63거래일 최고 종가 대비 8% 이상 하락. 또는 5% 이상 하락하며 50일선이 10거래일 전보다 하락.',
-    'confirmation': '하락 국면 이후 첫 상승 마감일을 Day 1로 계산. 그날 장중 저가를 지킨 상태에서 Day 4~7에 +1.7% 이상 상승하고 전일보다 거래량 증가.',
-    'failure': '반등 Day 1 장중 저가 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가는 경고로 구분.',
+    'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감한 날.',
+    'bottom': '하락 국면 시작(또는 직전 무효) 이후 Day 1까지의 장중 최저가. 이 가격을 장중에 깨면 반등 시도 무효.',
+    'confirmation': 'Day 4 이후 하루 +1.7% 이상 상승하고 거래량이 전일보다 많으면 FTD. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
+    'failure': '기준 저점 장중 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분배일 3번 이상은 경고.',
     'completion': 'FTD 이후 종가가 하락 전 고점을 다시 넘으면 상승 전환 완료로 보고 추적을 끝냅니다. 그 FTD는 이력으로만 남깁니다.',
     'note': 'WAMO 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승 지속을 보장하지 않습니다.',
     'sources': [
@@ -61,10 +65,17 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
     if sessions is not None and [r['date'] for r in rows]!=[d for d in sessions if rows[0]['date']<=d<=asof]:
         return unavailable('거래일 이력이 누락되어 반등 일수를 확정할 수 없습니다.')
     closes=[r['close'] for r in rows]
+    vols=[r['volume'] for r in rows]
     events=[]; cycle=None; rally=None; ftd=None; last_ftd=None; phase='OUTSIDE'; prev_gate=False
+    bottom=None  # lowest intraday low since the correction started or the last reset
+    warnings=[]
 
     def event(kind, row, **extra):
         events.append(dict(type=kind, date=row['date'], close=row['close'], **extra))
+
+    def upper_half(row):
+        span=row['high']-row['low']
+        return span>0 and (row['close']-row['low'])/span>0.5
 
     for i,r in enumerate(rows):
         if i<62:
@@ -75,9 +86,10 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
         gate=r['close']<ma and (dd>=8-1e-9 or (dd>=5-1e-9 and ma<oldma))
         change=(r['close']/closes[i-1]-1)*100
         ratio=r['volume']/rows[i-1]['volume']
+        warnings=[]
         start_new = cycle is None and gate
         # After a confirmed rally has left the gate, a fresh correction starts
-        # a new search even if its low remains above the much older Day 1 low.
+        # a new search even if its low remains above the much older bottom.
         if ftd and gate and not prev_gate:
             if r['low']<rally['low']:
                 event('FTD_FAILED',r,rallyDate=rally['date'],rallyLow=rally['low'],ftdDate=ftd['date'])
@@ -85,45 +97,70 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
             start_new=True
         if start_new:
             cycle=dict(date=r['date'], peak=peak, drawdownPct=round(dd,2), ma50=round(ma,2))
-            rally=ftd=None; phase='CORRECTION'; event('CORRECTION',r,**{'drawdownPct':round(dd,2)})
+            rally=ftd=None; bottom=r['low']; phase='CORRECTION'; event('CORRECTION',r,**{'drawdownPct':round(dd,2)})
         elif cycle is not None:
+            new_low=bottom is None or r['low']<bottom
             if rally and r['low']<rally['low']:
                 event('FTD_FAILED' if ftd else 'RALLY_FAILED',r,
                       rallyDate=rally['date'], rallyLow=rally['low'], ftdDate=ftd['date'] if ftd else None)
-                rally=ftd=None; phase='CORRECTION'
-            if rally is None and change>0:
-                rally=dict(date=r['date'], low=r['low'], startIndex=i, day=1)
-                phase='RALLY';event('RALLY',r,low=r['low'])
+                rally=ftd=None; phase='CORRECTION'; bottom=r['low']
+            if rally is None:
+                bottom=r['low'] if bottom is None else min(bottom,r['low'])
+                kind='UP_CLOSE' if change>0 else 'REVERSAL' if new_low and upper_half(r) else None
+                if kind:
+                    rally=dict(date=r['date'], low=bottom, dayOneLow=r['low'], startIndex=i, day=1, kind=kind)
+                    phase='RALLY';event('RALLY',r,low=bottom,dayOneKind=kind)
             elif rally:
                 rally['day']=i-rally['startIndex']+1
-                if ftd is None and 4<=rally['day']<=7 and change>=1.7-1e-9 and ratio>1:
+                if ftd is None and rally['day']>=4 and change>=POLICY['gainPct']-1e-9 and ratio>1:
+                    prior=vols[max(0,i-POLICY['volumeAvgDays']):i]
+                    avg=sum(prior)/len(prior) if len(prior)>=20 else None
+                    late=rally['day']>POLICY['preferredMaxRallyDay']
+                    quality=dict(early=not late, strongGain=change>=POLICY['strongGainPct']-1e-9,
+                                 aboveAvgVolume=None if avg is None else r['volume']>avg)
                     ftd=dict(date=r['date'], low=r['low'], close=r['close'], changePct=round(change,4),
-                             volumeRatio=round(ratio,4), rallyDay=rally['day'])
-                    phase='CONFIRMED';event('FTD',r,**{k:v for k,v in ftd.items() if k not in ('date','close')})
-                elif ftd is None and rally['day']>7:
-                    phase='EXPIRED'
-                    if rally['day']==8:
-                        event('WINDOW_EXPIRED',r,rallyDate=rally['date'])
+                             volumeRatio=round(ratio,4), rallyDay=rally['day'], late=late,
+                             volumeVsAvg=None if avg is None else round(r['volume']/avg,4),
+                             quality=quality, qualityScore=sum(1 for v in quality.values() if v),
+                             startIndex=i, postDistribution=[])
+                    phase='CONFIRMED';event('FTD',r,**{k:v for k,v in ftd.items() if k not in ('date','close','startIndex','postDistribution','quality')})
+                elif ftd is None:
+                    if rally['day']==POLICY['preferredMaxRallyDay']+1:
+                        event('LATE_WINDOW',r,rallyDate=rally['date'])
+                    phase='LATE' if rally['day']>POLICY['preferredMaxRallyDay'] else 'RALLY'
                 elif ftd:
-                    phase='PRESSURE' if r['close']<ftd['low'] else 'CONFIRMED'
+                    age=i-ftd['startIndex']
+                    if (age<=POLICY['postFtdWindow'] and change<=-POLICY['distributionDropPct']+1e-9
+                            and ratio>1):
+                        ftd['postDistribution'].append(r['date'])
+                    if r['close']<ftd['low']:
+                        warnings.append(dict(code='BELOW_FTD_LOW', level=ftd['low']))
+                    if len(ftd['postDistribution'])>=POLICY['postFtdDistributionWarn']:
+                        warnings.append(dict(code='DISTRIBUTION_CLUSTER', count=len(ftd['postDistribution']),
+                                             dates=list(ftd['postDistribution'])))
+                    phase='PRESSURE' if warnings else 'CONFIRMED'
             # The index can recover without a qualifying FTD. Do not carry an
             # unconfirmed attempt into a new high and flag a later bull-market day.
             if ftd is None and r['close']>=cycle['peak']:
-                event('RECOVERED',r); cycle=rally=None; phase='OUTSIDE'
+                event('RECOVERED',r); cycle=rally=None; bottom=None; phase='OUTSIDE'
             # After an FTD, a close back above the pre-correction peak completes
             # the turn. Keep the FTD as history; never show it as "valid" for months.
             elif ftd and r['date']>ftd['date'] and r['close']>=cycle['peak']:
-                last_ftd=dict(ftd, rallyDate=rally['date'], recoveredDate=r['date'], peak=cycle['peak'])
+                last_ftd=dict({k:v for k,v in ftd.items() if k!='startIndex'}, rallyDate=rally['date'], recoveredDate=r['date'], peak=cycle['peak'])
                 event('UPTREND',r,ftdDate=ftd['date'],peak=cycle['peak'])
-                cycle=rally=ftd=None; phase='OUTSIDE'
+                cycle=rally=ftd=None; bottom=None; warnings=[]; phase='OUTSIDE'
         prev_gate=gate
         result['series'].append(dict(date=r['date'],close=r['close'],low=r['low'],volume=r['volume'],
                                      ma50=round(ma,4),phase=phase))
         result['latest']=dict(close=r['close'],changePct=round(change,4),volumeRatio=round(ratio,4),
                               drawdownPct=round(dd,2),ma50=round(ma,2),belowMa50=r['close']<ma,
-                              ma50Falling=ma<oldma,correctionGate=gate)
+                              ma50Falling=ma<oldma,correctionGate=gate,
+                              low=r['low'],high=r['high'],upperHalf=upper_half(r))
     result.update(phase=phase,correction=cycle,rally={k:v for k,v in rally.items() if k!='startIndex'} if rally else None,
-                  ftd=ftd,events=events[-60:],series=result['series'][-140:])
+                  ftd={k:v for k,v in ftd.items() if k!='startIndex'} if ftd else None,
+                  warnings=warnings,events=events[-60:],series=result['series'][-140:])
+    if cycle is not None and bottom is not None:
+        result['bottom']=bottom
     if ftd:
         result['ftdAge']=sum(r['date']>ftd['date'] for r in rows)
     elif last_ftd and cycle is None:

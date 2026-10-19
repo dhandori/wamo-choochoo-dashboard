@@ -27,6 +27,8 @@ const LABELS = {
   '산업 동반 강세':'confirmed', '확인된 그룹만':'confirmed', '60일 추이':'trend', 'AI 관찰 종목':'ai',
   '추세 확산도':'trendBreadth','전일 변화':'changes',
 };
+// Other screens register their own glossary (FTD, leaders) without touching the list above.
+export function addTerms(extra) { Object.assign(TERMS, extra); }
 let active = null, pinned = false, closeTimer;
 const tip = document.createElement('div');
 tip.id = 'term-tooltip'; tip.className = 'term-tooltip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true;

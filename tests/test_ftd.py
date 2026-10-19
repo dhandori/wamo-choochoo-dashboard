@@ -64,14 +64,24 @@ class FTDTests(unittest.TestCase):
         self.assertEqual(result['phase'],'CONFIRMED')
         self.assertEqual(result['ftd']['rallyDay'],7)
 
-    def test_day_eight_gain_cannot_confirm(self):
+    def test_day_eight_gain_is_a_late_ftd(self):
         rows = recovery()
         prices = [r['close'] for r in rows[:-1]] + [91.2,91.3,91.2,91.3,93]
         extended = rows_for(prices); extended[-1]['volume']=130
         result=self.run_signal(extended)
-        self.assertEqual(result['phase'],'EXPIRED')
+        self.assertEqual(result['phase'],'CONFIRMED')
+        self.assertEqual(result['ftd']['rallyDay'],8)
+        self.assertTrue(result['ftd']['late'])
+        self.assertFalse(result['ftd']['quality']['early'])
+
+    def test_rally_past_day_seven_without_ftd_is_late_not_expired(self):
+        rows = recovery()
+        prices = [r['close'] for r in rows[:-1]] + [91.2,91.3,91.2,91.3,91.2]
+        result=self.run_signal(rows_for(prices))
+        self.assertEqual(result['phase'],'LATE')
+        self.assertTrue(any(e['type']=='LATE_WINDOW' for e in result['events']))
+        self.assertEqual(result['rally']['day'],8)
         self.assertIsNone(result['ftd'])
-        self.assertTrue(any(e['type']=='WINDOW_EXPIRED' for e in result['events']))
 
     def test_gain_below_one_point_seven_is_not_ftd(self):
         rows=recovery(); rows[-1]['close']=rows[-2]['close']*1.0169
@@ -81,22 +91,40 @@ class FTDTests(unittest.TestCase):
         rows = recovery(); rows[-1]['volume'] = 100
         self.assertEqual(self.run_signal(rows)['phase'], 'RALLY')
 
-    def test_intraday_day_one_low_break_resets_even_if_close_recovers(self):
-        rows = recovery(); rows[-2]['low'] = 90.6
+    def test_intraday_bottom_break_resets_even_if_close_recovers(self):
+        rows = recovery(); rows[-2].update(low=89.6, close=89.8)  # breaks the bottom, closes near the low
         result = self.run_signal(rows)
         self.assertEqual(result['phase'], 'RALLY')
         self.assertEqual(result['rally']['day'], 1)
         self.assertTrue(any(e['type']=='RALLY_FAILED' for e in result['events']))
 
+    def test_dip_below_day_one_low_but_above_bottom_keeps_counting(self):
+        # Day 1 low is 90.7, the correction bottom (prior session) is 89.7.
+        rows = recovery(); rows[-2]['low'] = 90.6
+        result = self.run_signal(rows)
+        self.assertEqual(result['phase'], 'CONFIRMED')
+        self.assertEqual(result['rally']['low'], 89.7)
+        self.assertEqual(result['rally']['dayOneLow'], 90.7)
+
+    def test_down_close_in_upper_half_after_new_low_is_day_one(self):
+        rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
+        rows[-1].update(low=88.0, high=91.0, close=90.0)  # new low, closes 2/3 up the range
+        result = self.run_signal(rows)
+        self.assertEqual(result['phase'], 'RALLY')
+        self.assertEqual(result['rally']['day'], 1)
+        self.assertEqual(result['rally']['kind'], 'REVERSAL')
+        rows[-1].update(close=89.4)  # lower half: not a Day 1
+        self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
+
     def test_same_day_up_reversal_starts_new_day_one(self):
-        rows = recovery(); rows[-2].update(low=90.6, close=91.3, high=91.6)
+        rows = recovery(); rows[-2].update(low=89.6, close=91.3, high=91.6)
         result = self.run_signal(rows)
         self.assertEqual(result['phase'], 'RALLY')
         self.assertEqual(result['rally']['day'], 2)
 
     def test_failed_ftd_uses_intraday_low(self):
         rows = recovery(); day = rows_for([100]*len(rows)+[91])[-1]['date']
-        rows.append(dict(date=day, close=91, high=92, low=90.6, volume=200))
+        rows.append(dict(date=day, close=90, high=92, low=89.6, volume=200))  # lower half: no new Day 1
         result = self.run_signal(rows)
         self.assertEqual(result['phase'], 'CORRECTION')
         self.assertIsNone(result['ftd'])
@@ -107,6 +135,24 @@ class FTDTests(unittest.TestCase):
         rows.append(dict(date=rows_for([100]*(len(rows)+1))[-1]['date'], close=last['low']-.1,
                          high=last['high'], low=last['low']-.2, volume=120))
         self.assertEqual(self.run_signal(rows)['phase'], 'PRESSURE')
+
+    def test_three_distribution_days_after_ftd_warn(self):
+        rows = recovery(); n=len(rows)
+        prices=[r['close'] for r in rows]+[93.0,92.7,93.1,92.8,93.2,92.9]
+        ext=rows_for(prices); ext[n-1]['volume']=130
+        vol=[130,140,120,150,120,160]
+        for k,v in enumerate(vol): ext[n+k]['volume']=v
+        result=self.run_signal(ext)
+        self.assertEqual(result['phase'],'PRESSURE')
+        self.assertEqual(len(result['ftd']['postDistribution']),3)
+        self.assertEqual(result['warnings'][-1]['code'],'DISTRIBUTION_CLUSTER')
+        self.assertEqual(self.run_signal(ext[:-2])['phase'],'CONFIRMED')
+
+    def test_ftd_quality_fields(self):
+        result = self.run_signal(recovery())
+        q=result['ftd']['quality']
+        self.assertTrue(q['early']); self.assertFalse(q['strongGain']); self.assertTrue(q['aboveAvgVolume'])
+        self.assertEqual(result['ftd']['qualityScore'],2)
 
     def test_missing_or_synthetic_data_cannot_confirm(self):
         rows = recovery()
