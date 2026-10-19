@@ -269,3 +269,15 @@ table { font-size: 13px; }
 .term-tooltip[hidden] { display: none; }
 .term-tooltip > strong { display: block; margin: 0 0 5px; color: #d8e9ff; font-size: 13px; }
 .term-tooltip > p { margin: 0; color: #c1cede; font-size: 12px; line-height: 1.8; }
+/* Step-by-step sort: cap floor → 1st key → tie-break key */
+.sort-panel { flex-basis: 100%; display: grid; gap: 10px; padding: 12px 14px; border: 1px solid #2b3c52; border-radius: 10px; background: #0d1929; }
+.sort-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 10px; }
+.sort-step { font-size: 12px; font-weight: 700; color: #c9d8e8; margin-right: 2px; white-space: nowrap; }
+.sort-row > button { padding: 6px 11px; font-size: 12px; }
+.sort-pick { display: flex; align-items: center; gap: 8px; }
+.sort-pick select { min-width: 190px; }
+.sort-presets > button { border-style: dashed; }
+.sort-summary { margin: 0; font-size: 12px; line-height: 1.7; color: #a9bbcf; }
+.sort-summary b { color: #e3edf8; }
+.sort-summary small { color: #7f97b2; font-size: 11px; }
+@media (max-width: 760px) { .sort-panel { padding: 11px 10px; } .sort-pick { width: 100%; justify-content: space-between; } .sort-pick select { min-width: 0; flex: 1; } }

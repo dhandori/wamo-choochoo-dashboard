@@ -1,6 +1,6 @@
 import { renderFTD, ftdSummary } from './ftd.js?v=20261019-3';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261019-1';
-import { validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261017-1';
+import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261019-2';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261019-1';
 import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261018-ftd1';
 import { runnerButton, initRunner } from './runner.js?v=20261017-2';
@@ -36,13 +36,19 @@ function fillCardCharts(root) {
 }
 
 const $ = id => document.getElementById(id);
-const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false };
+const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false, sort2:'none', minCap:0 };
 const PERIODS={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','medianReturn5d','return5dCount'],'20d':['20일','medianReturn20d','return20dCount'],'60d':['60일','medianReturn60d','return60dCount'],'120d':['120일','medianReturn120d','return120dCount'],'200d':['200일','medianReturn200d','return200dCount']};
 const CHANGE_LABELS={near:'신고가권 진입',rs:'RS 80 돌파',stage:'Stage 2 진입'};
 const EXIT_LABELS={near:'신고가권 이탈',rs:'RS 80 하회',stage:'Stage 2 이탈'};
 const params = new URLSearchParams(location.search);
 const state = { ...defaults, market: params.get('market') === 'US' ? 'US' : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'near' };
 let snapshot = null, refreshFailed = false, refreshing = false;
+// Sort settings (cap floor, 1st/2nd key) are remembered per market in this browser.
+const SORT_STORE='wamo-sort-v1';
+function loadSort(market){try{const all=JSON.parse(localStorage.getItem(SORT_STORE)||'{}')[market]||{};const floors=CAP_FLOORS[market].map(([v])=>v);
+  if(floors.includes(all.minCap))state.minCap=all.minCap;if(all.sort==='default'||SORT_KEYS[all.sort])state.sort=all.sort;if(all.sort2==='none'||SORT_KEYS[all.sort2])state.sort2=all.sort2;}catch{}}
+function saveSort(){try{const all=JSON.parse(localStorage.getItem(SORT_STORE)||'{}');all[state.market]={minCap:state.minCap,sort:state.sort,sort2:state.sort2};localStorage.setItem(SORT_STORE,JSON.stringify(all));}catch{}}
+loadSort(state.market);
 const fmt = (n, d = 1) => numeric(n) ? n.toLocaleString('ko-KR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—';
 const pct = n => numeric(n) ? `${n > 0 ? '+' : ''}${fmt(n)}%` : '—';
 const tone = n => n > 0 ? 'up' : n < 0 ? 'down' : 'neutral';
@@ -75,6 +81,7 @@ function button(text, active, action) {
 }
 function change(key, value) {
   state[key] = value; state.page = 1;
+  if(['minCap','sort','sort2'].includes(key))saveSort();
   if(state.tab==='ai') {
     if(key==='sort'&&/^return(60|120|200)d$/.test(value))state.aiPeriod=value.slice(6);
     if(key==='aiPeriod'&&/^return(5|20|60|120|200)d$/.test(state.sort))state.sort='default';
@@ -245,7 +252,7 @@ function table(rows) {
 }
 const rankGroups = (a, b) => Number(b.confirmed) - Number(a.confirmed) || Number(b.memberCount >= 3) - Number(a.memberCount >= 3) || (b.medianReturn5d ?? -Infinity) - (a.medianReturn5d ?? -Infinity) || b.nearHighCount - a.nearHighCount;
 function openIndustry(g) {
-  Object.assign(state, { tab: 'industries', industry: g, query: '', rs: false, stage: false, newOnly:false, sort: 'default', page: 1 }); $('search').value = ''; render();
+  Object.assign(state, { tab: 'industries', industry: g, query: '', rs: false, stage: false, newOnly:false, page: 1 }); $('search').value = ''; render();
 }
 function renderRail(m) {
   const rail = $('industry-rail'); rail.replaceChildren(); rail.hidden = state.tab==='ai'||state.tab === 'industries' && !state.industry;
@@ -273,8 +280,8 @@ function checkbox(key, text, parent) {
   const wrap = el('div', null, 'checkbox-help'); wrap.append(label, helpButton(text, key, true)); parent.append(wrap);
 }
 function resetFilters() {
-  for (const key of ['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'confirmed', 'page','aiSector','aiSignal','aiPeriod','newOnly']) state[key] = defaults[key];
-  $('search').value = ''; render();
+  for (const key of ['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'page','aiSector','aiSignal','aiPeriod','newOnly']) state[key] = defaults[key];
+  saveSort(); $('search').value = ''; render();
 }
 function renderControls() {
   const controls = $('controls'); controls.replaceChildren();
@@ -298,13 +305,43 @@ function renderControls() {
     checkbox('confirmed', '확인된 그룹만', controls);
   } else {
     const options = el('div', null, 'filter-group'); checkbox('rs', 'RS ≥80', options); checkbox('stage', 'Stage 2', options); controls.append(options);
-    const select = el('select'); select.setAttribute('aria-label', '정렬');
-    [['default', state.tab==='ai'?'선택 기간 수익률':'기본 정렬'], ['marketCap', '시총 큰 순'], ['marketCapAsc', '시총 작은 순'], ['changePct', '당일 상승률'], ['absolute', '당일 절대 변동'], ['return5d', '5일 수익률'], ['return20d','20일 수익률'], ...(state.tab==='ai'?[['return60d','60일 수익률'],['return120d','120일 수익률'],['return200d','200일 수익률']]:[]), ['volumeRatio', '거래량 배수'], ['rs', 'RS'], ['name', '종목명']].forEach(([value, text]) => { const o = el('option', text); o.value = value; o.selected = state.sort === value; select.append(o); });
-    select.onchange = () => change('sort', select.value); controls.append(select);
+    controls.append(sortPanel());
   }
-  if (['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'confirmed','aiSector','aiSignal','aiPeriod','newOnly'].some(key => state[key] !== defaults[key])) {
+  if (['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed','aiSector','aiSignal','aiPeriod','newOnly'].some(key => state[key] !== defaults[key])) {
     const reset = button('필터 초기화', false, resetFilters); reset.id = 'reset-filters'; controls.append(reset);
   }
+}
+// What "기본 정렬" means on each tab, in words.
+function defaultSortLabel(){return state.tab==='ai'?'선택 기간 수익률 높은 순':state.tab==='near'?'신고가에 가까운 순':state.tab==='movers'?'당일 변동 큰 순':'5일 수익률 높은 순';}
+function sortKeysForTab(){const extra=state.tab==='ai'?['return60d','return120d','return200d']:[];return ['rs','highDistancePct','marketCap','marketCapAsc','changePct','absolute','return5d','return20d',...extra,'volumeRatio','name'];}
+function capLabel(){return (CAP_FLOORS[state.market].find(([v])=>v===state.minCap)||[0,'전체'])[1];}
+// Step-by-step sort: ① market-cap floor → ② first key → ③ tie-break key.
+function sortPanel(){
+  const box=el('div',null,'sort-panel'),allowed=sortKeysForTab();
+  // A key only some tabs offer (e.g. 120일 on the AI tab) falls back when you leave that tab.
+  if(state.sort!=='default'&&!allowed.includes(state.sort))state.sort='default';
+  if(state.sort2!=='none'&&!allowed.includes(state.sort2))state.sort2='none';
+  const capRow=el('div',null,'sort-row');capRow.append(el('span','① 시총','sort-step'));
+  CAP_FLOORS[state.market].forEach(([v,label])=>capRow.append(button(label,state.minCap===v,()=>change('minCap',v))));
+  box.append(capRow);
+  const pick=(key,title,includeNone)=>{const wrap=el('label',null,'sort-pick');wrap.append(el('span',title,'sort-step'));const sel=el('select');sel.setAttribute('aria-label',title);
+    const opts=includeNone?[['none','없음']]:[['default',`기본 · ${defaultSortLabel()}`]];
+    sortKeysForTab().forEach(k=>opts.push([k,SORT_KEYS[k][0]]));
+    opts.forEach(([value,text])=>{const o=el('option',text);o.value=value;o.selected=state[key]===value;sel.append(o);});
+    sel.onchange=()=>change(key,sel.value);wrap.append(sel);return wrap;};
+  const keys=el('div',null,'sort-row');keys.append(pick('sort','② 1차 정렬',false),pick('sort2','③ 같으면 2차 정렬',true));box.append(keys);
+  const presets=el('div',null,'sort-row sort-presets');presets.append(el('span','빠른 설정','sort-step'));
+  const big=state.market==='KR'?1e12:1e10;
+  [[`대형주 중 RS 강한 순`,{minCap:big,sort:'rs',sort2:'highDistancePct'}],['RS 강한 순 → 신고가 가까운 순',{minCap:0,sort:'rs',sort2:'highDistancePct'}],['신고가 가까운 순 → RS',{minCap:0,sort:'highDistancePct',sort2:'rs'}]].forEach(([label,set])=>{
+    const on=state.minCap===set.minCap&&state.sort===set.sort&&state.sort2===set.sort2;
+    presets.append(button(label,on,()=>{Object.assign(state,set,{page:1});saveSort();render();}));});
+  box.append(presets);
+  const first=state.sort==='default'?defaultSortLabel():SORT_KEYS[state.sort]?.[0],second=state.sort2!=='none'&&state.sort2!==state.sort?SORT_KEYS[state.sort2]?.[0]:null;
+  const flow=[state.minCap>0?`시총 ${capLabel()}만`:'시총 제한 없음',first,second].filter(Boolean).join(' → ');
+  const note=el('p',null,'sort-summary');note.append(el('b','적용 순서 '),flow);
+  if(state.minCap>0)note.append(el('small',' · 시총 자료가 없는 종목은 빠져요'));
+  box.append(note);
+  return box;
 }
 function trendBar(g) {
   const wrap=el('div',null,'trend-breadth'),label=el('div',null,'trend-label');
@@ -470,12 +507,12 @@ function render() {
   }
 }
 function switchTab(tab) {
-  Object.assign(state, { tab, rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1, sort: 'default' }); $('search').value = ''; syncUrl(); render();
+  Object.assign(state, { tab, rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1 }); $('search').value = ''; syncUrl(); render();
   keepTabsInView();
 }
 function openTrend() {
   setSubtab('weather');
-  Object.assign(state, { tab: 'trend', rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1, sort: 'default' }); $('search').value = ''; syncUrl(); render();
+  Object.assign(state, { tab: 'trend', rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1 }); $('search').value = ''; syncUrl(); render();
   keepTabsInView();
 }
 // After switching tabs from far down the page, bring the tab bar back into view
@@ -517,12 +554,12 @@ function renderTrendTab() {
 }
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
   const tab=['ai','trend','ftd','leaders'].includes(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
-  Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod,aiView }); $('search').value = '';
+  Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod,aiView }); loadSort(state.market); $('search').value = '';
   syncUrl(); render();
 });
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
   if (b.dataset.tab === 'trend' && state.tab !== 'trend') setSubtab('weather');
-  Object.assign(state, { tab: b.dataset.tab, rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1, sort: 'default' }); $('search').value = '';syncUrl(); render();
+  Object.assign(state, { tab: b.dataset.tab, rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1 }); $('search').value = '';syncUrl(); render();
   keepTabsInView();
 });
 // Floating "맨 위로" button for long lists.

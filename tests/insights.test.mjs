@@ -41,3 +41,10 @@ test('major coverage loss retains old quotes and recalculates freshness',()=>{co
 
 test('news allows timestamps while official catalysts use trading dates',()=>{const stocks=m.stocks.map(s=>({...s,news:[{title:'Headline',url:'https://example.com/news',date:'2026-10-14T03:12:00+00:00'}]}));const withNews={...snap,markets:{KR:{...m,stocks},US:m}};assert.equal(validSnapshot(withNews),true);stocks[0].catalysts=[{title:'Official',url:'https://sec.gov/a',date:'2026-10-14T03:12:00+00:00'}];assert.equal(validSnapshot(withNews),false);});
 test('refresh deduplicates inflight, remains bounded and allows offline retry',async()=>{let calls=0,current=snap;const refresh=createRefresher(()=>current,r=>{current=r.snapshot;},{timeout:10,fetcher:()=>{calls++;return new Promise(()=>{});}});const first=refresh();assert.equal(refresh(),first);await first;assert.equal(calls,1);assert.equal(current,snap);await refresh();assert.equal(calls,2);assert.equal(current,snap);});
+test('cap floor then RS then distance sorts in steps, missing caps excluded',()=>{
+ const mk=(id,marketCap,rs,highDistancePct)=>({id,name:id,marketCap,rs,highDistancePct});
+ const stocks=[mk('small-strong',4e11,99,1),mk('big-a',2e12,90,8),mk('big-b',3e12,90,2),mk('big-c',5e12,95,9),mk('no-cap',null,99,0),mk('big-norsi',2e12,null,1)];
+ assert.deepEqual(selectStocks({stocks},{tab:'all',minCap:1e12,sort:'rs',sort2:'highDistancePct'}).map(s=>s.id),['big-c','big-b','big-a','big-norsi']);
+ assert.deepEqual(selectStocks({stocks},{tab:'all',sort:'highDistancePct',sort2:'rs'}).map(s=>s.id)[0],'no-cap');
+ assert.equal(selectStocks({stocks},{tab:'all',minCap:1e12}).some(s=>s.id==='no-cap'),false);
+});

@@ -71,7 +71,18 @@ export function acceptSnapshot(current, incoming) {
  }
  return {...incoming,markets};
 }
-export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
+// Market-cap floors offered per market (KRW for KR, USD for US). 0 = no floor.
+export const CAP_FLOORS={KR:[[0,'전체'],[5e11,'5천억↑'],[1e12,'1조↑'],[5e12,'5조↑'],[1e13,'10조↑']],US:[[0,'전체'],[2e9,'$20억↑'],[1e10,'$100억↑'],[5e10,'$500억↑'],[2e11,'$2천억↑']]};
+// Sort keys: [label shown in the menu, direction]. 'asc' means smaller first.
+export const SORT_KEYS={marketCap:['시총 큰 순','desc'],marketCapAsc:['시총 작은 순','asc'],rs:['RS 높은 순','desc'],highDistancePct:['신고가에 가까운 순','asc'],changePct:['당일 상승률 높은 순','desc'],absolute:['당일 변동 큰 순','desc'],return5d:['5일 수익률 높은 순','desc'],return20d:['20일 수익률 높은 순','desc'],return60d:['60일 수익률 높은 순','desc'],return120d:['120일 수익률 높은 순','desc'],return200d:['200일 수익률 높은 순','desc'],volumeRatio:['거래량 배수 큰 순','desc'],name:['종목명 순','asc']};
+// Compare one key; missing values always go last, whatever the direction.
+function compareBy(key){
+ const value=s=>key==='marketCap'||key==='marketCapAsc'?(numeric(s.marketCap)&&s.marketCap>0?s.marketCap:null):key==='absolute'?(numeric(s.changePct)?Math.abs(s.changePct):null):numeric(s[key])?s[key]:null;
+ if(key==='name')return (a,b)=>a.name.localeCompare(b.name,'ko');
+ const asc=SORT_KEYS[key]?.[1]==='asc';
+ return (a,b)=>{const x=value(a),y=value(b);if(x==null||y==null)return x==null&&y==null?0:x==null?1:-1;return asc?x-y:y-x;};
+}
+export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',sort2='none',minCap=0,aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
  let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
  if(tab==='ai') {
   rows=rows.filter(s=>{const member=aiMembership(s);return member&&(aiSector==='all'||member.sectors.includes(aiSector));});
@@ -86,14 +97,12 @@ export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',
  if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
  if(industry) rows=rows.filter(s=>industry.members.includes(s.id));
  if(newOnly)rows=rows.filter(s=>signalChanges(s,priorSignal(m,s),tab==='near'?distance:10).entered.length>0);
+ // Cap floor: stocks without a known market cap cannot prove they pass, so they drop out.
+ if(minCap>0)rows=rows.filter(s=>numeric(s.marketCap)&&s.marketCap>=minCap);
  const periodKey=aiPeriod==='1d'?'changePct':['5d','20d','60d','120d','200d'].includes(aiPeriod)?`return${aiPeriod}`:'return5d';
  const key=sort==='default'?(tab==='near'?'highDistancePct':tab==='movers'?'absolute':tab==='ai'?periodKey:'return5d'):sort;
- if(key==='marketCap'||key==='marketCapAsc')return rows.sort((a,b)=>{
-  const aValid=numeric(a.marketCap)&&a.marketCap>0,bValid=numeric(b.marketCap)&&b.marketCap>0;
-  if(aValid!==bValid)return aValid?-1:1;
-  return aValid?(key==='marketCapAsc'?a.marketCap-b.marketCap:b.marketCap-a.marketCap):0;
- });
- rows.sort((a,b)=>key==='name'?a.name.localeCompare(b.name): key==='absolute'?Math.abs(b.changePct||0)-Math.abs(a.changePct||0):key==='highDistancePct'?(a[key]??Infinity)-(b[key]??Infinity):(b[key]??-Infinity)-(a[key]??-Infinity));return rows;
+ const first=compareBy(key),second=sort2&&sort2!=='none'&&sort2!==key?compareBy(sort2):null;
+ return rows.sort((a,b)=>first(a,b)||(second?second(a,b):0));
 }
 export function marketStatus(m,now=Date.now()) {const deadline=Date.parse(m.verifiedThrough||m.nextScheduledFor);return m.status!=='UNAVAILABLE'&&Number.isFinite(deadline)&&now>deadline+90*60000?'STALE':m.status;}
 export async function refreshSnapshot(current,{fetcher=fetch,timeout=6500}={}) {
