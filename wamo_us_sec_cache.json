@@ -57744,5 +57744,173 @@
     "sic": "1311",
     "sicDescription": "Crude Petroleum & Natural Gas",
     "secFetchedAt": "2026-10-19"
+  },
+  "FLNC": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.fluenceenergy.com",
+    "businessModelReportDate": "9/30/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Fluence Energy Inc. Class A Common Stock은 Nasdaq 공식 분류상 Miscellaneous · Industrial Machinery/Components 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Fluence Energy Inc. Class A Common Stock은 Nasdaq 공식 분류상 Miscellaneous · Industrial Machinery/Components 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Fluence Energy, Inc. (Nasdaq: FLNC) is a global market leader delivering intelligent energy storage and optimization software for renewables and storage. The Company's solutions and operational services are helping to create a more resilient grid, from powering the next generation of AI-driven data centers to unlocking the full potential of renewable portfolios. With gigawatts of projects successfully contracted, deployed, and under management across nearly 50 markets, the Company is transforming the way we power our world for a more sustainable future.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 2,262,830천달러로 전년 대비 -16.1%입니다(결산기준 9/30/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "기타 (Miscellaneous)",
+        "Miscellaneous",
+        "Industrial Machinery/Components"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "9/30/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": false,
+      "leveragePass": false,
+      "liquidityPass": true,
+      "assets": 2357000.0,
+      "liabilities": 1808152.0,
+      "equity": 429595.0,
+      "netIncome": -48314.0,
+      "debtRatioPct": 420.9,
+      "currentRatioPct": 150.6,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": -16.1,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Miscellaneous",
+    "industry": "Industrial Machinery/Components",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-19",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "RRC": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.rangeresources.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Range Resources Corporation Common Stock은 Nasdaq 공식 분류상 Energy · Oil & Gas Production 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Range Resources Corporation Common Stock은 Nasdaq 공식 분류상 Energy · Oil & Gas Production 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Fort Worth-based Range Resources is an independent exploration and production company with that focuses entirely on its operations in the Marcellus Shale in Pennsylvania. At year-end 2021, Range's proved reserves totaled 17.8 trillion cubic feet equivalent, with net production of 2.1 billion cubic feet equivalent per day. Natural gas accounted for 70% of production.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 2,993,980천달러로 전년 대비 +26.8%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "에너지 (Energy)",
+        "Energy",
+        "Oil & Gas Production"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": false,
+      "assets": 7421948.0,
+      "liabilities": 3103267.0,
+      "equity": 4318681.0,
+      "netIncome": 658024.0,
+      "debtRatioPct": 71.9,
+      "currentRatioPct": 67.2,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 26.8,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Energy",
+    "industry": "Oil & Gas Production",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-19",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "MUSA": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.murphyusa.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Murphy USA Inc. Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Retail-Auto Dealers and Gas Stations 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Murphy USA Inc. Common Stock은 Nasdaq 공식 분류상 Consumer Discretionary · Retail-Auto Dealers and Gas Stations 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Murphy USA (NYSE: MUSA) is a leading retailer of gasoline and convenience merchandise with more than 1,800 stores located primarily in the Southwest, Southeast, Midwest and Northeast United States. The Company and its team of approximately 16,900 employees serve an estimated two million customers each day through its network of retail gasoline and convenience stores in 27 states. The majority of Murphy USA's stores are located in close proximity to Walmart Supercenters, but we also operate standalone stores that market gasoline and other products under the Murphy USA , Murphy Express, and QuickChek brands. Murphy USA ranks 263 among Fortune 500 companies.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 19,384,000천달러로 전년 대비 -4.2%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "경기소비재 (Consumer Discretionary)",
+        "Consumer Discretionary",
+        "Retail-Auto Dealers and Gas Stations"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": false,
+      "liquidityPass": true,
+      "assets": 4725800.0,
+      "liabilities": 4102300.0,
+      "equity": 623500.0,
+      "netIncome": 470600.0,
+      "debtRatioPct": 657.9,
+      "currentRatioPct": 80.5,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": -4.2,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Consumer Discretionary",
+    "industry": "Retail-Auto Dealers and Gas Stations",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-19",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
