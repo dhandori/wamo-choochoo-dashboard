@@ -92,7 +92,8 @@ function stageChip(stage) {
 }
 
 function rankDelta(v) {
-  if (!isNum(v) || v === 0) return n('span', v === 0 ? '–' : '—', 'ld-delta flat');
+  if (!isNum(v)) return n('span', '—', 'ld-delta flat');
+  if (v === 0) return n('span', '변동 없음', 'ld-delta flat');
   return n('span', `${v > 0 ? '▲' : '▼'}${Math.abs(v)}`, `ld-delta ${v > 0 ? 'up' : 'down'}`);
 }
 

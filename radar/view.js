@@ -37,7 +37,7 @@ function fillCardCharts(root) {
 }
 
 const $ = id => document.getElementById(id);
-const defaults = { tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false, sort2:'none', minCap:0 };
+const defaults = { smallGroups: false, tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false, sort2:'none', minCap:0 };
 const PERIODS={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','medianReturn5d','return5dCount'],'20d':['20일','medianReturn20d','return20dCount'],'60d':['60일','medianReturn60d','return60dCount'],'120d':['120일','medianReturn120d','return120dCount'],'200d':['200일','medianReturn200d','return200dCount']};
 const CHANGE_LABELS={near:'신고가권 진입',rs:'RS 80 돌파',stage:'Stage 2 진입'};
 const EXIT_LABELS={near:'신고가권 이탈',rs:'RS 80 하회',stage:'Stage 2 이탈'};
@@ -262,7 +262,6 @@ function table(rows) {
 // 3종목 미만 그룹은 보통 숨기지만, 2차전지 대장(삼성SDI·LG엔솔)만 있는 '배터리 셀'은 꼭 보여 준다.
 const ALWAYS_SHOW = new Set(['배터리 셀']);
 const bigEnough = g => g.memberCount >= 3 || (ALWAYS_SHOW.has(g.name) && g.memberCount >= 2);
-const rankGroups = (a, b) => Number(b.confirmed) - Number(a.confirmed) || Number(bigEnough(b)) - Number(bigEnough(a)) || (b.medianReturn5d ?? -Infinity) - (a.medianReturn5d ?? -Infinity) || b.nearHighCount - a.nearHighCount;
 // 산업 흐름 칸: 당일 / 5일 / 20일 중앙값. 기본은 당일 — 오늘 돈이 들어온 산업이 먼저 보여야 한다.
 const RAIL_PERIODS = { '1d': ['당일', 'medianChangePct', 'changePct'], '5d': ['5일', 'medianReturn5d', 'return5d'], '20d': ['20일', 'medianReturn20d', 'return20d'] };
 const RAIL_STORE = 'wamo-rail-period';
@@ -318,7 +317,7 @@ function checkbox(key, text, parent) {
   const wrap = el('div', null, 'checkbox-help'); wrap.append(label, helpButton(text, key, true)); parent.append(wrap);
 }
 function resetFilters() {
-  for (const key of ['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'page','aiSector','aiSignal','aiPeriod','newOnly']) state[key] = defaults[key];
+  for (const key of ['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'smallGroups', 'page','aiSector','aiSignal','aiPeriod','newOnly']) state[key] = defaults[key];
   saveSort(); $('search').value = ''; render();
 }
 function renderControls() {
@@ -341,11 +340,19 @@ function renderControls() {
   if (group.childNodes.length) controls.append(group);
   if (state.tab === 'industries' && !state.industry) {
     checkbox('confirmed', '확인된 그룹만', controls);
+    const small = el('label', null, 'checkbox-control'), input = el('input'); input.type = 'checkbox'; input.checked = state.smallGroups;
+    input.onchange = () => change('smallGroups', input.checked); small.append(input, document.createTextNode(' 1~2종목 산업도 보기')); controls.append(small);
   } else {
     const options = el('div', null, 'filter-group'); checkbox('rs', 'RS ≥80', options); checkbox('stage', 'Stage 2', options); controls.append(options);
-    controls.append(sortPanel());
+    // Folded on phones so the list starts near the top; the summary line keeps the applied order visible.
+    const fold = el('details', null, 'sort-fold'); let open = !window.matchMedia('(max-width:760px)').matches;
+    try { const saved = localStorage.getItem('wamo-sort-open'); if (saved) open = saved === '1'; } catch {}
+    fold.open = open; fold.addEventListener('toggle', () => { try { localStorage.setItem('wamo-sort-open', fold.open ? '1' : '0'); } catch {} });
+    const first = state.sort === 'default' ? defaultSortLabel() : SORT_KEYS[state.sort]?.[0], second = state.sort2 !== 'none' && state.sort2 !== state.sort ? SORT_KEYS[state.sort2]?.[0] : null;
+    const sum = el('summary'); sum.append(el('b', '정렬·시총 '), el('span', [state.minCap > 0 ? `시총 ${capLabel()}` : '시총 전체', first, second].filter(Boolean).join(' → ')));
+    fold.append(sum, sortPanel()); controls.append(fold);
   }
-  if (['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed','aiSector','aiSignal','aiPeriod','newOnly'].some(key => state[key] !== defaults[key])) {
+  if (['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'smallGroups','aiSector','aiSignal','aiPeriod','newOnly'].some(key => state[key] !== defaults[key])) {
     const reset = button('필터 초기화', false, resetFilters); reset.id = 'reset-filters'; controls.append(reset);
   }
 }
@@ -381,6 +388,47 @@ function sortPanel(){
   psel.onchange=()=>{const set=presets[Number(psel.value)]?.[1];if(!set)return;Object.assign(state,set,{page:1});saveSort();render();};
   preset.append(psel);keys.append(preset);box.append(keys);
   return box;
+}
+// 인더스트리 액션: one compact ranked row per industry instead of tall cards.
+// The period toggle is shared with the 산업 흐름 rail so both agree.
+function industryList(m) {
+  const value = g => railValue(m, g, railPeriod);
+  const q = state.query.toLowerCase();
+  const all = m.industries.filter(g => (!state.confirmed || g.confirmed) && (!q || g.name.toLowerCase().includes(q)));
+  const shown = all.filter(g => state.smallGroups || bigEnough(g));
+  shown.sort((a, b) => (value(b) ?? -Infinity) - (value(a) ?? -Infinity) || b.nearHighCount - a.nearHighCount);
+  const hidden = all.length - shown.length;
+  $('result-summary').textContent = `${shown.length}개 산업 · ${RAIL_PERIODS[railPeriod][0]} 중앙값 높은 순${hidden ? ` · 1~2종목 산업 ${hidden}개 숨김` : ''}`;
+  const wrap = el('div', null, 'ind-list-wrap');
+  const head = el('div', null, 'ind-list-head');
+  const seg = el('div', null, 'rail-seg'); seg.setAttribute('aria-label', '순위 기준 기간');
+  Object.entries(RAIL_PERIODS).forEach(([key, [label]]) => { const b = button(`${label} 기준`, railPeriod === key, () => { railPeriod = key; try { localStorage.setItem(RAIL_STORE, key); } catch {} render(); }); b.setAttribute('aria-pressed', String(railPeriod === key)); seg.append(b); });
+  head.append(seg, el('span', '중앙값 = 산업 안 종목 수익률의 가운데 값 · 대형주 하나에 휘둘리지 않아요', 'ind-list-note'));
+  wrap.append(head);
+  if (!shown.length) { wrap.append(el('div', '조건에 맞는 산업 그룹이 없습니다.', 'empty')); return wrap; }
+  const table = el('div', null, 'ind-table'); table.setAttribute('role', 'table');
+  const cols = [['#', 'c-rank'], ['산업', 'c-name'], ['종목', 'c-num'], ['당일', 'c-ret p-1d'], ['5일', 'c-ret p-5d'], ['20일', 'c-ret p-20d'], ['5일 상승', 'c-adv'], ['신고가권', 'c-num'], ['거래량↑', 'c-num']];
+  const hr = el('div', null, 'ind-row ind-header'); hr.setAttribute('role', 'row');
+  cols.forEach(([t, c]) => { const cell = el('span', t, `${c}${c.includes(`p-${railPeriod}`) ? ' sel' : ''}`); cell.setAttribute('role', 'columnheader'); hr.append(cell); });
+  table.append(hr);
+  const scale = Math.max(1, ...shown.map(g => Math.abs(value(g) || 0)));
+  shown.forEach((g, i) => {
+    const row = button('', false, () => openIndustry(g)); row.className = `ind-row${g.confirmed ? ' confirmed' : ''}`; row.setAttribute('role', 'row');
+    const name = el('span', null, 'c-name'); name.append(el('strong', g.name));
+    if (g.confirmed) name.append(el('em', '동반 강세', 'ind-chip'));
+    const v = value(g), bar = el('i', null, 'ind-bar'); const fill = el('b', null, tone(v)); fill.style.width = `${Math.min(100, Math.abs(v || 0) / scale * 100)}%`; bar.append(fill); name.append(bar);
+    const ret = (key, period) => el('span', pct(railValue(m, g, period)), `c-ret p-${period} ${tone(railValue(m, g, period))}${period === railPeriod ? ' sel' : ''}`);
+    const adv = el('span', null, 'c-adv'); const a5 = g.advancing5dCount ?? 0;
+    const track = el('i', null, 'adv-track'); const af = el('b'); af.style.width = `${g.memberCount ? a5 / g.memberCount * 100 : 0}%`; track.append(af);
+    adv.append(el('span', `${a5}/${g.memberCount}`), track);
+    row.append(el('span', String(i + 1), 'c-rank'), name, el('span', `${g.memberCount}`, 'c-num c-members'), ret('medianChangePct', '1d'), ret('medianReturn5d', '5d'), ret('medianReturn20d', '20d'), adv,
+      el('span', `${g.nearHighCount}`, `c-num${g.nearHighCount ? ' hot' : ''}`), el('span', `${g.volumeConfirmedCount}`, `c-num${g.volumeConfirmedCount ? ' hot' : ''}`));
+    row.setAttribute('aria-label', `${i + 1}위 ${g.name} · ${g.memberCount}종목 · ${RAIL_PERIODS[railPeriod][0]} ${pct(v)}`);
+    table.append(row);
+  });
+  wrap.append(table);
+  wrap.append(el('p', '동반 강세 = 3종목 이상 산업에서 오늘·5일 모두 여러 종목이 함께 오르고, 신고가권이나 거래량 증가 종목이 2개 이상인 경우예요. 신고가권 = 52주 고점 10% 이내 종목 수, 거래량↑ = 거래량이 평소 1.5배 이상인 종목 수.', 'ind-foot'));
+  return wrap;
 }
 function trendBar(g) {
   const wrap=el('div',null,'trend-breadth'),label=el('div',null,'trend-label');
@@ -522,18 +570,11 @@ function render() {
   const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd','leaders'].includes(state.tab);
   if (['trend','ftd','leaders'].includes(state.tab)) { renderTrendTab(); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
-  const labels = { near: ['52주 신고가권', '252거래일 고점에 가까운 종목 · 당일 경신은 별도 탭에서 확인'], high: ['당일 신고가', '표시된 거래일에 이전 251개 관측치 고점을 실제로 넘긴 종목'], industries: ['인더스트리 액션', '여러 종목의 동반 강세 우선 · 5일 중앙값 순'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망과 서비스의 흐름 · 상승·하락 모두 포함 · 한국/미국 전환 가능'] };
+  const labels = { near: ['52주 신고가권', '252거래일 고점에 가까운 종목 · 당일 경신은 별도 탭에서 확인'], high: ['당일 신고가', '표시된 거래일에 이전 251개 관측치 고점을 실제로 넘긴 종목'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망과 서비스의 흐름 · 상승·하락 모두 포함 · 한국/미국 전환 가능'] };
   $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();
   if (state.tab === 'industries' && !state.industry) {
-    const groups = m.industries.filter(g => (!state.confirmed || g.confirmed) && (!state.query || g.name.toLowerCase().includes(state.query.toLowerCase()))).sort(rankGroups);
-    $('result-summary').textContent = `${groups.length}개 산업 그룹 · 전체 스크리닝 대상 기준`;
-    const grid = el('div', null, 'industry-grid');
-    groups.forEach(g => {
-      const card = button('', false, () => openIndustry(g)); card.className = 'industry-card';
-      card.append(el('h3', g.name), el('strong', pct(g.medianReturn5d), `return ${tone(g.medianReturn5d)}`), el('p', `5일 중앙값 · ${g.memberCount}종목`), el('p', `당일 중앙값 ${pct(g.medianChangePct)} · 5일 상승 ${g.advancing5dCount ?? '—'}/${g.memberCount}`), el('p', `신고가권 ${g.nearHighCount} · 장중 신고가 ${g.newHighCount || 0}`), el('p', `당일 상승 ${g.advancingCount}/${g.memberCount} · 거래량 증가 ${g.volumeConfirmedCount}`), el('span', g.confirmed ? '동반 강세 확인' : '관찰 그룹', `flow-status ${g.confirmed ? 'confirmed' : ''}`)); grid.append(card);
-    });
-    content.append(groups.length ? grid : el('div', '조건에 맞는 산업 그룹이 없습니다.', 'empty'));
+    content.append(industryList(m));
   } else {
     const rows = selectStocks(m, { ...state, tab: state.industry ? 'industry' : state.tab }), pages = Math.max(1, Math.ceil(rows.length / 30));
     state.page = Math.min(state.page, pages); content.append(table(rows));

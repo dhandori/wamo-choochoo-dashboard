@@ -95,7 +95,29 @@ def symbol_of(stock, market):
     return symbol if ok else None
 
 
+_KR_MAP = None
+
+
+def kr_industry_map():
+    """WAMO 산업 분류표(제품 단위) — the same table the radar's industry tab uses."""
+    global _KR_MAP
+    if _KR_MAP is None:
+        try:
+            raw = json.loads((ROOT / 'wamo_industry_map_KR.json').read_text(encoding='utf-8'))
+            table = raw.get('map') if isinstance(raw, dict) else None
+            _KR_MAP = {k: v['industry'].strip() for k, v in (table or {}).items()
+                       if isinstance(v, dict) and isinstance(v.get('industry'), str) and v['industry'].strip()}
+        except (OSError, ValueError, AttributeError):
+            _KR_MAP = {}
+    return _KR_MAP
+
+
 def industry_of(stock, market):
+    if market == 'KR':
+        code = str(stock.get('stock_code') or stock.get('ticker') or '').split('.')[0]
+        mapped = kr_industry_map().get(code)
+        if mapped:
+            return mapped
     keys = ('industryEn', 'industry', 'sector') if market == 'US' else ('industry', 'sector', 'industryEn')
     for key in keys:
         if isinstance(stock.get(key), str) and stock[key].strip():

@@ -278,7 +278,8 @@ def _industries(universe, bench, raw, index_dd=None):
             elif ((pct5 is not None and pct5 - pct >= 10)
                   or (breadth_now['above50Pct'] is not None and breadth_ago['above50Pct'] is not None
                       and breadth_now['above50Pct'] - breadth_ago['above50Pct'] <= -10)
-                  or breadth_now['newHighs'] < breadth_ago['newHighs']):
+                  # A drop of one new high (1 -> 0) is noise; only a real fade counts.
+                  or (breadth_ago['newHighs'] >= 2 and breadth_now['newHighs'] <= breadth_ago['newHighs'] / 2)):
                 stage = 'DOWN'
             elif (pct5 is not None and pct > pct5 and breadth_now['above50Pct'] is not None
                   and breadth_ago['above50Pct'] is not None and breadth_now['above50Pct'] > breadth_ago['above50Pct']):
@@ -332,7 +333,8 @@ def _industries(universe, bench, raw, index_dd=None):
         })
     items.sort(key=lambda x: (-x['rs'], x['name']))
     dropped = [x for x in items if x['stage'] == 'OUT']
-    watchlist = [x for x in items if not x['leading'] and x['watchScore'] >= POLICY['watchScoreMin']]
+    # Relative strength is the entry ticket: a weak-RS industry is not 'getting ready'.
+    watchlist = [x for x in items if not x['leading'] and x['watch'].get('rsRising') and x['watchScore'] >= POLICY['watchScoreMin']]
     watchlist.sort(key=lambda x: (-x['watchScore'], -x['rs'], x['name']))
     point_map = [{'name': x['name'], 'rs': x['rs'], 'nearHighPct': x['nearHighPct'], 'members': x['members'],
                   'leading': x['leading'], 'watchScore': x['watchScore'], 'rankChange20': x['rankChange20']} for x in items]
