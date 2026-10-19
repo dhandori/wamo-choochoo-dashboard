@@ -2,10 +2,10 @@ import { renderFTD, ftdSummary } from './ftd.js?v=20261019-3';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261019-2';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261019-6';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261019-1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261018-ftd1';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261019-ui1';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261019-2';
 import { renderSchedule } from './schedule.js?v=20261019-1';
-import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261018-2';
+import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261019-ui1';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
 let cardObserver = null;
@@ -107,17 +107,25 @@ function naverLink(s, prominent = false) {
 }
 function spark(s, large = false) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  const width = large ? 560 : 80, height = large ? 140 : 30;
+  const width = large ? 560 : 120, height = large ? 140 : 40;
   svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
   svg.classList.add(large ? 'detail-chart' : 'spark');
-  svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', '최근 60거래일 종가 흐름');
+  svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', '최근 60거래일 종가 흐름 · 점선은 60일 전 종가');
   const values = (s.sparkline || []).filter(numeric);
   if (values.length > 1) {
     const low = Math.min(...values), range = Math.max(...values) - low || 1;
+    const px = (v, i) => [i / (values.length - 1) * (width - 4) + 2, height - 5 - (v - low) / range * (height - 10)];
+    const up = values.at(-1) >= values[0], color = up ? '#55d5b1' : '#fa8d96';
+    // Dotted baseline at the first close: above it = gained over the window.
+    const base = document.createElementNS(svg.namespaceURI, 'line'), y0 = px(values[0], 0)[1];
+    base.setAttribute('x1', 0); base.setAttribute('x2', width); base.setAttribute('y1', y0); base.setAttribute('y2', y0);
+    base.setAttribute('stroke', '#5a6d86'); base.setAttribute('stroke-width', '1'); base.setAttribute('stroke-dasharray', '2 3'); svg.append(base);
     const path = document.createElementNS(svg.namespaceURI, 'polyline');
-    path.setAttribute('points', values.map((v, i) => `${i / (values.length - 1) * width},${height - 5 - (v - low) / range * (height - 10)}`).join(' '));
-    path.setAttribute('fill', 'none'); path.setAttribute('stroke', values.at(-1) >= values[0] ? '#55d5b1' : '#fa8d96');
-    path.setAttribute('stroke-width', large ? '2' : '1.5'); svg.append(path);
+    path.setAttribute('points', values.map((v, i) => px(v, i).join(',')).join(' '));
+    path.setAttribute('fill', 'none'); path.setAttribute('stroke', color); path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('stroke-width', large ? '2' : '1.6'); svg.append(path);
+    const dot = document.createElementNS(svg.namespaceURI, 'circle'), [cx, cy] = px(values.at(-1), values.length - 1);
+    dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.setAttribute('r', large ? 3 : 2.2); dot.setAttribute('fill', color); svg.append(dot);
   }
   return svg;
 }
@@ -262,6 +270,8 @@ function renderRail(m) {
   const groups = m.industries.filter(g => g.memberCount >= 3).sort(rankGroups).slice(0, 6);
   const scale = Math.max(1, ...groups.map(g => Math.abs(g.medianReturn5d || 0)));
   if (!groups.length) rail.append(el('p', '비교 가능한 산업 그룹이 없습니다.'));
+  // On phones the strip scrolls sideways under the tabs; on desktop it is the side rail.
+  const strip = el('div', null, 'rail-strip'); rail.append(strip);
   groups.forEach(g => {
     const b = button('', false, () => openIndustry(g)); b.className = 'rail-group';
     const top = el('div', null, 'rail-group-top'); top.append(el('strong', g.name), el('span', pct(g.medianReturn5d), tone(g.medianReturn5d)));
@@ -271,7 +281,7 @@ function renderRail(m) {
       const width = Math.abs(g.medianReturn5d) / scale * 50;
       fill.style.width = `${width}%`; fill.style.left = `${g.medianReturn5d < 0 ? 50 - width : 50}%`; bar.append(fill);
     }
-    b.append(top, bar, el('small', `5일 중앙값 · ${g.memberCount}종목 · 신고가권 ${g.nearHighCount}`), el('span', g.confirmed ? '동반 강세 확인' : '관찰', `flow-status ${g.confirmed ? 'confirmed' : ''}`)); rail.append(b);
+    b.append(top, bar, el('small', `5일 중앙값 · ${g.memberCount}종목 · 신고가권 ${g.nearHighCount}`), el('span', g.confirmed ? '동반 강세 확인' : '관찰', `flow-status ${g.confirmed ? 'confirmed' : ''}`)); strip.append(b);
   });
   rail.append(button('전체 산업 보기 →', false, () => { Object.assign(state, { tab: 'industries', industry: null, query: '', rs: false, stage: false, newOnly:false, page: 1 }); $('search').value = ''; render(); }));
 }
@@ -322,26 +332,27 @@ function sortPanel(){
   // A key only some tabs offer (e.g. 120일 on the AI tab) falls back when you leave that tab.
   if(state.sort!=='default'&&!allowed.includes(state.sort))state.sort='default';
   if(state.sort2!=='none'&&!allowed.includes(state.sort2))state.sort2='none';
-  const capRow=el('div',null,'sort-row');capRow.append(el('span','① 시총','sort-step'));
+  // One row: cap chips → 1st key → tie-break → presets. The summary sentence is gone;
+  // the selects already read as the order they apply in.
+  const capRow=el('div',null,'sort-row sort-cap');capRow.append(el('span','시총','sort-step'));
   CAP_FLOORS[state.market].forEach(([v,label])=>capRow.append(button(label,state.minCap===v,()=>change('minCap',v))));
+  if(state.minCap>0)capRow.title='시총 자료가 없는 종목은 빠져요';
   box.append(capRow);
   const pick=(key,title,includeNone)=>{const wrap=el('label',null,'sort-pick');wrap.append(el('span',title,'sort-step'));const sel=el('select');sel.setAttribute('aria-label',title);
-    const opts=includeNone?[['none','없음']]:[['default',`기본 · ${defaultSortLabel()}`]];
+    const opts=includeNone?[['none','2차 정렬 없음']]:[['default',`기본 · ${defaultSortLabel()}`]];
     sortKeysForTab().forEach(k=>opts.push([k,SORT_KEYS[k][0]]));
     opts.forEach(([value,text])=>{const o=el('option',text);o.value=value;o.selected=state[key]===value;sel.append(o);});
     sel.onchange=()=>change(key,sel.value);wrap.append(sel);return wrap;};
-  const keys=el('div',null,'sort-row');keys.append(pick('sort','② 1차 정렬',false),pick('sort2','③ 같으면 2차 정렬',true));box.append(keys);
-  const presets=el('div',null,'sort-row sort-presets');presets.append(el('span','빠른 설정','sort-step'));
+  const keys=el('div',null,'sort-row sort-keys');keys.append(pick('sort','정렬',false),pick('sort2','같으면',true));
   const big=state.market==='KR'?1e12:1e10;
-  [[`대형주 중 RS 강한 순`,{minCap:big,sort:'rs',sort2:'highDistancePct'}],['RS 강한 순 → 신고가 가까운 순',{minCap:0,sort:'rs',sort2:'highDistancePct'}],['신고가 가까운 순 → RS',{minCap:0,sort:'highDistancePct',sort2:'rs'}]].forEach(([label,set])=>{
-    const on=state.minCap===set.minCap&&state.sort===set.sort&&state.sort2===set.sort2;
-    presets.append(button(label,on,()=>{Object.assign(state,set,{page:1});saveSort();render();}));});
-  box.append(presets);
-  const first=state.sort==='default'?defaultSortLabel():SORT_KEYS[state.sort]?.[0],second=state.sort2!=='none'&&state.sort2!==state.sort?SORT_KEYS[state.sort2]?.[0]:null;
-  const flow=[state.minCap>0?`시총 ${capLabel()}만`:'시총 제한 없음',first,second].filter(Boolean).join(' → ');
-  const note=el('p',null,'sort-summary');note.append(el('b','적용 순서 '),flow);
-  if(state.minCap>0)note.append(el('small',' · 시총 자료가 없는 종목은 빠져요'));
-  box.append(note);
+  const presets=[[`대형주 중 RS 강한 순`,{minCap:big,sort:'rs',sort2:'highDistancePct'}],['RS 강한 순 → 신고가 가까운 순',{minCap:0,sort:'rs',sort2:'highDistancePct'}],['신고가 가까운 순 → RS',{minCap:0,sort:'highDistancePct',sort2:'rs'}]];
+  const preset=el('label',null,'sort-pick sort-presets');preset.append(el('span','빠른 설정','sort-step'));
+  const psel=el('select');psel.setAttribute('aria-label','빠른 설정');
+  const none=el('option','선택…');none.value='';psel.append(none);
+  presets.forEach(([label,set],i)=>{const o=el('option',label);o.value=String(i);o.selected=state.minCap===set.minCap&&state.sort===set.sort&&state.sort2===set.sort2;psel.append(o);});
+  if(![...psel.options].some(o=>o.value&&o.selected))none.selected=true;
+  psel.onchange=()=>{const set=presets[Number(psel.value)]?.[1];if(!set)return;Object.assign(state,set,{page:1});saveSort();render();};
+  preset.append(psel);keys.append(preset);box.append(keys);
   return box;
 }
 function trendBar(g) {
@@ -600,7 +611,8 @@ function paintSchedule() {
   if (sum) sum.textContent = busy.length ? `갱신 일정·진행 상황 · ${busy.map(k => k === 'KR' ? '한국' : '미국').join('·')} 갱신 중` : '갱신 일정·진행 상황';
 }
 (() => { const w = $('schedule-wrap'); if (!w) return;
-  try { if (localStorage.getItem('wamo-schedule-open') === '0') w.open = false; } catch {}
+  // Folded by default: the first screen is for the market, not the run log.
+  try { w.open = localStorage.getItem('wamo-schedule-open') === '1'; } catch { w.open = false; }
   w.addEventListener('toggle', () => { try { localStorage.setItem('wamo-schedule-open', w.open ? '1' : '0'); } catch {} }); })();
 function updateRefreshButton() {
   document.querySelectorAll('.refresh-button').forEach(b => { b.disabled = refreshing; b.textContent = refreshing ? '확인 중…' : '데이터 확인'; });

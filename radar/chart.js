@@ -83,7 +83,7 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
   // Narrow screens get a smaller drawing area so axis text stays readable.
   const narrow = !compact && typeof window !== 'undefined' && window.innerWidth < 700;
   const W = compact ? 300 : narrow ? 360 : 680, H = compact ? 118 : narrow ? 260 : 330;
-  const pad = { l: compact ? 4 : 8, r: compact ? 46 : narrow ? 50 : 60, t: compact ? 8 : 12, b: compact ? 18 : 24 };
+  const pad = { l: compact ? 4 : 8, r: compact ? 54 : narrow ? 56 : 60, t: compact ? 8 : 12, b: compact ? 18 : 24 };
   const volH = showVolume ? Math.round(H * 0.2) : 0, gap = showVolume ? 8 : 0;
   const plotW = W - pad.l - pad.r, priceH = H - pad.t - pad.b - volH - gap;
   const values = idx.flatMap(i => [series.closes[i], ...maSeries.map(m => m.values[i])]).filter(v => v != null);
