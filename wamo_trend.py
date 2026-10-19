@@ -29,7 +29,7 @@ PAGES = {'KR': 'index.html', 'US': 'us.html'}
 INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500')}
 # Growth-heavy second index: market weather needs both (O'Neil watches both).
 SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥')}
-TREND_VERSION = 4
+TREND_VERSION = 5
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -213,8 +213,38 @@ def build_universe(payload, market):
                     'name': stock.get('name') or symbol, 'industry': industry_of(stock, market),
                     'marketCap': cap, 'rows': rows, 'closes': [r['close'] for r in rows],
                     'rsPercentile': num(stock.get('oneilRsPercentile')) or num(stock.get('rsPercentile')),
-                    'vcp': stock.get('vcp') if isinstance(stock.get('vcp'), dict) else None})
+                    'vcp': stock.get('vcp') if isinstance(stock.get('vcp'), dict) else None,
+                    'growth': growth_of(stock, market)})
     return asof, out
+
+
+def growth_of(stock, market):
+    """Is recent growth backing the price? True / False / None (unknown), plus a short reason.
+
+    Uses only figures already on the page (OpenDART for KR, SEC/Nasdaq for US).
+    Rule (WAMO default): latest-quarter EPS test passes (CAN SLIM 'C'), or sales grow >= 20% YoY.
+    """
+    c = (((stock.get('canSlim') or {}).get('items') or {}).get('C') or {}).get('status')
+    if market == 'KR':
+        sales = num(stock.get('sales_yoy'))
+        eps_pass = c == 'PASS'
+        sepa = {}
+    else:
+        sales = num(stock.get('annualSalesYoyNasdaq'))
+        sepa = stock.get('sepaFundamental') if isinstance(stock.get('sepaFundamental'), dict) else {}
+        eps_pass = c == 'PASS' or bool(sepa.get('epsPass'))
+    reasons = []
+    if eps_pass:
+        reasons.append('EPS 성장')
+    if sales is not None and sales >= 20:
+        reasons.append(f'매출 +{sales:.0f}%')
+    elif sepa.get('salesPass'):
+        reasons.append('매출 성장')
+    if reasons:
+        return {'ok': True, 'text': ' · '.join(reasons)}
+    if sales is not None or c == 'FAIL':
+        return {'ok': False, 'text': f'매출 {sales:+.0f}%' if sales is not None else 'EPS 기준 미달'}
+    return {'ok': None, 'text': '실적 자료 없음'}
 
 
 def synthetic_benchmark(universe):

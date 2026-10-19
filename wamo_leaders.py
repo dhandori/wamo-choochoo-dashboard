@@ -23,7 +23,21 @@ POLICY = {
     'industryMinMembers': 3, 'industryTopPct': 80, 'industryNewHighsMin': 3,
     'industryAbove50Min': 60, 'industryPersistDays': 10, 'industryPersistMin': 5,
     'industryLookback': 20,
+    # FTD 대기 워치리스트 (블로그 체크리스트 6문항을 숫자로 바꾼 와모 기본값)
+    'watchRsMin': 60, 'watchRsRise': 10, 'watchNearHighMin': 2, 'watchAbove50Min': 50,
+    'watchNearHighPctMin': 30, 'reclaimLookback': 10, 'reclaimVolume': 1.4, 'reclaimMin': 2,
+    'growthPctMin': 40, 'growthKnownMin': 2, 'candidateRsMin': 70, 'watchScoreMin': 4,
+    'heldUpGood': 0.8, 'leadsIndexMax': 5, 'leadsIndexBenchMin': 5,
 }
+
+WATCH_CHECKS = [
+    ('rsRising', '상대강도가 높아지는 중', '업종 RS 80 이상이거나, 60 이상이면서 20거래일 전보다 10점 넘게 올랐어요.'),
+    ('nearHigh', '신고가 근처 종목 있음', '52주 신고가 15% 이내 종목이 2개 이상이거나, 최근 10거래일 안에 신고가를 낸 종목이 있어요.'),
+    ('together', '여러 종목이 함께 강함', '50일선 위 종목이 50% 이상이고, 신고가 15% 이내 종목이 30% 이상이에요.'),
+    ('reclaim', '이평선 회복 + 거래량', '최근 10거래일 안에 50일선을 거래량 1.4배 이상으로 회복했거나 신고가를 거래량 돌파한 종목이 2개 이상이에요.'),
+    ('growth', '실적이 뒷받침', '실적 자료가 있는 종목 중 40% 이상이 EPS 성장(CAN SLIM C 통과) 또는 매출 +20% 이상이에요.'),
+    ('candidate', '매수 후보 종목 있음', 'RS 70 이상 · 신고가 15% 이내 · 50일선 위인 종목이 1개 이상 있어요. FTD가 나오면 바로 볼 종목이에요.'),
+]
 
 STAGE_TEXT = {
     'NEW': ('🆕', '신규 진입', 'RS 순위가 5거래일 전에는 상위 20% 밖이었다가 이번에 안으로 들어왔어요.'),
@@ -128,6 +142,9 @@ def analyze(universe, bench, market, ftd_indexes=None):
         s['_nearHigh'] = checks['nearHigh']
         s['_leader'] = all(checks.values())
         s['_dist'] = dist
+        s['_reclaim'] = bool(breakout_dates) or _reclaim(rows, closes)
+        s['_candidate'] = (rs is not None and rs >= POLICY['candidateRsMin'] and dist is not None
+                           and dist <= POLICY['highDistanceMax'] and s['_above50'] is True)
         stocks.append({
             'id': s['id'], 'symbol': s['symbol'], 'name': s['name'], 'industry': s['industry'],
             'close': rnd(closes[i], 4), 'changePct': rnd((closes[i] / closes[i - 1] - 1) * 100) if n > 1 else None,
@@ -137,6 +154,7 @@ def analyze(universe, bench, market, ftd_indexes=None):
             'rsLineHigh': rs_high_recent is not None, 'rsHighDaysAgo': rs_high_recent, 'rsLead': rs_lead,
             'breakoutDates': breakout_dates, 'heldUpRatio': held,
             'heldUp': held is not None and held < 1,
+            'growth': s.get('growth'),
         })
     leaders = [x for x in stocks if x['leader']]
     leaders.sort(key=lambda x: (not x['core'], not x['rsLead'], not x['breakoutDates'], -(x['rs'] or 0)))
@@ -165,7 +183,7 @@ def analyze(universe, bench, market, ftd_indexes=None):
                      'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs']}
                                for x in sorted(recent, key=lambda x: -(x['rs'] or 0))[:20]]}
 
-    industries = _industries(universe, bench, raw)
+    industries = _industries(universe, bench, raw, index_dd)
     return {
         'policy': POLICY,
         'asOf': dates[-1] if dates else None,
@@ -176,12 +194,43 @@ def analyze(universe, bench, market, ftd_indexes=None):
                     'breakoutCount': sum(bool(x['breakoutDates']) for x in leaders),
                     'items': leaders[:60]},
         'emergence': emergence,
+        'phase': _phase(ftd_indexes),
+        'watchChecks': [{'key': k, 'label': a, 'meaning': b} for k, a, b in WATCH_CHECKS],
         'industries': industries,
         'stageText': {k: {'icon': v[0], 'label': v[1], 'meaning': v[2]} for k, v in STAGE_TEXT.items()},
     }
 
 
-def _industries(universe, bench, raw):
+def _reclaim(rows, closes):
+    """Crossed back above the 50-day average on >= 1.4x 50-day volume within the lookback."""
+    n = len(closes)
+    for i in range(max(51, n - POLICY['reclaimLookback']), n):
+        ma, ma_prev = sma(closes, 50, i + 1), sma(closes, 50, i)
+        if ma is None or ma_prev is None or not (closes[i] > ma and closes[i - 1] <= ma_prev):
+            continue
+        vols = [r['volume'] for r in rows[i - 50:i]]
+        avg = sum(vols) / 50 if vols else 0
+        if avg > 0 and rows[i]['volume'] >= POLICY['reclaimVolume'] * avg:
+            return True
+    return False
+
+
+def _phase(ftd_indexes):
+    """Which job the screen should do now: verify leaders after an FTD, or prepare the watchlist before one."""
+    phases = [x.get('phase') for x in ftd_indexes or [] if x.get('status') == 'OK']
+    if any(p in ('CONFIRMED', 'PRESSURE') for p in phases):
+        mode = 'FTD'
+    elif any(p in ('CORRECTION', 'RALLY', 'LATE') for p in phases):
+        mode = 'WAIT'
+    elif phases:
+        mode = 'UPTREND'
+    else:
+        mode = 'UNKNOWN'
+    return {'mode': mode, 'indexes': [{'label': x.get('label'), 'phase': x.get('phase')}
+                                      for x in ftd_indexes or [] if x.get('status') == 'OK']}
+
+
+def _industries(universe, bench, raw, index_dd=None):
     lookback = POLICY['industryLookback']
     groups = {}
     for s in universe:
@@ -213,7 +262,7 @@ def _industries(universe, bench, raw):
         persist = sum(1 for k in range(POLICY['industryPersistDays']) if (pct_k[k].get(name) or 0) >= top)
         breadth_now = _breadth(members, 0)
         breadth_ago = _breadth(members, 5)
-        rs_line_high = _industry_rs_high(members, bench_dates, bench_close)
+        rs_line_high, levels = _industry_rs_high(members, bench_dates, bench_close)
         pct5, pct20 = pct_k[5].get(name), pct_k[lookback].get(name)
         r0, r5, r20 = rank_k[0].get(name), rank_k[5].get(name), rank_k[lookback].get(name)
         conds = {
@@ -238,6 +287,32 @@ def _industries(universe, bench, raw):
                 stage = 'HOLD'
         elif pct5 is not None and pct5 >= top:
             stage = 'OUT'
+        # Blog checklist: is this industry ready for the next FTD?
+        near_count = sum(1 for m in members if m.get('_nearHigh'))
+        known = [m['growth']['ok'] for m in members if isinstance(m.get('growth'), dict) and m['growth'].get('ok') is not None]
+        growth_pct = rnd(sum(known) / len(known) * 100, 1) if known else None
+        cands = [m for m in members if m.get('_candidate')]
+        reclaim_count = sum(1 for m in members if m.get('_reclaim'))
+        watch = {
+            'rsRising': pct >= top or (pct >= POLICY['watchRsMin'] and pct20 is not None and pct - pct20 >= POLICY['watchRsRise']),
+            'nearHigh': near_count >= POLICY['watchNearHighMin'] or breadth_now['newHighs'] >= 1,
+            'together': (breadth_now['above50Pct'] or 0) >= POLICY['watchAbove50Min']
+                        and (breadth_now['nearHighPct'] or 0) >= POLICY['watchNearHighPctMin'],
+            'reclaim': reclaim_count >= POLICY['reclaimMin'],
+            'growth': growth_pct is not None and len(known) >= POLICY['growthKnownMin'] and growth_pct >= POLICY['growthPctMin'],
+            'candidate': len(cands) >= 1,
+        }
+        ind_dd = _drawdown(levels[-POLICY['heldUpWindow']:]) if len(levels) >= POLICY['heldUpWindow'] else None
+        held = rnd(ind_dd / index_dd, 2) if ind_dd is not None and index_dd and index_dd >= POLICY['heldUpMinIndexDrawdown'] else None
+        ind_dist = (1 - levels[-1] / max(levels[-252:])) * 100 if levels else None
+        bench_tail = [bench_close[d] for d in bench_dates[-252:]]
+        bench_dist = (1 - bench_tail[-1] / max(bench_tail)) * 100 if bench_tail else None
+        leads_index = (ind_dist is not None and bench_dist is not None and ind_dist <= POLICY['leadsIndexMax']
+                       and bench_dist >= POLICY['leadsIndexBenchMin'])
+        cand_items = [{'id': m['id'], 'name': m['name'], 'symbol': m['symbol'], 'rs': m.get('_rsNow'),
+                       'dist': rnd(m.get('_dist'), 1), 'leader': bool(m.get('_leader')),
+                       'growth': (m.get('growth') or {}).get('text') if (m.get('growth') or {}).get('ok') else None}
+                      for m in sorted(cands, key=lambda m: -(m.get('_rsNow') or 0))[:5]]
         reps = sorted(members, key=lambda m: (not m.get('_leader'), -(m.get('_rsNow') or 0)))[:3]
         items.append({
             'name': name, 'members': len(members), 'rs': pct, 'rank': r0,
@@ -248,13 +323,28 @@ def _industries(universe, bench, raw):
             'above50Pct': breadth_now['above50Pct'], 'above50PctAgo': breadth_ago['above50Pct'],
             'nearHighPct': breadth_now['nearHighPct'], 'rsLineHigh': rs_line_high,
             'leaderCount': sum(1 for m in members if m.get('_leader')),
+            'nearHighCount': near_count, 'reclaimCount': reclaim_count, 'growthPct': growth_pct, 'growthKnown': len(known),
+            'watch': watch, 'watchScore': sum(watch.values()), 'candidates': cand_items, 'candidateCount': len(cands),
+            'heldUpRatio': held, 'heldUp': held is not None and held < POLICY['heldUpGood'],
+            'leadsIndex': leads_index, 'distFromHigh': rnd(ind_dist, 1),
             'representatives': [{'id': m['id'], 'name': m['name'], 'symbol': m['symbol'], 'rs': m.get('_rsNow'),
                                  'leader': bool(m.get('_leader'))} for m in reps],
         })
     items.sort(key=lambda x: (-x['rs'], x['name']))
     dropped = [x for x in items if x['stage'] == 'OUT']
+    watchlist = [x for x in items if not x['leading'] and x['watchScore'] >= POLICY['watchScoreMin']]
+    watchlist.sort(key=lambda x: (-x['watchScore'], -x['rs'], x['name']))
+    point_map = [{'name': x['name'], 'rs': x['rs'], 'nearHighPct': x['nearHighPct'], 'members': x['members'],
+                  'leading': x['leading'], 'watchScore': x['watchScore'], 'rankChange20': x['rankChange20']} for x in items]
     return {'status': 'OK', 'count': len(items), 'leadingCount': sum(x['leading'] for x in items),
-            'items': items[:15], 'dropped': dropped[:8]}
+            'items': items[:15], 'dropped': dropped[:8],
+            'watchlist': watchlist[:10], 'watchCount': len(watchlist), 'map': point_map,
+            'checklist': [{'name': x['name'], 'rs': x['rs'], 'watch': x['watch'], 'watchScore': x['watchScore'],
+                           'leading': x['leading']}
+                          for x in sorted(items, key=lambda x: (-x['watchScore'], -x['rs'], x['name']))[:15]],
+            'leadsIndex': [x['name'] for x in items if x['leadsIndex']][:10],
+            'heldUp': [{'name': x['name'], 'ratio': x['heldUpRatio']} for x in
+                       sorted((x for x in items if x['heldUp']), key=lambda x: x['heldUpRatio'])][:10]}
 
 
 def _breadth(members, back):
@@ -281,7 +371,9 @@ def _breadth(members, back):
 
 
 def _industry_rs_high(members, bench_dates, bench_close):
-    """Equal-weight industry index ÷ market index at a 252-session high within 5 sessions."""
+    """Equal-weight industry index ÷ market index at a 252-session high within 5 sessions.
+
+    Also returns the equal-weight industry index levels (for drawdown / distance from high)."""
     by_date = [{r['date']: r['close'] for r in m['rows']} for m in members]
     level, pts = 100.0, []
     for a, b in zip(bench_dates, bench_dates[1:]):
@@ -289,6 +381,7 @@ def _industry_rs_high(members, bench_dates, bench_close):
         if len(rets) >= max(2, len(members) // 2):
             level *= 1 + sum(rets) / len(rets)
         pts.append(level / bench_close[b])
+    levels = [p * bench_close[d] for p, d in zip(pts, bench_dates[1:])]
     if len(pts) < 200:
-        return None
-    return any(rs_high_at(pts, len(pts) - 1 - k) for k in range(5))
+        return None, levels
+    return any(rs_high_at(pts, len(pts) - 1 - k) for k in range(5)), levels

@@ -109,6 +109,38 @@ class LeaderTests(unittest.TestCase):
         s0 = next((x for x in out['leaders']['items'] if x['id'] == 'US:S3'), None)
         self.assertTrue(s0 is None or DAYS[-1] not in s0['breakoutDates'])
 
+    def test_watch_checklist_scores_strong_high_and_weak_low(self):
+        u = universe()
+        for s in u:
+            s['growth'] = {'ok': s['industry'] == 'Strong', 'text': 'x'}
+        out = L.analyze(u, BENCH, 'US')
+        by = {x['name']: x for x in out['industries']['map']}
+        self.assertGreater(by['Strong']['watchScore'], by['Weak']['watchScore'])
+        strong = next(x for x in out['industries']['items'] if x['name'] == 'Strong')
+        for key in ('rsRising', 'nearHigh', 'together', 'growth', 'candidate'):
+            self.assertTrue(strong['watch'][key], key)
+        weak = next(x for x in out['industries']['items'] if x['name'] == 'Weak')
+        self.assertFalse(weak['watch']['candidate'])
+        self.assertFalse(weak['watch']['growth'])
+        # Leading industries are not repeated in the waiting list.
+        self.assertNotIn('Strong', [x['name'] for x in out['industries']['watchlist']])
+        self.assertEqual(len(out['watchChecks']), 6)
+
+    def test_phase_tells_wait_before_ftd(self):
+        wait = L.analyze(universe(), BENCH, 'US', [{'status': 'OK', 'phase': 'RALLY', 'label': 'KOSPI'}])
+        self.assertEqual(wait['phase']['mode'], 'WAIT')
+        ftd = L.analyze(universe(), BENCH, 'US', [{'status': 'OK', 'phase': 'CONFIRMED', 'label': 'S&P 500',
+                                                    'ftd': {'date': DAYS[-3]}}])
+        self.assertEqual(ftd['phase']['mode'], 'FTD')
+
+    def test_growth_rule(self):
+        from wamo_trend import growth_of
+        self.assertTrue(growth_of({'sales_yoy': 25}, 'KR')['ok'])
+        self.assertFalse(growth_of({'sales_yoy': 5}, 'KR')['ok'])
+        self.assertIsNone(growth_of({}, 'KR')['ok'])
+        self.assertTrue(growth_of({'canSlim': {'items': {'C': {'status': 'PASS'}}}}, 'US')['ok'])
+        self.assertTrue(growth_of({'sepaFundamental': {'epsPass': True}}, 'US')['ok'])
+
 
 if __name__ == '__main__':
     unittest.main()
