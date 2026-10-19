@@ -33,6 +33,9 @@ KST = timezone(timedelta(hours=9))
 MIN_MARKET_CAP_USD = 1_000_000_000
 MIN_AVG_VALUE_50D_USD = 10_000_000
 MAX_PRICE_UNIVERSE = 900
+# Theme names the radar's AI tab tracks even when they rank below the top 900 by
+# market cap. They still must pass the $1B cap and $10M liquidity filters.
+PINNED_US = ("FLNC",)
 PRICE_WORKERS = 16
 SEC_TARGET_MAX = 80
 SEC_WORKERS = 3
@@ -211,6 +214,14 @@ def _assert_json_payload(payload):
         json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     except (TypeError, ValueError) as exc:
         raise RuntimeError(f"미국 payload JSON 검사 실패: {exc}") from exc
+
+
+def select_price_candidates(listed, limit=MAX_PRICE_UNIVERSE, pinned=PINNED_US):
+    """Top `limit` by market cap, plus pinned theme names found below that cut."""
+    top = listed[:limit]
+    have = {s.get("ticker") for s in top}
+    extra = [s for s in listed[limit:] if s.get("ticker") in pinned and s.get("ticker") not in have]
+    return top + extra
 
 
 def fetch_us_universe():
@@ -1211,8 +1222,8 @@ def main():
     listed, excluded_by_name, universe_recovery = load_universe(fetch_us_universe, old_payload, 'US')
     # 정적 GitHub Pages의 용량·모바일 속도를 지키기 위해 시총순 최대 900개만
     # 가격 정밀계산한다. 이 제한은 화면과 메타데이터에도 명시한다.
-    candidates = listed[:MAX_PRICE_UNIVERSE]
-    print("  시총 10억달러 이상", len(listed), "개 · 가격수집 상위", len(candidates), "개")
+    candidates = select_price_candidates(listed)
+    print("  시총 10억달러 이상", len(listed), "개 · 가격수집 상위", min(len(listed), MAX_PRICE_UNIVERSE), "개 + 테마 고정", len(candidates) - min(len(listed), MAX_PRICE_UNIVERSE), "개")
 
     print("2/9 미국 가격·거래량 수집")
     raw, errors, short_history_exclusions = [], [], []

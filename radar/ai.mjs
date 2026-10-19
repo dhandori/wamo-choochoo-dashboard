@@ -60,6 +60,7 @@ add('US','FSLR NXT','dcpower','태양광 모듈·트래커 (빅테크 전력계�
 add('US','NEE AES','dcpower','빅테크 재생에너지 장기 전력계약');
 add('US','GNRC','dcpower','데이터센터 비상발전기');
 add('KR','373220 006400','ess','데이터센터·전력망 ESS 배터리');
+add('US','FLNC','ess','ESS 전문 (데이터센터·전력망 저장장치)');
 add('US','TSLA','ess','ESS(메가팩) · 전기차 겸업');
 add('KR','336260','dcpower','데이터센터 연료전지 발전');
 add('KR','009830','dcpower','태양광·빅테크 재생에너지 전력계약');
