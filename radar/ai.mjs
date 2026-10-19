@@ -60,6 +60,10 @@ add('US','FSLR NXT','dcpower','태양광 모듈·트래커 (빅테크 전력계�
 add('US','NEE AES','dcpower','빅테크 재생에너지 장기 전력계약');
 add('US','GNRC','dcpower','데이터센터 비상발전기');
 add('KR','373220 006400','ess','데이터센터·전력망 ESS 배터리');
+add('KR','096770','ess','ESS용 LFP 배터리 (자회사 SK온)');
+add('KR','066970','ess','ESS용 LFP 양극재');
+add('KR','247540 003670','ess','ESS 셀용 양극재 일부 공급 (주력 전기차)');
+add('KR','051910','ess','양극재·LG에너지솔루션 모회사 (주력 전기차)');
 add('US','FLNC','ess','ESS 전문 (데이터센터·전력망 저장장치)');
 add('US','TSLA','ess','ESS(메가팩) · 전기차 겸업');
 add('KR','336260','dcpower','데이터센터 연료전지 발전');

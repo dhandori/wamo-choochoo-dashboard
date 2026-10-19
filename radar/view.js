@@ -1,6 +1,6 @@
 import { renderFTD, ftdSummary } from './ftd.js?v=20261019-3';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261019-1';
-import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261019-5';
+import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261019-6';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261019-1';
 import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261018-ftd1';
 import { runnerButton, initRunner } from './runner.js?v=20261017-2';
