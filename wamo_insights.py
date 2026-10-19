@@ -140,6 +140,17 @@ def comparison_snapshot(market, asof, previous=None, baseline=None):
     return result
 
 
+@lru_cache(maxsize=1)
+def industry_map_kr():
+    # WAMO 산업 분류표(제품 단위). 없거나 깨져 있으면 빈 표: 기존 분류를 그대로 쓴다.
+    try:
+        raw=json.loads(Path(__file__).resolve().parent.joinpath('wamo_industry_map_KR.json').read_text(encoding='utf-8'))
+        table=raw.get('map') if isinstance(raw,dict) else None
+        return {k:v for k,v in table.items() if isinstance(v,dict) and isinstance(v.get('industry'),str) and v['industry'].strip()} if isinstance(table,dict) else {}
+    except (OSError,ValueError,AttributeError):
+        return {}
+
+
 def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
@@ -161,6 +172,11 @@ def project(stock,market,asof):
     classification_keys=('industryEn','industry','sector') if market=='US' else ('industry','industryEn','sector')
     classification=next(((stock[k],k) for k in classification_keys if isinstance(stock.get(k),str) and stock[k].strip()),('Unclassified','unknown'))
     name,classification_source=classification
+    industry_group=None
+    if market=='KR':
+        mapped=industry_map_kr().get(symbol)
+        if mapped:
+            name,classification_source,industry_group=mapped['industry'],'WAMO 분류표',mapped.get('group')
     reasons=[]
     change=ret(1)
     if change is not None and change>=3: reasons.append('UP')
@@ -174,7 +190,7 @@ def project(stock,market,asof):
     market_cap=number(stock.get('market_cap_krw' if market=='KR' else 'market_cap_usd'))
     return {'id':f'{market}:{symbol}','symbol':symbol,'ticker':ticker,'name':stock.get('name') or symbol,'market':market,
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
-            'industry':name.strip(),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,
+            'industry':name.strip(),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),'volumeRatio':volume,
@@ -202,7 +218,7 @@ def industries(stocks,market):
         confirmed=(count>=3 and advancing>=2 and advancing5d>=2 and advancing5d/count>=0.5 and med('return5d') is not None and med('return5d')>0 and (near>=2 or volume_count>=2) and name not in {'Unclassified','산업 미분류','KRX 업종 미분류'})
         result.append({'id':f'{market}:{name}','name':name,'memberCount':count,'nearHighCount':near,'nearHighPct':round(near/count*100,2),
             'newHighCount':sum(s['intradayHigh52'] is True for s in members),'advancingCount':advancing,'advancingPct':round(advancing/count*100,2),
-            'medianReturn5d':med('return5d'),'medianChangePct':med('changePct'),'volumeConfirmedCount':sum(s['volumeRatio'] is not None and s['volumeRatio']>=1.5 for s in members),
+            'medianReturn5d':med('return5d'),'medianReturn20d':med('return20d'),'medianChangePct':med('changePct'),'volumeConfirmedCount':sum(s['volumeRatio'] is not None and s['volumeRatio']>=1.5 for s in members),
             'advancing5dCount':advancing5d,'advancing5dPct':round(advancing5d/count*100,2),'confirmed':confirmed,'leaders':[s['id'] for s in sorted(members,key=lambda s:s['return5d'] if s['return5d'] is not None else -math.inf,reverse=True)[:3]],'members':[s['id'] for s in members]})
     return result
 

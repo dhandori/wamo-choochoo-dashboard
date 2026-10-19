@@ -152,9 +152,21 @@ class InsightsTests(unittest.TestCase):
         self.assertEqual(result['markets']['US']['status'],'UNAVAILABLE')
         self.assertEqual(result['markets']['KR']['coverage']['valid'],1)
     def test_independent_markets_and_sector_fallback(self):
-        kr=stock('005930'); kr.pop('industry');kr['sector']='Electronics'
+        # 999990 is not in the WAMO classification table, so the broad sector is kept.
+        kr=stock('999990'); kr.pop('industry');kr['sector']='Electronics'
         m=build_insights({'KR':payload(kr),'US':{}},NOW)['markets']
-        self.assertEqual(m['KR']['stocks'][0]['id'],'KR:005930')
+        self.assertEqual(m['KR']['stocks'][0]['id'],'KR:999990')
         self.assertEqual(m['KR']['stocks'][0]['industrySource'],'sector (broad)')
         self.assertEqual(m['US']['status'],'UNAVAILABLE')
+    def test_wamo_classification_table_overrides_broad_sector(self):
+        # 에코프로(086520) used to land in '메모리 반도체'; the product-level table puts it with cathode makers.
+        kr=stock('086520',industry='메모리 반도체')
+        m=build_insights({'KR':payload(kr)},NOW)['markets']['KR']
+        self.assertEqual(m['stocks'][0]['industry'],'양극재·전구체')
+        self.assertEqual(m['stocks'][0]['industrySource'],'WAMO 분류표')
+        self.assertEqual(m['stocks'][0]['industryGroup'],'2차전지')
+        self.assertEqual(m['industries'][0]['name'],'양극재·전구체')
+        self.assertIn('medianReturn20d',m['industries'][0])
+        us=build_insights({'US':payload(stock('AAPL',industry='Chips'))},NOW)['markets']['US']
+        self.assertEqual(us['stocks'][0]['industrySource'],'industry')
 if __name__=='__main__': unittest.main()
