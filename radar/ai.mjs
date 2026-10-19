@@ -1,6 +1,6 @@
 // Maintained thematic watchlist, independent of unreliable vendor industry labels.
 // Membership describes business exposure, not AI revenue share or a buy signal.
-export const AI_REVIEWED = '2026-10-16';
+export const AI_REVIEWED = '2026-10-19';
 export const AI_SECTORS = [
   {id:'hardware',name:'AI H/W',description:'연산 반도체 · 메모리 · 서버 · 기판 · 반도체 공급망'},
   {id:'infrastructure',name:'AI 인프라',description:'클라우드 · 데이터센터 · 네트워크 · 냉각'},
@@ -9,6 +9,8 @@ export const AI_SECTORS = [
   {id:'security',name:'보안',description:'엔드포인트 · 네트워크 · ID · 데이터 보안'},
   {id:'optics',name:'광통신',description:'광학 부품 · 트랜시버 · 광섬유 · 연결 반도체'},
   {id:'power',name:'전력',description:'발전 · 전력망 · 전력기기 · 데이터센터 전원'},
+  {id:'nuclear',name:'원전',description:'원전 발전사 · 빅테크 원전 전력계약 · 원자로·SMR 기자재 · 우라늄 연료'},
+  {id:'dcenergy',name:'AI 발전·ESS',description:'데이터센터 현장 발전 · ESS 배터리 · 빅테크 재생에너지 전력계약 · 비상발전'},
 ];
 const catalog = new Map();
 function add(market, symbols, sectors, role) {
@@ -51,6 +53,23 @@ add('KR','053800 131370','security','기업·네트워크 보안');
 add('KR','010170 230240 388050','optics','광섬유·광통신 부품');
 add('KR','010120 267260 298040 103590 062040 001440 000500 229640 006260','power','전력기기·변압기·전선');
 add('KR','034020 052690 015760 336260','power','발전·전력 공급망');
+// AI data-center power: only names already in the verified price lists.
+add('US','BE','dcenergy','데이터센터 현장 연료전지 발전');
+add('US','FSLR NXT','dcenergy','태양광 모듈·트래커 (빅테크 전력계약 공급)');
+add('US','NEE AES','dcenergy','빅테크 재생에너지 장기 전력계약');
+add('US','GNRC','dcenergy','데이터센터 비상발전기');
+add('KR','373220 006400','dcenergy','데이터센터·전력망 ESS 배터리');
+add('KR','336260','dcenergy','데이터센터 연료전지 발전');
+add('KR','009830','dcenergy','태양광·빅테크 재생에너지 전력계약');
+add('US','CEG TLN VST','nuclear','원전 보유 발전사·빅테크 원전 전력계약');
+add('US','GEV','nuclear','SMR·원전 기자재');
+add('US','BWXT CW','nuclear','원자로 부품·원전 기자재');
+add('US','CCJ','nuclear','우라늄·원전 연료');
+add('KR','034020','nuclear','원자로 주기기·SMR');
+add('KR','052690','nuclear','원전 설계');
+add('KR','015760','nuclear','원전 운영·수출');
+add('KR','000720','nuclear','원전 시공');
+add('KR','083650 032820','nuclear','원전 보조기기·제어계측');
 
 export function aiMembership(stock) { return catalog.get(stock.id) || null; }
 export function aiSearchText(stock) {
