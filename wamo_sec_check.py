@@ -13,7 +13,8 @@ def note(level, text):
 
 
 ua = (os.getenv('SEC_USER_AGENT') or '').strip()
-note('notice', f"SEC_USER_AGENT 설정됨={bool(ua)} · 이름+이메일 형식={bool(re.search(r'\\S+\\s+\\S+@\\S+\\.\\S+', ua))}")
+looks_ok = bool(re.search(r'\S+\s+\S+@\S+\.\S+', ua))
+note('notice', f'SEC_USER_AGENT 설정됨={bool(ua)} · 이름+이메일 형식={looks_ok}')
 try:
     ip = urllib.request.urlopen('https://api.ipify.org', timeout=10).read().decode()
     note('notice', f'실행 서버 IP 앞부분 {".".join(ip.split(".")[:2])}.x.x')
