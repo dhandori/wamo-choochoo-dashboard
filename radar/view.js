@@ -260,28 +260,52 @@ function table(rows) {
   return container;
 }
 const rankGroups = (a, b) => Number(b.confirmed) - Number(a.confirmed) || Number(b.memberCount >= 3) - Number(a.memberCount >= 3) || (b.medianReturn5d ?? -Infinity) - (a.medianReturn5d ?? -Infinity) || b.nearHighCount - a.nearHighCount;
+// 산업 흐름 칸: 당일 / 5일 / 20일 중앙값. 기본은 당일 — 오늘 돈이 들어온 산업이 먼저 보여야 한다.
+const RAIL_PERIODS = { '1d': ['당일', 'medianChangePct', 'changePct'], '5d': ['5일', 'medianReturn5d', 'return5d'], '20d': ['20일', 'medianReturn20d', 'return20d'] };
+const RAIL_STORE = 'wamo-rail-period';
+let railPeriod = '1d';
+try { if (RAIL_PERIODS[localStorage.getItem(RAIL_STORE)]) railPeriod = localStorage.getItem(RAIL_STORE); } catch {}
+function railValue(m, g, period) {
+  const [, groupKey, stockKey] = RAIL_PERIODS[period];
+  if (numeric(g[groupKey])) return g[groupKey];
+  // Older snapshots lack the 20-day median: take it from the members instead.
+  const byId = m._byId || (m._byId = new Map(m.stocks.map(s => [s.id, s])));
+  const nums = (g.members || []).map(id => byId.get(id)?.[stockKey]).filter(numeric).sort((x, y) => x - y);
+  if (!nums.length) return null;
+  const mid = nums.length >> 1;
+  return nums.length % 2 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+}
 function openIndustry(g) {
   Object.assign(state, { tab: 'industries', industry: g, query: '', rs: false, stage: false, newOnly:false, page: 1 }); $('search').value = ''; render();
 }
 function renderRail(m) {
   const rail = $('industry-rail'); rail.replaceChildren(); rail.hidden = state.tab==='ai'||state.tab === 'industries' && !state.industry;
   if (rail.hidden) return;
-  rail.append(el('div', 'INDUSTRY FLOW', 'eyebrow'), el('h3', '산업 흐름'), el('p', '전체 대상 · 3종목 이상 그룹', 'rail-caption'));
-  const groups = m.industries.filter(g => g.memberCount >= 3).sort(rankGroups).slice(0, 6);
-  const scale = Math.max(1, ...groups.map(g => Math.abs(g.medianReturn5d || 0)));
+  const head = el('div', null, 'rail-head');
+  head.append(el('h3', '산업 흐름'));
+  const seg = el('div', null, 'rail-seg'); seg.setAttribute('aria-label', '산업 흐름 기간');
+  Object.entries(RAIL_PERIODS).forEach(([key, [label]]) => { const b = button(label, railPeriod === key, () => { railPeriod = key; try { localStorage.setItem(RAIL_STORE, key); } catch {} renderRail(m); }); b.setAttribute('aria-pressed', String(railPeriod === key)); seg.append(b); });
+  head.append(seg);
+  rail.append(el('div', 'INDUSTRY FLOW', 'eyebrow'), head, el('p', `${RAIL_PERIODS[railPeriod][0]} 수익률 중앙값 순 · 3종목 이상 그룹`, 'rail-caption'));
+  const value = g => railValue(m, g, railPeriod);
+  const groups = m.industries.filter(g => g.memberCount >= 3 && numeric(value(g)))
+    .sort((a, b) => value(b) - value(a) || Number(b.confirmed) - Number(a.confirmed) || b.nearHighCount - a.nearHighCount).slice(0, 6);
+  const scale = Math.max(1, ...groups.map(g => Math.abs(value(g) || 0)));
   if (!groups.length) rail.append(el('p', '비교 가능한 산업 그룹이 없습니다.'));
   // On phones the strip scrolls sideways under the tabs; on desktop it is the side rail.
   const strip = el('div', null, 'rail-strip'); rail.append(strip);
   groups.forEach(g => {
     const b = button('', false, () => openIndustry(g)); b.className = 'rail-group';
-    const top = el('div', null, 'rail-group-top'); top.append(el('strong', g.name), el('span', pct(g.medianReturn5d), tone(g.medianReturn5d)));
+    const v = value(g);
+    const top = el('div', null, 'rail-group-top'); top.append(el('strong', g.name), el('span', pct(v), tone(v)));
     const bar = el('div', null, 'flow-bar'); bar.setAttribute('aria-hidden', 'true');
-    if (numeric(g.medianReturn5d)) {
-      const fill = el('span', null, tone(g.medianReturn5d));
-      const width = Math.abs(g.medianReturn5d) / scale * 50;
-      fill.style.width = `${width}%`; fill.style.left = `${g.medianReturn5d < 0 ? 50 - width : 50}%`; bar.append(fill);
+    if (numeric(v)) {
+      const fill = el('span', null, tone(v));
+      const width = Math.abs(v) / scale * 50;
+      fill.style.width = `${width}%`; fill.style.left = `${v < 0 ? 50 - width : 50}%`; bar.append(fill);
     }
-    b.append(top, bar, el('small', `5일 중앙값 · ${g.memberCount}종목 · 신고가권 ${g.nearHighCount}`), el('span', g.confirmed ? '동반 강세 확인' : '관찰', `flow-status ${g.confirmed ? 'confirmed' : ''}`)); strip.append(b);
+    const others = Object.entries(RAIL_PERIODS).filter(([k]) => k !== railPeriod).map(([k, [label]]) => `${label} ${pct(railValue(m, g, k))}`).join(' · ');
+    b.append(top, bar, el('small', `${others} · ${g.memberCount}종목 · 신고가권 ${g.nearHighCount}`), el('span', g.confirmed ? '동반 강세 확인' : '관찰', `flow-status ${g.confirmed ? 'confirmed' : ''}`)); strip.append(b);
   });
   rail.append(button('전체 산업 보기 →', false, () => { Object.assign(state, { tab: 'industries', industry: null, query: '', rs: false, stage: false, newOnly:false, page: 1 }); $('search').value = ''; render(); }));
 }

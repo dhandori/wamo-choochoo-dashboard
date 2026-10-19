@@ -107,6 +107,10 @@ th:first-child, td:first-child { text-align: left; width: 27%; }
 .industry-rail { align-self: start; margin-top: 27px; padding: 17px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; min-width: 0; }
 .industry-rail[hidden] { display: none; }
 .industry-rail h3 { margin: 5px 0 2px; }.rail-caption { font-size: 12px; margin-bottom: 10px; }
+.rail-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rail-seg { display: flex; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: #0f1926; }
+.rail-seg button { min-height: 28px; padding: 3px 9px; font-size: 12px; border-color: transparent; }
+.rail-seg button.active { background: #1d3b33; border-color: #3b7f69; color: #c5ffec; }
 .rail-group { display: block; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: none; text-align: left; }
 .rail-group-top { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
 .rail-group-top strong { font-size: 11px; font-weight: 600; overflow-wrap: anywhere; }
@@ -317,8 +321,8 @@ table { font-size: 13px; }
   .scanner-layout { display: flex; flex-direction: column; }
   .industry-rail { order: -1; align-self: stretch; width: 100%; min-width: 0; margin: 0 0 12px; padding: 12px 14px 4px; }
   .industry-rail .eyebrow, .industry-rail > p.rail-caption { display: none; }
-  .industry-rail h3 { margin: 0 0 8px; font-size: 14px; }
-  .industry-rail h3::after { content: ' · 5일 중앙값 · 좌우로 밀기'; color: var(--muted); font-size: 11px; font-weight: 400; }
+  .industry-rail h3 { margin: 0; font-size: 14px; }
+  .rail-head { margin-bottom: 8px; }
   .industry-rail .rail-group { display: inline-flex; flex-direction: column; width: 168px; min-height: 0; margin-right: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; vertical-align: top; white-space: normal; }
   .industry-rail .rail-group small { margin: 4px 0; }
   .rail-strip { display: flex; min-width: 0; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x proximity; scrollbar-width: thin; }
