@@ -10,7 +10,8 @@ export const AI_SECTORS = [
   {id:'optics',name:'광통신',description:'광학 부품 · 트랜시버 · 광섬유 · 연결 반도체'},
   {id:'power',name:'전력',description:'발전 · 전력망 · 전력기기 · 데이터센터 전원'},
   {id:'nuclear',name:'원전',description:'원전 발전사 · 빅테크 원전 전력계약 · 원자로·SMR 기자재 · 우라늄 연료'},
-  {id:'dcenergy',name:'AI 발전·ESS',description:'데이터센터 현장 발전 · ESS 배터리 · 빅테크 재생에너지 전력계약 · 비상발전'},
+  {id:'dcpower',name:'AI 발전',description:'데이터센터 현장 연료전지 · 태양광 · 빅테크 재생에너지 전력계약 · 비상발전'},
+  {id:'ess',name:'ESS',description:'데이터센터·전력망용 에너지저장장치(배터리)'},
 ];
 const catalog = new Map();
 function add(market, symbols, sectors, role) {
@@ -54,13 +55,14 @@ add('KR','010170 230240 388050','optics','광섬유·광통신 부품');
 add('KR','010120 267260 298040 103590 062040 001440 000500 229640 006260','power','전력기기·변압기·전선');
 add('KR','034020 052690 015760 336260','power','발전·전력 공급망');
 // AI data-center power: only names already in the verified price lists.
-add('US','BE','dcenergy','데이터센터 현장 연료전지 발전');
-add('US','FSLR NXT','dcenergy','태양광 모듈·트래커 (빅테크 전력계약 공급)');
-add('US','NEE AES','dcenergy','빅테크 재생에너지 장기 전력계약');
-add('US','GNRC','dcenergy','데이터센터 비상발전기');
-add('KR','373220 006400','dcenergy','데이터센터·전력망 ESS 배터리');
-add('KR','336260','dcenergy','데이터센터 연료전지 발전');
-add('KR','009830','dcenergy','태양광·빅테크 재생에너지 전력계약');
+add('US','BE','dcpower','데이터센터 현장 연료전지 발전');
+add('US','FSLR NXT','dcpower','태양광 모듈·트래커 (빅테크 전력계약 공급)');
+add('US','NEE AES','dcpower','빅테크 재생에너지 장기 전력계약');
+add('US','GNRC','dcpower','데이터센터 비상발전기');
+add('KR','373220 006400','ess','데이터센터·전력망 ESS 배터리');
+add('US','TSLA','ess','ESS(메가팩) · 전기차 겸업');
+add('KR','336260','dcpower','데이터센터 연료전지 발전');
+add('KR','009830','dcpower','태양광·빅테크 재생에너지 전력계약');
 add('US','CEG TLN VST','nuclear','원전 보유 발전사·빅테크 원전 전력계약');
 add('US','GEV','nuclear','SMR·원전 기자재');
 add('US','BWXT CW','nuclear','원자로 부품·원전 기자재');
