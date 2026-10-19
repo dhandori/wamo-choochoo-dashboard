@@ -3,7 +3,8 @@ import { renderLeaders, leadersSummary } from './leaders.js?v=20261019-1';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261019-6';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261019-1';
 import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261018-ftd1';
-import { runnerButton, initRunner } from './runner.js?v=20261017-2';
+import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261019-2';
+import { renderSchedule } from './schedule.js?v=20261019-1';
 import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261018-2';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
@@ -479,7 +480,7 @@ function render() {
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
   document.body.dataset.view = state.tab;
-  renderMeta(m); renderWeather($('weather'), state.market, openTrend);
+  renderMeta(m); renderWeather($('weather'), state.market, openTrend); paintSchedule();
   const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd','leaders'].includes(state.tab);
   if (['trend','ftd','leaders'].includes(state.tab)) { renderTrendTab(); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
@@ -589,7 +590,18 @@ function refresh() {
   return performRefresh().finally(() => { refreshing = false; updateRefreshButton(); });
 }
 initRunner({ done: async () => { await refresh(); await loadTrend(true); render(); },
-  marketStatus: market => snapshot?.markets?.[market] ? marketStatus(snapshot.markets[market]) : null });
+  marketStatus: market => snapshot?.markets?.[market] ? marketStatus(snapshot.markets[market]) : null,
+  statusChanged: () => paintSchedule() });
+function paintSchedule() {
+  renderSchedule($('schedule'), getRefreshStatus(), trendBlock, state.market);
+  // Summary line stays useful when the box is folded: show any run in progress.
+  const wrap = $('schedule-wrap'), sum = wrap?.querySelector('summary'), st = getRefreshStatus() || {};
+  const busy = ['KR','US'].filter(k => ['RUNNING'].includes(st[k]?.status) || st[k]?.moversStatus === 'RUNNING' || st[k]?.radarStatus === 'RUNNING');
+  if (sum) sum.textContent = busy.length ? `갱신 일정·진행 상황 · ${busy.map(k => k === 'KR' ? '한국' : '미국').join('·')} 갱신 중` : '갱신 일정·진행 상황';
+}
+(() => { const w = $('schedule-wrap'); if (!w) return;
+  try { if (localStorage.getItem('wamo-schedule-open') === '0') w.open = false; } catch {}
+  w.addEventListener('toggle', () => { try { localStorage.setItem('wamo-schedule-open', w.open ? '1' : '0'); } catch {} }); })();
 function updateRefreshButton() {
   document.querySelectorAll('.refresh-button').forEach(b => { b.disabled = refreshing; b.textContent = refreshing ? '확인 중…' : '데이터 확인'; });
 }

@@ -15,7 +15,9 @@ const REPO = repoSlug();
 const WORKFLOW_URL = `https://github.com/${REPO}/actions/workflows/main.yml`;
 const API = `https://api.github.com/repos/${REPO}/actions/workflows/main.yml/runs?event=workflow_dispatch&per_page=5`;
 
-let status = null, statusAt = 0, statusTimer = null, pollTimer = null, onDone = () => {}, getMarketStatus = () => null;
+let status = null, statusAt = 0, statusTimer = null, pollTimer = null, onDone = () => {}, getMarketStatus = () => null, onStatus = () => {};
+/** Latest wamo_refresh_status.json (null until the first read). */
+export const getRefreshStatus = () => status;
 let gh = { etag: null, runs: null, limited: false };
 let pending = readPending();
 
@@ -211,9 +213,9 @@ async function poll() {
   schedulePoll(next.phase === 'waiting' ? 20000 : 30000);
 }
 
-export function initRunner({ done, marketStatus }) {
-  onDone = done || onDone; getMarketStatus = marketStatus || getMarketStatus;
-  const tick = async () => { if (!document.hidden) { await fetchStatus(); repaint(); } clearTimeout(statusTimer); statusTimer = setTimeout(tick, 60000); };
+export function initRunner({ done, marketStatus, statusChanged }) {
+  onDone = done || onDone; getMarketStatus = marketStatus || getMarketStatus; onStatus = statusChanged || onStatus;
+  const tick = async () => { if (!document.hidden) { await fetchStatus(); repaint(); onStatus(status); } clearTimeout(statusTimer); statusTimer = setTimeout(tick, 60000); };
   tick();
   if (pending) schedulePoll(3000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(); if (pending) schedulePoll(1000); } });
