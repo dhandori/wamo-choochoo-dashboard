@@ -1,6 +1,8 @@
 /* Refresh schedule and run progress, both markets */
-.schedule-wrap { margin: 0 0 14px; border: 1px solid #2b3c52; border-radius: 12px; background: #0d1929; padding: 10px 14px; }
-.schedule-wrap > summary { cursor: pointer; font-size: 13px; font-weight: 700; color: #d6e3f2; min-height: 22px; }
+.schedule-wrap { margin: 0; padding: 0; }
+.schedule-wrap[open] { margin: 0 0 6px; padding: 10px 14px; border: 1px solid #2b3c52; border-radius: 12px; background: #0d1929; flex-basis: 100%; }
+.schedule-wrap > summary { cursor: pointer; font-size: 12px; font-weight: 500; color: var(--muted); min-height: 22px; }
+.schedule-wrap[open] > summary { font-size: 13px; font-weight: 700; color: #d6e3f2; }
 .schedule { margin-top: 8px; }
 .sched-hint { margin: 0 0 10px; font-size: 11px; color: #7f97b2; }
 .sched-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -29,4 +31,4 @@
 .sched-rule { margin: 8px 0 0; font-size: 11px; color: #6f86a0; line-height: 1.6; }
 .sched-rule a { color: #8ebef3; }
 .sched-note { margin: 10px 0 0; font-size: 11px; color: #6f86a0; }
-@media (max-width: 760px) { .sched-grid { grid-template-columns: 1fr; } .schedule-wrap { padding: 9px 11px; } }
+@media (max-width: 760px) { .sched-grid { grid-template-columns: 1fr; } .schedule-wrap[open] { padding: 9px 11px; } }

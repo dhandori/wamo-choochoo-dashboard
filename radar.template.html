@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>WAMO | 데일리 마켓 레이더</title>
   <meta name="description" content="한국과 미국 시장의 52주 신고가권, 당일 신고가, 산업 동반 강세와 특징주">
-  <link rel="stylesheet" href="./radar/style.css?v=20261019-1">
-  <link rel="stylesheet" href="./radar/trend.css?v=20261018-2">
-  <link rel="stylesheet" href="./radar/ftd.css?v=20261019-3">
-  <link rel="stylesheet" href="./radar/leaders.css?v=20261019-2">
-  <link rel="stylesheet" href="./radar/schedule.css?v=20261019-1">
+  <link rel="stylesheet" href="./radar/style.css?v=20261019-ui1">
+  <link rel="stylesheet" href="./radar/trend.css?v=20261019-ui1">
+  <link rel="stylesheet" href="./radar/ftd.css?v=20261019-ui1">
+  <link rel="stylesheet" href="./radar/leaders.css?v=20261019-ui1">
+  <link rel="stylesheet" href="./radar/schedule.css?v=20261019-ui1">
 </head>
 <body>
   <div class="shell">
@@ -22,12 +22,15 @@
       <div id="date-info" class="date-info"></div>
     </section>
     <section id="weather" class="tr-weather" aria-label="시장 날씨" hidden></section>
-    <details id="schedule-wrap" class="schedule-wrap" open><summary>갱신 일정·진행 상황</summary><section id="schedule" class="schedule" aria-label="갱신 일정과 진행 상황" hidden></section></details>
     <div id="notice" class="notice" hidden></div>
     <div id="metrics" class="metrics" aria-label="전체 스크리닝 대상 집계"></div>
-    <details class="disclosure"><summary id="coverage-summary">데이터 범위와 기준</summary><div id="coverage-detail"></div></details>
+    <div class="meta-row">
+      <details class="disclosure"><summary id="coverage-summary">데이터 범위와 기준</summary><div id="coverage-detail"></div></details>
+      <details id="schedule-wrap" class="schedule-wrap"><summary>갱신 일정·진행 상황</summary><section id="schedule" class="schedule" aria-label="갱신 일정과 진행 상황" hidden></section></details>
+    </div>
     <nav class="tabs" aria-label="분석 화면">
-      <button data-tab="near">52주 신고가권</button><button data-tab="high">당일 신고가</button><button data-tab="industries">인더스트리 액션</button><button data-tab="movers">특징주</button><button data-tab="ai">AI 섹터</button><button data-tab="trend">추세 신호</button><button data-tab="ftd">시장 전환·FTD</button><button data-tab="leaders">선도주·선도업종</button>
+      <div class="tab-group" aria-label="시장 판단"><span class="tab-group-label">시장 판단</span><button data-tab="trend">추세 신호</button><button data-tab="ftd">시장 전환·FTD</button><button data-tab="leaders">선도주·선도업종</button></div>
+      <div class="tab-group" aria-label="종목 스캔"><span class="tab-group-label">종목 스캔</span><button data-tab="near">52주 신고가권</button><button data-tab="high">당일 신고가</button><button data-tab="industries">인더스트리 액션</button><button data-tab="movers">특징주</button><button data-tab="ai">AI 섹터</button></div>
     </nav>
     <section class="workspace">
       <div class="section-head">
@@ -45,6 +48,6 @@
   </div>
   <dialog id="drawer" aria-labelledby="stock-detail-title"><button id="close-drawer" class="close" aria-label="상세 닫기">×</button><div id="detail"></div></dialog>
   <!--WAMO_INSIGHTS-->
-  <script type="module" src="./radar/view.js?v=20261019-ld2"></script>
+  <script type="module" src="./radar/view.js?v=20261019-ui1"></script>
 </body>
 </html>
