@@ -657,12 +657,20 @@ def _latest_fact_value(facts, concepts, annual_only=False):
 
 
 def financial_health_from_sec_facts(facts, sector=""):
-    assets, _ = _latest_fact_value(facts, ("Assets",))
-    liabilities, _ = _latest_fact_value(facts, ("Liabilities",))
-    equity, _ = _latest_fact_value(facts, ("StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest", "Equity"))
-    current_assets, _ = _latest_fact_value(facts, ("AssetsCurrent", "CurrentAssets"))
-    current_liabilities, _ = _latest_fact_value(facts, ("LiabilitiesCurrent", "CurrentLiabilities"))
-    net_income, _ = _latest_fact_value(facts, ("NetIncomeLoss", "ProfitLoss"), annual_only=True)
+    return financial_health_from_values({
+        "assets": _latest_fact_value(facts, ("Assets",))[0],
+        "liabilities": _latest_fact_value(facts, ("Liabilities",))[0],
+        "equity": _latest_fact_value(facts, ("StockholdersEquity", "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest", "Equity"))[0],
+        "currentAssets": _latest_fact_value(facts, ("AssetsCurrent", "CurrentAssets"))[0],
+        "currentLiabilities": _latest_fact_value(facts, ("LiabilitiesCurrent", "CurrentLiabilities"))[0],
+        "netIncome": _latest_fact_value(facts, ("NetIncomeLoss", "ProfitLoss"), annual_only=True)[0],
+    }, sector)
+
+
+def financial_health_from_values(v, sector=""):
+    """Shared by direct SEC fetches and the browser relay (tools/sec_relay.js)."""
+    assets, liabilities, equity = v.get("assets"), v.get("liabilities"), v.get("equity")
+    current_assets, current_liabilities, net_income = v.get("currentAssets"), v.get("currentLiabilities"), v.get("netIncome")
     if liabilities is None and assets is not None and equity is not None:
         liabilities = assets - equity
     debt_ratio = liabilities / equity * 100 if liabilities is not None and equity and equity > 0 else None
@@ -809,25 +817,44 @@ def sec_enrich_one(stock, mapping):
     time.sleep(0.12)
     facts = _sec_get(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json")
     recent = ((submissions.get("filings") or {}).get("recent") or {})
-    forms = recent.get("form") or []
-    accessions = recent.get("accessionNumber") or []
-    primary_docs = recent.get("primaryDocument") or []
-    filing_dates = recent.get("filingDate") or []
+    filings = [{"form": f, "accession": a, "doc": d, "date": t} for f, a, d, t in
+               zip(recent.get("form") or [], recent.get("accessionNumber") or [],
+                   recent.get("primaryDocument") or [], recent.get("filingDate") or [])]
+    eps_concepts = ("EarningsPerShareDiluted", "EarningsPerShareBasicAndDiluted", "EarningsPerShareBasic")
+    sales_concepts = ("RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet")
+    eps_yoy, eps_mode, eps_concept = _latest_quarter_yoy(facts, eps_concepts)
+    sales_yoy, sales_mode, sales_concept = _latest_quarter_yoy(facts, sales_concepts)
+    annual_yoy, annual_cagr, annual_series, annual_concept = _annual_metrics(facts, eps_concepts)
+    parts = {
+        "eps": (eps_yoy, eps_mode, eps_concept), "sales": (sales_yoy, sales_mode, sales_concept),
+        "annual": (annual_yoy, annual_cagr, annual_series, annual_concept),
+        "epsHistory": _quarter_growth_history(facts, eps_concepts)[0],
+        "salesHistory": _quarter_growth_history(facts, sales_concepts)[0],
+        "grossMargin": _margin_change(facts, ("GrossProfit",), sales_concepts),
+        "operatingMargin": _margin_change(facts, ("OperatingIncomeLoss",), sales_concepts),
+        "health": financial_health_from_sec_facts(facts, stock.get("sector") or stock.get("krxSector") or ""),
+    }
+    return build_sec_entry(stock, cik, submissions.get("sic"), submissions.get("sicDescription"), filings, parts)
+
+
+def build_sec_entry(stock, cik, sic, sic_description, filings, parts, source="SEC EDGAR submissions + XBRL companyfacts"):
+    """Cache entry from filing list + computed figures (direct fetch or browser relay)."""
     filing_url = ""
     filing_date = ""
-    for i, form in enumerate(forms):
-        if form in ("10-K", "20-F", "40-F") and i < len(accessions) and i < len(primary_docs):
-            accession_flat = str(accessions[i]).replace("-", "")
-            filing_url = f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession_flat}/{primary_docs[i]}"
-            filing_date = filing_dates[i] if i < len(filing_dates) else ""
+    for item in filings:
+        if item.get("form") in ("10-K", "20-F", "40-F") and item.get("accession") and item.get("doc"):
+            accession_flat = str(item["accession"]).replace("-", "")
+            filing_url = f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession_flat}/{item['doc']}"
+            filing_date = item.get("date") or ""
             break
     cutoff = date.today() - timedelta(days=45)
     recent_filings = []
-    for i, form in enumerate(forms):
-        if form not in ("8-K", "10-Q", "10-K", "20-F", "40-F", "6-K") or i >= len(filing_dates):
+    for item in filings:
+        form = item.get("form")
+        if form not in ("8-K", "10-Q", "10-K", "20-F", "40-F", "6-K") or not item.get("date"):
             continue
         try:
-            filed = date.fromisoformat(filing_dates[i])
+            filed = date.fromisoformat(item["date"])
         except Exception:
             continue
         if filed < cutoff:
@@ -838,14 +865,10 @@ def sec_enrich_one(stock, mapping):
         })
         if len(recent_filings) >= 8:
             break
-
-    eps_concepts = ("EarningsPerShareDiluted", "EarningsPerShareBasicAndDiluted", "EarningsPerShareBasic")
-    sales_concepts = ("RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues", "SalesRevenueNet")
-    eps_yoy, eps_mode, eps_concept = _latest_quarter_yoy(facts, eps_concepts)
-    sales_yoy, sales_mode, sales_concept = _latest_quarter_yoy(facts, sales_concepts)
-    annual_yoy, annual_cagr, annual_series, annual_concept = _annual_metrics(facts, eps_concepts)
-    eps_history, _ = _quarter_growth_history(facts, eps_concepts)
-    sales_history, _ = _quarter_growth_history(facts, sales_concepts)
+    eps_yoy, eps_mode, eps_concept = parts["eps"]
+    sales_yoy, sales_mode, sales_concept = parts["sales"]
+    annual_yoy, annual_cagr, annual_series, annual_concept = parts["annual"]
+    eps_history, sales_history = parts["epsHistory"], parts["salesHistory"]
     eps_acceleration = bool(
         len(eps_history) >= 3
         and all(eps_history[i]["growthPct"] > eps_history[i - 1]["growthPct"] for i in range(1, len(eps_history)))
@@ -856,9 +879,8 @@ def sec_enrich_one(stock, mapping):
         and all(sales_history[i]["growthPct"] > sales_history[i - 1]["growthPct"] for i in range(1, len(sales_history)))
         and sales_history[-1]["growthPct"] >= 20
     )
-    gross_margin = _margin_change(facts, ("GrossProfit",), sales_concepts)
-    operating_margin = _margin_change(facts, ("OperatingIncomeLoss",), sales_concepts)
-    sic_desc = str(submissions.get("sicDescription") or "SEC 업종 미분류")
+    gross_margin, operating_margin = parts["grossMargin"], parts["operatingMargin"]
+    sic_desc = str(sic_description or "SEC 업종 미분류")
     industry = stock.get("industry") or stock.get("sector") or "산업 미분류"
     summary = f"{stock.get('name')}은 Nasdaq 분류상 {industry}에 속한 미국 상장기업입니다. SEC SIC 공식명은 {sic_desc}입니다."
     profile = {
@@ -872,7 +894,7 @@ def sec_enrich_one(stock, mapping):
     }
     return {
         "secStatus": "LIVE",
-        "secSource": "SEC EDGAR submissions + XBRL companyfacts",
+        "secSource": source,
         "cik": cik,
         "secCompanyUrl": f"https://www.sec.gov/edgar/browse/?CIK={int(cik)}&owner=exclude",
         "secFilingUrl": filing_url,
@@ -898,7 +920,7 @@ def sec_enrich_one(stock, mapping):
         "salesAcceleration": sales_acceleration,
         "grossMargin": gross_margin,
         "operatingMargin": operating_margin,
-        "financialHealth": financial_health_from_sec_facts(facts, stock.get("sector") or stock.get("krxSector") or ""),
+        "financialHealth": parts["health"],
         "sepaFundamental": {
             "status": "STRONG" if eps_yoy is not None and eps_yoy >= 25 and sales_yoy is not None and sales_yoy >= 20 and (eps_acceleration or sales_acceleration) else "CHECK",
             "epsPass": bool(eps_yoy is not None and eps_yoy >= 25),
@@ -909,7 +931,7 @@ def sec_enrich_one(stock, mapping):
             "earningsSurpriseStatus": "UNKNOWN",
             "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다.",
         },
-        "sic": submissions.get("sic"),
+        "sic": sic,
         "sicDescription": sic_desc,
         "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
         "secFetchedAt": date.today().isoformat(),
