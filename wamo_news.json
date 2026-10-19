@@ -161,52 +161,6 @@
         }
       ]
     },
-    "US:DELL": {
-      "checkedAt": "2026-10-15T20:25:50.854285+00:00",
-      "items": [
-        {
-          "title": "Dell Technologies Inc. $DELL Stock Sold by Gunderson Capital Management LLC - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQQ1hCQ0ZDQ3BGejdHS1pGbzVwY3ZwYW9mOW5kalJkd1RnbTJaUGFBN3VMa1V6Y1lieU5lNlFNelZQUGRjaERGWEFINXFBS3M0MzZNd0xsSjdaWm93dDRIRkt4YXFybHN3UlRZUVdWeGt4cW9MSngtSjZ2b0JQYlVsT2s4ODZ2c0RwWnV4eGczQWxBOUJ1VGlFQTJscVQ3VjNuQkJCOTdOZ1JsT0pqTHRKaVFLU3F0amU2QUlmZ2FVTG1ROE14NkZveHVCUnVMLWM?oc=5",
-          "date": "2026-10-15T17:44:21+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "Ninety One UK Ltd Sells 53,298 Shares of Dell Technologies Inc. $DELL - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOb0hmZVNhVzhhWFlBMFZtaUhKbFlBdmxlM1VxNFpxN1VOOV9QNDR6ZGN3V0NjcFphNWp1NWEwY3NWMGZydzQ2NzRUZFViUmtJN0pwUmZWbGxIQ2FFeGpCd2IyS1pHRWt1NlBDQzBEb05uLWI2NVBEb2lqdEdzWTdTRWw0Y1ZtMUpfelBQcnNmRnRQY3pKMjB4aEhBQlEtcGJYUzlvQjdwSEh2eGpRZUI1Q2VUa3d0NTFmZHlXc0Q5bWp4TXBfUUE?oc=5",
-          "date": "2026-10-15T17:44:19+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "AI Stocks Bleed as Inflation Bites: Any Buying Opportunities? - TradingView",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPODdGNG8tY3MwejQxLWc5bU5rZUlCdnN4LU5XWFRnTWJQR2FhdVBLNkYyTGx4WGROMEstOGkyOGlZUndfdWlvLXFteG1UUWFYQUtzVkpnOWdFZVYxTEVlbVVfUHZrWklrdzdld3Z2NHdjVEg2cnpMNFplTUhUNWVZR2xBRnBzMjlNVTdfRzhmbVFjYVlZOW5oX2pUVHBid3IzRTFGSFNodXZTOVhVdS1PZGRwUXhNQQ?oc=5",
-          "date": "2026-10-15T15:42:00+00:00",
-          "publisher": "TradingView"
-        }
-      ]
-    },
-    "US:SKYD": {
-      "checkedAt": "2026-10-15T20:25:50.854285+00:00",
-      "items": [
-        {
-          "title": "SKYD Stock Slides As Skydance Builds A Media Giant - StocksToTrade",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOMFRDQmRDcHkyOThwR01OdjNKaF9jbE02SjdpTks0dFVyMmd4YlVVV0l4ZEJYWTVkeWIwWTFhT014NTA1bDRwc3FDZE5RSFR2QVVXM2lRMHoxTGk4cDh0RENGODd6M0hWUHJLQ3pISk16ZU1oN1dVaVI3djdCcWNGNENyUk4zWXV4?oc=5",
-          "date": "2026-10-15T19:03:00+00:00",
-          "publisher": "StocksToTrade"
-        },
-        {
-          "title": "Skydance Rebounds 5% as Warrant Adjustment Selloff Fades; Netflix Rises 3%, Disney Advances 2% - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNVkMyd1ZVZ2FfbkpOQ1BEQ0VZUUEwS01jYy1YSmVLSk5lemVLRU1KeEF3QVZ5OU9HVkp1c2ZjTDJ2cmxGWDVMa2JkSVpTTkdzQmNqdHZjU3pnTWFOUFpHSUp3N1NmbnhQTDVjRXN0WWNPdUxhU21qbzVCZ2c0eVFhQnNZdElvZTJOZHBWejg0Z21hdzRHX3laMXpVYWhmXzMweW1ucEJn?oc=5",
-          "date": "2026-10-15T16:01:43+00:00",
-          "publisher": "Yahoo Finance"
-        },
-        {
-          "title": "Skydance Rebounds 5% as Warrant Adjustment Selloff Fades; Netflix Rises 3%, Disney Advances 2% - 24/7 Wall St.",
-          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxOTXE4a3NCZDdiaXZWeW1Wc0hVQjd6ZlZuVnQzektLa01hNHpzM1Rwa2c1MUJZYnRjUmJTXzh2TVVDSWc5bWNLYmxpSm5ZZEd0TlhIeDI2Q082WHBHY2pTemtjSWIzNktEQ1pXM1RVcVJxMHd3QV90VUhVdEFvMGNnSnNBVDVoT0dmTXE1akpUelNMSlRqS3ZGNExFSm1iZGE3RW1lWmdSZW5rTmVrSndId0p5NjhjYm5PdGM0ZWt1Skl6R2FTMEJGODc5Mk53dw?oc=5",
-          "date": "2026-10-15T16:01:00+00:00",
-          "publisher": "24/7 Wall St."
-        }
-      ]
-    },
     "US:DOCN": {
       "checkedAt": "2026-10-19T17:36:14.886915+00:00",
       "items": [
@@ -272,121 +226,6 @@
           "title": "CoreWeave: Why The Market Got It Wrong (Rating Upgrade) (NASDAQ:CRWV) - Seeking Alpha",
           "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNM1JzMUY5elZsTmEtTlNCdTJ6UlNmeVp1UXNSMURyRzVIZjloVld3ODVrMjZiYnFKS3UweDNQVktUaEZmNHRJZUFRclVGZy1TeXNYSnNFVmk2MTZncFJ6c3ZuNzVNZzk5Q3JmWVowY3NOdU1aejBrRWVFZ2FoRWlkS1kzRlVzLUZLQXNRbC1lSDRNTnloV1JhbA?oc=5",
           "date": "2026-10-19T16:37:17+00:00",
-          "publisher": "Seeking Alpha"
-        }
-      ]
-    },
-    "US:U": {
-      "checkedAt": "2026-10-15T20:25:50.854285+00:00",
-      "items": [
-        {
-          "title": "U Stock Gains After Q2 Beat — CEO Says It Was 'Arguably The Best Quarter In Unity's History As A Public Company' - Stocktwits",
-          "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxPODFwLUhXRy1Mcm52V25xUkR0T2l5aEJ5bUZidHYwbTVJVGpBbm5Bbmxoa1hveWY3azNxY3ZfQ3JYdGRjWlFEaHhaX3ZQQkJWT3pYQ2hvVnYxTHVqTGxOSjFQbjAzdWRuVUN3Sll0T1N4T3dDOVYxU3JFbVlyclBUam9aSEhacWdqS0xORkJIMWs0SWxhdlZoVVhmTXJUVFViOVNodUlaZGdXZlh1OFVHR1E4ZjRBWkVFVnRxOWdtUWw5emw2WmREd1VKV2ZJcktPS09WTl9TWThoLU52cnQ4?oc=5",
-          "date": "2026-10-15T01:35:06+00:00",
-          "publisher": "Stocktwits"
-        },
-        {
-          "title": "32,762 Shares in Unity Software Inc. $U Acquired by Sanders Morris Harris LLC - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNQkc0UGg1NUdqTVNIc1c4ZXZuYktvZW5FYWtUS1NLaFUxV2lpbndVOHZ6LU05XzMyOXZLMWJ5bDNSQVpXTnNBZHJFLUpFekxfYmJucGJibllCZFNIM3FYR3ZrdnRySzdxNFAzTFVoUFlaeU5VR3M3eFZSV0twNVc3WTFVQ05YcnFFdDROTUswYzFCU0FqV0ZVRXlmQXBNMmhBemJtQi1HNDVnN0xSakQtT1JBU19hVHJSNTBkX1VyS2R6VGd6OXk2Qm51UjVUVE9I?oc=5",
-          "date": "2026-10-14T23:36:31+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "A Look at Unity Software Inc (U) After 11.2% Decline -- GF Value $26.62 vs Price $41.40 - GuruFocus",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPa0dsNEVfa2lqa2x1TFlJOG1vdV9qX2dRb2NwN04tTUM0V2ZXcjhlWEJ1SzJ1WWRxWkxDNVE3cjBYZzdQMFhlNUgtekF3bGUtRDdsNm10SzRPZGE4aWUzQ2pXd21UMGZJLWFnOGhtWjl5WHZ1ZkRiOXozekhLRnRHX1Z4Q1dSell0NHk2dzdSd055Tk05T1JvRmZUdmNFQnJuWkp5YVZmMEtTUGQzSUJ3TjdJZk5sQQ?oc=5",
-          "date": "2026-10-14T22:33:56+00:00",
-          "publisher": "GuruFocus"
-        }
-      ]
-    },
-    "US:INIO": {
-      "checkedAt": "2026-10-15T20:25:50.854285+00:00",
-      "items": [
-        {
-          "title": "Innio N.V. (INIO) Stock Price, News, Quote & History - Yahoo! Finance Canada",
-          "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE9IMUt0b1Zzd1k1aUJnT2FfTTJtYkhDMldXbVBsNWRCNlJvSFM5U3RZRWRHczlfWndCVjJENks4Qjl2cl9jdFpwOGJuV2ZKV1JTQXc?oc=5",
-          "date": "2026-10-15T06:03:49+00:00",
-          "publisher": "Yahoo! Finance Canada"
-        },
-        {
-          "title": "Innio (NASDAQ:INIO) Sets New 1-Year Low Following Analyst Downgrade - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPV1BRZkx6bzY1emNpZW56WURqazlMdzhNY1BzRDFER2xFOXFxVGswRkhKV2JkYTNwdThfODNTNm1xUkVYdFd1SU5HSndYeEFCSDRsMlRZNnowLTZOcDNmakJ4NHB1OURYWlluQmdBM1FRem03Sk9ZOEhKSWdVNl9VY1BZTWh0SHRZZDJUQXVwZ21ZLUdMQTVjbDVKUHVQY2d0OVNMbVE1NFk2dGdFWlFGVlZqUU15WTA4ei1ETGlSMzlGR28?oc=5",
-          "date": "2026-10-14T17:55:51+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "Innio N.V. (INIO) stock price, news, quote and history - Yahoo Finance UK",
-          "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5KLW1HZkxSQXRvNExvUlBUNWd3Nk5oaG1DSHcyUEhPZHpXdUdRcTRiTVdFVElPU2JJcnk3MnJRQzNJRGRiZEU0My1EbER0Qjh2SUE?oc=5",
-          "date": "2026-10-14T16:15:35+00:00",
-          "publisher": "Yahoo Finance UK"
-        }
-      ]
-    },
-    "US:TTMI": {
-      "checkedAt": "2026-10-15T20:25:50.854285+00:00",
-      "items": [
-        {
-          "title": "Truist raises target for TTM Technologies stock to USD 231 - ad-hoc-news.de",
-          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQMERaUnFDakFiTFRlTElyVXVNZGxaMTFmb1plSXdyQXB4cUQtTXF4MnhFZzBiYXBBWUJzcUpGeG5fdWtsRG13RzNiT2ZuZFd2b21DSHNPaG9ZTkptd1hJblMyWTlJa1dqSUdmaUswZGNtNnNacDJlZXo4S0JIUDdtWkNWY1gzZm0wZTAtYnVEa3UxdzZYc21JWG4wTnV5MlBnOXZ5T2Ryank5dkRQS3VTdFExMFRVX3Qw?oc=5",
-          "date": "2026-10-15T11:52:28+00:00",
-          "publisher": "ad-hoc-news.de"
-        },
-        {
-          "title": "TTM Technologies, Inc. (TTMI) Stock Forecasts - Yahoo! Finance Canada",
-          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOX3VZRWtGYnJlbWZvQkRSRjQtMFFiakl0NTU1WUZ4d0k2ejk2bWhVbDlodWtKbHpydmRCS2pqZm9oN2F2MUNIMlZMVTVvbkk2QUdRTlNEWE1mR1pDR3dNb055enJrUk0zeFJrRk5OYkpTYkVkQnc2LWhENC03Zl8yclhBUURtVmQ4THdxWU9ydmtWZnM?oc=5",
-          "date": "2026-10-15T07:24:31+00:00",
-          "publisher": "Yahoo! Finance Canada"
-        },
-        {
-          "title": "TTM Technologies, Inc. (TTMI) Stock Forecasts - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNaWVPcWFqQ1A4b2pVN2ZHRnJnMXJUWUtlNW0xS3dQV1k3OG84c1RnUzZ4enhjZkNCaHBMNmpGeC0zWjlVU213TDZuRFhsTlRyTzVaQXlWVnoxZ1loUS10X0ZsZm5NeFlPd3M3aGc2dkY2c3I4cFcyUU45b2xYMzVzaXM5aEttLXVfMUhEVFlfYw?oc=5",
-          "date": "2026-10-15T02:14:26+00:00",
-          "publisher": "Yahoo Finance"
-        }
-      ]
-    },
-    "US:CIEN": {
-      "checkedAt": "2026-10-15T20:25:50.854285+00:00",
-      "items": [
-        {
-          "title": "Ciena: A Cyclical Business Priced Like A Compounder (NYSE:CIEN) - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNczJGa2F1czZ1b0RNb0x3dVh4b0UwcmZfb0NUVUhWbmEwSmxfT1Y4aDRGekxsSl9JSzFfc3VJQTJzdmJmZUtwZVVyRC11VTU5OEVNTU9JaTFoZlAyWm5JZ3dIZE1BLTZfUE16b0NaRGQ2YmppSXBqQzZSb2RNR3JpSTF4LUo2czNQcHQweXVnTDZIdDZhaWc?oc=5",
-          "date": "2026-10-15T18:42:11+00:00",
-          "publisher": "Seeking Alpha"
-        },
-        {
-          "title": "Ciena Suffers From AI Diversification Success, Growth Mostly Priced-In (NYSE:CIEN) - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPeW5VSU52TUFmUHFSSndZRUxCQnJmdDVpeEVkU1JzZFh2b0l5QTM4QXdoM0R5YlRBZ0g5andWMUx4ZG14Q1NzZE9zSFdlcFU0SVJabGFfblp2X1dRd3RaN0lFV09aYmdXY2JBTzE2U2Rsd0JDbHBXZ1YtZm1vbmMzT0VvN0JJbnF3czJ1cXBobUk1d3QzdzU1bUNHSzBIdVpCWXlRdXRSajBaUGdwcVBj?oc=5",
-          "date": "2026-10-15T15:15:00+00:00",
-          "publisher": "Seeking Alpha"
-        },
-        {
-          "title": "CIEN Stock Price and Chart — NYSE:CIEN - TradingView",
-          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE96S1Jia0hCaEQtdDd4c3BadkRzckZ3NEs4aUdZNk5JVFlYc1k0dmJhNDRNdk5FNGNwQ1RfN3JqVW5DcTd4bU1NM3FBaDV1ck1LWnFDa1VxT3pRQQ?oc=5",
-          "date": "2026-10-15T10:20:19+00:00",
-          "publisher": "TradingView"
-        }
-      ]
-    },
-    "US:HUT": {
-      "checkedAt": "2026-10-15T20:25:50.854285+00:00",
-      "items": [
-        {
-          "title": "Hut 8 (NASDAQ:HUT) Sees Large Volume Increase - Here's What Happened - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOS0g1MlZvX2k0UU03M1FlRGFJcjUxckItUkdjSnF5Q2UyWlZSSUc3dEkyeHdQMjJiRGNMRnlGdHpWX1VZZEhfMFF6MTFZdTQ3UDZTWDJqcGpKRzVER2ZFdFhHMVRuS1FVQ1hOUGFEMzRhclNZMnV5a0dVWk0tNUl2a2tseFVBMHFLUjYtVUE0ZUp0Yk9TSVlWVDh0NHlESlhYTXJUZDBpeVk0UzM2ajlDb3hSV0NwTVNoaFlBM3lYRl8?oc=5",
-          "date": "2026-10-15T17:44:20+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "Hut 8 Corp remains a buy despite recent neoclou... - Pluang",
-          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOcnlPbjV3cFFjUm51MVFPSHhxcDRQYjhWYklMRm8zQW1QSFRHWFRjU19vcXBaSDFmdS1zX0xla1k2N1BPTVBfNUxBUVlkbXdfbTMyS3pMaUstWkFNY3NnM3ZkQTVQUDlzc2RuN1RCOFZVemx4MTRzTU52TEF4YnFXeTBuWnRkUC1iRGxGYkI3bGxRay1TNTNVdlJscw?oc=5",
-          "date": "2026-10-15T12:10:26+00:00",
-          "publisher": "Pluang"
-        },
-        {
-          "title": "Hut 8: Separating The Winners From The Losers In The Neocloud Sell-Off (NASDAQ:HUT) - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNYVk3ZFBTRzllSUE0aFVidnQ1YWZNNHpfV3I4eGxqWEQ3MFZDUnhxc0JYeVRteEVrSV8tY2dsU3VoMkNyaS1PbHI0Z0hkWGpVV3BkWUp1UC1aNmdfcUkyMzdTMFBsUHRiazNockNVQmRjYW0teVR4WkduOXlKb3Bzd0ZPNFNoUmJSc3p3UnFLWHpXUkVteVZLNW11eHFSanpTNTVfRDBpazdSekpDMEZz?oc=5",
-          "date": "2026-10-15T11:15:39+00:00",
           "publisher": "Seeking Alpha"
         }
       ]
@@ -729,25 +568,25 @@
       ]
     },
     "US:QXO": {
-      "checkedAt": "2026-10-16T18:52:07.852440+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
-          "title": "Is It Too Late to Buy QXO Inc (QXO) After 8.2% Rally? GF Value S - GuruFocus",
-          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNRWkwNmtieVY5YjVhUVJpQUExcm1kUDBFUUVIZkhXWXRISXZNNzQtS1NIZ1hObnM4UXRoNFVHdVdpQnJlcGVtVndNS3kxSllLV0toRktrYjIydmVGMC1mOVVxRzZDOHEyVGJVZU5wNGVSUU1vVW9uRlU3SThwZXRHWWdTRmVqVi1wblk2ZGRpRldXVGhMYV95NWJhY095QXRCY2haNWFLUUpfVDltTUFHVm1HYw?oc=5",
-          "date": "2026-10-16T01:34:39+00:00",
-          "publisher": "GuruFocus"
+          "title": "IonQ, Inc. (IONQ) Stock Dips While Market Gains: Key Facts - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQbHUwbUg4Y2xBbjVNeGNWOENoOXJ6WV9aLUltYnd5blNPMHhnSjRPM0R1bnRaYTVoTEY5RHVpOFVDM3NzUWxmNHp2T2E3bEE5c0FmMkp3ckktYVFfWnlxQloyWFR0eU9wM2xuaXhVTmstc0dPc2lkMTBsNkkxQ19feWJ6Z2trWHZ4LTJmVWVYMnFIZ1U?oc=5",
+          "date": "2026-10-19T21:00:04+00:00",
+          "publisher": "Yahoo Finance"
         },
         {
-          "title": "QXO, Inc. (QXO) Stock Price, News, Quote & History - Yahoo! Finance Canada",
-          "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE4zaGRkXy13TVU5VkJYRXdvM2JWcDdaalliSHMzc2htcG9oZ2Z0MDJrcWN1alkxYlMzNm1Nb2I1TjJVYlBKYkU5Qjl4bEo5b0dV?oc=5",
-          "date": "2026-10-15T14:18:04+00:00",
-          "publisher": "Yahoo! Finance Canada"
+          "title": "NIO Inc. (NIO) Stock Slides as Market Rises: Facts to Know Before You Trade - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPOXJ3TjlOSWZDU1haNndpUFR3ZHdNcHY0b3pFeDJjbi1Sd1U2R1dBczFqVzg3Y1d1LV9BX0xvWkVGUFJTOTBGU1JuREhXZUktUVhtZ2t5NXVPZFZjZ01XekxwN2FFa24wbkd1YnAyVTlYcWc2UWdHNE9ZQ0t4VTVjcUM5ckJfNUtwaUgtLVlpMzNiMk0?oc=5",
+          "date": "2026-10-19T20:45:02+00:00",
+          "publisher": "Yahoo Finance"
         },
         {
-          "title": "QXO, Inc. $QXO Shares Acquired by Fort Washington Investment Advisors Inc. OH - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOTlJ3QnVpRFVXajFLWDlwS1V0WDZIcTM0cEZ0LUNCYm9zUWxrR1FaOElLeVRSQmUzMUswcjNCdkZGemdHZXdxbjhGY3BNbWlmWmpPcmtfb3QtaXVPZVNkSnprbVE1R3N4eVN3RUhfVU5aRng4dHV5T0R6NXBxR2hMZ0tmSzBPVG83aGZ4Rk82THNzeDNYODJXT2tkXzFFUDBLVDRPNk5Wcmt5bFFPQlpBeHVMNGhPbzNERlpHYnNmTlUtdkJZanpNbGE5b0pSazQ?oc=5",
-          "date": "2026-10-15T11:33:37+00:00",
-          "publisher": "MarketBeat"
+          "title": "U.S. Markets Closed Mixed Monday As JFrog Led, QXO Lagged - Barron's",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNaWR6SzZhNEppYWNGUzd5d015MmhLeEJ4R1QwUkppckgtOEN5QnZuSDVESHZpVHJqb2JBVWo2S1EwUjNLQjJFSUZjTHE3UmFtTjd0TGhQRkJWTHNjbUdDQXNFZkVkR2hBeE1QYy1FSExUVy1xUHIzZU9MNkxPTFd2eWptUDlYUXhiWWJmbXA1YXBwVEV4cjlJX2VHN293UQ?oc=5",
+          "date": "2026-10-19T20:10:00+00:00",
+          "publisher": "Barron's"
         }
       ]
     },
@@ -936,7 +775,7 @@
       ]
     },
     "KR:006110": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "[종목상담 주식민원처리반] 하이니켈 전구체 주력…ESS 배터리 적용 '에코프로머티' - 머니투데이 - 머니투데이",
@@ -1051,7 +890,7 @@
       ]
     },
     "US:TLK": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "PT Telekomunikasi Indonesia, Tbk (NYSE:TLK) Shares Gap Down - What's Next? - MarketBeat",
@@ -1060,62 +899,62 @@
           "publisher": "MarketBeat"
         },
         {
-          "title": "Intel Stock Rises After JPMorgan Upgrades Shares to Neutral - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOc1NWaDFEaUJuNnpldVV1aFlXVHp3U0RFMklQZktyckpXb0lLd3diMUVuaTRvejBoS215TkhvZjJNajNzakQ4WE9rU3dxOXI4NVBCSVNZZnB1MXBfdFFnVHRRQnJtekNEMDVKTWZQRHV6UzdpdTVZVnhTVFZLM1Z5ekhjTWgwOE83ZUVsSDBsUWdMVmJSVl95dm5OM0h0S3NtVWc?oc=5",
-          "date": "2026-10-19T14:23:27+00:00",
-          "publisher": "Yahoo Finance"
-        },
-        {
           "title": "Telkom Indonesia stock: One-analyst consensus puts USD 17.00 target on Telkom Indonesia stock - ad-hoc-news.de",
           "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxQM3dIekE3VFJtWWF1TDRsTjQ3RS1uTlJwQ1V6amhheUJzb0xmN1A0VmxaSmUyVmRZa1kyMFk4V2dTaTFrdGU3OU4xcWhETnFFWjFnN19jdWRFSjZsTUF4OFEwd2wyclFuV3phQ0Znclo4RUNDQzc0dU1iY2xjT3ZpNlBPVndQU3l3TVFieDBOTFluNTVUTXNIczlMX0w4QVdOVWNLYVpMdlNHdXNSbXRpUEJXQkhrQkZvWkNSdnFQZUFmRkF6UDgxTUJxbG9WSFBZakI5TmZ5d2lHMkZmWUFjUElCN2FXc01Pdjc0?oc=5",
           "date": "2026-10-19T13:46:41+00:00",
           "publisher": "ad-hoc-news.de"
+        },
+        {
+          "title": "Cleveland-Cliffs Stock Jumps on Rosy Outlook - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQM1hpSmh1ckRENG1sX01XSTJrV3gwZ0VmWTBKaUxDUWp0WGJBZ1FGRmhtOXhFUjJlSFZVT3FudHZZa05taG9NZmprRm5xdHZzb1g5QjJkdnd0M0VBWXNoWHczZUdJc3F1MU9qZGlMNlZkdHZ2UVV5OVhCRFJ4c29pd3JMeFRwT01uaGJGanhWSk5HQmU0WS1RQVNZdHZLaFE?oc=5",
+          "date": "2026-10-19T12:55:40+00:00",
+          "publisher": "Yahoo Finance"
         }
       ]
     },
     "US:FROG": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
+        {
+          "title": "A Look at JFrog Ltd (FROG) After 7.9% Gain -- GF Value $53.17 vs Price $91.00 - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNcENPWGN4UDBEblNoZUdNNE5uRkN0VzlLb1RONzRGNGs4SERjZURiYmxMV1kzcDhlcXlvYUFPcnJQNVhhNlc3ck1VOTNLSlZvVHVGMEw5UzloZ3AyRUs5UXRMME9JNnBJMmtoTXNKU2RRR0VZNHc4NFNoMVlnMkxMNHU0ZVFCdWV5OFpHcGktanBBUWpNMUdzMG9Rb2RrMEhiTl8zejE5eTI?oc=5",
+          "date": "2026-10-19T22:03:36+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "FROG Stock Gains Analyst Support Ahead Of Q3 Earnings - StocksToTrade",
+          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE50aHY0ZTVrek14TEZrMXlsdVYtYW41Uzg4YmVXNlEzaUpPcUd6VHJWaFJwUFZzOHNia2VIRXhaTExFcGVoTVNUc3hxbmZSWlV5NU0tTjl4T2g2SWpKMlhkSjNEN3M5THVKdzdzTjdSVQ?oc=5",
+          "date": "2026-10-19T19:03:00+00:00",
+          "publisher": "StocksToTrade"
+        },
         {
           "title": "JFrog (NASDAQ:FROG) Stock Jumps 5.7% - Time to Buy? - MarketBeat",
           "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQTC1oU0ZfNnZqdF9wTjctZUhKUDZwZUJrMnhKenctYkY0UmliTXg0MW1Zc2ZRd005S2FsSnl3U2ZuS2NVWkwySjIxR3BRcWN5ejZRM18tcm0tQXZucDRRaW1iZE9XV1pNWHNZbGJBQ2h1QTQ3Z0FfdFZjcUVleVZUUDNHQjFnT1VoeHZ6UWM1SERDRE9KUEl3VlRhWXNEZ192S0k2M1RZYw?oc=5",
           "date": "2026-10-19T16:41:50+00:00",
           "publisher": "MarketBeat"
-        },
-        {
-          "title": "1 Mid-Cap Stock on Our Buy List and 2 We Turn Down - Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPSTU0VXlhSmw1OF9CNl9kX2luQ0ZYUlVRbGZpNktfQnVSb0dlcGczbHU5UGxtVlk2ZnBIdEozOVc4bjloVUFMa1lsQ01vZmFHV2pJVGx0STB3cDUzQkQ5ZHZaZlY4WVdOMkVsVVRFa1NCZGtXMUFCd1l1NmlQMXRUcEpwMFdFZHRVei1ZNg?oc=5",
-          "date": "2026-10-19T12:00:55+00:00",
-          "publisher": "Yahoo Finance"
-        },
-        {
-          "title": "JFrog sets third-quarter results date. UBS targets JFrog stock at USD 125 - ad-hoc-news.de",
-          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNRWd5eDBoZkdya2EyNVJJUEJLSF9faFJBaE1kc2dHaE5RQmtwS3g4VVRwSWlrSmdlUUpyQWRLQmJzTHo2blAxZjlPMlJlM056NmxkU193YXp4QVlYYTNnbmI2RFVXcDJjZDR1bWpkM09RQ0VMckpEM3p0bG1tX3p3S1ZaUnhMQUhLcnhYRDNTdE1KUF9OZGozTEh5akZnWGFsb1ZBS01jZkFGX2RDNmhLQkt3RjM2TnN0aTB0cDRHUmdEamIxb0lELXhRWQ?oc=5",
-          "date": "2026-10-18T11:04:56+00:00",
-          "publisher": "ad-hoc-news.de"
         }
       ]
     },
     "US:CBRS": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
+        {
+          "title": "Cerebras Systems (NASDAQ:CBRS) Stock Price Down 5.1% - Should You Sell? - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNaDc1U1NwZEhhV1NLWmg2UUN3dnpkOXdPUXZQTFZZLUlESGVXcVkxb21WdDROSnpMd1RLaUx4d29rbDJ1RUlIanJSMnh1dl8xOFdXZG8zZGZ1Y3B2U3JaQjVWaEtqcEQ5NzJlalk5UXcxU2l6MkFBM3ZXTFdRdWdWd3VzckdSM3IzZTc4TXJkMnZ5MklfcHo2RG1BNXhNR2FnNnlfcWtPLVFIdzNhalZUcnZjbThsS19kRzVTV2l4dUlNZw?oc=5",
+          "date": "2026-10-19T21:38:04+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "Cerebras Systems (CBRS) Stock Chart and Price History 2026 - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE5nMUpYMHhSNFdFckh6ZWxRWXNqY0hTYTlnMEk1OGphLThzTU4tU1l2Ym8xUENGaTl2aEVzeGdNUzB0MjNwRUJUWE0tZ3JEdkdtRkIyRmxXY1o3STk0c0I0aHF3?oc=5",
+          "date": "2026-10-19T18:52:39+00:00",
+          "publisher": "MarketBeat"
+        },
         {
           "title": "Nasdaq Bounces Back as Chip Stocks Stabilize - Schaeffer's Investment Research",
           "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNTm5oQWVjYTd1VHZJY2ZFbXVXcExtNURPUHVIbG50ZUtBdzJLZi1aX05oYWw4XzVQamtzTHJPbDg1VDBOdWJvejd1TEJsS2pTTklELWIwMXFJdWJhaXhsMWIwamlLNUFxWXdpSkF6VGdfSExhWU4yVVZoNldySjJNRDVHRDVjNUlsVGJtNzFCTUROVENBYkdSSlhUSWJZNC1SNzhKME96SlE?oc=5",
           "date": "2026-10-19T16:03:16+00:00",
           "publisher": "Schaeffer's Investment Research"
-        },
-        {
-          "title": "Cerebras Systems (NASDAQ:CBRS) Hits New 12-Month Low - Here's What Happened - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPbVVCZ1NzbnBWcWZ6VjR1bWhLbE82b2toTEgzRXVUQ3B2dzdXWmk5RmZlcE9EYkFpa1pOQVJnbEI2OHNIaGNOTF8yNDRac3ZJNTZFcVE3UHl6TnRMTGpUNlkyQUpKcUFhTU5RMk1WQ2VId3JkVkd6VzlnRWl6ektfQWF4dEE3ZWxQQW5ra1RYdmMtaFZBbnk5bGhtS3hqY2RvdlpwbDFCLWNzSUVOeloxOGtKeE56MzZvOTU1Y1BtZGtPYXNIWjJNbEpB?oc=5",
-          "date": "2026-10-19T15:17:24+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "What's Going On With Cerebras Stock on Monday? - Benzinga",
-          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPa2pVMHVBc1BDX3dZcldyaktTd2h6NWt4elJYb1RabjhJVUdGOTA1cG1sVHlrUkFuNlkwVnZ5VDBpU0szZmVScWZpdWxmZWh0bXZvSFBMWHdzU3NiUEExMnRoOFJoQmFxcW5MZnBDUGRyWVZtUkozZWloamVzUG1DVkRkeGtITGdiS01CSWd2Wmw4TVg0ZlpTUEQyV0V0ZGFfdTdJYURmV1NMd0E?oc=5",
-          "date": "2026-10-19T11:47:54+00:00",
-          "publisher": "Benzinga"
         }
       ]
     },
@@ -1143,25 +982,25 @@
       ]
     },
     "US:TWLO": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
+        {
+          "title": "Twilio Inc (TWLO) Stock Up 5.3% but GF Value Says Overvalued -- GF Score: 67/100 - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPYWdzVlE1b000YzBmaGpubmwtLVdHLW1ZZDR5dF9OcWNlMUFkb1l4TVBwd3NQRzRQRlJuM251U3pEa2JiYlJUR2ZHZGJOQVg4N1hhWExpc0dYamdZX0tzajlhWDVZRmhxUzhUbEJMSVprVWthZmRrbnI1bzJrZ29FN1J4ZEc2NEJzdm80dzh6RXRkdXNDTGl2bXEyckloM2Z6TVVBZVFUb0g2cTVmV3dj?oc=5",
+          "date": "2026-10-19T21:34:44+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "13,554 Shares of Twilio Inc. $TWLO Bought by Jackson Square Capital LLC - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOTGRVdmpaTHdPTkI4b2lNYk9EWWtmcmk3OUxqZ2tjLUtoa1NDbHlOMTN4WVMxNUhSZVFjekRyWm9pZ0NqWXU5VDEteXlWaS01VEpLUVU5Vk1UOXRXeW1Ca1hkQWJlYWJidmRtMElicHlIdGVjazA5djFEZ0xuS1V2MEl3UXZiWXdfOTlwY1pSVTZuMFdvdlc0NDV3emVtMjQ4ZHdWa0owdkRFMTVOa1hOUEU4ZExfTG1WSk5aUm1WS2dvMDIzZFFraA?oc=5",
+          "date": "2026-10-19T17:34:16+00:00",
+          "publisher": "MarketBeat"
+        },
         {
           "title": "Twilio Delivers Growth, But Valuation Limits Upside (NYSE:TWLO) - Seeking Alpha",
           "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNdEI2VnhqRUhUYl9wS1EwbVFyeW5jenh3WHdrQ3JaZjVmbW1fQjItOUVzQTJHa3hmYnRYTkxyc2k1VllGV2E5dVdRS0FCcy1qZmplVEt1R0RSNW9mOHBIS01oVmx2VklXdEtiUXdKTnBzN1Q4WUtZeVJ1YnowTDBRaE1QcnhfajNMbnZaNUJIVGo3OWhaYW5pdU9yZHF1QQ?oc=5",
           "date": "2026-10-19T10:33:00+00:00",
           "publisher": "Seeking Alpha"
-        },
-        {
-          "title": "Twilio Inc. $TWLO Stock Sold by Assenagon Asset Management S.A. - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNb0luR1BnUDRURGlZVmNvTVAtTkxNMUN3NGx2em4xZ2VhN3JXTU1iU2dUX0VvN0hsc0FIdHdyVGY3QkNjYkkxQ1F0dkcya2wwdWkza0FfTDR0UE1QUFBva3p0dHFLV2tsLURvLUE3RFB2TmtJLTFVSFZUc0NhbUNwU2ZJSzVHVHVDdnpFOEpwcTY2NWdld1Jkdkg5Mk9NTTM0WmdGNW45RDBkSlZxaExIV2xwajZEd0FRa0ozNw?oc=5",
-          "date": "2026-10-19T07:54:23+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "BTIG raises target to USD 315.00 for Twilio stock - ad-hoc-news.de",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNWThBbU9GV2w4MHFxRnJjeUhqYVVpZ3BDcFJqcV8tMTVJSUpnRWlzSzRweTl0R1R4Q2xCLXhmR0xXdVE4U2h5LTVMYXlXeXZjWmRaazdoczNKSWxuWEFkZFBuUzRBNnJscC1qZzZSaTlMWWp4TmM1RUwxRkN3MGpKSWkxMkhUQ2xrMVBnM1hGbDc0TmVNQ2l2TnluaEpseWxwNGhhb25IYWJnWndD?oc=5",
-          "date": "2026-10-18T11:24:15+00:00",
-          "publisher": "ad-hoc-news.de"
         }
       ]
     },
@@ -1212,7 +1051,7 @@
       ]
     },
     "KR:450080": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "[종목상담 주식민원처리반] 하이니켈 전구체 주력…ESS 배터리 적용 '에코프로머티' - 머니투데이 - 머니투데이",
@@ -1227,16 +1066,22 @@
           "publisher": "톱스타뉴스"
         },
         {
-          "title": "[마감시황] 코스피, 99.96포인트(+1.76%) 오른 5768.01 마감 - 라이센스뉴스",
-          "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5jMExHSDhLLVFxZXV2anlXZGxtejBFU3ZYQmNyd2E0NHlHdnlVNUEtREdyZkZONDFJLUVvLUh0VzRteC1RZFppczZqcHJfcDNyT1dKV1NQY3NMajM0RXNhM19NUkFnekNaS19r?oc=5",
-          "date": "2026-10-19T06:59:16+00:00",
-          "publisher": "라이센스뉴스"
+          "title": "에코프로머티 11.80% 상승…전구체 판매 확대와 적자 개선 과제 - 잡포스트",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1WbThPYXFCLTJEZTNfa0p5TFpKUE5DVHl2TTVwd3p2Sk81aEpDbzB1TUpXOE5MM1U2ZXlaaHNMUWNMRGwwWTJkYmE4b0hTUEtBeFllb1o0MzlzN0JPbl9VX0h4MF9jbEhGc2xuVXRuel81UdIBckFVX3lxTE1WbThPYXFCLTJEZTNfa0p5TFpKUE5DVHl2TTVwd3p2Sk81aEpDbzB1TUpXOE5MM1U2ZXlaaHNMUWNMRGwwWTJkYmE4b0hTUEtBeFllb1o0MzlzN0JPbl9VX0h4MF9jbEhGc2xuVXRuel81UQ?oc=5",
+          "date": "2026-10-19T05:33:38+00:00",
+          "publisher": "잡포스트"
         }
       ]
     },
     "KR:020150": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
+        {
+          "title": "2026년 10/19(월) - 데일리포인트 - 네이버 프리미엄콘텐츠",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxONEdyWGFoeTduRHdxNUcwZERvbk1ITUhXM1ZkOUhnWVQyWVRlajBRNW9mWHpvMDJvTlVSQ2EwYUFOakxoRzdud3FXV3JHb3RWdkJsdFMzVURaTTQ2WGJtd1R0M3BEb0dmUkl5VmtQaVZ4VlR3WVR1aXpBOWx0bVAwSmVneEpxd00tOHpJ?oc=5",
+          "date": "2026-10-19T07:23:00+00:00",
+          "publisher": "네이버 프리미엄콘텐츠"
+        },
         {
           "title": "롯데에너지머티리얼즈 장중 16%대 상승 - 비건뉴스",
           "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1ZWVpvcEhtel9kRGl3RTNrZF96UlI4XzlkWl8zeXlYNGlRRU9ha1doWkZ1Y1ZJaFd5QXNpSk5ZNEdEUzU1Y014ME1iRnp5a1l3MF9VaUxDUGg1VUlORnZTcjB6QjRkdw?oc=5",
@@ -1244,21 +1089,15 @@
           "publisher": "비건뉴스"
         },
         {
-          "title": "롯데에너지머티리얼즈 주가, 10월 19일 장중 54,500원 10.32% 상승 - 톱스타뉴스",
-          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1aN3ppc1RxclFUdVBZdXFQaWxTWVFoX0gzcUhHNjhJdHNDU1JqakpJRHMtd19mLUNZTXJlalZmZEswTU9XSnZ3dzlGeElYUjNxMDlJSjR2NTVUTTlha0Myay1GRTZSZ0ZPTU9rVUUxcGVaQQ?oc=5",
-          "date": "2026-10-19T01:34:40+00:00",
-          "publisher": "톱스타뉴스"
-        },
-        {
-          "title": "롯데에너지머티리얼즈(020150)눌릴때마 물량 모아둘 기회로 보이며 이후 전망 및 대응전략 - ThinkPool",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1NYURxN280NUhJVXVrcEhYN2RwdWVndTEwZVJKVDg0RnpyS2dSSVl1c20tLXdRRDhXbjhyWTJZMmpWVmJ0b3NZZmEyQUdpdjg4aE11UHlVaW5ZWXNG?oc=5",
-          "date": "2026-10-19T01:31:00+00:00",
-          "publisher": "ThinkPool"
+          "title": "전고체 배터리주 훨훨…롯데에너지머티리얼즈·삼성SDI 폭풍매수 - 핀포인트뉴스",
+          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9FVHljVHRGbHlwc0ZobDlqdExGOEFqOEl1dkVHV3d5R0t3SjkzTjhZX3pVVmhLLU5YRnVBY3l4T3JKdkZjemlSdEdHTWMzWW5UMW5xbFZGYjEzWWktU1B0Y2xQWV9NYkpubU01Y2g5eWY3Y2PSAXdBVV95cUxNclFpcFktZVhOM2lLWUtHOWNwNnJVSzFPOWdlRXJqUjhDaDJiS2hVOVd5YUlLdEhXWlJFOXJoMWJLbmVzTmRSQk5vaEFFVXVVcVdHVnR5ai1lR0s1OEVjbEdSQWNyV3AyX3c4NWRySV9VbmdnYVNqRQ?oc=5",
+          "date": "2026-10-19T01:59:53+00:00",
+          "publisher": "핀포인트뉴스"
         }
       ]
     },
     "KR:023530": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "롯데쇼핑(023530)눌릴때마다 물량 모아둘 기회로 보이며 이후 전망 및 대응전략. - 씽크풀 AI",
@@ -1281,7 +1120,7 @@
       ]
     },
     "KR:003670": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "배터리주 들썩…\"中 ESS 업체 美서 철수\" - 한국경제",
@@ -1304,7 +1143,7 @@
       ]
     },
     "KR:086520": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "에코프로비엠 주식 유증 청약률 103%…8861억 조달 : 한국증시 - 재경일보",
@@ -1327,8 +1166,14 @@
       ]
     },
     "KR:006400": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
+        {
+          "title": "전기차 부진에도 '불기둥'…美 선거 앞두고 뛴 종목 [분석+] - 한국경제",
+          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE44MTAyMlhnYTZsUTlCVGl2Nmc0ZXphbHJ0T0EtVUtKQVhUSlZJT3pQZUYwYlQtX081XzBTYjNpNGdPaElKdXllOWEzc2pIWmpkMWgtSnA0WEFadw?oc=5",
+          "date": "2026-10-19T21:30:01+00:00",
+          "publisher": "한국경제"
+        },
         {
           "title": "InvestingPro 적정가치 분석 적중…삼성SDI 투자 수익률 64% By Investing.com - Investing.com 한국어",
           "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE96MERkbXVQQmtSX2FzUzZ3blFQUm8xN2NTMGd0bjZVb0I0ZkRjcGdBcXNKUnI4M1pHYk8zQWFZay1xTWZyTEJpbWFGQl9kU213dnVYN1lRY1BSZHF3MWdBRW40NmVBQnJVcjRhRF9fUlhTbDE3U0E?oc=5",
@@ -1340,17 +1185,11 @@
           "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBsSUp4NUtzajE1eGdvanNGY0ZyZy1TLVBvU1AxcDBRMUZhNHFtQmZVZEpzcHd1NFRUdGhteUJ1M3liNVB6Z0hwVjNDN1VJeUNmX21DYk1tbVJZb29udG5tNmNxNC1ObXNlQjE4dm9HdDdzS00?oc=5",
           "date": "2026-10-19T09:05:02+00:00",
           "publisher": "비즈니스포스트"
-        },
-        {
-          "title": "증시 주인공된 배터리주…미국 ESS 시장 中 업체 퇴출에 삼성SDI·LG엔솔 강세 - 한국경제",
-          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1NVGJUb0V2dy1VRjZ4MnZDYnZ6YlhMNmNDdk9lMVBCRDNFVXlDWlBFRlBTZ3VGTTRHcDB1d2QtWlRRSEF3dG1iU3lmdklpTjNmSUt5Vi1FNjFjUQ?oc=5",
-          "date": "2026-10-19T08:08:38+00:00",
-          "publisher": "한국경제"
         }
       ]
     },
     "KR:323280": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "[반도체 기판주] 태성 10%대 급등·LG이노텍 상승…삼성전기·이수페타시스는 약세 - CBC뉴스",
@@ -1373,7 +1212,7 @@
       ]
     },
     "KR:307950": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "[코스피 지수선물 옵션] 2차전지 관련주 동반 강세…LG에너지솔루션·포스코퓨처엠 상승랠리 - 핀포인트뉴스",
@@ -1396,7 +1235,7 @@
       ]
     },
     "KR:010060": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "OCI홀딩스 주가, 10월 19일 218,000원 9.66% 상승 - 톱스타뉴스",
@@ -1419,7 +1258,7 @@
       ]
     },
     "KR:000100": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "메리츠증권, S&T·IB 등 5개 부문 대졸 신입 공채 - 증권경제신문",
@@ -1434,15 +1273,15 @@
           "publisher": "증권경제신문"
         },
         {
-          "title": "[주가] 10월 19일 주요 제약·바이오·기기 5% 변동 현황 - 메디파나뉴스",
-          "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFA4cVB0SmRVTjBXVEtsSUJORGQ3UFlZalBFVExFMVdZUWVlNDRsVVpBRmdRZzJybTFjb3ZlRDJDM1g3VG5UajVNYURRaEpncXRJaHNPTEk4S0xhamNNck9ycDNfV1BPMER1MDlB?oc=5",
-          "date": "2026-10-19T06:33:04+00:00",
-          "publisher": "메디파나뉴스"
+          "title": "HD현대重, 반세기 넘는 조선 역사 담은 '우표첩' 12월 발행 - 증권경제신문",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5ZUnBIUS03QWtJY1RISXpMNWp1TklWaWUzMy16alNQcEJvYS1fNkxFdzhRWU55bDV3ME56QTF4WUIzZ1BGNnA3VjdFWFZjNG5aNEZkaTR4THpQN3cyUnNNaVpsRWMtY2xrTmhmaWZUZFBKd9IBdkFVX3lxTE1XM1MwSm5VMzFGYmxTQ3FHRndxZGoycHFtbGg5d0xXbE10RXRzbWthaUtzNDVmUmlLQV92eEdZMWdCenNaRUFJUzIzb2Npa2xqdDFMNENsd2t2TnNJTGpfMWdFaE9GQWt3ckFLSHZESGRHbGN2bGc?oc=5",
+          "date": "2026-10-19T07:13:49+00:00",
+          "publisher": "증권경제신문"
         }
       ]
     },
     "KR:207940": {
-      "checkedAt": "2026-10-19T17:36:14.886915+00:00",
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
       "items": [
         {
           "title": "삼성바이오로직스, 노조파업 제동걸리자 주가 급등 - 비즈트리뷴",
@@ -1463,7 +1302,168 @@
           "publisher": "비건뉴스"
         }
       ]
+    },
+    "US:SMMT": {
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
+      "items": [
+        {
+          "title": "Summit Therapeutics (SMMT) Launches Phase II Trial for Ivonescim - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOVVJQalp1YTNMb3lvZ0lDSUdRSmVTRjFPYl80bG9JWFV2Y0hPemh0clR5alVZZGIyVFdBUzBqUHBRTGFKRlpaaVA3UjJiT3NLUG4tZllUOFFyNDB6dlJnQ0MtMkk1U2NqWnA4QmpQRk5YMHdndi1VVDZ3MTViZWFhWWh2UVR0MFVoMTVpSTNHNlJTRGhMaWJMRDN0b2ZxZHVzZXRzS09rWkpyX2FPVGh6MlZzellsS0lIbWM3VGRQaHdTXy1wX2lxb21sSllzblA5LVE?oc=5",
+          "date": "2026-10-19T12:12:28+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Summit Therapeutics Initiates Phase 2 Study of Ivonescimab in Kidney Cancer - marketscreener.com",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNUE5UUE1pOEllWERQREhSdjdCcUk2dHNOa0hDQjdjdDBtT2pzMWpuWFVCQW9VRkRrcmxybmtJNEFBcXBsNzF5Z2FqdlAxQnFJbk5Hb21nOXVTcGVMaFJkTGFpdlZ6OHA0NG1QRGRubkZQNG41eFNRaHBXQkZVZU1TSTNCRDFLZHM2NFFvVGNkQ3J4YUFkblJydjJBUHotUldtZzc3NDZoVXVsb3MzNEJyUVZEcmllVVYtRU1Id0NUdWZtVi1JMlFN?oc=5",
+          "date": "2026-10-19T11:26:17+00:00",
+          "publisher": "marketscreener.com"
+        },
+        {
+          "title": "A share-increase proposal at Summit Therapeutics (SMMT) would help enable conversion of $2B in preferred stock. - Stock Titan",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQaVJ1ZEtYMWp4WEEwNDZZOHBxUE5yX2VQbjhNaWs5M0doaHRfeXE4N3F6RkFpc0w5bmgxak0wdE9BUnlVbWRYcFpnX1VVMjltWmJveG1qM0RSSXlkc3UxWWlXckVMY1gwelV0Zm1NYTJvUGY0Z3ZHRDNval9IR19xLXFMMkIxQ19sXzZnVmJ3ZzhNOUJZU3JuMndHc0g0RDg4OFQtREpOWlFaeXdIOHZzRldsNEJXRTctMzhTZA?oc=5",
+          "date": "2026-10-19T11:02:17+00:00",
+          "publisher": "Stock Titan"
+        }
+      ]
+    },
+    "US:WDC": {
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
+      "items": [
+        {
+          "title": "Western Digital (NASDAQ:WDC) Stock Jumps 6.1% - Here's Why - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOQnhCOHpMdTJmckFjblc4d3RqYVk3MkJfdDRYdER2VHVfYUk4Y3Jpa0pkWWNGZ1M3Ylk3VHRKOEFMYzE2SnZpdk1nbTNYZkd0c0JRZ0Y0dExkM0I5NjV1ZV9TM2RCZXI3MW1nY3JxN2pvQzJjOGY4blNrbm5aR196dmJ6VGlwdFFjMHl2TFNvQndOVTRMOXpSX1l2MlNHOWxRQmtuUzVqM2dISUZvazlSZw?oc=5",
+          "date": "2026-10-19T21:33:56+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "Western Digital (NASDAQ:WDC) Stock Jumps 4.7% - Should You Buy? - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQYjFJV0pkSGxnM1N0V3pGak1XLTItRU9RcHJxQTltVWRWNm5TaHpvR0ozQmhyR19EUDdyNWlHYjN0VjNHcW15U0V5RnVTYnMxT0JXU2ZKWmtTMW5jT0VzaHl0M1ZIREVmT3FHNGlOTHc4SXVYTHFsNy1sZGhLaXUxY25mVFJ3WGNoNEVXV3RxdE5hMmxGTl9MQ0tBeDAtRFpWZ0laOVpFNTBQb2hqQW9tWDhYaWdHX00?oc=5",
+          "date": "2026-10-19T15:47:32+00:00",
+          "publisher": "MarketBeat"
+        },
+        {
+          "title": "Western Digital shares rise around 4.5% as strong demand for high-capacity ePMR and UltraSMR drives boosts optimism - Traders Union",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNZzJya3haZm4wMFM2eVhJbF82Zmx2SGNPTnlzUE1WQUh4VDh6UTdhLVBxd0Qxa0c0UVhrQUMtMWszNDdoeVVwMU5TZm1zZ0tVZkk5Q2xTby1DdEdHQ2NDQTRwTERhTEdoTzlrSlBKYllnRnltNTVtbHBmQnAyaUROaVpUN3pwMVQzUlZFMXVaQUNtNDUyWGc?oc=5",
+          "date": "2026-10-19T15:37:42+00:00",
+          "publisher": "Traders Union"
+        }
+      ]
+    },
+    "US:SNDK": {
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
+      "items": [
+        {
+          "title": "SNDK Rallies As NAND Pricing And AI Hype Fuel Bull Run - StocksToTrade",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBGVkNJVEk1aDdmc21XdGNIT3p4c1RDcVBvblp5ZHphU09iZWdLaV9CMzJRZUR1dWpweEFpdW0zVG82ZEpYUnBTMkd3NmF6TDRHWnF2al9KTkNUaHBKTWdtUlVEWmRhbG5rNFE3T2xkWDBvUlhnbjZhRmZXVEk?oc=5",
+          "date": "2026-10-19T19:03:00+00:00",
+          "publisher": "StocksToTrade"
+        },
+        {
+          "title": "Why is SanDisk stock rallying today? By Investing.com - Investing.com Nigeria",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOcXZyVXJzMEdWcF9LVnJzNTZqMGVHX3NLd0lqYnprWTdaYXJTYWY3cWxaUGhaMTlwTmZmODh3ZE1VcVNpOGJKTWVfamFhT3diMkZOWmdmV05oYmx3aGRZMWZtcVoxX252TDdBMHhhMWZXM2NCanJ4WXQtNjVKS09OX2FlQ0p6Vnp4U3VKaEEzeHBiYmw1S2lXX0llUFA?oc=5",
+          "date": "2026-10-19T15:41:34+00:00",
+          "publisher": "Investing.com Nigeria"
+        },
+        {
+          "title": "Sandisk Corporation (SNDK) Upgraded to Strong Buy: Here's What You Should Know - Yahoo Finance UK",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxObFd6R1pEb0Rib0xQWGk0Z3RPRFh6RjRPM2VsUkVlZWw0LVJHMEUtZUQ3RXU1R0ZsVXhNRERCeXFTYW5zdmRxTzAtenlVLU95bG9LSGFpTlFVTVZENUVCZVloRlZaeUE0WkU5bzhRTTJjdVpuRE5vZWZIb2ZMdkc0cEdCTnVTbGc0bHNKcDJybG5qODg?oc=5",
+          "date": "2026-10-19T15:00:02+00:00",
+          "publisher": "Yahoo Finance UK"
+        }
+      ]
+    },
+    "US:DDOG": {
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
+      "items": [
+        {
+          "title": "Datadog (DDOG) Stock Is Up, What You Need To Know - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOYTJKTjJSbTEwckZEUmFCamVvbWJQQUFuMFNIWHR2aDQwMGluTEQ4cGFLcVZmYUhZdFlCVk1OUFp0SU1NcHFreTMyamR3N093b2VYeUNKcFpGSkNRWG1KcFRpYmFRNEVrRWNjbzktTzVOS2djeUpWS18tM2h5Znk3Y1pYRXRQM0RGaGdVQnFXU1g5Zw?oc=5",
+          "date": "2026-10-19T21:36:55+00:00",
+          "publisher": "Yahoo Finance"
+        },
+        {
+          "title": "Datadog Inc (DDOG) Shares Surge 5.4% -- What GF Score of 83 Tells Investors - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOWlFYWVJ3WF9pcHBWNGdHaUxKNnZ1bDlWOEZVblp0UDdFbEJ4RXRWempMbHY5bWFNZWw0MzU3Tjg5VFNlNlJmZktDNXhyTDFYajl1bDhWclEwSFdhWTY2V1g2NzlBb203Q2JuNHJmckEySFVobDVFT1BGdkF2SlNiWjBra1hYOUdnWjE1ZDBHM0NUVXVlRDVxYjB5MW9FeklNeXItUTlLTHl0Rms?oc=5",
+          "date": "2026-10-19T21:34:44+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Datadog Soars 6% on Bernstein Upgrade as AI Token Use Has “Grown at Least 50%” - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOVHVZLVRlWFBBYzE4QVp6RGN1WnB0blZYcUxuOFVKbHIzbkI1TXVIUWRlSGc5REZzWnc1V1FYamxJRDE2Y0VOMVdtenB2NHE0Y3FyY0JTOWlhZFZwMXBNMDdJaGpHUWtfY0FPVFd0dnRQWTNOd09PUTJ3bVQ3eXFVYXhiemJDM3RfTGNwVUZCWlVzUS1tTE81SXNiN1lkbjg?oc=5",
+          "date": "2026-10-19T19:06:28+00:00",
+          "publisher": "Yahoo Finance"
+        }
+      ]
+    },
+    "US:RBA": {
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
+      "items": [
+        {
+          "title": "A Look at RB Global Inc (RBA) After 5.3% Decline -- GF Value $106.40 vs Price $79.81 - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOYXF2bURzZjNDbmthejN3OGFub3EzRGlkZWJJN2czZnVqcDNlcEJVMkhBOW4zUUVKN3lUdWFLeG9NLUFEU2k5SmxnZDVwblRUNnY5SHdLdDFZX1poaXJ0cDdHblRSRmI4OU5Wd3hCekhiOVBEUlZjWFVreTZtaUdTemRjbi04bzhNM2Y3bi1rd2ZuWlFDVjBsRDdJYmdGTnNZWmNiREFHOTdtMmo1bE9nYnV3?oc=5",
+          "date": "2026-10-19T21:56:15+00:00",
+          "publisher": "GuruFocus"
+        },
+        {
+          "title": "Form 3 RB GLOBAL INC. For: Oct 07 Filed by: Dutt Shivsaday - StreetInsider",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQTXUtenpnMl9yc2puS3VZN0VYTU5yYjFjT0hvak5VSWJBQ2Z4WGNGR2VidnhqdEhVeUJ1SUFrQzZVYmpNSWNKWUxKa3VvVkszNWZVLXFNa2xwd2l1SWJobTFpbVNhamRKanpjNVdjSVNNeHdWMjM0SUlWYXlkOEV4S3NyQ0JEV19RWnI2MXN6QlNPTHJKVWJXMUdJSFpTbzQ0U1lfcG5TOXdfdkJ6ZzhBYWZuUV84em9aLUE?oc=5",
+          "date": "2026-10-19T21:43:44+00:00",
+          "publisher": "StreetInsider"
+        },
+        {
+          "title": "Digital and strategy chief reports 2,773 2025 and 2,101 2026 stock awards at RB Global (RBA). - Stock Titan",
+          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOMjRTWDlQUUI3UVk5UkVmckJzTWVNODNYZnowdkg0NFdEQWlQQjZoZER1R1VJVTE5OVFma3VjcktuZHh3dU9LeXNseWpaNUdlRWFGdDFJaW8tekxYdGRjYTc2dlZnb0w3OWxxOGxfRTVSbTdTSVZ3VGZKN3ozX1BxcDRJbm1QaEZnaFpVTWM2WDVDOFVWbGNoa2gwOXZ1Q2hocWdudWJ4RDhaUzZPMmNDYXV0Y0V5T25mTnVUUGpuT2w?oc=5",
+          "date": "2026-10-19T21:42:08+00:00",
+          "publisher": "Stock Titan"
+        }
+      ]
+    },
+    "US:SITM": {
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
+      "items": [
+        {
+          "title": "Rosenblatt initiates SiTime stock coverage with buy rating on MEMS tech - Investing.com UK",
+          "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNQ2VpTW1zeG9NdzBhQlJtWVNDb2VqRVpkOHZwMm9makZoUFcybzdzdk1QNWQ0cnRNUF81RWhXV0NMYkQzNEs1VENCVG5fbW1GRG1KMGUxWW5aai1tb1A5WnRDNmRSX3VBdm5aREZhNmtlb1FjR2YyWXFJZDFXQ1NPcVBkSlNZWXFMTmh3TjlMTjU3eEhzczNOWHcwUVRpVjFlOGI5d2t3c25ZdHZhRk5BNEptbzFyNTBpOXJCUEh5UllGZHM2VmxEWWhILTk?oc=5",
+          "date": "2026-10-19T21:32:00+00:00",
+          "publisher": "Investing.com UK"
+        },
+        {
+          "title": "SiTime rises as chip stocks rebound and investors look ahead to earnings - Quiver Quantitative",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNMlNLeXJvdjZkRXlQZXRFbC1FODF3bklhSUNpaEcxMFJWZGtlZ21GMXVqazBoQmRHcjgzNU1EdkZSVWlNRFJJcTdzQjF5THl2bUIxWjVjalEtXzFOSHdOeXgxTnZLb19wbnZUS0pldUdvRlo5M0YzVVBadjZQaWowRFQtUGdMb1BWTkRUcEVVc0tiZ2xaclhYeUJ3dUZCNmJwWGd5R1AxRTQ?oc=5",
+          "date": "2026-10-19T17:34:00+00:00",
+          "publisher": "Quiver Quantitative"
+        },
+        {
+          "title": "SiTime Jumps 5.2% Amid Sector-Wide Rally - AlphaStreet",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9nMjh4eWcxTzNtS1NtR2JHQmVuMklXWWYwR1FNWV9TZWRmZUhOMkdPUDBDb0VFNWlBS3NqTlAtaXJrZDFXakMyY05IcWs3dWJqcG9TLUdmR24zaUZyek9oVFRNZ21lRHpKMk82d3NHYnpic3AzNzMzMXV5VXBJZ9IBfkFVX3lxTE9nMjh4eWcxTzNtS1NtR2JHQmVuMklXWWYwR1FNWV9TZWRmZUhOMkdPUDBDb0VFNWlBS3NqTlAtaXJrZDFXakMyY05IcWs3dWJqcG9TLUdmR24zaUZyek9oVFRNZ21lRHpKMk82d3NHYnpic3AzNzMzMXV5VXBJZw?oc=5",
+          "date": "2026-10-19T16:45:25+00:00",
+          "publisher": "AlphaStreet"
+        }
+      ]
+    },
+    "US:AMZN": {
+      "checkedAt": "2026-10-19T22:32:32.794329+00:00",
+      "items": [
+        {
+          "title": "Amazon: Big Morgan Stanley Upgrade, Primed Into Earnings (NASDAQ:AMZN) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOTEdrUkZXcWV2V2ZteGdmZWFCd2dpUDVIbVJDYW5NVHE2SmJMTFBDZ1pKN3gyUjlaSjBaM1hsbkpkQXE2dExYZk1WRE1NeXV5ZWN0aWJBbmljYVplNzBqaXI2b1Z5TVFzaHN2ZC1hWWJ1UjVJRTMteWZwM2FHNjJ6NzR2cjlIQWJNeEh3cG9CQVRZNHRwWUpwNWNvbw?oc=5",
+          "date": "2026-10-19T18:34:33+00:00",
+          "publisher": "Seeking Alpha"
+        },
+        {
+          "title": "10 Consumer Discretionary Stocks With Whale Alerts In Today’s Session - Benzinga",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNNG0yQ1ROQTNpVkliaHQ3dVRoS2xJV0NNLW1zdml0dlZHOW5lSDNuLXRnUGtNNGlaY21oQXV5empkZnVmbnJpS1FKc0Rza21vVWVVVEJJMVpnOHd4OHRQRVZpTHdiVC16QnJNaG9Pd1dWZVdEakRWOTRCcE9zV3ZDMG1wb1ROM3JFRGtJcGhkUF8zZVpWSFZ0QlVHcEdXUkYySjFTUTlpS1hyODQ3SFBoNVZCc29lbUxZ?oc=5",
+          "date": "2026-10-19T17:35:12+00:00",
+          "publisher": "Benzinga"
+        },
+        {
+          "title": "Stock Market Today: Nasdaq 100 Rises as AI Chip Rout Reverses, SanDisk Jumps 7% - TradingView",
+          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQSVhEcUdVVTBVbHB2ZzlKTC12ZjktYjBBYzBDQ2xSektudjlGeWVxYmkta1VfTS1tcnRZWjc5TVlpdnJKMFBJLXZOWENhWmxXLTRDa3E4UWdsTUstaE5YVXU5QnUtWENvcW9uWmpqOEVLYm1SMjUyMlJiRnlZNWFob0tVMVljbjk0NUV4X2tCVU5OQ18zLVVZMW1oQVN6bEQtSWdvOXplbl9YcWRkaURzdk90SUtHVnV3OEwzYmZJbzJpallfZGI1bDZUR0JPbmxl?oc=5",
+          "date": "2026-10-19T16:58:22+00:00",
+          "publisher": "TradingView"
+        }
+      ]
     }
   },
-  "checkedAt": "2026-10-19T17:36:14.886915+00:00"
+  "checkedAt": "2026-10-19T22:32:32.794329+00:00"
 }
