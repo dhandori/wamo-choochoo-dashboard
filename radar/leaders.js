@@ -1,6 +1,6 @@
 // Leading stocks and leading industries. Reads wamo_trend.json → markets[X].leadership.
 import { helpButton, addTerms } from './help.js?v=20261020-asia1';
-import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261020-asia1';
+import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261020-asia5';
 addTerms(LEADER_TERMS);
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
@@ -221,7 +221,7 @@ function mapCard(L, no) {
   head.append(h, n('span', `${pts.length}개 업종`, 'ld-status tone-none')); card.append(head);
   card.append(n('p', '상대강도(RS)와 52주 신고가를 함께 봅니다. 오른쪽 위로 갈수록 시장보다 강하고 고점 근처 종목도 많은 업종이에요. 초록은 선도업종, 노랑은 FTD 대기 워치리스트예요.', 'ld-meaning'));
   if (pts.length < 3) { card.append(n('div', '지도를 그릴 업종 자료가 부족합니다.', 'ld-empty')); return card; }
-  const W = 360, H = 270, ml = 38, mr = 10, mt = 12, mb = 36, pw = W - ml - mr, ph = H - mt - mb;
+  const W = 360, H = 270, ml = 54, mr = 10, mt = 12, mb = 36, pw = W - ml - mr, ph = H - mt - mb;
   const X = v => ml + (v / 100) * pw, Y = v => mt + (1 - v / 100) * ph;
   const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, class: 'ld-map', role: 'img', 'aria-label': '업종 RS와 신고가 근접 비율 지도' });
   const pol = L.policy || {};
@@ -234,7 +234,7 @@ function mapCard(L, no) {
   svg.append(sv('line', { x1: X(xLine), x2: X(xLine), y1: mt, y2: mt + ph, class: 'ld-map-rule' }), sv('line', { x1: ml, x2: ml + pw, y1: Y(yLine), y2: Y(yLine), class: 'ld-map-rule' }));
   svg.append(sv('line', { x1: ml, x2: ml, y1: mt, y2: mt + ph, class: 'ld-map-axis' }), sv('line', { x1: ml, x2: ml + pw, y1: mt + ph, y2: mt + ph, class: 'ld-map-axis' }));
   svg.append(sv('text', { x: ml + pw / 2, y: H - 4, class: 'ld-map-label', 'text-anchor': 'middle' }, '업종 RS (오른쪽 = 시장보다 강함) →'));
-  svg.append(sv('text', { x: 11, y: mt + ph / 2, class: 'ld-map-label', 'text-anchor': 'middle', transform: `rotate(-90 11 ${mt + ph / 2})` }, '신고가 15% 이내 종목 비율 →'));
+  svg.append(sv('text', { x: 10, y: mt + ph / 2, class: 'ld-map-label', 'text-anchor': 'middle', transform: `rotate(-90 10 ${mt + ph / 2})` }, '신고가 15% 이내 종목 비율 →'));
   const maxM = Math.max(...pts.map(p => p.members));
   const watchMin = pol.watchScoreMin ?? 4;
   const kind = p => p.leading ? 'lead' : p.watchScore >= watchMin ? 'watch' : 'other';
@@ -248,7 +248,9 @@ function mapCard(L, no) {
   const placed = [];
   pts.filter(p => kind(p) !== 'other').sort((a, b) => b.rs - a.rs).slice(0, 10).forEach(p => {
     const x = X(p.rs), y0 = Y(p.nearHighPct), y = y0 - 8 < mt + 8 ? y0 + 15 : y0 - 8, txt = clip(p.name, 12);
-    const w = txt.length * 6.2, left = x + w / 2 > W - 2 ? W - 2 - w : x - w / 2;
+    // Korean/Chinese characters are about one font-size wide; Latin letters about half.
+    const w = [...txt].reduce((sum, ch) => sum + (/[\u1100-\u9fff\uac00-\ud7af\uff00-\uffef]/.test(ch) ? 11.8 : 6.8), 0);
+    const left = Math.max(ml + 2, Math.min(W - 3 - w, x - w / 2));
     if (placed.some(q => Math.abs(q.y - y) < 10 && left < q.r && left + w > q.l)) return;
     placed.push({ l: left, r: left + w, y });
     svg.append(sv('text', { x: left, y, class: `ld-map-name ${kind(p)}` }, txt));
@@ -375,8 +377,8 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   const pol = L.policy || {};
   rules.append(
     n('p', `기준일 ${L.asOf || '—'} · 분석 대상 ${L.universe ?? '—'}종목 (와모 스크리닝 목록 안에서의 비교이며 시장 전체가 아닙니다).`),
-    n('p', `선도주: RS(오닐 방식) ${pol.rsMin} 이상, 52주 고점 ${pol.highDistanceMax}% 이내, Stage 2, 유동성(${market === 'US' ? '시총 10억 달러 이상' : '20일 평균 거래대금 50억 원 이상'}). 핵심은 RS ${pol.rsCore} 이상.`),
-    n('p', `선도주 출현: FTD 뒤 ${pol.emergenceWindow}거래일 안에 RS ${pol.rsMin} 이상 종목이 52주 최고 종가를 50일 평균 ${pol.breakoutVolume}배 이상 거래량으로 돌파한 수. 기준 ${market === 'US' ? pol.emergenceMin?.US : pol.emergenceMin?.KR}종목 (와모 기본값).`),
+    n('p', `선도주: RS(오닐 방식) ${pol.rsMin} 이상, 52주 고점 ${pol.highDistanceMax}% 이내, Stage 2, 유동성(${({US:'시총 10억 달러 이상',KR:'20일 평균 거래대금 50억 원 이상',JP:'20일 평균 거래대금 5억 엔 이상',TW:'20일 평균 거래대금 1억 대만달러 이상'})[market]}). 핵심은 RS ${pol.rsCore} 이상.`),
+    n('p', `선도주 출현: FTD 뒤 ${pol.emergenceWindow}거래일 안에 RS ${pol.rsMin} 이상 종목이 52주 최고 종가를 50일 평균 ${pol.breakoutVolume}배 이상 거래량으로 돌파한 수. 기준 ${pol.emergenceMin?.[market] ?? pol.emergenceMin?.KR}종목 (와모 기본값).`),
     n('p', `업종: 구성 ${pol.industryMinMembers}종목 이상인 업종만. 업종 RS는 구성 종목 RS 원점수의 중간값을 업종끼리 순위화. 분류는 가격 화면의 산업 분류를 그대로 씁니다.`),
     n('p', `FTD 대기 워치리스트: 선도업종이 아닌 업종 중 6문항(${(L.watchChecks || []).map(c => c.label).join(' · ')}) 가운데 ${pol.watchScoreMin}개 이상을 채운 업종. 문항별 숫자 기준은 워치리스트 카드의 "6가지 질문" 상자에 있습니다(와모 기본값).`),
     n('p', '모든 숫자는 표시 거래일까지의 종가·거래량만으로 계산하며, 매수 권유가 아닙니다. RS·신고가는 과거 가격의 상대 비교입니다.'),

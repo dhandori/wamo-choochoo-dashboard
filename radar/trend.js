@@ -100,7 +100,7 @@ export function renderTrendMetrics(container, market) {
   add('RS선 선행 신고가', `${b.rsLeaders?.leadingCount ?? 0}`, `RS선 신고가 전체 ${b.rsLeaders?.count ?? 0}종목`);
   add('강한 경고', `${b.sellWarnings?.highCount ?? 0}`, `주의 포함 ${b.sellWarnings?.count ?? 0}종목`);
   const up = b.earnings?.upcoming || [];
-  add('실적발표 14일 내', b.earnings?.status === 'OK' ? `${b.earnings.total ?? up.length}` : '—', b.earnings?.status === 'OK' ? `추세 종목 ${up.filter(x => x.inTrend).length}` : market === 'KR' ? '한국은 미제공' : '일정 자료 대기');
+  add('실적발표 14일 내', b.earnings?.status === 'OK' ? `${b.earnings.total ?? up.length}` : '—', b.earnings?.status === 'OK' ? `추세 종목 ${up.filter(x => x.inTrend).length}` : ({KR:'한국',JP:'일본',TW:'대만'})[market] ? `${({KR:'한국',JP:'일본',TW:'대만'})[market]}은 미제공` : '일정 자료 대기');
 }
 
 // ------------------------------------------------------------ detail view

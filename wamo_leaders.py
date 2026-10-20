@@ -19,7 +19,9 @@ POLICY = {
     'minCapUsd': 1e9, 'minTradingValueKrw': 5e9, 'tradingValueDays': 20,
     'breakoutVolume': 1.5, 'breakoutLookback': 10, 'rsLeadDistance': 3,
     'heldUpWindow': 63, 'heldUpMinIndexDrawdown': 5,
-    'emergenceWindow': 10, 'emergenceMin': {'US': 10, 'KR': 5},
+    # Japan/Taiwan: average daily trading value in local currency (about 3 million dollars, like Korea's 5 billion won).
+    'minTradingValue': {'KR': 5e9, 'JP': 5e8, 'TW': 1e8},
+    'emergenceWindow': 10, 'emergenceMin': {'US': 10, 'KR': 5, 'JP': 5, 'TW': 5},
     'industryMinMembers': 3, 'industryTopPct': 80, 'industryNewHighsMin': 3,
     'industryAbove50Min': 60, 'industryPersistDays': 10, 'industryPersistMin': 5,
     'industryLookback': 20,
@@ -77,7 +79,7 @@ def _liquidity(s, market):
     if len(values) < POLICY['tradingValueDays'] * 0.8:
         return None, None
     avg = sum(values) / len(values)
-    return avg >= POLICY['minTradingValueKrw'], avg
+    return avg >= POLICY['minTradingValue'].get(market, POLICY['minTradingValueKrw']), avg
 
 
 def _ftd_anchor(ftd_indexes):

@@ -46,7 +46,8 @@ def patched():
     return [mock.patch('wamo_runtime.expected_session', lambda m, now=None: SESSION),
             mock.patch('wamo_insights.expected_session', lambda m, now=None: SESSION),
             mock.patch('wamo_insights.next_slot', lambda m, now: NOW + timedelta(days=1)),
-            mock.patch('wamo_insights.recent_sessions', lambda m, a: tuple(weekdays(55)))]
+            mock.patch('wamo_insights.recent_sessions', lambda m, a: tuple(weekdays(55))),
+            mock.patch('wamo_ftd.market_sessions', lambda m, start, end: [d for d in weekdays(400) if start <= d <= end])]
 
 
 class UniverseParsing(unittest.TestCase):
@@ -133,6 +134,37 @@ class EngineRun(unittest.TestCase):
             rs = sorted(s['rs'] for s in stored['markets']['JP']['stocks'])
             self.assertLess(rs[0], 20); self.assertGreater(rs[-1], 80)   # percentile within the market
             self.assertIn('wamo_chart_JP.json', names)
+            trend = json.loads((root / 'wamo_trend.json').read_text())
+            for market in ('JP', 'TW'):
+                t = trend['markets'][market]
+                self.assertEqual(t['asOf'], SESSION)
+                self.assertEqual(t['index']['symbol'], {'JP': '^N225', 'TW': '^TWII'}[market])
+                self.assertFalse(t['index']['synthetic'])
+                self.assertEqual(t['leadership']['status'], 'OK')
+                self.assertEqual(t['ftd']['indexes'][0]['symbol'], t['index']['symbol'])
+                self.assertIn(t['ftd']['indexes'][0]['status'], ('OK', 'UNAVAILABLE'))
+                self.assertEqual(t['earnings']['status'], 'UNAVAILABLE')
+            self.assertEqual(len(trend['markets']['JP']['ftd']['indexes']), 1)   # Japan: one index only
+            self.assertIn('wamo_trend.json', names)
+
+    def test_trend_keeps_korea_us_blocks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'wamo_trend.json').write_text(json.dumps({'markets': {'KR': {'asOf': 'x'}, 'US': {'asOf': 'y'}}}))
+            self.run_engine(root)
+            trend = json.loads((root / 'wamo_trend.json').read_text())
+            self.assertEqual(trend['markets']['KR'], {'asOf': 'x'})
+            self.assertEqual(sorted(trend['markets']), ['JP', 'KR', 'TW', 'US'])
+
+    def test_trend_failure_still_publishes_the_scan(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with mock.patch('wamo_trend.build_block', side_effect=RuntimeError('boom')):
+                names, status, failed = self.run_engine(root)
+            self.assertEqual(failed, [])
+            self.assertEqual(status['JP']['status'], 'PASS')
+            self.assertTrue((root / 'wamo_chart_JP.json').exists())
+            self.assertNotIn('wamo_trend.json', names)
 
     def test_second_run_same_session_is_skipped(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -182,3 +214,24 @@ class PublishMerge(unittest.TestCase):
             self.assertNotIn('TW', snap['markets'])
             (root / asia.MARKETS_FILE).write_text(json.dumps({'markets': {'JP': dict(block, asOf=SESSION)}}))
             self.assertEqual(self.collect(root)['markets']['JP']['status'], 'CURRENT')  # fresh hand-off wins
+
+
+class UnscheduledClosure(unittest.TestCase):
+    """Taiwan shut on 2026-07-10 for Typhoon Bavi; the exchange calendar still lists it."""
+    def test_day_without_any_trading_is_not_a_missing_index_day(self):
+        import wamo_ftd
+        days = weekdays(300)
+        typhoon = days[200]
+        rows = [r for r in rows_for(0.001, 300) if r['date'] != typhoon]
+        with mock.patch('wamo_ftd.market_sessions', lambda m, start, end: [d for d in days if start <= d <= end]):
+            strict = wamo_ftd.for_market(rows, 'TW', SESSION, expected=SESSION)
+            self.assertEqual(strict['status'], 'UNAVAILABLE')            # old behaviour: gap = missing data
+            traded = set(days) - {typhoon}
+            ok = wamo_ftd.for_market(rows, 'TW', SESSION, expected=SESSION, traded=traded)
+            self.assertEqual(ok['status'], 'OK')
+            self.assertEqual(ok['unscheduledClosures'], [typhoon])
+            # a day stocks traded but the index lacks is still a real gap
+            gap = days[150]
+            holey = [r for r in rows if r['date'] != gap]
+            self.assertEqual(wamo_ftd.for_market(holey, 'TW', SESSION, expected=SESSION, traded=traded)['status'], 'UNAVAILABLE')
+

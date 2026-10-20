@@ -1,8 +1,8 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261020-asia1';
-import { renderLeaders, leadersSummary } from './leaders.js?v=20261020-asia1';
-import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261020-asia2';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261020-asia5';
+import { renderLeaders, leadersSummary } from './leaders.js?v=20261020-asia6';
+import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261020-asia5';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261020-asia1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261020-asia1';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261020-asia5';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261019-2';
 import { renderSchedule } from './schedule.js?v=20261020-asia1';
 import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261020-asia1';
@@ -45,7 +45,7 @@ const params = new URLSearchParams(location.search);
 // Japan/Taiwan are Lite markets: price screens only (no trend/FTD/leaders/AI tabs yet).
 const MARKET_NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const LITE = new Set(['JP', 'TW']);
-const LITE_OFF = new Set(['ai', 'trend', 'ftd', 'leaders']);
+const LITE_OFF = new Set();   // every tab now works for Japan/Taiwan too
 const CURRENCY = { KR: ['₩', '원', 0], US: ['$', '달러', 2], JP: ['¥', '엔', 0], TW: ['NT$', '대만달러', 2] };
 const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'near' };
 let snapshot = null, refreshFailed = false, refreshing = false;
@@ -582,11 +582,11 @@ function render() {
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
   document.body.dataset.view = state.tab;
-  renderMeta(m); if (LITE.has(state.market)) $('weather').hidden = true; else renderWeather($('weather'), state.market, openTrend); paintSchedule();
+  renderMeta(m); renderWeather($('weather'), state.market, openTrend); paintSchedule();
   const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd','leaders'].includes(state.tab);
   if (['trend','ftd','leaders'].includes(state.tab)) { renderTrendTab(); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
-  const labels = { near: ['52주 신고가권', '252거래일 고점에 가까운 종목 · 당일 경신은 별도 탭에서 확인'], high: ['당일 신고가', '표시된 거래일에 이전 251개 관측치 고점을 실제로 넘긴 종목'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망과 서비스의 흐름 · 상승·하락 모두 포함 · 한국/미국 전환 가능'] };
+  const labels = { near: ['52주 신고가권', '252거래일 고점에 가까운 종목 · 당일 경신은 별도 탭에서 확인'], high: ['당일 신고가', '표시된 거래일에 이전 251개 관측치 고점을 실제로 넘긴 종목'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망과 서비스의 흐름 · 상승·하락 모두 포함 · 위쪽 버튼으로 시장 전환'] };
   $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();
   if (state.tab === 'industries' && !state.industry) {
@@ -649,7 +649,7 @@ function renderTrendTab() {
   renderTrend($('content'), state.market, { openStock: openStockById, onSubtab: syncUrl });
 }
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
-  const tab=['ai','trend','ftd','leaders'].includes(state.tab)&&!LITE.has(b.dataset.market)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
+  const tab=['ai','trend','ftd','leaders'].includes(state.tab)&&!LITE_OFF.has(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
   Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod,aiView }); loadSort(state.market); $('search').value = '';
   syncUrl(); render();
 });
