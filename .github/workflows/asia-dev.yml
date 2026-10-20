@@ -21,6 +21,19 @@ jobs:
           python -m unittest tests.test_asia tests.test_trend tests.test_leaders tests.test_ftd 2> ut.txt || true
           tail -1 ut.txt | sed 's/^/::notice::unittest /'
           grep -E '^(FAIL|ERROR):' ut.txt | head -20 | sed 's/^/::error::/' || true
+      - name: 지수 날짜와 거래소 달력 비교
+        run: |
+          python - <<'PY'
+          from wamo_trend import fetch_index
+          from wamo_ftd import market_sessions
+          for m, sym in (('JP', '^N225'), ('TW', '^TWII')):
+              rows = fetch_index(sym)
+              have = [r['date'] for r in rows]
+              cal = market_sessions(m, have[0], have[-1])
+              print(f"::notice::{sym} 야후 {len(have)} 달력 {len(cal)} 야후에만 {sorted(set(have)-set(cal))} 달력에만 {sorted(set(cal)-set(have))}")
+              bad = [r['date'] for r in rows if not (r.get('volume') and r.get('high') and r.get('low'))]
+              print(f"::notice::{sym} 거래량·고저 빠진 날 {bad[:20]}")
+          PY
       - name: 실제 일본·대만 자료로 엔진 실행 (게시 안 함)
         run: |
           python -u wamo_asia.py --force > run.txt 2>&1 || true

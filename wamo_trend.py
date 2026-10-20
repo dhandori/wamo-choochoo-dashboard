@@ -28,8 +28,8 @@ EARNINGS_CACHE = 'wamo_earnings_cache.json'
 PAGES = {'KR': 'index.html', 'US': 'us.html'}
 INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500'), 'JP': ('^N225', '닛케이 225'), 'TW': ('^TWII', '대만 가권')}
 # Growth-heavy second index: market weather needs both (O'Neil watches both).
-# Japan has no free daily TOPIX/Growth index with volume on Yahoo, so it runs on one index.
-SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥'), 'TW': ('^TWOII', '대만 장외(TPEx)')}
+# Japan/Taiwan: Yahoo has no free second index with volume (TOPIX, TPEx), so they run on one index.
+SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥')}
 EARNINGS_NOTE = {
     'KR': '한국은 실적발표 예정일을 한곳에서 공식으로 모아 주는 자료가 없어 아직 표시하지 않아요. 공시(DART) 탭에서 확인하세요.',
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
