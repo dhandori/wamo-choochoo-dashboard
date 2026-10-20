@@ -1,73 +1,73 @@
-"""일본·대만 시세 출처 점검 (GitHub 서버에서 1회 실행). 결과는 실행 요약 알림으로만 남긴다."""
+"""일본·대만 종목 목록·업종·시가총액 출처 점검 (GitHub 서버 1회 실행). 결과는 실행 요약 알림으로만 남긴다."""
 import json
+import re
 import time
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
 
-UA = {'User-Agent': 'Mozilla/5.0 (WAMO asia probe)', 'Accept': 'application/json,text/plain,*/*'}
+UA = {'User-Agent': 'Mozilla/5.0 (WAMO asia probe)', 'Accept': 'application/json,text/html,*/*'}
 
 
 def note(level, text):
-    print(f'::{level}::{text}', flush=True)
+    print(f'::{level}::{text[:3500]}', flush=True)
 
 
-def get(url, timeout=25):
-    t = time.time()
+def get(url, timeout=30):
     try:
         with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
-            body = r.read()
-            return r.status, body, time.time() - t
+            return r.status, r.read()
     except urllib.error.HTTPError as e:
-        return e.code, b'', time.time() - t
+        return e.code, b''
     except Exception as e:  # noqa: BLE001
-        return type(e).__name__, b'', time.time() - t
+        return type(e).__name__, b''
 
 
-def yahoo(sym):
-    now = int(time.time())
-    code, body, dt = get(f'https://query1.finance.yahoo.com/v8/finance/chart/{sym}?period1={now - 400 * 86400}&period2={now + 86400}&interval=1d')
-    rows = 0
+# 대만 상장사 기본정보 · 당일시세 필드
+for label, url in [('TWSE 기본정보', 'https://openapi.twse.com.tw/v1/opendata/t187ap03_L'),
+                   ('TWSE 당일시세', 'https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL'),
+                   ('TWSE 업종별 시가총액', 'https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL')]:
+    code, body = get(url)
+    if code == 200:
+        data = json.loads(body)
+        tsmc = next((x for x in data if any(str(v) == '2330' for v in x.values())), data[0])
+        note('notice', f'{label}: {len(data)}개 · 2330 = {json.dumps(tsmc, ensure_ascii=False)}')
+    else:
+        note('error', f'{label}: HTTP {code}')
+
+# 대만 장외(TPEx) 종목 목록 - TWSE ISIN 사이트 (big5)
+code, body = get('https://isin.twse.com.tw/isin/C_public.jsp?strMode=4', timeout=40)
+text = body.decode('big5', 'replace') if body else ''
+rows = re.findall(r'<td bgcolor=#FAFAD2>(\d{4})　([^<]+)</td>', text)
+note('notice', f'TPEx 목록(ISIN): HTTP {code} · {len(body)} bytes · 4자리 종목 {len(rows)}개 · 예 {rows[:5]}')
+for url in ['https://www.tpex.org.tw/web/stock/aftertrading/daily_close_quotes/stk_quote_result.php?l=zh-tw&o=json',
+            'https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes']:
+    code, body = get(url)
+    note('notice', f'TPEx 다른 주소 {url[:70]}: HTTP {code} · {len(body)} bytes')
+
+# 일본 종목 목록
+code, body = get('https://www.jpx.co.jp/markets/statistics-equities/misc/01.html')
+links = re.findall(r'href="([^"]+data_j\.xls[^"]*)"', body.decode('utf-8', 'replace')) if body else []
+note('notice', f'JPX 목록 안내 페이지: HTTP {code} · 파일 링크 {links}')
+if links:
+    link = links[0] if links[0].startswith('http') else 'https://www.jpx.co.jp' + links[0]
+    code, body = get(link, timeout=60)
+    note('notice', f'JPX 목록 파일: HTTP {code} · {len(body)} bytes · 앞부분 {body[:8]!r}')
+
+# 네이버 해외주식 (일본)
+code, body = get('https://api.stock.naver.com/stock/7203.T/basic')
+if code == 200:
+    d = json.loads(body)
+    note('notice', '네이버 7203.T 필드: ' + json.dumps({k: (v if not isinstance(v, (list, dict)) else type(v).__name__) for k, v in d.items()}, ensure_ascii=False))
+for url in ['https://api.stock.naver.com/stock/exchange/TYO/marketValue?page=1&pageSize=5',
+            'https://api.stock.naver.com/stock/exchange/TSE/marketValue?page=1&pageSize=5',
+            'https://api.stock.naver.com/stock/exchange/TAI/marketValue?page=1&pageSize=5',
+            'https://api.stock.naver.com/stock/exchange/TWO/marketValue?page=1&pageSize=5']:
+    code, body = get(url)
+    sample = ''
     if code == 200:
         try:
-            rows = len(json.loads(body)['chart']['result'][0]['timestamp'])
-        except Exception:  # noqa: BLE001
-            rows = -1
-    return sym, code, rows, round(dt, 2)
-
-
-JP = '7203 6758 8306 9984 6861 8035 9983 4063 6501 7974 8058 6098 4519 8316 6902 7741 6367 9432 8001 4568 6981 7267 6273 6594 8766 4502 6503 2914 6954 7751 5108 8411 4901 6702 6762 3382 9433 8031 6857 6146'.split()
-TW = '2330 2317 2454 2308 2382 3711 2412 2881 2882 1303 2891 2303 2886 3008 2357 1216 2002 2884 3045 5880 2892 2885 1301 2207 3034 2379 2395 6669 3231 2327 3017 2345 4938 2603 1326 2880 2912 6505 3661 2301'.split()
-
-# 1) 한 종목씩 (야후)
-for sym in ('7203.T', '2330.TW', '6488.TWO'):
-    s, code, rows, dt = yahoo(sym)
-    note('notice', f'야후 {s}: HTTP {code} · 일봉 {rows}개 · {dt}초')
-
-# 2) 몰아서 받기: 일본 40 + 대만 40, 동시 8개
-t0 = time.time()
-with ThreadPoolExecutor(8) as pool:
-    res = list(pool.map(yahoo, [s + '.T' for s in JP] + [s + '.TW' for s in TW]))
-ok = sum(1 for r in res if r[1] == 200 and r[2] > 200)
-codes = {}
-for r in res:
-    codes[str(r[1])] = codes.get(str(r[1]), 0) + 1
-note('notice', f'야후 80종목 연속: 성공 {ok}/80 · 응답 {codes} · {round(time.time() - t0, 1)}초')
-
-# 3) 거래소 공식 일괄 자료
-for label, url in [
-    ('대만 TWSE 전종목 당일시세', 'https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL'),
-    ('대만 TWSE 상장사 기본정보', 'https://openapi.twse.com.tw/v1/opendata/t187ap03_L'),
-    ('대만 TPEx 장외 전종목 시세', 'https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes'),
-    ('일본 JPX 상장종목 목록(xls)', 'https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls'),
-    ('네이버 해외 7203.T', 'https://api.stock.naver.com/stock/7203.T/basic'),
-    ('네이버 해외 2330.TW', 'https://api.stock.naver.com/stock/2330.TW/basic'),
-]:
-    code, body, dt = get(url, timeout=40)
-    extra = ''
-    if code == 200 and body[:1] in (b'[', b'{'):
-        try:
-            data = json.loads(body)
-            extra = f' · 항목 {len(data)}개'
-        except Exception:  # noqa: BLE001
-            pass
-    note('notice', f'{label}: HTTP {code} · {len(body)} bytes{extra} · {round(dt, 1)}초')
+            d = json.loads(body)
+            stocks = d.get('stocks') if isinstance(d, dict) else d
+            sample = f" · 전체 {d.get('totalCount') if isinstance(d, dict) else '?'} · 첫 종목 {json.dumps(stocks[0], ensure_ascii=False)[:900] if stocks else '-'}"
+        except Exception as e:  # noqa: BLE001
+            sample = f' · 해석 실패 {e}'
+    note('notice', f'네이버 순위 {url.split("/exchange/")[1][:30]}: HTTP {code}{sample}')
