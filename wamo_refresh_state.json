@@ -8,11 +8,9 @@
     "missingCount": 0
   },
   "US": {
-    "slot": "2026-10-19T20:20:00+00:00",
+    "slot": "2026-10-20T20:20:00+00:00",
     "attempts": 1,
-    "success": true,
-    "lastAttemptAt": "2026-10-19T22:30:25.459428+00:00",
-    "lastFullSlot": "2026-10-19T20:20:00+00:00",
-    "missingCount": 0
+    "success": false,
+    "lastAttemptAt": "2026-10-20T21:50:42.814909+00:00"
   }
 }
