@@ -387,3 +387,13 @@ table { font-size: 13px; }
   .industry-rail .rail-group .flow-status:not(.confirmed) { display: none; }
   .industry-rail > button:last-child { font-size: 12px; }
 }
+/* Japan/Taiwan: tabs not offered yet stay visible but greyed out with a reason on hover */
+.tabs button.tab-off { opacity: .38; cursor: not-allowed; }
+.tabs button.tab-off .tab-count { visibility: hidden; }
+.market-switch { flex-wrap: wrap; }
+@media (max-width: 760px) { .market-switch button { padding-left: 10px; padding-right: 10px; } }
+@media (max-width: 760px) {
+  .topbar { flex-wrap: wrap; row-gap: 10px; }
+  .market-switch { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .market-switch button { padding: 8px 4px; font-size: 13px; }
+}

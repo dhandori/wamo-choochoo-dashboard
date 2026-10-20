@@ -1,11 +1,11 @@
 import { renderFTD, ftdSummary } from './ftd.js?v=20261019-3';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261019-2';
-import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261019-6';
+import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261020-asia2';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261019-1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261019-ui1';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261020-asia1';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261019-2';
-import { renderSchedule } from './schedule.js?v=20261019-1';
-import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261019-ui1';
+import { renderSchedule } from './schedule.js?v=20261020-asia1';
+import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261020-asia1';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
 let cardObserver = null;
@@ -42,7 +42,12 @@ const PERIODS={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','med
 const CHANGE_LABELS={near:'신고가권 진입',rs:'RS 80 돌파',stage:'Stage 2 진입'};
 const EXIT_LABELS={near:'신고가권 이탈',rs:'RS 80 하회',stage:'Stage 2 이탈'};
 const params = new URLSearchParams(location.search);
-const state = { ...defaults, market: params.get('market') === 'US' ? 'US' : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'near' };
+// Japan/Taiwan are Lite markets: price screens only (no trend/FTD/leaders/AI tabs yet).
+const MARKET_NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
+const LITE = new Set(['JP', 'TW']);
+const LITE_OFF = new Set(['ai', 'trend', 'ftd', 'leaders']);
+const CURRENCY = { KR: ['₩', '원', 0], US: ['$', '달러', 2], JP: ['¥', '엔', 0], TW: ['NT$', '대만달러', 2] };
+const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'near' };
 let snapshot = null, refreshFailed = false, refreshing = false;
 // Sort settings (cap floor, 1st/2nd key) are remembered per market in this browser.
 const SORT_STORE='wamo-sort-v1';
@@ -55,17 +60,17 @@ const pct = n => numeric(n) ? `${n > 0 ? '+' : ''}${fmt(n)}%` : '—';
 const tone = n => n > 0 ? 'up' : n < 0 ? 'down' : 'neutral';
 const distance = s => numeric(s.highDistancePct) ? `${fmt(s.highDistancePct)}%` : '—';
 const volume = s => numeric(s.volumeRatio) ? `${fmt(s.volumeRatio, 2)}×` : '—';
-const price = s => `${s.market === 'KR' ? '₩' : '$'}${fmt(s.close, s.market === 'KR' ? 0 : 2)}`;
-const capCurrency = () => state.market === 'KR' ? '원' : '달러';
+const price = s => { const [sym, , d] = CURRENCY[s.market] || CURRENCY.US; return `${sym}${fmt(s.close, s.market === 'JP' && !Number.isInteger(s.close) ? 1 : d)}`; };
+const capCurrency = () => (CURRENCY[state.market] || CURRENCY.US)[1];
 function marketCap(s, withCurrency = false) {
   const cap = s.marketCap;
   if (!numeric(cap) || cap <= 0) return '미제공';
   const unit = cap >= 1e12 ? [1e12, '조'] : cap >= 1e8 ? [1e8, '억'] : cap >= 1e4 ? [1e4, '만'] : [1, ''];
-  return `${fmt(cap / unit[0], unit[0] === 1 ? 0 : 2)}${unit[1]}${withCurrency ? (s.market === 'KR' ? ' 원' : ' 달러') : ''}`;
+  return `${fmt(cap / unit[0], unit[0] === 1 ? 0 : 2)}${unit[1]}${withCurrency ? ' ' + (CURRENCY[s.market] || CURRENCY.US)[1] : ''}`;
 }
 function capNode(s, tag = 'span') {
   const node = el(tag, marketCap(s), 'market-cap');
-  node.title = numeric(s.marketCap) && s.marketCap > 0 ? `${fmt(s.marketCap, 0)} ${s.market === 'KR' ? '원' : '달러'}` : '시가총액 미제공';
+  node.title = numeric(s.marketCap) && s.marketCap > 0 ? `${fmt(s.marketCap, 0)} ${(CURRENCY[s.market] || CURRENCY.US)[1]}` : '시가총액 미제공';
   return node;
 }
 
@@ -378,7 +383,7 @@ function sortPanel(){
     opts.forEach(([value,text])=>{const o=el('option',text);o.value=value;o.selected=state[key]===value;sel.append(o);});
     sel.onchange=()=>change(key,sel.value);wrap.append(sel);return wrap;};
   const keys=el('div',null,'sort-row sort-keys');keys.append(pick('sort','정렬',false),pick('sort2','같으면',true));
-  const big=state.market==='KR'?1e12:1e10;
+  const big={KR:1e12,US:1e10,JP:1e12,TW:1e11}[state.market];
   const presets=[[`대형주 중 RS 강한 순`,{minCap:big,sort:'rs',sort2:'highDistancePct'}],['RS 강한 순 → 신고가 가까운 순',{minCap:0,sort:'rs',sort2:'highDistancePct'}],['신고가 가까운 순 → RS',{minCap:0,sort:'highDistancePct',sort2:'rs'}]];
   const preset=el('label',null,'sort-pick sort-presets');preset.append(el('span','빠른 설정','sort-step'));
   const psel=el('select');psel.setAttribute('aria-label','빠른 설정');
@@ -509,7 +514,7 @@ function renderMeta(m) {
   if (refreshFailed) messages.push('가격 파일을 다시 확인하지 못해 마지막 검증 데이터를 유지합니다.');
   $('notice').hidden = messages.length === 0; $('notice').textContent = messages.join(' ');
   $('date-info').replaceChildren(el('span', `${m.asOf || '미제공'} 거래일 종가`, 'session-date'), el('span', ({ CURRENT: '최신 거래일', PARTIAL: '일부 제외', STALE: '지난 거래일', UNAVAILABLE: '데이터 없음' })[status], `badge status-${status.toLowerCase()}`));
-  const refreshButton = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); refreshButton.className = 'refresh-button'; refreshButton.disabled = refreshing; $('date-info').append(refreshButton, runnerButton(state.market));
+  const refreshButton = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); refreshButton.className = 'refresh-button'; refreshButton.disabled = refreshing; $('date-info').append(refreshButton); if (!LITE.has(state.market)) $('date-info').append(runnerButton(state.market));
   const near = m.stocks.filter(s => numeric(s.highDistancePct) && s.highDistancePct <= 10), highs = m.stocks.filter(s => s.intradayHigh52 === true || s.closeHigh52 === true);
   const groups = m.industries.filter(g => g.confirmed), moves = selectStocks(m, { tab: 'movers' });
   const ai=aiOverview(m,state.market).total;
@@ -562,11 +567,21 @@ function render() {
     $('content').replaceChildren(el('div', '검증된 가격 데이터를 불러오는 중입니다.', 'empty'));
     const retry = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); retry.className = 'refresh-button'; $('date-info').replaceChildren(retry); return;
   }
+  if (LITE.has(state.market) && LITE_OFF.has(state.tab)) state.tab = 'near';
   const m = snapshot.markets[state.market];
+  document.querySelectorAll('[data-tab]').forEach(b => { const off = LITE.has(state.market) && LITE_OFF.has(b.dataset.tab); b.disabled = off; b.classList.toggle('tab-off', off); b.title = off ? `${MARKET_NAMES[state.market]}은 아직 이 탭을 제공하지 않아요 (신고가권·당일 신고가·인더스트리 액션·특징주만)` : b.title; });
+  if (!m) {
+    document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
+    $('weather').hidden = true; $('metrics').replaceChildren(); $('controls').replaceChildren(); $('industry-rail').hidden = true; $('pagination').replaceChildren(); $('result-summary').textContent = '';
+    $('date-info').replaceChildren(el('span', '자료 준비 중', 'badge status-unavailable'));
+    $('section-title').textContent = `${MARKET_NAMES[state.market]} 시장`; $('section-description').textContent = '';
+    $('content').replaceChildren(el('div', `${MARKET_NAMES[state.market]} 자료는 평일 오후 4시 40분 첫 자동 갱신 뒤부터 보여요. 그 전에는 다른 시장을 확인해 주세요.`, 'empty'));
+    paintSchedule(); return;
+  }
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
   document.body.dataset.view = state.tab;
-  renderMeta(m); renderWeather($('weather'), state.market, openTrend); paintSchedule();
+  renderMeta(m); if (LITE.has(state.market)) $('weather').hidden = true; else renderWeather($('weather'), state.market, openTrend); paintSchedule();
   const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd','leaders'].includes(state.tab);
   if (['trend','ftd','leaders'].includes(state.tab)) { renderTrendTab(); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
@@ -633,11 +648,12 @@ function renderTrendTab() {
   renderTrend($('content'), state.market, { openStock: openStockById, onSubtab: syncUrl });
 }
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
-  const tab=['ai','trend','ftd','leaders'].includes(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
+  const tab=['ai','trend','ftd','leaders'].includes(state.tab)&&!LITE.has(b.dataset.market)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
   Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod,aiView }); loadSort(state.market); $('search').value = '';
   syncUrl(); render();
 });
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
+  if (b.disabled) return;
   if (b.dataset.tab === 'trend' && state.tab !== 'trend') setSubtab('weather');
   Object.assign(state, { tab: b.dataset.tab, rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1 }); $('search').value = '';syncUrl(); render();
   keepTabsInView();
@@ -672,7 +688,7 @@ initRunner({ done: async () => { await refresh(); await loadTrend(true); render(
   marketStatus: market => snapshot?.markets?.[market] ? marketStatus(snapshot.markets[market]) : null,
   statusChanged: () => paintSchedule() });
 function paintSchedule() {
-  renderSchedule($('schedule'), getRefreshStatus(), trendBlock, state.market);
+  renderSchedule($('schedule'), getRefreshStatus(), trendBlock, state.market, snapshot);
   // Summary line stays useful when the box is folded: show any run in progress.
   const wrap = $('schedule-wrap'), sum = wrap?.querySelector('summary'), st = getRefreshStatus() || {};
   const busy = ['KR','US'].filter(k => ['RUNNING'].includes(st[k]?.status) || st[k]?.moversStatus === 'RUNNING' || st[k]?.radarStatus === 'RUNNING');

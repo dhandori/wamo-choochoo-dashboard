@@ -1,0 +1,51 @@
+name: 일본·대만 개발 검증 (작업 갈래 전용)
+on:
+  push:
+    branches: ['codex/asia-markets']
+permissions:
+  contents: write
+jobs:
+  check:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: 단위 검사 (실패는 요약 알림으로)
+        run: |
+          python -m unittest discover -s tests 2> ut.txt || true
+          tail -1 ut.txt | sed 's/^/::notice::unittest /'
+          grep -E '^(FAIL|ERROR):' ut.txt | head -20 | sed 's/^/::error::/' || true
+          grep -E 'Error:|AssertionError' ut.txt | head -20 | sed 's/^/::warning::/' || true
+          node --test --test-isolation=none tests/discovery.test.mjs tests/status.test.mjs tests/insights.test.mjs tests/ai.test.mjs tests/ftd.test.mjs > nt.txt 2>&1 || true
+          grep -E '^# (pass|fail)|^not ok' nt.txt | sed 's/^/::notice::node /'
+      - name: 실제 일본·대만 자료로 엔진 실행 (게시 안 함)
+        run: |
+          python -u wamo_asia.py --force > run.txt 2>&1 || true
+          sed 's/^/::notice::/' run.txt | tail -20
+          python - <<'PY'
+          import json
+          m = json.load(open('wamo_asia_markets.json'))['markets']
+          for k, b in m.items():
+              s = sorted(b['stocks'], key=lambda x: -(x.get('marketCap') or 0))[:5]
+              print(f"::notice::{k} {b['status']} {b['asOf']} 종목 {len(b['stocks'])} 업종 {len(b['industries'])} · 상위 " + ' / '.join(f"{x['name']} {x['close']} RS{x['rs']} 시총{(x.get('marketCap') or 0)/1e12:.1f}조" for x in s))
+          st = json.load(open('wamo_asia_status.json'))
+          print('::notice::상태 ' + json.dumps(st, ensure_ascii=False)[:1500])
+          u = json.load(open('wamo_asia_universe.json'))
+          print('::notice::목록 ' + json.dumps({k: v.get('info') for k, v in u.items()}, ensure_ascii=False)[:1500])
+          PY
+          ls -la wamo_asia_*.json wamo_chart_JP.json wamo_chart_TW.json | sed 's/^/::notice::/'
+      - name: 결과를 작업 갈래에 저장 (검토용)
+        run: |
+          git config user.name 'wamo-dashboard-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f wamo_asia_markets.json wamo_asia_status.json wamo_asia_universe.json wamo_chart_JP.json wamo_chart_TW.json run.txt ut.txt || true
+          git commit -m "asia dev outputs [skip ci]" && git push origin HEAD:codex/asia-markets || true

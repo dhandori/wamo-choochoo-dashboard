@@ -5,7 +5,8 @@
 .schedule-wrap[open] > summary { font-size: 13px; font-weight: 700; color: #d6e3f2; }
 .schedule { margin-top: 8px; }
 .sched-hint { margin: 0 0 10px; font-size: 11px; color: #7f97b2; }
-.sched-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sched-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 1100px) { .sched-grid { grid-template-columns: 1fr 1fr; } }
 .sched-card { border: 1px solid #23374e; border-radius: 10px; background: #101f31; padding: 12px 13px; }
 .sched-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .sched-head strong { font-size: 15px; color: #edf4fb; }
