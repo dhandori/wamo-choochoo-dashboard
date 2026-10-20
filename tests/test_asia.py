@@ -214,3 +214,24 @@ class PublishMerge(unittest.TestCase):
             self.assertNotIn('TW', snap['markets'])
             (root / asia.MARKETS_FILE).write_text(json.dumps({'markets': {'JP': dict(block, asOf=SESSION)}}))
             self.assertEqual(self.collect(root)['markets']['JP']['status'], 'CURRENT')  # fresh hand-off wins
+
+
+class UnscheduledClosure(unittest.TestCase):
+    """Taiwan shut on 2026-07-10 for Typhoon Bavi; the exchange calendar still lists it."""
+    def test_day_without_any_trading_is_not_a_missing_index_day(self):
+        import wamo_ftd
+        days = weekdays(300)
+        typhoon = days[200]
+        rows = [r for r in rows_for(0.001, 300) if r['date'] != typhoon]
+        with mock.patch('wamo_ftd.market_sessions', lambda m, start, end: [d for d in days if start <= d <= end]):
+            strict = wamo_ftd.for_market(rows, 'TW', SESSION, expected=SESSION)
+            self.assertEqual(strict['status'], 'UNAVAILABLE')            # old behaviour: gap = missing data
+            traded = set(days) - {typhoon}
+            ok = wamo_ftd.for_market(rows, 'TW', SESSION, expected=SESSION, traded=traded)
+            self.assertEqual(ok['status'], 'OK')
+            self.assertEqual(ok['unscheduledClosures'], [typhoon])
+            # a day stocks traded but the index lacks is still a real gap
+            gap = days[150]
+            holey = [r for r in rows if r['date'] != gap]
+            self.assertEqual(wamo_ftd.for_market(holey, 'TW', SESSION, expected=SESSION, traded=traded)['status'], 'UNAVAILABLE')
+

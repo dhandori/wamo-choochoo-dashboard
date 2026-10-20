@@ -904,6 +904,14 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     from wamo_ftd import for_market, merge_history, valid_num, fetch_naver_index, repair_korean_history
     from wamo_runtime import expected_session
     expected = expected_session(market)
+    traded = None
+    if market not in ('KR', 'US'):
+        # Days on which at least half the screened stocks traded; typhoon/emergency closures drop out.
+        counts = {}
+        for s in universe:
+            for r in s['rows']:
+                counts[r['date']] = counts.get(r['date'], 0) + 1
+        traded = {d for d, n in counts.items() if n >= len(universe) * 0.5}
     ftd_indexes = []
     ftd_history = read_json(root / "wamo_ftd_history.json", {})
     pairs = [(symbol, label, bench, synthetic)]
@@ -920,7 +928,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
                 except Exception as exc:
                     print(f'{sym} FTD 보완 자료 검증 실패: {type(exc).__name__}', flush=True)
         combined = merge_history(raw or [], ftd_history.get(sym, [])) if not is_synthetic else raw
-        signal = for_market(combined or [], market, asof, synthetic=is_synthetic, expected=expected)
+        signal = for_market(combined or [], market, asof, synthetic=is_synthetic, expected=expected, traded=traded)
         if signal["status"] == "OK":
             ftd_history[sym] = [r for r in combined if r["date"] <= asof]
         signal.update(symbol=sym, label=name, source='Yahoo Finance ' + sym,

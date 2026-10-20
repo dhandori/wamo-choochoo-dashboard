@@ -170,8 +170,13 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
     return result
 
 
-def for_market(rows, market, asof, *, synthetic=False, expected=None):
-    """Validate actual exchange sessions before counting Day 1, 2, 3, 4."""
+def for_market(rows, market, asof, *, synthetic=False, expected=None, traded=None):
+    """Validate actual exchange sessions before counting Day 1, 2, 3, 4.
+
+    traded: dates on which most screened stocks actually traded. When given (Japan/Taiwan),
+    a calendar session with no trading at all is an unscheduled closure (e.g. Taiwan shut
+    on 2026-07-10 for Typhoon Bavi) and is not counted as a missing index day.
+    """
     sessions=None
     if rows and not synthetic:
         try:
@@ -179,7 +184,15 @@ def for_market(rows, market, asof, *, synthetic=False, expected=None):
         except (ValueError, KeyError, TypeError):
             return {'status':'UNAVAILABLE','phase':'UNAVAILABLE','asOf':asof,'expectedSession':expected,
                     'policy':POLICY,'note':'거래일 달력 범위를 확인할 수 없습니다.','events':[],'series':[]}
-    return analyze(rows,asof=asof,expected=expected,synthetic=synthetic,sessions=sessions)
+    closed=[]
+    if sessions is not None and traded is not None:
+        first=min(traded) if traded else asof   # only judge days the stock histories cover
+        closed=[d for d in sessions if d not in traded and first<=d<asof]
+        sessions=[d for d in sessions if d not in closed]
+    result=analyze(rows,asof=asof,expected=expected,synthetic=synthetic,sessions=sessions)
+    if closed:
+        result['unscheduledClosures']=closed
+    return result
 
 
 def merge_history(current, stored):
