@@ -310,7 +310,10 @@ def run(markets=('JP', 'TW'), root=ROOT, now=None, force=False, fetch=None, inde
     import wamo_insights as insights
     from wamo_runtime import expected_session
     now = now or datetime.now(timezone.utc)
-    stored = read_json(root / MARKETS_FILE, {'schemaVersion': 1, 'markets': {}})
+    # The radar file already holds the last published JP/TW blocks; MARKETS_FILE is only a
+    # hand-off to wamo_publish_insights within this run (not committed, saves repo space).
+    stored = read_json(root / MARKETS_FILE, None) or {'schemaVersion': 1, 'markets': {
+        m: b for m, b in (read_json(root / 'wamo_insights.json', {}).get('markets') or {}).items() if m in MARKETS}}
     status = read_json(root / STATUS_FILE, {})
     changed, failed = [], []
     for market in markets:
@@ -346,7 +349,7 @@ def run(markets=('JP', 'TW'), root=ROOT, now=None, force=False, fetch=None, inde
             write_json(root / f'wamo_chart_{market}.json', chart_file(market, payload, bench, expected))
             entry.update(status='PASS' if block.get('status') == 'CURRENT' else 'WARNING', lastSuccessAt=now.isoformat(),
                          asOf=block.get('asOf'), count=ok, universe=len(items), failed=len(errors), error=None)
-            changed += [MARKETS_FILE, f'wamo_chart_{market}.json'] + ([UNIVERSE_FILE] if rebuilt else [])
+            changed += [f'wamo_chart_{market}.json'] + ([UNIVERSE_FILE] if rebuilt else [])
         except Exception as exc:  # noqa: BLE001 - keep the previous block, record the failure
             print(f'{market} 갱신 실패 · 이전 결과 유지: {type(exc).__name__}: {exc}', flush=True)
             entry.update(status='FAILED', error=str(exc)[:300])

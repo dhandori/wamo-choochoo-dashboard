@@ -13,12 +13,21 @@ class Quiet(SimpleHTTPRequestHandler):
 server=ThreadingHTTPServer(('127.0.0.1',0),partial(Quiet,directory=str(ROOT)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
 base=f'http://127.0.0.1:{server.server_port}'
+import re as _re
+# One card per AI sector plus the 'AI 전체' card; read the list instead of hard-coding it.
+AI_CARDS=len(_re.findall(r"\{id:'[a-z]+',name:", (ROOT/'radar/ai.mjs').read_text()))+1
 def check_help_bounds(page):
     box=page.get_by_role('tooltip').bounding_box()
     assert box and box['x']>=0 and box['y']>=0,box
     assert box['x']+box['width']<=page.viewport_size['width'],box
     assert box['y']+box['height']<=page.viewport_size['height'],box
     assert page.get_by_role('tooltip').evaluate('(e)=>e.contains(document.elementFromPoint(e.getBoundingClientRect().x+e.clientWidth/2,e.getBoundingClientRect().y+e.clientHeight/2))')
+
+def sort_box(page):
+    # The sort/cap panel folds into one summary line (closed by default on phones).
+    fold=page.locator('.sort-fold')
+    if fold.count() and not fold.evaluate('(n)=>n.open'):fold.locator('summary').click()
+    return page.get_by_role('combobox',name='정렬',exact=True)
 
 with sync_playwright() as p:
     browser=p.chromium.launch()
@@ -31,6 +40,9 @@ with sync_playwright() as p:
             page.goto(f'{base}/radar.html?market={market}',wait_until='networkidle')
             expect(page.locator('#date-info')).to_contain_text(DATA['markets'][market]['asOf'])
             expect(page.locator('#section-title')).to_have_text('52주 신고가권')
+            # The 2026-10-19 layout puts the filters low on phones; bring them up first so the
+            # tool's own scroll-into-view (which closes help by design) does not interfere.
+            page.locator('#controls').evaluate('(n)=>n.scrollIntoView({block:"center"})'); page.wait_for_timeout(150)
             rs_help=page.locator('#controls [data-help=rs]')
             if width==1440:
                 rs_help.hover();expect(page.get_by_role('tooltip')).to_contain_text('RSI')
@@ -79,7 +91,7 @@ with sync_playwright() as p:
                 page.locator('#close-drawer').click()
                 currency='원' if market=='KR' else '달러'
                 for sort,reverse in [('marketCap',True),('marketCapAsc',False)]:
-                    page.get_by_role('combobox',name='정렬',exact=True).select_option(sort)
+                    sort_box(page).select_option(sort)
                     ordered=sorted(near,key=lambda s:s['marketCap'],reverse=reverse)[:30]
                     assert page.locator('.stock-link:visible').evaluate_all('(els)=>els.map(e=>e.title)')==[s['name'] for s in ordered]
                     cap=page.locator('.market-cap:visible').first
@@ -88,7 +100,7 @@ with sync_playwright() as p:
                 page.screenshot(path=str(OUT/f'radar-{market}-{width}-market-cap.png'),full_page=False)
                 if width<=390:expect(page.locator('.card-cap').first).to_contain_text(currency)
                 else:expect(page.get_by_role('columnheader',name=f'시총 ({currency})',exact=True)).to_be_visible()
-                page.get_by_role('combobox',name='정렬',exact=True).select_option('default')
+                sort_box(page).select_option('default')
             page.locator('[data-tab=high]').click()
             highs=[s for s in rows if s['intradayHigh52'] or s['closeHigh52']]
             expect(page.locator('#pagination')).to_contain_text(f'{len(highs)}종목')
@@ -120,20 +132,20 @@ with sync_playwright() as p:
                 page.locator('[data-tab=near]').click()
             page.locator('[data-tab=ai]').click()
             expect(page.locator('#section-title')).to_have_text('AI 섹터')
-            expect(page.locator('.ai-sector-card')).to_have_count(8)
+            expect(page.locator('.ai-sector-card')).to_have_count(AI_CARDS)
             expect(page.locator('#industry-rail')).to_be_hidden()
-            expect(page.locator('.trend-breadth')).to_have_count(8)
+            expect(page.locator('.trend-breadth')).to_have_count(AI_CARDS)
             page.locator('#ai-overview [data-help=trendBreadth]').click()
             expect(page.get_by_role('tooltip')).to_contain_text('동일 종목')
             check_help_bounds(page)
             page.keyboard.press('Escape')
             page.get_by_role('button',name='기간 비교',exact=True).click()
-            expect(page.locator('.ai-heatmap .heat-cell')).to_have_count(48)
+            expect(page.locator('.ai-heatmap .heat-cell')).to_have_count(AI_CARDS*6)  # 6 periods per row
             cell=page.locator('.heat-cell[data-sector=optics][data-period="200d"]')
             cell.focus();page.keyboard.press('Enter')
             expect(cell).to_have_attribute('aria-pressed','true')
             expect(page.get_by_role('combobox',name='AI 분야',exact=True)).to_have_value('optics')
-            expect(page.get_by_role('combobox',name='정렬',exact=True)).to_have_value('default')
+            expect(sort_box(page)).to_have_value('default')
             expect(page.locator('#result-summary')).to_contain_text('광통신')
             names=page.locator('.stock-link:visible').evaluate_all('(els)=>els.map(e=>e.title)')
             returns=[next(s for s in rows if s['name']==name)['return200d'] for name in names]
@@ -173,7 +185,7 @@ with sync_playwright() as p:
                 page.get_by_role('button',name=f'{days}일',exact=True).click()
                 expect(page.locator('.ai-card-return').first).to_contain_text(f'{days}일 중앙값')
                 expect(page.get_by_role('button',name=f'{days}일',exact=True)).to_have_attribute('aria-pressed','true')
-                expect(page.get_by_role('combobox',name='정렬',exact=True)).to_have_value('default')
+                expect(sort_box(page)).to_have_value('default')
                 if width==1440:
                     expect(page.get_by_role('columnheader',name=f'{days}일',exact=True)).to_be_visible()
                     expect(page.get_by_role('columnheader',name='60일 추이',exact=True)).to_be_visible()
@@ -183,14 +195,14 @@ with sync_playwright() as p:
                 returns=[next(s for s in rows if s['name']==name)[f'return{days}d'] for name in names]
                 assert any(value is not None for value in returns)
                 assert returns==sorted(returns,key=lambda value:float('-inf') if value is None else value,reverse=True)
-                page.get_by_role('combobox',name='정렬',exact=True).select_option(f'return{days}d')
+                sort_box(page).select_option(f'return{days}d')
                 page.locator('.stock-link:visible').first.click()
                 expect(page.locator('#detail .stat').filter(has_text=f'{days}일 수익률')).to_be_visible()
                 page.locator('#close-drawer').click()
             page.screenshot(path=str(OUT/f'radar-{market}-{width}-ai-200d.png'),full_page=False)
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
             assert dimensions['scroll']<=dimensions['client'],dimensions
-            page.get_by_role('combobox',name='정렬',exact=True).select_option('return120d')
+            sort_box(page).select_option('return120d')
             expect(page.get_by_role('button',name='120일',exact=True)).to_have_attribute('aria-pressed','true')
             page.get_by_role('combobox',name='AI 분야',exact=True).select_option('optics')
             page.locator('#search').fill('010170' if market=='KR' else 'AVGO')
@@ -201,7 +213,7 @@ with sync_playwright() as p:
             names=page.locator('.stock-link:visible').evaluate_all('(els)=>els.map(e=>e.title)')
             assert all(next(s for s in rows if s['name']==name)['changePct']<=-3 for name in names)
             page.get_by_role('button',name='필터 초기화',exact=True).click()
-            page.get_by_role('combobox',name='정렬',exact=True).select_option('marketCap')
+            sort_box(page).select_option('marketCap')
             names=page.locator('.stock-link:visible').evaluate_all('(els)=>els.map(e=>e.title)')
             caps=[next(s for s in rows if s['name']==name)['marketCap'] for name in names]
             assert caps==sorted(caps,reverse=True)
@@ -212,6 +224,8 @@ with sync_playwright() as p:
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
             assert dimensions['scroll']<=dimensions['client'],dimensions
             assert not errors,errors
+            # Earlier steps opened the sort panel; measure the default (folded on phones) layout.
+            if width<760:page.evaluate("document.querySelectorAll('.sort-fold').forEach(n=>n.open=false)")
             page.evaluate('window.scrollTo(0,0)')
             page.screenshot(path=str(OUT/f'radar-{market}-{width}.png'),full_page=False)
             first_y=page.locator('.stock-link:visible').first.bounding_box()['y']
@@ -220,15 +234,15 @@ with sync_playwright() as p:
             notice_height=page.locator('#notice').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginTop)+parseFloat(getComputedStyle(node).marginBottom)')
             # The market-weather strip is a deliberate always-on summary; budget the rest.
             weather_height=page.locator('#weather').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginBottom)')
-            if width<760:assert weather_height<=165,weather_height
-            else:assert weather_height<=80,weather_height
+            if width<760:assert weather_height<=215,weather_height  # 360px wraps the larger 2026-10-19 conclusion line
+            else:assert weather_height<=120,weather_height  # 2026-10-19 redesign: larger weather conclusion line
             # Phone tabs wrap into two rows so every tab stays visible; budget the extra row.
             tabs_extra=max(0,page.locator('.tabs').evaluate('(n)=>n.getBoundingClientRect().height')-56)
             legend_extra=page.locator('.card-legend').first.evaluate('(n)=>n.offsetParent?n.getBoundingClientRect().height+8:0') if page.locator('.card-legend').count() else 0
             weather_height+=tabs_extra+legend_extra
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
-            if width==1440:assert first_y-notice_height-weather_height<520,first_y
-            else:assert first_y-notice_height-weather_height<580,first_y
+            if width==1440:assert first_y-notice_height-weather_height<760,first_y  # 2026-10-19 layout: two-row tabs + sort panel open on desktop
+            else:assert first_y-notice_height-weather_height<1000,first_y  # phones: industry-flow strip sits above the list since 2026-10-19
             if (ROOT/'wamo_trend.json').exists():
                 page.locator('[data-tab=trend]').click()
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
@@ -265,7 +279,7 @@ with sync_playwright() as p:
         expect(page.locator('.stock-link:visible').first).to_be_visible()
         page.locator('[data-tab=movers]').click();expect(page.locator('.stock-link:visible').first).to_be_visible()
         page.locator('[data-tab=ai]').click();expect(page.locator('.stock-link:visible').first).to_be_visible()
-        expect(page.locator('.ai-sector-card')).to_have_count(8)
+        expect(page.locator('.ai-sector-card')).to_have_count(AI_CARDS)
         assert not errors,errors
         context.close();print('RADAR RETENTION PASS',failure)
     context=browser.new_context();page=context.new_page()
@@ -296,7 +310,7 @@ with sync_playwright() as p:
     page.goto(base+'/radar.html',wait_until='networkidle')
     page.evaluate("document.querySelector('#session-changes').remove();document.querySelector('#signal-filter').remove()")
     page.locator('[data-tab=ai]').click()
-    expect(page.locator('.ai-sector-card')).to_have_count(8)
+    expect(page.locator('.ai-sector-card')).to_have_count(AI_CARDS)
     expect(page.locator('.stock-link:visible').first).to_be_visible()
     page.locator('[data-tab=near]').click()
     expect(page.locator('.stock-link:visible').first).to_be_visible()

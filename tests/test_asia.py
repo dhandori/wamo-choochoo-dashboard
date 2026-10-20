@@ -162,3 +162,23 @@ class EngineRun(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PublishMerge(unittest.TestCase):
+    def collect(self, root):
+        import wamo_publish_insights as pub
+        with mock.patch.object(pub, 'build_insights', lambda *a, **k: {'markets': {'KR': {}, 'US': {}}}), \
+             mock.patch('wamo_insights.expected_session', lambda m, now=None: SESSION), \
+             mock.patch('wamo_insights.next_slot', lambda m, now: NOW + timedelta(days=1)):
+            return pub.collect_snapshot(root, NOW)
+
+    def test_korea_us_publish_carries_last_japan_taiwan_and_marks_age(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            block = {'asOf': '2026-10-19', 'status': 'CURRENT', 'stocks': [{'id': 'JP:7203'}]}
+            (root / 'wamo_insights.json').write_text(json.dumps({'markets': {'JP': block}}))
+            snap = self.collect(root)
+            self.assertEqual(snap['markets']['JP']['status'], 'STALE')     # older than today's session
+            self.assertNotIn('TW', snap['markets'])
+            (root / asia.MARKETS_FILE).write_text(json.dumps({'markets': {'JP': dict(block, asOf=SESSION)}}))
+            self.assertEqual(self.collect(root)['markets']['JP']['status'], 'CURRENT')  # fresh hand-off wins

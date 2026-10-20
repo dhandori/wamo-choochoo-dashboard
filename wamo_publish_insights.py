@@ -24,7 +24,10 @@ def collect_snapshot(root, now=None):
     # Japan/Taiwan come from the Lite engine (wamo_asia.py); only their freshness is re-derived here.
     try:
         from wamo_insights import ASIA, refresh_market_status
-        asia = json.loads((root/'wamo_asia_markets.json').read_text(encoding='utf-8'))
+        try:
+            asia = json.loads((root/'wamo_asia_markets.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            asia = previous or {}  # Korea/US runs: carry the last published JP/TW forward.
         for market, block in (asia.get('markets') or {}).items():
             if market in ASIA and isinstance(block, dict) and block.get('stocks'):
                 result['markets'][market] = refresh_market_status(block, market, current_time)
