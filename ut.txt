@@ -1,4 +1,4 @@
-............./opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/exchange_calendars/exchange_calendar.py:65: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+............../opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/exchange_calendars/exchange_calendar.py:65: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
   ONE_HOUR = pd.Timedelta("1h")
 /opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/site-packages/exchange_calendars/utils/pandas_utils.py:60: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
   delta = pd.Timedelta(
@@ -8,6 +8,6 @@
   delta = pd.Timedelta(
 .....................................................
 ----------------------------------------------------------------------
-Ran 70 tests in 8.900s
+Ran 71 tests in 5.279s
 
 OK
