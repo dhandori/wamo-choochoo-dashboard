@@ -1,10 +1,10 @@
 {
  "JP": {
-  "attemptedAt": "2026-10-20T08:26:07.874985+00:00",
+  "attemptedAt": "2026-10-20T12:58:38.541992+00:00",
   "expectedSession": "2026-10-20",
-  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39393183993",
+  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39426450898",
   "status": "WARNING",
-  "lastSuccessAt": "2026-10-20T08:26:07.874985+00:00",
+  "lastSuccessAt": "2026-10-20T12:58:38.541992+00:00",
   "asOf": "2026-10-20",
   "count": 490,
   "universe": 491,
