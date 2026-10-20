@@ -1,0 +1,7796 @@
+{
+ "JP": {
+  "builtAt": "2026-10-20",
+  "items": [
+   {
+    "code": "1332",
+    "ticker": "1332.T",
+    "name": "니쑤이",
+    "nameLocal": "ニッスイ",
+    "industry": "수산·농림",
+    "shares": 305265402.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1333",
+    "ticker": "1333.T",
+    "name": "우미오스",
+    "nameLocal": "Ｕｍｉｏｓ",
+    "industry": "수산·농림",
+    "shares": 151736511.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1414",
+    "ticker": "1414.T",
+    "name": "쇼본드 홀딩스",
+    "nameLocal": "ショーボンドホールディングス",
+    "industry": "건설",
+    "shares": 218980720.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1417",
+    "ticker": "1417.T",
+    "name": "미라이트 원",
+    "nameLocal": "ミライト・ワン",
+    "industry": "건설",
+    "shares": 91325329.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1605",
+    "ticker": "1605.T",
+    "name": "국제석유개발제석",
+    "nameLocal": "ＩＮＰＥＸ",
+    "industry": "광업",
+    "shares": 1259136067.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1719",
+    "ticker": "1719.T",
+    "name": "하자마 안도",
+    "nameLocal": "安藤・間",
+    "industry": "건설",
+    "shares": 181021197.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1721",
+    "ticker": "1721.T",
+    "name": "콤시스홀딩스",
+    "nameLocal": "コムシスホールディングス",
+    "industry": "건설",
+    "shares": 118000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1801",
+    "ticker": "1801.T",
+    "name": "다이세이건설",
+    "nameLocal": "大成建設",
+    "industry": "건설",
+    "shares": 163185872.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1802",
+    "ticker": "1802.T",
+    "name": "오바야시",
+    "nameLocal": "大林組",
+    "industry": "건설",
+    "shares": 691811346.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1803",
+    "ticker": "1803.T",
+    "name": "시미즈",
+    "nameLocal": "清水建設",
+    "industry": "건설",
+    "shares": 716689413.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1808",
+    "ticker": "1808.T",
+    "name": "하세코",
+    "nameLocal": "長谷工コーポレーション",
+    "industry": "건설",
+    "shares": 292479897.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1812",
+    "ticker": "1812.T",
+    "name": "가지마",
+    "nameLocal": "鹿島建設",
+    "industry": "건설",
+    "shares": 483656011.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1820",
+    "ticker": "1820.T",
+    "name": "니시마쓰건설",
+    "nameLocal": "西松建設",
+    "industry": "건설",
+    "shares": 41791502.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1860",
+    "ticker": "1860.T",
+    "name": "토다",
+    "nameLocal": "戸田建設",
+    "industry": "건설",
+    "shares": 318005696.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1878",
+    "ticker": "1878.T",
+    "name": "다이토 건탁",
+    "nameLocal": "大東建託",
+    "industry": "부동산",
+    "shares": 344594895.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1893",
+    "ticker": "1893.T",
+    "name": "펜타오션 건설",
+    "nameLocal": "五洋建設",
+    "industry": "건설",
+    "shares": 286013910.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1911",
+    "ticker": "1911.T",
+    "name": "스미토모임업",
+    "nameLocal": "住友林業",
+    "industry": "건설",
+    "shares": 618584004.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1925",
+    "ticker": "1925.T",
+    "name": "다이와 하우스 공업",
+    "nameLocal": "大和ハウス工業",
+    "industry": "건설",
+    "shares": 1319660172.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "1928",
+    "ticker": "1928.T",
+    "name": "세키스이하우스",
+    "nameLocal": "積水ハウス",
+    "industry": "건설",
+    "shares": 651585566.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "1942",
+    "ticker": "1942.T",
+    "name": "간덴코",
+    "nameLocal": "関電工",
+    "industry": "건설",
+    "shares": 205288338.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1944",
+    "ticker": "1944.T",
+    "name": "긴덴",
+    "nameLocal": "きんでん",
+    "industry": "건설",
+    "shares": 166454180.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1951",
+    "ticker": "1951.T",
+    "name": "엑세오 그룹",
+    "nameLocal": "エクシオグループ",
+    "industry": "건설",
+    "shares": 205624838.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1959",
+    "ticker": "1959.T",
+    "name": "크라프티아",
+    "nameLocal": "クラフティア",
+    "industry": "건설",
+    "shares": 70864961.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1963",
+    "ticker": "1963.T",
+    "name": "JGC홀딩스",
+    "nameLocal": "日揮ホールディングス",
+    "industry": "건설",
+    "shares": 244293008.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "1969",
+    "ticker": "1969.T",
+    "name": "다카사고열학공업",
+    "nameLocal": "高砂熱学工業",
+    "industry": "건설",
+    "shares": 140478804.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2002",
+    "ticker": "2002.T",
+    "name": "닛신제분그룹",
+    "nameLocal": "日清製粉グループ本社",
+    "industry": "식품",
+    "shares": 280570991.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2127",
+    "ticker": "2127.T",
+    "name": "니혼 M&A 센터 홀딩스",
+    "nameLocal": "日本Ｍ＆Ａセンターホールディングス",
+    "industry": "서비스",
+    "shares": 336934800.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2181",
+    "ticker": "2181.T",
+    "name": "템프 홀딩스",
+    "nameLocal": "パーソルホールディングス",
+    "industry": "서비스",
+    "shares": 2278437810.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2201",
+    "ticker": "2201.T",
+    "name": "모리나가",
+    "nameLocal": "森永製菓",
+    "industry": "식품",
+    "shares": 86111638.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2206",
+    "ticker": "2206.T",
+    "name": "에자키 글리코",
+    "nameLocal": "江崎グリコ",
+    "industry": "식품",
+    "shares": 68468569.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2212",
+    "ticker": "2212.T",
+    "name": "야마자키제빵",
+    "nameLocal": "山崎製パン",
+    "industry": "식품",
+    "shares": 220282860.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2222",
+    "ticker": "2222.T",
+    "name": "코토부키 스피리츠",
+    "nameLocal": "寿スピリッツ",
+    "industry": "식품",
+    "shares": 155658402.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2229",
+    "ticker": "2229.T",
+    "name": "가루비",
+    "nameLocal": "カルビー",
+    "industry": "식품",
+    "shares": 121966500.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2264",
+    "ticker": "2264.T",
+    "name": "모리나가유업",
+    "nameLocal": "森永乳業",
+    "industry": "식품",
+    "shares": 344719144.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2267",
+    "ticker": "2267.T",
+    "name": "야쿠르트혼샤",
+    "nameLocal": "ヤクルト本社",
+    "industry": "식품",
+    "shares": 302753736.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2269",
+    "ticker": "2269.T",
+    "name": "메이지 홀딩스",
+    "nameLocal": "明治ホールディングス",
+    "industry": "식품",
+    "shares": 282200000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2282",
+    "ticker": "2282.T",
+    "name": "닛폰햄",
+    "nameLocal": "日本ハム",
+    "industry": "식품",
+    "shares": 282735000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2327",
+    "ticker": "2327.T",
+    "name": "신닛테츠솔루션즈",
+    "nameLocal": "日鉄ソリューションズ",
+    "industry": "정보·통신",
+    "shares": 183002000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2331",
+    "ticker": "2331.T",
+    "name": "ALSOK",
+    "nameLocal": "ＡＬＳＯＫ",
+    "industry": "서비스",
+    "shares": 510200210.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2371",
+    "ticker": "2371.T",
+    "name": "가카쿠콤",
+    "nameLocal": "カカクコム",
+    "industry": "서비스",
+    "shares": 198218300.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2413",
+    "ticker": "2413.T",
+    "name": "엠쓰리",
+    "nameLocal": "エムスリー",
+    "industry": "서비스",
+    "shares": 679127600.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2432",
+    "ticker": "2432.T",
+    "name": "디엔에이",
+    "nameLocal": "ディー・エヌ・エー",
+    "industry": "정보·통신",
+    "shares": 103035845.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2433",
+    "ticker": "2433.T",
+    "name": "하쿠호도 DY 홀딩스",
+    "nameLocal": "博報堂ＤＹホールディングス",
+    "industry": "서비스",
+    "shares": 363902636.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2501",
+    "ticker": "2501.T",
+    "name": "삿포로 브루어리스",
+    "nameLocal": "サッポロビール",
+    "industry": "식품",
+    "shares": 393971490.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2502",
+    "ticker": "2502.T",
+    "name": "아사히 그룹 홀딩스",
+    "nameLocal": "アサヒグループホールディングス",
+    "industry": "식품",
+    "shares": 1521010086.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "2503",
+    "ticker": "2503.T",
+    "name": "기린 양조",
+    "nameLocal": "キリンホールディングス",
+    "industry": "식품",
+    "shares": 816000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "2531",
+    "ticker": "2531.T",
+    "name": "다카라홀딩스",
+    "nameLocal": "宝ホールディングス",
+    "industry": "식품",
+    "shares": 197252043.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2579",
+    "ticker": "2579.T",
+    "name": "코카콜라 웨스트",
+    "nameLocal": "コカ・コーラ　ボトラーズジャパンホールディングス",
+    "industry": "식품",
+    "shares": 171268593.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2587",
+    "ticker": "2587.T",
+    "name": "산토리 식품 인터내셔널",
+    "nameLocal": "サントリービバレッジ＆フード",
+    "industry": "식품",
+    "shares": 309000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2593",
+    "ticker": "2593.T",
+    "name": "이토엔",
+    "nameLocal": "伊藤園",
+    "industry": "식품",
+    "shares": 85212380.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2607",
+    "ticker": "2607.T",
+    "name": "후지 오일",
+    "nameLocal": "不二製油",
+    "industry": "식품",
+    "shares": 87569383.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2670",
+    "ticker": "2670.T",
+    "name": "ABC-마트",
+    "nameLocal": "エービーシー・マート",
+    "industry": "소매",
+    "shares": 247618938.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2768",
+    "ticker": "2768.T",
+    "name": "소지쯔주식회사",
+    "nameLocal": "双日",
+    "industry": "도매(종합상사)",
+    "shares": 210000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2784",
+    "ticker": "2784.T",
+    "name": "알프레사 홀딩스",
+    "nameLocal": "アルフレッサ　ホールディングス",
+    "industry": "도매(종합상사)",
+    "shares": 191300000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2801",
+    "ticker": "2801.T",
+    "name": "깃코만",
+    "nameLocal": "キッコーマン",
+    "industry": "식품",
+    "shares": 969416010.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2802",
+    "ticker": "2802.T",
+    "name": "아지노모토",
+    "nameLocal": "味の素",
+    "industry": "식품",
+    "shares": 977735616.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "2809",
+    "ticker": "2809.T",
+    "name": "큐피",
+    "nameLocal": "キユーピー",
+    "industry": "식품",
+    "shares": 141500000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2810",
+    "ticker": "2810.T",
+    "name": "하우스 식품 그룹",
+    "nameLocal": "ハウス食品グループ本社",
+    "industry": "식품",
+    "shares": 92098416.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2811",
+    "ticker": "2811.T",
+    "name": "가고메",
+    "nameLocal": "カゴメ",
+    "industry": "식품",
+    "shares": 91132844.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "285A",
+    "ticker": "285A.T",
+    "name": "키옥시아 홀딩스",
+    "nameLocal": "キオクシアホールディングス",
+    "industry": "전기기기",
+    "shares": 1646307702.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2871",
+    "ticker": "2871.T",
+    "name": "니치레이",
+    "nameLocal": "ニチレイ",
+    "industry": "식품",
+    "shares": 257036047.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2875",
+    "ticker": "2875.T",
+    "name": "도요 수산",
+    "nameLocal": "東洋水産",
+    "industry": "식품",
+    "shares": 110881044.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2897",
+    "ticker": "2897.T",
+    "name": "닛신식품 홀딩스",
+    "nameLocal": "日清食品ホールディングス",
+    "industry": "식품",
+    "shares": 297584500.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "2914",
+    "ticker": "2914.T",
+    "name": "재팬토바코",
+    "nameLocal": "日本たばこ産業",
+    "industry": "식품",
+    "shares": 2000000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "3003",
+    "ticker": "3003.T",
+    "name": "휴릭",
+    "nameLocal": "ヒューリック",
+    "industry": "부동산",
+    "shares": 767907735.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3038",
+    "ticker": "3038.T",
+    "name": "고베 물산",
+    "nameLocal": "神戸物産",
+    "industry": "도매(종합상사)",
+    "shares": 273600000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3048",
+    "ticker": "3048.T",
+    "name": "빅 카메라",
+    "nameLocal": "ビックカメラ",
+    "industry": "소매",
+    "shares": 188146304.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3064",
+    "ticker": "3064.T",
+    "name": "모노타로",
+    "nameLocal": "ＭｏｎｏｔａＲＯ",
+    "industry": "소매",
+    "shares": 496155600.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3086",
+    "ticker": "3086.T",
+    "name": "J. 프론트 리테일링",
+    "nameLocal": "Ｊ．フロント　リテイリング",
+    "industry": "소매",
+    "shares": 270565764.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3088",
+    "ticker": "3088.T",
+    "name": "마츠키요코코카라 & 코",
+    "nameLocal": "マツキヨココカラ＆カンパニー",
+    "industry": "소매",
+    "shares": 405658130.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3092",
+    "ticker": "3092.T",
+    "name": "스타트 투데이",
+    "nameLocal": "ＺＯＺＯ",
+    "industry": "소매",
+    "shares": 892032372.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3099",
+    "ticker": "3099.T",
+    "name": "이세탄 미쓰코시 홀딩스",
+    "nameLocal": "三越伊勢丹ホールディングス",
+    "industry": "소매",
+    "shares": 734909108.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3105",
+    "ticker": "3105.T",
+    "name": "닛신보 홀딩스",
+    "nameLocal": "日清紡ホールディングス",
+    "industry": "전기기기",
+    "shares": 169360439.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3107",
+    "ticker": "3107.T",
+    "name": "다이와보 홀딩스",
+    "nameLocal": "ダイワボウホールディングス",
+    "industry": "도매(종합상사)",
+    "shares": 88479028.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3116",
+    "ticker": "3116.T",
+    "name": "토요타 방직",
+    "nameLocal": "トヨタ紡織",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 187665738.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3132",
+    "ticker": "3132.T",
+    "name": "맥니카 홀딩스",
+    "nameLocal": "マクニカホールディングス",
+    "industry": "도매(종합상사)",
+    "shares": 179072146.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3197",
+    "ticker": "3197.T",
+    "name": "스카이라크 홀딩스",
+    "nameLocal": "すかいらーくホールディングス",
+    "industry": "소매",
+    "shares": 227502200.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3231",
+    "ticker": "3231.T",
+    "name": "노무라 부동산 홀딩스",
+    "nameLocal": "野村不動産ホールディングス",
+    "industry": "부동산",
+    "shares": 917942685.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3288",
+    "ticker": "3288.T",
+    "name": "오픈 하우스 그룹",
+    "nameLocal": "オープンハウスグループ",
+    "industry": "부동산",
+    "shares": 116772000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3289",
+    "ticker": "3289.T",
+    "name": "도큐 부동산 홀딩스",
+    "nameLocal": "東急不動産ホールディングス",
+    "industry": "부동산",
+    "shares": 719830974.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3291",
+    "ticker": "3291.T",
+    "name": "이다 그룹 홀딩스",
+    "nameLocal": "飯田グループホールディングス",
+    "industry": "부동산",
+    "shares": 280379057.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3349",
+    "ticker": "3349.T",
+    "name": "코스모스 약품",
+    "nameLocal": "コスモス薬品",
+    "industry": "소매",
+    "shares": 80001600.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3360",
+    "ticker": "3360.T",
+    "name": "십 헬스케어 홀딩스",
+    "nameLocal": "シップヘルスケアホールディングス",
+    "industry": "도매(종합상사)",
+    "shares": 94350134.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3382",
+    "ticker": "3382.T",
+    "name": "세븐 & 아이 홀딩스",
+    "nameLocal": "セブン＆アイ・ホールディングス",
+    "industry": "소매",
+    "shares": 2320258349.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "3391",
+    "ticker": "3391.T",
+    "name": "쓰루하 홀딩스",
+    "nameLocal": "ツルハホールディングス",
+    "industry": "소매",
+    "shares": 454659990.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3397",
+    "ticker": "3397.T",
+    "name": "토리돌 홀딩스",
+    "nameLocal": "トリドールホールディングス",
+    "industry": "소매",
+    "shares": 88760752.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3401",
+    "ticker": "3401.T",
+    "name": "테이진",
+    "nameLocal": "帝人",
+    "industry": "섬유",
+    "shares": 202954207.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3402",
+    "ticker": "3402.T",
+    "name": "도레이",
+    "nameLocal": "東レ",
+    "industry": "섬유",
+    "shares": 1504481403.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3405",
+    "ticker": "3405.T",
+    "name": "쿠라레",
+    "nameLocal": "クラレ",
+    "industry": "화학",
+    "shares": 302133603.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3407",
+    "ticker": "3407.T",
+    "name": "아사히카세이",
+    "nameLocal": "旭化成",
+    "industry": "화학",
+    "shares": 1365751932.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "3436",
+    "ticker": "3436.T",
+    "name": "섬코",
+    "nameLocal": "ＳＵＭＣＯ",
+    "industry": "금속제품",
+    "shares": 350175139.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3549",
+    "ticker": "3549.T",
+    "name": "쿠스리노아오키홀딩스",
+    "nameLocal": "クスリのアオキホールディングス",
+    "industry": "소매",
+    "shares": 95616980.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3563",
+    "ticker": "3563.T",
+    "name": "푸드&라이프 컴퍼니스",
+    "nameLocal": "ＦＯＯＤ　＆　ＬＩＦＥ　ＣＯＭＰＡＮＩＥＳ",
+    "industry": "소매",
+    "shares": 232138368.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3591",
+    "ticker": "3591.T",
+    "name": "와코루 홀딩스",
+    "nameLocal": "ワコールホールディングス",
+    "industry": "섬유",
+    "shares": 52500000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3626",
+    "ticker": "3626.T",
+    "name": "TISI",
+    "nameLocal": "ＴＩＳＩ",
+    "industry": "정보·통신",
+    "shares": 214700000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3635",
+    "ticker": "3635.T",
+    "name": "코에이테크모 홀딩스",
+    "nameLocal": "コーエーテクモホールディングス",
+    "industry": "정보·통신",
+    "shares": 336096924.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3659",
+    "ticker": "3659.T",
+    "name": "넥슨 재팬",
+    "nameLocal": "ネクソン",
+    "industry": "정보·통신",
+    "shares": 780725010.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3697",
+    "ticker": "3697.T",
+    "name": "시프트",
+    "nameLocal": "ＳＨＩＦＴ",
+    "industry": "정보·통신",
+    "shares": 267500670.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3769",
+    "ticker": "3769.T",
+    "name": "GMO 페이먼트 게이트웨이",
+    "nameLocal": "ＧＭＯペイメントゲートウェイ",
+    "industry": "정보·통신",
+    "shares": 76557545.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3774",
+    "ticker": "3774.T",
+    "name": "인터넷 이니셔티브 재팬",
+    "nameLocal": "インターネットイニシアティブ",
+    "industry": "정보·통신",
+    "shares": 183478668.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3861",
+    "ticker": "3861.T",
+    "name": "오지홀딩스",
+    "nameLocal": "王子ホールディングス",
+    "industry": "펄프·종이",
+    "shares": 914381817.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3923",
+    "ticker": "3923.T",
+    "name": "라쿠스",
+    "nameLocal": "ラクス",
+    "industry": "정보·통신",
+    "shares": 354391000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3941",
+    "ticker": "3941.T",
+    "name": "렝고",
+    "nameLocal": "レンゴー",
+    "industry": "펄프·종이",
+    "shares": 271056029.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "3994",
+    "ticker": "3994.T",
+    "name": "머니 포워드",
+    "nameLocal": "マネーフォワード",
+    "industry": "정보·통신",
+    "shares": 55702614.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4004",
+    "ticker": "4004.T",
+    "name": "레조낙 홀딩스",
+    "nameLocal": "レゾナック・ホールディングス",
+    "industry": "화학",
+    "shares": 191152811.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4005",
+    "ticker": "4005.T",
+    "name": "스미토모화학",
+    "nameLocal": "住友化学",
+    "industry": "화학",
+    "shares": 1662978884.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4021",
+    "ticker": "4021.T",
+    "name": "닛산화학공업",
+    "nameLocal": "日産化学",
+    "industry": "화학",
+    "shares": 134800000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4042",
+    "ticker": "4042.T",
+    "name": "토소",
+    "nameLocal": "東ソー",
+    "industry": "화학",
+    "shares": 325080956.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4043",
+    "ticker": "4043.T",
+    "name": "도쿠야마",
+    "nameLocal": "トクヤマ",
+    "industry": "화학",
+    "shares": 72088327.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4045",
+    "ticker": "4045.T",
+    "name": "토아고세이",
+    "nameLocal": "東亞合成",
+    "industry": "화학",
+    "shares": 108000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4061",
+    "ticker": "4061.T",
+    "name": "덴카",
+    "nameLocal": "デンカ",
+    "industry": "화학",
+    "shares": 88555840.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4062",
+    "ticker": "4062.T",
+    "name": "이비덴",
+    "nameLocal": "イビデン",
+    "industry": "전기기기",
+    "shares": 567387652.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4063",
+    "ticker": "4063.T",
+    "name": "신에츠화학",
+    "nameLocal": "信越化学工業",
+    "industry": "화학",
+    "shares": 1984995865.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "4091",
+    "ticker": "4091.T",
+    "name": "다이요닛폰산소",
+    "nameLocal": "日本酸素ホールディングス",
+    "industry": "화학",
+    "shares": 433092837.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4114",
+    "ticker": "4114.T",
+    "name": "니폰쇼쿠바이",
+    "nameLocal": "日本触媒",
+    "industry": "화학",
+    "shares": 150000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4118",
+    "ticker": "4118.T",
+    "name": "가네카",
+    "nameLocal": "カネカ",
+    "industry": "화학",
+    "shares": 63000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4151",
+    "ticker": "4151.T",
+    "name": "교와발효기린",
+    "nameLocal": "協和キリン",
+    "industry": "의약품",
+    "shares": 525634500.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "417A",
+    "ticker": "417A.T",
+    "name": "블루 존스 홀딩스",
+    "nameLocal": "ブルーゾーンホールディングス",
+    "industry": "소매",
+    "shares": 209470885.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4182",
+    "ticker": "4182.T",
+    "name": "미쓰비시가스화학",
+    "nameLocal": "三菱瓦斯化学",
+    "industry": "화학",
+    "shares": 211686599.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4183",
+    "ticker": "4183.T",
+    "name": "미쓰이화학",
+    "nameLocal": "三井化学",
+    "industry": "화학",
+    "shares": 381587374.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4186",
+    "ticker": "4186.T",
+    "name": "도쿄오카공업",
+    "nameLocal": "東京応化工業",
+    "industry": "화학",
+    "shares": 127800000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4188",
+    "ticker": "4188.T",
+    "name": "미쓰비시 케미컬 그룹",
+    "nameLocal": "三菱ケミカルグループ",
+    "industry": "화학",
+    "shares": 1441467207.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4194",
+    "ticker": "4194.T",
+    "name": "비져널",
+    "nameLocal": "ビジョナル",
+    "industry": "정보·통신",
+    "shares": 40488800.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4202",
+    "ticker": "4202.T",
+    "name": "다이셀",
+    "nameLocal": "ダイセル",
+    "industry": "화학",
+    "shares": 256142682.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4203",
+    "ticker": "4203.T",
+    "name": "스미토모 베이크라이트",
+    "nameLocal": "住友ベークライト",
+    "industry": "화학",
+    "shares": 88249856.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4204",
+    "ticker": "4204.T",
+    "name": "세키스이화학공업",
+    "nameLocal": "積水化学工業",
+    "industry": "화학",
+    "shares": 405507285.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4205",
+    "ticker": "4205.T",
+    "name": "제온",
+    "nameLocal": "日本ゼオン",
+    "industry": "화학",
+    "shares": 209251256.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4206",
+    "ticker": "4206.T",
+    "name": "아이카 공업",
+    "nameLocal": "アイカ工業",
+    "industry": "화학",
+    "shares": 67590664.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4208",
+    "ticker": "4208.T",
+    "name": "우베",
+    "nameLocal": "ＵＢＥ",
+    "industry": "화학",
+    "shares": 106200107.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4272",
+    "ticker": "4272.T",
+    "name": "일본화약",
+    "nameLocal": "日本化薬",
+    "industry": "화학",
+    "shares": 148700000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4307",
+    "ticker": "4307.T",
+    "name": "노무라종합연구소",
+    "nameLocal": "野村総合研究所",
+    "industry": "정보·통신",
+    "shares": 561197409.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4324",
+    "ticker": "4324.T",
+    "name": "덴츠",
+    "nameLocal": "電通グループ",
+    "industry": "서비스",
+    "shares": 265800000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4385",
+    "ticker": "4385.T",
+    "name": "메루카리",
+    "nameLocal": "メルカリ",
+    "industry": "정보·통신",
+    "shares": 165322708.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4401",
+    "ticker": "4401.T",
+    "name": "아데카",
+    "nameLocal": "ＡＤＥＫＡ",
+    "industry": "화학",
+    "shares": 98944242.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4403",
+    "ticker": "4403.T",
+    "name": "니치유",
+    "nameLocal": "日油",
+    "industry": "화학",
+    "shares": 226524128.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4452",
+    "ticker": "4452.T",
+    "name": "가오",
+    "nameLocal": "花王",
+    "industry": "화학",
+    "shares": 907200000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4502",
+    "ticker": "4502.T",
+    "name": "다케다 제약",
+    "nameLocal": "武田薬品工業",
+    "industry": "의약품",
+    "shares": 1602141359.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "4503",
+    "ticker": "4503.T",
+    "name": "아스텔라스제약",
+    "nameLocal": "アステラス製薬",
+    "industry": "의약품",
+    "shares": 1809663075.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4506",
+    "ticker": "4506.T",
+    "name": "스미모토 제약",
+    "nameLocal": "住友ファーマ",
+    "industry": "의약품",
+    "shares": 449204554.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4507",
+    "ticker": "4507.T",
+    "name": "시오노기제약",
+    "nameLocal": "塩野義製薬",
+    "industry": "의약품",
+    "shares": 889632195.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4516",
+    "ticker": "4516.T",
+    "name": "니폰 신약",
+    "nameLocal": "日本新薬",
+    "industry": "의약품",
+    "shares": 70251484.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4519",
+    "ticker": "4519.T",
+    "name": "주가이제약",
+    "nameLocal": "中外製薬",
+    "industry": "의약품",
+    "shares": 1679057667.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4523",
+    "ticker": "4523.T",
+    "name": "에자이",
+    "nameLocal": "エーザイ",
+    "industry": "의약품",
+    "shares": 291649149.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4527",
+    "ticker": "4527.T",
+    "name": "로토 제약",
+    "nameLocal": "ロート製薬",
+    "industry": "의약품",
+    "shares": 236178310.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4528",
+    "ticker": "4528.T",
+    "name": "오노 약품공업",
+    "nameLocal": "小野薬品工業",
+    "industry": "의약품",
+    "shares": 498692800.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4536",
+    "ticker": "4536.T",
+    "name": "산텐 제약",
+    "nameLocal": "参天製薬",
+    "industry": "의약품",
+    "shares": 322314154.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4540",
+    "ticker": "4540.T",
+    "name": "쓰무라",
+    "nameLocal": "ツムラ",
+    "industry": "의약품",
+    "shares": 76758362.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4543",
+    "ticker": "4543.T",
+    "name": "테루모",
+    "nameLocal": "テルモ",
+    "industry": "정밀기기",
+    "shares": 1480559680.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4544",
+    "ticker": "4544.T",
+    "name": "HU 그룹 홀딩스",
+    "nameLocal": "Ｈ．Ｕ．グループホールディングス",
+    "industry": "서비스",
+    "shares": 57502622.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4568",
+    "ticker": "4568.T",
+    "name": "다이이찌산쿄",
+    "nameLocal": "第一三共",
+    "industry": "의약품",
+    "shares": 1862893329.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "4578",
+    "ticker": "4578.T",
+    "name": "오츠카 홀딩스",
+    "nameLocal": "大塚ホールディングス",
+    "industry": "의약품",
+    "shares": 542988917.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4587",
+    "ticker": "4587.T",
+    "name": "펩티드림",
+    "nameLocal": "ペプチドリーム",
+    "industry": "의약품",
+    "shares": 130010400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4612",
+    "ticker": "4612.T",
+    "name": "니폰 페인트 홀딩스",
+    "nameLocal": "日本ペイントホールディングス",
+    "industry": "화학",
+    "shares": 2370512215.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4613",
+    "ticker": "4613.T",
+    "name": "간사이 페인트",
+    "nameLocal": "関西ペイント",
+    "industry": "화학",
+    "shares": 177976280.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4626",
+    "ticker": "4626.T",
+    "name": "다이요 홀딩스",
+    "nameLocal": "太陽ホールディングス",
+    "industry": "화학",
+    "shares": 116839616.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4631",
+    "ticker": "4631.T",
+    "name": "DIC",
+    "nameLocal": "ＤＩＣ",
+    "industry": "화학",
+    "shares": 95156904.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4661",
+    "ticker": "4661.T",
+    "name": "오리엔탈랜드",
+    "nameLocal": "オリエンタルランド",
+    "industry": "서비스",
+    "shares": 1800450800.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4665",
+    "ticker": "4665.T",
+    "name": "더스킨",
+    "nameLocal": "ダスキン",
+    "industry": "서비스",
+    "shares": 48000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4666",
+    "ticker": "4666.T",
+    "name": "파크 24",
+    "nameLocal": "パーク２４",
+    "industry": "부동산",
+    "shares": 171048369.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4676",
+    "ticker": "4676.T",
+    "name": "후지 미디어 홀딩스",
+    "nameLocal": "フジ・メディア・ホールディングス",
+    "industry": "정보·통신",
+    "shares": 169123000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4680",
+    "ticker": "4680.T",
+    "name": "라운드 원",
+    "nameLocal": "ラウンドワン",
+    "industry": "서비스",
+    "shares": 289161942.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4681",
+    "ticker": "4681.T",
+    "name": "리조트트러스트",
+    "nameLocal": "リゾートトラスト",
+    "industry": "서비스",
+    "shares": 217041598.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4684",
+    "ticker": "4684.T",
+    "name": "오빅크",
+    "nameLocal": "オービック",
+    "industry": "정보·통신",
+    "shares": 492000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4689",
+    "ticker": "4689.T",
+    "name": "LY 주식회사",
+    "nameLocal": "ＬＩＮＥヤフー",
+    "industry": "정보·통신",
+    "shares": 6887099761.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4704",
+    "ticker": "4704.T",
+    "name": "트렌드마이크로",
+    "nameLocal": "トレンドマイクロ",
+    "industry": "정보·통신",
+    "shares": 140901604.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4716",
+    "ticker": "4716.T",
+    "name": "오라클 재팬",
+    "nameLocal": "日本オラクル",
+    "industry": "정보·통신",
+    "shares": 128313071.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4732",
+    "ticker": "4732.T",
+    "name": "유에스에스",
+    "nameLocal": "ユー・エス・エス",
+    "industry": "서비스",
+    "shares": 474000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4733",
+    "ticker": "4733.T",
+    "name": "오빅비즈니스",
+    "nameLocal": "オービックビジネスコンサルタント",
+    "industry": "정보·통신",
+    "shares": 75404000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4751",
+    "ticker": "4751.T",
+    "name": "사이버에이전트",
+    "nameLocal": "サイバーエージェント",
+    "industry": "서비스",
+    "shares": 507133370.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4755",
+    "ticker": "4755.T",
+    "name": "라쿠텐 그룹",
+    "nameLocal": "楽天グループ",
+    "industry": "서비스",
+    "shares": 2183874000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4768",
+    "ticker": "4768.T",
+    "name": "오쓰카",
+    "nameLocal": "大塚商会",
+    "industry": "정보·통신",
+    "shares": 380004240.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4887",
+    "ticker": "4887.T",
+    "name": "사와이 그룹",
+    "nameLocal": "サワイグループホールディングス",
+    "industry": "의약품",
+    "shares": 115685926.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4901",
+    "ticker": "4901.T",
+    "name": "후지필름 홀딩스",
+    "nameLocal": "富士フイルムホールディングス",
+    "industry": "화학",
+    "shares": 1234150284.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "4902",
+    "ticker": "4902.T",
+    "name": "코니카 미놀타",
+    "nameLocal": "コニカミノルタ",
+    "industry": "전기기기",
+    "shares": 502664337.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4911",
+    "ticker": "4911.T",
+    "name": "시세이도",
+    "nameLocal": "資生堂",
+    "industry": "화학",
+    "shares": 400000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4912",
+    "ticker": "4912.T",
+    "name": "라이온",
+    "nameLocal": "ライオン",
+    "industry": "화학",
+    "shares": 279782746.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4922",
+    "ticker": "4922.T",
+    "name": "코세 홀딩스",
+    "nameLocal": "コーセーホールディングス",
+    "industry": "화학",
+    "shares": 60592541.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4927",
+    "ticker": "4927.T",
+    "name": "폴라 오르비스 홀딩스",
+    "nameLocal": "ポーラ・オルビスホールディングス",
+    "industry": "화학",
+    "shares": 229136156.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4967",
+    "ticker": "4967.T",
+    "name": "고바야시 제약",
+    "nameLocal": "小林製薬",
+    "industry": "화학",
+    "shares": 78050000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "4980",
+    "ticker": "4980.T",
+    "name": "덱세리알즈",
+    "nameLocal": "デクセリアルズ",
+    "industry": "화학",
+    "shares": 174741400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5016",
+    "ticker": "5016.T",
+    "name": "JX 어드밴스드 메탈스",
+    "nameLocal": "ＪＸ金属",
+    "industry": "비철금속",
+    "shares": 949183210.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5019",
+    "ticker": "5019.T",
+    "name": "이데미쓰 고산",
+    "nameLocal": "出光興産",
+    "industry": "석유·석탄제품",
+    "shares": 1223217590.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5020",
+    "ticker": "5020.T",
+    "name": "ENEOS 홀딩스",
+    "nameLocal": "ＥＮＥＯＳホールディングス",
+    "industry": "석유·석탄제품",
+    "shares": 2667132649.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "5021",
+    "ticker": "5021.T",
+    "name": "코스모 에너지 홀딩스",
+    "nameLocal": "コスモエネルギーホールディングス",
+    "industry": "석유·석탄제품",
+    "shares": 165041722.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5076",
+    "ticker": "5076.T",
+    "name": "인프로니어 홀딩스",
+    "nameLocal": "インフロニア・ホールディングス",
+    "industry": "건설",
+    "shares": 274845024.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5101",
+    "ticker": "5101.T",
+    "name": "요코하마고무",
+    "nameLocal": "横浜ゴム",
+    "industry": "고무제품",
+    "shares": 166396381.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5105",
+    "ticker": "5105.T",
+    "name": "도요 고무공업",
+    "nameLocal": "ＴＯＹＯ　ＴＩＲＥ",
+    "industry": "고무제품",
+    "shares": 123438829.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5108",
+    "ticker": "5108.T",
+    "name": "브리지스톤",
+    "nameLocal": "ブリヂストン",
+    "industry": "고무제품",
+    "shares": 1291387942.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "5110",
+    "ticker": "5110.T",
+    "name": "스미토모고무공업",
+    "nameLocal": "住友ゴム工業",
+    "industry": "고무제품",
+    "shares": 263043057.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5201",
+    "ticker": "5201.T",
+    "name": "AGC",
+    "nameLocal": "ＡＧＣ",
+    "industry": "유리·요업",
+    "shares": 217434681.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5214",
+    "ticker": "5214.T",
+    "name": "일본전기초자",
+    "nameLocal": "日本電気硝子",
+    "industry": "유리·요업",
+    "shares": 89523246.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5232",
+    "ticker": "5232.T",
+    "name": "스미토모오사카시멘트",
+    "nameLocal": "住友大阪セメント",
+    "industry": "유리·요업",
+    "shares": 96204351.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5233",
+    "ticker": "5233.T",
+    "name": "다이헤이요시멘트",
+    "nameLocal": "太平洋セメント",
+    "industry": "유리·요업",
+    "shares": 118191578.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5301",
+    "ticker": "5301.T",
+    "name": "도카이카본",
+    "nameLocal": "東海カーボン",
+    "industry": "유리·요업",
+    "shares": 216111904.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5332",
+    "ticker": "5332.T",
+    "name": "토토",
+    "nameLocal": "ＴＯＴＯ",
+    "industry": "유리·요업",
+    "shares": 166358397.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5333",
+    "ticker": "5333.T",
+    "name": "NGK",
+    "nameLocal": "ＮＧＫ",
+    "industry": "유리·요업",
+    "shares": 285993496.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5334",
+    "ticker": "5334.T",
+    "name": "니테라",
+    "nameLocal": "日本特殊陶業",
+    "industry": "유리·요업",
+    "shares": 398495440.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5344",
+    "ticker": "5344.T",
+    "name": "마루와",
+    "nameLocal": "ＭＡＲＵＷＡ",
+    "industry": "유리·요업",
+    "shares": 12372000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5393",
+    "ticker": "5393.T",
+    "name": "니치아스",
+    "nameLocal": "ニチアス",
+    "industry": "유리·요업",
+    "shares": 190985751.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5401",
+    "ticker": "5401.T",
+    "name": "일본제철",
+    "nameLocal": "日本製鉄",
+    "industry": "철강",
+    "shares": 5373633760.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "5406",
+    "ticker": "5406.T",
+    "name": "고베제강",
+    "nameLocal": "神戸製鋼所",
+    "industry": "철강",
+    "shares": 399485471.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5411",
+    "ticker": "5411.T",
+    "name": "JFE 홀딩스",
+    "nameLocal": "ＪＦＥホールディングス",
+    "industry": "철강",
+    "shares": 639438399.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5444",
+    "ticker": "5444.T",
+    "name": "야마토 공업",
+    "nameLocal": "大和工業",
+    "industry": "철강",
+    "shares": 62000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5463",
+    "ticker": "5463.T",
+    "name": "마루이치 강관",
+    "nameLocal": "丸一鋼管",
+    "industry": "철강",
+    "shares": 252000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5471",
+    "ticker": "5471.T",
+    "name": "다이도 특수강",
+    "nameLocal": "大同特殊鋼",
+    "industry": "철강",
+    "shares": 217243845.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5631",
+    "ticker": "5631.T",
+    "name": "일본제강소",
+    "nameLocal": "日本製鋼所",
+    "industry": "기계",
+    "shares": 74428302.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5706",
+    "ticker": "5706.T",
+    "name": "미쓰이금속",
+    "nameLocal": "三井金属",
+    "industry": "비철금속",
+    "shares": 574203890.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5711",
+    "ticker": "5711.T",
+    "name": "미쓰비시 머티리얼",
+    "nameLocal": "三菱マテリアル",
+    "industry": "비철금속",
+    "shares": 131489535.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5713",
+    "ticker": "5713.T",
+    "name": "스미토모금속광산",
+    "nameLocal": "住友金属鉱山",
+    "industry": "비철금속",
+    "shares": 288748215.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5714",
+    "ticker": "5714.T",
+    "name": "도와홀딩스",
+    "nameLocal": "ＤＯＷＡホールディングス",
+    "industry": "비철금속",
+    "shares": 61989206.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5801",
+    "ticker": "5801.T",
+    "name": "후루카와 전기공업",
+    "nameLocal": "古河電気工業",
+    "industry": "비철금속",
+    "shares": 706669170.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5802",
+    "ticker": "5802.T",
+    "name": "스미토모전기공업",
+    "nameLocal": "住友電気工業",
+    "industry": "비철금속",
+    "shares": 3175762284.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "5803",
+    "ticker": "5803.T",
+    "name": "후지쿠라",
+    "nameLocal": "フジクラ",
+    "industry": "비철금속",
+    "shares": 1775180526.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "5830",
+    "ticker": "5830.T",
+    "name": "이요긴 홀딩스",
+    "nameLocal": "いよぎんホールディングス",
+    "industry": "은행",
+    "shares": 313408831.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5831",
+    "ticker": "5831.T",
+    "name": "시즈오카 파이낸셜 그룹",
+    "nameLocal": "しずおかフィナンシャルグループ",
+    "industry": "은행",
+    "shares": 580129069.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5832",
+    "ticker": "5832.T",
+    "name": "중긴 파이낸셜 그룹",
+    "nameLocal": "ちゅうぎんフィナンシャルグループ",
+    "industry": "은행",
+    "shares": 184771461.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5838",
+    "ticker": "5838.T",
+    "name": "라쿠텐 뱅크",
+    "nameLocal": "楽天銀行",
+    "industry": "은행",
+    "shares": 223936153.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5844",
+    "ticker": "5844.T",
+    "name": "교토 파이낸셜 그룹",
+    "nameLocal": "京都フィナンシャルグループ",
+    "industry": "은행",
+    "shares": 301362752.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5901",
+    "ticker": "5901.T",
+    "name": "도요제관그룹홀딩스",
+    "nameLocal": "東洋製罐グループホールディングス",
+    "industry": "금속제품",
+    "shares": 153162162.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5929",
+    "ticker": "5929.T",
+    "name": "산와홀딩스",
+    "nameLocal": "三和ホールディングス",
+    "industry": "금속제품",
+    "shares": 219000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5938",
+    "ticker": "5938.T",
+    "name": "릭실",
+    "nameLocal": "ＬＩＸＩＬ",
+    "industry": "금속제품",
+    "shares": 287664534.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5947",
+    "ticker": "5947.T",
+    "name": "린나이",
+    "nameLocal": "リンナイ",
+    "industry": "금속제품",
+    "shares": 141126771.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "5991",
+    "ticker": "5991.T",
+    "name": "NHK 스프링",
+    "nameLocal": "日本発條",
+    "industry": "금속제품",
+    "shares": 231066144.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6005",
+    "ticker": "6005.T",
+    "name": "미우라 공업",
+    "nameLocal": "三浦工業",
+    "industry": "기계",
+    "shares": 125291112.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6098",
+    "ticker": "6098.T",
+    "name": "리쿠르트 홀딩스",
+    "nameLocal": "リクルートホールディングス",
+    "industry": "서비스",
+    "shares": 1472504149.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "6113",
+    "ticker": "6113.T",
+    "name": "아마다 홀딩스",
+    "nameLocal": "アマダ",
+    "industry": "기계",
+    "shares": 317451417.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6134",
+    "ticker": "6134.T",
+    "name": "후지기계제조",
+    "nameLocal": "ＦＵＪＩ",
+    "industry": "기계",
+    "shares": 97823748.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6136",
+    "ticker": "6136.T",
+    "name": "오에스지",
+    "nameLocal": "オーエスジー",
+    "industry": "기계",
+    "shares": 96145417.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6141",
+    "ticker": "6141.T",
+    "name": "모리정밀기기제작소",
+    "nameLocal": "ＤＭＧ森精機",
+    "industry": "기계",
+    "shares": 157325934.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6146",
+    "ticker": "6146.T",
+    "name": "디스코",
+    "nameLocal": "ディスコ",
+    "industry": "기계",
+    "shares": 108523429.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6178",
+    "ticker": "6178.T",
+    "name": "일본우정",
+    "nameLocal": "日本郵政",
+    "industry": "서비스",
+    "shares": 2808194600.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6268",
+    "ticker": "6268.T",
+    "name": "나부테스코",
+    "nameLocal": "ナブテスコ",
+    "industry": "기계",
+    "shares": 118064699.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6269",
+    "ticker": "6269.T",
+    "name": "미쓰이 해양개발",
+    "nameLocal": "三井海洋開発",
+    "industry": "기계",
+    "shares": 68345300.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6273",
+    "ticker": "6273.T",
+    "name": "에스엠씨",
+    "nameLocal": "ＳＭＣ",
+    "industry": "기계",
+    "shares": 63869359.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6301",
+    "ticker": "6301.T",
+    "name": "코마츠",
+    "nameLocal": "小松製作所",
+    "industry": "기계",
+    "shares": 930340620.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6302",
+    "ticker": "6302.T",
+    "name": "스미토모중공업",
+    "nameLocal": "住友重機械工業",
+    "industry": "기계",
+    "shares": 122905481.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6305",
+    "ticker": "6305.T",
+    "name": "히타치건설기계",
+    "nameLocal": "日立建機",
+    "industry": "기계",
+    "shares": 215115038.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6323",
+    "ticker": "6323.T",
+    "name": "로체",
+    "nameLocal": "ローツェ",
+    "industry": "기계",
+    "shares": 176400000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6326",
+    "ticker": "6326.T",
+    "name": "구보다",
+    "nameLocal": "クボタ",
+    "industry": "기계",
+    "shares": 1138716846.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6361",
+    "ticker": "6361.T",
+    "name": "에바라",
+    "nameLocal": "荏原製作所",
+    "industry": "기계",
+    "shares": 457446685.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6367",
+    "ticker": "6367.T",
+    "name": "다이킨공업",
+    "nameLocal": "ダイキン工業",
+    "industry": "기계",
+    "shares": 293113973.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "6368",
+    "ticker": "6368.T",
+    "name": "오르가노",
+    "nameLocal": "オルガノ",
+    "industry": "기계",
+    "shares": 231798500.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6370",
+    "ticker": "6370.T",
+    "name": "구리타공업",
+    "nameLocal": "栗田工業",
+    "industry": "기계",
+    "shares": 116200694.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6383",
+    "ticker": "6383.T",
+    "name": "다이후쿠",
+    "nameLocal": "ダイフク",
+    "industry": "기계",
+    "shares": 379830231.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6417",
+    "ticker": "6417.T",
+    "name": "산쿄",
+    "nameLocal": "ＳＡＮＫＹＯ",
+    "industry": "기계",
+    "shares": 230000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6436",
+    "ticker": "6436.T",
+    "name": "아마노",
+    "nameLocal": "アマノ",
+    "industry": "기계",
+    "shares": 71106129.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6448",
+    "ticker": "6448.T",
+    "name": "브라더 인더스트리",
+    "nameLocal": "ブラザー工業",
+    "industry": "전기기기",
+    "shares": 250448530.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6457",
+    "ticker": "6457.T",
+    "name": "글로리",
+    "nameLocal": "グローリー",
+    "industry": "기계",
+    "shares": 54898510.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6460",
+    "ticker": "6460.T",
+    "name": "세가새미홀딩스",
+    "nameLocal": "セガサミーホールディングス",
+    "industry": "기계",
+    "shares": 213545376.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6465",
+    "ticker": "6465.T",
+    "name": "호시자키 전기",
+    "nameLocal": "ホシザキ",
+    "industry": "기계",
+    "shares": 144890100.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "646A",
+    "ticker": "646A.T",
+    "name": "크라서스 케미컬",
+    "nameLocal": "クラサスケミカル",
+    "industry": "화학",
+    "shares": 234415443.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6471",
+    "ticker": "6471.T",
+    "name": "NSK",
+    "nameLocal": "日本精工",
+    "industry": "기계",
+    "shares": 500000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6472",
+    "ticker": "6472.T",
+    "name": "NTN",
+    "nameLocal": "ＮＴＮ",
+    "industry": "기계",
+    "shares": 597533017.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6473",
+    "ticker": "6473.T",
+    "name": "제이텍트",
+    "nameLocal": "ジェイテクト",
+    "industry": "기계",
+    "shares": 318608107.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6479",
+    "ticker": "6479.T",
+    "name": "미네베아",
+    "nameLocal": "ミネベアミツミ",
+    "industry": "전기기기",
+    "shares": 427080606.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6481",
+    "ticker": "6481.T",
+    "name": "THK",
+    "nameLocal": "ＴＨＫ",
+    "industry": "기계",
+    "shares": 119099803.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6501",
+    "ticker": "6501.T",
+    "name": "히타치",
+    "nameLocal": "日立製作所",
+    "industry": "전기기기",
+    "shares": 4535560985.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "6503",
+    "ticker": "6503.T",
+    "name": "미쓰비시전기",
+    "nameLocal": "三菱電機",
+    "industry": "전기기기",
+    "shares": 2113201551.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "6504",
+    "ticker": "6504.T",
+    "name": "후지전기",
+    "nameLocal": "富士電機",
+    "industry": "전기기기",
+    "shares": 149296991.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6506",
+    "ticker": "6506.T",
+    "name": "야스카와 전기",
+    "nameLocal": "安川電機",
+    "industry": "전기기기",
+    "shares": 266690497.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6525",
+    "ticker": "6525.T",
+    "name": "코쿠사이 엘렉트릭",
+    "nameLocal": "ＫＯＫＵＳＡＩ　ＥＬＥＣＴＲＩＣ",
+    "industry": "전기기기",
+    "shares": 237549714.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6526",
+    "ticker": "6526.T",
+    "name": "소시오넥스트",
+    "nameLocal": "ソシオネクスト",
+    "industry": "전기기기",
+    "shares": 180018430.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6532",
+    "ticker": "6532.T",
+    "name": "베이커런트",
+    "nameLocal": "ベイカレント",
+    "industry": "서비스",
+    "shares": 150227210.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6544",
+    "ticker": "6544.T",
+    "name": "재팬 엘리베이터 서비스 홀딩스",
+    "nameLocal": "ジャパンエレベーターサービスホールディングス",
+    "industry": "서비스",
+    "shares": 178784000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6586",
+    "ticker": "6586.T",
+    "name": "마키타",
+    "nameLocal": "マキタ",
+    "industry": "기계",
+    "shares": 280017520.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6592",
+    "ticker": "6592.T",
+    "name": "마부치 모터",
+    "nameLocal": "マブチモーター",
+    "industry": "전기기기",
+    "shares": 260649848.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6632",
+    "ticker": "6632.T",
+    "name": "JVC켄우드",
+    "nameLocal": "ＪＶＣケンウッド",
+    "industry": "전기기기",
+    "shares": 161564801.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6645",
+    "ticker": "6645.T",
+    "name": "오므론",
+    "nameLocal": "オムロン",
+    "industry": "전기기기",
+    "shares": 206242220.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6674",
+    "ticker": "6674.T",
+    "name": "GS 유아사",
+    "nameLocal": "ジーエス・ユアサ　コーポレーション",
+    "industry": "전기기기",
+    "shares": 100446442.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6701",
+    "ticker": "6701.T",
+    "name": "NEC",
+    "nameLocal": "日本電気",
+    "industry": "전기기기",
+    "shares": 1364249315.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6702",
+    "ticker": "6702.T",
+    "name": "후지쯔",
+    "nameLocal": "富士通",
+    "industry": "전기기기",
+    "shares": 1739778265.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6707",
+    "ticker": "6707.T",
+    "name": "산켄 전기",
+    "nameLocal": "サンケン電気",
+    "industry": "전기기기",
+    "shares": 20925360.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6723",
+    "ticker": "6723.T",
+    "name": "르네사스 일렉트로닉스",
+    "nameLocal": "ルネサスエレクトロニクス",
+    "industry": "전기기기",
+    "shares": 1870614885.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6724",
+    "ticker": "6724.T",
+    "name": "세이코 엡손",
+    "nameLocal": "セイコーエプソン",
+    "industry": "전기기기",
+    "shares": 373573152.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6728",
+    "ticker": "6728.T",
+    "name": "알박",
+    "nameLocal": "アルバック",
+    "industry": "전기기기",
+    "shares": 49355938.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6752",
+    "ticker": "6752.T",
+    "name": "파나소닉 홀딩스",
+    "nameLocal": "パナソニック　ホールディングス",
+    "industry": "전기기기",
+    "shares": 2454737697.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6753",
+    "ticker": "6753.T",
+    "name": "샤프",
+    "nameLocal": "シャープ",
+    "industry": "전기기기",
+    "shares": 650414638.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6754",
+    "ticker": "6754.T",
+    "name": "안리쓰",
+    "nameLocal": "アンリツ",
+    "industry": "전기기기",
+    "shares": 135870594.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6758",
+    "ticker": "6758.T",
+    "name": "소니 그룹",
+    "nameLocal": "ソニーグループ",
+    "industry": "전기기기",
+    "shares": 5965316326.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "6762",
+    "ticker": "6762.T",
+    "name": "TDK",
+    "nameLocal": "ＴＤＫ",
+    "industry": "전기기기",
+    "shares": 1943859885.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6770",
+    "ticker": "6770.T",
+    "name": "알프스전기",
+    "nameLocal": "アルプスアルパイン",
+    "industry": "전기기기",
+    "shares": 208103750.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6806",
+    "ticker": "6806.T",
+    "name": "히로세 전기",
+    "nameLocal": "ヒロセ電機",
+    "industry": "전기기기",
+    "shares": 34530435.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6841",
+    "ticker": "6841.T",
+    "name": "요코가와전기",
+    "nameLocal": "横河電機",
+    "industry": "전기기기",
+    "shares": 257201210.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6845",
+    "ticker": "6845.T",
+    "name": "아즈빌",
+    "nameLocal": "アズビル",
+    "industry": "전기기기",
+    "shares": 541372736.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6849",
+    "ticker": "6849.T",
+    "name": "니혼 고덴",
+    "nameLocal": "日本光電工業",
+    "industry": "전기기기",
+    "shares": 167961960.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6856",
+    "ticker": "6856.T",
+    "name": "호리바",
+    "nameLocal": "堀場製作所",
+    "industry": "전기기기",
+    "shares": 42233252.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6857",
+    "ticker": "6857.T",
+    "name": "어드반테스트",
+    "nameLocal": "アドバンテスト",
+    "industry": "전기기기",
+    "shares": 732000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "6861",
+    "ticker": "6861.T",
+    "name": "키엔스",
+    "nameLocal": "キーエンス",
+    "industry": "전기기기",
+    "shares": 243207684.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "6869",
+    "ticker": "6869.T",
+    "name": "시스멕스",
+    "nameLocal": "シスメックス",
+    "industry": "전기기기",
+    "shares": 608341876.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6902",
+    "ticker": "6902.T",
+    "name": "덴소",
+    "nameLocal": "デンソー",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 2910979691.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6920",
+    "ticker": "6920.T",
+    "name": "레이져테크",
+    "nameLocal": "レーザーテック",
+    "industry": "전기기기",
+    "shares": 94286400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6923",
+    "ticker": "6923.T",
+    "name": "스탠리 일렉트릭",
+    "nameLocal": "スタンレー電気",
+    "industry": "전기기기",
+    "shares": 126000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6925",
+    "ticker": "6925.T",
+    "name": "우시오 전기",
+    "nameLocal": "ウシオ電機",
+    "industry": "전기기기",
+    "shares": 83500000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6951",
+    "ticker": "6951.T",
+    "name": "지올",
+    "nameLocal": "日本電子",
+    "industry": "전기기기",
+    "shares": 51532800.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6952",
+    "ticker": "6952.T",
+    "name": "카시오 컴퓨터",
+    "nameLocal": "カシオ計算機",
+    "industry": "전기기기",
+    "shares": 228878114.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6954",
+    "ticker": "6954.T",
+    "name": "화낙",
+    "nameLocal": "ファナック",
+    "industry": "전기기기",
+    "shares": 982272430.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6963",
+    "ticker": "6963.T",
+    "name": "롬",
+    "nameLocal": "ローム",
+    "industry": "전기기기",
+    "shares": 403760000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6965",
+    "ticker": "6965.T",
+    "name": "하마마쓰 포토닉스",
+    "nameLocal": "浜松ホトニクス",
+    "industry": "전기기기",
+    "shares": 319257365.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6971",
+    "ticker": "6971.T",
+    "name": "교세라",
+    "nameLocal": "京セラ",
+    "industry": "전기기기",
+    "shares": 1419100820.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6976",
+    "ticker": "6976.T",
+    "name": "태양유전",
+    "nameLocal": "太陽誘電",
+    "industry": "전기기기",
+    "shares": 137564793.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6981",
+    "ticker": "6981.T",
+    "name": "무라타제작소",
+    "nameLocal": "村田製作所",
+    "industry": "전기기기",
+    "shares": 1963001843.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "6988",
+    "ticker": "6988.T",
+    "name": "니토덴코",
+    "nameLocal": "日東電工",
+    "industry": "화학",
+    "shares": 678659700.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7003",
+    "ticker": "7003.T",
+    "name": "미쓰이 E&S",
+    "nameLocal": "三井Ｅ＆Ｓ",
+    "industry": "기계",
+    "shares": 103098717.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7011",
+    "ticker": "7011.T",
+    "name": "미쓰비시중공업",
+    "nameLocal": "三菱重工業",
+    "industry": "기계",
+    "shares": 3373647810.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "7012",
+    "ticker": "7012.T",
+    "name": "가와사키중공업",
+    "nameLocal": "川崎重工業",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 876959000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7013",
+    "ticker": "7013.T",
+    "name": "IHI",
+    "nameLocal": "ＩＨＩ",
+    "industry": "기계",
+    "shares": 1082759678.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7164",
+    "ticker": "7164.T",
+    "name": "젠코쿠 호쇼",
+    "nameLocal": "全国保証",
+    "industry": "기타금융",
+    "shares": 137743580.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7167",
+    "ticker": "7167.T",
+    "name": "메부키피난셜그룹",
+    "nameLocal": "めぶきフィナンシャルグループ",
+    "industry": "은행",
+    "shares": 947055218.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7180",
+    "ticker": "7180.T",
+    "name": "큐슈파이낸셜그룹",
+    "nameLocal": "九州フィナンシャルグループ",
+    "industry": "은행",
+    "shares": 463375978.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7181",
+    "ticker": "7181.T",
+    "name": "간포생명보험",
+    "nameLocal": "かんぽ生命保険",
+    "industry": "보험",
+    "shares": 1084817700.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7182",
+    "ticker": "7182.T",
+    "name": "유초은행",
+    "nameLocal": "ゆうちょ銀行",
+    "industry": "은행",
+    "shares": 3575878720.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7186",
+    "ticker": "7186.T",
+    "name": "요코하마 파이낸셜 그룹",
+    "nameLocal": "横浜フィナンシャルグループ",
+    "industry": "은행",
+    "shares": 1144616065.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7189",
+    "ticker": "7189.T",
+    "name": "니시닛폰 파이낸셜홀딩스",
+    "nameLocal": "西日本フィナンシャルホールディングス",
+    "industry": "은행",
+    "shares": 146391055.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7201",
+    "ticker": "7201.T",
+    "name": "닛산자동차",
+    "nameLocal": "日産自動車",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 3713998612.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7202",
+    "ticker": "7202.T",
+    "name": "이스즈자동차",
+    "nameLocal": "いすゞ自動車",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 688751769.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7203",
+    "ticker": "7203.T",
+    "name": "토요타자동차",
+    "nameLocal": "トヨタ自動車",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 14594987460.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "7211",
+    "ticker": "7211.T",
+    "name": "미쓰비시 자동차",
+    "nameLocal": "三菱自動車工業",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 1460476846.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7259",
+    "ticker": "7259.T",
+    "name": "아이신",
+    "nameLocal": "アイシン",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 726023902.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7261",
+    "ticker": "7261.T",
+    "name": "마쓰다 자동차",
+    "nameLocal": "マツダ",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 631803979.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7267",
+    "ticker": "7267.T",
+    "name": "혼다자동차",
+    "nameLocal": "本田技研工業",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 4533000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "7269",
+    "ticker": "7269.T",
+    "name": "스즈키자동차",
+    "nameLocal": "スズキ",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 1964586400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7270",
+    "ticker": "7270.T",
+    "name": "후지중공업",
+    "nameLocal": "ＳＵＢＡＲＵ",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 717335273.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7272",
+    "ticker": "7272.T",
+    "name": "야마하 모터",
+    "nameLocal": "ヤマハ発動機",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 1018125101.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7276",
+    "ticker": "7276.T",
+    "name": "고이토 제작소",
+    "nameLocal": "小糸製作所",
+    "industry": "전기기기",
+    "shares": 307833172.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7282",
+    "ticker": "7282.T",
+    "name": "도요다 고세이",
+    "nameLocal": "豊田合成",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 588070735.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7309",
+    "ticker": "7309.T",
+    "name": "시마노",
+    "nameLocal": "シマノ",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 86530000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7313",
+    "ticker": "7313.T",
+    "name": "티에스테크",
+    "nameLocal": "テイ・エス　テック",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 124000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7337",
+    "ticker": "7337.T",
+    "name": "히로진 홀딩스",
+    "nameLocal": "ひろぎんホールディングス",
+    "industry": "은행",
+    "shares": 305327921.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7453",
+    "ticker": "7453.T",
+    "name": "양품계획",
+    "nameLocal": "良品計画",
+    "industry": "소매",
+    "shares": 561560000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7458",
+    "ticker": "7458.T",
+    "name": "다이이치코쇼",
+    "nameLocal": "第一興商",
+    "industry": "도매(종합상사)",
+    "shares": 103968400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7459",
+    "ticker": "7459.T",
+    "name": "메디팔 홀딩스",
+    "nameLocal": "メディパルホールディングス",
+    "industry": "도매(종합상사)",
+    "shares": 215975042.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7476",
+    "ticker": "7476.T",
+    "name": "애즈원",
+    "nameLocal": "アズワン",
+    "industry": "도매(종합상사)",
+    "shares": 75012540.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7532",
+    "ticker": "7532.T",
+    "name": "팬 퍼시픽 인터내셔널 홀딩스",
+    "nameLocal": "パン・パシフィック・インターナショナルホールディングス",
+    "industry": "소매",
+    "shares": 3177296700.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7550",
+    "ticker": "7550.T",
+    "name": "젠쇼 홀딩스",
+    "nameLocal": "ゼンショーホールディングス",
+    "industry": "소매",
+    "shares": 160733225.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7616",
+    "ticker": "7616.T",
+    "name": "콜로와이드",
+    "nameLocal": "コロワイド",
+    "industry": "소매",
+    "shares": 106453541.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7649",
+    "ticker": "7649.T",
+    "name": "수기 홀딩스",
+    "nameLocal": "スギホールディングス",
+    "industry": "소매",
+    "shares": 390149028.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7701",
+    "ticker": "7701.T",
+    "name": "시마츠",
+    "nameLocal": "島津製作所",
+    "industry": "정밀기기",
+    "shares": 296070227.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7729",
+    "ticker": "7729.T",
+    "name": "동경정밀",
+    "nameLocal": "東京精密",
+    "industry": "정밀기기",
+    "shares": 42285281.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7731",
+    "ticker": "7731.T",
+    "name": "니콘",
+    "nameLocal": "ニコン",
+    "industry": "정밀기기",
+    "shares": 333585686.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7733",
+    "ticker": "7733.T",
+    "name": "올림푸스",
+    "nameLocal": "オリンパス",
+    "industry": "정밀기기",
+    "shares": 1114485700.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7735",
+    "ticker": "7735.T",
+    "name": "스크린 홀딩스",
+    "nameLocal": "ＳＣＲＥＥＮホールディングス",
+    "industry": "전기기기",
+    "shares": 190759972.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7741",
+    "ticker": "7741.T",
+    "name": "호야",
+    "nameLocal": "ＨＯＹＡ",
+    "industry": "정밀기기",
+    "shares": 334838020.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "7747",
+    "ticker": "7747.T",
+    "name": "아사히 인텍",
+    "nameLocal": "朝日インテック",
+    "industry": "정밀기기",
+    "shares": 265332300.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7751",
+    "ticker": "7751.T",
+    "name": "캐논",
+    "nameLocal": "キヤノン",
+    "industry": "전기기기",
+    "shares": 1333763464.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7752",
+    "ticker": "7752.T",
+    "name": "리코",
+    "nameLocal": "リコー",
+    "industry": "전기기기",
+    "shares": 569733178.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7832",
+    "ticker": "7832.T",
+    "name": "반다이남코 홀딩스",
+    "nameLocal": "バンダイナムコホールディングス",
+    "industry": "기타제품",
+    "shares": 645000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7846",
+    "ticker": "7846.T",
+    "name": "파일럿",
+    "nameLocal": "パイロットコーポレーション",
+    "industry": "기타제품",
+    "shares": 112215600.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7867",
+    "ticker": "7867.T",
+    "name": "타카라토미",
+    "nameLocal": "タカラトミー",
+    "industry": "기타제품",
+    "shares": 93616650.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7911",
+    "ticker": "7911.T",
+    "name": "돗판 홀딩스",
+    "nameLocal": "ＴＯＰＰＡＮホールディングス",
+    "industry": "기타제품",
+    "shares": 589412480.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7912",
+    "ticker": "7912.T",
+    "name": "다이니폰인쇄",
+    "nameLocal": "大日本印刷",
+    "industry": "기타제품",
+    "shares": 439480692.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7936",
+    "ticker": "7936.T",
+    "name": "아식스",
+    "nameLocal": "アシックス",
+    "industry": "기타제품",
+    "shares": 709482236.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "7951",
+    "ticker": "7951.T",
+    "name": "야마하",
+    "nameLocal": "ヤマハ",
+    "industry": "기타제품",
+    "shares": 463000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7956",
+    "ticker": "7956.T",
+    "name": "피죤",
+    "nameLocal": "ピジョン",
+    "industry": "기타제품",
+    "shares": 121653486.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7974",
+    "ticker": "7974.T",
+    "name": "닌텐도",
+    "nameLocal": "任天堂",
+    "industry": "기타제품",
+    "shares": 1287260000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "7984",
+    "ticker": "7984.T",
+    "name": "고쿠요",
+    "nameLocal": "コクヨ",
+    "industry": "기타제품",
+    "shares": 440969852.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7988",
+    "ticker": "7988.T",
+    "name": "니프코",
+    "nameLocal": "ニフコ",
+    "industry": "화학",
+    "shares": 180856000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8001",
+    "ticker": "8001.T",
+    "name": "이토추상사",
+    "nameLocal": "伊藤忠商事",
+    "industry": "도매(종합상사)",
+    "shares": 7924447520.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8002",
+    "ticker": "8002.T",
+    "name": "마루베니",
+    "nameLocal": "丸紅",
+    "industry": "도매(종합상사)",
+    "shares": 1660758361.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8012",
+    "ticker": "8012.T",
+    "name": "나가세 산업",
+    "nameLocal": "長瀬産業",
+    "industry": "도매(종합상사)",
+    "shares": 439633140.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8015",
+    "ticker": "8015.T",
+    "name": "도요타쯔우쇼",
+    "nameLocal": "豊田通商",
+    "industry": "도매(종합상사)",
+    "shares": 944074116.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8020",
+    "ticker": "8020.T",
+    "name": "가네마쓰",
+    "nameLocal": "兼松",
+    "industry": "도매(종합상사)",
+    "shares": 169000404.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8031",
+    "ticker": "8031.T",
+    "name": "미쓰이물산",
+    "nameLocal": "三井物産",
+    "industry": "도매(종합상사)",
+    "shares": 2864666576.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8035",
+    "ticker": "8035.T",
+    "name": "도쿄일렉트론",
+    "nameLocal": "東京エレクトロン",
+    "industry": "전기기기",
+    "shares": 2340163665.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8053",
+    "ticker": "8053.T",
+    "name": "스미토모상사",
+    "nameLocal": "住友商事",
+    "industry": "도매(종합상사)",
+    "shares": 4780604217.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8056",
+    "ticker": "8056.T",
+    "name": "바이프로지",
+    "nameLocal": "ＢＩＰＲＯＧＹ",
+    "industry": "정보·통신",
+    "shares": 98959624.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8058",
+    "ticker": "8058.T",
+    "name": "미쓰비시상사",
+    "nameLocal": "三菱商事",
+    "industry": "도매(종합상사)",
+    "shares": 3710528742.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8060",
+    "ticker": "8060.T",
+    "name": "캐논 마케팅 재팬",
+    "nameLocal": "キヤノンマーケティングジャパン",
+    "industry": "도매(종합상사)",
+    "shares": 222159944.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8086",
+    "ticker": "8086.T",
+    "name": "니프로",
+    "nameLocal": "ニプロ",
+    "industry": "정밀기기",
+    "shares": 184732205.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8088",
+    "ticker": "8088.T",
+    "name": "이와타니산업",
+    "nameLocal": "岩谷産業",
+    "industry": "도매(종합상사)",
+    "shares": 234246596.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8111",
+    "ticker": "8111.T",
+    "name": "골드윈",
+    "nameLocal": "ゴールドウイン",
+    "industry": "섬유",
+    "shares": 142344516.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8113",
+    "ticker": "8113.T",
+    "name": "유니참",
+    "nameLocal": "ユニ・チャーム",
+    "industry": "화학",
+    "shares": 1862502957.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8129",
+    "ticker": "8129.T",
+    "name": "도호 홀딩스",
+    "nameLocal": "東邦ホールディングス",
+    "industry": "도매(종합상사)",
+    "shares": 73025942.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8136",
+    "ticker": "8136.T",
+    "name": "산리오",
+    "nameLocal": "サンリオ",
+    "industry": "도매(종합상사)",
+    "shares": 1277041515.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8174",
+    "ticker": "8174.T",
+    "name": "니폰 가스",
+    "nameLocal": "日本瓦斯",
+    "industry": "소매",
+    "shares": 323855394.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8227",
+    "ticker": "8227.T",
+    "name": "시마무라",
+    "nameLocal": "しまむら",
+    "industry": "소매",
+    "shares": 221479794.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8233",
+    "ticker": "8233.T",
+    "name": "다카시마야",
+    "nameLocal": "高島屋",
+    "industry": "소매",
+    "shares": 305208916.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8242",
+    "ticker": "8242.T",
+    "name": "에이치투오리테일링",
+    "nameLocal": "エイチ・ツー・オー　リテイリング",
+    "industry": "소매",
+    "shares": 125201396.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8252",
+    "ticker": "8252.T",
+    "name": "마루이그룹",
+    "nameLocal": "丸井グループ",
+    "industry": "소매",
+    "shares": 183660417.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8253",
+    "ticker": "8253.T",
+    "name": "크레디트 세종",
+    "nameLocal": "クレディセゾン",
+    "industry": "기타금융",
+    "shares": 161102570.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8267",
+    "ticker": "8267.T",
+    "name": "이온",
+    "nameLocal": "イオン",
+    "industry": "소매",
+    "shares": 2783529021.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8282",
+    "ticker": "8282.T",
+    "name": "케이스 홀딩스",
+    "nameLocal": "ケーズホールディングス",
+    "industry": "소매",
+    "shares": 168000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8303",
+    "ticker": "8303.T",
+    "name": "SBI 신세이은행",
+    "nameLocal": "ＳＢＩ新生銀行",
+    "industry": "은행",
+    "shares": 895500000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8304",
+    "ticker": "8304.T",
+    "name": "아오조라 은행",
+    "nameLocal": "あおぞら銀行",
+    "industry": "은행",
+    "shares": 139789418.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8306",
+    "ticker": "8306.T",
+    "name": "미쓰비시 UFJ 파이낸셜 그룹",
+    "nameLocal": "三菱ＵＦＪフィナンシャル・グループ",
+    "industry": "은행",
+    "shares": 11867710920.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8308",
+    "ticker": "8308.T",
+    "name": "리소나홀딩스",
+    "nameLocal": "りそなホールディングス",
+    "industry": "은행",
+    "shares": 2307136666.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8309",
+    "ticker": "8309.T",
+    "name": "스미토모 미쓰이 트러스트 그룹",
+    "nameLocal": "三井住友トラストグループ",
+    "industry": "은행",
+    "shares": 2795251920.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8316",
+    "ticker": "8316.T",
+    "name": "스미토모 미쓰이 파이낸셜그룹",
+    "nameLocal": "三井住友フィナンシャルグループ",
+    "industry": "은행",
+    "shares": 7602249786.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8331",
+    "ticker": "8331.T",
+    "name": "지바은행",
+    "nameLocal": "千葉銀行",
+    "industry": "은행",
+    "shares": 775521087.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8334",
+    "ticker": "8334.T",
+    "name": "군마 은행",
+    "nameLocal": "群馬銀行",
+    "industry": "은행",
+    "shares": 395888177.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8341",
+    "ticker": "8341.T",
+    "name": "77 은행",
+    "nameLocal": "七十七銀行",
+    "industry": "은행",
+    "shares": 229967238.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8354",
+    "ticker": "8354.T",
+    "name": "후쿠오카 파이낸셜 그룹",
+    "nameLocal": "ふくおかフィナンシャルグループ",
+    "industry": "은행",
+    "shares": 191138265.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8359",
+    "ticker": "8359.T",
+    "name": "하치주니 나가노 은행",
+    "nameLocal": "八十二長野銀行",
+    "industry": "은행",
+    "shares": 493767424.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8377",
+    "ticker": "8377.T",
+    "name": "호쿠호쿠 파이낸셜 그룹",
+    "nameLocal": "ほくほくフィナンシャルグループ",
+    "industry": "은행",
+    "shares": 1211201140.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8410",
+    "ticker": "8410.T",
+    "name": "세븐 은행",
+    "nameLocal": "セブン銀行",
+    "industry": "은행",
+    "shares": 1179308000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8411",
+    "ticker": "8411.T",
+    "name": "미즈호 파이낸셜그룹",
+    "nameLocal": "みずほフィナンシャルグループ",
+    "industry": "은행",
+    "shares": 2442831994.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8418",
+    "ticker": "8418.T",
+    "name": "야마구치 파이낸셜 그룹",
+    "nameLocal": "山口フィナンシャルグループ",
+    "industry": "은행",
+    "shares": 234767616.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8424",
+    "ticker": "8424.T",
+    "name": "후요 종합 리스",
+    "nameLocal": "芙蓉総合リース",
+    "industry": "기타금융",
+    "shares": 90863430.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8439",
+    "ticker": "8439.T",
+    "name": "센츄리리싱시스템",
+    "nameLocal": "東京センチュリー",
+    "industry": "기타금융",
+    "shares": 492113280.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8473",
+    "ticker": "8473.T",
+    "name": "SBI홀딩스",
+    "nameLocal": "ＳＢＩホールディングス",
+    "industry": "증권",
+    "shares": 661199214.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8570",
+    "ticker": "8570.T",
+    "name": "이온크레디트서비스",
+    "nameLocal": "イオンフィナンシャルサービス",
+    "industry": "기타금융",
+    "shares": 216010128.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8572",
+    "ticker": "8572.T",
+    "name": "아콤",
+    "nameLocal": "アコム",
+    "industry": "기타금융",
+    "shares": 1566614098.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8591",
+    "ticker": "8591.T",
+    "name": "오릭스",
+    "nameLocal": "オリックス",
+    "industry": "기타금융",
+    "shares": 1124106624.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8593",
+    "ticker": "8593.T",
+    "name": "미쓰비시 HC 캐피탈",
+    "nameLocal": "三菱ＨＣキャピタル",
+    "industry": "기타금융",
+    "shares": 1466912244.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8595",
+    "ticker": "8595.T",
+    "name": "자프코",
+    "nameLocal": "ジャフコ　グループ",
+    "industry": "증권",
+    "shares": 54250000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8601",
+    "ticker": "8601.T",
+    "name": "다이와증권그룹",
+    "nameLocal": "大和証券グループ本社",
+    "industry": "증권",
+    "shares": 1569378772.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8604",
+    "ticker": "8604.T",
+    "name": "노무라 홀딩스",
+    "nameLocal": "野村ホールディングス",
+    "industry": "증권",
+    "shares": 3088562601.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8630",
+    "ticker": "8630.T",
+    "name": "솜포 홀딩스",
+    "nameLocal": "ＳＯＭＰＯホールディングス",
+    "industry": "보험",
+    "shares": 934228767.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8697",
+    "ticker": "8697.T",
+    "name": "일본 거래소 그룹",
+    "nameLocal": "日本取引所グループ",
+    "industry": "기타금융",
+    "shares": 1031785336.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8725",
+    "ticker": "8725.T",
+    "name": "MS&AD 인슈어런스 그룹 홀딩스",
+    "nameLocal": "ＭＳ＆ＡＤインシュアランスグループホールディングス",
+    "industry": "보험",
+    "shares": 1492551732.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8729",
+    "ticker": "8729.T",
+    "name": "소니 파이낸셜 그룹",
+    "nameLocal": "ソニーフィナンシャルグループ",
+    "industry": "보험",
+    "shares": 6770358214.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8750",
+    "ticker": "8750.T",
+    "name": "다이이치 라이프 그룹",
+    "nameLocal": "第一ライフグループ",
+    "industry": "보험",
+    "shares": 3622638019.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8766",
+    "ticker": "8766.T",
+    "name": "도쿄마린홀딩스",
+    "nameLocal": "東京海上ホールディングス",
+    "industry": "보험",
+    "shares": 29010000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "8795",
+    "ticker": "8795.T",
+    "name": "T&D 홀딩스",
+    "nameLocal": "Ｔ＆Ｄホールディングス",
+    "industry": "보험",
+    "shares": 488000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8801",
+    "ticker": "8801.T",
+    "name": "미쓰이부동산",
+    "nameLocal": "三井不動産",
+    "industry": "부동산",
+    "shares": 2693184033.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8802",
+    "ticker": "8802.T",
+    "name": "미쓰비시부동산",
+    "nameLocal": "三菱地所",
+    "industry": "부동산",
+    "shares": 1211104906.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8804",
+    "ticker": "8804.T",
+    "name": "도쿄 다테모노",
+    "nameLocal": "東京建物",
+    "industry": "부동산",
+    "shares": 207978574.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8830",
+    "ticker": "8830.T",
+    "name": "스미토모부동산",
+    "nameLocal": "住友不動産",
+    "industry": "부동산",
+    "shares": 936000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "8876",
+    "ticker": "8876.T",
+    "name": "리로 그룹",
+    "nameLocal": "リログループ",
+    "industry": "서비스",
+    "shares": 153016200.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9001",
+    "ticker": "9001.T",
+    "name": "도부철도",
+    "nameLocal": "東武鉄道",
+    "industry": "육운",
+    "shares": 197266821.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9003",
+    "ticker": "9003.T",
+    "name": "소테쓰 홀딩스",
+    "nameLocal": "相鉄ホールディングス",
+    "industry": "육운",
+    "shares": 98145499.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9005",
+    "ticker": "9005.T",
+    "name": "도큐",
+    "nameLocal": "東急",
+    "industry": "육운",
+    "shares": 624869876.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9006",
+    "ticker": "9006.T",
+    "name": "게이힌 급행철도",
+    "nameLocal": "京浜急行電鉄",
+    "industry": "육운",
+    "shares": 275760547.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9007",
+    "ticker": "9007.T",
+    "name": "오다큐전철",
+    "nameLocal": "小田急電鉄",
+    "industry": "육운",
+    "shares": 368497717.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9008",
+    "ticker": "9008.T",
+    "name": "게이오",
+    "nameLocal": "京王電鉄",
+    "industry": "육운",
+    "shares": 586018150.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9009",
+    "ticker": "9009.T",
+    "name": "게이세이전철",
+    "nameLocal": "京成電鉄",
+    "industry": "육운",
+    "shares": 517233555.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9020",
+    "ticker": "9020.T",
+    "name": "동일본여객철도",
+    "nameLocal": "東日本旅客鉄道",
+    "industry": "육운",
+    "shares": 1134412200.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "9021",
+    "ticker": "9021.T",
+    "name": "서일본여객철도",
+    "nameLocal": "西日本旅客鉄道",
+    "industry": "육운",
+    "shares": 455561300.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "9022",
+    "ticker": "9022.T",
+    "name": "도카이여객철도",
+    "nameLocal": "東海旅客鉄道",
+    "industry": "육운",
+    "shares": 995385200.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "9023",
+    "ticker": "9023.T",
+    "name": "도쿄 메트로",
+    "nameLocal": "東京地下鉄",
+    "industry": "육운",
+    "shares": 581000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9024",
+    "ticker": "9024.T",
+    "name": "세이부 홀딩스",
+    "nameLocal": "西武ホールディングス",
+    "industry": "육운",
+    "shares": 305775520.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9031",
+    "ticker": "9031.T",
+    "name": "서일본 철도",
+    "nameLocal": "西日本鉄道",
+    "industry": "육운",
+    "shares": 79360186.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9041",
+    "ticker": "9041.T",
+    "name": "긴테쓰",
+    "nameLocal": "近鉄グループホールディングス",
+    "industry": "육운",
+    "shares": 190662061.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9042",
+    "ticker": "9042.T",
+    "name": "한큐 한신 홀딩스",
+    "nameLocal": "阪急阪神ホールディングス",
+    "industry": "육운",
+    "shares": 251498234.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9044",
+    "ticker": "9044.T",
+    "name": "난카이",
+    "nameLocal": "ＮＡＮＫＡＩ",
+    "industry": "육운",
+    "shares": 108465746.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9045",
+    "ticker": "9045.T",
+    "name": "게이한 홀딩스",
+    "nameLocal": "京阪ホールディングス",
+    "industry": "육운",
+    "shares": 106816403.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9048",
+    "ticker": "9048.T",
+    "name": "나고야철도",
+    "nameLocal": "名古屋鉄道",
+    "industry": "육운",
+    "shares": 196700692.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9064",
+    "ticker": "9064.T",
+    "name": "야마토홀딩스",
+    "nameLocal": "ヤマトホールディングス",
+    "industry": "육운",
+    "shares": 360496492.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9065",
+    "ticker": "9065.T",
+    "name": "산큐",
+    "nameLocal": "山九",
+    "industry": "육운",
+    "shares": 264508745.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9069",
+    "ticker": "9069.T",
+    "name": "센코",
+    "nameLocal": "センコーグループホールディングス",
+    "industry": "육운",
+    "shares": 175692457.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9072",
+    "ticker": "9072.T",
+    "name": "닛콘 홀딩스",
+    "nameLocal": "ニッコンホールディングス",
+    "industry": "육운",
+    "shares": 126479784.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9076",
+    "ticker": "9076.T",
+    "name": "세이노 홀딩스",
+    "nameLocal": "セイノーホールディングス",
+    "industry": "육운",
+    "shares": 187679783.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9101",
+    "ticker": "9101.T",
+    "name": "NYK 라인",
+    "nameLocal": "日本郵船",
+    "industry": "해운",
+    "shares": 405321700.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "9104",
+    "ticker": "9104.T",
+    "name": "미쓰이상선",
+    "nameLocal": "商船三井",
+    "industry": "해운",
+    "shares": 363039627.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "9107",
+    "ticker": "9107.T",
+    "name": "가와사키기선",
+    "nameLocal": "川崎汽船",
+    "industry": "해운",
+    "shares": 594743067.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9142",
+    "ticker": "9142.T",
+    "name": "큐슈레일웨이",
+    "nameLocal": "九州旅客鉄道",
+    "industry": "육운",
+    "shares": 154649000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9143",
+    "ticker": "9143.T",
+    "name": "SG 홀딩스",
+    "nameLocal": "ＳＧホールディングス",
+    "industry": "육운",
+    "shares": 640394400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9147",
+    "ticker": "9147.T",
+    "name": "닛폰 익스프레스 홀딩스",
+    "nameLocal": "ＮＩＰＰＯＮ　ＥＸＰＲＥＳＳホールディングス",
+    "industry": "육운",
+    "shares": 243000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9201",
+    "ticker": "9201.T",
+    "name": "일본항공",
+    "nameLocal": "日本航空",
+    "industry": "항공운송",
+    "shares": 437143500.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9202",
+    "ticker": "9202.T",
+    "name": "올니폰 항공",
+    "nameLocal": "ＡＮＡホールディングス",
+    "industry": "항공운송",
+    "shares": 484293561.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "9301",
+    "ticker": "9301.T",
+    "name": "미쓰비시물류",
+    "nameLocal": "三菱倉庫",
+    "industry": "창고·운수",
+    "shares": 362135395.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9302",
+    "ticker": "9302.T",
+    "name": "미쓰이소꼬 홀딩스",
+    "nameLocal": "三井倉庫ホールディングス",
+    "industry": "창고·운수",
+    "shares": 77991106.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9364",
+    "ticker": "9364.T",
+    "name": "가미구미",
+    "nameLocal": "上組",
+    "industry": "창고·운수",
+    "shares": 106576837.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9401",
+    "ticker": "9401.T",
+    "name": "도쿄 방송 홀딩스",
+    "nameLocal": "ＴＢＳホールディングス",
+    "industry": "정보·통신",
+    "shares": 161091065.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9404",
+    "ticker": "9404.T",
+    "name": "닛폰 테레비 홀딩스",
+    "nameLocal": "日本テレビホールディングス",
+    "industry": "정보·통신",
+    "shares": 257079580.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9432",
+    "ticker": "9432.T",
+    "name": "NTT",
+    "nameLocal": "ＮＴＴ",
+    "industry": "정보·통신",
+    "shares": 90550316400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "9433",
+    "ticker": "9433.T",
+    "name": "KDDI",
+    "nameLocal": "ＫＤＤＩ",
+    "industry": "정보·통신",
+    "shares": 4007450967.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "9434",
+    "ticker": "9434.T",
+    "name": "소프트뱅크",
+    "nameLocal": "ソフトバンク",
+    "industry": "정보·통신",
+    "shares": 48051182700.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "9435",
+    "ticker": "9435.T",
+    "name": "히카리 통신",
+    "nameLocal": "光通信",
+    "industry": "정보·통신",
+    "shares": 43989642.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9449",
+    "ticker": "9449.T",
+    "name": "GMO 인터넷 그룹",
+    "nameLocal": "ＧＭＯインターネットグループ",
+    "industry": "정보·통신",
+    "shares": 107349121.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9468",
+    "ticker": "9468.T",
+    "name": "가도카와",
+    "nameLocal": "ＫＡＤＯＫＡＷＡ",
+    "industry": "정보·통신",
+    "shares": 148990296.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9501",
+    "ticker": "9501.T",
+    "name": "도쿄 전력 홀딩스",
+    "nameLocal": "東京電力ホールディングス",
+    "industry": "전기·가스",
+    "shares": 1607017531.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9502",
+    "ticker": "9502.T",
+    "name": "주부전력",
+    "nameLocal": "中部電力",
+    "industry": "전기·가스",
+    "shares": 758000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9503",
+    "ticker": "9503.T",
+    "name": "간사이전력",
+    "nameLocal": "関西電力",
+    "industry": "전기·가스",
+    "shares": 1114927528.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9504",
+    "ticker": "9504.T",
+    "name": "주고쿠 전력",
+    "nameLocal": "中国電力",
+    "industry": "전기·가스",
+    "shares": 387154692.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9505",
+    "ticker": "9505.T",
+    "name": "호쿠리쿠 전력",
+    "nameLocal": "北陸電力",
+    "industry": "전기·가스",
+    "shares": 210333694.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9506",
+    "ticker": "9506.T",
+    "name": "도호쿠전력",
+    "nameLocal": "東北電力",
+    "industry": "전기·가스",
+    "shares": 502882585.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9507",
+    "ticker": "9507.T",
+    "name": "시코쿠 전력",
+    "nameLocal": "四国電力",
+    "industry": "전기·가스",
+    "shares": 207528202.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9509",
+    "ticker": "9509.T",
+    "name": "홋카이도 일렉트릭 파워",
+    "nameLocal": "北海道電力",
+    "industry": "전기·가스",
+    "shares": 215291912.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9513",
+    "ticker": "9513.T",
+    "name": "전원개발주식회사",
+    "nameLocal": "電源開発",
+    "industry": "전기·가스",
+    "shares": 176337900.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9531",
+    "ticker": "9531.T",
+    "name": "도쿄가스",
+    "nameLocal": "東京瓦斯",
+    "industry": "전기·가스",
+    "shares": 334959259.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9532",
+    "ticker": "9532.T",
+    "name": "오사카가스",
+    "nameLocal": "大阪瓦斯",
+    "industry": "전기·가스",
+    "shares": 383176500.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9533",
+    "ticker": "9533.T",
+    "name": "토호 가스",
+    "nameLocal": "東邦瓦斯",
+    "industry": "전기·가스",
+    "shares": 366267140.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9602",
+    "ticker": "9602.T",
+    "name": "토호",
+    "nameLocal": "東宝",
+    "industry": "정보·통신",
+    "shares": 850000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9616",
+    "ticker": "9616.T",
+    "name": "교리츠 메인터넌스",
+    "nameLocal": "共立メンテナンス",
+    "industry": "서비스",
+    "shares": 91243720.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9627",
+    "ticker": "9627.T",
+    "name": "아인 홀딩스",
+    "nameLocal": "アインホールディングス",
+    "industry": "소매",
+    "shares": 35428212.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9684",
+    "ticker": "9684.T",
+    "name": "스퀘어 에닉스 홀딩스",
+    "nameLocal": "スクウェア・エニックス・ホールディングス",
+    "industry": "정보·통신",
+    "shares": 367594788.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9697",
+    "ticker": "9697.T",
+    "name": "캡콤",
+    "nameLocal": "カプコン",
+    "industry": "정보·통신",
+    "shares": 533011246.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9706",
+    "ticker": "9706.T",
+    "name": "일본 공항 터미널",
+    "nameLocal": "日本空港ビルデング",
+    "industry": "부동산",
+    "shares": 93145400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9735",
+    "ticker": "9735.T",
+    "name": "세콤",
+    "nameLocal": "セコム",
+    "industry": "서비스",
+    "shares": 466599796.0,
+    "exchange": "TSE",
+    "size": "TOPIX Large70"
+   },
+   {
+    "code": "9744",
+    "ticker": "9744.T",
+    "name": "메이텍 그룹 홀딩스",
+    "nameLocal": "メイテックグループホールディングス",
+    "industry": "서비스",
+    "shares": 78000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9759",
+    "ticker": "9759.T",
+    "name": "니폰 시스템개발",
+    "nameLocal": "ＮＳＤ",
+    "industry": "정보·통신",
+    "shares": 83000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9766",
+    "ticker": "9766.T",
+    "name": "코나미 그룹",
+    "nameLocal": "コナミグループ",
+    "industry": "정보·통신",
+    "shares": 143500000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9831",
+    "ticker": "9831.T",
+    "name": "야마다 덴키",
+    "nameLocal": "ヤマダホールディングス",
+    "industry": "소매",
+    "shares": 966863199.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9843",
+    "ticker": "9843.T",
+    "name": "니토리 홀딩스",
+    "nameLocal": "ニトリホールディングス",
+    "industry": "소매",
+    "shares": 572217480.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9861",
+    "ticker": "9861.T",
+    "name": "요시노야 홀딩스",
+    "nameLocal": "吉野家ホールディングス",
+    "industry": "소매",
+    "shares": 65129558.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9934",
+    "ticker": "9934.T",
+    "name": "이나바 전기산업",
+    "nameLocal": "因幡電機産業",
+    "industry": "도매(종합상사)",
+    "shares": 113659600.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9962",
+    "ticker": "9962.T",
+    "name": "미스미 그룹",
+    "nameLocal": "ミスミグループ本社",
+    "industry": "도매(종합상사)",
+    "shares": 285304897.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9983",
+    "ticker": "9983.T",
+    "name": "패스트리테일링",
+    "nameLocal": "ファーストリテイリング",
+    "industry": "소매",
+    "shares": 318220968.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "9984",
+    "ticker": "9984.T",
+    "name": "소프트뱅크 그룹",
+    "nameLocal": "ソフトバンクグループ",
+    "industry": "정보·통신",
+    "shares": 5711848120.0,
+    "exchange": "TSE",
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "9987",
+    "ticker": "9987.T",
+    "name": "스즈켄",
+    "nameLocal": "スズケン",
+    "industry": "도매(종합상사)",
+    "shares": 144334408.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "9989",
+    "ticker": "9989.T",
+    "name": "선드럭",
+    "nameLocal": "サンドラッグ",
+    "industry": "소매",
+    "shares": 119331184.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   }
+  ],
+  "info": {
+   "source": "JPX 상장종목 목록 + 네이버 해외주식(한글명·상장주식수)",
+   "count": 491,
+   "withShares": 491
+  }
+ },
+ "TW": {
+  "builtAt": "2026-10-20",
+  "items": [
+   {
+    "code": "2330",
+    "ticker": "2330.TW",
+    "name": "TSMC (台積電)",
+    "nameLocal": "台積電",
+    "industry": "반도체",
+    "shares": 25932370067.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2454",
+    "ticker": "2454.TW",
+    "name": "MediaTek (聯發科)",
+    "nameLocal": "聯發科",
+    "industry": "반도체",
+    "shares": 1604952613.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2308",
+    "ticker": "2308.TW",
+    "name": "DELTA (台達電)",
+    "nameLocal": "台達電",
+    "industry": "전자부품",
+    "shares": 2597543329.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2317",
+    "ticker": "2317.TW",
+    "name": "HON HAI (鴻海)",
+    "nameLocal": "鴻海",
+    "industry": "기타 전자",
+    "shares": 14075746497.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3711",
+    "ticker": "3711.TW",
+    "name": "ASEH (日月光投控)",
+    "nameLocal": "日月光投控",
+    "industry": "반도체",
+    "shares": 4470572282.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1303",
+    "ticker": "1303.TW",
+    "name": "NPC (南亞)",
+    "nameLocal": "南亞",
+    "industry": "플라스틱",
+    "shares": 7930821589.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2881",
+    "ticker": "2881.TW",
+    "name": "Fubon Financial (富邦金)",
+    "nameLocal": "富邦金",
+    "industry": "금융·보험",
+    "shares": 14007364952.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3037",
+    "ticker": "3037.TW",
+    "name": "UNIMICRON (欣興)",
+    "nameLocal": "欣興",
+    "industry": "전자부품",
+    "shares": 1641291596.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2383",
+    "ticker": "2383.TW",
+    "name": "EMC (台光電)",
+    "nameLocal": "台光電",
+    "industry": "전자부품",
+    "shares": 358321114.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2882",
+    "ticker": "2882.TW",
+    "name": "CATHAY FHC (國泰金)",
+    "nameLocal": "國泰金",
+    "industry": "금융·보험",
+    "shares": 14669210128.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2303",
+    "ticker": "2303.TW",
+    "name": "UMC (聯電)",
+    "nameLocal": "聯電",
+    "industry": "반도체",
+    "shares": 12570093899.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2408",
+    "ticker": "2408.TW",
+    "name": "NTC (南亞科)",
+    "nameLocal": "南亞科",
+    "industry": "반도체",
+    "shares": 3450205894.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2891",
+    "ticker": "2891.TW",
+    "name": "CTBC HOLDING (中信金)",
+    "nameLocal": "中信金",
+    "industry": "금융·보험",
+    "shares": 19675932806.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3017",
+    "ticker": "3017.TW",
+    "name": "AVC (奇鋐)",
+    "nameLocal": "奇鋐",
+    "industry": "컴퓨터·주변기기",
+    "shares": 392670107.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2382",
+    "ticker": "2382.TW",
+    "name": "QCI (廣達)",
+    "nameLocal": "廣達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 4107627432.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2412",
+    "ticker": "2412.TW",
+    "name": "CHT (中華電)",
+    "nameLocal": "中華電",
+    "industry": "통신·네트워크",
+    "shares": 7757446545.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2345",
+    "ticker": "2345.TW",
+    "name": "ACCTON (智邦)",
+    "nameLocal": "智邦",
+    "industry": "통신·네트워크",
+    "shares": 561117897.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6505",
+    "ticker": "6505.TW",
+    "name": "FPCC (台塑化)",
+    "nameLocal": "台塑化",
+    "industry": "석유·가스·전력",
+    "shares": 9525959652.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2327",
+    "ticker": "2327.TW",
+    "name": "YAGEO (國巨*)",
+    "nameLocal": "國巨*",
+    "industry": "전자부품",
+    "shares": 2063128462.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2887",
+    "ticker": "2887.TW",
+    "name": "TS Holdings (台新新光金)",
+    "nameLocal": "台新新光金",
+    "industry": "금융·보험",
+    "shares": 25115061997.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6669",
+    "ticker": "6669.TW",
+    "name": "Wiwynn (緯穎)",
+    "nameLocal": "緯穎",
+    "industry": "컴퓨터·주변기기",
+    "shares": 560199772.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3443",
+    "ticker": "3443.TW",
+    "name": "GUC (創意)",
+    "nameLocal": "創意",
+    "industry": "반도체",
+    "shares": 134011911.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2885",
+    "ticker": "2885.TW",
+    "name": "Yuanta Group (元大金)",
+    "nameLocal": "元大金",
+    "industry": "금융·보험",
+    "shares": 13864395944.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7769",
+    "ticker": "7769.TW",
+    "name": "HON (鴻勁)",
+    "nameLocal": "鴻勁",
+    "industry": "반도체",
+    "shares": 179930000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3653",
+    "ticker": "3653.TW",
+    "name": "JENTECH (健策)",
+    "nameLocal": "健策",
+    "industry": "전자부품",
+    "shares": 147203878.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2059",
+    "ticker": "2059.TW",
+    "name": "king slide (川湖)",
+    "nameLocal": "川湖",
+    "industry": "전자부품",
+    "shares": 95297072.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8046",
+    "ticker": "8046.TW",
+    "name": "N.P.C (南電)",
+    "nameLocal": "南電",
+    "industry": "전자부품",
+    "shares": 646165487.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2884",
+    "ticker": "2884.TW",
+    "name": "E.S.F.H (玉山金)",
+    "nameLocal": "玉山金",
+    "industry": "금융·보험",
+    "shares": 17723510471.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2360",
+    "ticker": "2360.TW",
+    "name": "CHROMA (致茂)",
+    "nameLocal": "致茂",
+    "industry": "기타 전자",
+    "shares": 425245742.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3008",
+    "ticker": "3008.TW",
+    "name": "LARGAN (大立光)",
+    "nameLocal": "大立光",
+    "industry": "광전자",
+    "shares": 130798197.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2886",
+    "ticker": "2886.TW",
+    "name": "MEGA FHC (兆豐金)",
+    "nameLocal": "兆豐金",
+    "industry": "금융·보험",
+    "shares": 14833378282.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2357",
+    "ticker": "2357.TW",
+    "name": "ASUSTEK (華碩)",
+    "nameLocal": "華碩",
+    "industry": "컴퓨터·주변기기",
+    "shares": 742760280.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2344",
+    "ticker": "2344.TW",
+    "name": "WEC (華邦電)",
+    "nameLocal": "華邦電",
+    "industry": "반도체",
+    "shares": 4500000193.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2880",
+    "ticker": "2880.TW",
+    "name": "HNFHC (華南金)",
+    "nameLocal": "華南金",
+    "industry": "금융·보험",
+    "shares": 14056134739.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2890",
+    "ticker": "2890.TW",
+    "name": "SINOPACHOLDINGS (永豐金)",
+    "nameLocal": "永豐金",
+    "industry": "금융·보험",
+    "shares": 14782168721.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5274",
+    "ticker": "5274.TWO",
+    "name": "信驊",
+    "nameLocal": "信驊",
+    "industry": "반도체",
+    "shares": 41582953.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2368",
+    "ticker": "2368.TW",
+    "name": "GCE (金像電)",
+    "nameLocal": "金像電",
+    "industry": "전자부품",
+    "shares": 530594972.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2883",
+    "ticker": "2883.TW",
+    "name": "KGI Financial (凱基金)",
+    "nameLocal": "凱基金",
+    "industry": "금융·보험",
+    "shares": 16974612475.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4958",
+    "ticker": "4958.TW",
+    "name": "ZDT (臻鼎-KY)",
+    "nameLocal": "臻鼎-KY",
+    "industry": "전자부품",
+    "shares": 1133397175.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3231",
+    "ticker": "3231.TW",
+    "name": "Wistron (緯創)",
+    "nameLocal": "緯創",
+    "industry": "컴퓨터·주변기기",
+    "shares": 3429842250.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2301",
+    "ticker": "2301.TW",
+    "name": "LTC (光寶科)",
+    "nameLocal": "光寶科",
+    "industry": "컴퓨터·주변기기",
+    "shares": 2316107763.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2892",
+    "ticker": "2892.TW",
+    "name": "FFHC (第一金)",
+    "nameLocal": "第一金",
+    "industry": "금융·보험",
+    "shares": 14379468650.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2395",
+    "ticker": "2395.TW",
+    "name": "Advantech (研華)",
+    "nameLocal": "研華",
+    "industry": "컴퓨터·주변기기",
+    "shares": 869046008.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2603",
+    "ticker": "2603.TW",
+    "name": "EMC (長榮)",
+    "nameLocal": "長榮",
+    "industry": "해운",
+    "shares": 2165042996.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3189",
+    "ticker": "3189.TW",
+    "name": "KINSUS (景碩)",
+    "nameLocal": "景碩",
+    "industry": "반도체",
+    "shares": 526910360.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6223",
+    "ticker": "6223.TWO",
+    "name": "旺矽",
+    "nameLocal": "旺矽",
+    "industry": "반도체",
+    "shares": 97981309.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1301",
+    "ticker": "1301.TW",
+    "name": "FPC (台塑)",
+    "nameLocal": "台塑",
+    "industry": "플라스틱",
+    "shares": 6365740781.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6446",
+    "ticker": "6446.TW",
+    "name": "PEC (藥華藥)",
+    "nameLocal": "藥華藥",
+    "industry": "바이오·의료",
+    "shares": 422434636.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6274",
+    "ticker": "6274.TWO",
+    "name": "台燿",
+    "nameLocal": "台燿",
+    "industry": "전자부품",
+    "shares": 299460093.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3045",
+    "ticker": "3045.TW",
+    "name": "TWM (台灣大)",
+    "nameLocal": "台灣大",
+    "industry": "통신·네트워크",
+    "shares": 3723431015.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6488",
+    "ticker": "6488.TWO",
+    "name": "環球晶",
+    "nameLocal": "環球晶",
+    "industry": "반도체",
+    "shares": 528113725.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1216",
+    "ticker": "1216.TW",
+    "name": "UNI-PRESIDENT (統一)",
+    "nameLocal": "統一",
+    "industry": "식품",
+    "shares": 5682015421.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5880",
+    "ticker": "5880.TW",
+    "name": "TCFHC (合庫金)",
+    "nameLocal": "合庫金",
+    "industry": "금융·보험",
+    "shares": 16072960337.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1326",
+    "ticker": "1326.TW",
+    "name": "FCFC (台化)",
+    "nameLocal": "台化",
+    "industry": "플라스틱",
+    "shares": 5861186291.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8299",
+    "ticker": "8299.TWO",
+    "name": "群聯",
+    "nameLocal": "群聯",
+    "industry": "반도체",
+    "shares": 221165247.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "4904",
+    "ticker": "4904.TW",
+    "name": "Far EasTone (遠傳)",
+    "nameLocal": "遠傳",
+    "industry": "통신·네트워크",
+    "shares": 3607705357.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2379",
+    "ticker": "2379.TW",
+    "name": "RT (瑞昱)",
+    "nameLocal": "瑞昱",
+    "industry": "반도체",
+    "shares": 515512641.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3665",
+    "ticker": "3665.TW",
+    "name": "BHI (BizLink) (貿聯-KY)",
+    "nameLocal": "貿聯-KY",
+    "industry": "기타 전자",
+    "shares": 199578405.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3481",
+    "ticker": "3481.TW",
+    "name": "INX (群創)",
+    "nameLocal": "群創",
+    "industry": "광전자",
+    "shares": 7989197337.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3034",
+    "ticker": "3034.TW",
+    "name": "NOVATEK (聯詠)",
+    "nameLocal": "聯詠",
+    "industry": "반도체",
+    "shares": 611511469.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2801",
+    "ticker": "2801.TW",
+    "name": "CHANG HWA BANK (彰銀)",
+    "nameLocal": "彰銀",
+    "industry": "금융·보험",
+    "shares": 12060197409.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2449",
+    "ticker": "2449.TW",
+    "name": "KYEC (京元電子)",
+    "nameLocal": "京元電子",
+    "industry": "반도체",
+    "shares": 1283882318.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2615",
+    "ticker": "2615.TW",
+    "name": "WANHAI (萬海)",
+    "nameLocal": "萬海",
+    "industry": "해운",
+    "shares": 2806146293.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3661",
+    "ticker": "3661.TW",
+    "name": "Alchip (世芯-KY)",
+    "nameLocal": "世芯-KY",
+    "industry": "반도체",
+    "shares": 86305114.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6770",
+    "ticker": "6770.TW",
+    "name": "PSMC (力積電)",
+    "nameLocal": "力積電",
+    "industry": "반도체",
+    "shares": 4712080856.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5347",
+    "ticker": "5347.TWO",
+    "name": "世界",
+    "nameLocal": "世界",
+    "industry": "반도체",
+    "shares": 1878502192.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2002",
+    "ticker": "2002.TW",
+    "name": "CSC (中鋼)",
+    "nameLocal": "中鋼",
+    "industry": "철강",
+    "shares": 15734860997.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2313",
+    "ticker": "2313.TW",
+    "name": "COMPEQ (華通)",
+    "nameLocal": "華通",
+    "industry": "전자부품",
+    "shares": 1233820589.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3044",
+    "ticker": "3044.TW",
+    "name": "Tripod (健鼎)",
+    "nameLocal": "健鼎",
+    "industry": "전자부품",
+    "shares": 525605898.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2207",
+    "ticker": "2207.TW",
+    "name": "HOTAI MOTOR (和泰車)",
+    "nameLocal": "和泰車",
+    "industry": "자동차",
+    "shares": 557102768.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6213",
+    "ticker": "6213.TW",
+    "name": "ITEQ (聯茂)",
+    "nameLocal": "聯茂",
+    "industry": "전자부품",
+    "shares": 363597218.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2409",
+    "ticker": "2409.TW",
+    "name": "AUO (友達)",
+    "nameLocal": "友達",
+    "industry": "광전자",
+    "shares": 7547098972.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4938",
+    "ticker": "4938.TW",
+    "name": "Pegatron (和碩)",
+    "nameLocal": "和碩",
+    "industry": "컴퓨터·주변기기",
+    "shares": 2675708703.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5876",
+    "ticker": "5876.TW",
+    "name": "SCSB (上海商銀)",
+    "nameLocal": "上海商銀",
+    "industry": "금융·보험",
+    "shares": 4910219171.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3081",
+    "ticker": "3081.TWO",
+    "name": "聯亞",
+    "nameLocal": "聯亞",
+    "industry": "통신·네트워크",
+    "shares": 101869004.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3036",
+    "ticker": "3036.TW",
+    "name": "WT (文曄)",
+    "nameLocal": "文曄",
+    "industry": "전자 유통",
+    "shares": 1270562701.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2912",
+    "ticker": "2912.TW",
+    "name": "PCSC (統一超)",
+    "nameLocal": "統一超",
+    "industry": "무역·백화점",
+    "shares": 1039622255.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2376",
+    "ticker": "2376.TW",
+    "name": "GIGABYTE (技嘉)",
+    "nameLocal": "技嘉",
+    "industry": "컴퓨터·주변기기",
+    "shares": 669888886.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1590",
+    "ticker": "1590.TW",
+    "name": "AIRTAC (亞德客-KY)",
+    "nameLocal": "亞德客-KY",
+    "industry": "전기기계",
+    "shares": 199999998.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2618",
+    "ticker": "2618.TW",
+    "name": "EVAAIR (長榮航)",
+    "nameLocal": "長榮航",
+    "industry": "해운",
+    "shares": 5400444335.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1519",
+    "ticker": "1519.TW",
+    "name": "FE (華城)",
+    "nameLocal": "華城",
+    "industry": "전기기계",
+    "shares": 347468929.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2609",
+    "ticker": "2609.TW",
+    "name": "YMTC (陽明)",
+    "nameLocal": "陽明",
+    "industry": "해운",
+    "shares": 3492104270.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3293",
+    "ticker": "3293.TWO",
+    "name": "鈊象",
+    "nameLocal": "鈊象",
+    "industry": "문화·콘텐츠",
+    "shares": 281801560.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2356",
+    "ticker": "2356.TW",
+    "name": "INVENTEC (英業達)",
+    "nameLocal": "英業達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 3587475066.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2404",
+    "ticker": "2404.TW",
+    "name": "UIS (漢唐)",
+    "nameLocal": "漢唐",
+    "industry": "기타 전자",
+    "shares": 190586698.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3105",
+    "ticker": "3105.TWO",
+    "name": "穩懋",
+    "nameLocal": "穩懋",
+    "industry": "반도체",
+    "shares": 423940384.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1101",
+    "ticker": "1101.TW",
+    "name": "TCC (台泥)",
+    "nameLocal": "台泥",
+    "industry": "시멘트",
+    "shares": 7523181742.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3533",
+    "ticker": "3533.TW",
+    "name": "LOTES (嘉澤)",
+    "nameLocal": "嘉澤",
+    "industry": "전자부품",
+    "shares": 112534691.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2337",
+    "ticker": "2337.TW",
+    "name": "Macronix (旺宏)",
+    "nameLocal": "旺宏",
+    "industry": "반도체",
+    "shares": 1981856638.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3529",
+    "ticker": "3529.TWO",
+    "name": "力旺",
+    "nameLocal": "力旺",
+    "industry": "반도체",
+    "shares": 74686492.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3702",
+    "ticker": "3702.TW",
+    "name": "WPG (大聯大)",
+    "nameLocal": "大聯大",
+    "industry": "전자 유통",
+    "shares": 1751374307.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6239",
+    "ticker": "6239.TW",
+    "name": "PTI (力成)",
+    "nameLocal": "力成",
+    "industry": "반도체",
+    "shares": 759146634.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1802",
+    "ticker": "1802.TW",
+    "name": "TGI (台玻)",
+    "nameLocal": "台玻",
+    "industry": "유리·도자기",
+    "shares": 2908060800.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6515",
+    "ticker": "6515.TW",
+    "name": "WinWay (穎崴)",
+    "nameLocal": "穎崴",
+    "industry": "반도체",
+    "shares": 36444782.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2834",
+    "ticker": "2834.TW",
+    "name": "TBB (臺企銀)",
+    "nameLocal": "臺企銀",
+    "industry": "금융·보험",
+    "shares": 10398326179.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5871",
+    "ticker": "5871.TW",
+    "name": "Chailease (中租-KY)",
+    "nameLocal": "中租-KY",
+    "industry": "기타",
+    "shares": 1745649584.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6415",
+    "ticker": "6415.TW",
+    "name": "Silergy (矽力*-KY)",
+    "nameLocal": "矽力*-KY",
+    "industry": "반도체",
+    "shares": 390362929.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8069",
+    "ticker": "8069.TWO",
+    "name": "元太",
+    "nameLocal": "元太",
+    "industry": "광전자",
+    "shares": 1154678380.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2492",
+    "ticker": "2492.TW",
+    "name": "WTC (華新科)",
+    "nameLocal": "華新科",
+    "industry": "전자부품",
+    "shares": 485204774.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2347",
+    "ticker": "2347.TW",
+    "name": "Synnex (聯強)",
+    "nameLocal": "聯強",
+    "industry": "전자 유통",
+    "shares": 1667946968.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1605",
+    "ticker": "1605.TW",
+    "name": "WALSIN (華新)",
+    "nameLocal": "華新",
+    "industry": "전선·케이블",
+    "shares": 4431332948.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1504",
+    "ticker": "1504.TW",
+    "name": "TECO (東元)",
+    "nameLocal": "東元",
+    "industry": "전기기계",
+    "shares": 2376440684.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6805",
+    "ticker": "6805.TW",
+    "name": "Fositek (富世達)",
+    "nameLocal": "富世達",
+    "industry": "전자부품",
+    "shares": 68553896.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2324",
+    "ticker": "2324.TW",
+    "name": "Compal (仁寶)",
+    "nameLocal": "仁寶",
+    "industry": "컴퓨터·주변기기",
+    "shares": 4407146625.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6139",
+    "ticker": "6139.TW",
+    "name": "L & K (亞翔)",
+    "nameLocal": "亞翔",
+    "industry": "기타 전자",
+    "shares": 235575724.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6147",
+    "ticker": "6147.TWO",
+    "name": "頎邦",
+    "nameLocal": "頎邦",
+    "industry": "반도체",
+    "shares": 744577539.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1402",
+    "ticker": "1402.TW",
+    "name": "FENC (遠東新)",
+    "nameLocal": "遠東新",
+    "industry": "섬유",
+    "shares": 5352875227.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3532",
+    "ticker": "3532.TW",
+    "name": "FST (台勝科)",
+    "nameLocal": "台勝科",
+    "industry": "반도체",
+    "shares": 387848300.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2633",
+    "ticker": "2633.TW",
+    "name": "THSRC (台灣高鐵)",
+    "nameLocal": "台灣高鐵",
+    "industry": "해운",
+    "shares": 5628293058.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8996",
+    "ticker": "8996.TW",
+    "name": "KAORI (高力)",
+    "nameLocal": "高力",
+    "industry": "전기기계",
+    "shares": 93501537.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6789",
+    "ticker": "6789.TW",
+    "name": "VisEra (采鈺)",
+    "nameLocal": "采鈺",
+    "industry": "반도체",
+    "shares": 318413119.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6187",
+    "ticker": "6187.TWO",
+    "name": "萬潤",
+    "nameLocal": "萬潤",
+    "industry": "반도체",
+    "shares": 98262739.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2377",
+    "ticker": "2377.TW",
+    "name": "MSI (微星)",
+    "nameLocal": "微星",
+    "industry": "컴퓨터·주변기기",
+    "shares": 844856199.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6531",
+    "ticker": "6531.TW",
+    "name": "AP Memory (愛普*)",
+    "nameLocal": "愛普*",
+    "industry": "반도체",
+    "shares": 163149082.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1102",
+    "ticker": "1102.TW",
+    "name": "ACC (亞泥)",
+    "nameLocal": "亞泥",
+    "industry": "시멘트",
+    "shares": 3546562881.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2027",
+    "ticker": "2027.TW",
+    "name": "TC (大成鋼)",
+    "nameLocal": "大成鋼",
+    "industry": "철강",
+    "shares": 2584260615.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6196",
+    "ticker": "6196.TW",
+    "name": "MIC (帆宣)",
+    "nameLocal": "帆宣",
+    "industry": "기타 전자",
+    "shares": 220329529.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6526",
+    "ticker": "6526.TW",
+    "name": "Airoha (達發)",
+    "nameLocal": "達發",
+    "industry": "반도체",
+    "shares": 167505554.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7750",
+    "ticker": "7750.TW",
+    "name": "Syntec (新代)",
+    "nameLocal": "新代",
+    "industry": "전기기계",
+    "shares": 71843000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1560",
+    "ticker": "1560.TW",
+    "name": "KINIK (中砂)",
+    "nameLocal": "中砂",
+    "industry": "전기기계",
+    "shares": 150289456.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3324",
+    "ticker": "3324.TWO",
+    "name": "雙鴻",
+    "nameLocal": "雙鴻",
+    "industry": "기타 전자",
+    "shares": 93076837.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3264",
+    "ticker": "3264.TWO",
+    "name": "欣銓",
+    "nameLocal": "欣銓",
+    "industry": "반도체",
+    "shares": 490170076.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2610",
+    "ticker": "2610.TW",
+    "name": "CAL (華航)",
+    "nameLocal": "華航",
+    "industry": "해운",
+    "shares": 6144988558.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5483",
+    "ticker": "5483.TWO",
+    "name": "中美晶",
+    "nameLocal": "中美晶",
+    "industry": "반도체",
+    "shares": 641221651.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6442",
+    "ticker": "6442.TW",
+    "name": "EZconn (光聖)",
+    "nameLocal": "光聖",
+    "industry": "통신·네트워크",
+    "shares": 81817552.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8358",
+    "ticker": "8358.TWO",
+    "name": "金居",
+    "nameLocal": "金居",
+    "industry": "전자부품",
+    "shares": 252588000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3026",
+    "ticker": "3026.TW",
+    "name": "HOLY STONE (禾伸堂)",
+    "nameLocal": "禾伸堂",
+    "industry": "전자부품",
+    "shares": 165890318.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2812",
+    "ticker": "2812.TW",
+    "name": "T.C.C.B. (台中銀)",
+    "nameLocal": "台中銀",
+    "industry": "금융·보험",
+    "shares": 6425074858.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6257",
+    "ticker": "6257.TW",
+    "name": "SIGURD (矽格)",
+    "nameLocal": "矽格",
+    "industry": "반도체",
+    "shares": 483912325.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6285",
+    "ticker": "6285.TW",
+    "name": "WNC (啟碁)",
+    "nameLocal": "啟碁",
+    "industry": "통신·네트워크",
+    "shares": 483441359.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3374",
+    "ticker": "3374.TWO",
+    "name": "精材",
+    "nameLocal": "精材",
+    "industry": "반도체",
+    "shares": 271364316.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6919",
+    "ticker": "6919.TW",
+    "name": "Caliway (康霈*)",
+    "nameLocal": "康霈*",
+    "industry": "바이오·의료",
+    "shares": 1557200860.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3406",
+    "ticker": "3406.TW",
+    "name": "GSEO (玉晶光)",
+    "nameLocal": "玉晶光",
+    "industry": "광전자",
+    "shares": 112743063.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3706",
+    "ticker": "3706.TW",
+    "name": "MHC (神達)",
+    "nameLocal": "神達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 1459933715.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2451",
+    "ticker": "2451.TW",
+    "name": "Transcend (創見)",
+    "nameLocal": "創見",
+    "industry": "반도체",
+    "shares": 431345675.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7856",
+    "ticker": "7856.TWO",
+    "name": "漢測",
+    "nameLocal": "漢測",
+    "industry": "반도체",
+    "shares": 33000000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3260",
+    "ticker": "3260.TWO",
+    "name": "威剛",
+    "nameLocal": "威剛",
+    "industry": "반도체",
+    "shares": 336463418.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "5289",
+    "ticker": "5289.TWO",
+    "name": "宜鼎",
+    "nameLocal": "宜鼎",
+    "industry": "컴퓨터·주변기기",
+    "shares": 98289931.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "5434",
+    "ticker": "5434.TW",
+    "name": "TOPCO (崇越)",
+    "nameLocal": "崇越",
+    "industry": "전자 유통",
+    "shares": 194007983.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5269",
+    "ticker": "5269.TW",
+    "name": "Asmedia (祥碩)",
+    "nameLocal": "祥碩",
+    "industry": "반도체",
+    "shares": 74156359.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2049",
+    "ticker": "2049.TW",
+    "name": "HIWIN (上銀)",
+    "nameLocal": "上銀",
+    "industry": "전기기계",
+    "shares": 353792240.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8464",
+    "ticker": "8464.TW",
+    "name": "Nien Made (億豐)",
+    "nameLocal": "億豐",
+    "industry": "생활용품",
+    "shares": 293020200.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6510",
+    "ticker": "6510.TWO",
+    "name": "精測",
+    "nameLocal": "精測",
+    "industry": "반도체",
+    "shares": 32929138.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2474",
+    "ticker": "2474.TW",
+    "name": "CATCHER (可成)",
+    "nameLocal": "可成",
+    "industry": "기타 전자",
+    "shares": 538821068.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2105",
+    "ticker": "2105.TW",
+    "name": "CST (正新)",
+    "nameLocal": "正新",
+    "industry": "고무",
+    "shares": 3241415536.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5536",
+    "ticker": "5536.TWO",
+    "name": "聖暉*",
+    "nameLocal": "聖暉*",
+    "industry": "기타 전자",
+    "shares": 124080930.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "8210",
+    "ticker": "8210.TW",
+    "name": "CHENBRO (勤誠)",
+    "nameLocal": "勤誠",
+    "industry": "컴퓨터·주변기기",
+    "shares": 125619146.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1503",
+    "ticker": "1503.TW",
+    "name": "SEEC (士電)",
+    "nameLocal": "士電",
+    "industry": "전기기계",
+    "shares": 520972223.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2353",
+    "ticker": "2353.TW",
+    "name": "ACER (宏碁)",
+    "nameLocal": "宏碁",
+    "industry": "컴퓨터·주변기기",
+    "shares": 3047853828.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9105",
+    "ticker": "9105.TW",
+    "name": "CCET (泰金寶-DR)",
+    "nameLocal": "泰金寶-DR",
+    "industry": "기타",
+    "shares": 10450002831.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3491",
+    "ticker": "3491.TWO",
+    "name": "昇達科",
+    "nameLocal": "昇達科",
+    "industry": "통신·네트워크",
+    "shares": 68805125.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1815",
+    "ticker": "1815.TWO",
+    "name": "富喬",
+    "nameLocal": "富喬",
+    "industry": "전자부품",
+    "shares": 614703462.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2838",
+    "ticker": "2838.TW",
+    "name": "UBOT (聯邦銀)",
+    "nameLocal": "聯邦銀",
+    "industry": "금융·보험",
+    "shares": 4607828961.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2455",
+    "ticker": "2455.TW",
+    "name": "VPEC (全新)",
+    "nameLocal": "全新",
+    "industry": "통신·네트워크",
+    "shares": 186983443.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6691",
+    "ticker": "6691.TW",
+    "name": "YANKEY (洋基工程)",
+    "nameLocal": "洋基工程",
+    "industry": "기타 전자",
+    "shares": 133546930.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2855",
+    "ticker": "2855.TW",
+    "name": "PSC (統一證)",
+    "nameLocal": "統一證",
+    "industry": "금융·보험",
+    "shares": 1601414478.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3167",
+    "ticker": "3167.TW",
+    "name": "TA LIANG (大量)",
+    "nameLocal": "大量",
+    "industry": "전기기계",
+    "shares": 89513491.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1476",
+    "ticker": "1476.TW",
+    "name": "ECLAT (儒鴻)",
+    "nameLocal": "儒鴻",
+    "industry": "섬유",
+    "shares": 274367111.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2354",
+    "ticker": "2354.TW",
+    "name": "FTC (鴻準)",
+    "nameLocal": "鴻準",
+    "industry": "기타 전자",
+    "shares": 1414485192.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2542",
+    "ticker": "2542.TW",
+    "name": "Highwealth (興富發)",
+    "nameLocal": "興富發",
+    "industry": "건설·건자재",
+    "shares": 2153083539.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1717",
+    "ticker": "1717.TW",
+    "name": "ETERNAL (長興)",
+    "nameLocal": "長興",
+    "industry": "화학",
+    "shares": 1184245483.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9945",
+    "ticker": "9945.TW",
+    "name": "RUENTEX DEVELOP (潤泰新)",
+    "nameLocal": "潤泰新",
+    "industry": "기타",
+    "shares": 2844225086.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6278",
+    "ticker": "6278.TW",
+    "name": "TSMT (台表科)",
+    "nameLocal": "台表科",
+    "industry": "광전자",
+    "shares": 292398353.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7610",
+    "ticker": "7610.TW",
+    "name": "LIANYOU METALS (聯友金屬-創)",
+    "nameLocal": "聯友金屬-創",
+    "industry": "친환경·에너지",
+    "shares": 58305456.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1513",
+    "ticker": "1513.TW",
+    "name": "CHEM (中興電)",
+    "nameLocal": "中興電",
+    "industry": "전기기계",
+    "shares": 503112515.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6781",
+    "ticker": "6781.TW",
+    "name": "AES-KY",
+    "nameLocal": "AES-KY",
+    "industry": "전자부품",
+    "shares": 85418780.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2467",
+    "ticker": "2467.TW",
+    "name": "C SUN (志聖)",
+    "nameLocal": "志聖",
+    "industry": "전자부품",
+    "shares": 161513684.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2385",
+    "ticker": "2385.TW",
+    "name": "CHICONY (群光)",
+    "nameLocal": "群光",
+    "industry": "전자부품",
+    "shares": 765721188.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6409",
+    "ticker": "6409.TW",
+    "name": "VOLTRONIC (旭隼)",
+    "nameLocal": "旭隼",
+    "industry": "기타 전자",
+    "shares": 88253566.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8039",
+    "ticker": "8039.TW",
+    "name": "TAIFLEX (台虹)",
+    "nameLocal": "台虹",
+    "industry": "전자부품",
+    "shares": 263803994.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9904",
+    "ticker": "9904.TW",
+    "name": "PCC (寶成)",
+    "nameLocal": "寶成",
+    "industry": "스포츠·레저",
+    "shares": 2946787213.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5904",
+    "ticker": "5904.TWO",
+    "name": "寶雅*",
+    "nameLocal": "寶雅*",
+    "industry": "생활용품",
+    "shares": 1064438260.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6548",
+    "ticker": "6548.TWO",
+    "name": "長科*",
+    "nameLocal": "長科*",
+    "industry": "반도체",
+    "shares": 950464700.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6005",
+    "ticker": "6005.TW",
+    "name": "CSC (群益證)",
+    "nameLocal": "群益證",
+    "industry": "금융·보험",
+    "shares": 2455297058.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6944",
+    "ticker": "6944.TW",
+    "name": "Mega Union (兆聯實業)",
+    "nameLocal": "兆聯實業",
+    "industry": "친환경·에너지",
+    "shares": 99694286.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8021",
+    "ticker": "8021.TW",
+    "name": "Topoint (尖點)",
+    "nameLocal": "尖點",
+    "industry": "기타 전자",
+    "shares": 147088074.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3005",
+    "ticker": "3005.TW",
+    "name": "Getac (神基)",
+    "nameLocal": "神基",
+    "industry": "컴퓨터·주변기기",
+    "shares": 624570150.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2637",
+    "ticker": "2637.TW",
+    "name": "WISDOM (慧洋-KY)",
+    "nameLocal": "慧洋-KY",
+    "industry": "해운",
+    "shares": 746409199.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1229",
+    "ticker": "1229.TW",
+    "name": "LHIHC (聯華)",
+    "nameLocal": "聯華",
+    "industry": "식품",
+    "shares": 1831879881.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3023",
+    "ticker": "3023.TW",
+    "name": "SINBON (信邦)",
+    "nameLocal": "信邦",
+    "industry": "전자부품",
+    "shares": 240069014.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8150",
+    "ticker": "8150.TW",
+    "name": "ChipMOS (南茂)",
+    "nameLocal": "南茂",
+    "industry": "반도체",
+    "shares": 704523126.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3006",
+    "ticker": "3006.TW",
+    "name": "ESMT (晶豪科)",
+    "nameLocal": "晶豪科",
+    "industry": "반도체",
+    "shares": 298127841.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4749",
+    "ticker": "4749.TWO",
+    "name": "新應材",
+    "nameLocal": "新應材",
+    "industry": "반도체",
+    "shares": 94732865.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "7799",
+    "ticker": "7799.TW",
+    "name": "HNMC (禾榮科)",
+    "nameLocal": "禾榮科",
+    "industry": "바이오·의료",
+    "shares": 158245000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4979",
+    "ticker": "4979.TWO",
+    "name": "華星光",
+    "nameLocal": "華星光",
+    "industry": "통신·네트워크",
+    "shares": 142802027.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "7734",
+    "ticker": "7734.TWO",
+    "name": "印能科技",
+    "nameLocal": "印能科技",
+    "industry": "반도체",
+    "shares": 28000000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3030",
+    "ticker": "3030.TW",
+    "name": "TRI (德律)",
+    "nameLocal": "德律",
+    "industry": "기타 전자",
+    "shares": 236216000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6121",
+    "ticker": "6121.TWO",
+    "name": "新普",
+    "nameLocal": "新普",
+    "industry": "컴퓨터·주변기기",
+    "shares": 184970519.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "9910",
+    "ticker": "9910.TW",
+    "name": "FT (豐泰)",
+    "nameLocal": "豐泰",
+    "industry": "스포츠·레저",
+    "shares": 987482831.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2006",
+    "ticker": "2006.TW",
+    "name": "Tung Ho Steel (東和鋼鐵)",
+    "nameLocal": "東和鋼鐵",
+    "industry": "철강",
+    "shares": 730213818.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6182",
+    "ticker": "6182.TWO",
+    "name": "合晶",
+    "nameLocal": "合晶",
+    "industry": "반도체",
+    "shares": 625305662.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "8454",
+    "ticker": "8454.TW",
+    "name": "momo (富邦媒)",
+    "nameLocal": "富邦媒",
+    "industry": "디지털·클라우드",
+    "shares": 264975275.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2441",
+    "ticker": "2441.TW",
+    "name": "GTK (超豐)",
+    "nameLocal": "超豐",
+    "industry": "반도체",
+    "shares": 568845921.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2845",
+    "ticker": "2845.TW",
+    "name": "FEIB (遠東銀)",
+    "nameLocal": "遠東銀",
+    "industry": "금융·보험",
+    "shares": 4923424883.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2915",
+    "ticker": "2915.TW",
+    "name": "RUENTEX IND.LTD (潤泰全)",
+    "nameLocal": "潤泰全",
+    "industry": "무역·백화점",
+    "shares": 1104318772.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3450",
+    "ticker": "3450.TW",
+    "name": "ELASER (聯鈞)",
+    "nameLocal": "聯鈞",
+    "industry": "반도체",
+    "shares": 145681382.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2645",
+    "ticker": "2645.TW",
+    "name": "EGAT (長榮航太)",
+    "nameLocal": "長榮航太",
+    "industry": "해운",
+    "shares": 374570962.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3131",
+    "ticker": "3131.TWO",
+    "name": "弘塑",
+    "nameLocal": "弘塑",
+    "industry": "반도체",
+    "shares": 29831623.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3042",
+    "ticker": "3042.TW",
+    "name": "TXC (晶技)",
+    "nameLocal": "晶技",
+    "industry": "전자부품",
+    "shares": 342992971.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2371",
+    "ticker": "2371.TW",
+    "name": "TATUNG COMPANY (大同)",
+    "nameLocal": "大同",
+    "industry": "전기기계",
+    "shares": 2150834851.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2606",
+    "ticker": "2606.TW",
+    "name": "U-MING (裕民)",
+    "nameLocal": "裕民",
+    "industry": "해운",
+    "shares": 845055712.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2889",
+    "ticker": "2889.TW",
+    "name": "IBF (國票金)",
+    "nameLocal": "國票金",
+    "industry": "금융·보험",
+    "shares": 3665902186.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4919",
+    "ticker": "4919.TW",
+    "name": "NTC (新唐)",
+    "nameLocal": "新唐",
+    "industry": "반도체",
+    "shares": 452397767.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7828",
+    "ticker": "7828.TWO",
+    "name": "創新服務",
+    "nameLocal": "創新服務",
+    "industry": "반도체",
+    "shares": 40493911.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3363",
+    "ticker": "3363.TWO",
+    "name": "上詮",
+    "nameLocal": "上詮",
+    "industry": "통신·네트워크",
+    "shares": 113640567.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2646",
+    "ticker": "2646.TW",
+    "name": "STARLUX AIR (星宇航空)",
+    "nameLocal": "星宇航空",
+    "industry": "해운",
+    "shares": 3008735000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2481",
+    "ticker": "2481.TW",
+    "name": "PANJIT (強茂)",
+    "nameLocal": "強茂",
+    "industry": "반도체",
+    "shares": 382114927.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6414",
+    "ticker": "6414.TW",
+    "name": "ENNOCONN (樺漢)",
+    "nameLocal": "樺漢",
+    "industry": "컴퓨터·주변기기",
+    "shares": 151315037.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1785",
+    "ticker": "1785.TWO",
+    "name": "光洋科",
+    "nameLocal": "光洋科",
+    "industry": "기타 전자",
+    "shares": 595950743.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2634",
+    "ticker": "2634.TW",
+    "name": "AIDC (漢翔)",
+    "nameLocal": "漢翔",
+    "industry": "해운",
+    "shares": 941867101.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3163",
+    "ticker": "3163.TWO",
+    "name": "波若威",
+    "nameLocal": "波若威",
+    "industry": "통신·네트워크",
+    "shares": 94635370.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6214",
+    "ticker": "6214.TW",
+    "name": "SYSTEX (精誠)",
+    "nameLocal": "精誠",
+    "industry": "정보서비스",
+    "shares": 272243066.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3211",
+    "ticker": "3211.TWO",
+    "name": "順達",
+    "nameLocal": "順達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 155449021.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3583",
+    "ticker": "3583.TW",
+    "name": "Scientech (辛耘)",
+    "nameLocal": "辛耘",
+    "industry": "반도체",
+    "shares": 83858644.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2258",
+    "ticker": "2258.TW",
+    "name": "Foxtron (鴻華先進-創)",
+    "nameLocal": "鴻華先進-創",
+    "industry": "자동차",
+    "shares": 1751267300.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6472",
+    "ticker": "6472.TW",
+    "name": "Bora (保瑞)",
+    "nameLocal": "保瑞",
+    "industry": "바이오·의료",
+    "shares": 128019122.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2850",
+    "ticker": "2850.TW",
+    "name": "SK Insurance (新產)",
+    "nameLocal": "新產",
+    "industry": "금융·보험",
+    "shares": 315963300.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4991",
+    "ticker": "4991.TWO",
+    "name": "環宇-KY",
+    "nameLocal": "環宇-KY",
+    "industry": "반도체",
+    "shares": 121363372.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2486",
+    "ticker": "2486.TW",
+    "name": "I-CHIUN (一詮)",
+    "nameLocal": "一詮",
+    "industry": "광전자",
+    "shares": 240482510.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1477",
+    "ticker": "1477.TW",
+    "name": "Makalot (聚陽)",
+    "nameLocal": "聚陽",
+    "industry": "섬유",
+    "shares": 246693713.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2597",
+    "ticker": "2597.TW",
+    "name": "REC (潤弘)",
+    "nameLocal": "潤弘",
+    "industry": "건설·건자재",
+    "shares": 310716000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3035",
+    "ticker": "3035.TW",
+    "name": "Faraday (智原)",
+    "nameLocal": "智原",
+    "industry": "반도체",
+    "shares": 260550313.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9917",
+    "ticker": "9917.TW",
+    "name": "TAIWAN SECOM (中保科)",
+    "nameLocal": "中保科",
+    "industry": "기타",
+    "shares": 473756948.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2206",
+    "ticker": "2206.TW",
+    "name": "SYM (三陽工業)",
+    "nameLocal": "三陽工業",
+    "industry": "자동차",
+    "shares": 773675604.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1773",
+    "ticker": "1773.TW",
+    "name": "SHINY  CHEMICAL (勝一)",
+    "nameLocal": "勝一",
+    "industry": "화학",
+    "shares": 300000000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2539",
+    "ticker": "2539.TW",
+    "name": "SAKURAD (櫻花建)",
+    "nameLocal": "櫻花建",
+    "industry": "건설·건자재",
+    "shares": 1455585149.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3680",
+    "ticker": "3680.TWO",
+    "name": "家登",
+    "nameLocal": "家登",
+    "industry": "반도체",
+    "shares": 96211690.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "5522",
+    "ticker": "5522.TW",
+    "name": "Farglory (遠雄)",
+    "nameLocal": "遠雄",
+    "industry": "건설·건자재",
+    "shares": 781596241.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2312",
+    "ticker": "2312.TW",
+    "name": "KINPO (金寶)",
+    "nameLocal": "金寶",
+    "industry": "기타 전자",
+    "shares": 1505953211.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1319",
+    "ticker": "1319.TW",
+    "name": "TYG (東陽)",
+    "nameLocal": "東陽",
+    "industry": "자동차",
+    "shares": 591477068.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1907",
+    "ticker": "1907.TW",
+    "name": "YFY (永豐餘)",
+    "nameLocal": "永豐餘",
+    "industry": "제지",
+    "shares": 1660371495.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8028",
+    "ticker": "8028.TW",
+    "name": "PSI (昇陽半導體)",
+    "nameLocal": "昇陽半導體",
+    "industry": "반도체",
+    "shares": 183550260.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1795",
+    "ticker": "1795.TW",
+    "name": "Lotus Pharm (美時)",
+    "nameLocal": "美時",
+    "industry": "바이오·의료",
+    "shares": 270035257.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8926",
+    "ticker": "8926.TW",
+    "name": "TCC (台汽電)",
+    "nameLocal": "台汽電",
+    "industry": "석유·가스·전력",
+    "shares": 830282000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6271",
+    "ticker": "6271.TW",
+    "name": "THEIL (同欣電)",
+    "nameLocal": "同欣電",
+    "industry": "반도체",
+    "shares": 209058024.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6949",
+    "ticker": "6949.TW",
+    "name": "PELL BMT (沛爾生醫*-創)",
+    "nameLocal": "沛爾生醫*-創",
+    "industry": "바이오·의료",
+    "shares": 1311601000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8112",
+    "ticker": "8112.TW",
+    "name": "Supreme (至上)",
+    "nameLocal": "至上",
+    "industry": "전자 유통",
+    "shares": 565293058.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3090",
+    "ticker": "3090.TW",
+    "name": "NDB (日電貿)",
+    "nameLocal": "日電貿",
+    "industry": "전자부품",
+    "shares": 287567150.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2421",
+    "ticker": "2421.TW",
+    "name": "SUNON (建準)",
+    "nameLocal": "建準",
+    "industry": "전자부품",
+    "shares": 286943669.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2923",
+    "ticker": "2923.TW",
+    "name": "Sino Horizon (鼎固-KY)",
+    "nameLocal": "鼎固-KY",
+    "industry": "건설·건자재",
+    "shares": 1740296982.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6672",
+    "ticker": "6672.TW",
+    "name": "Ventec (騰輝電子-KY)",
+    "nameLocal": "騰輝電子-KY",
+    "industry": "전자부품",
+    "shares": 82311633.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4763",
+    "ticker": "4763.TW",
+    "name": "ACE (材料*-KY)",
+    "nameLocal": "材料*-KY",
+    "industry": "화학",
+    "shares": 989146670.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1210",
+    "ticker": "1210.TW",
+    "name": "GREATWALL (大成)",
+    "nameLocal": "大成",
+    "industry": "식품",
+    "shares": 894767222.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2540",
+    "ticker": "2540.TW",
+    "name": "JSL (愛山林)",
+    "nameLocal": "愛山林",
+    "industry": "건설·건자재",
+    "shares": 944873965.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9941",
+    "ticker": "9941.TW",
+    "name": "TAC (裕融)",
+    "nameLocal": "裕融",
+    "industry": "기타",
+    "shares": 587149073.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2352",
+    "ticker": "2352.TW",
+    "name": "Qisda (佳世達)",
+    "nameLocal": "佳世達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 1580506505.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6191",
+    "ticker": "6191.TW",
+    "name": "GBM (精成科)",
+    "nameLocal": "精成科",
+    "industry": "전자부품",
+    "shares": 499303000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6290",
+    "ticker": "6290.TWO",
+    "name": "良維",
+    "nameLocal": "良維",
+    "industry": "전자부품",
+    "shares": 169652410.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3016",
+    "ticker": "3016.TW",
+    "name": "EPi (嘉晶)",
+    "nameLocal": "嘉晶",
+    "industry": "반도체",
+    "shares": 293256903.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6173",
+    "ticker": "6173.TWO",
+    "name": "信昌電",
+    "nameLocal": "信昌電",
+    "industry": "전자부품",
+    "shares": 160928000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6451",
+    "ticker": "6451.TW",
+    "name": "ShunSin (訊芯-KY)",
+    "nameLocal": "訊芯-KY",
+    "industry": "반도체",
+    "shares": 117853601.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4766",
+    "ticker": "4766.TW",
+    "name": "NAN PAO (南寶)",
+    "nameLocal": "南寶",
+    "industry": "화학",
+    "shares": 120570780.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3563",
+    "ticker": "3563.TW",
+    "name": "MACHVISION (牧德)",
+    "nameLocal": "牧德",
+    "industry": "광전자",
+    "shares": 63960858.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6116",
+    "ticker": "6116.TW",
+    "name": "Hannstar (彩晶)",
+    "nameLocal": "彩晶",
+    "industry": "광전자",
+    "shares": 2858654851.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5469",
+    "ticker": "5469.TW",
+    "name": "HSB (瀚宇博)",
+    "nameLocal": "瀚宇博",
+    "industry": "전자부품",
+    "shares": 486166000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4966",
+    "ticker": "4966.TWO",
+    "name": "譜瑞-KY",
+    "nameLocal": "譜瑞-KY",
+    "industry": "반도체",
+    "shares": 78957788.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "5903",
+    "ticker": "5903.TWO",
+    "name": "全家",
+    "nameLocal": "全家",
+    "industry": "생활용품",
+    "shares": 223220000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1409",
+    "ticker": "1409.TW",
+    "name": "SSFC (新纖)",
+    "nameLocal": "新纖",
+    "industry": "섬유",
+    "shares": 1618409286.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6197",
+    "ticker": "6197.TW",
+    "name": "JPC (佳必琪)",
+    "nameLocal": "佳必琪",
+    "industry": "전자부품",
+    "shares": 123439128.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9933",
+    "ticker": "9933.TW",
+    "name": "CTCI (中鼎)",
+    "nameLocal": "中鼎",
+    "industry": "기타",
+    "shares": 962011718.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1722",
+    "ticker": "1722.TW",
+    "name": "TFC (台肥)",
+    "nameLocal": "台肥",
+    "industry": "화학",
+    "shares": 980000000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2851",
+    "ticker": "2851.TW",
+    "name": "Central Re (中再保)",
+    "nameLocal": "中再保",
+    "industry": "금융·보험",
+    "shares": 800388750.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2458",
+    "ticker": "2458.TW",
+    "name": "ELAN (義隆)",
+    "nameLocal": "義隆",
+    "industry": "반도체",
+    "shares": 303880392.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7711",
+    "ticker": "7711.TW",
+    "name": "ASROCK RACK (永擎)",
+    "nameLocal": "永擎",
+    "industry": "컴퓨터·주변기기",
+    "shares": 71700445.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7751",
+    "ticker": "7751.TWO",
+    "name": "竑騰",
+    "nameLocal": "竑騰",
+    "industry": "반도체",
+    "shares": 26888600.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2464",
+    "ticker": "2464.TW",
+    "name": "Mirle (盟立)",
+    "nameLocal": "盟立",
+    "industry": "기타 전자",
+    "shares": 227368886.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2466",
+    "ticker": "2466.TW",
+    "name": "COSMO (冠西電)",
+    "nameLocal": "冠西電",
+    "industry": "광전자",
+    "shares": 173458697.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2351",
+    "ticker": "2351.TW",
+    "name": "SDI (順德)",
+    "nameLocal": "順德",
+    "industry": "반도체",
+    "shares": 193734061.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8415",
+    "ticker": "8415.TWO",
+    "name": "大國鋼",
+    "nameLocal": "大國鋼",
+    "industry": "철강",
+    "shares": 1031500000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2015",
+    "ticker": "2015.TW",
+    "name": "FH (豐興)",
+    "nameLocal": "豐興",
+    "industry": "철강",
+    "shares": 581599424.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3715",
+    "ticker": "3715.TW",
+    "name": "Dynamic Holding (定穎投控)",
+    "nameLocal": "定穎投控",
+    "industry": "전자부품",
+    "shares": 283574584.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2504",
+    "ticker": "2504.TW",
+    "name": "GBM (國產)",
+    "nameLocal": "國產",
+    "industry": "건설·건자재",
+    "shares": 1180000000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4772",
+    "ticker": "4772.TWO",
+    "name": "台特化",
+    "nameLocal": "台特化",
+    "industry": "화학",
+    "shares": 147681552.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "8932",
+    "ticker": "8932.TWO",
+    "name": "智通*",
+    "nameLocal": "智通*",
+    "industry": "디지털·클라우드",
+    "shares": 426013152.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "9921",
+    "ticker": "9921.TW",
+    "name": "GIANT (巨大)",
+    "nameLocal": "巨大",
+    "industry": "스포츠·레저",
+    "shares": 392065395.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8070",
+    "ticker": "8070.TW",
+    "name": "CHANG WAH (長華*)",
+    "nameLocal": "長華*",
+    "industry": "전자 유통",
+    "shares": 725648455.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9939",
+    "ticker": "9939.TW",
+    "name": "HON CHUAN (宏全)",
+    "nameLocal": "宏全",
+    "industry": "기타",
+    "shares": 295786475.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6890",
+    "ticker": "6890.TW",
+    "name": "Lai Yih (來億-KY)",
+    "nameLocal": "來億-KY",
+    "industry": "스포츠·레저",
+    "shares": 250296650.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6023",
+    "ticker": "6023.TWO",
+    "name": "元大期貨",
+    "nameLocal": "元大期貨",
+    "industry": "금융·보험",
+    "shares": 447972732.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6670",
+    "ticker": "6670.TW",
+    "name": "FSP (復盛應用)",
+    "nameLocal": "復盛應用",
+    "industry": "스포츠·레저",
+    "shares": 139386973.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1736",
+    "ticker": "1736.TW",
+    "name": "JHT (喬山)",
+    "nameLocal": "喬山",
+    "industry": "스포츠·레저",
+    "shares": 303394617.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6592",
+    "ticker": "6592.TW",
+    "name": "HOTAI FINANCE (和潤企業)",
+    "nameLocal": "和潤企業",
+    "industry": "기타",
+    "shares": 641845008.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3019",
+    "ticker": "3019.TW",
+    "name": "ASIA (亞光)",
+    "nameLocal": "亞光",
+    "industry": "광전자",
+    "shares": 279243901.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "7822",
+    "ticker": "7822.TW",
+    "name": "V5 TECHNOLOGIES (倍利科)",
+    "nameLocal": "倍利科",
+    "industry": "반도체",
+    "shares": 45560763.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6282",
+    "ticker": "6282.TW",
+    "name": "Acbel (康舒)",
+    "nameLocal": "康舒",
+    "industry": "전자부품",
+    "shares": 856100705.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2388",
+    "ticker": "2388.TW",
+    "name": "VIA (威盛)",
+    "nameLocal": "威盛",
+    "industry": "반도체",
+    "shares": 555955941.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8016",
+    "ticker": "8016.TW",
+    "name": "Sitronix (矽創)",
+    "nameLocal": "矽創",
+    "industry": "반도체",
+    "shares": 120136876.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3010",
+    "ticker": "3010.TW",
+    "name": "WAH LEE (華立)",
+    "nameLocal": "華立",
+    "industry": "전자 유통",
+    "shares": 259436817.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8422",
+    "ticker": "8422.TW",
+    "name": "Cleanaway (可寧衛*)",
+    "nameLocal": "可寧衛*",
+    "industry": "친환경·에너지",
+    "shares": 1358762544.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2472",
+    "ticker": "2472.TW",
+    "name": "LELON (立隆電)",
+    "nameLocal": "立隆電",
+    "industry": "전자부품",
+    "shares": 164735137.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6683",
+    "ticker": "6683.TWO",
+    "name": "雍智科技",
+    "nameLocal": "雍智科技",
+    "industry": "반도체",
+    "shares": 27552661.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "7795",
+    "ticker": "7795.TW",
+    "name": "EPM (長廣)",
+    "nameLocal": "長廣",
+    "industry": "전자부품",
+    "shares": 78828500.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3596",
+    "ticker": "3596.TW",
+    "name": "Arcadyan (智易)",
+    "nameLocal": "智易",
+    "industry": "통신·네트워크",
+    "shares": 220354321.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3265",
+    "ticker": "3265.TWO",
+    "name": "台星科",
+    "nameLocal": "台星科",
+    "industry": "반도체",
+    "shares": 136261659.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3376",
+    "ticker": "3376.TW",
+    "name": "SZS (新日興)",
+    "nameLocal": "新日興",
+    "industry": "전자부품",
+    "shares": 195780215.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6584",
+    "ticker": "6584.TWO",
+    "name": "南俊國際",
+    "nameLocal": "南俊國際",
+    "industry": "전자부품",
+    "shares": 71379810.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1434",
+    "ticker": "1434.TW",
+    "name": "F.T.C (福懋)",
+    "nameLocal": "福懋",
+    "industry": "섬유",
+    "shares": 1684664637.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5351",
+    "ticker": "5351.TWO",
+    "name": "鈺創",
+    "nameLocal": "鈺創",
+    "industry": "반도체",
+    "shares": 328636781.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2211",
+    "ticker": "2211.TW",
+    "name": "EGST (長榮鋼)",
+    "nameLocal": "長榮鋼",
+    "industry": "철강",
+    "shares": 417091463.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2498",
+    "ticker": "2498.TW",
+    "name": "HTC (宏達電)",
+    "nameLocal": "宏達電",
+    "industry": "통신·네트워크",
+    "shares": 836097086.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1314",
+    "ticker": "1314.TW",
+    "name": "CPDC (中石化)",
+    "nameLocal": "中石化",
+    "industry": "플라스틱",
+    "shares": 3784850130.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5314",
+    "ticker": "5314.TWO",
+    "name": "世紀*",
+    "nameLocal": "世紀*",
+    "industry": "기타",
+    "shares": 1203460000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2428",
+    "ticker": "2428.TW",
+    "name": "THINKING (興勤)",
+    "nameLocal": "興勤",
+    "industry": "전자부품",
+    "shares": 128112726.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6715",
+    "ticker": "6715.TW",
+    "name": "Lintes (嘉基)",
+    "nameLocal": "嘉基",
+    "industry": "전자부품",
+    "shares": 68274026.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2367",
+    "ticker": "2367.TW",
+    "name": "UNITECH (燿華)",
+    "nameLocal": "燿華",
+    "industry": "전자부품",
+    "shares": 706253175.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4583",
+    "ticker": "4583.TW",
+    "name": "APEXDYNA (台灣精銳)",
+    "nameLocal": "台灣精銳",
+    "industry": "전기기계",
+    "shares": 80171351.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6176",
+    "ticker": "6176.TW",
+    "name": "ROEC (瑞儀)",
+    "nameLocal": "瑞儀",
+    "industry": "광전자",
+    "shares": 348770447.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6491",
+    "ticker": "6491.TW",
+    "name": "PEGAVISION (晶碩)",
+    "nameLocal": "晶碩",
+    "industry": "바이오·의료",
+    "shares": 78000000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2903",
+    "ticker": "2903.TW",
+    "name": "FEDS (遠百)",
+    "nameLocal": "遠百",
+    "industry": "무역·백화점",
+    "shares": 1416940589.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2201",
+    "ticker": "2201.TW",
+    "name": "YL (裕隆)",
+    "nameLocal": "裕隆",
+    "industry": "자동차",
+    "shares": 1070001251.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1215",
+    "ticker": "1215.TW",
+    "name": "CPE (卜蜂)",
+    "nameLocal": "卜蜂",
+    "industry": "식품",
+    "shares": 294790098.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2849",
+    "ticker": "2849.TW",
+    "name": "EnTie Bank (安泰銀)",
+    "nameLocal": "安泰銀",
+    "industry": "금융·보험",
+    "shares": 1957609349.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2548",
+    "ticker": "2548.TW",
+    "name": "HUAKU (華固)",
+    "nameLocal": "華固",
+    "industry": "건설·건자재",
+    "shares": 335704631.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3413",
+    "ticker": "3413.TW",
+    "name": "Fiti (京鼎)",
+    "nameLocal": "京鼎",
+    "industry": "반도체",
+    "shares": 110924410.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2897",
+    "ticker": "2897.TW",
+    "name": "O-Bank (王道銀行)",
+    "nameLocal": "王道銀行",
+    "industry": "금융·보험",
+    "shares": 2805357878.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2607",
+    "ticker": "2607.TW",
+    "name": "EITC (榮運)",
+    "nameLocal": "榮運",
+    "industry": "해운",
+    "shares": 533570547.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3693",
+    "ticker": "3693.TWO",
+    "name": "營邦",
+    "nameLocal": "營邦",
+    "industry": "컴퓨터·주변기기",
+    "shares": 42990694.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2393",
+    "ticker": "2393.TW",
+    "name": "EVERLIGHT (億光)",
+    "nameLocal": "億光",
+    "industry": "광전자",
+    "shares": 443393086.0,
+    "exchange": "TWSE"
+   }
+  ],
+  "info": {
+   "source": "대만증권거래소·장외시장 공식 공개자료(OpenAPI)",
+   "count": 318,
+   "notes": [
+    "장외(TPEx) 893종목 중 시가총액 계산 870종목"
+   ]
+  }
+ }
+}
