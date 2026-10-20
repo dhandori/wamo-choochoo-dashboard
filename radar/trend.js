@@ -41,22 +41,33 @@ const DIST_KINDS = [['HEAVY', '꽉 찬 음봉', 1.5], ['NORMAL', '보통', 1], [
 const DIST_SHORT = { HEAVY: '꽉 찬 음봉', NORMAL: '보통', LIGHT: '긴 아랫꼬리', HIDDEN: '위장 분산일' };
 const DIST_NAME = { HEAVY: '꽉 찬 음봉 · 위험', NORMAL: '보통 분산일', LIGHT: '긴 아랫꼬리 · 저가에서 회복 · 덜 위험', HIDDEN: '위장 분산일 · 올랐지만 아래쪽 마감' };
 
-// Tiny candle for one day: wick = high~low, body = open~close (red down, green up).
-// Older stored days may lack the open; then only the wick and a close tick are drawn.
-function miniCandle(c, kind) {
-  const SVGNS = 'http://www.w3.org/2000/svg', W = 14, H = 24, pad = 2;
+// Tiny candle for one day with its volume underneath.
+// Top: wick = high~low, body = open~close (green = 양봉 close above open, red = 음봉).
+// Bottom: today's volume bar under the candle and the day before as a faint bar on the left,
+// each coloured by its own candle. Older stored days may lack the open: then the wick, a close
+// tick and grey volume bars are drawn.
+function miniCandle(x, kind) {
+  const SVGNS = 'http://www.w3.org/2000/svg', W = 24, CH = 26, VT = 30, VH = 12, H = VT + VH, pad = 2, cx = 16;
   const svg = document.createElementNS(SVGNS, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('class', 'tr-candle');
   svg.setAttribute('aria-hidden', 'true');
-  if (!c || !isNum(c.high) || !isNum(c.low) || !isNum(c.close) || c.high <= c.low) return svg;
-  const y = v => pad + (c.high - v) / (c.high - c.low) * (H - pad * 2);
-  const line = (x1, y1, x2, y2, cls) => { const l = document.createElementNS(SVGNS, 'line'); Object.entries({ x1, y1, x2, y2, class: cls }).forEach(([k, v]) => l.setAttribute(k, v)); svg.append(l); };
-  line(W / 2, y(c.high), W / 2, y(c.low), 'tr-candle-wick');
-  if (isNum(c.open)) {
-    const top = y(Math.max(c.open, c.close)), bottom = y(Math.min(c.open, c.close));
-    const r = document.createElementNS(SVGNS, 'rect');
-    Object.entries({ x: 3, y: top, width: W - 6, height: Math.max(1.5, bottom - top), class: c.close < c.open ? 'tr-candle-down' : 'tr-candle-up' }).forEach(([k, v]) => r.setAttribute(k, v));
-    svg.append(r);
-  } else line(W / 2, y(c.close), W - 1, y(c.close), 'tr-candle-close');
+  const add = (tag, attrs) => { const n = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v)); svg.append(n); return n; };
+  const dir = c => c && isNum(c.open) && isNum(c.close) ? (c.close < c.open ? 'down' : 'up') : 'flat';
+  const c = x.candle;
+  if (c && isNum(c.high) && isNum(c.low) && isNum(c.close) && c.high > c.low) {
+    const y = v => pad + (c.high - v) / (c.high - c.low) * (CH - pad * 2);
+    add('line', { x1: cx, y1: y(c.high), x2: cx, y2: y(c.low), class: 'tr-candle-wick' });
+    if (isNum(c.open)) {
+      const top = y(Math.max(c.open, c.close)), bottom = y(Math.min(c.open, c.close));
+      add('rect', { x: cx - 4.5, y: top, width: 9, height: Math.max(1.5, bottom - top), class: `tr-candle-${dir(c)}` });
+    } else add('line', { x1: cx, y1: y(c.close), x2: cx + 6, y2: y(c.close), class: 'tr-candle-close' });
+  }
+  if (isNum(x.volume) && x.volume > 0) {
+    const max = Math.max(x.volume, isNum(x.prevVolume) ? x.prevVolume : 0);
+    const bar = (v, x0, w, cls) => { const h = Math.max(1, v / max * VH); add('rect', { x: x0, y: H - h, width: w, height: h, class: cls }); };
+    add('line', { x1: 0, y1: H - 0.5, x2: W, y2: H - 0.5, class: 'tr-vol-base' });
+    if (isNum(x.prevVolume) && x.prevVolume > 0) bar(x.prevVolume, 2, 6, `tr-vol tr-vol-${dir(x.prevCandle)} prev`);
+    bar(x.volume, cx - 4.5, 9, `tr-vol tr-vol-${dir(c)}`);
+  }
   svg.classList.add(kind);
   return svg;
 }
@@ -184,10 +195,13 @@ function weatherDetail(b) {
       const live = days.filter(x => x.distribution && !x.expired && x.kind);
       if (live.length) {
         const box = el('div', null, 'tr-dist-list');
-        box.append(el('b', '지금 세는 분산일'), el('small', '왼쪽 그림 = 그날 캔들 · 종가 위치: 0% = 그날 저가에서 끝남, 100% = 그날 고가에서 끝남'));
+        box.append(el('b', '지금 세는 분산일'), el('small', '그림: 위 = 그날 캔들, 아래 = 거래량(왼쪽 흐린 막대 = 전날) · 초록 = 양봉, 빨강 = 음봉 · 종가 위치: 0% = 그날 저가에서 끝남, 100% = 고가에서 끝남'));
+        const head = el('p', null, 'tr-dist-row tr-dist-head');
+        ['', '날짜', '등락', '위치', '거래량', '종류'].forEach(t => head.append(el('span', t)));
+        box.append(head);
         live.slice().reverse().forEach(x => {
           const row = el('p', null, `tr-dist-row ${x.kind.toLowerCase()}`);
-          row.append(miniCandle(x.candle, (x.kind || '').toLowerCase()), el('time', md(x.date)), el('span', pct(x.changePct), tone(x.changePct)), el('span', isNum(x.closePos) ? `위치 ${x.closePos}%` : '위치 —'), el('strong', DIST_SHORT[x.kind]));
+          row.append(miniCandle(x, (x.kind || '').toLowerCase()), el('time', md(x.date)), el('span', pct(x.changePct), tone(x.changePct)), el('span', isNum(x.closePos) ? `${x.closePos}%` : '—'), el('span', isNum(x.volumeRatio) ? `${fmt(x.volumeRatio, 2)}배` : '—', 'tr-dist-vol'), el('strong', DIST_SHORT[x.kind]));
           box.append(row);
         });
         c2.append(box);

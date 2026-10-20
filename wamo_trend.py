@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 8
+TREND_VERSION = 9
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -371,7 +371,11 @@ def distribution_days(bench, window=25):
             pos = close_position(cur)
             day.update(close=rnd(cur['close']), kind=kind, closePos=None if pos is None else rnd(pos * 100, 0),
                        # Mini candle on the card: open may be missing in older stored history.
-                       candle={k: rnd(cur.get(k)) for k in ('open', 'high', 'low', 'close')})
+                       candle={k: rnd(cur.get(k)) for k in ('open', 'high', 'low', 'close')},
+                       # Volume under the mini candle: today vs the day before, each coloured by its own candle.
+                       volume=cur.get('volume'), prevVolume=prev.get('volume'),
+                       volumeRatio=rnd(cur['volume'] / prev['volume']) if cur.get('volume') and prev.get('volume') else None,
+                       prevCandle={k: rnd(prev.get(k)) for k in ('open', 'close')})
         if hit is not None:
             day['expiredOn'] = hit['date']
             day['expiredClose'] = rnd(hit['close'])

@@ -307,15 +307,22 @@ dialog[open] ~ .to-top { display: none; }
 .tr-dist-list { margin: 2px 0 10px; padding: 8px 10px; border: 1px solid var(--rule, #22324a); border-radius: 8px; font-size: 12px; }
 .tr-dist-list > b { display: block; font-size: 12px; color: var(--ink-1, #e6edf5); font-weight: 600; }
 .tr-dist-list > small { display: block; margin-bottom: 4px; font-size: 11px; color: var(--ink-3, #8aa0b9); }
-.tr-dist-row { display: grid; grid-template-columns: 14px 36px 50px 62px 1fr; align-items: center; gap: 6px; align-items: baseline; margin: 3px 0 0; font-variant-numeric: tabular-nums; }
+.tr-dist-row { display: grid; grid-template-columns: 24px 32px 44px 32px 40px minmax(0, 1fr); gap: 5px; align-items: center; margin: 2px 0 0; font-variant-numeric: tabular-nums; }
 .tr-dist-row time { color: var(--ink-3, #8aa0b9); }
 .tr-dist-row strong { font-weight: 600; white-space: nowrap; }
 .tr-dist-row.heavy strong { color: #ff8b95; } .tr-dist-row.light strong { color: #f6c48f; } .tr-dist-row.hidden strong { color: #c8a8f7; } .tr-dist-row.normal strong { color: var(--ink-1, #e6edf5); }
-.tr-candle { width: 14px; height: 24px; display: block; }
+.tr-candle { width: 24px; height: 42px; display: block; }
 .tr-candle-wick { stroke: #c9d4e2; stroke-width: 1.4; }
 .tr-candle-close { stroke: #c9d4e2; stroke-width: 2; }
 .tr-candle-down { fill: #ff5d6c; }
 .tr-candle-up { fill: #3ccf9b; }
+.tr-candle-flat { fill: #c9d4e2; }
+.tr-vol-up { fill: #3ccf9b; } .tr-vol-down { fill: #ff5d6c; } .tr-vol-flat { fill: #8aa0b9; }
+.tr-vol.prev { opacity: .45; }
+.tr-vol-base { stroke: #3a4c63; stroke-width: 1; }
+.tr-dist-vol { color: var(--ink-2, #b8c4d4); }
+.tr-dist-head { margin-top: 6px; font-size: 10.5px; color: var(--ink-3, #8aa0b9); }
+.tr-dist-head span { white-space: nowrap; }
 .tr-dist-row.light { background: color-mix(in srgb, #f6c48f 7%, transparent); border-radius: 4px; }
 
 /* ================= 천장 신호 (climax.js) ================= */

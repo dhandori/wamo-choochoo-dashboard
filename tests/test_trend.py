@@ -86,6 +86,7 @@ class TrendMathTests(unittest.TestCase):
         self.assertEqual(out['score'], 3.0)
         day = next(x for x in out['days'] if x['date'] == dates[16])
         self.assertEqual((day['kind'], day['closePos']), ('HIDDEN', 13))
+        self.assertEqual((day['volume'], day['prevVolume'], day['volumeRatio']), (150.0, 100.0, 1.5))
 
     def test_distribution_days_need_volume(self):
         bench = [{'date': d, 'close': 100.0, 'volume': None} for d in sessions(30)]
