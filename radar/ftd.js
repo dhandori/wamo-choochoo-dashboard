@@ -1,7 +1,7 @@
 // Separate market-reversal workspace; individual-stock filters do not apply.
 import { ftdSummary, freshIndex, PHASES, PHASE_MEANING, ftdQuality } from './ftd-model.mjs?v=20261019-2';
 import { helpButton, addTerms } from './help.js?v=20261020-asia1';
-import { FTD_TERMS, glossary } from './terms.mjs?v=20261020-dist1';
+import { FTD_TERMS, glossary } from './terms.mjs?v=20261020-dist3';
 addTerms(FTD_TERMS);
 const n = (tag, text, cls) => { const e=document.createElement(tag); if(text!=null)e.textContent=text; if(cls)e.className=cls; return e; };
 const num = (v,d=1) => typeof v==='number' && Number.isFinite(v) ? v.toLocaleString('ko-KR',{maximumFractionDigits:d,minimumFractionDigits:d}) : '—';
@@ -140,7 +140,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
     panel.append(signal);}
   if(!s.ftd&&s.lastFtd){const lf=s.lastFtd,box=n('div',null,'ftd-signal ftd-past');const top=n('div',null,'ftd-signal-top');top.append(n('strong',`지난 FTD ${lf.date}`),n('span',`당시 ${pct(lf.changePct)} · 거래량 ${num(lf.volumeRatio,2)}배 · 반등 Day ${lf.rallyDay}`));const done=n('span');done.append(`${lf.recoveredDate} 하락 전 고점(${num(lf.peak,0)}) 회복 → `,term('uptrendDone','상승 전환 완료'),` · 이후 ${lf.age??0}거래일`);top.append(done);box.append(top);panel.append(box);}
   if(s.rally){const lows=n('div',null,'ftd-levels');lows.append(metric(term('bottom','기준 저점 (반등 무효선)'),num(s.rally.low,2),`장중 이 가격 아래로 내려가면 반등·FTD 무효${typeof s.rally.dayOneLow==='number'&&s.rally.dayOneLow!==s.rally.low?` · Day 1 장중 저가는 ${num(s.rally.dayOneLow,2)}`:''}`));if(s.ftd)lows.append(metric(term('ftdLow','FTD 저가 (경고선)'),num(s.ftd.low,2),'종가가 이 가격 아래면 경고'));panel.append(lows);}
-  if(s.ftd&&s.ftd.postDistribution){const d=s.ftd.postDistribution;const line=n('p',null,'ftd-caption');const kindName={HEAVY:'꽉 찬 음봉',NORMAL:'보통',LIGHT:'저가 회복',HIDDEN:'위장'},kinds=s.ftd.postDistributionKind||{};line.append('FTD 뒤 10거래일 안의 ',term('distribution','분산일'),`: ${d.length}번${d.length?` (${d.map(x=>`${x.slice(5).replace('-','/')}${kinds[x]?` ${kindName[kinds[x]]}`:''}`).join(', ')})`:''} · 3번 이상이면 경고`);panel.append(line);}
+  if(s.ftd&&s.ftd.postDistribution){const d=s.ftd.postDistribution;const line=n('p',null,'ftd-caption');const kindName={HEAVY:'꽉 찬 음봉',NORMAL:'보통',LIGHT:'긴 아랫꼬리',HIDDEN:'위장'},kinds=s.ftd.postDistributionKind||{};line.append('FTD 뒤 10거래일 안의 ',term('distribution','분산일'),`: ${d.length}번${d.length?` (${d.map(x=>`${x.slice(5).replace('-','/')}${kinds[x]?` ${kindName[kinds[x]]}`:''}`).join(', ')})`:''} · 3번 이상이면 경고`);panel.append(line);}
   panel.append(chart(s));container.append(panel);
   const history=n('details',null,'ftd-history');history.append(n('summary',`최근 판정 이력 · ${(s.events||[]).length}건`));
   const list=n('ol');[...(s.events||[])].reverse().slice(0,20).forEach(e=>{const li=n('li');li.append(n('time',e.date),n('strong',EVENT_NAMES[e.type]||e.type),n('span',e.type==='FTD'?`${pct(e.changePct)} · ${num(e.volumeRatio,2)}배 · Day ${e.rallyDay}${e.late?' · 늦은 FTD':''}`:e.type==='RALLY'?`${DAY_ONE_KIND[e.dayOneKind]||'상승 마감'} · 기준 저점 ${num(e.low,2)}`:`지수 ${num(e.close,2)}`));list.append(li);});history.append(list);container.append(history);

@@ -246,6 +246,7 @@ class IndexFTDInputTests(unittest.TestCase):
         rows=fetch_index('^GSPC',opener=lambda *a,**kw:io.BytesIO(json.dumps(data).encode()))
         self.assertEqual(rows[-1].get('low'),98)
         self.assertEqual(rows[-1].get('high'),102)
+        self.assertIn('open',rows[-1])
 
     def test_wrong_index_identity_rejected(self):
         import io,json

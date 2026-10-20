@@ -33,7 +33,7 @@ DIST_RULE = {'heavyPosMax': 1 / 3, 'lightPosMin': 0.5, 'hiddenPosMax': 1 / 3, 'h
 DIST_KIND_TEXT = {
     'HEAVY': '꽉 찬 음봉 · 저가 근처 마감 (위험)',
     'NORMAL': '보통 분산일',
-    'LIGHT': '저가에서 회복해 위쪽 마감 (덜 위험)',
+    'LIGHT': '긴 아랫꼬리 · 저가에서 회복해 위쪽 마감 (덜 위험)',
     'HIDDEN': '위장 분산일 · 올랐지만 아래쪽 마감',
 }
 

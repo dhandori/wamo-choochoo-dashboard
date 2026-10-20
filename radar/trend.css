@@ -294,20 +294,26 @@ dialog[open] ~ .to-top { display: none; }
 /* Distribution days by where the close landed in the day's range. */
 .tr-d.hit.heavy { background: #ff4d5e; box-shadow: inset 0 0 0 1px #ffb3ba; }
 .tr-d.hit.normal { background: var(--red); }
-.tr-d.hit.light { background: #c98a92; }
+.tr-d.hit.light { background: linear-gradient(to bottom, var(--red) 0 45%, transparent 45%); box-shadow: inset 0 0 0 1px var(--red); }
 .tr-d.hit.hidden { background: #b48cf2; }
 .tr-dist-score { margin-left: auto; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1px solid currentColor; }
 .tr-dist-score.good { color: #7fdcbc; } .tr-dist-score.mid { color: #f2d38e; } .tr-dist-score.bad { color: #ff8b95; }
 .tr-dist-mix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; margin: 2px 0 8px; font-size: 12px; color: var(--ink-2, #b8c4d4); }
 .tr-dist-chip { display: flex; align-items: center; gap: 5px; min-width: 0; }
 .tr-dist-chip i { flex: none; width: 10px; height: 10px; border-radius: 2px; background: var(--red); }
-.tr-dist-chip.heavy i { background: #ff4d5e; } .tr-dist-chip.light i { background: #c98a92; } .tr-dist-chip.hidden i { background: #b48cf2; }
+.tr-dist-chip.heavy i { background: #ff4d5e; } .tr-dist-chip.light i { background: linear-gradient(to bottom, var(--red) 0 45%, transparent 45%); box-shadow: inset 0 0 0 1px var(--red); } .tr-dist-chip.hidden i { background: #b48cf2; }
 .tr-dist-chip b { font-weight: 600; color: var(--ink-1, #e6edf5); white-space: nowrap; }
 .tr-dist-chip span { color: var(--ink-3, #8aa0b9); white-space: nowrap; }
 .tr-dist-list { margin: 2px 0 10px; padding: 8px 10px; border: 1px solid var(--rule, #22324a); border-radius: 8px; font-size: 12px; }
 .tr-dist-list > b { display: block; font-size: 12px; color: var(--ink-1, #e6edf5); font-weight: 600; }
 .tr-dist-list > small { display: block; margin-bottom: 4px; font-size: 11px; color: var(--ink-3, #8aa0b9); }
-.tr-dist-row { display: grid; grid-template-columns: 36px 50px 62px 1fr; gap: 6px; align-items: baseline; margin: 3px 0 0; font-variant-numeric: tabular-nums; }
+.tr-dist-row { display: grid; grid-template-columns: 14px 36px 50px 62px 1fr; align-items: center; gap: 6px; align-items: baseline; margin: 3px 0 0; font-variant-numeric: tabular-nums; }
 .tr-dist-row time { color: var(--ink-3, #8aa0b9); }
 .tr-dist-row strong { font-weight: 600; white-space: nowrap; }
-.tr-dist-row.heavy strong { color: #ff8b95; } .tr-dist-row.light strong { color: #f2b8bd; } .tr-dist-row.hidden strong { color: #c8a8f7; } .tr-dist-row.normal strong { color: var(--ink-1, #e6edf5); }
+.tr-dist-row.heavy strong { color: #ff8b95; } .tr-dist-row.light strong { color: #f6c48f; } .tr-dist-row.hidden strong { color: #c8a8f7; } .tr-dist-row.normal strong { color: var(--ink-1, #e6edf5); }
+.tr-candle { width: 14px; height: 24px; display: block; }
+.tr-candle-wick { stroke: #c9d4e2; stroke-width: 1.4; }
+.tr-candle-close { stroke: #c9d4e2; stroke-width: 2; }
+.tr-candle-down { fill: #ff5d6c; }
+.tr-candle-up { fill: #3ccf9b; }
+.tr-dist-row.light { background: color-mix(in srgb, #f6c48f 7%, transparent); border-radius: 4px; }

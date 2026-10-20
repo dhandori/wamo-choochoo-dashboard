@@ -35,7 +35,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 6
+TREND_VERSION = 7
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -320,7 +320,7 @@ def fetch_index(symbol, days=420, opener=None):
                 def field(key):
                     values = quote.get(key) or []
                     return num(values[i]) if i < len(values) else None
-                rows.append({'date': d, 'close': c, 'high': field('high'), 'low': field('low'), 'volume': v})
+                rows.append({'date': d, 'open': field('open'), 'close': c, 'high': field('high'), 'low': field('low'), 'volume': v})
             if len(rows) < 120:
                 raise ValueError('short index history')
             return rows
@@ -364,7 +364,9 @@ def distribution_days(bench, window=25):
         day = {'date': cur['date'], 'changePct': rnd(chg * 100), 'distribution': is_dist, 'expired': expired}
         if is_dist:
             pos = close_position(cur)
-            day.update(close=rnd(cur['close']), kind=kind, closePos=None if pos is None else rnd(pos * 100, 0))
+            day.update(close=rnd(cur['close']), kind=kind, closePos=None if pos is None else rnd(pos * 100, 0),
+                       # Mini candle on the card: open may be missing in older stored history.
+                       candle={k: rnd(cur.get(k)) for k in ('open', 'high', 'low', 'close')})
         if hit is not None:
             day['expiredOn'] = hit['date']
             day['expiredClose'] = rnd(hit['close'])
@@ -373,7 +375,7 @@ def distribution_days(bench, window=25):
     return {'status': 'OK', 'count': count, 'score': rnd(score, 1), 'kinds': kinds, 'window': window, 'days': days,
             'weights': DIST_RULE['weights'],
             'note': ('분산일: 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 같은 날이라도 종가가 어디서 끝났는지가 중요해서, '
-                     '그날 고가~저가 범위에서 아래쪽 1/3에서 끝나면(꽉 찬 음봉) 위험, 위쪽 절반에서 끝나면(저가에서 회복) 덜 위험으로 봅니다. '
+                     '그날 고가~저가 범위에서 아래쪽 1/3에서 끝나면(꽉 찬 음봉) 위험, 위쪽 절반에서 끝나면(긴 아랫꼬리 · 저가에서 회복) 덜 위험으로 봅니다. '
                      '지수가 올랐어도 거래량이 늘고 종가가 범위 아래쪽 1/3에 처지면(윗꼬리) 막판 매물이 끌어내린 위장 분산일로 셉니다. '
                      '그 뒤 지수가 5% 넘게 오르면 지웁니다.')}
 
@@ -527,7 +529,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None):
         c = max(risk(d) for _, d in counted)
         def one(d):
             k = d.get('kinds') or {}
-            parts = [f'{name} {k[key]}' for key, name in (('HEAVY', '꽉 찬 음봉'), ('HIDDEN', '위장'), ('LIGHT', '저가 회복')) if k.get(key)]
+            parts = [f'{name} {k[key]}' for key, name in (('HEAVY', '꽉 찬 음봉'), ('HIDDEN', '위장'), ('LIGHT', '긴 아랫꼬리')) if k.get(key)]
             return f"{d['count']}번" + (f" ({' · '.join(parts)}) · 위험 점수 {risk(d):g}" if parts else '')
         detail = ' / '.join(f'{label} {one(d)}' for label, d in counted) if len(counted) > 1 else one(counted[0][1])
         add('distribution', '분산일', -1 if c >= 6 else 0 if c >= 4 else 1,
