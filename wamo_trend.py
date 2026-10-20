@@ -20,6 +20,7 @@ import urllib.parse
 import urllib.request
 
 from wamo_update import extract_old_payload
+import wamo_climax as climax_mod
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT = 'wamo_trend.json'
@@ -35,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 7
+TREND_VERSION = 8
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -47,6 +48,10 @@ SIGNALS = {
                'why': '주가는 고점 아래인데 지수 대비 강도(RS선)가 먼저 52주 신고가'},
     'sell50': {'label': '50일선 대량 이탈', 'side': 'sell',
                'why': '평소의 1.4배 넘는 거래량으로 50일선 아래로 내려간 날'},
+    'revTop': {'label': '일중전환 · 천장형', 'side': 'sell',
+               'why': '장중 50일 최고가를 새로 찍고도 전날보다 낮게, 그날 범위 아래쪽 절반에서 끝난 날'},
+    'climaxTop': {'label': '천장 경고 (클라이맥스 뒤 일중전환)', 'side': 'sell',
+                  'why': '클라이맥스 런이 나온 뒤 10거래일 안에 천장형 일중전환이 나온 날'},
 }
 
 
@@ -670,6 +675,11 @@ def signals_at(s, i, bench_by_date):
     br = heavy_ma50_break_at(rows, closes, i)
     if br is True:
         found.append('sell50')
+    rv = climax_mod.reversal_at(rows, i)
+    if rv and rv['kind'] == 'TOP':
+        found.append('revTop')
+        if any((climax_mod.climax_at(rows, j) or {}).get('met') for j in range(max(0, i - climax_mod.RECENT), i + 1)):
+            found.append('climaxTop')
     if bench_by_date:
         pts = [(k, r['close'] / bench_by_date[r['date']]) for k, r in enumerate(rows[:i + 1]) if bench_by_date.get(r['date'])]
         if len(pts) >= 200 and pts[-1][0] == i:
@@ -687,18 +697,23 @@ def update_signal_log(log, market, universe, bench, asof, backfill_sessions=40):
     keys = {(e['date'], e['id'], e['signal']) for e in events}
     bench_by_date = {r['date']: r['close'] for r in bench}
     first_run = not events
+    # 새로 추가된 신호는 한 번만 최근 40거래일을 거꾸로 계산해 성적표를 빨리 채움
+    known = set(book.get('signalsKnown') or {e['signal'] for e in events})
+    fresh = set(SIGNALS) - known if not first_run else set()
     for s in universe:
         n = len(s['rows'])
-        start = n - backfill_sessions if first_run else n - 1
+        start = n - backfill_sessions if (first_run or fresh) else n - 1
         for i in range(max(start, 230), n):
             for sig in signals_at(s, i, bench_by_date):
+                if i < n - 1 and not first_run and sig not in fresh:
+                    continue
                 d = s['rows'][i]['date']
                 if (d, s['id'], sig) in keys:
                     continue
                 keys.add((d, s['id'], sig))
                 events.append({'date': d, 'id': s['id'], 'symbol': s['symbol'], 'name': s['name'],
                                'signal': sig, 'close': rnd(s['closes'][i], 4),
-                               'bench': rnd(bench_by_date.get(d), 4), 'backfill': first_run and i < n - 1,
+                               'bench': rnd(bench_by_date.get(d), 4), 'backfill': (first_run or sig in fresh) and i < n - 1,
                                'ret': {}, 'excess': {}})
     # Fill forward returns from current verified histories.
     by_id = {s['id']: s for s in universe}
@@ -724,6 +739,7 @@ def update_signal_log(log, market, universe, bench, asof, backfill_sessions=40):
     cutoff = (date.fromisoformat(asof) - timedelta(days=400)).isoformat()
     book['events'] = [e for e in events if e['date'] >= cutoff]
     book['updatedAsOf'] = asof
+    book['signalsKnown'] = sorted(set(SIGNALS) | known)
     return book
 
 
@@ -937,7 +953,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
             for r in s['rows']:
                 counts[r['date']] = counts.get(r['date'], 0) + 1
         traded = {d for d, n in counts.items() if n >= len(universe) * 0.5}
-    ftd_indexes = []
+    ftd_indexes, climax_rows = [], []
     ftd_history = read_json(root / "wamo_ftd_history.json", {})
     pairs = [(symbol, label, bench, synthetic)]
     if sym2 and (market in ('KR', 'US') or bench2):   # optional second index: shown only when it arrived
@@ -954,6 +970,8 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
                     print(f'{sym} FTD 보완 자료 검증 실패: {type(exc).__name__}', flush=True)
         combined = merge_history(raw or [], ftd_history.get(sym, [])) if not is_synthetic else raw
         signal = for_market(combined or [], market, asof, synthetic=is_synthetic, expected=expected, traded=traded)
+        if combined and not is_synthetic:
+            climax_rows.append((sym, name, [r for r in combined if r['date'] <= asof]))
         if signal["status"] == "OK":
             ftd_history[sym] = [r for r in combined if r["date"] <= asof]
         signal.update(symbol=sym, label=name, source='Yahoo Finance ' + sym,
@@ -976,6 +994,11 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     except Exception as exc:  # noqa: BLE001 - optional module never blocks the rest
         print(f'{market} 선도주·선도업종 계산 실패: {type(exc).__name__}: {exc}', flush=True)
         leadership = {'status': 'UNAVAILABLE', 'note': '선도주·선도업종 계산에 실패했습니다. 다음 갱신 때 다시 계산합니다.'}
+    try:
+        climax = climax_mod.build(universe, climax_rows)
+    except Exception as exc:  # noqa: BLE001 - optional module never blocks the rest
+        print(f'{market} 천장 신호 계산 실패: {type(exc).__name__}: {exc}', flush=True)
+        climax = {'status': 'UNAVAILABLE', 'note': '천장 신호 계산에 실패했습니다. 다음 갱신 때 다시 계산합니다.'}
     charts = chart_payload(universe, bench, asof, market)
     charts['benchLabel'] = idx['label']
     return {
@@ -992,6 +1015,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
                          'items': warnings[:80],
                          'note': '최근 20거래일 안에 상승 추세였던 종목만 봐요. 경고는 팔라는 명령이 아니라 확인하라는 신호예요.'},
         'earnings': earnings,
+        'climax': climax,
         'scorecard': scorecard(book),
     }, earnings_cache, charts
 
