@@ -4,3 +4,5 @@ __pycache__/
 .env
 .env.*
 test-results/
+# JP/TW hand-off between wamo_asia.py and the radar publish (same data lives in wamo_insights.json)
+wamo_asia_markets.json

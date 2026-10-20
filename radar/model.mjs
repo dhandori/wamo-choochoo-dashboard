@@ -28,10 +28,16 @@ export function signalChanges(s,prior,distance=10) {
  }
  return {entered,exited,comparable};
 }
+// Korea/US are required. Japan/Taiwan are optional Lite markets: an invalid one is
+// dropped so a bad Asia block can never take the Korea/US radar down with it.
+export const OPTIONAL_MARKETS=['JP','TW'];
 export function validSnapshot(x) {
  if (!x || x.schemaVersion!==1 || !timestamp(x.generatedAt) || !x.markets) return false;
- return ['KR','US'].every(k=> {
-  const m=x.markets[k];
+ for(const k of OPTIONAL_MARKETS)if(x.markets[k]!=null&&!validMarket(x.markets[k]))delete x.markets[k];
+ return ['KR','US'].every(k=>validMarket(x.markets[k]));
+}
+function validMarket(m) {
+ {
   if(!m || !['CURRENT','PARTIAL','STALE','UNAVAILABLE'].includes(m.status) || !day(m.expectedSession) || !timestamp(m.nextScheduledFor) || (m.verifiedThrough!=null&&!timestamp(m.verifiedThrough)) || !text(m.source) || !Array.isArray(m.stocks) || !Array.isArray(m.industries) || !Array.isArray(m.movers) || !Array.isArray(m.warnings) || !m.warnings.every(w=>typeof w==='string'))return false;
   if(m.status==='UNAVAILABLE' ? !(m.asOf==null && m.stocks.length===0) : !day(m.asOf))return false;
   const c=m.coverage;
@@ -54,7 +60,7 @@ export function validSnapshot(x) {
    if(!Array.isArray(g.members)||!Array.isArray(g.leaders)||new Set(g.members).size!==g.members.length||g.memberCount!==g.members.length||!g.members.every(id=>ids.has(id))||!g.leaders.every(id=>g.members.includes(id)))return false;
    return ['nearHighCount','advancingCount','volumeConfirmedCount','newHighCount'].every(key=>g[key]==null||g[key]<=g.memberCount);
   });
- });
+ }
 }
 export function acceptSnapshot(current, incoming) {
  current=validSnapshot(current)?current:null;
@@ -62,8 +68,11 @@ export function acceptSnapshot(current, incoming) {
  if (!current) return incoming;
  if (Date.parse(incoming.generatedAt)<Date.parse(current.generatedAt)) return current;
  const markets={...incoming.markets};
- for(const k of ['KR','US']) {
+ // A Korea/US-only file must not wipe Japan/Taiwan that the page already holds.
+ for(const k of OPTIONAL_MARKETS)if(!markets[k]&&current.markets[k])markets[k]=current.markets[k];
+ for(const k of Object.keys(markets)) {
   const old=current.markets[k],next=markets[k];
+  if(!old||old===next)continue;
   if ((old.asOf||'')>(next.asOf||'') || (old.stocks.length && next.stocks.length<old.stocks.length*.9)) {
    markets[k]={...old,expectedSession:next.expectedSession,nextScheduledFor:next.nextScheduledFor,status:old.asOf===next.expectedSession?'PARTIAL':'STALE',warnings:[...new Set([...old.warnings,'새 가격 파일의 날짜가 더 오래되거나 유효 종목이 10% 넘게 감소해 이전 검증 가격을 유지합니다.'])]};
    if(next.verifiedThrough)markets[k].verifiedThrough=next.verifiedThrough;else delete markets[k].verifiedThrough;
@@ -72,7 +81,9 @@ export function acceptSnapshot(current, incoming) {
  return {...incoming,markets};
 }
 // Market-cap floors offered per market (KRW for KR, USD for US). 0 = no floor.
-export const CAP_FLOORS={KR:[[0,'전체'],[5e11,'5천억↑'],[1e12,'1조↑'],[5e12,'5조↑'],[1e13,'10조↑']],US:[[0,'전체'],[2e9,'$20억↑'],[1e10,'$100억↑'],[5e10,'$500억↑'],[2e11,'$2천억↑']]};
+export const CAP_FLOORS={KR:[[0,'전체'],[5e11,'5천억↑'],[1e12,'1조↑'],[5e12,'5조↑'],[1e13,'10조↑']],
+ JP:[[0,'전체'],[5e11,'5천억엔↑'],[1e12,'1조엔↑'],[5e12,'5조엔↑'],[1e13,'10조엔↑']],
+ TW:[[0,'전체'],[3e10,'300억↑'],[1e11,'1천억↑'],[5e11,'5천억↑'],[2e12,'2조↑']],US:[[0,'전체'],[2e9,'$20억↑'],[1e10,'$100억↑'],[5e10,'$500억↑'],[2e11,'$2천억↑']]};
 // Sort keys: [label shown in the menu, direction]. 'asc' means smaller first.
 export const SORT_KEYS={marketCap:['시총 큰 순','desc'],marketCapAsc:['시총 작은 순','asc'],rs:['RS 높은 순','desc'],highDistancePct:['신고가에 가까운 순','asc'],changePct:['당일 상승률 높은 순','desc'],absolute:['당일 변동 큰 순','desc'],return5d:['5일 수익률 높은 순','desc'],return20d:['20일 수익률 높은 순','desc'],return60d:['60일 수익률 높은 순','desc'],return120d:['120일 수익률 높은 순','desc'],return200d:['200일 수익률 높은 순','desc'],volumeRatio:['거래량 배수 큰 순','desc'],name:['종목명 순','asc']};
 // Compare one key; missing values always go last, whatever the direction.

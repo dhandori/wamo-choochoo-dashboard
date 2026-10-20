@@ -12,17 +12,20 @@ KST = timezone(timedelta(hours=9))
 NEW_YORK = ZoneInfo('America/New_York')
 # Logical market-local publication times. Two US UTC cron candidates preserve
 # 16:20 America/New_York across daylight-saving transitions.
-SLOTS = {'KR': ((16, 0),), 'US': ((16, 20),)}
-MARKET_TZ = {'KR': KST, 'US': NEW_YORK}
+SLOTS = {'KR': ((16, 0),), 'US': ((16, 20),), 'JP': ((16, 40),), 'TW': ((15, 40),)}
+MARKET_TZ = {'KR': KST, 'US': NEW_YORK, 'JP': ZoneInfo('Asia/Tokyo'), 'TW': ZoneInfo('Asia/Taipei')}
+CALENDARS = {'KR': 'XKRX', 'US': 'XNYS', 'JP': 'XTKS', 'TW': 'XTAI'}
 SCHEDULE_LABEL = {'KR': '한국 16:00',
-                  'US': '미국 뉴욕 16:20 이후 (한국 05:20/06:20)'}
+                  'US': '미국 뉴욕 16:20 이후 (한국 05:20/06:20)',
+                  'JP': '일본·대만 한국시간 16:40',
+                  'TW': '일본·대만 한국시간 16:40'}
 
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=4)
 def calendar(market):
     import exchange_calendars as xc
-    return xc.get_calendar('XKRX' if market == 'KR' else 'XNYS')
+    return xc.get_calendar(CALENDARS[market])
 
 
 def expected_session(market, now=None):

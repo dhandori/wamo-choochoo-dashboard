@@ -21,6 +21,18 @@ def collect_snapshot(root, now=None):
     except (OSError,ValueError):baseline=None
     current_time = now or datetime.now(timezone.utc)
     result = build_insights(payloads, current_time, previous, baseline)
+    # Japan/Taiwan come from the Lite engine (wamo_asia.py); only their freshness is re-derived here.
+    try:
+        from wamo_insights import ASIA, refresh_market_status
+        try:
+            asia = json.loads((root/'wamo_asia_markets.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            asia = previous or {}  # Korea/US runs: carry the last published JP/TW forward.
+        for market, block in (asia.get('markets') or {}).items():
+            if market in ASIA and isinstance(block, dict) and block.get('stocks'):
+                result['markets'][market] = refresh_market_status(block, market, current_time)
+    except (OSError, ValueError, TypeError, KeyError, RuntimeError):
+        pass  # No Asia file yet, or calendar missing: Korea/US publish as before.
     try:
         from wamo_news import attach_news
         cache = json.loads((root/'wamo_news.json').read_text(encoding='utf-8'))

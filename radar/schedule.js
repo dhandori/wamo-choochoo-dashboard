@@ -2,7 +2,7 @@
 // "지금 갱신" button reads (published at the start and end of every run).
 import { refreshReason } from './runner.js?v=20261019-2';
 
-const NAMES = { KR: '한국', US: '미국' };
+const NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const RULE = {
   KR: '평일 오후 4시 (장 마감 15:30 뒤)',
   US: '평일 새벽 5시 20분 · 미국 서머타임 끝나면 6시 20분',
@@ -75,15 +75,54 @@ function card(market, s, trend, now) {
   return box;
 }
 
-export function renderSchedule(container, status, trendBlock, current) {
+// Japan/Taiwan run in their own light job (wamo_asia.py) with its own status file.
+let asia = null, asiaAt = 0, asiaLoading = null;
+function loadAsia(again) {
+  if (asiaLoading || Date.now() - asiaAt < 60000) return;
+  asiaLoading = fetch('wamo_asia_status.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null).then(j => { asia = j; again(); })
+    .catch(() => {}).finally(() => { asiaAt = Date.now(); asiaLoading = null; });
+}
+function asiaCard(snapshot, now) {
+  const box = n('div', null, 'sched-card');
+  const head = n('div', null, 'sched-head');
+  head.append(n('strong', '일본·대만'));
+  const blocks = ['JP', 'TW'].map(m => snapshot?.markets?.[m] || null), st = ['JP', 'TW'].map(m => asia?.[m] || null);
+  let label, tone;
+  if (st.some(x => x?.status === 'FAILED')) [label, tone] = ['지난 갱신 실패', 'bad'];
+  else if (blocks.every(b => !b)) [label, tone] = ['첫 갱신 대기', 'idle'];
+  else if (blocks.some(b => b && b.status === 'STALE')) [label, tone] = ['갱신 지연', 'warn'];
+  else [label, tone] = ['최신 상태', 'ok'];
+  head.append(n('span', label, `sched-chip tone-${tone}`));
+  box.append(head);
+  const rows = n('dl', null, 'sched-rows');
+  const row = (k, v, sub) => { rows.append(n('dt', k)); const dd = n('dd'); dd.append(n('b', v)); if (sub) dd.append(n('small', ` ${sub}`)); rows.append(dd); };
+  ['JP', 'TW'].forEach((m, i) => {
+    const t = ms(st[i]?.lastSuccessAt);
+    row(`${NAMES[m]} 마지막 갱신`, when(t), t ? `${ago(t, now)} · ${blocks[i]?.asOf || st[i]?.asOf || '—'} 종가 · ${st[i]?.count ?? blocks[i]?.stocks?.length ?? '—'}종목` : '');
+  });
+  const next = ms(blocks[0]?.nextScheduledFor || blocks[1]?.nextScheduledFor);
+  row('다음 예약', when(next), next ? until(next, now) : '평일 오후 4시 40분');
+  box.append(rows);
+  st.forEach((x, i) => { if (x?.status === 'FAILED' && x.error) box.append(n('p', `${NAMES[['JP', 'TW'][i]]}: ${x.error}`, 'sched-reason')); });
+  const foot = n('p', '평일 오후 4시 40분 (대만 14:30·일본 15:30 마감 뒤) · 실패하면 밤 9시 40분까지 30분마다 다시 시도', 'sched-rule');
+  const url = st.find(x => x?.runUrl)?.runUrl;
+  if (url) { const a = n('a', '실행 기록 ↗'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; foot.append(' · ', a); }
+  box.append(foot);
+  return box;
+}
+
+export function renderSchedule(container, status, trendBlock, current, snapshot) {
   if (!container) return;
+  loadAsia(() => renderSchedule(container, status, trendBlock, current, snapshot));
   const now = Date.now();
   container.hidden = false;
   container.replaceChildren();
   container.append(n('p', '한국시간 기준 · 1분마다 자동으로 다시 확인해요', 'sched-hint'));
   const grid = n('div', null, 'sched-grid');
   // The market on screen comes first.
-  for (const m of current === 'US' ? ['US', 'KR'] : ['KR', 'US']) grid.append(card(m, status?.[m] || null, trendBlock?.(m), now));
+  const order = current === 'US' ? ['US', 'KR', 'ASIA'] : current === 'JP' || current === 'TW' ? ['ASIA', 'KR', 'US'] : ['KR', 'US', 'ASIA'];
+  for (const m of order) grid.append(m === 'ASIA' ? asiaCard(snapshot, now) : card(m, status?.[m] || null, trendBlock?.(m), now));
   container.append(grid);
   container.append(n('p', 'GitHub 예약 실행은 사용량이 몰리면 10~30분쯤 늦게 시작될 수 있어요. 휴장일에는 갱신하지 않아요.', 'sched-note'));
 }

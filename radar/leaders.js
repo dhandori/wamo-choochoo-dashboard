@@ -1,6 +1,6 @@
 // Leading stocks and leading industries. Reads wamo_trend.json → markets[X].leadership.
-import { helpButton, addTerms } from './help.js?v=20261019-1';
-import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261019-2';
+import { helpButton, addTerms } from './help.js?v=20261020-asia1';
+import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261020-asia1';
 addTerms(LEADER_TERMS);
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
@@ -176,12 +176,12 @@ function leaderCard(L, openStock, rerender, no) {
     row.append(stockButton(x, openStock, x.industry));
     const nums = n('div', null, 'ld-nums');
     const rs = n('span'); rs.append(term('rsOneil', 'RS'), n('b', ` ${num(x.rs)}`));
-    const dist = n('span'); dist.append(term('distance', '고점까지'), n('b', ` ${isNum(x.highDistancePct) ? `-${num(x.highDistancePct, 1)}%` : '—'}`));
+    const dist = n('span'); dist.append(term('ldDistance', '고점까지'), n('b', ` ${isNum(x.highDistancePct) ? `-${num(x.highDistancePct, 1)}%` : '—'}`));
     nums.append(rs, dist); row.append(nums);
     const flags = n('div', null, 'ld-flags');
     if (x.core) flags.append(chip('핵심', 'core', 'core'));
     if (x.rsLead) flags.append(chip('★ RS선 선행', 'star', 'rsLead'));
-    if (x.breakoutDates?.length) flags.append(chip(`돌파 ${md(x.breakoutDates[x.breakoutDates.length - 1])}`, 'bo', 'breakout'));
+    if (x.breakoutDates?.length) flags.append(chip(`돌파 ${md(x.breakoutDates[x.breakoutDates.length - 1])}`, 'bo', 'ldBreakout'));
     if (isNum(x.heldUpRatio)) flags.append(chip(`버팀 ${num(x.heldUpRatio, 2)}${x.heldUp ? ' ✓' : ''}`, x.heldUp ? 'held' : 'soft', 'heldUp'));
     row.append(flags); list.append(row);
   });
@@ -358,7 +358,7 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   const intro = n('div', null, 'ld-intro');
   const p = n('p'); p.append('상승장은 ', term('leader', '선도주'), '와 ', term('leadingIndustry', '선도업종'), '이 끌고 갑니다. 선도업종은 지수보다 먼저 움직이는 경우가 많아서, FTD 전에 미리 찾아 두는 것이 중요해요. 상대강도(RS)와 52주 신고가를 함께 보고, 준비된 업종을 워치리스트로 관리합니다. 밑줄 친 말을 누르면 뜻이 나와요.');
   intro.append(p); container.append(intro);
-  container.append(glossary(LEADER_TERMS, ['leader', 'core', 'rsOneil', 'distance', 'rsLead', 'breakout', 'heldUp', 'emergence', 'industryRs', 'rankChange', 'industryRsLine', 'newHighs', 'above50', 'persist', 'leadingIndustry', 'stage', 'stageNEW', 'stageUP', 'stageHOLD', 'stageDOWN', 'stageOUT', 'phaseMode', 'industryMap', 'watchlist', 'watchScore', 'candidate', 'growthBack', 'heldUpIndustry', 'leadsIndex']));
+  container.append(glossary(LEADER_TERMS, ['leader', 'core', 'rsOneil', 'ldDistance', 'rsLead', 'ldBreakout', 'heldUp', 'emergence', 'industryRs', 'rankChange', 'industryRsLine', 'newHighs', 'above50', 'persist', 'leadingIndustry', 'ldStage', 'stageNEW', 'stageUP', 'stageHOLD', 'stageDOWN', 'stageOUT', 'phaseMode', 'industryMap', 'watchlist', 'watchScore', 'candidate', 'growthBack', 'heldUpIndustry', 'leadsIndex']));
   const L = block?.leadership;
   if (!L || L.status !== 'OK') { container.append(n('div', L?.note || '선도주·선도업종 자료를 준비 중입니다. 다음 자동 갱신 때 채워집니다.', 'ld-empty')); return; }
   if (stale) container.append(n('div', '최근 마감 거래일 자료가 아니라서 과거 기준으로 보여 주고 있어요.', 'ftd-data-warning'));

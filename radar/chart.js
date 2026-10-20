@@ -65,8 +65,9 @@ function node(tag, attrs = {}, parent) {
   return n;
 }
 function text(parent, x, y, value, attrs = {}) { const t = node('text', { x, y, ...attrs }, parent); t.textContent = value; return t; }
-const fmtPrice = (v, market) => v == null ? '—' : v.toLocaleString('ko-KR', { maximumFractionDigits: market === 'KR' ? 0 : 2, minimumFractionDigits: market === 'KR' ? 0 : 2 });
-const fmtAxis = (v, market) => market === 'KR' && Math.abs(v) >= 10000 ? `${(v / 10000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만` : v.toLocaleString('ko-KR', { maximumFractionDigits: market === 'KR' ? 0 : 2 });
+const priceDigits = (v, market) => market === 'KR' ? 0 : market === 'JP' ? (Number.isInteger(v) ? 0 : 1) : 2;
+const fmtPrice = (v, market) => v == null ? '—' : v.toLocaleString('ko-KR', { maximumFractionDigits: priceDigits(v, market), minimumFractionDigits: priceDigits(v, market) });
+const fmtAxis = (v, market) => (market === 'KR' || market === 'JP') && Math.abs(v) >= 10000 ? `${(v / 10000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만` : v.toLocaleString('ko-KR', { maximumFractionDigits: market === 'KR' ? 0 : 2 });
 const fmtVol = v => v >= 1e8 ? `${(v / 1e8).toFixed(1)}억` : v >= 1e4 ? `${Math.round(v / 1e4).toLocaleString('ko-KR')}만` : `${Math.round(v)}`;
 const md = d => `${+d.slice(5, 7)}/${+d.slice(8, 10)}`;
 

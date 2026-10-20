@@ -65,8 +65,17 @@ def catalysts(raw):
     return result
 
 
+ASIA = ('JP', 'TW')
+# Lite markets (no legacy detail page): local-currency market cap, symbol shape.
+CAP_KEY = {'KR': 'market_cap_krw', 'US': 'market_cap_usd', 'JP': 'market_cap_local', 'TW': 'market_cap_local'}
+
+
 def naver_url(market, symbol, exchange=None):
     """Conservative Reuters identifier mapping for verified Naver destinations."""
+    if market == 'JP':
+        return f'https://m.stock.naver.com/worldstock/stock/{symbol}.T/total' if re.fullmatch(r'[0-9][0-9A-Z]{3}', symbol) else None
+    if market == 'TW':
+        return None  # Naver does not carry Taiwan listings (checked 2026-10-20).
     if market == 'KR':
         return f'https://m.stock.naver.com/domestic/stock/{symbol}/total' if re.fullmatch(r'[A-Z0-9]{6}', symbol) else None
     venue = str(exchange or '').strip().upper()
@@ -155,7 +164,8 @@ def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
     if market=='US': symbol=str(stock.get('ticker') or symbol).strip().upper()
-    if not (re.fullmatch(r'[A-Z0-9]{6}',symbol) if market=='KR' else re.fullmatch(r'[A-Z0-9][A-Z0-9.^=-]{0,19}',symbol)): return None
+    pattern={'KR':r'[A-Z0-9]{6}','JP':r'[0-9][0-9A-Z]{3}','TW':r'[0-9]{4,6}[A-Z]?'}.get(market,r'[A-Z0-9][A-Z0-9.^=-]{0,19}')
+    if not re.fullmatch(pattern,symbol): return None
     rows=history(stock.get('history'))
     if not rows or rows[-1]['date']!=asof or day(stock.get('date'))!=asof: return None
     if stock.get('isStale') or stock.get('dataStatus') in ('STALE','FAILED','ERROR'): return None
@@ -187,7 +197,7 @@ def project(stock,market,asof):
         prior=max(r[key] for r in rows[-252:-1]); latest=rows[-1][key]
         return latest>prior+max(abs(prior)*1e-8,1e-8)
     ticker=stock.get('ticker') or symbol
-    market_cap=number(stock.get('market_cap_krw' if market=='KR' else 'market_cap_usd'))
+    market_cap=number(stock.get(CAP_KEY.get(market,'market_cap_usd')))
     return {'id':f'{market}:{symbol}','symbol':symbol,'ticker':ticker,'name':stock.get('name') or symbol,'market':market,
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
             'industry':name.strip(),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
@@ -198,7 +208,7 @@ def project(stock,market,asof):
             **trend_position(rows,market,asof),
             'source':stock.get('dataSource') or stock.get('priceProvider') or 'verified local history',
             'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),
-            'detailUrl':('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
+            'detailUrl':None if market in ASIA else ('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
             'chartUrl':'https://finance.yahoo.com/quote/'+quote(str(ticker))+'/',
             'sparkline':[r['close'] for r in rows[-60:]],'catalysts':catalysts(stock.get('catalysts')),'moverReasons':reasons}
 
@@ -223,44 +233,56 @@ def industries(stocks,market):
     return result
 
 
-def build_insights(payloads,now,previous=None,baseline=None):
+def build_market(market,payload,now,previous_market=None,baseline_market=None):
+    """One market block of the radar snapshot (shared by KR/US pages and the Lite JP/TW engine)."""
+    expected=expected_session(market,now);scheduled=next_slot(market,now).isoformat()
+    if not isinstance(payload,dict):payload={}
+    meta=payload.get('meta') or {}
+    if not isinstance(meta,dict):meta={}
+    asof=day(meta.get('asOf'))
+    raw=payload.get('stocks') or []
+    if not isinstance(raw,list):raw=[]
+    stocks=[];seen=set()
+    if asof and asof<=expected:
+        for item in raw:
+            s=project(item,market,asof)
+            if s and s['id'] not in seen:stocks.append(s);seen.add(s['id'])
+    prior_count=len(previous_market.get('stocks') or []) if previous_market else 0
+    coverage_collapse=bool(prior_count and len(stocks)<prior_count*0.9)
+    if previous_market and previous_market.get('stocks') and (not stocks or coverage_collapse or (raw and len(stocks)/len(raw)<0.9) or (previous_market.get('asOf') or '')>(asof or '')):
+        m=copy.deepcopy(previous_market);m.update(expectedSession=expected,nextScheduledFor=scheduled)
+        m['status']='STALE' if m.get('asOf')!=expected else 'PARTIAL'
+        reason='대체 가격의 종목 수가 기존 검증 유니버스의 90%보다 적어 기존 가격을 유지합니다.' if coverage_collapse else '대체 가격의 유효 범위가 부족하거나 더 오래되어 기존 검증 가격을 유지합니다.'
+        m['warnings']=list(dict.fromkeys(list(m.get('warnings') or [])+[reason]))
+        return m
+    excluded=len(raw)-len(stocks); warnings=['스크리닝 유니버스 기준이며 전체 시장의 종목 수나 확산 지표가 아닙니다.']
+    recovery=meta.get('universeRecovery')
+    if recovery:warnings.append('유니버스 복구 정보: '+(json.dumps(recovery,ensure_ascii=False) if isinstance(recovery,dict) else str(recovery)))
+    if excluded:warnings.append(f'날짜 불일치·중복·가격 오류 {excluded}종목을 제외했습니다.')
+    if any(s['industrySource']=='sector (broad)' for s in stocks):warnings.append('일부 그룹은 세부 산업 대신 넓은 섹터 분류를 사용합니다.')
+    warnings.extend(w for w in (meta.get('warnings') or []) if isinstance(w,str))
+    return {'asOf':asof if stocks else None,'expectedSession':expected,'status':('STALE' if asof!=expected else 'PARTIAL' if excluded else 'CURRENT') if stocks else 'UNAVAILABLE',
+           'nextScheduledFor':scheduled,'source':meta.get('source') or 'verified local history',
+           'coverage':{'total':len(raw),'valid':len(stocks),'excluded':excluded,'eligible52w':sum(s['high52'] is not None for s in stocks)},
+           'stocks':stocks,'industries':industries(stocks,market),'movers':[s for s in stocks if s['moverReasons']],'warnings':warnings,
+           'comparison':comparison_snapshot(market,asof if stocks else None,previous_market,baseline_market)}
+
+
+def refresh_market_status(block,market,now):
+    """Stored JP/TW blocks age between their own runs: re-derive freshness at publish time."""
+    m=copy.deepcopy(block);expected=expected_session(market,now)
+    m.update(expectedSession=expected,nextScheduledFor=next_slot(market,now).isoformat())
+    if m.get('stocks') and m.get('asOf')!=expected:m['status']='STALE'
+    return m
+
+
+def build_insights(payloads,now,previous=None,baseline=None,markets=('KR','US')):
     if isinstance(now,str):now=datetime.fromisoformat(now.replace('Z','+00:00'))
     if now.tzinfo is None:now=now.replace(tzinfo=timezone.utc)
     result={'schemaVersion':1,'generatedAt':now.isoformat(),'markets':{}}
-    for market in ('KR','US'):
-        expected=expected_session(market,now);scheduled=next_slot(market,now).isoformat()
-        payload=payloads.get(market) or {}
-        if not isinstance(payload,dict):payload={}
-        meta=payload.get('meta') or {}
-        if not isinstance(meta,dict):meta={}
-        asof=day(meta.get('asOf'))
-        raw=payload.get('stocks') or []
-        if not isinstance(raw,list):raw=[]
-        stocks=[];seen=set()
-        if asof and asof<=expected:
-            for item in raw:
-                s=project(item,market,asof)
-                if s and s['id'] not in seen:stocks.append(s);seen.add(s['id'])
-        previous_market=((previous or {}).get('markets') or {}).get(market)
-        prior_count=len(previous_market.get('stocks') or []) if previous_market else 0
-        coverage_collapse=bool(prior_count and len(stocks)<prior_count*0.9)
-        if previous_market and previous_market.get('stocks') and (not stocks or coverage_collapse or (raw and len(stocks)/len(raw)<0.9) or (previous_market.get('asOf') or '')>(asof or '')):
-            m=copy.deepcopy(previous_market);m.update(expectedSession=expected,nextScheduledFor=scheduled)
-            m['status']='STALE' if m.get('asOf')!=expected else 'PARTIAL'
-            reason='대체 가격의 종목 수가 기존 검증 유니버스의 90%보다 적어 기존 가격을 유지합니다.' if coverage_collapse else '대체 가격의 유효 범위가 부족하거나 더 오래되어 기존 검증 가격을 유지합니다.'
-            m['warnings']=list(dict.fromkeys(list(m.get('warnings') or [])+[reason]))
-        else:
-            excluded=len(raw)-len(stocks); warnings=['스크리닝 유니버스 기준이며 전체 시장의 종목 수나 확산 지표가 아닙니다.']
-            recovery=meta.get('universeRecovery')
-            if recovery:warnings.append('유니버스 복구 정보: '+(json.dumps(recovery,ensure_ascii=False) if isinstance(recovery,dict) else str(recovery)))
-            if excluded:warnings.append(f'날짜 불일치·중복·가격 오류 {excluded}종목을 제외했습니다.')
-            if any(s['industrySource']=='sector (broad)' for s in stocks):warnings.append('일부 그룹은 세부 산업 대신 넓은 섹터 분류를 사용합니다.')
-            m={'asOf':asof if stocks else None,'expectedSession':expected,'status':('STALE' if asof!=expected else 'PARTIAL' if excluded else 'CURRENT') if stocks else 'UNAVAILABLE',
-               'nextScheduledFor':scheduled,'source':meta.get('source') or 'verified local history',
-               'coverage':{'total':len(raw),'valid':len(stocks),'excluded':excluded,'eligible52w':sum(s['high52'] is not None for s in stocks)},
-               'stocks':stocks,'industries':industries(stocks,market),'movers':[s for s in stocks if s['moverReasons']],'warnings':warnings,
-               'comparison':comparison_snapshot(market,asof if stocks else None,previous_market,((baseline or {}).get('markets') or {}).get(market))}
-        result['markets'][market]=m
+    for market in markets:
+        result['markets'][market]=build_market(market,payloads.get(market) or {},now,
+            ((previous or {}).get('markets') or {}).get(market),((baseline or {}).get('markets') or {}).get(market))
     return result
 
 

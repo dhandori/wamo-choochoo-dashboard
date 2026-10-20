@@ -1,4 +1,4 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261019-ui1';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261020-asia1';
 // Trend-following view: market weather, RS-line leaders, sell warnings,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };

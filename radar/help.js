@@ -28,7 +28,11 @@ const LABELS = {
   '추세 확산도':'trendBreadth','전일 변화':'changes',
 };
 // Other screens register their own glossary (FTD, leaders) without touching the list above.
-export function addTerms(extra) { Object.assign(TERMS, extra); }
+export function addTerms(extra) {
+  // Never overwrite a term another screen already defined (a shared key once made
+  // the Stage 2 help show the leaders tab's industry-stage text).
+  for (const [key, value] of Object.entries(extra)) if (!(key in TERMS)) TERMS[key] = value; else if (TERMS[key] !== value) console.warn('help term key in use:', key);
+}
 let active = null, pinned = false, closeTimer;
 const tip = document.createElement('div');
 tip.id = 'term-tooltip'; tip.className = 'term-tooltip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true;
