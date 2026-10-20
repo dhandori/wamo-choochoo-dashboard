@@ -326,7 +326,28 @@ function guideIcon(kind) {
   return svg;
 }
 
-function guide() {
+// 종목에서 일중전환을 쓰는 법 + 이 시장 성적표(5거래일 뒤) 숫자는 그때그때 자료에서 읽는다.
+function stockUse(b) {
+  const sec = el('section', null, 'cx-guide-use');
+  sec.append(el('h4', '종목에서 일중전환 쓰는 법'));
+  sec.append(el('p', '일중전환은 지수보다 종목에서 덜 맞아요. 종목은 하루 변동이 크고, 실적·뉴스 갭이 캔들 모양을 흐트러뜨리기 때문이에요. 그래서 종목에서는 일중전환 하나만 보고 팔지 않고, 아래 조건이 겹칠 때 무게를 크게 둬요.'));
+  const ol = el('ol', null, 'cx-guide-checks');
+  ['이미 많이 올랐어요 (클라이맥스 런)', '거래량이 평소보다 많아요', '종가가 그날 저가 근처에서 끝났어요', '다음 날 그 저가를 깨요'].forEach(t => ol.append(el('li', t)));
+  sec.append(ol);
+  const sig = b.scorecard?.signals || {}, stat = k => sig[k]?.stats?.['5'];
+  const line = (name, st) => st?.n ? `${name} ${st.n}건 · 5거래일 뒤 떨어진 비율 ${fmt(st.hitRate, 0)}% · 지수보다 ${isNum(st.avgExcess) ? `${st.avgExcess > 0 ? '+' : ''}${fmt(st.avgExcess, 1)}%p` : '—'}` : null;
+  const rows = [line('일중전환(천장형)만', stat('revTop')), line('천장 경고 (클라이맥스 뒤 일중전환)', stat('climaxTop'))].filter(Boolean);
+  if (rows.length) {
+    const box = el('div', null, 'cx-guide-stats');
+    box.append(el('b', `이 시장 종목 기록 · ${b.scorecard?.since ? `${b.scorecard.since.slice(2).replaceAll('-', '.')}부터` : ''}`));
+    rows.forEach(t => box.append(el('p', t)));
+    box.append(el('small', '"지수보다" 마이너스 = 같은 기간 지수보다 더 빠짐 · 기록이 짧아 방향만 참고'));
+    sec.append(box);
+  }
+  return sec;
+}
+
+function guide(b) {
   const box = el('details', null, 'cx-guide');
   // 펼침이 기본, 접어 두면 이 브라우저에서는 계속 접힌 채로 (기억 못 해도 화면은 정상)
   let closed = false; try { closed = localStorage.getItem('wamo.cxGuideClosed') === '1'; } catch (e) { /* storage off */ }
@@ -349,6 +370,7 @@ function guide() {
     grid.append(card);
   });
   box.append(grid);
+  box.append(stockUse(b));
   const more = el('p', null, 'tr-help'); more.append('밑줄 친 말을 누르면 정확한 숫자 기준이 나와요: ', term('cx_climaxRun'), ' · ', term('cx_reversalTop'), ' · ', term('cx_topWarning'), ' · ', term('cx_reversalBottom'), ' · ', term('cx_closePos'));
   box.append(more);
   return box;
@@ -357,7 +379,7 @@ function guide() {
 export function climaxSection(b, market, openStock, rerender) {
   const c = b.climax, wrap = el('div', null, 'cx');
   if (!c || c.status !== 'OK') { wrap.append(el('div', c?.note || '천장 신호 자료는 다음 자동 갱신 때 채워져요.', 'empty')); return wrap; }
-  wrap.append(guide());
+  wrap.append(guide(b));
   const grid = el('div', null, 'cx-index-grid');
   (c.indexes || []).forEach(rep => grid.append(indexCard(rep, market, b)));
   if ((c.indexes || []).length) wrap.append(grid);
