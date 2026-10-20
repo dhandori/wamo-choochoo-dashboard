@@ -16,7 +16,7 @@ POLICY = {
     'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감한 날.',
     'bottom': '하락 국면 시작(또는 직전 무효) 이후 Day 1까지의 장중 최저가. 이 가격을 장중에 깨면 반등 시도 무효.',
     'confirmation': 'Day 4 이후 하루 +1.7% 이상 상승하고 거래량이 전일보다 많으면 FTD. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
-    'failure': '기준 저점 장중 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분배일 3번 이상은 경고.',
+    'failure': '기준 저점 장중 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함) 3번 이상은 경고.',
     'completion': 'FTD 이후 종가가 하락 전 고점을 다시 넘으면 상승 전환 완료로 보고 추적을 끝냅니다. 그 FTD는 이력으로만 남깁니다.',
     'note': 'WAMO 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승 지속을 보장하지 않습니다.',
     'sources': [
@@ -24,6 +24,48 @@ POLICY = {
         {'title': 'Morales·Kacher · 1.5%·거래량 기준과 한계', 'url': 'https://www.virtueofselfishinvesting.com/reports/view/mlr-time-to-buy-qe3-and-its-effect-on-the-general-market-and-gold/amp'},
     ],
 }
+
+
+# Where the close lands in the day's range matters as much as the volume.
+# pos = (close - low) / (high - low): 0 = closed at the low, 1 = closed at the high.
+DIST_RULE = {'heavyPosMax': 1 / 3, 'lightPosMin': 0.5, 'hiddenPosMax': 1 / 3, 'hiddenRangeMinPct': 0.6,
+             'weights': {'HEAVY': 1.5, 'NORMAL': 1.0, 'LIGHT': 0.5, 'HIDDEN': 1.0}}
+DIST_KIND_TEXT = {
+    'HEAVY': '꽉 찬 음봉 · 저가 근처 마감 (위험)',
+    'NORMAL': '보통 분산일',
+    'LIGHT': '저가에서 회복해 위쪽 마감 (덜 위험)',
+    'HIDDEN': '위장 분산일 · 올랐지만 아래쪽 마감',
+}
+
+
+def close_position(row):
+    high, low, close = row.get('high'), row.get('low'), row.get('close')
+    if not (valid_num(high) and valid_num(low) and valid_num(close)) or high <= low:
+        return None
+    return min(1.0, max(0.0, (close - low) / (high - low)))
+
+
+def distribution_kind(prev, cur, drop_pct=0.2):
+    """None, or HEAVY / NORMAL / LIGHT (classic: down >= 0.2% on higher volume) or HIDDEN.
+
+    HIDDEN: an up close on higher volume whose close sank into the bottom third of a real
+    (>= 0.6%) range - late selling pushed it down, a disguised distribution day.
+    """
+    if not (valid_num(prev.get('close')) and valid_num(cur.get('close'))
+            and valid_num(prev.get('volume')) and valid_num(cur.get('volume'))):
+        return None
+    if cur['volume'] <= prev['volume']:
+        return None
+    change = (cur['close'] / prev['close'] - 1) * 100
+    pos = close_position(cur)
+    if change <= -drop_pct + 1e-9:
+        if pos is None:
+            return 'NORMAL'
+        return 'HEAVY' if pos <= DIST_RULE['heavyPosMax'] else 'LIGHT' if pos >= DIST_RULE['lightPosMin'] else 'NORMAL'
+    if change > 0 and pos is not None and pos <= DIST_RULE['hiddenPosMax'] \
+            and (cur['high'] - cur['low']) / prev['close'] * 100 >= DIST_RULE['hiddenRangeMinPct']:
+        return 'HIDDEN'
+    return None
 
 
 def valid_num(value):
@@ -130,9 +172,10 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
                     phase='LATE' if rally['day']>POLICY['preferredMaxRallyDay'] else 'RALLY'
                 elif ftd:
                     age=i-ftd['startIndex']
-                    if (age<=POLICY['postFtdWindow'] and change<=-POLICY['distributionDropPct']+1e-9
-                            and ratio>1):
+                    kind=distribution_kind(rows[i-1],r,POLICY['distributionDropPct']) if age<=POLICY['postFtdWindow'] else None
+                    if kind:
                         ftd['postDistribution'].append(r['date'])
+                        ftd.setdefault('postDistributionKind',{})[r['date']]=kind
                     if r['close']<ftd['low']:
                         warnings.append(dict(code='BELOW_FTD_LOW', level=ftd['low']))
                     if len(ftd['postDistribution'])>=POLICY['postFtdDistributionWarn']:

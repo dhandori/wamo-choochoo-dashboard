@@ -35,7 +35,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 5
+TREND_VERSION = 6
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -347,26 +347,35 @@ def distribution_days(bench, window=25):
     if len(rows) < window + 1 or sum(1 for v in vols if v) < window * 0.8:
         return {'status': 'UNAVAILABLE', 'count': None, 'window': window, 'days': [],
                 'note': '지수 거래량 자료가 부족해 분산일을 셀 수 없습니다.'}
-    days, count = [], 0
+    from wamo_ftd import distribution_kind, close_position, DIST_RULE
+    days, count, score, kinds = [], 0, 0.0, {'HEAVY': 0, 'NORMAL': 0, 'LIGHT': 0, 'HIDDEN': 0}
     for i in range(1, len(rows)):
         prev, cur = rows[i - 1], rows[i]
         chg = cur['close'] / prev['close'] - 1
-        is_dist = bool(cur.get('volume') and prev.get('volume') and chg <= -0.002 and cur['volume'] > prev['volume'])
+        kind = distribution_kind(prev, cur)
+        is_dist = kind is not None
         # 지운 이유를 화면에 적기 위해, 분산일 종가 대비 처음으로 5% 이상 오른 날을 기록
         hit = next((r for r in rows[i + 1:] if is_dist and r['close'] >= cur['close'] * 1.05), None)
         expired = hit is not None
         if is_dist and not expired:
             count += 1
+            kinds[kind] += 1
+            score += DIST_RULE['weights'][kind]
         day = {'date': cur['date'], 'changePct': rnd(chg * 100), 'distribution': is_dist, 'expired': expired}
         if is_dist:
-            day['close'] = rnd(cur['close'])
+            pos = close_position(cur)
+            day.update(close=rnd(cur['close']), kind=kind, closePos=None if pos is None else rnd(pos * 100, 0))
         if hit is not None:
             day['expiredOn'] = hit['date']
             day['expiredClose'] = rnd(hit['close'])
             day['expiredRisePct'] = rnd((hit['close'] / cur['close'] - 1) * 100)
         days.append(day)
-    return {'status': 'OK', 'count': count, 'window': window, 'days': days,
-            'note': '지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 그 뒤 지수가 5% 넘게 오르면 지웁니다.'}
+    return {'status': 'OK', 'count': count, 'score': rnd(score, 1), 'kinds': kinds, 'window': window, 'days': days,
+            'weights': DIST_RULE['weights'],
+            'note': ('분산일: 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 같은 날이라도 종가가 어디서 끝났는지가 중요해서, '
+                     '그날 고가~저가 범위에서 아래쪽 1/3에서 끝나면(꽉 찬 음봉) 위험, 위쪽 절반에서 끝나면(저가에서 회복) 덜 위험으로 봅니다. '
+                     '지수가 올랐어도 거래량이 늘고 종가가 범위 아래쪽 1/3에 처지면(윗꼬리) 막판 매물이 끌어내린 위장 분산일로 셉니다. '
+                     '그 뒤 지수가 5% 넘게 오르면 지웁니다.')}
 
 
 def breadth(universe, sessions=60):
@@ -511,12 +520,18 @@ def weather(idx, dist, br, hl, synthetic, secondary=None):
     dists = [(idx.get('label') or '지수', dist)]
     if secondary and (secondary.get('distribution') or {}).get('status') == 'OK':
         dists.append((secondary.get('label'), secondary['distribution']))
-    counted = [(label, d['count']) for label, d in dists if d.get('status') == 'OK']
+    counted = [(label, d) for label, d in dists if d.get('status') == 'OK']
     if counted:
-        c = max(n for _, n in counted)
-        detail = ' · '.join(f'{label} {n}번' for label, n in counted) if len(counted) > 1 else f'{counted[0][1]}번'
+        # Judge on the risk score (heavy 1.5 · normal 1 · light 0.5 · hidden 1), same 4/6 lines as the plain count.
+        risk = lambda d: d.get('score', d['count'])
+        c = max(risk(d) for _, d in counted)
+        def one(d):
+            k = d.get('kinds') or {}
+            parts = [f'{name} {k[key]}' for key, name in (('HEAVY', '꽉 찬 음봉'), ('HIDDEN', '위장'), ('LIGHT', '저가 회복')) if k.get(key)]
+            return f"{d['count']}번" + (f" ({' · '.join(parts)}) · 위험 점수 {risk(d):g}" if parts else '')
+        detail = ' / '.join(f'{label} {one(d)}' for label, d in counted) if len(counted) > 1 else one(counted[0][1])
         add('distribution', '분산일', -1 if c >= 6 else 0 if c >= 4 else 1,
-            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail} 있었어요.' + (' 6번 이상은 경고 신호예요.' if c >= 6 else ''))
+            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail} 있었어요.' + (' 위험 점수 6 이상은 경고 신호예요.' if c >= 6 else ''))
     if br.get('status') == 'OK':
         p = br['above50Pct']
         add('breadth', '시장 체력', 1 if p >= 60 else -1 if p < 40 else 0,

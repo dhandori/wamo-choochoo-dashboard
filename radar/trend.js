@@ -35,6 +35,11 @@ export function trendTabLabel(market) {
   return b ? (LIGHT[b.weather?.level] || '—') : failed ? '대기' : '…';
 }
 
+// Same order and weights as wamo_ftd.DIST_RULE (heavy 1.5 · normal 1 · light 0.5 · hidden 1).
+const DIST_KINDS = [['HEAVY', '꽉 찬 음봉', 1.5], ['NORMAL', '보통', 1], ['LIGHT', '저가 회복', 0.5], ['HIDDEN', '위장', 1]];
+const DIST_SHORT = { HEAVY: '꽉 찬 음봉', NORMAL: '보통', LIGHT: '저가 회복', HIDDEN: '위장 분산일' };
+const DIST_NAME = { HEAVY: '꽉 찬 음봉 · 위험', NORMAL: '보통 분산일', LIGHT: '저가에서 회복 · 덜 위험', HIDDEN: '위장 분산일 · 올랐지만 아래쪽 마감' };
+
 function help(text) { const s = el('p', text, 'tr-help'); return s; }
 
 function stockName(item, openStock) {
@@ -80,8 +85,10 @@ export function renderWeather(container, market, onOpen) {
     { 1: '이평선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
   chip('기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '),
     { 1: '상승', 0: '꺾임', '-1': '하락' }[ss] ?? '—', ss);
-  const dcount = [dist, dist2].filter(d => d?.status === 'OK').map(d => d.count);
-  chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
+  const dok = [dist, dist2].filter(d => d?.status === 'OK');
+  const dcount = dok.map(d => d.count);
+  const riskNote = dok.some(d => isNum(d.score) && d.score !== d.count) ? ` · 위험 점수 ${dok.map(d => fmt(d.score, 1)).join(' · ')}` : '';
+  chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일${riskNote}` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
   chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
   chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히', false, onOpen, 'tr-more');
@@ -133,12 +140,37 @@ function weatherDetail(b) {
   const distRows = [[idx.label, dist], [idx2?.label, idx2?.distribution]].filter(([, d]) => d?.status === 'OK');
   if (distRows.length) {
     distRows.forEach(([label, d]) => {
-      const big = el('div', null, 'tr-big'); big.append(el('b', `${d.count}`), el('span', `${distRows.length > 1 ? label + ' · ' : ''}최근 25거래일`)); c2.append(big);
+      const big = el('div', null, 'tr-big'); big.append(el('b', `${d.count}`), el('span', `${distRows.length > 1 ? label + ' · ' : ''}최근 25거래일`));
+      if (isNum(d.score)) big.append(el('span', `위험 점수 ${fmt(d.score, 1)}`, `tr-dist-score ${d.score >= 6 ? 'bad' : d.score >= 4 ? 'mid' : 'good'}`));
+      c2.append(big);
+      const k = d.kinds || {};
+      if (d.kinds) {
+        const mix = el('div', null, 'tr-dist-mix');
+        DIST_KINDS.forEach(([key, name, w]) => { const c = el('span', null, `tr-dist-chip ${key.toLowerCase()}`); c.append(el('i'), el('b', name), el('span', `${k[key] || 0}번 · ×${w}`)); mix.append(c); });
+        c2.append(mix);
+      }
       const dots = el('div', null, 'tr-dots');
-      (d.days || []).forEach(x => { const s = el('span', null, `tr-d ${x.distribution ? (x.expired ? 'expired' : 'hit') : ''}`); s.title = `${x.date} ${pct(x.changePct)}${x.distribution ? x.expired ? ' · 분산일(지워짐)' : ' · 분산일' : ''}`; dots.append(s); });
+      (d.days || []).forEach(x => {
+        const kind = x.kind ? x.kind.toLowerCase() : '';
+        const s = el('span', null, `tr-d ${x.distribution ? (x.expired ? 'expired' : `hit ${kind}`) : ''}`);
+        s.title = `${x.date} ${pct(x.changePct)}${x.distribution ? ` · ${DIST_NAME[x.kind] || '분산일'}${isNum(x.closePos) ? ` · 종가 위치 ${x.closePos}%` : ''}${x.expired ? ' (지워짐)' : ''}` : ''}`;
+        dots.append(s);
+      });
       c2.append(dots);
       const days = d.days || [];
-      if (days.length) { const ax = el('div', null, 'tr-dots-axis'); ax.append(el('span', md(days[0].date)), el('span', '빨강 = 분산일 · 테두리 = 지워진 분산일'), el('span', md(days.at(-1).date))); c2.append(ax); }
+      if (days.length) { const ax = el('div', null, 'tr-dots-axis'); ax.append(el('span', md(days[0].date)), el('span', d.kinds ? '색은 위 종류와 같음 · 테두리 = 지워진 분산일' : '빨강 = 분산일 · 테두리 = 지워진 분산일'), el('span', md(days.at(-1).date))); c2.append(ax); }
+      // 지금 세고 있는 분산일: 날짜 · 등락 · 종가가 그날 범위 어디서 끝났는지
+      const live = days.filter(x => x.distribution && !x.expired && x.kind);
+      if (live.length) {
+        const box = el('div', null, 'tr-dist-list');
+        box.append(el('b', '지금 세는 분산일'), el('small', '종가 위치: 0% = 그날 저가에서 끝남, 100% = 그날 고가에서 끝남'));
+        live.slice().reverse().forEach(x => {
+          const row = el('p', null, `tr-dist-row ${x.kind.toLowerCase()}`);
+          row.append(el('time', md(x.date)), el('span', pct(x.changePct), tone(x.changePct)), el('span', isNum(x.closePos) ? `위치 ${x.closePos}%` : '위치 —'), el('strong', DIST_SHORT[x.kind]));
+          box.append(row);
+        });
+        c2.append(box);
+      }
       // 지워진 분산일마다 이유를 한 줄씩 적어 둠
       const gone = days.filter(x => x.distribution && x.expired);
       if (gone.length) {

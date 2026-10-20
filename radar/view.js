@@ -1,8 +1,8 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261020-asia7';
-import { renderLeaders, leadersSummary } from './leaders.js?v=20261020-asia6';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261020-dist1';
+import { renderLeaders, leadersSummary } from './leaders.js?v=20261020-dist1';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261020-asia5';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261020-asia1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261020-asia7';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261020-dist2';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261019-2';
 import { renderSchedule } from './schedule.js?v=20261020-asia1';
 import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261020-asia1';

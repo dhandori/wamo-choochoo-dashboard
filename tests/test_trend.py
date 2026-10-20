@@ -56,6 +56,37 @@ class TrendMathTests(unittest.TestCase):
         bench[25] = {'date': dates[25], 'close': 103.0, 'volume': 80.0}
         self.assertEqual(trend.distribution_days(bench)['count'], 0)
 
+    def test_distribution_close_position_sets_risk(self):
+        from wamo_ftd import distribution_kind
+        prev = {'close': 100.0, 'volume': 100.0, 'high': 101, 'low': 99}
+        down = lambda close, high, low: {'close': close, 'high': high, 'low': low, 'volume': 150.0}
+        self.assertEqual(distribution_kind(prev, down(98.0, 100.0, 97.9)), 'HEAVY')    # closed near the low
+        self.assertEqual(distribution_kind(prev, down(99.0, 100.0, 97.0)), 'LIGHT')    # recovered off the low
+        self.assertEqual(distribution_kind(prev, down(98.5, 100.0, 97.5)), 'NORMAL')   # middle
+        # Up close on more volume but finished in the bottom third: late selling (disguised).
+        self.assertEqual(distribution_kind(prev, down(100.3, 102.0, 100.0)), 'HIDDEN')
+        self.assertIsNone(distribution_kind(prev, down(101.6, 102.0, 100.0)))          # strong close
+        self.assertIsNone(distribution_kind(prev, down(100.1, 100.3, 100.0)))          # tiny range: noise
+        self.assertIsNone(distribution_kind(prev, {**down(100.3, 102.0, 100.0), 'volume': 90.0}))  # lighter volume
+        self.assertEqual(distribution_kind(prev, {'close': 99.0, 'volume': 150.0}), 'NORMAL')       # no range data
+
+    def test_distribution_days_score_by_kind(self):
+        dates = sessions(26)
+        bench = [{'date': d, 'close': 100.0, 'high': 100.5, 'low': 99.5, 'volume': 100.0} for d in dates]
+        bench[5] = {'date': dates[5], 'close': 99.0, 'high': 100.2, 'low': 98.9, 'volume': 150.0}    # heavy
+        bench[10] = {'date': dates[10], 'close': 100.0, 'high': 100.5, 'low': 99.5, 'volume': 100.0}
+        bench[11] = {'date': dates[11], 'close': 99.6, 'high': 100.0, 'low': 98.0, 'volume': 150.0}  # light
+        bench[15] = {'date': dates[15], 'close': 100.0, 'high': 100.5, 'low': 99.5, 'volume': 100.0}
+        bench[16] = {'date': dates[16], 'close': 100.2, 'high': 101.5, 'low': 100.0, 'volume': 150.0}  # hidden
+        for k in (6, 12, 17):
+            bench[k]['volume'] = 100.0
+        out = trend.distribution_days(bench)
+        self.assertEqual(out['count'], 3)
+        self.assertEqual(out['kinds'], {'HEAVY': 1, 'NORMAL': 0, 'LIGHT': 1, 'HIDDEN': 1})
+        self.assertEqual(out['score'], 3.0)
+        day = next(x for x in out['days'] if x['date'] == dates[16])
+        self.assertEqual((day['kind'], day['closePos']), ('HIDDEN', 13))
+
     def test_distribution_days_need_volume(self):
         bench = [{'date': d, 'close': 100.0, 'volume': None} for d in sessions(30)]
         self.assertEqual(trend.distribution_days(bench)['status'], 'UNAVAILABLE')
@@ -92,6 +123,11 @@ class TrendMathTests(unittest.TestCase):
         s, w = score(up, heavy)
         self.assertEqual(s['distribution'], -1)
         self.assertIn('S&P 500 1번', next(f['text'] for f in w['factors'] if f['key'] == 'distribution'))
+        # Weather judges the risk score: 4 days that all closed near the low (4 x 1.5 = 6) is a warning.
+        full = {**up, 'distribution': {'status': 'OK', 'count': 4, 'score': 6.0, 'kinds': {'HEAVY': 4}}}
+        s, w = score(up, full)
+        self.assertEqual(s['distribution'], -1)
+        self.assertIn('꽉 찬 음봉 4', next(f['text'] for f in w['factors'] if f['key'] == 'distribution'))
 
     def test_moving_average_slope_direction_and_score(self):
         up = [100 + i * 0.3 for i in range(260)]

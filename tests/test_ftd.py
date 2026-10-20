@@ -148,6 +148,16 @@ class FTDTests(unittest.TestCase):
         self.assertEqual(result['warnings'][-1]['code'],'DISTRIBUTION_CLUSTER')
         self.assertEqual(self.run_signal(ext[:-2])['phase'],'CONFIRMED')
 
+    def test_disguised_distribution_after_ftd_counts(self):
+        rows = recovery(); n=len(rows)
+        prices=[r['close'] for r in rows]+[93.4,93.6]
+        ext=rows_for(prices); ext[n-1]['volume']=130
+        for k,(v,hi) in enumerate([(150,95.0),(160,95.4)]):
+            ext[n+k].update(volume=v,high=hi,low=ext[n+k]['close']-0.1)   # up close, finished near the low
+        result=self.run_signal(ext)
+        self.assertEqual(len(result['ftd']['postDistribution']),2)
+        self.assertEqual(set(result['ftd']['postDistributionKind'].values()),{'HIDDEN'})
+
     def test_ftd_quality_fields(self):
         result = self.run_signal(recovery())
         q=result['ftd']['quality']
