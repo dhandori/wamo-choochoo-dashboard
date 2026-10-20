@@ -139,6 +139,19 @@ function weatherDetail(b) {
       c2.append(dots);
       const days = d.days || [];
       if (days.length) { const ax = el('div', null, 'tr-dots-axis'); ax.append(el('span', md(days[0].date)), el('span', '빨강 = 분산일 · 테두리 = 지워진 분산일'), el('span', md(days.at(-1).date))); c2.append(ax); }
+      // 지워진 분산일마다 이유를 한 줄씩 적어 둠
+      const gone = days.filter(x => x.distribution && x.expired);
+      if (gone.length) {
+        const box = el('div', null, 'tr-expired');
+        box.append(el('b', `지워진 분산일 ${gone.length}개`));
+        gone.forEach(x => {
+          const why = x.expiredOn
+            ? `${md(x.date)} 분산일(종가 ${fmt(x.close, 2)}, ${pct(x.changePct)}) → ${md(x.expiredOn)} 종가 ${fmt(x.expiredClose, 2)}로 ${pct(x.expiredRisePct)} 올라 5% 기준을 넘어 지웠어요.`
+            : `${md(x.date)} 분산일(${pct(x.changePct)}) → 그 뒤 지수가 그날 종가보다 5% 넘게 올라 지웠어요.`;
+          box.append(el('p', why));
+        });
+        c2.append(box);
+      }
     });
   } else c2.append(el('p', '자료 없음'));
   c2.append(help(dist.note || ''));

@@ -352,11 +352,19 @@ def distribution_days(bench, window=25):
         prev, cur = rows[i - 1], rows[i]
         chg = cur['close'] / prev['close'] - 1
         is_dist = bool(cur.get('volume') and prev.get('volume') and chg <= -0.002 and cur['volume'] > prev['volume'])
-        later = [r['close'] for r in rows[i + 1:]]
-        expired = bool(is_dist and later and max(later) >= cur['close'] * 1.05)
+        # 지운 이유를 화면에 적기 위해, 분산일 종가 대비 처음으로 5% 이상 오른 날을 기록
+        hit = next((r for r in rows[i + 1:] if is_dist and r['close'] >= cur['close'] * 1.05), None)
+        expired = hit is not None
         if is_dist and not expired:
             count += 1
-        days.append({'date': cur['date'], 'changePct': rnd(chg * 100), 'distribution': is_dist, 'expired': expired})
+        day = {'date': cur['date'], 'changePct': rnd(chg * 100), 'distribution': is_dist, 'expired': expired}
+        if is_dist:
+            day['close'] = rnd(cur['close'])
+        if hit is not None:
+            day['expiredOn'] = hit['date']
+            day['expiredClose'] = rnd(hit['close'])
+            day['expiredRisePct'] = rnd((hit['close'] / cur['close'] - 1) * 100)
+        days.append(day)
     return {'status': 'OK', 'count': count, 'window': window, 'days': days,
             'note': '지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 그 뒤 지수가 5% 넘게 오르면 지웁니다.'}
 

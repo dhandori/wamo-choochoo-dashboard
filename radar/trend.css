@@ -57,6 +57,9 @@
 .tr-d.expired { background: transparent; box-shadow: inset 0 0 0 1px #6a3a41; }
 .tr-dots-axis { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--ink-3); margin: -1px 0 6px; }
 .tr-dots-axis span:nth-child(2) { color: #6f839c; text-align: center; }
+.tr-expired { margin: 2px 0 12px; padding: 8px 10px; border: 1px dashed color-mix(in srgb, var(--red, #f08a8a) 45%, transparent); border-radius: 8px; font-size: 12px; line-height: 1.55; color: var(--ink-2, #b8c4d4); }
+.tr-expired b { display: block; font-size: 12px; color: var(--ink-1, #e6edf5); margin-bottom: 2px; }
+.tr-expired p { margin: 2px 0 0; }
 
 .tr-anchor { height: 0; }
 .tr-subtabs { position: sticky; top: 0; z-index: 6; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; margin: 12px 0 14px; padding: 6px; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--line); border-radius: 12px; }
