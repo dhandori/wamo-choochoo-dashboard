@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-20T03:39:44.850612+00:00",
+  "checkedAt": "2026-10-20T07:34:24.884210+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-20T03:39:44.850612+00:00",
+      "generatedAt": "2026-10-20T07:34:24.884210+00:00",
       "sessions": {
         "US-NYSE": "20261019",
         "US-NASDAQ": "20261019",
@@ -817,18 +817,18 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-20T03:39:44.850612+00:00",
+      "generatedAt": "2026-10-20T07:34:24.884210+00:00",
       "sessions": {
-        "KR-KOSDAQ": "20261019",
-        "KR-KOSPI": "20261019"
+        "KR-KOSPI": "20261020",
+        "KR-KOSDAQ": "20261020"
       },
       "source": "WAMO_52W",
       "scope": "WAMO KR 검증 종목군 · 최근 252거래일",
       "coverage": {
-        "totalCount": 215,
-        "currentCount": 215,
-        "validatedCount": 215,
-        "eligible52WeekCount": 214,
+        "totalCount": 214,
+        "currentCount": 214,
+        "validatedCount": 214,
+        "eligible52WeekCount": 213,
         "excludedCount": 0
       },
       "exclusions": [],
@@ -840,7 +840,7 @@
           "symbol": "033780",
           "name": "KT&G",
           "currency": "KRW",
-          "as_of": "20261019",
+          "as_of": "20261020",
           "industry_path": [
             "담배 제조업"
           ],
@@ -849,11 +849,34 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 192900.0,
+          "current_close": 193700.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": false,
+            "intraday_252": true,
             "close_252": true
+          }
+        },
+        {
+          "key": "KR-KOSPI:021240",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "021240",
+          "name": "코웨이",
+          "currency": "KRW",
+          "as_of": "20261020",
+          "industry_path": [
+            "그외 기타 개인 서비스업"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 107700.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
           }
         }
       ],
@@ -862,6 +885,17 @@
           "market": "KR",
           "industry_path": [
             "담배 제조업"
+          ],
+          "eligible_classified_issuers": 1,
+          "current_signal_issuers": 1,
+          "micro_verified": false,
+          "phase": "52주 신고가 관측",
+          "comparison_scope": "WAMO 검증 종목군"
+        },
+        {
+          "market": "KR",
+          "industry_path": [
+            "그외 기타 개인 서비스업"
           ],
           "eligible_classified_issuers": 1,
           "current_signal_issuers": 1,
