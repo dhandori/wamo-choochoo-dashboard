@@ -25,7 +25,13 @@ def build(baskets_path):
     out = {}
     for item in data["markets"]["KR"]["items"]:
         for m in item["members"]:
-            out[m["code"]] = {"group": item["group"], "industry": item["name"], "name": m.get("name")}
+            row = out.get(m["code"])
+            if row is None:
+                # 처음 나온 산업이 대표 산업(종목 표에 보이는 이름)이다.
+                out[m["code"]] = {"group": item["group"], "industry": item["name"], "name": m.get("name")}
+            elif item["name"] != row["industry"]:
+                # 겹쳐 소속된 산업(예: ESS 밸류체인). 산업 순위·구성 종목에는 함께 들어간다.
+                row.setdefault("also", []).append(item["name"])
     for code, (group, industry) in MANUAL.items():
         out.setdefault(code, {"group": group, "industry": industry})
     return {"_source": "WAMO 산업 분류표(global-high-radar 제품 단위) + 수동 보정", "map": dict(sorted(out.items()))}

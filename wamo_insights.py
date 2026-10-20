@@ -182,11 +182,12 @@ def project(stock,market,asof):
     classification_keys=('industryEn','industry','sector') if market=='US' else ('industry','industryEn','sector')
     classification=next(((stock[k],k) for k in classification_keys if isinstance(stock.get(k),str) and stock[k].strip()),('Unclassified','unknown'))
     name,classification_source=classification
-    industry_group=None
+    industry_group=None;also=[]
     if market=='KR':
         mapped=industry_map_kr().get(symbol)
         if mapped:
             name,classification_source,industry_group=mapped['industry'],'WAMO 분류표',mapped.get('group')
+            also=[a.strip() for a in mapped.get('also') or [] if isinstance(a,str) and a.strip() and a.strip()!=name.strip()]
     reasons=[]
     change=ret(1)
     if change is not None and change>=3: reasons.append('UP')
@@ -200,7 +201,7 @@ def project(stock,market,asof):
     market_cap=number(stock.get(CAP_KEY.get(market,'market_cap_usd')))
     return {'id':f'{market}:{symbol}','symbol':symbol,'ticker':ticker,'name':stock.get('name') or symbol,'market':market,
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
-            'industry':name.strip(),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
+            'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),'volumeRatio':volume,
@@ -215,7 +216,9 @@ def project(stock,market,asof):
 
 def industries(stocks,market):
     groups=defaultdict(list)
-    for stock in stocks: groups[stock['industry']].append(stock)
+    # 한 종목이 겹쳐 소속된 산업(alsoIndustries)에도 들어간다. 같은 산업에 두 번 들어가지는 않는다.
+    for stock in stocks:
+        for name in dict.fromkeys([stock['industry'],*(stock.get('alsoIndustries') or [])]): groups[name].append(stock)
     result=[]
     for name,members in sorted(groups.items()):
         count=len(members);near=sum(s['highDistancePct'] is not None and s['highDistancePct']<=10 for s in members)
