@@ -22,12 +22,13 @@ export const KIND = {
   TOP: ['일중전환 · 천장형', '천장형 반전', 'warn'],
   BOTTOM: ['일중전환 · 바닥형', '바닥형 반전', 'lead'],
 };
+// [짧은 이름, 색, 설명, 큰 글씨 한 줄, 아이콘]
 const STATE = {
-  TOP_WARNING: ['천장 경고', 'bad', '클라이맥스 런 뒤에 천장형 일중전환이 나왔어요. 상승이 끝났을 가능성을 가장 강하게 의심하는 자리예요.'],
-  CLIMAX: ['클라이맥스 진행 중', 'warn', '짧은 기간에 지수가 가파르게 올랐어요. 아직 꺾이지는 않았지만 끝물 징후가 겹쳐 있어요.'],
-  TOP: ['천장형 반전', 'warn', '최근 5거래일 안에 장중 고점을 새로 찍고 밀려 끝난 날이 있었어요.'],
-  BOTTOM: ['바닥형 반전', 'lead', '최근 5거래일 안에 장중 저점을 깨고 말아 올린 날이 있었어요.'],
-  NONE: ['특이 신호 없음', 'mid', '최근 10거래일 동안 클라이맥스 런이나 일중전환이 없었어요.'],
+  TOP_WARNING: ['천장 경고', 'bad', '클라이맥스 런 뒤에 천장형 일중전환이 나왔어요. 상승이 끝났을 가능성을 가장 강하게 의심하는 자리예요.', '천장 경고 · 일중전환 있었음', '⚠'],
+  CLIMAX: ['클라이맥스 진행 중', 'warn', '짧은 기간에 지수가 가파르게 올랐어요. 아직 꺾이지는 않았지만 끝물 징후가 겹쳐 있어요.', '클라이맥스 런 진행 중', '🔥'],
+  TOP: ['천장형 반전', 'warn', '최근 5거래일 안에 장중 고점을 새로 찍고 밀려 끝난 날이 있었어요.', '일중전환 있었음 · 천장형', '▼'],
+  BOTTOM: ['바닥형 반전', 'lead', '최근 5거래일 안에 장중 저점을 깨고 말아 올린 날이 있었어요.', '일중전환 있었음 · 바닥형', '▲'],
+  NONE: ['특이 신호 없음', 'none', '최근 10거래일 동안 클라이맥스 런이나 일중전환이 없었어요.', '일중전환 없었음', '—'],
 };
 
 const TERMS = {
@@ -51,8 +52,11 @@ function indexChart(rep, market) {
   if (cs.length < 20) return el('p', '차트 자료가 부족해요.', 'tr-help');
   const days = cs.length;
   const narrow = window.innerWidth < 700;
-  const W = narrow ? 360 : 680, H = narrow ? 250 : 300;
-  const pad = { l: 8, r: narrow ? 52 : 60, t: 18, b: 24 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  // Volume panel under the candles (green = 양봉, red = 음봉), only when the index reports volume.
+  const hasVol = cs.filter(c => isNum(c.v) && c.v > 0).length >= cs.length * 0.8;
+  const VOLH = hasVol ? (narrow ? 46 : 58) : 0, GAP = hasVol ? 10 : 0;
+  const W = narrow ? 360 : 680, H = (narrow ? 250 : 300) + VOLH + GAP;
+  const pad = { l: 8, r: narrow ? 52 : 60, t: 18, b: 24 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b - VOLH - GAP;
   const ma = [20, 50].map(n => ({ ...MA.find(m => m.n === n), values: (rep.ma?.[n] || []).slice(-days) }));
   const vals = cs.flatMap(c => [c.h, c.l]).concat(ma.flatMap(m => m.values.filter(isNum)));
   let lo = Math.min(...vals), hi = Math.max(...vals); const m = (hi - lo) * 0.08; lo -= m; hi += m;
@@ -95,6 +99,23 @@ function indexChart(rep, market) {
       node('rect', { x: x(k) - bw / 2, y: top, width: bw, height: h, class: `cx-body ${down ? 'down' : 'up'}` }, svg);
     } else node('line', { x1: x(k), x2: x(k) + bw / 2, y1: y(c.c), y2: y(c.c), class: `cx-wick ${down ? 'down' : 'up'}` }, svg);
   });
+  // 거래량 막대: 캔들과 같은 색, 오른쪽에 최대 거래량 눈금, 주황 선 = 50일 평균 거래량
+  if (hasVol) {
+    const vTop = pad.t + plotH + GAP, vMax = Math.max(...cs.map(c => c.v || 0));
+    const vy = v => axisY - v / vMax * VOLH;
+    node('line', { x1: pad.l, x2: pad.l + plotW, y1: vTop, y2: vTop, class: 'pc-grid' }, svg);
+    txt(svg, W - pad.r + 6, vTop + 8, volText(vMax), { class: 'pc-axis' });
+    txt(svg, W - pad.r + 6, axisY - 3, '거래량', { class: 'pc-axis cx-vol-label' });
+    cs.forEach((c, k) => {
+      if (!isNum(c.v) || c.v <= 0) return;
+      const prev = cs[k - 1]?.c, open = isNum(c.o) && c.o > 0 ? c.o : null;
+      const down = open != null ? c.c < open : prev != null && c.c < prev;
+      node('rect', { x: x(k) - bw / 2, y: vy(c.v), width: bw, height: Math.max(0.8, axisY - vy(c.v)), class: `cx-vol ${down ? 'down' : 'up'}` }, svg);
+    });
+    const avg = cs.map((c, k) => { const w = cs.slice(Math.max(0, k - 49), k + 1).map(z => z.v).filter(v => isNum(v) && v > 0); return k >= 19 && w.length ? w.reduce((a, b) => a + b, 0) / w.length : null; });
+    const pts = avg.map((v, k) => v == null ? null : `${x(k)},${vy(v)}`).filter(Boolean);
+    if (pts.length > 1) node('polyline', { points: pts.join(' '), class: 'cx-vol-avg' }, svg);
+  }
   // 신호 표시: ▼ 천장형(천장 경고는 크게), ▲ 바닥형
   const byDate = new Map(); (rep.events || []).forEach(e => { if (e.type !== 'CLIMAX') byDate.set(e.date, e); });
   cs.forEach((c, k) => {
@@ -119,7 +140,7 @@ function indexChart(rep, market) {
   // 마우스 · 손가락 읽기
   const cross = node('line', { y1: pad.t, y2: axisY, class: 'pc-cross', visibility: 'hidden' }, svg);
   const tip = el('div', null, 'pc-tip'); tip.hidden = true; wrap.append(tip);
-  const hit = node('rect', { x: pad.l, y: pad.t, width: plotW, height: plotH, fill: 'transparent' }, svg);
+  const hit = node('rect', { x: pad.l, y: pad.t, width: plotW, height: axisY - pad.t, fill: 'transparent' }, svg);
   const show = evt => {
     const box = svg.getBoundingClientRect(), px = (evt.clientX - box.left) / box.width * W;
     const k = Math.max(0, Math.min(days - 1, Math.floor((px - pad.l) / slot)));
@@ -130,6 +151,7 @@ function indexChart(rep, market) {
     const p = v => isNum(v) && v > 0 ? v.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) : '—';
     row('종가', `${p(c.c)}${isNum(prev) ? ` (${pct((c.c / prev - 1) * 100)})` : ''}`, '#eaf0f8');
     row('시가 · 고가 · 저가', `${p(c.o)} · ${p(c.h)} · ${p(c.l)}`, '#5b6f88');
+    if (hasVol && isNum(c.v)) { const pv = cs[k - 1]?.v; row('거래량', `${volText(c.v)}${isNum(pv) && pv > 0 ? ` (전날의 ${fmt(c.v / pv, 2)}배)` : ''}`, isNum(c.o) && c.c < c.o ? 'var(--red)' : 'var(--green)'); }
     ma.forEach(line => row(line.label, p(line.values[k]), line.color));
     const e = byDate.get(c.d);
     if (e) row('신호', `${KIND[e.type]?.[0] || ''} · 종가 위치 ${fmt(e.closePos, 0)}%`, e.type === 'BOTTOM' ? 'var(--green)' : 'var(--red)');
@@ -144,10 +166,15 @@ function indexChart(rep, market) {
   const lg = el('div', null, 'pc-legend small');
   const key = (cls, label) => { const k = el('span', null, `pc-key ${cls}`); k.append(el('i'), el('b', label)); lg.append(k); };
   ma.forEach(line => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = line.color; k.append(i, el('b', line.label)); lg.append(k); });
+  if (hasVol) { key('cx-key-volup', '거래량 · 양봉'); key('cx-key-voldown', '거래량 · 음봉'); key('cx-key-volavg', '50일 평균 거래량'); }
   key('cx-key-warning', '▼ 천장 경고'); key('cx-key-top', '▼ 천장형 반전'); key('cx-key-bottom', '▲ 바닥형 반전'); key('cx-key-zone', '맨 위 노란 띠 = 클라이맥스 런 구간');
   lg.append(el('span', `최근 ${days}거래일 · 오른쪽 숫자는 지수`, 'pc-hint'));
   wrap.append(lg);
   return wrap;
+}
+
+function volText(v) {
+  return v >= 1e8 ? `${fmt(v / 1e8, 1)}억` : v >= 1e4 ? `${fmt(v / 1e4, 0)}만` : fmt(v, 0);
 }
 
 function pointList(points, date) {
@@ -160,15 +187,19 @@ function pointList(points, date) {
 function indexCard(rep, market) {
   const card = el('article', null, 'tr-card cx-index');
   if (rep.status !== 'OK') { card.append(el('h3', rep.label), el('p', '지수 자료가 없어 계산하지 못했어요.')); return card; }
-  const [title, cls, text] = STATE[rep.state] || STATE.NONE;
+  const [, cls, text, headline, icon] = STATE[rep.state] || STATE.NONE;
   const head = el('div', null, 'cx-index-head');
-  head.append(el('h3', `${rep.label} · ${md(rep.asOf)} 종가`), el('span', title, `tr-tag ${cls}`));
-  card.append(head, el('p', text, 'cx-state-text'));
+  head.append(el('h3', `${rep.label} · ${md(rep.asOf)} 종가`));
+  // 큰 상태 막대: 있었는지 없었는지가 먼저 보이게
+  const banner = el('div', null, `cx-banner ${cls}`);
+  const line = el('div', null, 'cx-banner-line'); line.append(el('span', icon, 'cx-banner-icon'), el('strong', headline));
+  banner.append(line, el('p', text));
+  card.append(head, banner);
   const now = [];
   if (rep.topWarning) now.push(`${md(rep.topWarning.date)} 천장형 반전 · ${md(rep.topWarning.runStart)}부터 ${pct(rep.topWarning.gainPct)} 급등 뒤`);
   if (rep.climax) now.push(`클라이맥스 런: ${md(rep.climax.runStart)}부터 ${pct(rep.climax.gainPct)} · 고점 대비 ${pct(rep.climax.fromPeakPct)}`);
   (rep.reversals || []).slice(-2).forEach(r => now.push(`${md(r.date)} ${KIND[r.kind][0]} · 종가 위치 ${fmt(r.closePos, 0)}% · ${pct(r.changePct)}`));
-  if (now.length) { const ul = el('ul', null, 'cx-now'); now.forEach(t => ul.append(el('li', t))); card.append(ul); }
+  if (now.length) { const ul = el('ul', null, 'cx-now'); now.forEach(t => ul.append(el('li', t))); banner.append(ul); }
   card.append(indexChart(rep, market));
   // 지난 1년 기록
   const ev = rep.events || [];

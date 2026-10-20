@@ -254,7 +254,8 @@ def index_report(rows, symbol, label, days=260):
             'climax': _strip(now['climax']), 'topWarning': now['topWarning'],
             'reversals': [_strip(r) for r in now['reversals'][-SHOW_REVERSAL:]],
             'events': events[::-1], 'climaxDates': [d for d in met_dates if d >= rows[-130]['date']],
-            'candles': [{'d': r['date'], **{k[0]: _r(r.get(k), 2) for k in ('open', 'high', 'low', 'close')}} for r in chart],
+            'candles': [{'d': r['date'], **{k[0]: _r(r.get(k), 2) for k in ('open', 'high', 'low', 'close')},
+                         'v': int(r['volume']) if r.get('volume') else None} for r in chart],
             'ma': {str(n_): [_r(_sma([x['close'] for x in rows], n_, k + 1), 2) for k in range(n - len(chart), n)] for n_ in (20, 50)}}
 
 
