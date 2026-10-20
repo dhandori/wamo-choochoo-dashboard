@@ -184,7 +184,7 @@ function pointList(points, date) {
   return ul;
 }
 
-function indexCard(rep, market) {
+function indexCard(rep, market, b) {
   const card = el('article', null, 'tr-card cx-index');
   if (rep.status !== 'OK') { card.append(el('h3', rep.label), el('p', '지수 자료가 없어 계산하지 못했어요.')); return card; }
   const [, cls, text, headline, icon] = STATE[rep.state] || STATE.NONE;
@@ -195,6 +195,13 @@ function indexCard(rep, market) {
   const line = el('div', null, 'cx-banner-line'); line.append(el('span', icon, 'cx-banner-icon'), el('strong', headline));
   banner.append(line, el('p', text));
   card.append(head, banner);
+  // 같은 지수의 분산일을 바로 옆에서 함께 봄 (시장 날씨와 같은 숫자)
+  const dist = b?.index?.symbol === rep.symbol ? b?.weather?.distribution : b?.index2?.symbol === rep.symbol ? b.index2.distribution : null;
+  if (dist?.status === 'OK') {
+    const box = el('div', null, `cx-dist ${dist.count >= 6 ? 'bad' : dist.count >= 4 ? 'mid' : 'good'}`);
+    box.append(el('span', '분산일'), el('b', `${dist.count}번`), el('small', `최근 25거래일${isNum(dist.score) ? ` · 위험 점수 ${fmt(dist.score, 1)}` : ''} · ${dist.count >= 6 ? '많음' : dist.count >= 4 ? '주의' : '적음'}`));
+    card.append(box);
+  }
   const now = [];
   if (rep.topWarning) now.push(`${md(rep.topWarning.date)} 천장형 반전 · ${md(rep.topWarning.runStart)}부터 ${pct(rep.topWarning.gainPct)} 급등 뒤`);
   if (rep.climax) now.push(`클라이맥스 런: ${md(rep.climax.runStart)}부터 ${pct(rep.climax.gainPct)} · 고점 대비 ${pct(rep.climax.fromPeakPct)}`);
@@ -352,7 +359,7 @@ export function climaxSection(b, market, openStock, rerender) {
   if (!c || c.status !== 'OK') { wrap.append(el('div', c?.note || '천장 신호 자료는 다음 자동 갱신 때 채워져요.', 'empty')); return wrap; }
   wrap.append(guide());
   const grid = el('div', null, 'cx-index-grid');
-  (c.indexes || []).forEach(rep => grid.append(indexCard(rep, market)));
+  (c.indexes || []).forEach(rep => grid.append(indexCard(rep, market, b)));
   if ((c.indexes || []).length) wrap.append(grid);
   wrap.append(stockSection(c, openStock, rerender));
   wrap.append(el('p', c.note || '', 'tr-help'));

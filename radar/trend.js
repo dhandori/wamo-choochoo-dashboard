@@ -1,10 +1,10 @@
 import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261020-asia1';
-import { climaxSection, climaxCount } from './climax.js?v=20261020-gd2';
+import { climaxSection, climaxCount } from './climax.js?v=20261020-mv1';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
 // [key, full label, short label for phones]
-const SUBTABS = [['weather', '시장 날씨', '날씨'], ['rs', 'RS선 선행 신고가', 'RS선'], ['sell', '팔 때 경고', '팔 때'], ['climax', '천장 신호', '천장'], ['earnings', '실적발표 임박', '실적'], ['score', '신호 성적표', '성적표']];
+const SUBTABS = [['weather', '시장 날씨', '날씨'], ['climax', '천장 신호', '천장'], ['rs', 'RS선 선행 신고가', 'RS선'], ['sell', '팔 때 경고', '팔 때'], ['earnings', '실적발표 임박', '실적'], ['score', '신호 성적표', '성적표']];
 const SUB_KEYS = SUBTABS.map(([k]) => k);
 let data = null, loading = null, failed = false, sellFilter = 'HIGH';
 let subtab = SUB_KEYS.includes(new URLSearchParams(location.search).get('sub')) ? new URLSearchParams(location.search).get('sub') : 'weather';
