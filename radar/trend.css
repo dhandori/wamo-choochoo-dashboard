@@ -409,3 +409,20 @@ dialog[open] ~ .to-top { display: none; }
 .cx-banner.none { background: color-mix(in srgb, #8aa0b9 8%, transparent); border-color: #4a5d75; }
 .cx-banner.none strong { color: #d7e1ee; } .cx-banner.none .cx-banner-icon { background: #3a4c63; color: #d7e1ee; }
 @media (max-width: 760px) { .cx-banner strong { font-size: 15.5px; } .cx-banner p, .cx-banner .cx-now { margin-left: 0; } }
+/* 천장 신호 읽는 법 */
+.cx-guide { margin: 0 0 14px; padding: 12px 14px; border: 1px solid #2c3f57; border-radius: 10px; background: #111c2b; }
+.cx-guide > summary { cursor: pointer; font-size: 14.5px; font-weight: 750; color: var(--text, #eaf0f8); }
+.cx-guide-lead { margin: 8px 0 10px; font-size: 13px; line-height: 1.65; color: var(--ink-2, #b8c4d4); }
+.cx-guide-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.cx-guide-card { padding: 10px 11px; border-radius: 8px; border: 1px solid #2a3a50; border-top: 3px solid; background: #0f1826; }
+.cx-guide-card.warn { border-top-color: var(--amber); } .cx-guide-card.bad { border-top-color: var(--red); } .cx-guide-card.lead { border-top-color: var(--green); }
+.cx-guide-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.cx-guide-head strong { display: block; font-size: 14px; color: var(--text, #eaf0f8); }
+.cx-guide-short { display: block; font-size: 12px; font-weight: 700; color: #f6cf7f; }
+.cx-guide-card.bad .cx-guide-short { color: #ff9aa3; } .cx-guide-card.lead .cx-guide-short { color: #8fe8c6; }
+.cx-guide-icon { flex: none; width: 44px; height: 40px; }
+.cx-guide-level { stroke: #7b9fc6; stroke-width: 1; stroke-dasharray: 3 2; }
+.cx-guide-card p { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-2, #b8c4d4); }
+.cx-guide-card .cx-guide-act { margin-top: 6px; font-weight: 650; color: var(--text, #eaf0f8); }
+@media (max-width: 1100px) { .cx-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .cx-guide-grid { grid-template-columns: 1fr; } }

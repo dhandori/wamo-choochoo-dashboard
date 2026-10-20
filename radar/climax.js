@@ -24,10 +24,10 @@ export const KIND = {
 };
 // [짧은 이름, 색, 설명, 큰 글씨 한 줄, 아이콘]
 const STATE = {
-  TOP_WARNING: ['천장 경고', 'bad', '클라이맥스 런 뒤에 천장형 일중전환이 나왔어요. 상승이 끝났을 가능성을 가장 강하게 의심하는 자리예요.', '천장 경고 · 일중전환 있었음', '⚠'],
-  CLIMAX: ['클라이맥스 진행 중', 'warn', '짧은 기간에 지수가 가파르게 올랐어요. 아직 꺾이지는 않았지만 끝물 징후가 겹쳐 있어요.', '클라이맥스 런 진행 중', '🔥'],
-  TOP: ['천장형 반전', 'warn', '최근 5거래일 안에 장중 고점을 새로 찍고 밀려 끝난 날이 있었어요.', '일중전환 있었음 · 천장형', '▼'],
-  BOTTOM: ['바닥형 반전', 'lead', '최근 5거래일 안에 장중 저점을 깨고 말아 올린 날이 있었어요.', '일중전환 있었음 · 바닥형', '▲'],
+  TOP_WARNING: ['천장 경고', 'bad', '클라이맥스 런 뒤에 천장형 일중전환이 나왔어요. 상승이 끝났을 가능성을 가장 강하게 의심하는 자리예요.', '천장 경고 · 클라이맥스 뒤 고점 찍고 밀림', '⚠'],
+  CLIMAX: ['클라이맥스 진행 중', 'warn', '짧은 기간에 지수가 가파르게 올랐어요. 아직 꺾이지는 않았지만 끝물 징후가 겹쳐 있어요.', '클라이맥스 런 진행 중 (끝물 급등)', '🔥'],
+  TOP: ['천장형 반전', 'warn', '최근 5거래일 안에 장중 고점을 새로 찍고 밀려 끝난 날이 있었어요.', '일중전환 있었음 · 천장형 (고점 찍고 밀림)', '▼'],
+  BOTTOM: ['바닥형 반전', 'lead', '최근 5거래일 안에 장중 저점을 깨고 말아 올린 날이 있었어요.', '일중전환 있었음 · 바닥형 (저점 깨고 말아 올림)', '▲'],
   NONE: ['특이 신호 없음', 'none', '최근 10거래일 동안 클라이맥스 런이나 일중전환이 없었어요.', '일중전환 없었음', '—'],
 };
 
@@ -167,7 +167,7 @@ function indexChart(rep, market) {
   const key = (cls, label) => { const k = el('span', null, `pc-key ${cls}`); k.append(el('i'), el('b', label)); lg.append(k); };
   ma.forEach(line => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = line.color; k.append(i, el('b', line.label)); lg.append(k); });
   if (hasVol) { key('cx-key-volup', '거래량 · 양봉'); key('cx-key-voldown', '거래량 · 음봉'); key('cx-key-volavg', '50일 평균 거래량'); }
-  key('cx-key-warning', '▼ 천장 경고'); key('cx-key-top', '▼ 천장형 반전'); key('cx-key-bottom', '▲ 바닥형 반전'); key('cx-key-zone', '맨 위 노란 띠 = 클라이맥스 런 구간');
+  key('cx-key-warning', '▼ 천장 경고 (클라이맥스 + 고점 찍고 밀림)'); key('cx-key-top', '▼ 천장형 반전 (고점 찍고 밀림)'); key('cx-key-bottom', '▲ 바닥형 반전 (저점 깨고 말아 올림)'); key('cx-key-zone', '맨 위 노란 띠 = 클라이맥스 런 (끝물 급등) 구간');
   lg.append(el('span', `최근 ${days}거래일 · 오른쪽 숫자는 지수`, 'pc-hint'));
   wrap.append(lg);
   return wrap;
@@ -304,13 +304,53 @@ export const climaxCount = b => {
   return `${idx ? '! ' : ''}${c.counts?.TOP_WARNING ?? 0}`;
 };
 
+// 읽는 법: 이 칸의 목적(클라이맥스 런 잡기)과 용어를 그림과 쉬운 말로 늘 펼쳐 둔다.
+function guideIcon(kind) {
+  const svg = node('svg', { viewBox: '0 0 44 40', class: 'cx-guide-icon', 'aria-hidden': 'true' });
+  const candle = (x, hi, lo, open, close) => {
+    const down = close > open;   // y grows downward: bigger y = lower price
+    node('line', { x1: x, x2: x, y1: hi, y2: lo, class: `cx-wick ${down ? 'down' : 'up'}` }, svg);
+    node('rect', { x: x - 3, y: Math.min(open, close), width: 6, height: Math.max(1.5, Math.abs(close - open)), class: `cx-body ${down ? 'down' : 'up'}` }, svg);
+  };
+  if (kind === 'climax') { [[6, 30, 36, 35, 31], [14, 25, 32, 31, 26], [22, 17, 27, 26, 18], [30, 8, 19, 18, 9], [38, 2, 10, 9, 3]].forEach(a => candle(...a)); node('rect', { x: 1, y: 0, width: 42, height: 3, class: 'cx-zone' }, svg); }
+  if (kind === 'top') { candle(12, 14, 26, 24, 16); candle(26, 4, 30, 18, 27); node('line', { x1: 2, x2: 42, y1: 13, y2: 13, class: 'cx-guide-level' }, svg); }
+  if (kind === 'warning') { [[6, 30, 36, 35, 31], [14, 20, 30, 29, 21], [22, 9, 21, 20, 10]].forEach(a => candle(...a)); candle(34, 2, 26, 9, 22); node('rect', { x: 1, y: 0, width: 26, height: 3, class: 'cx-zone' }, svg); }
+  if (kind === 'bottom') { candle(12, 12, 24, 14, 22); candle(26, 10, 36, 22, 13); node('line', { x1: 2, x2: 42, y1: 25, y2: 25, class: 'cx-guide-level' }, svg); }
+  return svg;
+}
+
+function guide() {
+  const box = el('details', null, 'cx-guide');
+  // 펼침이 기본, 접어 두면 이 브라우저에서는 계속 접힌 채로 (기억 못 해도 화면은 정상)
+  let closed = false; try { closed = localStorage.getItem('wamo.cxGuideClosed') === '1'; } catch (e) { /* storage off */ }
+  box.open = !closed;
+  box.addEventListener('toggle', () => { try { localStorage.setItem('wamo.cxGuideClosed', box.open ? '0' : '1'); } catch (e) { /* storage off */ } });
+  box.append(el('summary', '읽는 법 · 이 칸은 클라이맥스 런을 잡으려고 만든 곳이에요'));
+  box.append(el('p', '오르던 종목이나 지수가 마지막에 수직으로 치솟는 구간(클라이맥스 런)은 상승의 끝물인 경우가 많아요. 그 구간을 먼저 잡고, 그 뒤에 "고점을 찍고 밀린 날"이 나오는지 지켜보는 게 이 칸의 목적이에요. 일중전환은 하루 안에 방향이 뒤집힌 날을 말해요. 장중에 새 고점(또는 새 저점)을 찍었다가 반대쪽으로 끝난 날이에요.', 'cx-guide-lead'));
+  const rows = [
+    ['climax', 'warn', '🔥 클라이맥스 런', '끝물 급등', '짧은 기간에 수직으로 치솟은 구간이에요. 종목은 15거래일 안에 +25% 넘게(지수는 +12%) 오르고, 하루 최대 상승 · 쉬지 않는 상승 · 빈칸 갭 · 이평선과 크게 벌어짐 · 1년 최대 거래량 같은 끝물 징후가 겹친 경우예요.', '새로 사지 않고, 오를 때 조금씩 나눠 팔기 시작할 자리'],
+    ['top', 'warn', '▼ 천장형 반전 (일중전환)', '고점 찍고 밀린 날', '장중에는 최근 50거래일 최고가를 새로 넘었는데, 종가는 전날보다 낮고 그날 범위의 아래쪽 절반에서 끝난 날이에요. 사려는 힘보다 파는 힘이 이겼다는 흔적이에요.', '혼자 나오면 약한 신호 · 클라이맥스 뒤에 나오면 강한 신호'],
+    ['warning', 'bad', '⚠ 천장 경고', '클라이맥스 + 고점 찍고 밀림', '클라이맥스 런이 나온 뒤 10거래일 안에 천장형 반전이 나온 경우예요. 두 신호가 겹쳐서 상승이 끝났을 가능성을 가장 강하게 의심하는 자리예요.', '남은 물량 정리를 검토할 자리 (가장 강한 매도 경고)'],
+    ['bottom', 'lead', '▲ 바닥형 반전 (일중전환)', '저점 깨고 말아 올린 날', '장중에는 최근 20거래일 최저가를 깼는데, 종가는 전날보다 높고 그날 범위의 위쪽에서 끝난 날이에요. 파는 힘이 바닥났을 수 있다는 흔적이에요.', '하락이 끝나 가는지 확인하는 용도 · 이것만 보고 사지는 않기'],
+  ];
+  const grid = el('div', null, 'cx-guide-grid');
+  rows.forEach(([icon, tone, name, short, text, act]) => {
+    const card = el('div', null, `cx-guide-card ${tone}`);
+    const head = el('div', null, 'cx-guide-head'); const t = el('div'); t.append(el('strong', name), el('span', short, 'cx-guide-short'));
+    head.append(guideIcon(icon), t);
+    card.append(head, el('p', text), el('p', `→ ${act}`, 'cx-guide-act'));
+    grid.append(card);
+  });
+  box.append(grid);
+  const more = el('p', null, 'tr-help'); more.append('밑줄 친 말을 누르면 정확한 숫자 기준이 나와요: ', term('cx_climaxRun'), ' · ', term('cx_reversalTop'), ' · ', term('cx_topWarning'), ' · ', term('cx_reversalBottom'), ' · ', term('cx_closePos'));
+  box.append(more);
+  return box;
+}
+
 export function climaxSection(b, market, openStock, rerender) {
   const c = b.climax, wrap = el('div', null, 'cx');
   if (!c || c.status !== 'OK') { wrap.append(el('div', c?.note || '천장 신호 자료는 다음 자동 갱신 때 채워져요.', 'empty')); return wrap; }
-  const intro = el('p', null, 'tr-help cx-intro');
-  intro.append('추세의 끝물을 알려 주는 두 신호를 함께 봐요. ', term('cx_climaxRun'), '은 이미 오르던 것이 마지막에 수직으로 치솟는 구간이고, ',
-    term('cx_reversalTop'), '은 고점을 새로 찍고도 밀려 끝난 날이에요. 둘이 10거래일 안에 겹치면 ', term('cx_topWarning'), '로 올려요.');
-  wrap.append(intro);
+  wrap.append(guide());
   const grid = el('div', null, 'cx-index-grid');
   (c.indexes || []).forEach(rep => grid.append(indexCard(rep, market)));
   if ((c.indexes || []).length) wrap.append(grid);
