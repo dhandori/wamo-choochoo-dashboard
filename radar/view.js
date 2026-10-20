@@ -66,7 +66,8 @@ function marketCap(s, withCurrency = false) {
   const cap = s.marketCap;
   if (!numeric(cap) || cap <= 0) return '미제공';
   const unit = cap >= 1e12 ? [1e12, '조'] : cap >= 1e8 ? [1e8, '억'] : cap >= 1e4 ? [1e4, '만'] : [1, ''];
-  return `${fmt(cap / unit[0], unit[0] === 1 ? 0 : 2)}${unit[1]}${withCurrency ? ' ' + (CURRENCY[s.market] || CURRENCY.US)[1] : ''}`;
+  const v = cap / unit[0], digits = unit[0] === 1 ? 0 : unit[1] === '억' ? (v >= 100 ? 0 : 1) : 2;
+  return `${fmt(v, digits)}${unit[1]}${withCurrency ? ' ' + (CURRENCY[s.market] || CURRENCY.US)[1] : ''}`;
 }
 function capNode(s, tag = 'span') {
   const node = el(tag, marketCap(s), 'market-cap');
