@@ -26,9 +26,15 @@ OUTPUT = 'wamo_trend.json'
 SIGNAL_LOG = 'wamo_signal_log.json'
 EARNINGS_CACHE = 'wamo_earnings_cache.json'
 PAGES = {'KR': 'index.html', 'US': 'us.html'}
-INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500')}
+INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500'), 'JP': ('^N225', '닛케이 225'), 'TW': ('^TWII', '대만 가권')}
 # Growth-heavy second index: market weather needs both (O'Neil watches both).
-SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥')}
+# Japan has no free daily TOPIX/Growth index with volume on Yahoo, so it runs on one index.
+SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥'), 'TW': ('^TWOII', '대만 장외(TPEx)')}
+EARNINGS_NOTE = {
+    'KR': '한국은 실적발표 예정일을 한곳에서 공식으로 모아 주는 자료가 없어 아직 표시하지 않아요. 공시(DART) 탭에서 확인하세요.',
+    'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
+    'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
+}
 TREND_VERSION = 5
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
@@ -841,6 +847,11 @@ def write_json(path, value, compact=False):
 def build_market(root, market, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index):
     payload = extract_old_payload((root / PAGES[market]).read_text(encoding='utf-8'))
     asof, universe = build_universe(payload, market)
+    return build_block(root, market, asof, universe, log, earnings_cache, fetch_network, index_fetcher)
+
+
+def build_block(root, market, asof, universe, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index):
+    """Trend, FTD and leadership for one market from verified daily histories (any market)."""
     if not asof or len(universe) < 30:
         raise RuntimeError(f'{market} 검증 가격 부족')
     symbol, label = INDEX[market]
@@ -861,9 +872,9 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
         bench, synthetic, source = synthetic_benchmark(universe), True, '스크리닝 종목 동일가중 중앙값(대체)'
     idx = {**index_trend(bench), 'label': label if not synthetic else '종목 중앙값 지수'}
     secondary = None
-    sym2, label2 = SECONDARY[market]
+    sym2, label2 = SECONDARY.get(market, (None, None))
     bench2 = (load_fixture(market + '2') if os.getenv('WAMO_INDEX_FIXTURE') else None)
-    if bench2 is None and fetch_network and not os.getenv('WAMO_INDEX_FIXTURE'):
+    if sym2 and bench2 is None and fetch_network and not os.getenv('WAMO_INDEX_FIXTURE'):
         try:
             bench2 = index_fetcher(sym2)
         except Exception as exc:  # noqa: BLE001
@@ -880,8 +891,7 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
     hl = highs_lows(universe)
     leaders, warnings = analyze_stocks(universe, bench)
     book = update_signal_log(log, market, universe, bench, asof)
-    earnings = {'status': 'UNAVAILABLE', 'upcoming': [],
-                'note': '한국은 실적발표 예정일을 한곳에서 공식으로 모아 주는 자료가 없어 아직 표시하지 않아요. 공시(DART) 탭에서 확인하세요.'}
+    earnings = {'status': 'UNAVAILABLE', 'upcoming': [], 'note': EARNINGS_NOTE.get(market, '')}
     if market == 'US':
         calls = 0
         if fetch_network:
@@ -896,7 +906,10 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
     expected = expected_session(market)
     ftd_indexes = []
     ftd_history = read_json(root / "wamo_ftd_history.json", {})
-    for sym, name, raw, is_synthetic in [(symbol, label, bench, synthetic), (sym2, label2, bench2, False)]:
+    pairs = [(symbol, label, bench, synthetic)]
+    if sym2 and (market in ('KR', 'US') or bench2):   # optional second index: shown only when it arrived
+        pairs.append((sym2, label2, bench2, False))
+    for sym, name, raw, is_synthetic in pairs:
         repaired_dates = []
         if raw and not is_synthetic:
             raw = merge_history(raw, ftd_history.get(sym, []))

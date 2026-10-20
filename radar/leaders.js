@@ -1,6 +1,6 @@
 // Leading stocks and leading industries. Reads wamo_trend.json → markets[X].leadership.
 import { helpButton, addTerms } from './help.js?v=20261020-asia1';
-import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261020-asia1';
+import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261020-asia5';
 addTerms(LEADER_TERMS);
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
@@ -375,8 +375,8 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   const pol = L.policy || {};
   rules.append(
     n('p', `기준일 ${L.asOf || '—'} · 분석 대상 ${L.universe ?? '—'}종목 (와모 스크리닝 목록 안에서의 비교이며 시장 전체가 아닙니다).`),
-    n('p', `선도주: RS(오닐 방식) ${pol.rsMin} 이상, 52주 고점 ${pol.highDistanceMax}% 이내, Stage 2, 유동성(${market === 'US' ? '시총 10억 달러 이상' : '20일 평균 거래대금 50억 원 이상'}). 핵심은 RS ${pol.rsCore} 이상.`),
-    n('p', `선도주 출현: FTD 뒤 ${pol.emergenceWindow}거래일 안에 RS ${pol.rsMin} 이상 종목이 52주 최고 종가를 50일 평균 ${pol.breakoutVolume}배 이상 거래량으로 돌파한 수. 기준 ${market === 'US' ? pol.emergenceMin?.US : pol.emergenceMin?.KR}종목 (와모 기본값).`),
+    n('p', `선도주: RS(오닐 방식) ${pol.rsMin} 이상, 52주 고점 ${pol.highDistanceMax}% 이내, Stage 2, 유동성(${({US:'시총 10억 달러 이상',KR:'20일 평균 거래대금 50억 원 이상',JP:'20일 평균 거래대금 5억 엔 이상',TW:'20일 평균 거래대금 1억 대만달러 이상'})[market]}). 핵심은 RS ${pol.rsCore} 이상.`),
+    n('p', `선도주 출현: FTD 뒤 ${pol.emergenceWindow}거래일 안에 RS ${pol.rsMin} 이상 종목이 52주 최고 종가를 50일 평균 ${pol.breakoutVolume}배 이상 거래량으로 돌파한 수. 기준 ${pol.emergenceMin?.[market] ?? pol.emergenceMin?.KR}종목 (와모 기본값).`),
     n('p', `업종: 구성 ${pol.industryMinMembers}종목 이상인 업종만. 업종 RS는 구성 종목 RS 원점수의 중간값을 업종끼리 순위화. 분류는 가격 화면의 산업 분류를 그대로 씁니다.`),
     n('p', `FTD 대기 워치리스트: 선도업종이 아닌 업종 중 6문항(${(L.watchChecks || []).map(c => c.label).join(' · ')}) 가운데 ${pol.watchScoreMin}개 이상을 채운 업종. 문항별 숫자 기준은 워치리스트 카드의 "6가지 질문" 상자에 있습니다(와모 기본값).`),
     n('p', '모든 숫자는 표시 거래일까지의 종가·거래량만으로 계산하며, 매수 권유가 아닙니다. RS·신고가는 과거 가격의 상대 비교입니다.'),

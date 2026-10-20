@@ -305,6 +305,39 @@ def chart_file(market, payload, bench, asof):
     return charts
 
 
+def trend_universe(market, payload):
+    """Same per-stock shape wamo_trend builds for Korea/US (no earnings data for Japan/Taiwan)."""
+    from wamo_trend import clean_rows
+    out = []
+    for s in payload['stocks']:
+        rows = clean_rows(s.get('history'))
+        if not rows:
+            continue
+        out.append({'id': f"{market}:{s['stock_code']}", 'symbol': s['stock_code'], 'ticker': s['ticker'],
+                    'name': s['name'], 'industry': s.get('industry') or '산업 미분류',
+                    'marketCap': s.get('market_cap_local'), 'rows': rows, 'closes': [r['close'] for r in rows],
+                    'rsPercentile': s.get('rsPercentile'), 'vcp': None,
+                    'growth': {'ok': None, 'text': '실적 자료 없음'}})
+    return out
+
+
+def build_trend(market, payload, asof, root, now, index_fetcher=None):
+    """Trend signal, FTD and leaders for Japan/Taiwan, written into the shared wamo_trend.json."""
+    import wamo_trend as trend
+    log = trend.read_json(root / trend.SIGNAL_LOG, {'schemaVersion': 1, 'markets': {}})
+    block, _, charts = trend.build_block(root, market, asof, trend_universe(market, payload), log, {},
+                                         True, index_fetcher or trend.fetch_index)
+    block['builtAt'] = now.isoformat()
+    result = trend.read_json(root / trend.OUTPUT, {'schemaVersion': 1, 'markets': {}})
+    result.setdefault('markets', {})[market] = block
+    result['generatedAt'] = now.isoformat()
+    trend.write_json(root / trend.OUTPUT, result, compact=True)
+    trend.write_json(root / trend.SIGNAL_LOG, log, compact=True)
+    print(f"{market} 추세 신호: 날씨 {block['weather']['label']} · FTD {block['ftd']['indexes'][0].get('phase')} · "
+          f"선도주 {len((block.get('leadership') or {}).get('leaders') or [])}", flush=True)
+    return block, charts
+
+
 # ------------------------------------------------------------------ main
 def run(markets=('JP', 'TW'), root=ROOT, now=None, force=False, fetch=None, index_fetcher=None, builders=None):
     import wamo_insights as insights
@@ -340,13 +373,22 @@ def run(markets=('JP', 'TW'), root=ROOT, now=None, force=False, fetch=None, inde
             block = insights.build_market(market, payload, now, prev, None)
             block['universe'] = {'label': MARKETS[market]['universeLabel'], **{k: v for k, v in info.items() if k != 'warning'}}
             stored.setdefault('markets', {})[market] = block
-            bench = None
+            charts = None
             try:
-                from wamo_trend import fetch_index
-                bench = [r for r in (index_fetcher or fetch_index)(MARKETS[market]['bench'][0]) if r['date'] <= expected]
-            except Exception as exc:  # noqa: BLE001 - chart works without the index line
-                print(f'{market} 지수 이력 실패 · 차트의 지수 비교선 생략: {exc}', flush=True)
-            write_json(root / f'wamo_chart_{market}.json', chart_file(market, payload, bench, expected))
+                _, charts = build_trend(market, payload, expected, root, now, index_fetcher)
+                changed += ['wamo_trend.json', 'wamo_signal_log.json', 'wamo_ftd_history.json']
+            except Exception as exc:  # noqa: BLE001 - the stock scan still publishes; trend keeps its last block
+                print(f'{market} 추세·FTD·선도주 계산 실패 · 이전 결과 유지: {type(exc).__name__}: {exc}', flush=True)
+                payload['meta']['warnings'].append('추세·FTD·선도주 계산에 실패해 이전 결과를 보여 줍니다.')
+            if charts is None:
+                bench = None
+                try:
+                    from wamo_trend import fetch_index
+                    bench = [r for r in (index_fetcher or fetch_index)(MARKETS[market]['bench'][0]) if r['date'] <= expected]
+                except Exception as exc:  # noqa: BLE001 - chart works without the index line
+                    print(f'{market} 지수 이력 실패 · 차트의 지수 비교선 생략: {exc}', flush=True)
+                charts = chart_file(market, payload, bench, expected)
+            write_json(root / f'wamo_chart_{market}.json', charts)
             entry.update(status='PASS' if block.get('status') == 'CURRENT' else 'WARNING', lastSuccessAt=now.isoformat(),
                          asOf=block.get('asOf'), count=ok, universe=len(items), failed=len(errors), error=None)
             changed += [f'wamo_chart_{market}.json'] + ([UNIVERSE_FILE] if rebuilt else [])

@@ -1,0 +1,54 @@
+name: 일본·대만 전체 탭 개발 검증 (작업 갈래 전용)
+on:
+  push:
+    branches: ['codex/asia-full']
+permissions:
+  contents: write
+jobs:
+  check:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: 단위 검사
+        run: |
+          python -m unittest tests.test_asia tests.test_trend tests.test_leaders tests.test_ftd 2> ut.txt || true
+          tail -1 ut.txt | sed 's/^/::notice::unittest /'
+          grep -E '^(FAIL|ERROR):' ut.txt | head -20 | sed 's/^/::error::/' || true
+      - name: 실제 일본·대만 자료로 엔진 실행 (게시 안 함)
+        run: |
+          python -u wamo_asia.py --force > run.txt 2>&1 || true
+          sed 's/^/::notice::/' run.txt | tail -20
+          python - <<'PY'
+          import json
+          t = json.load(open('wamo_trend.json'))['markets']
+          for k in ('JP', 'TW'):
+              b = t.get(k)
+              if not b:
+                  print(f'::error::{k} 추세 블록 없음'); continue
+              w = b['weather']
+              print(f"::notice::{k} 추세 {b['asOf']} 대상 {b['universe']} 지수 {b['index']['label']} 합성 {b['index']['synthetic']} 날씨 {w.get('label')} 분산일 {w['distribution'].get('count')} 보조지수 {(b.get('index2') or {}).get('label')}")
+              for f in b['ftd']['indexes']:
+                  vol = sum(1 for r in f.get('series') or [] if r.get('volume'))
+                  print(f"::notice::{k} FTD {f.get('label')} 상태 {f.get('status')} 단계 {f.get('phase')} 메모 {f.get('note')} 시리즈 {len(f.get('series') or [])} 거래량있음 {vol}")
+              L = b['leadership']
+              print(f"::notice::{k} 선도 상태 {L.get('status')} 키 {sorted(L)[:20]} 선도주 {len(L.get('leaders') or [])} 업종 {len(L.get('industries') or [])}")
+              print(f"::notice::{k} RS선 {b['rsLeaders']['count']} 경고 {b['sellWarnings']['count']} 점수표 {json.dumps(b['scorecard'], ensure_ascii=False)[:300]}")
+          h = json.load(open('wamo_ftd_history.json'))
+          for s in ('^N225', '^TWII', '^TWOII'):
+              rows = h.get(s) or []
+              print(f"::notice::지수 이력 {s} {len(rows)}행 마지막 {rows[-1] if rows else None}")
+          PY
+          ls -la wamo_trend.json wamo_signal_log.json wamo_ftd_history.json wamo_chart_JP.json wamo_chart_TW.json | sed 's/^/::notice::/'
+      - name: 결과를 작업 갈래에 저장 (검토용)
+        run: |
+          git config user.name 'wamo-dashboard-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -f wamo_trend.json wamo_asia_markets.json wamo_chart_JP.json wamo_chart_TW.json run.txt ut.txt || true
+          git commit -m "asia dev outputs [skip ci]" && git push origin HEAD:codex/asia-full || true

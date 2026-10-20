@@ -1,6 +1,6 @@
 // Maintained thematic watchlist, independent of unreliable vendor industry labels.
 // Membership describes business exposure, not AI revenue share or a buy signal.
-export const AI_REVIEWED = '2026-10-19';
+export const AI_REVIEWED = '2026-10-20';
 export const AI_SECTORS = [
   {id:'hardware',name:'AI H/W',description:'연산 반도체 · 메모리 · 서버 · 기판 · 반도체 공급망'},
   {id:'infrastructure',name:'AI 인프라',description:'클라우드 · 데이터센터 · 네트워크 · 냉각'},
@@ -77,6 +77,37 @@ add('KR','052690','nuclear','원전 설계');
 add('KR','015760','nuclear','원전 운영·수출');
 add('KR','000720','nuclear','원전 시공');
 add('KR','083650 032820','nuclear','원전 보조기기·제어계측');
+
+// Japan (TOPIX 500) and Taiwan: only codes checked against the 2026-10-20 universe lists.
+add('JP','8035 6857 6920 7735 6146 6525 6323','hardware','반도체 장비');
+add('JP','4063 3436 4186 5016','hardware','웨이퍼·반도체 소재');
+add('JP','285A','hardware','메모리(낸드)');
+add('JP','6723 6526','hardware','반도체 설계·시스템 반도체');
+add('JP','4062 6981 6762 6976 7741','hardware','기판·전자부품·마스크 블랭크');
+add('JP','9432 9433 9434','infrastructure','통신·데이터센터');
+add('JP','6702 6701 4307','infrastructure software','IT 서비스·기업용 AI');
+add('JP','9984','bigtech','AI 투자 지주(ARM·OpenAI 등)');
+add('JP','4704','security','기업 보안');
+add('JP','5803 5802 5801','optics power','광섬유·광부품·전선');
+add('JP','6501 6503 6504','power','전력망·전력기기');
+add('JP','1942 1944','power infrastructure','전기·데이터센터 설비 공사');
+add('JP','7011 7013 5631','nuclear','원자로·원전 기자재');
+add('JP','9501 9503','nuclear power','원전 보유 발전사');
+add('JP','6752 6674','ess','ESS·데이터센터용 배터리');
+add('TW','2330 2303 3711 2449 6488','hardware','파운드리·패키징·테스트·웨이퍼');
+add('TW','2454 3443 3661 5274','hardware','AI 칩 설계·맞춤형 반도체(ASIC)·서버 관리 칩');
+add('TW','2408 2344','hardware','메모리');
+add('TW','2317 2382 3231 6669 2356 2376','hardware infrastructure','AI 서버 조립');
+add('TW','8210 2059','hardware infrastructure','서버 섀시·레일');
+add('TW','3037 8046 3189 2368 2383 6274 3044 2313','hardware','기판·PCB·동박적층판');
+add('TW','3533 3665','hardware','커넥터·고속 케이블');
+add('TW','3017 3324 3653','infrastructure','서버 냉각(수랭·방열)');
+add('TW','2308','infrastructure power','데이터센터 전원·냉각');
+add('TW','2301','power','서버 전원공급장치');
+add('TW','1519 1503 1513','power','변압기·전력기기');
+add('TW','6781','ess','서버용 배터리 백업(BBU)');
+add('TW','3081 3363 4979','optics','광통신 부품');
+add('TW','2345','optics infrastructure','데이터센터 네트워크 스위치');
 
 export function aiMembership(stock) { return catalog.get(stock.id) || null; }
 export function aiSearchText(stock) {
