@@ -406,3 +406,6 @@ table { font-size: 13px; }
   .industry-rail .rail-group small { display: none; }
   .industry-rail .rail-group { padding: 7px 10px; }
 }
+/* Word values such as "공격 가능" stay on one line instead of breaking mid-word. */
+.metric strong.metric-word { font-size: 21px; white-space: nowrap; }
+@media (max-width: 760px) { .metric strong.metric-word { font-size: 15px; } }

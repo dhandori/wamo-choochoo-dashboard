@@ -1,8 +1,8 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261020-asia5';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261020-asia7';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261020-asia6';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261020-asia5';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261020-asia1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261020-asia5';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261020-asia7';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261019-2';
 import { renderSchedule } from './schedule.js?v=20261020-asia1';
 import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261020-asia1';
@@ -105,6 +105,13 @@ function safeLink(text, url, cls) {
 function naverLink(s, prominent = false) {
   const url = safeUrl(s.naverUrl);
   if (!url || !/^https:\/\/m\.stock\.naver\.com\/(domestic|worldstock)\/stock\/[A-Za-z0-9.]+\/total$/.test(url)) {
+    // Naver has no Taiwan pages; Yahoo Finance does (same source as the prices).
+    const yahoo = safeUrl(s.chartUrl);
+    if (yahoo && /^https:\/\/finance\.yahoo\.com\/quote\/[A-Za-z0-9.^-]+\/?$/.test(yahoo)) {
+      const y = safeLink(prominent ? '야후 파이낸스 ↗' : '야후 ↗', yahoo, prominent ? 'naver-primary' : 'naver-row');
+      y.setAttribute('aria-label', `${s.name} 야후 파이낸스 새 탭`);
+      return y;
+    }
     return el('span', prominent ? '네이버증권 연결 미제공' : '미제공', prominent ? 'unavailable' : 'row-unavailable');
   }
   const a = safeLink(prominent ? '네이버증권 ↗' : '네이버 ↗', url, prominent ? 'naver-primary' : 'naver-row');
@@ -337,7 +344,9 @@ function renderControls() {
   if (state.tab === 'movers') [['all', '전체'], ['up', '상승 ≥3%'], ['down', '하락 ≤−3%'], ['volume', '거래량 ≥1.5×']].forEach(([v, text]) => group.append(button(text, state.mode === v, () => change('mode', v))));
   if(state.tab==='ai') {
     const sectors=el('select');sectors.setAttribute('aria-label','AI 분야');
-    [{id:'all',name:'AI 전체'},...AI_SECTORS].forEach(g=>{const o=el('option',g.name);o.value=g.id;o.selected=state.aiSector===g.id;sectors.append(o);});
+    const listed=new Set(aiOverview(snapshot.markets[state.market],state.market).groups.filter(g=>g.catalogCount>0).map(g=>g.id));
+    if(state.aiSector!=='all'&&!listed.has(state.aiSector))state.aiSector='all';
+    [{id:'all',name:'AI 전체'},...AI_SECTORS.filter(g=>listed.has(g.id))].forEach(g=>{const o=el('option',g.name);o.value=g.id;o.selected=state.aiSector===g.id;sectors.append(o);});
     sectors.onchange=()=>change('aiSector',sectors.value);group.append(sectors);
     const signal=el('select');signal.setAttribute('aria-label','AI 종목 조건');
     [['all','모든 AI 종목'],['near','신고가권 10% 이내'],['high','당일 신고가'],['up','상승 ≥3%'],['down','하락 ≤−3%'],['volume','거래량 ≥1.5×']].forEach(([value,text])=>{const o=el('option',text);o.value=value;o.selected=state.aiSignal===value;signal.append(o);});
@@ -470,6 +479,7 @@ function renderAI(m) {
   const panel=$('ai-overview');if(!panel)return;panel.replaceChildren();panel.hidden=state.tab!=='ai';
   if(panel.hidden)return;
   const overview=aiOverview(m,state.market),t=overview.total;
+  overview.groups=overview.groups.filter(g=>g.catalogCount>0);   // e.g. Taiwan has no AI software names
   const [period,key,countKey]=PERIODS[state.aiPeriod];
   const top=el('div',null,'ai-heading'),caption=el('div');
   caption.append(el('h3','AI 분야별 흐름'),el('p','현재 시장의 전체 AI 대상 · 아래 종목 필터와 독립'));

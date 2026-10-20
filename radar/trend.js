@@ -94,7 +94,7 @@ export function renderWeather(container, market, onOpen) {
 export function renderTrendMetrics(container, market) {
   const b = block(market);
   container.replaceChildren();
-  const add = (label, value, sub) => { const box = el('div', null, 'metric'); box.append(el('span', label), el('strong', value), el('small', sub)); container.append(box); };
+  const add = (label, value, sub) => { const box = el('div', null, 'metric'); box.append(el('span', label), el('strong', value, /^[\d—.,%+-]+$/.test(value) ? null : 'metric-word'), el('small', sub)); container.append(box); };
   if (!b) { add('시장 날씨', '—', '자료 준비 중'); return; }
   add('시장 날씨', LIGHT[b.weather?.level] || '—', `점수 ${b.weather?.score ?? '—'} · ${b.asOf} 종가`);
   add('RS선 선행 신고가', `${b.rsLeaders?.leadingCount ?? 0}`, `RS선 신고가 전체 ${b.rsLeaders?.count ?? 0}종목`);
@@ -115,7 +115,7 @@ function weatherDetail(b) {
   const grid = el('div', null, 'tr-cards');
   // Index
   const idx = b.index || {}, idx2 = b.index2, c1 = el('article', null, 'tr-card');
-  c1.append(el('h3', idx2 ? `지수 추세 (${idx.label} · ${idx2.label})` : (idx.label || '지수')));
+  c1.append(el('h3', idx2 ? `지수 추세 (${idx.label} · ${idx2.label})` : '지수 추세'));
   [idx, idx2].filter(Boolean).forEach(i => {
     const line = el('div', null, 'tr-index-line');
     const big = el('div', null, 'tr-big'); big.append(el('b', fmt(i.close, 2)), el('span', pct(i.changePct), tone(i.changePct)));
@@ -126,7 +126,7 @@ function weatherDetail(b) {
       el('p', `기울기: 50일선 ${sl(i.ma50Slope, i.ma50Dir, 10)} · 200일선 ${sl(i.ma200Slope, i.ma200Dir, 20)}`, 'tr-slope'));
     c1.append(line);
   });
-  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : '가격: 두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평).'));
+  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : `가격: ${idx2 ? '두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨' : '50일선과 200일선 위에 있으면 좋음, 200일선 아래면 나쁨'}. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평).`));
   // Distribution days
   const dist = w.distribution || {}, c2 = el('article', null, 'tr-card');
   c2.append(el('h3', '분산일 (기관이 판 흔적)'));
