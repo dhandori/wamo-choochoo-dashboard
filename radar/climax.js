@@ -203,10 +203,10 @@ function indexCard(rep, market, b) {
     card.append(box);
   }
   // 셀링 클라이맥스(급락 + 1년 최대 거래대금): 바닥 후보. 시장 거래대금 카드와 같은 숫자.
-  const sc = b?.index?.symbol === rep.symbol ? b?.liquidity?.sellingClimax : null;
+  const sc = (b?.liquidity?.groups || []).find(g => g.symbol === rep.symbol)?.sellingClimax || null;
   if (sc) {
     const box = el('div', null, 'cx-dist lead');
-    box.append(el('span', '셀링 클라이맥스'), el('b', `${md(sc.date)} ${pct(sc.changePct)}`), el('small', `급락 + 1년 최대 거래대금(50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배) · 그 뒤 ${pct(sc.sinceThenPct)} · 바닥 후보, FTD 대기`));
+    box.append(el('span', '셀링 클라이맥스'), el('b', `${md(sc.date)} ${pct(sc.changePct)}`), el('small', `급락 + 1년 최대 거래량(50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배) · 그 뒤 ${pct(sc.sinceThenPct)} · 바닥 후보, FTD 대기`));
     card.append(box);
   }
   const now = [];

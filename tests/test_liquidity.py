@@ -110,3 +110,51 @@ class Ratios(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def index_rows(n=300, price_tail=0.0, vol_tail=1.0, tail=5, drop_at=None, drop_vol=None):
+    rows, c = [], 1000.0
+    for i, d in enumerate(sessions(n)):
+        v = 1e6
+        if i >= n - tail:
+            c *= 1 + price_tail
+            v = 1e6 * vol_tail
+        if drop_at is not None and i == n + drop_at:
+            c *= 0.95
+            v = drop_vol
+        rows.append({'date': d, 'close': c, 'high': c * 1.01, 'low': c * 0.99, 'volume': v})
+    return rows
+
+
+class IndexVolume(unittest.TestCase):
+    """시장 판정은 지수 공식 거래량(거래소 전체)으로 한다."""
+
+    def test_each_index_is_judged_on_its_own_volume(self):
+        u = universe()
+        for s in u[:6]:
+            s['board'] = 'KOSPI'
+        for s in u[6:]:
+            s['board'] = 'KOSDAQ'
+        r = L.split(u, [('KOSPI', 'KOSPI', '^KS11', lambda s: s['board'] == 'KOSPI', index_rows(price_tail=0.01, vol_tail=1.5)),
+                        ('KOSDAQ', 'KOSDAQ', '^KQ11', lambda s: s['board'] == 'KOSDAQ', index_rows(price_tail=-0.01, vol_tail=1.5))])
+        g = {x['key']: x for x in r['groups']}
+        self.assertEqual(g['KOSPI']['trend']['key'], 'HEALTHY')
+        self.assertEqual(g['KOSDAQ']['trend']['key'], 'DISTRIBUTION')
+        self.assertEqual(r['score'], -1)                      # the weaker market sets the weather score
+        self.assertIn('KOSDAQ 분산', r['summary'])
+        self.assertEqual(g['KOSDAQ']['members'], 6)
+        self.assertIsNotNone(r['industries'])                 # money-flow industries still from all screened stocks
+
+    def test_dry_index_volume_warns(self):
+        g = L.index_flow(index_rows(vol_tail=0.5, tail=20), 'ALL', 'S&P 500', '^GSPC')
+        self.assertEqual(g['liquidity']['key'], 'DRY')
+        self.assertLess(g['series'][-1]['x50'], 1)             # chart is in multiples of the 50-day average
+
+    def test_selling_climax_on_index_volume(self):
+        g = L.index_flow(index_rows(drop_at=-2, drop_vol=5e6), 'KOSPI', 'KOSPI', '^KS11')
+        self.assertEqual(g['sellingClimax']['daysAgo'], 1)
+        self.assertIsNone(L.index_flow(index_rows(drop_at=-2, drop_vol=1e6), 'KOSPI', 'KOSPI', '^KS11')['sellingClimax'])
+
+    def test_index_without_volume_is_skipped(self):
+        rows = [dict(r, volume=None) for r in index_rows()]
+        self.assertEqual(L.split(universe(), [('ALL', 'X', '^X', lambda s: True, rows)])['status'], 'UNAVAILABLE')

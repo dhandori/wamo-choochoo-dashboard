@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 11
+TREND_VERSION = 12
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -247,7 +247,9 @@ def build_universe(payload, market):
                     'marketCap': cap, 'rows': rows, 'closes': [r['close'] for r in rows],
                     'rsPercentile': num(stock.get('oneilRsPercentile')) or num(stock.get('rsPercentile')),
                     'vcp': stock.get('vcp') if isinstance(stock.get('vcp'), dict) else None,
-                    'growth': growth_of(stock, market)})
+                    'growth': growth_of(stock, market),
+                    # 상장 시장: 거래대금을 지수별로 나눌 때 씀 (KOSPI/KOSDAQ, NASDAQ/NYSE)
+                    'board': str(stock.get('krx_market') or stock.get('exchange') or '').upper()})
     return asof, out
 
 
@@ -556,8 +558,13 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None):
             f'오늘 신고가 {h}종목, 신저가 {l}종목이에요.'
             + (' 신고가 종목이 너무 적어 아직 힘이 약해요.' if not good and not bad and h <= l * 2 + 0.02 * n else ''))
     if liq and liq.get('status') == 'OK':
-        add('liquidity', '시장 거래대금', liq['score'],
-            f"{liq['trend']['label']} · 유동성 {liq['liquidity']['label']}. {liq['trend']['text']}")
+        gs = liq.get('groups') or []
+        if len(gs) == 1:
+            g = gs[0]
+            text = f"{g['trend']['label']} · 유동성 {g['liquidity']['label']}. {g['trend']['text']}"
+        else:
+            text = liq['summary'] + '. 두 시장 중 나쁜 쪽으로 점수를 매겨요.'
+        add('liquidity', '시장 거래대금', liq['score'], text)
     total = sum(f['score'] for f in factors)
     measured = len(factors)
     if measured < 2:
@@ -939,7 +946,17 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     hl = highs_lows(universe)
     try:
         import wamo_liquidity
-        liq = wamo_liquidity.analyze(universe, None if synthetic else bench, asof)
+        main_rows = None if synthetic else bench
+        if market == 'KR':
+            groups = [('KOSPI', 'KOSPI', symbol, lambda s: s.get('board') == 'KOSPI', main_rows),
+                      ('KOSDAQ', 'KOSDAQ', sym2, lambda s: s.get('board') == 'KOSDAQ', bench2)]
+        elif market == 'US':
+            # S&P 500 has both NYSE and Nasdaq listings (Apple, Nvidia...), so it pairs with every stock.
+            groups = [('ALL', 'S&P 500', symbol, lambda s: True, main_rows),
+                      ('NASDAQ', '나스닥', sym2, lambda s: s.get('board') == 'NASDAQ', bench2)]
+        else:
+            groups = [('ALL', label, symbol, lambda s: True, main_rows)]
+        liq = wamo_liquidity.split(universe, groups)
     except Exception as exc:  # noqa: BLE001 - never block the rest
         print(f'{market} 거래대금 계산 실패: {type(exc).__name__}: {exc}', flush=True)
         liq = {'status': 'UNAVAILABLE', 'note': '거래대금 계산에 실패했어요. 다음 갱신 때 다시 계산해요.'}

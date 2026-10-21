@@ -1,5 +1,5 @@
 import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261020-asia1';
-import { climaxSection, climaxCount } from './climax.js?v=20261021-lq1';
+import { climaxSection, climaxCount } from './climax.js?v=20261022-lq2';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -124,9 +124,14 @@ export function renderWeather(container, market, onOpen) {
   chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
   // Turnover verdict: a chip on wide screens; on phones it rides on the advice line so the strip keeps two chip rows.
   const lq = b.liquidity;
-  if (lq?.status === 'OK') {
-    if (window.matchMedia('(max-width:760px)').matches) text.append(el('span', ` 거래대금: ${lq.trend.label}`, 'tr-weather-lq'));
-    else chip('거래대금', `${lq.trend.label} · ${lq.liquidity.label}`, lq.trend.label, score('liquidity'));
+  if (lq?.status === 'OK' && lq.groups?.length) {
+    const worst = lq.groups.reduce((a, g) => (g.score < a.score ? g : a), lq.groups[0]);
+    const SHORT = { HEALTHY: '건강', THIN: '힘 빠짐', DISTRIBUTION: '분산', EXHAUSTION: '소진', FLAT: '보합' };
+    if (window.matchMedia('(max-width:760px)').matches) text.append(el('span', ` 거래량: ${lq.groups.map(g => `${g.label} ${SHORT[g.trend.key] || g.trend.label}`).join(' · ')}`, 'tr-weather-lq'));
+    else {
+      chip('거래량', lq.groups.map(g => `${g.label} ${SHORT[g.trend.key] || g.trend.label}`).join(' · '), SHORT[worst.trend.key] || worst.trend.label, score('liquidity'));
+      chips.lastChild.title = `거래량: ${lq.summary}`;
+    }
   }
   chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히', false, onOpen, 'tr-more');
@@ -260,33 +265,26 @@ function weatherDetail(b, market) {
 const SVGNS = 'http://www.w3.org/2000/svg';
 function node(tag, attrs = {}, parent) { const n = document.createElementNS(SVGNS, tag); Object.entries(attrs).forEach(([k, v]) => n.setAttribute(k, v)); if (parent) parent.append(n); return n; }
 function text(parent, x, y, value, attrs = {}) { const t = node('text', { x, y, ...attrs }, parent); t.textContent = value; return t; }
-const MONEY = { KR: [1e12, '조', 1e8, '억'], JP: [1e12, '조', 1e8, '억'], US: [1e9, 'B', 1e6, 'M'], TW: [1e9, '십억', 1e6, '백만'] };
-function money(v, market) {
-  if (!isNum(v)) return '—';
-  const [big, bu, small, su] = MONEY[market] || MONEY.US;
-  const cur = { KR: '원', JP: '엔', US: '$', TW: 'NT$' }[market] || '';
-  return v >= big ? `${fmt(v / big, v / big >= 100 ? 0 : 1)}${bu} ${cur}` : `${fmt(v / small, 0)}${su} ${cur}`;
-}
 const TONE = { 1: 'good', 0: 'mid', '-1': 'bad' };
+let lqPick = {};   // which index the card shows, per market (in-memory)
 
-function turnoverChart(series, market) {
-  // 60 bars: colour = index up/down that day; orange = 20-day average, blue = 50-day average.
+function volumeChart(series) {
+  // 60 bars = index official volume as a multiple of its 50-day average (units differ by index).
+  // Colour = index up/down that day; orange line = 20-day average ÷ 50-day average; dashed = 1.0 (normal).
   const narrow = window.innerWidth < 760;
-  const W = narrow ? 420 : 1000, H = narrow ? 240 : 210, pad = { l: 6, r: narrow ? 50 : 64, t: 10, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  const W = narrow ? 420 : 1000, H = narrow ? 240 : 210, pad = { l: 6, r: narrow ? 46 : 58, t: 10, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const n = series.length, slot = plotW / n, bw = Math.max(2, slot * 0.66);
-  const vals = series.flatMap(p => [p.value, p.avg20, p.avg50]).filter(isNum);
-  const max = Math.max(...vals) * 1.08;
-  const x = k => pad.l + slot * (k + 0.5), y = v => pad.t + (1 - v / max) * plotH;
-  const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg lq-svg', role: 'img', 'aria-label': '최근 60거래일 시장 거래대금과 20·50일 평균' });
-  const [big, bu, small, su] = MONEY[market] || MONEY.US;
-  const unit = max >= big ? [big, bu] : [small, su];
-  [0.25, 0.5, 0.75, 1].forEach(f => { const v = max * f / 1.08; node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(v), y2: y(v), class: 'pc-grid' }, svg); text(svg, W - pad.r + 6, y(v) + 4, `${fmt(v / unit[0], v / unit[0] >= 100 ? 0 : 1)}${unit[1]}`, { class: 'pc-axis' }); });
+  const top = Math.max(2, Math.ceil(Math.max(...series.map(p => p.x50 || 0)) * 2) / 2);
+  const x = k => pad.l + slot * (k + 0.5), y = v => pad.t + (1 - v / top) * plotH;
+  const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg lq-svg', role: 'img', 'aria-label': '최근 60거래일 지수 거래량 (50일 평균 대비 배수)' });
+  for (let t = 0.5; t <= top + 1e-9; t += 0.5) {
+    node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(t), y2: y(t), class: t === 1 ? 'pc-grid lq-one' : 'pc-grid' }, svg);
+    text(svg, W - pad.r + 6, y(t) + 4, `${fmt(t, 1)}배`, { class: t === 1 ? 'pc-axis lq-one-label' : 'pc-axis' });
+  }
   const axisY = H - pad.b; node('line', { x1: pad.l, x2: pad.l + plotW, y1: axisY, y2: axisY, class: 'pc-baseline' }, svg);
-  series.forEach((p, k) => node('rect', { x: x(k) - bw / 2, y: y(p.value), width: bw, height: Math.max(1, axisY - y(p.value)), class: `lq-bar ${p.up ? 'up' : 'down'}` }, svg));
-  [['avg50', 50], ['avg20', 20]].forEach(([key, n_]) => {
-    const pts = series.map((p, k) => isNum(p[key]) ? `${x(k)},${y(p[key])}` : null).filter(Boolean);
-    if (pts.length > 1) node('polyline', { points: pts.join(' '), stroke: MA.find(m => m.n === n_)?.color || '#f0a35a', class: 'pc-ma lq-avg' }, svg);
-  });
+  series.forEach((p, k) => { if (isNum(p.x50)) node('rect', { x: x(k) - bw / 2, y: y(p.x50), width: bw, height: Math.max(1, axisY - y(p.x50)), class: `lq-bar ${p.up ? 'up' : 'down'}` }, svg); });
+  const pts = series.map((p, k) => isNum(p.avg20x50) ? `${x(k)},${y(p.avg20x50)}` : null).filter(Boolean);
+  if (pts.length > 1) node('polyline', { points: pts.join(' '), stroke: MA.find(m => m.n === 20)?.color || '#f0a35a', class: 'pc-ma lq-avg' }, svg);
   const marks = narrow ? [0, Math.floor((n - 1) / 2), n - 1] : [0, Math.floor((n - 1) / 4), Math.floor((n - 1) / 2), Math.floor(3 * (n - 1) / 4), n - 1];
   marks.forEach((k, j) => text(svg, x(k), axisY + 15, md(series[k].date), { class: 'pc-axis', 'text-anchor': j === 0 ? 'start' : j === marks.length - 1 ? 'end' : 'middle' }));
   return svg;
@@ -294,45 +292,61 @@ function turnoverChart(series, market) {
 
 function liquidityCard(b, market) {
   const q = b.liquidity, card = el('article', null, 'tr-card lq-card');
-  const head = el('div', null, 'lq-head'); head.append(el('h3', '시장 거래대금 (돈의 흐름)'));
-  card.append(head);
-  if (!q || q.status !== 'OK') { card.append(el('p', q?.note || '거래대금 자료는 다음 자동 갱신 때 채워져요.', 'tr-help')); return card; }
-  // 1. verdict first
-  const t = q.trend, lq = q.liquidity;
-  const verdict = el('div', null, `lq-verdict ${TONE[t.score]}`);
-  const vTop = el('div', null, 'lq-verdict-top');
-  vTop.append(el('strong', t.label), el('span', `5일 기준 · 지수 ${pct(t.priceChange5dPct)} · 거래대금 ${pct(t.flowChange5dPct)}`, 'lq-verdict-sub'));
-  verdict.append(vTop, el('p', t.text));
-  card.append(verdict);
-  // 2. chart + today
-  const today = el('div', null, 'lq-today');
-  const tv = el('div', null, 'tr-big'); tv.append(el('b', money(q.today.value, market)), el('span', `${md(q.asOf)} 거래대금 · 20일 평균의 ${fmt(q.today.vsAvg20, 2)}배${q.today.surge ? ' · 급증' : ''}`));
-  today.append(tv);
-  card.append(today, turnoverChart(q.series || [], market));
+  card.append(el('h3', '시장 거래량 (거래소 전체 · 돈의 흐름)'));
+  const groups = q?.groups || [];
+  if (!q || q.status !== 'OK' || !groups.length) { card.append(el('p', q?.note || '거래량 자료는 다음 자동 갱신 때 채워져요.', 'tr-help')); return card; }
+  // 1. one verdict per index, side by side — the conclusion comes first
+  const verdicts = el('div', null, 'lq-verdicts');
+  groups.forEach(g => {
+    const v = el('div', null, `lq-verdict ${TONE[g.score]}`);
+    const top = el('div', null, 'lq-verdict-top');
+    top.append(el('span', g.label, 'lq-verdict-index'), el('strong', g.trend.label));
+    if (g.liquidity.key !== 'NORMAL') top.append(el('span', g.liquidity.label, `lq-pill ${TONE[g.liquidity.score]}`));
+    v.append(top, el('span', `최근 5일 · 지수 ${pct(g.trend.priceChange5dPct)} · 거래량 ${pct(g.trend.flowChange5dPct)}`, 'lq-verdict-sub'), el('p', g.trend.text));
+    verdicts.append(v);
+  });
+  card.append(verdicts);
+  // 2. pick an index for the detail
+  const key = groups.some(g => g.key === lqPick[market]) ? lqPick[market] : groups[0].key;
+  const g = groups.find(x => x.key === key);
+  const detail = el('div', null, 'lq-detail');
+  const headRow = el('div', null, 'lq-detail-head');
+  if (groups.length > 1) {
+    const seg = el('div', null, 'rail-seg lq-seg'); seg.setAttribute('aria-label', '지수 고르기');
+    groups.forEach(x => { const bt = btn(x.label, x.key === key, () => { lqPick[market] = x.key; card.replaceWith(liquidityCard(b, market)); }); bt.setAttribute('aria-pressed', String(x.key === key)); seg.append(bt); });
+    headRow.append(seg);
+  }
+  const tv = el('div', null, 'tr-big'); tv.append(el('b', `${fmt(g.today.vsAvg50, 2)}배`), el('span', `${md(g.asOf)} ${g.label} 거래량 · 50일 평균 대비 · 20일 평균의 ${fmt(g.today.vsAvg20, 2)}배${g.today.surge ? ' · 급증' : ''}`));
+  headRow.append(tv);
+  detail.append(headRow, volumeChart(g.series || []));
   const lg = el('div', null, 'pc-legend small');
-  [['var(--green)', '지수 오른 날'], ['var(--red)', '지수 내린 날'], [MA.find(m => m.n === 20)?.color || '#f0a35a', '20일 평균'], [MA.find(m => m.n === 50)?.color || '#4f8ef7', '50일 평균']].forEach(([c, tx]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', tx)); lg.append(k); });
-  lg.append(el('span', `최근 ${(q.series || []).length}거래일 · ${q.universe}종목 합계`, 'pc-hint'));
-  card.append(lg);
-  // 3. two tiles: up/down money ratio, liquidity alert
+  [['var(--green)', '지수 오른 날'], ['var(--red)', '지수 내린 날'], [MA.find(m => m.n === 20)?.color || '#f0a35a', '20일 평균'], ['#8aa0b9', '점선 1.0배 = 50일 평균']].forEach(([c, tx]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', tx)); lg.append(k); });
+  lg.append(el('span', `${g.label} 공식 거래량 (거래소 전체) · 최근 ${(g.series || []).length}거래일`, 'pc-hint'));
+  detail.append(lg);
+  // 3. tiles: liquidity (exchange-wide), up/down money (screened stocks), selling climax
   const tiles = el('div', null, 'lq-tiles');
-  const ud = q.upDown, udTone = isNum(ud.avg10) ? (ud.avg10 >= 1.2 ? 'good' : ud.avg10 <= 0.8 ? 'bad' : 'mid') : 'mid';
-  const t1 = el('div', null, `lq-tile ${udTone}`);
-  t1.append(el('span', '상승 ÷ 하락 거래대금', 'lq-tile-label'), el('strong', isNum(ud.today) ? `${fmt(ud.today, 2)}배` : '—'),
-    el('small', `오늘 · 최근 10일 평균 ${isNum(ud.avg10) ? fmt(ud.avg10, 2) + '배' : '—'} · 돈 들어온 날 ${ud.inflowDays10}/10`),
-    el('p', '1보다 크면 오른 종목에 돈이 더 몰린 날이에요. 지수는 오르는데 계속 1 아래면 소수 대형주만 끌고 가는 장이에요.'));
-  const t2 = el('div', null, `lq-tile ${TONE[lq.score]}`);
-  t2.append(el('span', '유동성 (20일 ÷ 50일 평균)', 'lq-tile-label'), el('strong', lq.label), el('small', isNum(lq.ratio20to50) ? `${fmt(lq.ratio20to50 * 100, 0)}%` : '—'), el('p', lq.text));
-  tiles.append(t1, t2);
-  // 5. selling climax (only when one happened recently)
-  if (q.sellingClimax) {
-    const sc = q.sellingClimax, t3 = el('div', null, 'lq-tile lead');
-    t3.append(el('span', '셀링 클라이맥스 (바닥 후보)', 'lq-tile-label'), el('strong', `${md(sc.date)} · ${pct(sc.changePct)}`),
-      el('small', `그날 거래대금 50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배 · 1년 최대 · 그 뒤 ${pct(sc.sinceThenPct)}`),
-      el('p', '급락하면서 1년 중 가장 많은 돈이 거래된 날이에요. 공포 매도가 한꺼번에 나온 흔적이라 바닥 후보로 보고, FTD가 나오는지 기다려요.'));
+  const lq = g.liquidity, t2 = el('div', null, `lq-tile ${TONE[lq.score]}`);
+  t2.append(el('span', '유동성 · 20일 ÷ 50일 평균 거래량', 'lq-tile-label'), el('strong', lq.label), el('small', isNum(lq.ratio20to50) ? `${fmt(lq.ratio20to50 * 100, 0)}% · 거래소 전체` : '—'), el('p', lq.text));
+  tiles.append(t2);
+  const ud = g.upDown;
+  if (ud) {
+    const udTone = isNum(ud.avg10) ? (ud.avg10 >= 1.2 ? 'good' : ud.avg10 <= 0.8 ? 'bad' : 'mid') : 'mid';
+    const t1 = el('div', null, `lq-tile ${udTone}`);
+    t1.append(el('span', '상승 ÷ 하락 거래대금 · 화면 속 종목', 'lq-tile-label'), el('strong', isNum(ud.today) ? `${fmt(ud.today, 2)}배` : '—'),
+      el('small', `오늘 · 최근 10일 평균 ${isNum(ud.avg10) ? fmt(ud.avg10, 2) + '배' : '—'} · 돈 들어온 날 ${ud.inflowDays10}/10 · ${g.members}종목`),
+      el('p', '오른 종목에 몰린 돈 ÷ 내린 종목에 몰린 돈이에요. 1보다 크면 돈이 들어온 날이에요. 지수는 오르는데 계속 1 아래면 소수 대형주만 끌고 가는 장이에요.'));
+    tiles.append(t1);
+  }
+  if (g.sellingClimax) {
+    const sc = g.sellingClimax, t3 = el('div', null, 'lq-tile lead');
+    t3.append(el('span', '셀링 클라이맥스 · 바닥 후보', 'lq-tile-label'), el('strong', `${md(sc.date)} · ${pct(sc.changePct)}`),
+      el('small', `그날 거래량 50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배 · 1년 최대 · 그 뒤 ${pct(sc.sinceThenPct)}`),
+      el('p', '급락하면서 1년 중 가장 많이 거래된 날이에요. 공포 매도가 한꺼번에 나온 흔적이라 바닥 후보로 보고, FTD가 나오는지 기다려요.'));
     tiles.append(t3);
   }
-  card.append(tiles);
-  // 3b. money-flow industries
+  detail.append(tiles);
+  card.append(detail);
+  // 4. money-flow industries (screened stocks, whole market)
   const ind = q.industries || {};
   if ((ind.inflow || []).length || (ind.outflow || []).length) {
     const flow = el('div', null, 'lq-flow');
@@ -342,12 +356,13 @@ function liquidityCard(b, market) {
       items.slice(0, 5).forEach(it => {
         const row = el('div', null, 'lq-flow-row');
         row.append(el('span', it.name, 'lq-flow-name'), el('span', `${it.shareChangePp > 0 ? '+' : ''}${fmt(it.shareChangePp, 1)}%p`, 'lq-flow-delta'), el('span', `비중 ${fmt(it.sharePct, 1)}%`, 'lq-flow-share'), el('span', `5일 ${pct(it.return5d)}`, tone(it.return5d)));
+        row.title = it.name;
         c.append(row);
       });
       return c;
     };
     flow.append(col('돈이 몰리는 업종', ind.inflow || [], 'in'), col('돈이 빠지는 업종', ind.outflow || [], 'out'));
-    card.append(el('h4', '돈이 몰리는 업종 · 최근 5일 거래대금 비중 변화', 'lq-sub'), flow);
+    card.append(el('h4', '돈이 몰리는 업종 · 최근 5일 거래대금 비중 변화 (화면 속 종목)', 'lq-sub'), flow);
     card.append(help('비중이 늘면서 값도 오르는 업종이 선도업종 후보예요. 비중은 느는데 값이 내리면 큰손이 그 업종에서 팔고 나가는 중일 수 있어요.'));
   }
   card.append(help(q.note || ''));

@@ -75,11 +75,11 @@ def _quadrant(price_dir, flow_dir):
     """가격 방향(up/down) × 거래대금(up/down)의 네 가지 뜻."""
     key = (price_dir, flow_dir)
     return {
-        ('up', 'up'): ('HEALTHY', '건강한 상승', '지수가 오르면서 거래대금도 늘고 있어요. 돈이 들어오는 상승이라 돌파 매매에 좋은 환경이에요.', 1),
-        ('up', 'down'): ('THIN', '힘 빠진 상승', '지수는 오르는데 거래대금은 줄고 있어요. 돈이 따라오지 않는 상승이라 신고가 돌파가 잘 실패해요. 비중을 천천히 늘리세요.', 0),
-        ('down', 'up'): ('DISTRIBUTION', '분산 (큰손 매도)', '지수가 내리면서 거래대금이 늘고 있어요. 큰손이 팔고 있다는 뜻이라 새로 사지 않고 지키는 게 먼저예요.', -1),
-        ('down', 'down'): ('EXHAUSTION', '매도세 소진', '지수가 내리는데 거래대금도 줄고 있어요. 팔 사람이 줄어드는 중이라 바닥을 다지는 후보 구간이에요. FTD를 기다리세요.', 0),
-    }.get(key, ('FLAT', '뚜렷한 방향 없음', '가격과 거래대금 모두 큰 변화가 없어요.', 0))
+        ('up', 'up'): ('HEALTHY', '건강한 상승', '지수가 오르면서 거래량도 늘고 있어요. 돈이 들어오는 상승이라 돌파 매매에 좋은 환경이에요.', 1),
+        ('up', 'down'): ('THIN', '힘 빠진 상승', '지수는 오르는데 거래량은 줄고 있어요. 돈이 따라오지 않는 상승이라 신고가 돌파가 잘 실패해요. 비중을 천천히 늘리세요.', 0),
+        ('down', 'up'): ('DISTRIBUTION', '분산 (큰손 매도)', '지수가 내리면서 거래량이 늘고 있어요. 큰손이 팔고 있다는 뜻이라 새로 사지 않고 지키는 게 먼저예요.', -1),
+        ('down', 'down'): ('EXHAUSTION', '매도세 소진', '지수가 내리는데 거래량도 줄고 있어요. 팔 사람이 줄어드는 중이라 바닥을 다지는 후보 구간이에요. FTD를 기다리세요.', 0),
+    }.get(key, ('FLAT', '뚜렷한 방향 없음', '지수와 거래량 모두 5일 동안 큰 변화가 없어요.', 0))
 
 
 def analyze(universe, bench=None, asof=None):
@@ -132,7 +132,7 @@ def analyze(universe, bench=None, asof=None):
         if chg is None or chg > SELLING_CLIMAX_DROP:
             continue
         window = values[max(0, k - SELLING_CLIMAX_LOOKBACK):k]
-        if window and values[k] >= max(window):
+        if window and values[k] > max(window):
             after = (closes[-1] / closes[k] - 1) * 100 if closes[-1] and closes[k] else None
             climax = {'date': d['date'], 'changePct': _r(chg), 'valueVsAvg50': _r(values[k] / avg50[k], 2) if avg50[k] else None,
                       'sinceThenPct': _r(after), 'daysAgo': n - 1 - k}
@@ -187,4 +187,85 @@ def analyze(universe, bench=None, asof=None):
                    for i, d in enumerate(days) if i >= n - WINDOW],
         'score': score,
         'note': '거래대금 = 화면 속 종목들의 (종가 × 거래량) 합. 거래소 전체 공식 숫자와는 다르지만 같은 기준으로 매일 비교해요.',
+    }
+
+
+# ------------------------------------------------------------------ 지수 전체 거래량 (거래소 공식 숫자)
+def _judge(price_chg5, flow_chg, liq_ratio):
+    price_dir = 'up' if price_chg5 > 0.3 else 'down' if price_chg5 < -0.3 else 'flat'
+    flow_dir = 'up' if flow_chg > 5 else 'down' if flow_chg < -5 else 'flat'
+    quad = _quadrant('x', 'x') if 'flat' in (price_dir, flow_dir) else _quadrant(price_dir, flow_dir)
+    if liq_ratio is None:
+        liq = ('UNKNOWN', '판단 보류', '평균을 계산할 날이 부족해요.', 0)
+    elif liq_ratio < DRY_RATIO:
+        liq = ('DRY', '유동성 마름', f'최근 20일 평균 거래량이 50일 평균의 {liq_ratio * 100:.0f}%예요. 거래가 말라 돌파가 잘 안 먹히는 장이니 새로 사는 비중을 줄이세요.', -1)
+    elif liq_ratio > FLOOD_RATIO:
+        liq = ('FLOOD', '거래 몰림', f'최근 20일 평균 거래량이 50일 평균의 {liq_ratio * 100:.0f}%예요. 시장에 거래가 많이 몰려 있어요. 방향(위 판정)과 함께 보세요.', 1)
+    else:
+        liq = ('NORMAL', '보통', f'최근 20일 평균 거래량이 50일 평균의 {liq_ratio * 100:.0f}%로 평소 수준이에요.', 0)
+    raw = quad[3] + liq[3]
+    return quad, liq, (1 if raw >= 1 else -1 if raw <= -1 else 0)
+
+
+def index_flow(rows, key, label, symbol):
+    """한 지수의 공식 거래량(거래소 전체)으로 4분면·유동성·셀링 클라이맥스를 판정한다."""
+    rows = [r for r in (rows or []) if r.get('volume') and r.get('close')]
+    if len(rows) < AVG_LONG + 10:
+        return None
+    vols = [r['volume'] for r in rows]
+    closes = [r['close'] for r in rows]
+    n = len(rows)
+    avg20 = [_avg(vols[max(0, i - AVG_SHORT + 1):i + 1]) if i >= AVG_SHORT - 1 else None for i in range(n)]
+    avg50 = [_avg(vols[max(0, i - AVG_LONG + 1):i + 1]) if i >= AVG_LONG - 1 else None for i in range(n)]
+    price_chg5 = (closes[-1] / closes[-6] - 1) * 100
+    flow_chg = (_avg(vols[-5:]) / _avg(vols[-10:-5]) - 1) * 100
+    liq_ratio = avg20[-1] / avg50[-1] if avg20[-1] and avg50[-1] else None
+    quad, liq, score = _judge(price_chg5, flow_chg, liq_ratio)
+    climax = None
+    for k in range(max(1, n - 10), n):
+        chg = (closes[k] / closes[k - 1] - 1) * 100
+        window = vols[max(0, k - SELLING_CLIMAX_LOOKBACK):k]
+        if chg <= SELLING_CLIMAX_DROP and len(window) >= 120 and vols[k] > max(window):
+            climax = {'date': rows[k]['date'], 'changePct': _r(chg), 'valueVsAvg50': _r(vols[k] / avg50[k], 2) if avg50[k] else None,
+                      'sinceThenPct': _r((closes[-1] / closes[k] - 1) * 100), 'daysAgo': n - 1 - k}
+    a20, a50 = avg20[-1], avg50[-1]
+    return {
+        'key': key, 'label': label, 'symbol': symbol, 'asOf': rows[-1]['date'], 'source': 'index',
+        'today': {'vsAvg20': _r(vols[-1] / a20, 2) if a20 else None, 'vsAvg50': _r(vols[-1] / a50, 2) if a50 else None,
+                  'surge': bool(a20 and vols[-1] / a20 >= SURGE), 'changePct': _r((closes[-1] / closes[-2] - 1) * 100)},
+        'trend': {'key': quad[0], 'label': quad[1], 'text': quad[2], 'score': quad[3],
+                  'priceChange5dPct': _r(price_chg5), 'flowChange5dPct': _r(flow_chg)},
+        'liquidity': {'key': liq[0], 'label': liq[1], 'text': liq[2], 'score': liq[3], 'ratio20to50': _r(liq_ratio, 2)},
+        'sellingClimax': climax, 'score': score,
+        # 차트는 50일 평균 대비 배수로 그린다 (지수마다 거래량 단위가 달라서)
+        'series': [{'date': rows[i]['date'], 'x50': _r(vols[i] / avg50[i], 3) if avg50[i] else None,
+                    'avg20x50': _r(avg20[i] / avg50[i], 3) if avg20[i] and avg50[i] else None,
+                    'up': closes[i] >= closes[i - 1]} for i in range(max(1, n - WINDOW), n)],
+    }
+
+
+def split(universe, groups):
+    """groups: [(key, label, symbol, members_filter, index_rows)].
+
+    시장 판정은 각 지수의 공식 거래량(거래소 전체)으로 한다. 상승·하락 거래대금 비율은
+    종목별 자료가 있어야 하므로 그 지수에 상장된 화면 속 종목으로 계산해 보조로 붙인다.
+    """
+    out = []
+    for key, label, symbol, keep, rows in groups:
+        g = index_flow(rows, key, label, symbol)
+        if not g:
+            continue
+        members = [s for s in universe if keep(s)]
+        stock = analyze(members) if len(members) >= 15 else {}
+        g['members'] = len(members)
+        g['upDown'] = stock.get('upDown') if stock.get('status') == 'OK' else None
+        out.append(g)
+    combined = analyze(universe)
+    if not out:
+        return {'status': 'UNAVAILABLE', 'note': '지수 거래량 자료가 아직 부족해요.'}
+    return {
+        'status': 'OK', 'asOf': out[0]['asOf'], 'score': min(g['score'] for g in out), 'groups': out,
+        'industries': combined.get('industries') if combined.get('status') == 'OK' else None,
+        'summary': ' · '.join(f"{g['label']} {g['trend']['label']}{'' if g['liquidity']['key'] == 'NORMAL' else ' · ' + g['liquidity']['label']}" for g in out),
+        'note': '시장 판정은 지수 공식 거래량(거래소 전체)으로 해요. 상승·하락 비율과 업종 돈 흐름은 종목별 자료가 필요해서 화면 속 종목 기준이에요.',
     }
