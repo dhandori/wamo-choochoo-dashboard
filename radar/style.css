@@ -325,6 +325,8 @@ table { font-size: 13px; }
   .rail-head { margin-bottom: 8px; }
   .industry-rail .rail-group { display: inline-flex; flex-direction: column; width: 168px; min-height: 0; margin-right: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; vertical-align: top; white-space: normal; }
   .industry-rail .rail-group small { margin: 4px 0; }
+  /* Long English industry names: two clean lines with an ellipsis, never a mid-word break. */
+  .industry-rail .rail-group-top strong { overflow-wrap: normal; word-break: keep-all; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-width: 0; }
   .rail-strip { display: flex; min-width: 0; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x proximity; scrollbar-width: thin; }
   .industry-rail .rail-group { flex: none; }
   .rail-group { scroll-snap-align: start; }

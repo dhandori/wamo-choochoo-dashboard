@@ -122,8 +122,12 @@ export function renderWeather(container, market, onOpen) {
   const riskNote = dok.some(d => isNum(d.score) && d.score !== d.count) ? ` · 위험 점수 ${dok.map(d => fmt(d.score, 1)).join(' · ')}` : '';
   chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일${riskNote}` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
   chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
+  // Turnover verdict: a chip on wide screens; on phones it rides on the advice line so the strip keeps two chip rows.
   const lq = b.liquidity;
-  if (lq?.status === 'OK') chip('거래대금', `${lq.trend.label} · ${lq.liquidity.label}`, lq.trend.label, score('liquidity'));
+  if (lq?.status === 'OK') {
+    if (window.matchMedia('(max-width:760px)').matches) text.append(el('span', ` 거래대금: ${lq.trend.label}`, 'tr-weather-lq'));
+    else chip('거래대금', `${lq.trend.label} · ${lq.liquidity.label}`, lq.trend.label, score('liquidity'));
+  }
   chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히', false, onOpen, 'tr-more');
   more.setAttribute('aria-label', '시장 날씨 자세히 보기');

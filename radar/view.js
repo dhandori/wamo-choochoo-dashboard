@@ -312,7 +312,7 @@ function renderRail(m) {
   groups.forEach(g => {
     const b = button('', false, () => openIndustry(g)); b.className = 'rail-group';
     const v = value(g);
-    const top = el('div', null, 'rail-group-top'); top.append(el('strong', g.name), el('span', pct(v), tone(v)));
+    const top = el('div', null, 'rail-group-top'); const nm = el('strong', g.name); nm.title = g.name; top.append(nm, el('span', pct(v), tone(v)));
     const bar = el('div', null, 'flow-bar'); bar.setAttribute('aria-hidden', 'true');
     if (numeric(v)) {
       const fill = el('span', null, tone(v));

@@ -482,3 +482,4 @@ dialog[open] ~ .to-top { display: none; }
   .lq-flow-share { display: none; }
   .lq-verdict strong { font-size: 15.5px; }
 }
+.tr-weather-lq { color: var(--ink-3); }
