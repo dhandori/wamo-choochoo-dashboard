@@ -1,6 +1,6 @@
 // Leading stocks and leading industries. Reads wamo_trend.json → markets[X].leadership.
 import { helpButton, addTerms } from './help.js?v=20261020-asia1';
-import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261020-dist3';
+import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261021-lq1';
 addTerms(LEADER_TERMS);
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
@@ -105,7 +105,7 @@ function condDots(c) {
   return wrap;
 }
 
-function industryCard(L, openStock, no) {
+function industryCard(L, openStock, no, flow = new Map()) {
   const ind = L.industries || {};
   const card = n('section', null, 'ld-card');
   const head = n('div', null, 'ld-card-head');
@@ -125,6 +125,7 @@ function industryCard(L, openStock, no) {
     if (x.rsLineHigh) name.append(chip('★ RS선 신고가', 'star', 'industryRsLine'));
     if (x.leadsIndex) name.append(chip('지수보다 먼저 고점권', 'bo', 'leadsIndex'));
     if (x.heldUp) name.append(chip(`버팀 ${num(x.heldUpRatio, 2)}`, 'held', 'heldUpIndustry'));
+    { const mc = moneyChip(x.name, flow); if (mc) name.append(mc); }
     top.append(name, stageChip(x.stage));
     li.append(top);
     const stats = n('div', null, 'ld-ind-stats');
@@ -273,7 +274,7 @@ function checkRow(watch, checks) {
   return wrap;
 }
 
-function watchCard(L, openStock, rerender, no) {
+function watchCard(L, openStock, rerender, no, flow = new Map()) {
   const ind = L.industries || {};
   const checks = L.watchChecks || [];
   const card = n('section', null, 'ld-card ld-watch');
@@ -304,6 +305,7 @@ function watchCard(L, openStock, rerender, no) {
     name.append(n('strong', short(x.name)));
     if (x.leadsIndex) name.append(chip('지수보다 먼저 고점권', 'bo', 'leadsIndex'));
     if (x.heldUp) name.append(chip(`버팀 ${num(x.heldUpRatio, 2)}`, 'held', 'heldUpIndustry'));
+    { const mc = moneyChip(x.name, flow); if (mc) name.append(mc); }
     if (x.rsLineHigh) name.append(chip('★ RS선 신고가', 'star', 'industryRsLine'));
     const score = n('div', null, 'ld-score');
     score.append(helpButton(`준비도 ${x.watchScore}/6`, 'watchScore'));
@@ -354,8 +356,22 @@ function watchCard(L, openStock, rerender, no) {
   return card;
 }
 
+// Industries whose turnover share rose/fell over the last 5 days (from the liquidity block).
+function moneyFlow(block) {
+  const m = new Map();
+  const ind = (block?.liquidity || {}).industries || {};
+  [...(ind.inflow || []), ...(ind.outflow || [])].forEach(x => m.set(x.name, x));
+  return m;
+}
+function moneyChip(name, flow) {
+  const f = flow.get(name);
+  if (f && f.shareChangePp >= 0.3) return chip(`💰 돈 몰림 +${num(f.shareChangePp, 1)}%p`, 'money', 'moneyFlow');
+  if (f && f.shareChangePp <= -0.3) return chip(`돈 빠짐 ${num(f.shareChangePp, 1)}%p`, 'money-out', 'moneyFlow');
+  return null;
+}
 export function renderLeaders(container, market, block, { openStock, openFTD, stale } = {}) {
   container.replaceChildren();
+  const flow = moneyFlow(block);
   const rerender = () => renderLeaders(container, market, block, { openStock, openFTD, stale });
   const intro = n('div', null, 'ld-intro');
   const p = n('p'); p.append('상승장은 ', term('leader', '선도주'), '와 ', term('leadingIndustry', '선도업종'), '이 끌고 갑니다. 선도업종은 지수보다 먼저 움직이는 경우가 많아서, FTD 전에 미리 찾아 두는 것이 중요해요. 상대강도(RS)와 52주 신고가를 함께 보고, 준비된 업종을 워치리스트로 관리합니다. 밑줄 친 말을 누르면 뜻이 나와요.');
@@ -368,10 +384,10 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   // Before an FTD the job is preparing the watchlist; after one, checking that leaders break out.
   const mode = L.phase?.mode;
   const builders = mode === 'WAIT'
-    ? [no => watchCard(L, openStock, rerender, no), no => mapCard(L, no), no => industryCard(L, openStock, no), no => emergenceCard(L, market, openStock, null, no), no => leaderCard(L, openStock, rerender, no)]
+    ? [no => watchCard(L, openStock, rerender, no, flow), no => mapCard(L, no), no => industryCard(L, openStock, no, flow), no => emergenceCard(L, market, openStock, null, no), no => leaderCard(L, openStock, rerender, no)]
     : mode === 'FTD'
-      ? [no => emergenceCard(L, market, openStock, null, no), no => leaderCard(L, openStock, rerender, no), no => mapCard(L, no), no => industryCard(L, openStock, no), no => watchCard(L, openStock, rerender, no)]
-      : [no => mapCard(L, no), no => industryCard(L, openStock, no), no => watchCard(L, openStock, rerender, no), no => leaderCard(L, openStock, rerender, no), no => emergenceCard(L, market, openStock, null, no)];
+      ? [no => emergenceCard(L, market, openStock, null, no), no => leaderCard(L, openStock, rerender, no), no => mapCard(L, no), no => industryCard(L, openStock, no, flow), no => watchCard(L, openStock, rerender, no, flow)]
+      : [no => mapCard(L, no), no => industryCard(L, openStock, no, flow), no => watchCard(L, openStock, rerender, no, flow), no => leaderCard(L, openStock, rerender, no), no => emergenceCard(L, market, openStock, null, no)];
   builders.forEach((b, i) => container.append(b(NO[i])));
   const rules = n('details', null, 'ftd-rules'); rules.append(n('summary', '판정 기준·데이터 범위'));
   const pol = L.policy || {};

@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 10
+TREND_VERSION = 11
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -499,7 +499,7 @@ def _index_state(i):
     return 0, '50일선 아래 · 200일선 위'
 
 
-def weather(idx, dist, br, hl, synthetic, secondary=None):
+def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None):
     factors = []
 
     def add(key, label, score, text):
@@ -555,6 +555,9 @@ def weather(idx, dist, br, hl, synthetic, secondary=None):
         add('highsLows', '신고가 vs 신저가', -1 if bad else 1 if good else 0,
             f'오늘 신고가 {h}종목, 신저가 {l}종목이에요.'
             + (' 신고가 종목이 너무 적어 아직 힘이 약해요.' if not good and not bad and h <= l * 2 + 0.02 * n else ''))
+    if liq and liq.get('status') == 'OK':
+        add('liquidity', '시장 거래대금', liq['score'],
+            f"{liq['trend']['label']} · 유동성 {liq['liquidity']['label']}. {liq['trend']['text']}")
     total = sum(f['score'] for f in factors)
     measured = len(factors)
     if measured < 2:
@@ -934,6 +937,12 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'}
     br = breadth(universe)
     hl = highs_lows(universe)
+    try:
+        import wamo_liquidity
+        liq = wamo_liquidity.analyze(universe, None if synthetic else bench, asof)
+    except Exception as exc:  # noqa: BLE001 - never block the rest
+        print(f'{market} 거래대금 계산 실패: {type(exc).__name__}: {exc}', flush=True)
+        liq = {'status': 'UNAVAILABLE', 'note': '거래대금 계산에 실패했어요. 다음 갱신 때 다시 계산해요.'}
     leaders, warnings = analyze_stocks(universe, bench)
     book = update_signal_log(log, market, universe, bench, asof)
     earnings = {'status': 'UNAVAILABLE', 'upcoming': [], 'note': EARNINGS_NOTE.get(market, '')}
@@ -1012,7 +1021,8 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'index2': secondary,
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},
-        'weather': {**weather(idx, dist, br, hl, synthetic, secondary), 'distribution': dist, 'breadth': br, 'highsLows': hl},
+        'weather': {**weather(idx, dist, br, hl, synthetic, secondary, liq), 'distribution': dist, 'breadth': br, 'highsLows': hl},
+        'liquidity': liq,
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
                       'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),

@@ -2,7 +2,7 @@
 // 계산 규칙은 wamo_climax.py에 있고, 이 화면은 그 결과를 지수 차트·기록표·종목 목록으로 보여 줍니다.
 import { MA } from './chart.js?v=20261020-asia1';
 import { addTerms, helpButton } from './help.js?v=20261020-asia1';
-import { glossary } from './terms.mjs?v=20261020-dist3';
+import { glossary } from './terms.mjs?v=20261021-lq1';
 
 const NS = 'http://www.w3.org/2000/svg';
 const isNum = n => typeof n === 'number' && Number.isFinite(n);
@@ -200,6 +200,13 @@ function indexCard(rep, market, b) {
   if (dist?.status === 'OK') {
     const box = el('div', null, `cx-dist ${dist.count >= 6 ? 'bad' : dist.count >= 4 ? 'mid' : 'good'}`);
     box.append(el('span', '분산일'), el('b', `${dist.count}번`), el('small', `최근 25거래일${isNum(dist.score) ? ` · 위험 점수 ${fmt(dist.score, 1)}` : ''} · ${dist.count >= 6 ? '많음' : dist.count >= 4 ? '주의' : '적음'}`));
+    card.append(box);
+  }
+  // 셀링 클라이맥스(급락 + 1년 최대 거래대금): 바닥 후보. 시장 거래대금 카드와 같은 숫자.
+  const sc = b?.index?.symbol === rep.symbol ? b?.liquidity?.sellingClimax : null;
+  if (sc) {
+    const box = el('div', null, 'cx-dist lead');
+    box.append(el('span', '셀링 클라이맥스'), el('b', `${md(sc.date)} ${pct(sc.changePct)}`), el('small', `급락 + 1년 최대 거래대금(50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배) · 그 뒤 ${pct(sc.sinceThenPct)} · 바닥 후보, FTD 대기`));
     card.append(box);
   }
   const now = [];

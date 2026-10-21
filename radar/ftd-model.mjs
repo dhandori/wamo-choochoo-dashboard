@@ -25,7 +25,7 @@ export function ftdQuality(ftd,emergence){
   if(!ftd)return null;
   const q=ftd.quality||{};
   const leaders=emergence&&emergence.ftd&&emergence.ftd.date===ftd.date?(emergence.status==='CONFIRMED'?true:emergence.status==='WEAK'?false:null):null;
-  const items=[['Day 4~7에 나옴',q.early!==false&&!ftd.late],['상승률 +2% 이상',!!q.strongGain],['거래량 50일 평균 초과',q.aboveAvgVolume??null],['10거래일 안에 선도주 출현',leaders]];
+  const items=[['Day 4~7에 나옴',q.early!==false&&!ftd.late],['상승률 +2% 이상',!!q.strongGain],[`거래량 50일 평균 초과${typeof ftd.volumeVsAvg==='number'?` (${ftd.volumeVsAvg.toFixed(2)}배)`:''}`,q.aboveAvgVolume??null],['10거래일 안에 선도주 출현',leaders]];
   const score=items.filter(([,v])=>v===true).length;
   return {items,score,label:score>=3?'강함':score===2?'보통':'약함'};
 }
