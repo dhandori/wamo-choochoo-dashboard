@@ -99,6 +99,8 @@ export function renderWeather(container, market, onOpen) {
   const head = el('div', null, 'tr-weather-head');
   head.append(el('span', null, 'tr-dot'), el('span', '시장 날씨', 'tr-weather-kicker'), el('strong', w.label || '판단 보류'));
   const text = el('div', w.advice || '', 'tr-weather-text');
+  // A late index bar never turns into a fake-index verdict; the last real one stays and says so.
+  if (b.kept) text.append(el('span', ` ⏳ 지수 자료 지연 · ${md(b.asOf)} 종가 기준 판정을 유지 중이에요. 다음 정기 확인 때 다시 계산해요.`, 'tr-weather-kept'));
   const chips = el('div', null, 'tr-chips');
   const dist = w.distribution || {}, br = w.breadth || {}, hl = w.highsLows || {}, idx = b.index || {};
   const score = key => (w.factors || []).find(f => f.key === key)?.score;

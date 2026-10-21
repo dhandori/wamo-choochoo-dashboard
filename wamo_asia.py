@@ -325,10 +325,19 @@ def build_trend(market, payload, asof, root, now, index_fetcher=None):
     """Trend signal, FTD and leaders for Japan/Taiwan, written into the shared wamo_trend.json."""
     import wamo_trend as trend
     log = trend.read_json(root / trend.SIGNAL_LOG, {'schemaVersion': 1, 'markets': {}})
-    block, _, charts = trend.build_block(root, market, asof, trend_universe(market, payload), log, {},
-                                         True, index_fetcher or trend.fetch_index)
-    block['builtAt'] = now.isoformat()
     result = trend.read_json(root / trend.OUTPUT, {'schemaVersion': 1, 'markets': {}})
+    prev = (result.get('markets') or {}).get(market)
+    try:
+        block, _, charts = trend.build_block(root, market, asof, trend_universe(market, payload), log, {},
+                                             True, index_fetcher or trend.fetch_index,
+                                             allow_synthetic=not trend.has_real_index(prev))
+    except trend.IndexDelayed as exc:
+        # Keep the last real-index verdict; the scheduled retries rebuild once the bar arrives.
+        result['markets'][market] = trend.mark_kept(prev, '지수 자료 지연', now)
+        trend.write_json(root / trend.OUTPUT, result, compact=True)
+        print(f'{market} 추세 신호: {exc}', flush=True)
+        return result['markets'][market], None
+    block['builtAt'] = now.isoformat()
     result.setdefault('markets', {})[market] = block
     result['generatedAt'] = now.isoformat()
     trend.write_json(root / trend.OUTPUT, result, compact=True)

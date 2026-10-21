@@ -500,3 +500,4 @@ dialog[open] ~ .to-top { display: none; }
 .lq-verdict-line b { min-width: 74px; font-weight: 700; color: var(--text); }
 .lq-day { font-style: normal; font-weight: 700; font-size: 12px; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; }
 .lq-day.good { color: #8fe8c6; } .lq-day.mid { color: #f6cf7f; } .lq-day.bad { color: #ff9aa3; }
+.tr-weather-kept { display: block; margin-top: 2px; font-size: 12px; color: #f6cf7f; }

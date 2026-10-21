@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 15
+TREND_VERSION = 16
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -899,10 +899,37 @@ def write_json(path, value, compact=False):
     tmp.replace(path)
 
 
-def build_market(root, market, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index):
+def build_market(root, market, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index, allow_synthetic=True):
     payload = extract_old_payload((root / PAGES[market]).read_text(encoding='utf-8'))
     asof, universe = build_universe(payload, market)
-    return build_block(root, market, asof, universe, log, earnings_cache, fetch_network, index_fetcher)
+    return build_block(root, market, asof, universe, log, earnings_cache, fetch_network, index_fetcher, allow_synthetic)
+
+
+def has_real_index(block):
+    return bool(block) and not (block.get('index') or {}).get('synthetic')
+
+
+def mark_kept(block, reason, now):
+    """Keep the last verified block on screen and say why (the next scheduled check retries)."""
+    kept = dict(block)
+    kept['kept'] = {'reason': reason, 'at': now.isoformat()}
+    return kept
+
+
+class IndexDelayed(RuntimeError):
+    """The real index bar for the session is not available yet; keep the previous verified block."""
+
+
+def korean_second_source(rows, symbol, asof, fetch_network=True):
+    """Yahoo missing today's KOSPI/KOSDAQ bar: take it from Naver after cross-checking the history."""
+    if not fetch_network or symbol not in ('^KS11', '^KQ11') or not rows:
+        return rows, None
+    from wamo_ftd import extend_korean_latest, fetch_naver_index
+    try:
+        return extend_korean_latest(rows, symbol, fetch_naver_index(symbol), asof)
+    except Exception as exc:  # noqa: BLE001 - verification failure means: do not use it
+        print(f'{symbol} 네이버 보조 자료 검증 실패: {type(exc).__name__}: {exc}', flush=True)
+        return rows, None
 
 
 def stored_index(root, symbol, asof):
@@ -921,8 +948,14 @@ def stored_index(root, symbol, asof):
     return rows
 
 
-def build_block(root, market, asof, universe, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index):
-    """Trend, FTD and leadership for one market from verified daily histories (any market)."""
+def build_block(root, market, asof, universe, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index,
+                allow_synthetic=True):
+    """Trend, FTD and leadership for one market from verified daily histories (any market).
+
+    Index sources, in order: Yahoo live -> (Korea) Naver after cross-check -> stored verified
+    history. If none has the session and a verified block already exists (allow_synthetic=False),
+    raise IndexDelayed instead of publishing a stock-median substitute.
+    """
     if not asof or len(universe) < 30:
         raise RuntimeError(f'{market} 검증 가격 부족')
     symbol, label = INDEX[market]
@@ -934,16 +967,25 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
             bench = index_fetcher(symbol)
         except Exception as exc:  # noqa: BLE001
             print(f'{market} 지수 이력 실패 · 종목 중앙값으로 대체: {exc}', flush=True)
+    live = bench
     if bench:
         bench = [r for r in bench if r['date'] <= asof]
         if not bench or bench[-1]['date'] != asof:
-            print(f'{market} 지수 기준일 불일치', flush=True)
+            print(f'{market} 지수 기준일 불일치 ({bench[-1]["date"] if bench else "자료 없음"} ≠ {asof})', flush=True)
             bench = None
+    if not bench and market == 'KR' and not load_fixture(market):
+        base = [r for r in (live or []) if r['date'] <= asof] or (read_json(root / 'wamo_ftd_history.json', {}).get(symbol) or [])
+        extended, added = korean_second_source(base, symbol, asof, fetch_network)
+        if added:
+            bench, source = extended, f'Yahoo Finance {symbol} + 네이버 KRX 지수({added} 보완)'
+            print(f'{market} {added} 지수 일봉을 네이버에서 교차검증 후 보완', flush=True)
     if not bench and not load_fixture(market):
         saved = stored_index(root, symbol, asof)
         if saved:
             bench, source = saved, '저장된 검증 지수 자료 ' + symbol + ' (야후 실시간 지연)'
             print(f'{market} 저장된 검증 지수 자료로 대신 계산 ({asof})', flush=True)
+    if not bench and not allow_synthetic:
+        raise IndexDelayed(f'{market} {asof} 지수 일봉을 아직 받지 못함 · 직전 판정 유지')
     if not bench:
         print(f'{market} 종목 중앙값으로 대체', flush=True)
         bench, synthetic, source = synthetic_benchmark(universe), True, '스크리닝 종목 동일가중 중앙값(대체)'
@@ -959,7 +1001,13 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if bench2:
         bench2 = [r for r in bench2 if r['date'] <= asof]
     if sym2 and not (bench2 and bench2[-1]['date'] == asof) and not os.getenv('WAMO_INDEX_FIXTURE'):
-        bench2 = stored_index(root, sym2, asof) or bench2
+        if market == 'KR':
+            base2 = bench2 or (read_json(root / 'wamo_ftd_history.json', {}).get(sym2) or [])
+            extended2, added2 = korean_second_source(base2, sym2, asof, fetch_network)
+            if added2:
+                bench2 = extended2
+        if not (bench2 and bench2[-1]['date'] == asof):
+            bench2 = stored_index(root, sym2, asof) or bench2
     if bench2:
         if bench2 and bench2[-1]['date'] == asof and len(bench2) >= 200:
             secondary = {**index_trend(bench2), 'symbol': sym2, 'label': label2,
@@ -1092,14 +1140,21 @@ def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
     result = {'schemaVersion': 1, 'generatedAt': now.isoformat(), 'markets': dict(previous.get('markets') or {})}
     built = []
     for market in markets:
+        prev_block = (previous.get('markets') or {}).get(market)
         try:
-            block, earnings_cache, charts = build_market(root, market, log, earnings_cache, fetch_network)
+            block, earnings_cache, charts = build_market(root, market, log, earnings_cache, fetch_network,
+                                                         allow_synthetic=not has_real_index(prev_block))
             write_json(root / f'wamo_chart_{market}.json', charts, compact=True)
             block['builtAt'] = now.isoformat()
             result['markets'][market] = block
             built.append(market)
             print(f"추세 신호 {market}: 기준일 {block['asOf']} · 날씨 {block['weather']['label']} · "
                   f"RS선 {block['rsLeaders']['count']} · 경고 {block['sellWarnings']['count']}", flush=True)
+        except IndexDelayed as exc:
+            # Never replace a real-index verdict with a stock-median substitute; retry next check.
+            result['markets'][market] = mark_kept(prev_block, '지수 자료 지연', now)
+            built.append(market)
+            print(f'추세 신호 {market}: {exc}', flush=True)
         except Exception as exc:  # noqa: BLE001 - keep the other market and prior output
             print(f'추세 신호 {market} 생성 실패 · 이전 결과 유지: {type(exc).__name__}: {exc}', flush=True)
     if not built:

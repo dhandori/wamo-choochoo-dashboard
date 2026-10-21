@@ -273,8 +273,8 @@ def fetch_naver_index(symbol):
         return json.load(response)
 
 
-def repair_korean_history(rows, symbol, payload):
-    """Only fill invalid Yahoo rows after cross-source identity/scale checks.
+def _naver_verified(rows, symbol, payload):
+    """Naver KRX index bars, accepted only after identity and scale checks against `rows`.
 
     Do not synthesize volume or use ETF data. At least 20 overlapping valid
     sessions must agree in close (0.001%) and volume units (1%).
@@ -292,6 +292,8 @@ def repair_korean_history(rows, symbol, payload):
         d=f'{d[:4]}-{d[4:6]}-{d[6:]}'
         row=dict(date=d,close=raw.get('closePrice'),high=raw.get('highPrice'),low=raw.get('lowPrice'),
                  volume=raw.get('accumulatedTradingVolume'))
+        if valid_num(raw.get('openPrice')):
+            row['open']=raw['openPrice']
         if d in replacement or not all(valid_num(row[k]) for k in ('close','high','low','volume')) or not row['low']<=row['close']<=row['high']:
             raise ValueError('보완 원천 OHLCV 오류')
         replacement[d]=row
@@ -304,6 +306,12 @@ def repair_korean_history(rows, symbol, payload):
             overlap+=1
     if overlap<20:
         raise ValueError('교차검증 가능한 관측 부족')
+    return replacement
+
+
+def repair_korean_history(rows, symbol, payload):
+    """Only fill invalid Yahoo rows after cross-source identity/scale checks."""
+    replacement=_naver_verified(rows, symbol, payload)
     repaired=[];out=[]
     for r in rows:
         invalid=not all(valid_num(r.get(k)) for k in ('close','high','low','volume'))
@@ -312,6 +320,22 @@ def repair_korean_history(rows, symbol, payload):
         else:
             out.append(r)
     return out,repaired
+
+
+def extend_korean_latest(rows, symbol, payload, asof):
+    """Append the expected session from Naver when Yahoo has not posted it yet.
+
+    Same checks as repair: Naver must match the earlier verified history. Returns
+    (rows, added_date or None). Never invents a bar the second source lacks.
+    """
+    rows=[r for r in (rows or []) if r.get('date','')<=asof]
+    if rows and rows[-1].get('date')==asof:
+        return rows,None
+    replacement=_naver_verified(rows, symbol, payload)
+    bar=replacement.get(asof)
+    if not bar:
+        return rows,None
+    return rows+[bar],asof
 
 
 # KRX official notices, checked 2026-10-18. The installed calendar omits

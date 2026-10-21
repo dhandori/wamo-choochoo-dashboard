@@ -362,3 +362,50 @@ class StoredIndexFallback(unittest.TestCase):
             (root / 'wamo_ftd_history.json').write_text(json.dumps({'^KS11': rows}))
             self.assertIsNone(trend.stored_index(root, '^KS11', dates[-1]))       # incomplete bar is not used
 
+
+
+class IndexSafeguards(unittest.TestCase):
+    """Late index bars: Naver fills Korea after a cross-check; a fake index never replaces a real one."""
+
+    def naver(self, rows, code='KOSPI', scale=1.0):
+        infos = [{'localDate': r['date'].replace('-', ''), 'closePrice': r['close'] * scale, 'highPrice': r['high'] * scale,
+                  'lowPrice': r['low'] * scale, 'openPrice': r['close'] * scale, 'accumulatedTradingVolume': r['volume']} for r in rows]
+        return {'code': code, 'infoType': 'index', 'stockExchangeType': 'KRX', 'hasVolume': True, 'priceInfos': infos}
+
+    def rows(self, n=60):
+        return [{'date': d, 'close': 2500.0 + i, 'high': 2510.0 + i, 'low': 2490.0 + i, 'volume': 300000.0 + i}
+                for i, d in enumerate(sessions(n))]
+
+    def test_naver_adds_the_missing_session_only_after_matching_history(self):
+        import wamo_ftd
+        full = self.rows()
+        yahoo = full[:-1]                                     # Yahoo has not posted the last session yet
+        rows, added = wamo_ftd.extend_korean_latest(yahoo, '^KS11', self.naver(full), full[-1]['date'])
+        self.assertEqual(added, full[-1]['date'])
+        self.assertEqual(rows[-1]['close'], full[-1]['close'])
+        with self.assertRaises(ValueError):                   # a source on a different scale is refused
+            wamo_ftd.extend_korean_latest(yahoo, '^KS11', self.naver(full, scale=1.01), full[-1]['date'])
+        with self.assertRaises(ValueError):                   # wrong index identity is refused
+            wamo_ftd.extend_korean_latest(yahoo, '^KS11', self.naver(full, code='KOSDAQ'), full[-1]['date'])
+        same, none = wamo_ftd.extend_korean_latest(full, '^KS11', self.naver(full), full[-1]['date'])
+        self.assertIsNone(none)                               # nothing to add when Yahoo already has it
+
+    def test_real_index_block_is_kept_instead_of_a_fake_index(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            dates = sessions(260)
+            stocks = []
+            for k in range(40):
+                closes = [100 + k + i * (0.2 + k / 100) for i in range(260)]
+                stocks.append({'ticker': f'T{k}', 'name': f'T{k}', 'date': dates[-1], 'dataStatus': 'LIVE',
+                               'history': [{'date': d, 'close': c, 'high': c, 'low': c, 'volume': 1000} for d, c in zip(dates, closes)]})
+            (root / 'us.html').write_text('<script>window.WAMO_DATA = ' + json.dumps({'meta': {'asOf': dates[-1]}, 'stocks': stocks}) + ';</script>')
+            real = {'asOf': dates[-2], 'index': {'synthetic': False, 'label': 'S&P 500'}, 'weather': {'label': '조심'}}
+            (root / 'wamo_trend.json').write_text(json.dumps({'markets': {'US': real}}))
+            with contextlib.redirect_stdout(io.StringIO()):
+                result, built = trend.build(root, markets=('US',), fetch_network=False)
+            kept = result['markets']['US']
+            self.assertEqual(kept['asOf'], dates[-2])         # previous verified verdict stays
+            self.assertFalse(kept['index']['synthetic'])
+            self.assertEqual(kept['kept']['reason'], '지수 자료 지연')
+            self.assertFalse((root / 'wamo_chart_US.json').exists())   # nothing built on the fake index
