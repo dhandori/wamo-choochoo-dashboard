@@ -111,7 +111,7 @@ class RefreshTests(unittest.TestCase):
         self.assertIn('fetch-depth: 1', workflow)
         self.assertIn("if: github.event_name != 'push'", workflow)
         self.assertIn("github.event_name == 'push' && 'code-check' || 'data-update'", workflow)
-        self.assertIn("43 */2 * * *", workflow)
+        self.assertNotIn("43 */2 * * *", workflow)
         self.assertIn('queue: max', workflow)
         self.assertIn('timeout-minutes: 90', workflow)
         self.assertIn('timeout-minutes: 75', workflow)
@@ -141,7 +141,7 @@ class RefreshTests(unittest.TestCase):
         body = textwrap.dedent(body).replace('python -u wamo_run.py "${args[@]}"', 'printf "%s\\n" "${args[@]}"')
         for schedule, market, recovery in [
             ('0 7 * * 1-5', 'KR', False), ('20 20 * * 1-5', 'US', False),
-            ('20 21 * * 1-5', 'US', False), ('43 */2 * * *', 'auto', True),
+            ('20 21 * * 1-5', 'US', False),
             ('11,41 0-3,7-13,20-23 * * *', 'auto', True),
             ('4,17,24,34,47,54 7 * * 1-5', 'auto', True),
             ('4,17,27,34,47,54 20-22 * * 1-5', 'auto', True),

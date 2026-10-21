@@ -11,8 +11,6 @@ on:
     # KR: 16:11-22:41 KST. US: 05:11-12:41 KST, both DST variants.
     # The calendar/session guard skips holidays and already collected closes.
     - cron: '11,41 0-3,7-13,20-23 * * *'
-    # Cheap recovery checks: completed sessions exit before provider calls.
-    - cron: '43 */2 * * *'
     # GitHub often delays or drops on-the-hour schedules. Extra off-minute
     # checks right after each close keep the delay to a few minutes; runs for
     # an already collected session exit before any provider call.
