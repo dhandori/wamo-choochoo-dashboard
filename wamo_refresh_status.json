@@ -44,12 +44,12 @@
     "partialRerun": "누락 종목 재수집 · 7 → 0종목"
   },
   "US": {
-    "status": "WARNING",
-    "attemptedAt": "2026-10-21T06:35:06.813849+00:00",
-    "scheduledFor": "2026-10-20T20:20:00+00:00",
-    "nextScheduledFor": "2026-10-21T20:20:00+00:00",
+    "status": "RUNNING",
+    "attemptedAt": "2026-10-21T23:03:39.421436+00:00",
+    "scheduledFor": "2026-10-21T20:20:00+00:00",
+    "nextScheduledFor": "2026-10-22T20:20:00+00:00",
     "trigger": "예약실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39556276705",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39690834346",
     "moversStatus": "PASS",
     "warnings": [
       "SEC 직접연결 안 됨 · Nasdaq 대체자료와 미확인 공시 구분"
