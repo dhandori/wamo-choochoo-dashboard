@@ -277,7 +277,7 @@
       ]
     },
     "US:TRU": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "Red Lobster can tell when a new card belongs to a returning guest - Stock Titan",
@@ -323,7 +323,7 @@
       ]
     },
     "KR:003160": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "디아이, 장중 8.45% 상승해 39,000원 터치 - 비건뉴스",
@@ -369,7 +369,7 @@
       ]
     },
     "KR:226950": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "[오늘의 주목주] '반도체 투심 회복' SK 주가 12%대 상승, 코스피 '외국인 순매수'에 5730선 상승 마감 - 비즈니스포스트",
@@ -507,8 +507,14 @@
       ]
     },
     "US:TLK": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
+        {
+          "title": "IDX COMPOSITE (^JKSE) charts, data and news - Yahoo Finance UK",
+          "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE01TnIxVEpOY3J5Vk1GaWZiTHJnRFNjazM4eTF0dTNrQ1VNQ1VRaG1SMFVSZ0xrNGJ2Rklob0UtSnNWN3dHZW04MzVraVZKbmM3SWE0RDN3?oc=5",
+          "date": "2026-10-21T11:04:27+00:00",
+          "publisher": "Yahoo Finance UK"
+        },
         {
           "title": "TLK stock buyback plans headline Telkom update pre-market - AD HOC NEWS",
           "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPeG5BNlh2V1VIWnk0eURCRC10NTQxMk9oaHF3bkFhb213d243cE8xeHZnM0pBOE1oVjBvYi1JaXh6cXdoUFdMTWlGbktMSnhNLWZ2Y2pLb3lYOWlJdV9YVV94dWR4RWtXaW1MZVhOcHNCQ2dnNUY0VzdpeXVIUGJ5eXMtckhWWVdZejdlZU12TGVwdGE4NzF3S0UzamVfNDNmbWlwYUhiaGdncjVEUVZULVFOVktOdw?oc=5",
@@ -520,12 +526,6 @@
           "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQQWg4OVRpaTZBaDhUeWltUnRGX05pZjN5UHpnQUI1Q1ZEMk1aamRGY29VcG0zNzF1SmJjRmJ4Q2JYT3FORm5HX0I5Y1Y0UzdCd0taNERoRXJYbElCeHNWeHEwcFo3TE9GMDl5NEQwSldlYjRZZkY2eFVhaDlrUmxFVkJKWjVvVG5icjA3d2w5QVZsdDRJMTQtQmlvamJwdHNNT0FjNFVpc2tjb29qR1BGYWIzUUkxbzkwOU55dTl3NjBoV05XX0Zpd3I4RF9MN0lQOV81R3pBMFREYXFIOTJ1MnZUWlhRTmc?oc=5",
           "date": "2026-10-21T04:20:00+00:00",
           "publisher": "TradingView"
-        },
-        {
-          "title": "PT Telekomunikasi Indonesia, Tbk (NYSE:TLK) Shares Gap Up - Should You Buy? - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOWlZoSV9NUVZMNEpzV0tLTlMtWEZlaWRMeGJxQU5GMm5uTjhBeE5EWm1pZnctMEZjemxCYll6cE0xMVdLX1dFSl9XX3JrMkxoR0hCVnVPMFRrVUN3b053Q1d0M2YtWkdBYXNpLThmMXdMNEY0WlBuQ2RvZ3U0dTN4LU9RV2J6U1JaR1ZlQTVLOWJSS1dBT1ZUdTlOZ1ZZY2xvNm04bnk5X3lBekluaDhvaHk0bUJ2M0M1d0N2VVU0RWpJa2JDcEJZeQ?oc=5",
-          "date": "2026-10-20T15:09:18+00:00",
-          "publisher": "MarketBeat"
         }
       ]
     },
@@ -645,8 +645,14 @@
       ]
     },
     "KR:178320": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
+        {
+          "title": "[마감분석] 서진시스템 10.88% 급락하며 3만4000원 마감 : 기업주식정보 - 재경일보",
+          "url": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE5zT3MyLTBydmFHSEdqYnVGcnZlc1l5YUdHS1FnZEpvckptd1dBalp3aVh2RGl4RTFyS3ZCY2cyRzQxdUstYXVFcl9Udw?oc=5",
+          "date": "2026-10-21T06:51:20+00:00",
+          "publisher": "재경일보"
+        },
         {
           "title": "[코스닥 외국인] 에코프로비엠·큐리옥스바이오시스템즈 담고 서진시스템 팔았다 - 핀포인트뉴스",
           "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5RenczaVlmWVBLLXNJX2V1bnU2TjdvaEJDemFyTXlrRnE4U2NVYzE4U1NIUmNUYUVjX0QxbmpyZUc2NUsxdVhIc201RmFtWkEwN0Flak5BVGl0blRzcDVuUExCWm51X3A5Mzk0RkJBdFkwdWfSAXdBVV95cUxOdjRRTlRrWUZWMmFQb2VoeWxFTXRfbXVMNjA4NkVsMm40MjNWNXctQ01yTkZDbWZoZkw5bWNsSDBHdVJFWllDSEo1NG01bWljdDVaQnhpb21WZmR1aUtwbllFZnFCZGRRSTFQOTZ4MGJPNTJNZENRRQ?oc=5",
@@ -658,12 +664,6 @@
           "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1rR0l4R05QUHZsZUVmS0pQRUg2SVZNdlBsTEdQNzlEUmxlQVhXODd0QnVvTGtoSHpQa0JvQkpaczFtRnRJUk1iNEk2ZWZ1YzZpWS1rYTdjNDFOYmpZcWdPT0ZNZEpkal85bmN6UFdwdVpsUQ?oc=5",
           "date": "2026-10-21T06:46:53+00:00",
           "publisher": "TopStarNews"
-        },
-        {
-          "title": "[서울데이터랩]마감 직후 인기 검색 종목 20選 - www.twig24.com",
-          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1yX2Jxa2FHRE81OFkzbEJDb2FPMkM2NmVDSnRUUWhpeGdUY2hNcFJjR3ZRM2ZCRGo4UmFvSmtpYmtNU3NmVC1vcVl2bUFOV3B0YnFidkl3MkwzSTlSRXZvdWZqazItcDFyRmU2cWZ6dTVhcmN1NUE?oc=5",
-          "date": "2026-10-21T06:44:00+00:00",
-          "publisher": "www.twig24.com"
         }
       ]
     },
@@ -1082,7 +1082,7 @@
       ]
     },
     "JP:3697": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:2531": {
@@ -1134,7 +1134,7 @@
       "items": []
     },
     "TW:6173": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:6949": {
@@ -1158,7 +1158,7 @@
       "items": []
     },
     "TW:2466": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:3260": {
@@ -1241,7 +1241,7 @@
       ]
     },
     "KR:281820": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "케이씨텍, 장중 12%대 급등 - 비건뉴스",
@@ -1356,7 +1356,7 @@
       ]
     },
     "KR:131970": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "\"내년 사상 최대 실적\"…삼성·애플 업고 9% 급등한 두산테스나 - 한국경제",
@@ -1391,7 +1391,7 @@
       "items": []
     },
     "JP:4004": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:6323": {
@@ -1399,7 +1399,7 @@
       "items": []
     },
     "JP:5803": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:5802": {
@@ -1419,7 +1419,7 @@
       "items": []
     },
     "JP:3436": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:9984": {
@@ -1471,7 +1471,7 @@
       "items": []
     },
     "US:EFX": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "Equifax Stock Climbs As Wall Street Cuts Targets But Backs Growth Story - Timothy Sykes",
@@ -1494,7 +1494,7 @@
       ]
     },
     "US:TSEM": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "Tower Semiconductor stock: November 2 results loom for Tower Semiconductor stock - AD HOC NEWS",
@@ -1503,21 +1503,21 @@
           "publisher": "AD HOC NEWS"
         },
         {
+          "title": "Tower Semiconductor expands Semtech pact while Tower Semiconductor stock costs EUR 167.50 - AD HOC NEWS",
+          "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxOSDFybFNyVG5kNThVbHFlc1N5TElIa3psbjhiQVhWbEo1NmVObUhLSzE3OFFScG9LMXBick9NMGcyN0xYUW5YQ3JtV0VScTZmSUpxNHo5UE5CR3ZsY1pseVdreUtxSGRZckNHRVlNYWVyRmxSWnVtUGVkVjB4Skd1TkhUQlJjd0RUY0ZUWHZ6czBIOUJnZUdzRV9lV3ZfamM5VGEtTlM5eENLaGYxVHNRbEp1Tm5oQ2xuU3VwSEQxMk5rWmhFeFBoSHNnQU9FSWY2SVFwZVlIY2VEUlJDanllWjA5TkZoUWc?oc=5",
+          "date": "2026-10-21T08:48:31+00:00",
+          "publisher": "AD HOC NEWS"
+        },
+        {
           "title": "NICE Ltd. (NICE) Stock Price, News, Quote & History - Yahoo! Finance Canada",
           "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE0xR1RMSHR5aWsxUzlQVURXYjVZUngxRDQ0MmFya2tpZXU1Z1VTZkZ6NGFDbURBNUNFTW5PdHNiNWZFTVBYdmpaT1FVRGd1cXR4OHc?oc=5",
           "date": "2026-10-21T00:14:29+00:00",
           "publisher": "Yahoo! Finance Canada"
-        },
-        {
-          "title": "Tower Semiconductor Ltd (TSEM) Shares Fall 8.2% -- GF Value Says Still Overvalued - GuruFocus",
-          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOeXRqNjFDejRkUy1pTlZobE4ySzZfbldHVHZZT3ZVd0ZQc0JZVFF4TlMzSklxVUVHZXFOZTZCLURkZnl0aDgwVDBtNVk3NmJKaUVKOFRELTBQSjc1WWZuWTZsc24tRVBOZ2gtNDd5bUZPdjZ6NUp5VXdJOEVjV3J2LWVqSGhmSThFVXhyUTlGR2xDYXVUVWJGYm1iNlN1bktpbmVSNkpBZVlPVVJ6M3FGUnZzNA?oc=5",
-          "date": "2026-10-20T22:00:11+00:00",
-          "publisher": "GuruFocus"
         }
       ]
     },
     "US:GWRE": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "Guidewire Software (NYSE:GWRE) President Sells $999,000.00 in Stock - MarketBeat",
@@ -1526,21 +1526,21 @@
           "publisher": "MarketBeat"
         },
         {
-          "title": "Guidewire CEO Michael Rosenbaum sells $201,480 in stock By Investing.com - Investing.com South Africa",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPcWJBcWc1UFAtcjE4V003ejEwTmMySXJCRjFJQURFRFJMY0o3d2ZGaTA2amJTT2NjLTMzcTFRcnp5RG0xNkk5SXBWUEExaDVsZllYdjJnd1dTR1RNbnFoSnFaNFZoQmRpYW5CemJ6Vk9ETW1USWhRamtDbExuTzBENC1mQ2NVNjJLLWEwaWFqTXpqcmgzY0dFMHIyX1pwN0pYdjJMQnBlWmJkXzFoeGVTYVRGVC0?oc=5",
-          "date": "2026-10-21T01:08:51+00:00",
-          "publisher": "Investing.com South Africa"
-        },
-        {
           "title": "Guidewire Software President John P. Mullen Sells 5,400 Shares at $185 Under 10b5-1 Plan - Kalkine Media",
           "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQLUktcmVXcm1lTE9SS2pxX2FBM0FYeVdKWmdPN2lEVGhSNE0xTnlWV2FXNlpDcHkyLXllYmQ5TnNBcXo2TW43MDlTd1Axa29hMmcxdTNxbFVCeGRRLXBNX2RrZEIzWWFTWWlXeEhuY3RSZmg1R3ROMHZsYWNjWkxVY3N6Z2NoZDJFTnVRTmE4YzdWTmdkVHZHSllsOFJoOG9uM2JaRUFCcm5rQnZFWjNQcWhJQ0VzRmlzV1Z4WDFXamREMVN2VFBaR05mU28?oc=5",
           "date": "2026-10-21T00:01:26+00:00",
           "publisher": "Kalkine Media"
+        },
+        {
+          "title": "A Look at Guidewire Software Inc (GWRE) After 7.1% Gain -- GF Value $218.92 vs Price $183.58 - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPZGplZUUyU1lnMHF0U2hIUGFqdWZMMG5zYW5hai1td2pHY1hDTDQ4RFNGdEZiV2hoNEZ0S2ZxVS1IeGl0TFBzMTl3emtGdmFkRzBZUzhfemFWN2NlSUkxVHBvdlBiUi1NWFdLRVRKQkVJRzhpOUZBVFhfRUpjZG54Qzlnbk1QRXZjc0l0NlpIWGlWTjMwb2psMUxzRGpfVzRkOXZKRm1BemNUM1FSNE9WUXdmMkF1MGdIZFNOYw?oc=5",
+          "date": "2026-10-20T22:10:51+00:00",
+          "publisher": "GuruFocus"
         }
       ]
     },
     "US:HAS": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "Why Did BRZE, HLT, HAS Stocks Hit 52-Week Highs Today? - TradingView",
@@ -1563,7 +1563,7 @@
       ]
     },
     "US:RVMD": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "RVMD Stock Rallies As RASONQUE Launch And EU Nod Fuel Hype - Timothy Sykes",
@@ -1586,12 +1586,18 @@
       ]
     },
     "US:PAC": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "US:HUBS": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
+        {
+          "title": "HubSpot stock gains support from mixed analyst view after strong Q2 figures - AD HOC NEWS",
+          "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOTVYzZ1o4QkRsMDlYeElPQ2NqLVhTZEhZZFI5SDRuNmF2NTh3Z3RaYkVPc1hMNm1xc2ozdjUtaU9rQjFvbkFWWmhITU1UczBwZEhFQld3RlVYQzlyQnd6bnZCcWRkTWxNc3F6MU5LbmJqSkxGUUNUbzRPWlNFekJyMW9aeEZrbENDN0ctMXdpTjRaRFpHYzVVOWVpaTI3b3BXT29GY3RZanZiek1JcnFVTVQ5bi1hYTlSaC1QRUNTVW9wY19PcVlVb1RTeE1vSWtWLWpvbA?oc=5",
+          "date": "2026-10-21T07:23:10+00:00",
+          "publisher": "AD HOC NEWS"
+        },
         {
           "title": "J.P. Morgan downgrades HubSpot to Hold and sets USD 240 target for HubSpot stock - AD HOC NEWS",
           "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxPaDNNSFI5VmdXZ0J2dkhMU2NGeDRpU0FYUEVKR0Fvd01PaF9fZnplYWRYS040TnVZUXhtX2FWWFltbmVlcnZFWjBIOXo3dUE2NkdnWG5ZNlR3T1czaUZKU0ZERy12V0h2YmNFVVV1dzd5NTNycUNvYVlkUUdlMm5LemdsMkhuc2trWE9oZGxRWjJhSHRmS1B3X0ZRTC1XMFRHZzREYVRXYlN2S2NBOWtVVkcyMWtvMEdKQnlxTXlKOExsbnR1WGh2TzNTS1VCR01kb0RmaA?oc=5",
@@ -1603,17 +1609,11 @@
           "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQRGU2ajQ0VTRUTERpX2VuYkMxM0NtNVV3bGJqWHRhX01PT0xPN1dDTWxyUlVGSmRNTXdEbDUzMU9ZTGlWOS0tajBUaUs3cVZBT01GeUZpazM5WE5CRmpEX2FLY2FXaVU0czlkZjkzN1JkZl96YWF0bllJNmNxdDVoZWh2Q1FlR1dPZTRJ?oc=5",
           "date": "2026-10-20T18:15:27+00:00",
           "publisher": "TradingKey"
-        },
-        {
-          "title": "Wolf Investors LLC lists 8,500 HubSpot (HUBS) shares for sale. - Stock Titan",
-          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPQXVCazRWTmFvRmg4bWVhRUlnbG5Nd2xibDVQd3FLYVFPUmwyY1MtM1Z2NHJaNGR2UG15QmxfTzA2WE45NXU5NmF0aGhEUWxRbk1OSDdHSkdVTG9jTEdzX3Ztb3JlWUtNWlhPMnlxeEM4RkdNMWh5bG9ZdzZJNC0wSURwaEU5UEM1MWh3elpFTUo3QQ?oc=5",
-          "date": "2026-10-20T17:08:24+00:00",
-          "publisher": "Stock Titan"
         }
       ]
     },
     "US:MLI": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "Mueller Industries (NYSE:MLI) Gaps Lower: Is the Drop Overdone? - Kalkine Media",
@@ -1636,12 +1636,12 @@
       ]
     },
     "US:MRNA": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
-          "title": "Oddo BHF raises Moderna stock target from USD 170.00 to USD 251.00 - AD HOC NEWS",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNZkhOVVdjNzJfMlRMWXRkQjdtU2huMDRJMEhwSEtod2RkMXBqLTlGY3lpajlpUGR2SDE0aUw0ZkhIckQtbkl4SWVaLVRhMHhHNTBHcW9zcVFhY3NScnhwcjJxaXRVSmloc1VlMG1maFkzbTdfVzlpajN2bzRlcE9CcXAxckp2SGktZzI4ZnJJcVJZTDdRekllMWRPY0ZITzhkYXNUTXlqSU5BU2pHRXJvblNHblRsR1hsblY0d1hOQks4am5ndHlROQ?oc=5",
-          "date": "2026-10-21T10:03:49+00:00",
+          "title": "Moderna stock: Oddo BHF lifts target for Moderna stock to USD 251.00 from USD 170.00 - AD HOC NEWS",
+          "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxPcnBhYmlYdlUtOERfdHh5TnpHT1NDVmZzNWR6S1hFTXNWYnpybGdvXzFyVXJUMEZNUkVUOUltT1JCZWY2WTE4R25fdWh1MDZDT2JfOGllSmRZU0NXREpsaTZfRjlQYjhhb3Q0Ymw3Y1c2am5EN1UtZ3c0MHBtVFFsRUhBekROT05jNnR4Z2hpWm1zMXR5OFZEaVJtX0liSHY5SGR0MnNOeFpMb1dIdThMSHRqUm5hQmREcDJ1WlZsTTBPRm5QM0hJelVRVXFDNEZBa1p6bHF2Z0QzU1NFTGNF?oc=5",
+          "date": "2026-10-21T15:52:46+00:00",
           "publisher": "AD HOC NEWS"
         },
         {
@@ -1659,30 +1659,30 @@
       ]
     },
     "US:GM": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
-          "title": "RBC Capital lowers General Motors stock price target on cost pressures - Investing.com India",
-          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxPdEgxcWh2U1dUbVVPYlp1Yi1NbmNZMDRpcW11aTZvQm1GOVU4LXEzZGtrOWFiMnVuaVNHZDlYSWYyME4tc0ZDaWJ6YlVqUkpfZzYxclQ0Ym9uVnRWSXdESi1PTkhuLWVJZWJnVFU5NzVXeU1CTHBCNEtsVXFTRFZCOG9zX1FaYTZ2X0NXQWowTnBxcGRyUDBkalZQTlhqSHJZdVJULW95a3NQazd0eHJfcFJQQWxuVmt4TXFjSk1hdzhxWHNVcjVrNlpRSQ?oc=5",
-          "date": "2026-10-21T13:55:14+00:00",
-          "publisher": "Investing.com India"
-        },
-        {
-          "title": "GM Stock Falls 7% Despite Q3 Earnings Beat: Buy the Dip? - The Globe and Mail",
-          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPTVRuX2txbHpyLW5LZlZZQk9NUzdXOGczaGpUbl85NzVib1VUYTd1dlhJbTl3SmVaMEhSbWtqejZhdUs4Y0ZlaVhFbElxNHdabDlSSnk5ZE1VQ0pEMFIzX3JJR2RaaXd3OTJoVnpqUmNEVmg4SkEzZWhBOVQ3RjZxMEZPcWNIcThOcFVOM1g2YVJmYmNVcXNPeTV1TEZ5a1NfZXBIVzRtWk5iWTc3TUtZLW43NVQ2b1hQTjVVUlQ0bkZJdGs3YUloc0IxV21NNG1C?oc=5",
-          "date": "2026-10-21T13:20:56+00:00",
-          "publisher": "The Globe and Mail"
+          "title": "Is General Motors (NYSE:GM) Still Strong After Its Target Trim? - Kalkine Media",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQTkQxaWxRekhKSnpvcFRNUGxSMFdENWdKTDFLUjVqMmNaTkJOVXI3TVZGSmk2elRSZUd2VUJ3aVhxTEtuRlVQX1kwYzBsenBWbnF5SGNuN2J0MHo0MWFnT0sxZ3VvZWg4U0pfWEd6LU1sZEwtNERDS0hVY1dHRFVvUVowSm1mdFFZUHBLb05XbzdTcXVxdDBmcHdydEdHMmw3YXpiMV9R?oc=5",
+          "date": "2026-10-21T14:28:00+00:00",
+          "publisher": "Kalkine Media"
         },
         {
           "title": "General Motors (NYSE:GM) Stock Gets Price Target Reduction from Royal Bank Of Canada - MarketBeat",
           "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxQLUwxVWJ3Y0NTSzI3M2RmdmNacy1oVk1wbk1NdlRxTmlEXzdWcDk3NXdtcWJhbkt0MXUtZkh0bXFVdlIzQ2pUT3lJMGt2cXBaeXM3alVXVlNnU01KZVBzU3d5bnd1MFpOdHhYVGlJT0lGbWNSUTVGdWY3bVpyaEgxa08zSVEtYU9HeXVlMVFHSm9mcnhmOWRlT0V3ZnMyRTVZS1ZvRWlRT0dvVlRjbWdSWXFTbmUyR2Z2T2lBeWt6SHpuZF91WTZEOGc5N2xVbDRmdHdXLXVsS2pFb0Zq?oc=5",
           "date": "2026-10-21T12:51:56+00:00",
           "publisher": "MarketBeat"
+        },
+        {
+          "title": "GM Stock Falls 7% Despite Q3 Earnings Beat: Buy the Dip? - TradingView",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPbDYwbUxFVmZ1T1plcnptN2llQ0l0VEZVT2EzcDdodEtVR1dpRUliQWxBamNCRHFKUVQtam1LZHFPaTc4ZXhsZXBFVVFjSXpCYXg0cE9iOVpKa0g5ZFRTVFV4R3hXRERleVdob3FQZmxhcUdNaXh4cFFsSDJFYjVFaXB0elVndmJ5WEc3RnZCY2Z2SWNWYWlwYmM5NV9rQnA1N3M1QzFpV3lkYjV5bEE?oc=5",
+          "date": "2026-10-21T11:04:00+00:00",
+          "publisher": "TradingView"
         }
       ]
     },
     "KR:010170": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "코스닥 '활짝'...알테오젠·대한광통신·성호전자·엘리스 '급등' - 초이스경제",
@@ -1691,10 +1691,10 @@
           "publisher": "초이스경제"
         },
         {
-          "title": "[코스닥 기관] 알테오젠·심텍 폭풍매수…브이엠·에스엠은 팔아 치웠다 - 핀포인트뉴스",
-          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE1jSUdvZUozbEhvTDk4alNDNzFRRFU4aWZDTWRpSDhGTHdtU1otNWN4YkJxeFg5VVlFLWxraGExd05FSGNYT1BHZzdzaVpPRXN4cEdEYW45SVJkZ19tTVczRHZsZXhmM1YtVnFLaTlJeE02NVXSAXdBVV95cUxNU1M3cG85RFgyZ3RpQmxBU1hqb1dkcVFRUUpBLWNkTHlaekFRWkpqZUx4dlB5ZXRXaHlYNFV3NFk3UUplWEV5b2lZazZ1ZUhqbER6WGY4dFJCWVlxVGZRLU1HTUg4QVhHTUktNVlhNFNVdnRrMjZWUQ?oc=5",
-          "date": "2026-10-21T06:57:51+00:00",
-          "publisher": "핀포인트뉴스"
+          "title": "[마감분석] 대한광통신, 뚜렷한 공시 없이 12%대 급등 마감 : 기업주식정보 - 재경일보",
+          "url": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE1yWGVHMS1RSE1IVkpOUjBmZkhuUDNBZWlZcWRWaFFDT1JpMENCSVpEaGlLM3ZpM0RFa0IzVUl6bElpVk5kX1g5NXh5Zw?oc=5",
+          "date": "2026-10-21T06:51:00+00:00",
+          "publisher": "재경일보"
         },
         {
           "title": "[서울데이터랩]마감 직후 인기 검색 종목 20選 - 서울신문",
@@ -1705,7 +1705,7 @@
       ]
     },
     "KR:183300": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "삼전닉스 반등에도 갈 길 먼 주가…증권가 목표가 '요지부동' - 머니투데이 - 머니투데이",
@@ -1728,7 +1728,7 @@
       ]
     },
     "KR:036540": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "[코스닥 기관] 알테오젠·심텍 폭풍매수…브이엠·에스엠은 팔아 치웠다 - 핀포인트뉴스",
@@ -1737,21 +1737,21 @@
           "publisher": "핀포인트뉴스"
         },
         {
-          "title": "[코스닥 외국인] 에코프로비엠·큐리옥스바이오시스템즈 담고 서진시스템 팔았다 - 핀포인트뉴스",
-          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5RenczaVlmWVBLLXNJX2V1bnU2TjdvaEJDemFyTXlrRnE4U2NVYzE4U1NIUmNUYUVjX0QxbmpyZUc2NUsxdVhIc201RmFtWkEwN0Flak5BVGl0blRzcDVuUExCWm51X3A5Mzk0RkJBdFkwdWfSAXdBVV95cUxOdjRRTlRrWUZWMmFQb2VoeWxFTXRfbXVMNjA4NkVsMm40MjNWNXctQ01yTkZDbWZoZkw5bWNsSDBHdVJFWllDSEo1NG01bWljdDVaQnhpb21WZmR1aUtwbllFZnFCZGRRSTFQOTZ4MGJPNTJNZENRRQ?oc=5",
-          "date": "2026-10-21T06:51:04+00:00",
-          "publisher": "핀포인트뉴스"
-        },
-        {
           "title": "SFA반도체 6.52% 상승…후공정 가동률 회복 주목 - 잡포스트",
           "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9sSjFvMUQyV09SUGRsZXc0M0liYk0wZmEyd0Qxc1B3U2lYRlQxSHhYU1Q0d0ttczJNbE5tT1MwYThGb3hZRE5BZ1YxTmVrR2VrZnpHNGEtcjJPZmxpZkplcVVTcUs0RzczbXBoZWt0Sy1SUdIBckFVX3lxTE9sSjFvMUQyV09SUGRsZXc0M0liYk0wZmEyd0Qxc1B3U2lYRlQxSHhYU1Q0d0ttczJNbE5tT1MwYThGb3hZRE5BZ1YxTmVrR2VrZnpHNGEtcjJPZmxpZkplcVVTcUs0RzczbXBoZWt0Sy1SUQ?oc=5",
           "date": "2026-10-21T05:27:21+00:00",
           "publisher": "잡포스트"
+        },
+        {
+          "title": "SFA반도체 장중 7.42% 올라 9550원 - 비건뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1LVGIyWG5tOXRvOXYzdlE2Z0xERk1IVjZodkF5THktUnFtNGFuNlhieFlaaVZCWEQzblppYmxmYkxpbGxHdlNrTE80cEtNVjlVMVFPbnNBRUJkLWgwaDUxQU8tRVc2UQ?oc=5",
+          "date": "2026-10-21T04:37:40+00:00",
+          "publisher": "비건뉴스"
         }
       ]
     },
     "KR:181710": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "NHN 장중 12%대 급등…5만7300원 거래 - 비건뉴스",
@@ -1766,16 +1766,22 @@
           "publisher": "핀포인트뉴스"
         },
         {
-          "title": "NHN, 정부 GPU 추가 확보가 주가 변수…장중 600원 하락 - CBC뉴스",
-          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBlUGVuTnBybV9xUGhsbUp3WDhkZDVIZVpyYUhTb3NlRVdsUmJFOTdCLUtzVTFSaGxBRmU4T0NpTXdaYndkVGYxRWg2SFk5Y2JTbGhVdjhCdS1xcGNJcV9BblVHcWwteWti?oc=5",
-          "date": "2026-10-19T02:37:06+00:00",
+          "title": "[속보] 엔켐 VI 발동, 주가 껑충 - CBC뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5lWVZ5cDMzRG0wS2pTRHE3RzNkaFBwZjlyVGJvX045OWoteHVFZGxWclNzZmljeXp4WDBZRzYzUTJBV0l2MGEyMjBjOWZHNU9CdjVNOFRaeWRMWFRsdTdLTWlYdUVDWkJK?oc=5",
+          "date": "2026-10-19T04:56:03+00:00",
           "publisher": "CBC뉴스"
         }
       ]
     },
     "KR:034730": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
+        {
+          "title": "\"정말 피가 마릅니다\"…SK하이닉스 폭등에도 개미들은 '한숨' [분석+] - 한국경제",
+          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1OV09uTTRXLUVDbTNXTlVXam5acHplNHB1UDhjLUdFMm9DbG9Xa3BDT3ZPa0JKN2tJMmhGM2VBVElpOVhaMEpMajFlUUdfR1VDUTVpT2hwOHJoZw?oc=5",
+          "date": "2026-10-21T14:30:00+00:00",
+          "publisher": "한국경제"
+        },
         {
           "title": "7조 적자 홀로 견뎠는데…SK하이닉스 주가 흔든 '솔리다임 IPO'의 역설 - 뉴스퀘스트",
           "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBjM1hmeVBFY0dsMnZfd0hsUnBZZ1B3RU1iUVVINFRvM2E1YXlXeVNnc1pjVms1NWE0US1hQXliNzFXRlE5ZVhIZzJuMDBsRE9FLUo3Rml4YzdPcml4UGZFOHR1OUhGMHZCOWdOck9mcw?oc=5",
@@ -1783,21 +1789,15 @@
           "publisher": "뉴스퀘스트"
         },
         {
-          "title": "SK하이닉스, 40조원 규모 자사주 매입 완료… 주가 5.8% 뛰었다 - 여성신문",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE92TjlGQ3dzTUkyWmdSbl9ZYV94dlVoR1pzbC1FRG5sa0RNbFNvZk92cy03NlIwN0c4UjdhNjNBQTFHRkRVUWtLbW1CNUZtQVQ4VUViUHhpSldFdEhLQWh4Y1FBQ21NTkdwbUVmYmR2ONIBc0FVX3lxTE9YOW9nM2xMX1pVS1ZfQkFRYjh4cWJnTGVTZzk1c094RjJxN1VCRUJCb2xQemxIWUJReWpwODhjNnpzcEh5X0Z3cXFiTXQ2ZkYwSEFXT0JHblYxVFIxaXdKQXJveEpHa1JQVFZNUy1nZ1hoek0?oc=5",
-          "date": "2026-10-21T09:52:34+00:00",
-          "publisher": "여성신문"
-        },
-        {
-          "title": "[오늘의 주목주] '반도체 투심 회복' SK 주가 12%대 상승, 코스피 '외국인 순매수'에 5730선 상승 마감 - 비즈니스포스트",
-          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBYNXB3SHNtdGYyUjVrY2ptZHd5QjhFQnBZXzZkdmIzdzF6MGdHTm1rR3l6U2N6NGU0U3hZQ2JibHItN3hoSEE4VGc3TVNxdWVPN1ZvSWU3X21MajB3WFdJRVpjUDVMbDlFWkVMRGY5WHo0UUU?oc=5",
-          "date": "2026-10-21T08:24:03+00:00",
-          "publisher": "비즈니스포스트"
+          "title": "[특징주] SK, 행동주의 펀드 얼라인 지분 확보에 12%대 급등…“NAV 할인율 75%” - https://www.moneystorm.kr/",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9HY1pObW5YZHhTQmQzd012MWRLczRLOVBiS3VPZ3BKNXpmaFJmNV82UHBGcThuRE1mTHFkT0JQV1hILUh2MGJvQS1VTF9NVjRaaWpFS2hmSzFMX0hvS0ZaVFotSGtvcHFFS0E?oc=5",
+          "date": "2026-10-21T10:17:34+00:00",
+          "publisher": "https://www.moneystorm.kr/"
         }
       ]
     },
     "KR:043260": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "코스닥 '활짝'...알테오젠·대한광통신·성호전자·엘리스 '급등' - 초이스경제",
@@ -1820,7 +1820,7 @@
       ]
     },
     "KR:028050": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": [
         {
           "title": "[주식도락] 조용히 오르는 2차전지 대장주…LG엔솔 이달 14%↑ - 뉴스드림",
@@ -1843,75 +1843,75 @@
       ]
     },
     "JP:5838": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:4186": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:6869": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:5016": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:4587": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:5706": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:4182": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:6672": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:3374": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:6278": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:3532": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:6213": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:3406": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:6789": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:1303": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:2345": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:3105": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "JP:4062": {
-      "checkedAt": "2026-10-21T13:59:15.264553+00:00",
+      "checkedAt": "2026-10-21T16:02:42.091698+00:00",
       "items": []
     },
     "TW:3491": {
@@ -1919,5 +1919,5 @@
       "items": []
     }
   },
-  "checkedAt": "2026-10-21T15:41:37.497222+00:00"
+  "checkedAt": "2026-10-21T16:02:42.091698+00:00"
 }
