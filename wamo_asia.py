@@ -355,7 +355,12 @@ def run(markets=('JP', 'TW'), root=ROOT, now=None, force=False, fetch=None, inde
         entry = dict(status.get(market) or {}, attemptedAt=now.isoformat(), expectedSession=expected,
                      runUrl=(f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
                              if os.getenv('GITHUB_RUN_ID') else None))
-        if not force and prev and prev.get('asOf') == expected and prev.get('status') == 'CURRENT':
+        # Yahoo often posts the Asian index's volume/low a few hours after the close. Keep the
+        # scheduled retries running until that day's index bar is complete (FTD can judge it).
+        trend_block = (read_json(root / 'wamo_trend.json', {}).get('markets') or {}).get(market) or {}
+        ftd0 = ((trend_block.get('ftd') or {}).get('indexes') or [{}])[0]
+        index_done = trend_block.get('asOf') == expected and ftd0.get('status') == 'OK'
+        if not force and prev and prev.get('asOf') == expected and prev.get('status') == 'CURRENT' and index_done:
             print(f'{market} {expected} 이미 반영됨 · 건너뜀', flush=True)
             continue
         try:

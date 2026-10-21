@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 14
+TREND_VERSION = 15
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -905,6 +905,22 @@ def build_market(root, market, log, earnings_cache, fetch_network=True, index_fe
     return build_block(root, market, asof, universe, log, earnings_cache, fetch_network, index_fetcher)
 
 
+def stored_index(root, symbol, asof):
+    """Verified index history saved by an earlier run (wamo_ftd_history.json).
+
+    Yahoo sometimes serves an index without the latest bar for a while after the close even
+    though an earlier run already verified that day. Use the stored rows only when they end
+    exactly on the expected session with a full bar (close, high, low and volume).
+    """
+    from wamo_ftd import valid_num
+    rows = [r for r in (read_json(root / 'wamo_ftd_history.json', {}).get(symbol) or []) if r.get('date', '') <= asof]
+    if len(rows) < 200 or rows[-1]['date'] != asof:
+        return None
+    if not all(valid_num(rows[-1].get(k)) for k in ('close', 'high', 'low', 'volume')):
+        return None
+    return rows
+
+
 def build_block(root, market, asof, universe, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index):
     """Trend, FTD and leadership for one market from verified daily histories (any market)."""
     if not asof or len(universe) < 30:
@@ -921,9 +937,15 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if bench:
         bench = [r for r in bench if r['date'] <= asof]
         if not bench or bench[-1]['date'] != asof:
-            print(f'{market} 지수 기준일 불일치 · 종목 중앙값으로 대체', flush=True)
+            print(f'{market} 지수 기준일 불일치', flush=True)
             bench = None
+    if not bench and not load_fixture(market):
+        saved = stored_index(root, symbol, asof)
+        if saved:
+            bench, source = saved, '저장된 검증 지수 자료 ' + symbol + ' (야후 실시간 지연)'
+            print(f'{market} 저장된 검증 지수 자료로 대신 계산 ({asof})', flush=True)
     if not bench:
+        print(f'{market} 종목 중앙값으로 대체', flush=True)
         bench, synthetic, source = synthetic_benchmark(universe), True, '스크리닝 종목 동일가중 중앙값(대체)'
     idx = {**index_trend(bench), 'label': label if not synthetic else '종목 중앙값 지수'}
     secondary = None
@@ -936,6 +958,9 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
             print(f'{market} 보조지수 {label2} 실패 · 주지수만 사용: {exc}', flush=True)
     if bench2:
         bench2 = [r for r in bench2 if r['date'] <= asof]
+    if sym2 and not (bench2 and bench2[-1]['date'] == asof) and not os.getenv('WAMO_INDEX_FIXTURE'):
+        bench2 = stored_index(root, sym2, asof) or bench2
+    if bench2:
         if bench2 and bench2[-1]['date'] == asof and len(bench2) >= 200:
             secondary = {**index_trend(bench2), 'symbol': sym2, 'label': label2,
                          'source': 'Yahoo Finance ' + sym2, 'distribution': distribution_days(bench2)}

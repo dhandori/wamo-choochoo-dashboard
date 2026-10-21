@@ -343,3 +343,22 @@ class AlertTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class StoredIndexFallback(unittest.TestCase):
+    """Yahoo can serve an index without the latest bar after the close; use the verified stored day."""
+
+    def test_stored_history_used_only_when_it_ends_on_the_session_with_a_full_bar(self):
+        import json, tempfile
+        from pathlib import Path
+        dates = sessions(260)
+        rows = [{'date': d, 'close': 100.0 + i * 0.1, 'high': 101.0 + i * 0.1, 'low': 99.0 + i * 0.1, 'volume': 1000.0} for i, d in enumerate(dates)]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'wamo_ftd_history.json').write_text(json.dumps({'^KS11': rows}))
+            self.assertEqual(trend.stored_index(root, '^KS11', dates[-1])[-1]['date'], dates[-1])
+            self.assertIsNone(trend.stored_index(root, '^KS11', '2099-01-01'))   # stored data is a day behind
+            rows[-1]['volume'] = None
+            (root / 'wamo_ftd_history.json').write_text(json.dumps({'^KS11': rows}))
+            self.assertIsNone(trend.stored_index(root, '^KS11', dates[-1]))       # incomplete bar is not used
+

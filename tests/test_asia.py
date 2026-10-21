@@ -175,6 +175,18 @@ class EngineRun(unittest.TestCase):
             self.assertEqual(calls, [])
             self.assertEqual(names, [])
 
+    def test_same_session_reruns_while_index_bar_is_incomplete(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.run_engine(root)
+            trend = json.loads((root / 'wamo_trend.json').read_text())
+            trend['markets']['JP']['ftd']['indexes'][0]['status'] = 'UNAVAILABLE'   # Yahoo had no volume yet
+            (root / 'wamo_trend.json').write_text(json.dumps(trend))
+            calls = []
+            self.run_engine(root, fetch=lambda t: calls.append(t) or fake_fetch(t))
+            self.assertTrue(any(t.endswith('.T') for t in calls))      # Japan retried
+            self.assertFalse(any(t.endswith('.TW') for t in calls))    # Taiwan was complete, skipped
+
     def test_too_many_price_failures_keep_previous_block(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
