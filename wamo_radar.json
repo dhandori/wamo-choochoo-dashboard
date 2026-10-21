@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-21T01:44:42.624235+00:00",
+  "checkedAt": "2026-10-21T06:37:00.316972+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-21T01:44:42.624235+00:00",
+      "generatedAt": "2026-10-21T06:37:00.316972+00:00",
       "sessions": {
         "US-NYSE": "20261020",
         "US-NASDAQ": "20261020",
@@ -14,9 +14,9 @@
       "scope": "WAMO US 검증 종목군 · 최근 252거래일",
       "coverage": {
         "totalCount": 880,
-        "currentCount": 879,
-        "validatedCount": 879,
-        "eligible52WeekCount": 865,
+        "currentCount": 880,
+        "validatedCount": 880,
+        "eligible52WeekCount": 866,
         "excludedCount": 0
       },
       "exclusions": [],
@@ -298,29 +298,6 @@
           }
         },
         {
-          "key": "US-NYSE:CVX",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "CVX",
-          "name": "Chevron Corporation Common Stock",
-          "currency": "USD",
-          "as_of": "20261020",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 225.71,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
           "key": "US-NYSE:SU",
           "market": "US-NYSE",
           "country": "US",
@@ -337,29 +314,6 @@
             "WAMO 기존 업종 분류"
           ],
           "current_close": 78.44,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:MANH",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "MANH",
-          "name": "Manhattan Associates Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261020",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 232.86,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -386,6 +340,52 @@
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:CVX",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "CVX",
+          "name": "Chevron Corporation Common Stock",
+          "currency": "USD",
+          "as_of": "20261020",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 225.71,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NASDAQ:MANH",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "MANH",
+          "name": "Manhattan Associates Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261020",
+          "industry_path": [
+            "Technology"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 232.86,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
             "close_252": true
           }
         },
@@ -551,29 +551,6 @@
           }
         },
         {
-          "key": "US-NYSE:LLY",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "LLY",
-          "name": "Eli Lilly and Company Common Stock",
-          "currency": "USD",
-          "as_of": "20261020",
-          "industry_path": [
-            "Health Care"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 1283.66,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
           "key": "US-NYSE:MA",
           "market": "US-NYSE",
           "country": "US",
@@ -590,6 +567,29 @@
             "WAMO 기존 업종 분류"
           ],
           "current_close": 620.42,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:LLY",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "LLY",
+          "name": "Eli Lilly and Company Common Stock",
+          "currency": "USD",
+          "as_of": "20261020",
+          "industry_path": [
+            "Health Care"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 1283.66,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -643,29 +643,6 @@
           }
         },
         {
-          "key": "US-NYSE:EOG",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "EOG",
-          "name": "EOG Resources Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261020",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 157.91,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
           "key": "US-NYSE:RGA",
           "market": "US-NYSE",
           "country": "US",
@@ -686,6 +663,29 @@
           "flags": {
             "intraday_252": true,
             "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:EOG",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "EOG",
+          "name": "EOG Resources Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261020",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 157.91,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
           }
         },
         {
@@ -1149,6 +1149,29 @@
           }
         },
         {
+          "key": "US-NYSE:BRK-A",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "BRK-A",
+          "name": "Berkshire Hathaway Inc.",
+          "currency": "USD",
+          "as_of": "20261020",
+          "industry_path": [
+            "산업 미분류"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 809555.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
           "key": "US-NYSE:TAK",
           "market": "US-NYSE",
           "country": "US",
@@ -1404,8 +1427,8 @@
           "industry_path": [
             "산업 미분류"
           ],
-          "eligible_classified_issuers": 2,
-          "current_signal_issuers": 1,
+          "eligible_classified_issuers": 3,
+          "current_signal_issuers": 2,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
           "comparison_scope": "WAMO 검증 종목군"
@@ -1415,7 +1438,7 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-21T01:44:42.624235+00:00",
+      "generatedAt": "2026-10-21T06:37:00.316972+00:00",
       "sessions": {
         "KR-KOSPI": "20261020",
         "KR-KOSDAQ": "20261020"
