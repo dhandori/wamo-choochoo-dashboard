@@ -1,0 +1,33 @@
+name: 거래소 전체 거래대금 자료 확인 (작업 갈래 전용)
+on:
+  push:
+    branches: ['codex/probe-turnover']
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: 네이버 지수 일봉과 대만 거래소 자료 필드 보기
+        run: |
+          python3 - <<'PY'
+          import json, urllib.request
+          def get(u):
+              req = urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json'})
+              with urllib.request.urlopen(req, timeout=20) as r:
+                  return json.load(r)
+          for code in ('KOSPI', 'KOSDAQ'):
+              try:
+                  d = get(f'https://api.stock.naver.com/chart/domestic/index/{code}?periodType=dayCandle')
+                  rows = d.get('priceInfos') or []
+                  print(f"::notice::NAVER {code} keys={sorted(d)[:12]} n={len(rows)} last={json.dumps(rows[-1], ensure_ascii=False)[:400] if rows else None} first={rows[0].get('localDate') if rows else None}")
+              except Exception as e:
+                  print(f'::error::NAVER {code} {e}')
+          for name, u in (('TWSE_FMTQIK', 'https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK'),
+                          ('TPEX_daily', 'https://www.tpex.org.tw/openapi/v1/tpex_index'),
+                          ('TPEX_trading', 'https://www.tpex.org.tw/openapi/v1/tpex_daily_trading_index')):
+              try:
+                  d = get(u)
+                  print(f"::notice::{name} n={len(d)} first={json.dumps(d[0], ensure_ascii=False)[:300]} last={json.dumps(d[-1], ensure_ascii=False)[:300]}")
+              except Exception as e:
+                  print(f'::error::{name} {e}')
+          PY
