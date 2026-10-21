@@ -1,11 +1,11 @@
 {
   "KR": {
     "status": "RUNNING",
-    "attemptedAt": "2026-10-21T07:46:48.409525+00:00",
+    "attemptedAt": "2026-10-21T07:56:11.977747+00:00",
     "scheduledFor": "2026-10-21T07:00:00+00:00",
     "nextScheduledFor": "2026-10-22T07:00:00+00:00",
     "trigger": "수동실행",
-    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39564331046",
+    "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39565299352",
     "moversStatus": "PASS",
     "warnings": [],
     "lastSuccessAt": "2026-10-20T07:33:59.917376+00:00",
