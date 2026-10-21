@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 12
+TREND_VERSION = 13
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -944,22 +944,6 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'}
     br = breadth(universe)
     hl = highs_lows(universe)
-    try:
-        import wamo_liquidity
-        main_rows = None if synthetic else bench
-        if market == 'KR':
-            groups = [('KOSPI', 'KOSPI', symbol, lambda s: s.get('board') == 'KOSPI', main_rows),
-                      ('KOSDAQ', 'KOSDAQ', sym2, lambda s: s.get('board') == 'KOSDAQ', bench2)]
-        elif market == 'US':
-            # S&P 500 has both NYSE and Nasdaq listings (Apple, Nvidia...), so it pairs with every stock.
-            groups = [('ALL', 'S&P 500', symbol, lambda s: True, main_rows),
-                      ('NASDAQ', '나스닥', sym2, lambda s: s.get('board') == 'NASDAQ', bench2)]
-        else:
-            groups = [('ALL', label, symbol, lambda s: True, main_rows)]
-        liq = wamo_liquidity.split(universe, groups)
-    except Exception as exc:  # noqa: BLE001 - never block the rest
-        print(f'{market} 거래대금 계산 실패: {type(exc).__name__}: {exc}', flush=True)
-        liq = {'status': 'UNAVAILABLE', 'note': '거래대금 계산에 실패했어요. 다음 갱신 때 다시 계산해요.'}
     leaders, warnings = analyze_stocks(universe, bench)
     book = update_signal_log(log, market, universe, bench, asof)
     earnings = {'status': 'UNAVAILABLE', 'upcoming': [], 'note': EARNINGS_NOTE.get(market, '')}
@@ -1016,6 +1000,26 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
                           repairSourceUrl='https://m.stock.naver.com/domestic/index/' + {'^KS11':'KOSPI','^KQ11':'KOSDAQ'}[sym] + '/total')
         ftd_indexes.append(signal)
     write_json(root / "wamo_ftd_history.json", ftd_history, compact=True)
+    try:
+        import wamo_liquidity
+        # Use the same verified index history as FTD (Yahoo merged with stored rows, and for Korea
+        # repaired from Naver where Yahoo's volume is missing) — raw Yahoo KOSPI volume has gaps.
+        verified = {sym_: rows_ for sym_, _, rows_ in climax_rows}
+        main_rows = None if synthetic else (verified.get(symbol) or bench)
+        bench2 = verified.get(sym2) or bench2
+        if market == 'KR':
+            groups = [('KOSPI', 'KOSPI', symbol, lambda s: s.get('board') == 'KOSPI', main_rows),
+                      ('KOSDAQ', 'KOSDAQ', sym2, lambda s: s.get('board') == 'KOSDAQ', bench2)]
+        elif market == 'US':
+            # S&P 500 has both NYSE and Nasdaq listings (Apple, Nvidia...), so it pairs with every stock.
+            groups = [('ALL', 'S&P 500', symbol, lambda s: True, main_rows),
+                      ('NASDAQ', '나스닥', sym2, lambda s: s.get('board') == 'NASDAQ', bench2)]
+        else:
+            groups = [('ALL', label, symbol, lambda s: True, main_rows)]
+        liq = wamo_liquidity.split(universe, groups)
+    except Exception as exc:  # noqa: BLE001 - never block the rest
+        print(f'{market} 거래대금 계산 실패: {type(exc).__name__}: {exc}', flush=True)
+        liq = {'status': 'UNAVAILABLE', 'note': '거래대금 계산에 실패했어요. 다음 갱신 때 다시 계산해요.'}
     try:
         from wamo_leaders import analyze as analyze_leadership
         leadership = {'status': 'OK', **analyze_leadership(universe, bench, market, ftd_indexes)}
