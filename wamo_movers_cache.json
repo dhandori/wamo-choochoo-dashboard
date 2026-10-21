@@ -6498,7 +6498,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 53.8,
-      "volumeRatio20": 2.63,
+      "volumeRatio20": 2.7,
       "historyDays": 260,
       "history": [
         {
@@ -21659,7 +21659,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 70.2,
-      "volumeRatio20": 1.93,
+      "volumeRatio20": 1.95,
       "historyDays": 260,
       "history": [
         {
@@ -22044,7 +22044,7 @@
         },
         {
           "date": "2026-02-25",
-          "close": 697.39
+          "close": 697.4
         },
         {
           "date": "2026-02-26",
@@ -27074,7 +27074,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 83.7,
-      "volumeRatio20": 0.96,
+      "volumeRatio20": 1.07,
       "historyDays": 260,
       "history": [
         {
@@ -29239,7 +29239,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 94.6,
-      "volumeRatio20": 2.27,
+      "volumeRatio20": 2.3,
       "historyDays": 260,
       "history": [
         {
@@ -31405,7 +31405,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 71.3,
-      "volumeRatio20": 1.02,
+      "volumeRatio20": 1.05,
       "historyDays": 260,
       "history": [
         {
@@ -35737,7 +35737,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 83.7,
-      "volumeRatio20": 0.88,
+      "volumeRatio20": 0.89,
       "historyDays": 260,
       "history": [
         {
@@ -38984,7 +38984,7 @@
     },
     "us": {
       "asOf": "2026-10-20",
-      "updatedAt": "2026-10-21T06:52:46+09:00",
+      "updatedAt": "2026-10-21T15:36:57+09:00",
       "count": 30,
       "candidateCount": 657,
       "financialFailCount": 23,
