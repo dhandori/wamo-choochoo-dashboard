@@ -300,9 +300,18 @@ function liquidityCard(b, market) {
   groups.forEach(g => {
     const v = el('div', null, `lq-verdict ${TONE[g.score]}`);
     const top = el('div', null, 'lq-verdict-top');
-    top.append(el('span', g.label, 'lq-verdict-index'), el('strong', g.trend.label));
+    top.append(el('span', g.label, 'lq-verdict-index'), el('span', '5일 판정', 'lq-verdict-kind'), el('strong', g.trend.label));
     if (g.liquidity.key !== 'NORMAL') top.append(el('span', g.liquidity.label, `lq-pill ${TONE[g.liquidity.score]}`));
-    v.append(top, el('span', `최근 5일 · 지수 ${pct(g.trend.priceChange5dPct)} · 거래량 ${pct(g.trend.flowChange5dPct)}`, 'lq-verdict-sub'), el('p', g.trend.text));
+    // The last session on its own line, with its date, so a big up day never looks contradicted by the 5-day verdict.
+    const d = g.today || {}, dayUp = isNum(d.changePct) && d.changePct > 0, dayDown = isNum(d.changePct) && d.changePct < 0;
+    const heavy = isNum(d.vsAvg50) && d.vsAvg50 >= 1;
+    const dayWord = dayUp ? (heavy ? '거래량 실린 상승' : '거래량 적은 반등') : dayDown ? (heavy ? '거래량 실린 하락' : '거래량 적은 하락') : '보합';
+    const dayTone = dayUp ? (heavy ? 'good' : 'mid') : dayDown ? (heavy ? 'bad' : 'mid') : 'mid';
+    const day = el('div', null, 'lq-verdict-line');
+    day.append(el('b', `${md(g.asOf)} 하루`), el('span', `지수 ${pct(d.changePct)} · 거래량 50일 평균의 ${fmt(d.vsAvg50, 2)}배`), el('em', dayWord, `lq-day ${dayTone}`));
+    const five = el('div', null, 'lq-verdict-line');
+    five.append(el('b', '최근 5거래일'), el('span', `지수 ${pct(g.trend.priceChange5dPct)} (5거래일 전 종가 대비) · 거래량 ${pct(g.trend.flowChange5dPct)} (그 전 5일 평균 대비)`));
+    v.append(top, day, five, el('p', g.trend.text));
     verdicts.append(v);
   });
   card.append(verdicts);

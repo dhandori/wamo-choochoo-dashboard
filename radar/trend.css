@@ -495,3 +495,8 @@ dialog[open] ~ .to-top { display: none; }
 .lq-one-label { fill: #c9d4e2; font-weight: 700; }
 .lq-detail-head .tr-big b { white-space: nowrap; }
 @media (max-width: 760px) { .lq-detail-head { flex-direction: column; align-items: flex-start; gap: 8px; } .lq-detail-head .tr-big { flex-wrap: wrap; } }
+.lq-verdict-kind { font-size: 11.5px; color: var(--ink-3); }
+.lq-verdict-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin-top: 4px; font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.lq-verdict-line b { min-width: 74px; font-weight: 700; color: var(--text); }
+.lq-day { font-style: normal; font-weight: 700; font-size: 12px; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; }
+.lq-day.good { color: #8fe8c6; } .lq-day.mid { color: #f6cf7f; } .lq-day.bad { color: #ff9aa3; }
