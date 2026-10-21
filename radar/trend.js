@@ -127,8 +127,8 @@ export function renderWeather(container, market, onOpen) {
   if (lq?.status === 'OK' && lq.groups?.length) {
     const worst = lq.groups.reduce((a, g) => (g.score < a.score ? g : a), lq.groups[0]);
     const SHORT = { HEALTHY: '건강', THIN: '힘 빠짐', DISTRIBUTION: '분산', EXHAUSTION: '소진', FLAT: '보합' };
-    if (window.matchMedia('(max-width:760px)').matches) text.append(el('span', ` 거래량: ${lq.groups.map(g => `${g.label} ${SHORT[g.trend.key] || g.trend.label}`).join(' · ')}`, 'tr-weather-lq'));
-    else {
+    // Phones: the strip stays two short lines; the verdict is in the weather score and the card below.
+    if (!window.matchMedia('(max-width:760px)').matches) {
       chip('거래량', lq.groups.map(g => `${g.label} ${SHORT[g.trend.key] || g.trend.label}`).join(' · '), SHORT[worst.trend.key] || worst.trend.label, score('liquidity'));
       chips.lastChild.title = `거래량: ${lq.summary}`;
     }

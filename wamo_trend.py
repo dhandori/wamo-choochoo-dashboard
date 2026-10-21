@@ -1005,8 +1005,11 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         # Use the same verified index history as FTD (Yahoo merged with stored rows, and for Korea
         # repaired from Naver where Yahoo's volume is missing) — raw Yahoo KOSPI volume has gaps.
         verified = {sym_: rows_ for sym_, _, rows_ in climax_rows}
-        main_rows = None if synthetic else (verified.get(symbol) or bench)
-        bench2 = verified.get(sym2) or bench2
+        # If today's index quote failed (synthetic weather), fall back to the last verified stored
+        # history; the card shows that date, so a one-day-old volume verdict is still honest.
+        stored = lambda sym_: [r for r in ftd_history.get(sym_, []) if r.get('date', '') <= asof] or None
+        main_rows = verified.get(symbol) or stored(symbol) or (None if synthetic else bench)
+        bench2 = verified.get(sym2) or stored(sym2) or bench2
         if market == 'KR':
             groups = [('KOSPI', 'KOSPI', symbol, lambda s: s.get('board') == 'KOSPI', main_rows),
                       ('KOSDAQ', 'KOSDAQ', sym2, lambda s: s.get('board') == 'KOSDAQ', bench2)]
