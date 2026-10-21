@@ -1,6 +1,6 @@
 // "갱신 일정·진행 상황": both markets at a glance, from the same status file the
 // "지금 갱신" button reads (published at the start and end of every run).
-import { refreshReason } from './runner.js?v=20261019-2';
+import { refreshReason } from './runner.js?v=20261021-late15';
 
 const NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const RULE = {
@@ -8,8 +8,8 @@ const RULE = {
   US: '평일 새벽 5시 20분 · 미국 서머타임 끝나면 6시 20분',
 };
 const RETRY = {
-  KR: '실패하면 밤 10시 41분까지 30분마다 다시 시도',
-  US: '실패하면 낮 12시 41분까지 30분마다 다시 시도',
+  KR: '늦어지면 오후 5시까지 약 6분마다, 그 뒤 밤 10시 41분까지 30분마다 다시 확인',
+  US: '늦어지면 아침 8시까지 약 6분마다, 그 뒤 낮 12시 41분까지 30분마다 다시 확인',
 };
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const ms = v => { const t = Date.parse(v || ''); return Number.isFinite(t) ? t : null; };

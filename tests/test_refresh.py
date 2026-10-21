@@ -143,6 +143,8 @@ class RefreshTests(unittest.TestCase):
             ('0 7 * * 1-5', 'KR', False), ('20 20 * * 1-5', 'US', False),
             ('20 21 * * 1-5', 'US', False), ('43 */2 * * *', 'auto', True),
             ('11,41 0-3,7-13,20-23 * * *', 'auto', True),
+            ('4,17,24,34,47,54 7 * * 1-5', 'auto', True),
+            ('4,17,27,34,47,54 20-22 * * 1-5', 'auto', True),
         ]:
             with self.subTest(schedule=schedule):
                 env = dict(os.environ, REQUESTED_MARKET='auto', GITHUB_EVENT_NAME='schedule',

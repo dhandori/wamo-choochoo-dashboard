@@ -5,6 +5,8 @@
 const PENDING_KEY = 'wamo-run-pending-v1';
 const MAX_WAIT = 100 * 60000;
 const NAMES = { KR: '한국', US: '미국' };
+// GitHub's free scheduler is often late; offer a manual run after 15 minutes.
+const LATE_AFTER = 15 * 60000;
 
 function repoSlug() {
   const host = location.hostname, seg = location.pathname.split('/').filter(Boolean)[0];
@@ -41,7 +43,7 @@ export function refreshReason(market, s = status?.[market], radarStatus = getMar
   if (s.status === 'RUNNING' && attempted && now - attempted > 40 * 60000) return '수집이 중간에 멈춘 것 같아요';
   if (s.status === 'RUNNING') return null;
   if (s.status === 'FAILED') return '지난 수집이 실패했어요';
-  if (next && now > next + 90 * 60000) return '예약 시각이 지났는데 새 결과가 없어요';
+  if (next && now > next + LATE_AFTER) return '예약 시각이 지났는데 아직 새 결과가 없어요 (GitHub 예약 지연)';
   const f = s.freshness || {};
   const missing = Number(s.count) - Number(f.currentCount);
   if (f.expectedSession && s.asOf === f.expectedSession && missing > 0) return `${missing}종목이 빠졌어요`;
@@ -93,10 +95,19 @@ function paint(box) {
     box.append(b); if (p.runUrl) box.append(linkTo(p.runUrl, '실패 기록 보기')); return;
   }
   b.textContent = '지금 갱신';
-  if (!reason) { b.disabled = true; b.title = '지금 데이터가 최신이라 갱신할 필요가 없어요.'; }
+  if (!reason) { b.disabled = true; b.title = waitingTitle(market); }
   else { b.classList.add('needed'); b.title = reason; b.onclick = () => openDialog(market, reason); }
   box.append(b);
   if (reason) box.append(el('span', reason, 'run-reason'));
+}
+
+const kstTime = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+/** Honest tooltip for a disabled button: either current, or waiting for the next scheduled run. */
+function waitingTitle(market, now = Date.now()) {
+  const next = parse(status?.[market]?.nextScheduledFor);
+  if (next && now >= next) return `예약 갱신(${kstTime.format(new Date(next))})을 기다리는 중이에요. ${Math.ceil((next + LATE_AFTER - now) / 60000)}분 안에 시작되지 않으면 이 버튼이 켜져요.`;
+  if (next) return `마지막 장 마감 데이터까지 반영돼 있어요. 다음 예약 갱신: ${kstTime.format(new Date(next))}`;
+  return '마지막 장 마감 데이터까지 반영돼 있어요.';
 }
 
 function linkTo(url, text) { const a = el('a', text, 'run-link'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; }

@@ -13,6 +13,11 @@ on:
     - cron: '11,41 0-3,7-13,20-23 * * *'
     # Cheap recovery checks: completed sessions exit before provider calls.
     - cron: '43 */2 * * *'
+    # GitHub often delays or drops on-the-hour schedules. Extra off-minute
+    # checks right after each close keep the delay to a few minutes; runs for
+    # an already collected session exit before any provider call.
+    - cron: '4,17,24,34,47,54 7 * * 1-5'
+    - cron: '4,17,27,34,47,54 20-22 * * 1-5'
   workflow_dispatch:
     inputs:
       market:
@@ -95,12 +100,16 @@ jobs:
         run: |
           set -euo pipefail
           market="$REQUESTED_MARKET"
+          recovery=''
           if [[ "${GITHUB_EVENT_NAME}" == 'schedule' ]]; then
-            if [[ "$EVENT_SCHEDULE" == '43 */2 * * *' || "$EVENT_SCHEDULE" == '11,41 0-3,7-13,20-23 * * *' ]]; then market='auto';
-            elif [[ "$EVENT_SCHEDULE" == '0 7 * * 1-5' ]]; then market='KR'; else market='US'; fi
+            case "$EVENT_SCHEDULE" in
+              '0 7 * * 1-5') market='KR' ;;
+              '20 20 * * 1-5'|'20 21 * * 1-5') market='US' ;;
+              *) market='auto'; recovery='yes' ;;
+            esac
           fi
           args=(--market "$market")
-          if [[ "$EVENT_SCHEDULE" == '43 */2 * * *' || "$EVENT_SCHEDULE" == '11,41 0-3,7-13,20-23 * * *' ]]; then args+=(--recovery); fi
+          if [[ -n "$recovery" ]]; then args+=(--recovery); fi
           if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
           python -u wamo_run.py "${args[@]}"
       - name: 중단된 실행 상태 정리
