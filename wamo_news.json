@@ -415,8 +415,14 @@
       ]
     },
     "KR:006110": {
-      "checkedAt": "2026-10-20T03:30:30.394643+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
+        {
+          "title": "삼아알미늄 장중 4.3% 하락 - 비건뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9JVlgxaWNFMzhSVU5jRjJJeDI2TkZUSVlZbmpnOFVpVEluZ05pLWZrQ0ZXMGpmMV85dFE4bG5MQVF5Y1huSE5uSGdub01feUdONkx1MVk4MEg3dUJPWGg2Wmp2aGVjdw?oc=5",
+          "date": "2026-10-21T05:30:30+00:00",
+          "publisher": "비건뉴스"
+        },
         {
           "title": "[특징주] 현대로템 11% 급락…높아진 실적·수주 부담 - 아주경제",
           "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5NYUVPT0pUWXBZZWsyY2w3UzdxUENHdEwxTWRwUVJkZTU2Rm1POVVoYkxpZnF5VHU2YTM5d1pHdTJRVkR0UVVaaXVNcjhpX1BTRnR1SEQxQ0_SAVhBVV95cUxOTWFFT09KVFlwWWVrMmNsN1M3cVBDR3RMMU1kcFFSZGU1NkZtTzlVaGJMaWZxeVR1NmEzOXdaR3UyUVZEdFFVWml1TXI4aV9QU0Z0dUhEMUNP?oc=5",
@@ -428,12 +434,6 @@
           "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5fZi1FV2hjT1lJOGJEWUtlMkdIQUdxTndzeXFUOEhxTG9PdGdBT1hGaVAtRVEwcWV6MXViOEg5elBENy1vNU5vWmpqX0JRSk9oUUNIaEhSbzdlQ0pzZ25LdGQ3dEx3UWg20gFuQVVfeXFMTTB1WXlianBvS1YtLWVfd2JQcTItQ0VVMHRuV2RNSmVWVmVPOExRSHRBZHk2bXF3MWdBc3RDOS1RZWZDc3VkRVdBNnhhNW1yTDdVbEYyajFNdV9IWmVDUmlnQjJ0Q2ZyNmRZT2pPcnc?oc=5",
           "date": "2026-10-19T10:21:02+00:00",
           "publisher": "머니투데이"
-        },
-        {
-          "title": "2026년 10/19(월) - 데일리포인트 - 네이버 프리미엄콘텐츠",
-          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxONEdyWGFoeTduRHdxNUcwZERvbk1ITUhXM1ZkOUhnWVQyWVRlajBRNW9mWHpvMDJvTlVSQ2EwYUFOakxoRzdud3FXV3JHb3RWdkJsdFMzVURaTTQ2WGJtd1R0M3BEb0dmUkl5VmtQaVZ4VlR3WVR1aXpBOWx0bVAwSmVneEpxd00tOHpJ?oc=5",
-          "date": "2026-10-19T07:23:00+00:00",
-          "publisher": "네이버 프리미엄콘텐츠"
         }
       ]
     },
@@ -576,7 +576,7 @@
       ]
     },
     "US:SMCI": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "Stock Market Today, Oct. 21: Super Micro Computer Raises Full-Year Revenue Guidance on Strong AI Demand - Yahoo Finance",
@@ -622,7 +622,7 @@
       ]
     },
     "US:OKTA": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "Okta Stock Climbs As AI Agents And Blueprint Alliance Fuel Upgrades - StocksToTrade",
@@ -806,25 +806,25 @@
       ]
     },
     "KR:323280": {
-      "checkedAt": "2026-10-20T03:30:30.394643+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "[반도체 기판주] 태성 10%대 급등·LG이노텍 상승…삼성전기·이수페타시스는 약세 - CBC뉴스",
           "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5IUkhvd1RWeUhROXJmbVV1S3oxMUh0ZVJJMndSRHpJTUFIdERaaTM3SnVFdmJCOEtObm5qVWVLeElkRTJKNTd5em1zNnQ2YkhVNVVmd2tDUk92V2hwcjI5eVV2d2otMnp1?oc=5",
-          "date": "2026-10-19T04:26:38+00:00",
+          "date": "2026-10-21T03:44:05+00:00",
           "publisher": "CBC뉴스"
         },
         {
-          "title": "[장중수급포착] 태성, 외국인/기관 동시 순매수… 주가 +8.70% - 뉴스핌",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE14bWZhRUZjNVJwQThRdmRMOHktcmdWTkRGMGQ1eF9RdUk2ZDUwbkV5NjVKX3NyX2pSdWIyV1FPdklrS0VRbDhsOTh2RnBFZk1aaWZjNE1TNUN4V2Jl?oc=5",
-          "date": "2026-10-19T02:40:00+00:00",
-          "publisher": "뉴스핌"
+          "title": "태성 주가, 10월 20일 56,900원 3.40% 하락 - TopStarNews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9RcU02T1k5TVNKXzB2QUZIQUNmRy1yLWk5T0RkOFVWRjduNjFtYWdPOGQ5N3VWVTdpc1ItYVlZbkZEX2pKdzRvUFV1RDhINjBpWXRRYlV4TlUzNEF1X09SWXhJWUhpU1VIcmFpckkybmFjdw?oc=5",
+          "date": "2026-10-20T06:57:28+00:00",
+          "publisher": "TopStarNews"
         },
         {
-          "title": "태성 주가, 10월 19일 장중 56,200원 6.24% 상승 - 톱스타뉴스",
-          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFBBRHJxS0JBQ01TelA5V1UzUGJnZF9EajRtbl9udEVHZXM4S3pQYlhMYmNvYXFNVWJqNHJBV2dmM3h0RVVlajJveG5GdjNsU2I2cUhTTVBkckpSZVg2di1MZEFhM0NuS2pVWGVodGwyLWVRQQ?oc=5",
-          "date": "2026-10-19T01:17:39+00:00",
-          "publisher": "톱스타뉴스"
+          "title": "화면 효과가 결과를 가릴 때 확인할 토토자동문 태성건업 경북북부대리점 표시 - Calgary Roughnecks",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQbU5SeTZTd2NtOWJZdVN6UThSQ1BfQklDcG1DQkx0VlpjVkhmOGxrR0dtUVZUNFlXXzhrblNBakNSM3NyQzR5eWNTNnlybUd3cWRHYjBtWHQ3NUkzekZXYUpySkRRX1FoQzlQbFl2Z0l2M2o2TEJRVmtOUGRSd0k5Z3ZsNi04cmtFT1FsWE1Xc3FteVU4UldDMERfTE9DSHR0a1JGeXlGRlRzTmt3V1E?oc=5",
+          "date": "2026-10-20T03:57:38+00:00",
+          "publisher": "Calgary Roughnecks"
         }
       ]
     },
@@ -990,7 +990,7 @@
       ]
     },
     "US:DDOG": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "Datadog, Inc. (DDOG) Stock Forecasts - Yahoo Finance",
@@ -1082,7 +1082,7 @@
       ]
     },
     "JP:3697": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:2531": {
@@ -1130,11 +1130,11 @@
       "items": []
     },
     "TW:2492": {
-      "checkedAt": "2026-10-22T02:33:27.290292+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:6173": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:6949": {
@@ -1158,7 +1158,7 @@
       "items": []
     },
     "TW:2466": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:3260": {
@@ -1218,30 +1218,30 @@
       ]
     },
     "KR:229640": {
-      "checkedAt": "2026-10-21T06:37:07.560602+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
-          "title": "“본업 실적 잭팟에 ‘희토류·UC’ 날개 달았다…LS에코에너지의 화려한 변신” - 뉴스퀘스트",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBRTzlMVXJ2V3BWWGwtT1lPVkg2eXdkSFVLaXhWUmEwMjBmcEFLZlY4Ul9JMTdLeHhkbEFHMDBzVEFXUXBMTFhUcGcxbUNPcW1KbS1IdHdMTlZHNmJMQlY4TUhSa2x1VDFfNkd0TFBmZw?oc=5",
-          "date": "2026-10-21T06:26:46+00:00",
-          "publisher": "뉴스퀘스트"
+          "title": "LS에코에너지 주가, 10월 22일 장중 59,700원 12.22% 상승 - TopStarNews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1wcTVjZXZGbU9XRlRobGtrbVBTWHdsMDFkVU9hSTJXV2VfbXRpTHRfdzVYb1JnYnpzNVhvSHpVSEYxWDBQdFMtTTNuWUNnRzVYVmpqaHV1TzhLZTNsT3A2QjNZNHJzcDJDbFRnM2t1Z18xQQ?oc=5",
+          "date": "2026-10-22T01:50:22+00:00",
+          "publisher": "TopStarNews"
         },
         {
-          "title": "LS에코에너지 주가 장중 7.99% 상승 - 비건뉴스",
-          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE11WG5UNkxxV1NCWEs2a0Vrbm5ETmJfZmVtOGF0WHZWbkVmUGhsVldZMlMtbE9nNVNGUDRCQXBGbDNNZnUtRFJ2N0hMTFItajlSeWFKbzF0Ri1STXdTbVZ5RXVGNlZUdw?oc=5",
-          "date": "2026-10-21T04:57:52+00:00",
-          "publisher": "비건뉴스"
+          "title": "LS에코에너지 주가, 13%대↑... 배경은? - 금강일보",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE03N05McnR3OENJVUZhMTcyaVZ3bEtjSWtKZHZLS25YeGVsNkpoZXZvVkEzQ1pFUFV6NWZIT2ZqVWtuZjBydEZrSG9NNXJfUWdCZ3h6YVlveXJ3LXp3VFluTUhkaFhTWEhLc2c?oc=5",
+          "date": "2026-10-22T01:40:39+00:00",
+          "publisher": "금강일보"
         },
         {
-          "title": "[오늘의 증권가 콜] 카카오, 예스티, LS에코에너지, 금호석유화학, 피에스케이홀딩스, KT&G 등 - 한국경제",
-          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5ZX1FhSnpDNUpRTG9OcWpEVWRIaElmVXVfMnFCcjFDTnVzU2UwWkxTRWsxd1h2V295b0tBZDJCbkUwWU5zOXd1dWhhNHVvTzFYWllhbVpiUDlWdw?oc=5",
-          "date": "2026-10-21T04:13:45+00:00",
-          "publisher": "한국경제"
+          "title": "[증권사 종목분석] LS에코에너지, 3Q 실적 호조 및 신성장 구체화로 재평가 기대…목표가 6만2천원 - 남도일보",
+          "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9kTTZ2LTFXbU1ZZm5VVHVMYWYtNEpESXQyUHVLaEI3WkVIY29wSF9XQUFwTDVEcXBzeElheTlxZkdlUkR4LTBiZ1V2bHk2UzlrOGtPSERmMUMwSUVzNW94OU1fY01RdmFmQS1WStIBcEFVX3lxTE16QVdtT2RmZ2xQdEx6OVRSd0VkbTNIUEI2S3RkdXBlbHhaVVIzcGwxbjZndHpscnVlakstdUg5dnoxUzd0SjkxV0t4dW9GSHdybm85Rks1SmRTUzNwMkVYeE1fdnI3VkNhMHZBbEZVVEI?oc=5",
+          "date": "2026-10-22T01:14:36+00:00",
+          "publisher": "남도일보"
         }
       ]
     },
     "KR:281820": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "케이씨텍, 장중 12%대 급등 - 비건뉴스",
@@ -1391,7 +1391,7 @@
       "items": []
     },
     "JP:4004": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:6323": {
@@ -1399,7 +1399,7 @@
       "items": []
     },
     "JP:5803": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:5802": {
@@ -1419,7 +1419,7 @@
       "items": []
     },
     "JP:3436": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:9984": {
@@ -1797,7 +1797,7 @@
       ]
     },
     "KR:043260": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "성호전자 주가, 10월 22일 장중 28,050원 2.94% 하락 - TopStarNews",
@@ -1820,90 +1820,90 @@
       ]
     },
     "KR:028050": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
-          "title": "[특징주] 삼성E&A, 어닝 서프라이즈에 6900억 자사주 소각 얹자 14%↑ - 서울파이낸스",
-          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBONUhsY1Y3Q09YaXhjTHNmN3loc1BqQ3VkdDVJcUlGcFJBa0dqV1FsSDFYbmZ0RVhsVzlHZ3I1TUgtd1FuVV9EdlJXeEx2U3dQanVKZnJ3OFhVQzBrdU9QVlBlQVBZcnQyaFE?oc=5",
-          "date": "2026-10-22T01:30:58+00:00",
-          "publisher": "서울파이낸스"
+          "title": "급락장에 반도체 순매도 전환…삼성E&A는 순매수 [주식 초고수는 지금] - 매일경제",
+          "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1WbGx1RHFsckhpNVRIWFNNTkQ3RkZkdmZjdTVXQnVQWTRZamU4U19seG1KbXN4SnBWX1EzeEk4ZE96bnptUDVnbjV0dXo4Wlo4akE?oc=5",
+          "date": "2026-10-22T06:37:46+00:00",
+          "publisher": "매일경제"
         },
         {
-          "title": "[공시 Pick] 삼성E&A, 3분기 호실적·자사주 소각 결정에 주가 15% 급등 - 뉴스투데이",
-          "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE91cHR0eldrQWlRS1dEaUtaTGFvbHoySmZYTmtzWDlXRGxlVWwwdVFsT0c1Y21YRWJuOUtiX1lmNmhLS3l2a1p4RXZ1eUl0eTRTeDdFSE1wekxXeVcyMmc?oc=5",
-          "date": "2026-10-22T01:30:00+00:00",
-          "publisher": "뉴스투데이"
+          "title": "[특징주] 삼성E&A, 3분기 호실적·자사주 취득에 16% 급등(종합) - 연합뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1LWm4tWjJJOVRXallpRnptdlp6bXBaeWhPNk5HeUV4WkZLLVBJLUhDcDBPR045YlRVVXRLZUU4MXhyRkpoSFJkdnRNcTNtWUszRzMxVnR2UzExUXfSAWBBVV95cUxNcnVFcWZ0b2lCU3BTbXdfdlgtRUY1OGdKdEJsVzlmcjJ6dDY1WU53Y0t3T1dJNmpYR25aWjdHWE05N3d0c0szdXdMRmk1YVdJbk1JeUl0YURoQTZNenlSVTA?oc=5",
+          "date": "2026-10-22T06:37:19+00:00",
+          "publisher": "연합뉴스"
         },
         {
-          "title": "[장중수급포착] 삼성E&A, 기관 9일 연속 순매수행진... 주가 +14.68% - 뉴스핌",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1SSWZMMEl3VGM2VWZ5a2IyUkE4RFRNTmRzY0dGdU1DUjJPTkZyWlRlVlVibzY2VmtGenNzNTdIR3p3c29TWTI0MW9TUms0eUZfbC1rMEJ2WGtzWDRi?oc=5",
-          "date": "2026-10-22T01:17:00+00:00",
+          "title": "[장중수급포착] 삼성E&A, 외국인/기관 동시 순매수… 주가 +16.56% - 뉴스핌",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5ZcUFWTlhaMXNha1MtQ2VRM3h4V01Ici1mU0FKajhPZGNMZEVpMlIzR01OVTNHVmFwQUppRl8xZHJiMVg3SUVhdVNTeHd5dm5aREJsd05QTUpmcHBy?oc=5",
+          "date": "2026-10-22T02:32:00+00:00",
           "publisher": "뉴스핌"
         }
       ]
     },
     "JP:5838": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:4186": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:6869": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:5016": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:4587": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:5706": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "JP:4182": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:6672": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:3374": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:6278": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:3532": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:6213": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:3406": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:6789": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:1303": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:2345": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:3105": {
@@ -1911,7 +1911,7 @@
       "items": []
     },
     "JP:4062": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": []
     },
     "TW:3491": {
@@ -1919,7 +1919,7 @@
       "items": []
     },
     "US:ZS": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "Zscaler Inc Stock (ZS) Moved Up by 7.22% on Oct 21: What Investors Need To Know - TradingKey",
@@ -1942,8 +1942,14 @@
       ]
     },
     "US:SKYD": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
+        {
+          "title": "Skydance stock at EUR 6.90 ahead of the Xetra open: media group - AD HOC NEWS",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNdFNzd1ZEZUh3X1R3LXlnT1A3c2ZaNEdOUmhGeGY1dFZYR3Z0UXhKdlZyNnFDSTlOVWZMSXhuRzRNUkVaT29rWUR3RFctSGw2R01zZlhkMDdwWjllMXNJRFkxSnR2Q0pnNVM4NlZiRnRaSl9YRGF2RlJnd00tRDV2S3FUa29uS1Jka0lyZ2FrUjhpbHZTVkRtc0o3MWlPdWtzM3kyNU5ncldteDRlOTVmX3hyVXdMUjlMZi1PNA?oc=5",
+          "date": "2026-10-22T05:47:56+00:00",
+          "publisher": "AD HOC NEWS"
+        },
         {
           "title": "Skydance jumps 11% on Malone’s SpaceX deal talk (SKYD:NYSE) - Seeking Alpha",
           "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNbEVTQ205bjdBRHpzeWxZWWdBMDg3d1BlTW1vbmRpZEtNZ1JSb2FHLXljNlJtTXVLZ2FxVlp6WE9uY3h0LVh0MS1JZ0l1VnpONExmSmt0YnVBVXNQTVZhVW5OcFdvYndLLTZfNmV4eVJzM050bU02LTBJMEJvVDhreHRzLTNQbF9TX3Vfd2lValV1NksxZ19F?oc=5",
@@ -1951,21 +1957,15 @@
           "publisher": "Seeking Alpha"
         },
         {
-          "title": "Skydance stock: November 9 results are listed for Skydance stock - AD HOC NEWS",
-          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPTDFRdlFTLTZNVHVoRVh6TW8wTlllZUxzRlJvUk9zSXMxSVhORjczejEteGZqd3VRYk1IU1FsUS14YnIyQmh2MDN5alNqNjZaVFFjY3FJMTFwU0RKN1I4c0hOMFRGSGU4VV9Gcl94anVFbkR0MkVpN3l2QkZBUFVMbWx1RXlKRzRydlNSZ3gzRnAxWWtyYnUtNGVISll4bmYtbTNjQW5ET3RjbFdhRTJSbmZ4RXJNS1V3dDg2RVNYbHVNX21J?oc=5",
-          "date": "2026-10-21T13:54:21+00:00",
-          "publisher": "AD HOC NEWS"
-        },
-        {
-          "title": "SKYD Forecast — Price Target — Prediction for 2027 - TradingView",
-          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE91djBuVlRMVEIzR1VDUy1vTHVhdENyRFU5TlF2Zzk4dmVwRVNPSG94MVlfYm5nZmh5cG9faklnTGdtZFNuUTdLbmg3bVlOdDd4MUI4R1RFazE2WWhUakdjdHppRHNWaTRMYmxJc1NZbi1UWnNROFNr?oc=5",
-          "date": "2026-10-21T10:22:59+00:00",
-          "publisher": "TradingView"
+          "title": "Skydance's Impossible Mission: Theatrical (And Spin-Off) Opportunities Make This A Cautious, Speculative Buy - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxNSkhpYldoVWVPLWFHMXdibXpGVHJxVzM2YUJSVzdtU3lESE1QMzQzRnl0bFRIUGxKVzhadlZEZ0R4QmplQkJLaEl1bEdaSHczeWZaVXBDVDBDWFo1bGcyU0h4djhPaEFrZnkyQjhzOW9iX2czTGpfWUZpOFNVVTBFUk9fRWlXX0FtMWJ6MWxTZzJYdHE2dmFVWUM0am5MWlFlMk94amFyM0laaFJZZFZGdnNGVHFUNlEzbzN4a3pLdFoxZC1VLWsyVXozTUswSVB4QkNUMmNYOUNPNW8?oc=5",
+          "date": "2026-10-21T09:52:40+00:00",
+          "publisher": "Seeking Alpha"
         }
       ]
     },
     "US:CRL": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "$1000 Invested In Charles River 15 Years Ago Would Be Worth This Much Today - Benzinga",
@@ -1980,16 +1980,22 @@
           "publisher": "Timothy Sykes"
         },
         {
-          "title": "Charles River Labs Stock Climbs As Analysts Boost Targets - StocksToTrade",
-          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNOEd3RzA5SmhTNHRLZ2o3LWZXdmdNUWVHS0Jva2JCOHExdmxfRm9RQ3pwOC15SHBLWDNBRm9SNkJ0WjNMVmpXbkliMmR1WWNWUktOS05HUjdtdUxPOWhtN19PT09fa3lER040ejB3amk0VlJDM3dNQk14ajRpUXRTa3dsdFdzZ0ZueXcwOHpsN0pjXy1TNlRKeDcwOVc0Nms?oc=5",
-          "date": "2026-10-21T20:47:00+00:00",
-          "publisher": "StocksToTrade"
+          "title": "Illumina Inc. stock outperforms competitors on strong trading day - MarketWatch",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQNlM0NUR5dHFOTFY0N3VqSXFBWXphVHVfcjRmUkVDdmNFQ1dqXzE5N2JuQk5uOUkxUXU4Uk1QRURqTmR6dG5GOWJTR25EZEtUcEVqQmZ3aGxYQ1ZRajNLNTVpMjZDemRhWUFaVmVUM1FKZzkwZ2piZ3ZvM2hwazMxdHktOVFqRjZCZklzNmFHQWYtVGp2MVZpUVk0a21Odlp5MHRQczYzR1hVOFlaUDZuM1NITXJyaXFaNEM0MkZLbW43QQ?oc=5",
+          "date": "2026-10-21T20:30:00+00:00",
+          "publisher": "MarketWatch"
         }
       ]
     },
     "US:MSTR": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
+        {
+          "title": "Strategy (MSTR) Stock Nears A Golden Cross After Fresh Bullish Signal - Simply Wall Street",
+          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxObDExcVI1NXkxQ1hCeGx6ZnpWM0ppUlUybGNLcjNNaFZDWFQ5ckV5THM4ejhUOFhITGM3dVpVcGV5LVlFRUFQSHUtUkdRUDJXV2IwUVlNOURsZGRSQVdwSE1iVi00cWNuN0xfcEt5ZTloTVRoOVhxRjNMYWc5SlpkeXlKWVZCVlBoUlVacEJKbEh0b3d0ek1EaHUzVDdXNDRIS201NHREYlJzeWFlQ3pPR1k2OXdocTlZWjlacW93bEE1RGM4RmxLZURia9IBywFBVV95cUxObDExcVI1NXkxQ1hCeGx6ZnpWM0ppUlUybGNLcjNNaFZDWFQ5ckV5THM4ejhUOFhITGM3dVpVcGV5LVlFRUFQSHUtUkdRUDJXV2IwUVlNOURsZGRSQVdwSE1iVi00cWNuN0xfcEt5ZTloTVRoOVhxRjNMYWc5SlpkeXlKWVZCVlBoUlVacEJKbEh0b3d0ek1EaHUzVDdXNDRIS201NHREYlJzeWFlQ3pPR1k2OXdocTlZWjlacW93bEE1RGM4RmxLZURiaw?oc=5",
+          "date": "2026-10-22T06:48:30+00:00",
+          "publisher": "Simply Wall Street"
+        },
         {
           "title": "Strategy rises for second straight session, climbing 8% (MSTR:NASDAQ) - Seeking Alpha",
           "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQa3lfNVF2RS1KbFNueVpNLTNLUHBfZWFNamVzRzFmVG1kOGkxRU4yOVU5SE5temcxLVAxU0xubjgteGNIYTZxV1EtSi1obU91bzFheWhYd3RvdWZkSnhNX0szZmhQTWlqUHNfV0VlcXI1UkV4cUJTVDdrVWx0blAtbHN0UWE1OW51WUtRVV9hekplbmRIeGc?oc=5",
@@ -2001,17 +2007,11 @@
           "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNVEFiTWt2a1ZNYVZoTEJkaUdSOWhBZldraG9HZmRETTNfZ280bVpxMS1aaFp3SVFialByR3NaSUpOeGJ3YzlPTURJTVJWY0M2V0V6YnhoeXJoUGMyUUJvTnRDNG43dU9PTjNSY0RPUmlYTzFsVGNXNjNwWTBkRWFhSTE0ZDdVY05CMFE4U192UzBTb3VjQW5fblh0RkVRbUxuMGhKRTB6Y3RieExYUVJjSjl3?oc=5",
           "date": "2026-10-21T21:33:41+00:00",
           "publisher": "GuruFocus"
-        },
-        {
-          "title": "Strategy Inc Stock (MSTR) Moved Up by 7.29% on Oct 21: What Signal Does It Send? - TradingKey",
-          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOTnAxbWVtQldmRVd1cDZMRWxoV3pGVVRYVW9RRXhEUklfOXZmNkM5MGM1OUgyN2lhQWlRSkpoYVJHNWpWcGxvUFBfaEJLb2g4MDZfdV9GdVgyT2IwcDYxX3FXazBaWEFoYVhzME4ySExlVVVuQ0dsTEg2WmNfaU5lbEVvZ0NhaWhQVGZV?oc=5",
-          "date": "2026-10-21T19:15:23+00:00",
-          "publisher": "TradingKey"
         }
       ]
     },
     "US:BE": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "Bloom Energy Corporation (BE) Stock Forecasts - Yahoo Finance",
@@ -2034,7 +2034,7 @@
       ]
     },
     "US:MDB": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "MongoDB Inc (MDB) Stock Up 6.7% and Still Undervalued -- GF Scor - GuruFocus",
@@ -2043,21 +2043,21 @@
           "publisher": "GuruFocus"
         },
         {
+          "title": "MongoDB, Inc. (MDB) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+          "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE4tbEFMYzJlNHNOZk1sSVNma1NOdkFLaXY0R083R29TTXRpMkVvcjdxbHpOTVBWMlIwMzNvQV9lTWo5ZHFHQXM1SG95SFpteUxv?oc=5",
+          "date": "2026-10-21T16:05:49+00:00",
+          "publisher": "Yahoo! Finance Canada"
+        },
+        {
           "title": "What's behind MongoDB's latest stock surge? - Traders Union",
           "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOTm9HcF92dDdEcHZZQmh0cEZhVTBVeGtCX1dGbHFoYmFQMUpMdFBHV1cxYlV4dHZ4OFhreFhpN1JxSjNremliYzNIbVNnZVdsQXg2cklSUDNGc2tRLV9iS3AyOEZBQnJlWjlfeTUtZWotWmtocXJHNmNkc1UtS0hiR2Q2MnpTY2ZPYVpjNG1XQQ?oc=5",
           "date": "2026-10-21T15:57:34+00:00",
           "publisher": "Traders Union"
-        },
-        {
-          "title": "MongoDB, Inc. (MDB) Stock Price, News, Quote & History - Yahoo! Finance Canada",
-          "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE4tbEFMYzJlNHNOZk1sSVNma1NOdkFLaXY0R083R29TTXRpMkVvcjdxbHpOTVBWMlIwMzNvQV9lTWo5ZHFHQXM1SG95SFpteUxv?oc=5",
-          "date": "2026-10-21T02:42:55+00:00",
-          "publisher": "Yahoo! Finance Canada"
         }
       ]
     },
     "US:ECHO": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "EchoStar Ord Shs Class A Stock (ECHO) Closed Up by 7.23% on Oct 21: What Signal Does It Send? - TradingKey",
@@ -2080,7 +2080,7 @@
       ]
     },
     "US:MEDP": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "A Look at Medpace Holdings Inc (MEDP) After 6.4% Gain -- GF Value $539.19 vs Price $662.48 - GuruFocus",
@@ -2089,21 +2089,21 @@
           "publisher": "GuruFocus"
         },
         {
-          "title": "Is Medpace Holdings Inc (MEDP) Overvalued After Q3 Earnings Beat - GuruFocus",
-          "url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxNZ3hlM2ZrWWV5SWpyOWZoVEhjRXd5VFFERXNtV252OUxsYlRnWUI0Zk5qRkpPdkN4YmdaeHFPZjllQU80TE5HNjFheXNYVnZ5clVSRXFISWZuT3drcGo3S0t6UVRfRTREVkFZekVMUXdiXzdRaEFhX1hnZVRVeXc2RkM2ckNwVDRyVUdXOERkZ2hjZ0xiYXMxQVVGcTFWZXhMQlQtVmRmaUtzb1ppbEZKc09FeVBvUGh5UGdUOWowUk8xQU5ZWXR0TWh2YWdzQmx4ZW9EMnZJcjE3b1VaT1FpSTVYaHNBR3MzYWk5VUh2dHRNQQ?oc=5",
-          "date": "2026-10-21T21:55:54+00:00",
-          "publisher": "GuruFocus"
-        },
-        {
           "title": "Medpace beats Q3 estimates but guides below on revenue - Yahoo Finance",
           "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNdHJFRi1fSDZEdDBZX19BS2dCcEZEcVBPZnBST19ObGZBOTd3WTQ5cFQ0MW5iUndZMkk3ZktSYmlLeFRwN1UtMzk4OGdYQUVXcE1qZWRaMHF6aE0zZXE3d2Z5eU9VYW1Wb3VzOGxjR2Q4bnA0VHJxb0NBZXoxZ2lpS1otMVhkNXRPaFlIVlFFWVN6UTd3M25SenVBeUl5Tms?oc=5",
           "date": "2026-10-21T21:33:05+00:00",
           "publisher": "Yahoo Finance"
+        },
+        {
+          "title": "Medpace (NASDAQ:MEDP) Q3 Revenue In Line and EPS Beat Offset by Cautious Sales Guidance - ChartMill",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPa3ZxN0pZQ3pmWmdSYnVHa1hiYVUwTWp1UU5WMXlIMUVsc3lqRDlLeWhVSFluM0hHVllWLWk2andXV3ZsdVJlQkZfZ2ZpRFZkTGpPdzVQN3NrTHJPSnFkc2dteWh6NkJ2cXl4UW13Y3hscU1RMjJZQnk1WWJsSVU5NWFEb1JSb1BrZ3ZmaW1hUm5VdER3Ulo1NndvcGR4eTdQMUJ2anROSF9JUGp1YmU5a1lZem52TkdoUG1zLTVSRFhMaWE3c2VJa2xHc3B4XzdSTWc?oc=5",
+          "date": "2026-10-21T21:09:34+00:00",
+          "publisher": "ChartMill"
         }
       ]
     },
     "US:T": {
-      "checkedAt": "2026-10-22T01:40:35.008927+00:00",
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
       "items": [
         {
           "title": "Is AT&T Inc (T) a Bargain After 6.5% Drop? GF Value Says Underva - GuruFocus",
@@ -2112,10 +2112,10 @@
           "publisher": "GuruFocus"
         },
         {
-          "title": "AT&T Stock Slides As Starlink Mobile Threat Rattles Telecoms - StocksToTrade",
-          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFA0SHRXcllYa3lSeXlEOVhERDhvUlhtZG15QktuR1RZQmpjTEthUnNRSks1bjhxYkdwbkRKMU5yR3IyWmtoY3dEcUJ1bUhGZlZySV9YTS1SOG9HWHkwMkdaaEtDdGNGQ1FFOHc?oc=5",
-          "date": "2026-10-21T19:04:00+00:00",
-          "publisher": "StocksToTrade"
+          "title": "AT&T's Convergence Strategy Is Gaining Steam but at High Cost - Morningstar",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNcUlhYmZTZ3VWbGszbW9lcHNhUzNXRXRCYUN0ZG5FclllbkswX253eUlhS0pxekJZOXlwSDZfX1JSU0FEd0d4VkVmSTdrdVNWMzA0MkVvaG1nbEFRTUFOU1JRclYyQkZxZS1tYmVraXBEcW9vNnZfZnRYOUd2QnlBYmM5R01UZ1JFdjVTX0RBckpFODdFUGlERXlXV0E4czlkOTVaS2poQWI3LU9OLXBSVA?oc=5",
+          "date": "2026-10-21T20:15:11+00:00",
+          "publisher": "Morningstar"
         },
         {
           "title": "AT&T Stock Slumps As Starlink Mobile Threat Rattles Traders - Timothy Sykes",
@@ -2124,7 +2124,145 @@
           "publisher": "Timothy Sykes"
         }
       ]
+    },
+    "KR:095610": {
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
+      "items": [
+        {
+          "title": "테스 주가, 10월 22일 장중 113,200원 5.75% 하락 - TopStarNews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFB6al9Oa0tDT21ZMXVGaks2X0l3VHE3UDhWUmhoM015M2owcVM2bWJEd1BkdzZ4WHpqRmZ6SnJHclRfaHdEM0lfalRTZXZGQUstMVlrU3RRZUJmMV91VWw1VDFLOVM1R0ZiTml5c2Z2QTdfQQ?oc=5",
+          "date": "2026-10-22T02:04:37+00:00",
+          "publisher": "TopStarNews"
+        },
+        {
+          "title": "두산테스나 주가, 10월 22일 장중 106,500원 5.08% 하락 - TopStarNews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE42SEM5OWk4My16YS1VRlNPSWEtWjFFdzFtN1ZqWHJoUEV6YVREcWVmZ3pCdDZoNU5Jd0pRVnhLbXVsdmp4cGRzSl9uUjNtbTNreWpmTzNHU1drdmhvZDdud3E1YmV4NGdrS3JzcFM4WjFkQQ?oc=5",
+          "date": "2026-10-22T02:02:37+00:00",
+          "publisher": "TopStarNews"
+        },
+        {
+          "title": "포테스큐 주가, 1분기 철광석 출하량 부진으로 16개월 최저치 - Investing.com 한국어",
+          "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1ZUkppR3k1ZXgwS0RsRHEtMWdQMi1kUFJUOF9NdXJaZF9yOGtTdEwtb2NUN1d2c3FmbnN6OHJtNVBUVjFETmdMRUktamw2ZlRRbTVvOFZtMFpsVV9IWHNmTlNkV0s?oc=5",
+          "date": "2026-10-22T01:59:00+00:00",
+          "publisher": "Investing.com 한국어"
+        }
+      ]
+    },
+    "KR:096770": {
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
+      "items": [
+        {
+          "title": "[데이터 뉴스룸] 석화 업종 50개 주식종목 하반기 시총 8%대 상승…SK이노베이션 4개월 새 시총 9조 넘게 늘 때, S-Oil·아모레퍼시픽·코스맥스는? - 녹색경제신문",
+          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE95bVhKaFNsVG80VDVpRUJUVTlYTjBuT0FLR05aOFpOREQyUEttb2dxVHQxWnJBSUNoS0dSRjZxTl9hRi1NS1hMYjN4SmJ5WkRndjNYNTlpTlFXaDZkckZGQ1pJWXhBVTBw?oc=5",
+          "date": "2026-10-22T06:56:29+00:00",
+          "publisher": "녹색경제신문"
+        },
+        {
+          "title": "SK이노베이션 주가, 10월 22일 장중 143,700원 6.87% 하락 - TopStarNews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFBKdklOVmpnOF9DSG1rUkpVcmFPT0JWLUVHUjQzdnljcVg3Y0hWSENQdlpRRWdvVFJ6NENITHpmdUxSVEc3UVMyOGpZajJkQk4tYUlYcGJYa1p2NjExX3lrVDBRMnRBSHZ3VUFxTnoyQVFsZw?oc=5",
+          "date": "2026-10-22T01:20:33+00:00",
+          "publisher": "TopStarNews"
+        },
+        {
+          "title": "SK이노베이션, 장중 7%대 급락…14만원선 위협 [종목NOW] - 파이낸셜뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBLdVBFRHV1TENlTkdfQkJsaUZycVUwUFYybWRRdWUtd2Q5QzhFSFJSLWVnaVBqWEhlbzJOczlabHJuclhjNUQwR1ZXTjBzeXhSMVVta0RXa2psQQ?oc=5",
+          "date": "2026-10-22T01:17:49+00:00",
+          "publisher": "파이낸셜뉴스"
+        }
+      ]
+    },
+    "KR:036930": {
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
+      "items": [
+        {
+          "title": "[특징주] 주성엔지니어링 장중 18만8100원 기록 - 비건뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFByX1prd1RITUNNYkliY1VMVVVsc19WVF9OM1h6WFRoVWZXTDYzeUwxdTljUmwzYkpXN0Q4RHdHR0lOdldsei1xUmJVTnU3OUl6YzZRbXFlSGFvdXlublZWUlp5eGNwQQ?oc=5",
+          "date": "2026-10-22T05:22:53+00:00",
+          "publisher": "비건뉴스"
+        },
+        {
+          "title": "[특징주] 주성엔지니어링, 뚜렷한 공시 없이 장중 4%대 하락세 : 기업주식정보 - 재경일보",
+          "url": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE5nQnNqaVVhSTc1bjVleW1UdTViRlNVRUVSMGhKZHRkV2Mtd1JsMFR2d1gzNklDOEtURGpzdnNLZHgySkJNV1U4UE1zRQ?oc=5",
+          "date": "2026-10-22T01:26:10+00:00",
+          "publisher": "재경일보"
+        },
+        {
+          "title": "주성엔지니어링 주가, 10월 22일 장중 197,000원 3.90% 하락 - TopStarNews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFBPeDVvdmtTZFNtTG9rcTRjQ3lTdjlyeUpjUUtWQUpCN084emlUYXZpcW1WeDIzQ2JfWjFhZ21OTDBNWDNRVVpJWXA2WGdNWHJpVmQtOGVpaDFFUmRHRmVyVDZCMGJ3cEpDa3QyUXpDLS01dw?oc=5",
+          "date": "2026-10-22T01:01:47+00:00",
+          "publisher": "TopStarNews"
+        }
+      ]
+    },
+    "KR:031980": {
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
+      "items": [
+        {
+          "title": "코리아 밸류업 지수 관련주 혼조…명신산업·코미코 주가는 급등 - 핀포인트뉴스",
+          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9KLUg0Y0xWdFF4WmJzM0J0LS1tRHRuVEZCX2YwdDctajRac3JvemRQOUhuRWVweUxiNWRMTjZFSTR6NjhFcTc3ejEyTDhYWWlPT2lrbGRFRkRTSjlHSzNsQWw3VEhndlhxMlJ2QmZlNExFalR5U1Rz0gF3QVVfeXFMT0otSDRjTFZ0UXhaYnMzQnQtLW1EdG5URkJfZjB0Ny1qNFpzcm96ZFA5SG5FZXB5TGI1ZExONkVJNHo2OEVxNzd6MTJMOFhZaU9PaWtsZEVGRFNKOUdLM2xBbDdUSGd2WHEyUnZCZmU0TEVqVHlTVHM?oc=5",
+          "date": "2026-10-21T05:42:26+00:00",
+          "publisher": "핀포인트뉴스"
+        },
+        {
+          "title": "피에스케이홀딩스 18만3800원, 장중 2.68% 상승 - 비건뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1FY1VTaHFSU180b3ltVTZyMUdieXY3cFpyRUdXRXU0V1dVa3VQZ1FMdUUyYVllQmowU2FKQ1drRi1makV3cUowRG5UdVp6NXAzT2gyV2JkZ1ozUXVyNVlXQ3k0MGNhUQ?oc=5",
+          "date": "2026-10-21T05:38:49+00:00",
+          "publisher": "비건뉴스"
+        },
+        {
+          "title": "[오늘의 증권가 콜] 카카오, 예스티, LS에코에너지, 금호석유화학, 피에스케이홀딩스, KT&G 등 - 한국경제",
+          "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5ZX1FhSnpDNUpRTG9OcWpEVWRIaElmVXVfMnFCcjFDTnVzU2UwWkxTRWsxd1h2V295b0tBZDJCbkUwWU5zOXd1dWhhNHVvTzFYWllhbVpiUDlWdw?oc=5",
+          "date": "2026-10-21T04:13:45+00:00",
+          "publisher": "한국경제"
+        }
+      ]
+    },
+    "KR:278470": {
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
+      "items": [
+        {
+          "title": "에이피알, 매출 107% 성장 전망에도 주가 뒷걸음질…원화 강세·유럽 물류비 부담 부각 - CBC뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE51dV9qWExQR2dfaDVIemR2di03MDloM0pYN2tMTmFKWDhxekZzRnpnTVA5QmpYcllFQ3dLRDJtRVQzVHZSUE1yUFduOTBTa1ZuTlBLc0ZLOG1CVVM1aEpicnRmTk1nSzNH?oc=5",
+          "date": "2026-10-22T01:37:53+00:00",
+          "publisher": "CBC뉴스"
+        },
+        {
+          "title": "[리포트 브리핑]에이피알, '여전히 강한 수요' 목표가 550,000원 - IBK투자증권 - 뉴스핌",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE16OTNGLVJBX3YtTnphNXdrTmg2Z0dvam90ZktVak1xNEdBUlRydUV2R1FPc3dKZjRRWE5SZmpna1ZXV1pOOXJ0Ry0yRFZVdlZ1d3VPaFhFcGw5VWFH?oc=5",
+          "date": "2026-10-22T00:30:00+00:00",
+          "publisher": "뉴스핌"
+        },
+        {
+          "title": "에이피알 주가 하락 중 - 아시아뉴스통신",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9iRGZzTGFNMVZXTTZreVBPUk80cDItdWpwa1FwNmJyRDhfUl82aE5QeTVVdmZZcnhDUjRRaWV6TENmWFVBd2wzVlRIWG9Qa21VTlRBRUdoTWcwOEJwWEtodWVWV3ByZXdGbUo4SUdCdFBsZTZv?oc=5",
+          "date": "2026-10-22T00:28:40+00:00",
+          "publisher": "아시아뉴스통신"
+        }
+      ]
+    },
+    "KR:247540": {
+      "checkedAt": "2026-10-22T07:33:06.886528+00:00",
+      "items": [
+        {
+          "title": "에코프로비엠 장중 10만원선 아래로 밀려 - 비건뉴스",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE93ZkJWNGpSaTNIaG1RZkI3aUpFLXplSGxPMzJPSWtqVzRfWFR1LXFoelpwaTdDazVYbE02SlpHLXhUR3JYNjNXMVE4WVhUcHdRZk0wM0dKT2lQblBESXI3aFd3N0xUQQ?oc=5",
+          "date": "2026-10-22T04:26:05+00:00",
+          "publisher": "비건뉴스"
+        },
+        {
+          "title": "에코프로비엠 주가 장중 7%대 내려, 'CATL 실적 쇼크'에 2차전지주 투자심리 위축 - 비즈니스포스트",
+          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE1kQTRaS1JvUkN4MEc3dVE4a3RKTEsxSDFrM2o4TXpTSXFOMjNpai1jT0JuVkgyTmV2YjFpT3o2eC1NWlFZb0N0V2NFc2t4YzBfbUZjYTFwVUlXN3hsQ20wZng2ZXhGTjEzRDVsb19pakhxN1k?oc=5",
+          "date": "2026-10-22T02:26:07+00:00",
+          "publisher": "비즈니스포스트"
+        },
+        {
+          "title": "에코프로비엠 주가, 10월 22일 장중 100,900원 7.18% 하락 - TopStarNews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTFB4b29VdVpNRGVKUkxkZGlYMWdzQWIzNEs2cUd3dmFEcW13cnFrd2xja2JicEZvZkltb01jMTJjSjB6NFlmelNTUGdMX3BnVWZESFBxR0FuNkw5b1VZSlpsMGFfeDBJc3JWWkJGYjRlVlctUQ?oc=5",
+          "date": "2026-10-22T01:34:56+00:00",
+          "publisher": "TopStarNews"
+        }
+      ]
     }
   },
-  "checkedAt": "2026-10-22T06:11:22.863033+00:00"
+  "checkedAt": "2026-10-22T07:33:06.886528+00:00"
 }
