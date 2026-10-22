@@ -352,6 +352,19 @@ def same_basis_latest(rows, first_seen):
                                     'prevFirstSeen': fs0, 'prevFinal': v0}
 
 
+def confirmed_latest(rows, first_seen):
+    """The latest bar's volume was revised since first seen → it is the confirmed (final) value."""
+    if not rows or not first_seen:
+        return None
+    d1 = rows[-1]
+    v1, fs1 = d1.get('volumeRaw', d1.get('volume')), first_seen.get(d1.get('date'))
+    if d1.get('source') == 'naver' or 'volumeRaw' in d1 or not (valid_num(v1) and valid_num(fs1)):
+        return None
+    if v1 / fs1 - 1 < 0.02:
+        return None
+    return {'date': d1['date'], 'scale': round(v1 / fs1, 4), 'firstSeen': fs1, 'final': v1}
+
+
 def raw_rows(rows):
     """Undo same_basis_latest before storing history (store only observed numbers)."""
     out = []

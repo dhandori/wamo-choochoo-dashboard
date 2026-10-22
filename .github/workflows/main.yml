@@ -16,6 +16,11 @@ on:
     # an already collected session exit before any provider call.
     - cron: '4,17,24,34,47,54 7 * * 1-5'
     - cron: '4,17,27,34,47,54 20-22 * * 1-5'
+    # US index volume from Yahoo is preliminary right after the close and is revised
+    # later in the Korean afternoon. Recalculate US trend with the final volume at
+    # 18:10 KST, and once more at 21:10 KST only if it was still preliminary.
+    - cron: '10 9 * * 2-6'
+    - cron: '10 12 * * 2-6'
   workflow_dispatch:
     inputs:
       market:
@@ -105,6 +110,13 @@ jobs:
               '20 20 * * 1-5'|'20 21 * * 1-5') market='US' ;;
               *) market='auto'; recovery='yes' ;;
             esac
+          fi
+          if [[ "$EVENT_SCHEDULE" == '10 9 * * 2-6' || "$EVENT_SCHEDULE" == '10 12 * * 2-6' ]]; then
+            slot=$([[ "$EVENT_SCHEDULE" == '10 9 * * 2-6' ]] && echo first || echo second)
+            args=(--confirm-volume "$slot")
+            if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
+            python -u wamo_run.py "${args[@]}"
+            exit 0
           fi
           args=(--market "$market")
           if [[ -n "$recovery" ]]; then args+=(--recovery); fi

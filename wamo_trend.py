@@ -899,6 +899,20 @@ def write_json(path, value, compact=False):
     tmp.replace(path)
 
 
+CONFIRM_SLOTS = {'US': ('18:10', '21:10')}   # KST evening rechecks for Yahoo's revised index volume
+
+
+def volume_schedule(checks):
+    """Summarise the evening rechecks: is the volume really final by the first (18:10 KST) check?"""
+    if not checks:
+        return None
+    first = [c for c in checks if c.get('slot') == 'first']
+    hit = sum(1 for c in first if c.get('confirmed'))
+    verified = len(first) >= 3 and hit / len(first) >= 0.8
+    return {'firstSlot': '18:10', 'secondSlot': '21:10', 'checks': len(first), 'confirmedAtFirst': hit,
+            'verified': verified, 'last': checks[-1]}
+
+
 def build_market(root, market, log, earnings_cache, fetch_network=True, index_fetcher=fetch_index, allow_synthetic=True):
     payload = extract_old_payload((root / PAGES[market]).read_text(encoding='utf-8'))
     asof, universe = build_universe(payload, market)
@@ -989,10 +1003,12 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if not bench:
         print(f'{market} 종목 중앙값으로 대체', flush=True)
         bench, synthetic, source = synthetic_benchmark(universe), True, '스크리닝 종목 동일가중 중앙값(대체)'
-    from wamo_ftd import same_basis_latest, raw_rows
-    first_seen_all = read_json(root / 'wamo_ftd_history.json', {}).get('_firstSeen', {})
-    prelim = {}
+    from wamo_ftd import same_basis_latest, raw_rows, confirmed_latest
+    history_meta = read_json(root / 'wamo_ftd_history.json', {})
+    first_seen_all = history_meta.get('_firstSeen', {})
+    prelim, confirmed = {}, {}
     if not synthetic:
+        confirmed[symbol] = confirmed_latest(bench, first_seen_all.get(symbol, {}))
         bench, prelim[symbol] = same_basis_latest(bench, first_seen_all.get(symbol, {}))
     idx = {**index_trend(bench), 'label': label if not synthetic else '종목 중앙값 지수'}
     secondary = None
@@ -1014,12 +1030,13 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         if not (bench2 and bench2[-1]['date'] == asof):
             bench2 = stored_index(root, sym2, asof) or bench2
     if bench2:
+        confirmed[sym2] = confirmed_latest(bench2, first_seen_all.get(sym2, {}))
         bench2, prelim[sym2] = same_basis_latest(bench2, first_seen_all.get(sym2, {}))
     if bench2:
         if bench2 and bench2[-1]['date'] == asof and len(bench2) >= 200:
             secondary = {**index_trend(bench2), 'symbol': sym2, 'label': label2,
-                         'source': 'Yahoo Finance ' + sym2, 'distribution': dict(distribution_days(bench2), prelim=prelim.get(sym2))}
-    dist = (dict(distribution_days(bench), prelim=prelim.get(symbol)) if not synthetic else {
+                         'source': 'Yahoo Finance ' + sym2, 'distribution': dict(distribution_days(bench2), prelim=prelim.get(sym2), confirmed=confirmed.get(sym2))}
+    dist = (dict(distribution_days(bench), prelim=prelim.get(symbol), confirmed=confirmed.get(symbol)) if not synthetic else {
         'status': 'UNAVAILABLE', 'count': None, 'window': 25, 'days': [],
         'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'})
     br = breadth(universe)
@@ -1114,6 +1131,9 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
             pv = prelim.get(g.get('symbol'))
             if pv and pv['date'] == g.get('asOf'):
                 g['volumePrelim'] = pv
+            cv = confirmed.get(g.get('symbol'))
+            if cv and cv['date'] == g.get('asOf'):
+                g['volumeConfirmed'] = cv
     except Exception as exc:  # noqa: BLE001 - never block the rest
         print(f'{market} 거래대금 계산 실패: {type(exc).__name__}: {exc}', flush=True)
         liq = {'status': 'UNAVAILABLE', 'note': '거래대금 계산에 실패했어요. 다음 갱신 때 다시 계산해요.'}
@@ -1141,6 +1161,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
                   'synthetic': synthetic, **idx},
         'weather': {**weather(idx, dist, br, hl, synthetic, secondary, liq), 'distribution': dist, 'breadth': br, 'highsLows': hl},
         'liquidity': liq,
+        'volumeSchedule': volume_schedule(history_meta.get('_confirmChecks', {}).get(market)),
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
                       'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),
