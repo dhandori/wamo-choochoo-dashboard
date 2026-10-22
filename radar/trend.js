@@ -188,6 +188,7 @@ function weatherDetail(b, market) {
       const big = el('div', null, 'tr-big'); big.append(el('b', `${d.count}`), el('span', `${distRows.length > 1 ? label + ' · ' : ''}최근 25거래일`));
       if (isNum(d.score)) big.append(el('span', `위험 점수 ${fmt(d.score, 1)}`, `tr-dist-score ${d.score >= 6 ? 'bad' : d.score >= 4 ? 'mid' : 'good'}`));
       c2.append(big);
+      if (d.prelim) c2.append(prelimNote(d.prelim));
       const k = d.kinds || {};
       if (d.kinds) {
         const mix = el('div', null, 'tr-dist-mix');
@@ -292,6 +293,11 @@ function volumeChart(series) {
   return svg;
 }
 
+// Yahoo의 최신일 지수 거래량은 장 마감 직후 '확정 전' 값이라 다음 날 더 크게 고쳐져요.
+// 전날도 확정 전 값 기준으로 맞춰 비교했다는 걸 알려 줌.
+function prelimNote(p) {
+  return el('p', `ⓘ ${md(p.date)} 거래량은 아직 확정 전이에요. 전날 거래량이 확정되며 ${fmt(p.scale, 2)}배로 늘어난 만큼 이날도 늘려 잡아 비교했어요. 확정되면 다시 계산해요.`, 'tr-prelim');
+}
 function liquidityCard(b, market) {
   const q = b.liquidity, card = el('article', null, 'tr-card lq-card');
   card.append(el('h3', '시장 거래량 (거래소 전체 · 돈의 흐름)'));
@@ -314,6 +320,7 @@ function liquidityCard(b, market) {
     const five = el('div', null, 'lq-verdict-line');
     five.append(el('b', '최근 5거래일'), el('span', `지수 ${pct(g.trend.priceChange5dPct)} (5거래일 전 종가 대비) · 거래량 ${pct(g.trend.flowChange5dPct)} (그 전 5일 평균 대비)`));
     v.append(top, day, five, el('p', g.trend.text));
+    if (g.volumePrelim) v.append(prelimNote(g.volumePrelim));
     verdicts.append(v);
   });
   card.append(verdicts);
