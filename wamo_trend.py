@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 16
+TREND_VERSION = 17
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -989,6 +989,11 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if not bench:
         print(f'{market} 종목 중앙값으로 대체', flush=True)
         bench, synthetic, source = synthetic_benchmark(universe), True, '스크리닝 종목 동일가중 중앙값(대체)'
+    from wamo_ftd import same_basis_latest, raw_rows
+    first_seen_all = read_json(root / 'wamo_ftd_history.json', {}).get('_firstSeen', {})
+    prelim = {}
+    if not synthetic:
+        bench, prelim[symbol] = same_basis_latest(bench, first_seen_all.get(symbol, {}))
     idx = {**index_trend(bench), 'label': label if not synthetic else '종목 중앙값 지수'}
     secondary = None
     sym2, label2 = SECONDARY.get(market, (None, None))
@@ -1009,12 +1014,14 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         if not (bench2 and bench2[-1]['date'] == asof):
             bench2 = stored_index(root, sym2, asof) or bench2
     if bench2:
+        bench2, prelim[sym2] = same_basis_latest(bench2, first_seen_all.get(sym2, {}))
+    if bench2:
         if bench2 and bench2[-1]['date'] == asof and len(bench2) >= 200:
             secondary = {**index_trend(bench2), 'symbol': sym2, 'label': label2,
-                         'source': 'Yahoo Finance ' + sym2, 'distribution': distribution_days(bench2)}
-    dist = distribution_days(bench) if not synthetic else {
+                         'source': 'Yahoo Finance ' + sym2, 'distribution': dict(distribution_days(bench2), prelim=prelim.get(sym2))}
+    dist = (dict(distribution_days(bench), prelim=prelim.get(symbol)) if not synthetic else {
         'status': 'UNAVAILABLE', 'count': None, 'window': 25, 'days': [],
-        'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'}
+        'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'})
     br = breadth(universe)
     hl = highs_lows(universe)
     leaders, warnings = analyze_stocks(universe, bench)
@@ -1060,7 +1067,17 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         if combined and not is_synthetic:
             climax_rows.append((sym, name, [r for r in combined if r['date'] <= asof]))
         if signal["status"] == "OK":
-            ftd_history[sym] = [r for r in combined if r["date"] <= asof]
+            ftd_history[sym] = raw_rows([r for r in combined if r["date"] <= asof])
+        if combined and not is_synthetic:
+            # Remember the first volume seen for each new session (Yahoo revises it later).
+            last = raw_rows(combined[-1:])[0]
+            seen = ftd_history.setdefault('_firstSeen', {}).setdefault(sym, {})
+            if last['date'] <= asof and last['date'] not in seen and last.get('source') != 'naver' and valid_num(last.get('volume')):
+                seen[last['date']] = last['volume']
+            for old in sorted(seen)[:-20]:
+                del seen[old]
+        if prelim.get(sym):
+            signal['volumePrelim'] = prelim[sym]
         signal.update(symbol=sym, label=name, source='Yahoo Finance ' + sym,
                       sourceUrl='https://finance.yahoo.com/quote/' + urllib.parse.quote(sym, safe='') + '/history/',
                       volumeNote='Yahoo 제공 지수 거래량 · ETF 거래량을 사용하지 않음')
@@ -1093,6 +1110,10 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         else:
             groups = [('ALL', label, symbol, lambda s: True, main_rows)]
         liq = wamo_liquidity.split(universe, groups)
+        for g in liq.get('groups') or []:
+            pv = prelim.get(g.get('symbol'))
+            if pv and pv['date'] == g.get('asOf'):
+                g['volumePrelim'] = pv
     except Exception as exc:  # noqa: BLE001 - never block the rest
         print(f'{market} 거래대금 계산 실패: {type(exc).__name__}: {exc}', flush=True)
         liq = {'status': 'UNAVAILABLE', 'note': '거래대금 계산에 실패했어요. 다음 갱신 때 다시 계산해요.'}

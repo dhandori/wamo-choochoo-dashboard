@@ -294,6 +294,7 @@ def _naver_verified(rows, symbol, payload):
                  volume=raw.get('accumulatedTradingVolume'))
         if valid_num(raw.get('openPrice')):
             row['open']=raw['openPrice']
+        row['source']='naver'
         if d in replacement or not all(valid_num(row[k]) for k in ('close','high','low','volume')) or not row['low']<=row['close']<=row['high']:
             raise ValueError('보완 원천 OHLCV 오류')
         replacement[d]=row
@@ -320,6 +321,45 @@ def repair_korean_history(rows, symbol, payload):
         else:
             out.append(r)
     return out,repaired
+
+
+def same_basis_latest(rows, first_seen):
+    """Compare the newest bar with the day before on the same basis.
+
+    Yahoo posts a preliminary index volume for the newest session and revises it later
+    (S&P 500 about 1.8x the next day, KOSPI/KOSDAQ 5-16% once after-hours trades are in).
+    When yesterday has already been revised but today is still the first value we saw,
+    "today > yesterday" would compare a preliminary number with a final one. In that case
+    today's volume is scaled by yesterday's own revision factor, which gives exactly the same
+    answer as comparing the two preliminary numbers we actually observed. The raw value is
+    kept in volumeRaw; nothing estimated is stored.
+    Returns (rows, info or None).
+    """
+    if not rows or len(rows) < 2 or not first_seen:
+        return rows, None
+    d0, d1 = rows[-2], rows[-1]
+    if d1.get('source') == 'naver':          # second-source bars are already final
+        return rows, None
+    v0, v1, fs0, fs1 = d0.get('volume'), d1.get('volume'), first_seen.get(d0['date']), first_seen.get(d1['date'])
+    if not (valid_num(v0) and valid_num(v1) and valid_num(fs0)):
+        return rows, None
+    unrevised = fs1 is None or abs(v1 / fs1 - 1) <= 0.005
+    if not unrevised or v0 / fs0 - 1 < 0.02:
+        return rows, None
+    k = min(3.0, v0 / fs0)
+    adjusted = dict(d1, volume=v1 * k, volumeRaw=v1, volumePrelimScale=round(k, 4))
+    return rows[:-1] + [adjusted], {'date': d1['date'], 'scale': round(k, 4), 'prevDate': d0['date'],
+                                    'prevFirstSeen': fs0, 'prevFinal': v0}
+
+
+def raw_rows(rows):
+    """Undo same_basis_latest before storing history (store only observed numbers)."""
+    out = []
+    for r in rows or []:
+        if 'volumeRaw' in r:
+            r = {k: v for k, v in r.items() if k not in ('volumeRaw', 'volumePrelimScale')} | {'volume': r['volumeRaw']}
+        out.append(r)
+    return out
 
 
 def extend_korean_latest(rows, symbol, payload, asof):

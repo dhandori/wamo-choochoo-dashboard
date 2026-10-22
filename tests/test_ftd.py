@@ -299,6 +299,7 @@ class KoreanInputRepairTests(unittest.TestCase):
         self.assertIsNotNone(repair,'Verified Korean fallback missing')
         rows,damaged,payload=self.fixture()
         fixed,dates=repair(damaged,'^KS11',payload)
+        self.assertEqual(fixed[70].pop('source'),'naver')   # repaired bars are tagged (never treated as preliminary Yahoo volume)
         self.assertEqual(fixed,rows)
         self.assertEqual(dates,[rows[70]['date']])
 
@@ -320,3 +321,29 @@ class FTDSessionTests(unittest.TestCase):
         self.assertNotIn('2026-06-03',dates)
         self.assertNotIn('2026-07-17',dates)
         self.assertIn('2026-06-29',dates)
+
+
+class PreliminaryVolume(unittest.TestCase):
+    """Yahoo의 최신일 지수 거래량은 확정 전 값 → 전날과 같은 기준으로 맞춰 비교."""
+
+    def rows(self):
+        return [{'date': '2026-10-19', 'close': 100, 'volume': 4.59e9},
+                {'date': '2026-10-20', 'close': 101, 'volume': 5.00e9},
+                {'date': '2026-10-21', 'close': 99, 'volume': 2.89e9}]
+
+    def test_latest_is_scaled_when_previous_day_was_revised_up(self):
+        from wamo_ftd import same_basis_latest, raw_rows
+        seen = {'2026-10-20': 2.72e9, '2026-10-21': 2.89e9}
+        out, info = same_basis_latest(self.rows(), seen)
+        self.assertAlmostEqual(info['scale'], 5.00 / 2.72, 3)
+        self.assertGreater(out[-1]['volume'], out[-2]['volume'])   # 같은 기준이면 이날이 전날보다 무거움
+        self.assertEqual(raw_rows(out)[-1]['volume'], 2.89e9)               # only the raw value is ever stored
+        self.assertNotIn('volumeRaw', raw_rows(out)[-1])
+
+    def test_no_change_when_latest_already_final_or_no_revision(self):
+        from wamo_ftd import same_basis_latest
+        self.assertIsNone(same_basis_latest(self.rows(), {'2026-10-20': 2.72e9, '2026-10-21': 2.0e9})[1])   # latest revised already
+        self.assertIsNone(same_basis_latest(self.rows(), {'2026-10-20': 5.0e9, '2026-10-21': 2.89e9})[1])   # provider never revises (JP/TW)
+        self.assertIsNone(same_basis_latest(self.rows(), {})[1])
+        naver = self.rows(); naver[-1]['source'] = 'naver'
+        self.assertIsNone(same_basis_latest(naver, {'2026-10-20': 2.72e9})[1])
