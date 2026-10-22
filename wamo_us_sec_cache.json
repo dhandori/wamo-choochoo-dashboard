@@ -57968,5 +57968,117 @@
     "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
     "profileFetchedAt": "2026-10-20",
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "SOLS": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.solstice.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Solstice Advanced Materials Inc. Common Stock은 Nasdaq 공식 분류상 Industrials · Major Chemicals 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Solstice Advanced Materials Inc. Common Stock은 Nasdaq 공식 분류상 Industrials · Major Chemicals 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): Solstice Advanced Materials is a prominent global specialty materials company dedicated to advancing science for smarter outcomes. They offer high-performance solutions that are integral to various industries, such as refrigerants, semiconductor manufacturing, data center cooling, alternative energy, protective fibers, and healthcare packaging. The company is known for developing next-generation materials under renowned brands like Solstice, Genetron, Aclar, Spectra, Fluka, and Hydranal. Solstice partners with over 3,000 customers across more than 120 countries and territories, supported by a portfolio of over 5,700 patents. With approximately 4,000 employees worldwide, Solstice is a leading innovator in materials science.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 3,886,000천달러로 전년 대비 +3.1%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "산업재 (Industrials)",
+        "Industrials",
+        "Major Chemicals"
+      ]
+    },
+    "financialHealth": {
+      "status": "FAIL",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": false,
+      "liquidityPass": true,
+      "assets": 5673000.0,
+      "liabilities": 4296000.0,
+      "equity": 1411000.0,
+      "netIncome": 237000.0,
+      "debtRatioPct": 304.5,
+      "currentRatioPct": 139.4,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 3.1,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Industrials",
+    "industry": "Major Chemicals",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-22",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+  },
+  "QGEN": {
+    "secStatus": "NASDAQ_FALLBACK",
+    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
+    "profileStatus": "LIVE",
+    "profileSource": "Nasdaq Company Profile",
+    "businessModelUrl": "https://www.qiagen.com",
+    "businessModelReportDate": "12/31/2025",
+    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
+    "businessModelEasy": "Qiagen N.V. Common Shares은 Nasdaq 공식 분류상 Health Care · Biotechnology: Biological Products (No Diagnostic Substances) 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "businessProfile": {
+      "summary": "Qiagen N.V. Common Shares은 Nasdaq 공식 분류상 Health Care · Biotechnology: Biological Products (No Diagnostic Substances) 기업입니다.",
+      "products": "Nasdaq 공식 회사설명(영문): QIAGEN N.V., a Netherlands -based holding company, is a global leader in Sample to Insight solutions that enable customers to extract and analyze molecular information from biological samples containing the building blocks of life. Our Sample technologies isolate and process DNA, RNA and proteins from blood, tissue and other materials. Assay technologies prepare these biomolecules for analysis, while bioinformatics support the interpretation of complex data to deliver actionable insights. Automation solutions integrate these steps into streamlined, cost-effective workflows. QIAGEN serves more than 500,000 customers worldwide in the Life Sciences (academia, pharmaceutical R&D and industrial applications such as forensics) and Molecular Diagnostics (clinical healthcare). As of September 30, 2026, QIAGEN employed about 5,400 people across more than 35 locations.",
+      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
+      "revenue": "최근 연간 매출은 2,089,999천달러로 전년 대비 +5.7%입니다(결산기준 12/31/2025).",
+      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "segments": [
+        "헬스케어 (Health Care)",
+        "Health Care",
+        "Biotechnology: Biological Products (No Diagnostic Substances)"
+      ]
+    },
+    "financialHealth": {
+      "status": "PASS",
+      "source": "Nasdaq 연간 재무제표(SEC 대체)",
+      "period": "12/31/2025",
+      "sectorRule": "GENERAL",
+      "equityPositive": true,
+      "profitPositive": true,
+      "leveragePass": true,
+      "liquidityPass": true,
+      "assets": 6281232.0,
+      "liabilities": 2503078.0,
+      "equity": 3778154.0,
+      "netIncome": 424880.0,
+      "debtRatioPct": 66.3,
+      "currentRatioPct": 389.6,
+      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+    },
+    "annualSalesYoyNasdaq": 5.7,
+    "catalysts": [],
+    "sepaFundamental": {
+      "status": "CHECK",
+      "epsPass": false,
+      "salesPass": false,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
+      "marginImproving": false,
+      "earningsSurpriseStatus": "UNKNOWN",
+      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+    },
+    "sector": "Health Care",
+    "industry": "Biotechnology: Biological Products (No Diagnostic Substances)",
+    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
+    "profileFetchedAt": "2026-10-22",
+    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   }
 }
