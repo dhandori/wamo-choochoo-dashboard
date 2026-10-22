@@ -188,7 +188,8 @@ function weatherDetail(b, market) {
       const big = el('div', null, 'tr-big'); big.append(el('b', `${d.count}`), el('span', `${distRows.length > 1 ? label + ' · ' : ''}최근 25거래일`));
       if (isNum(d.score)) big.append(el('span', `위험 점수 ${fmt(d.score, 1)}`, `tr-dist-score ${d.score >= 6 ? 'bad' : d.score >= 4 ? 'mid' : 'good'}`));
       c2.append(big);
-      if (d.prelim) c2.append(prelimNote(d.prelim));
+      if (d.prelim) c2.append(prelimNote(d.prelim, b.volumeSchedule));
+      else if (d.confirmed) c2.append(confirmedNote(d.confirmed));
       const k = d.kinds || {};
       if (d.kinds) {
         const mix = el('div', null, 'tr-dist-mix');
@@ -295,8 +296,21 @@ function volumeChart(series) {
 
 // Yahoo의 최신일 지수 거래량은 장 마감 직후 '확정 전' 값이라 다음 날 더 크게 고쳐져요.
 // 전날도 확정 전 값 기준으로 맞춰 비교했다는 걸 알려 줌.
-function prelimNote(p) {
-  return el('p', `ⓘ ${md(p.date)} 거래량은 아직 확정 전이에요. 전날 거래량이 확정되며 ${fmt(p.scale, 2)}배로 늘어난 만큼 이날도 늘려 잡아 비교했어요. 확정되면 다시 계산해요.`, 'tr-prelim');
+function prelimNote(p, sched) {
+  const when = sched ? ' 저녁 6시 10분에 확정 값으로 다시 계산해요.' : ' 확정되면 다시 계산해요.';
+  return el('p', `ⓘ ${md(p.date)} 거래량은 아직 확정 전이에요. 전날 거래량이 확정되며 ${fmt(p.scale, 2)}배로 늘어난 만큼 이날도 늘려 잡아 비교했어요.${when}`, 'tr-prelim');
+}
+function confirmedNote(c) {
+  return el('p', `✓ ${md(c.date)} 거래량은 확정 값이에요 (처음 나온 값의 ${fmt(c.scale, 2)}배). 확정 값으로 다시 계산했어요.`, 'tr-prelim ok');
+}
+// 미국 지수 거래량이 언제 확정되는지: 저녁 확인 기록이 쌓여 맞다고 나올 때만 '저녁 6시면 확정'이라고 씀
+function scheduleNote(s) {
+  if (!s) return null;
+  const head = '미국 지수 거래량은 장이 끝난 직후(한국 시간 아침)엔 확정 전 값이 먼저 나오고, 한국 시간 오후에 확정 값으로 바뀌어요. 그래서 아침에 한 번 계산하고, 저녁 6시 10분에 확정 값으로 한 번 더 계산해요.';
+  const tail = s.verified
+    ? ` 실제로 최근 ${s.checks}번 중 ${s.confirmedAtFirst}번은 저녁 6시 10분 확인 때 이미 확정돼 있었어요. 아직이면 밤 9시 10분에 한 번 더 봐요.`
+    : ` 저녁 6시 10분이면 확정되는지 기록을 모으는 중이에요 (지금까지 ${s.checks}번 중 ${s.confirmedAtFirst}번 확정). 아직이면 밤 9시 10분에 한 번 더 봐요.`;
+  return el('p', head + tail, 'tr-help lq-schedule');
 }
 function liquidityCard(b, market) {
   const q = b.liquidity, card = el('article', null, 'tr-card lq-card');
@@ -320,7 +334,8 @@ function liquidityCard(b, market) {
     const five = el('div', null, 'lq-verdict-line');
     five.append(el('b', '최근 5거래일'), el('span', `지수 ${pct(g.trend.priceChange5dPct)} (5거래일 전 종가 대비) · 거래량 ${pct(g.trend.flowChange5dPct)} (그 전 5일 평균 대비)`));
     v.append(top, day, five, el('p', g.trend.text));
-    if (g.volumePrelim) v.append(prelimNote(g.volumePrelim));
+    if (g.volumePrelim) v.append(prelimNote(g.volumePrelim, b.volumeSchedule));
+    else if (g.volumeConfirmed) v.append(confirmedNote(g.volumeConfirmed));
     verdicts.append(v);
   });
   card.append(verdicts);
@@ -384,6 +399,7 @@ function liquidityCard(b, market) {
     card.append(help('비중이 늘면서 값도 오르는 업종이 선도업종 후보예요. 비중은 느는데 값이 내리면 큰손이 그 업종에서 팔고 나가는 중일 수 있어요.'));
   }
   card.append(help(q.note || ''));
+  if (market === 'US') { const sn = scheduleNote(b.volumeSchedule); if (sn) card.append(sn); }
   return card;
 }
 

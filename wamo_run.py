@@ -316,6 +316,46 @@ def recover_auxiliary(state, status, now, requested, do_publish):
             publish(names)
 
 
+def confirm_volume(slot, do_publish=False, builder=None, now=None):
+    """Evening recheck of US index volume (Yahoo revises the first, preliminary figure later).
+
+    Rebuilds only the US trend block, then records whether the latest session's volume
+    was final by this check, so the page can say when it is usually confirmed.
+    """
+    from wamo_trend import volume_schedule
+    now = now or datetime.now(UTC)
+    trend_path, hist_path = ROOT / 'wamo_trend.json', ROOT / 'wamo_ftd_history.json'
+    block = (read_json(trend_path).get('markets') or {}).get('US') or {}
+    asof = block.get('asOf')
+    history = read_json(hist_path) if hist_path.exists() else {}
+    checks = history.get('_confirmChecks', {}).get('US', [])
+    if not asof or any(c.get('session') == asof and c.get('confirmed') for c in checks):
+        print('미국 거래량 확정 확인: 이미 확정 값으로 계산됨 · 건너뜀', flush=True)
+        return []
+    names = (builder or build_trend)(['US'])
+    if not names:
+        return []
+    trend = read_json(trend_path)
+    block = (trend.get('markets') or {}).get('US') or {}
+    groups = (block.get('liquidity') or {}).get('groups') or []
+    dist = (block.get('weather') or {}).get('distribution') or {}
+    prelim = bool(dist.get('prelim') or any(g.get('volumePrelim') for g in groups))
+    final = dist.get('confirmed') or next((g['volumeConfirmed'] for g in groups if g.get('volumeConfirmed')), None)
+    record = {'session': block.get('asOf'), 'slot': slot, 'at': now.astimezone(KST).isoformat(timespec='minutes'),
+              'confirmed': bool(final) and not prelim, 'scale': (final or {}).get('scale')}
+    history = read_json(hist_path)
+    log = [c for c in history.setdefault('_confirmChecks', {}).get('US', []) if not (c.get('session') == record['session'] and c.get('slot') == slot)]
+    history['_confirmChecks']['US'] = (log + [record])[-40:]
+    write_json(hist_path, history)
+    block['volumeSchedule'] = volume_schedule(history['_confirmChecks']['US'])
+    write_json(trend_path, trend)
+    print(f"미국 거래량 확정 확인({slot}): {'확정됨' if record['confirmed'] else '아직 확정 전'}", flush=True)
+    names = sorted(set(names + ['wamo_trend.json', 'wamo_ftd_history.json'] + refresh_insights()))
+    if do_publish:
+        publish(names)
+    return names
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--market', choices=['auto', 'both', 'KR', 'US'], default='auto')
@@ -323,7 +363,11 @@ def main():
     parser.add_argument('--plan', action='store_true')
     parser.add_argument('--recovery', action='store_true')
     parser.add_argument('--finalize-interrupted', action='store_true')
+    parser.add_argument('--confirm-volume', choices=['first', 'second'])
     args = parser.parse_args()
+    if args.confirm_volume:
+        confirm_volume(args.confirm_volume, args.publish)
+        return
     if args.finalize_interrupted:
         finalize_interrupted(args.publish)
         return
