@@ -1,26 +1,26 @@
 {
  "JP": {
-  "attemptedAt": "2026-10-22T13:44:29.317584+00:00",
-  "expectedSession": "2026-10-22",
-  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39789460189",
+  "attemptedAt": "2026-10-23T12:52:45.844616+00:00",
+  "expectedSession": "2026-10-23",
+  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39956559720",
   "status": "WARNING",
-  "lastSuccessAt": "2026-10-22T13:44:29.317584+00:00",
-  "asOf": "2026-10-22",
+  "lastSuccessAt": "2026-10-23T12:52:45.844616+00:00",
+  "asOf": "2026-10-23",
   "count": 490,
   "universe": 491,
   "failed": 1,
   "error": null
  },
  "TW": {
-  "attemptedAt": "2026-10-22T13:44:29.317584+00:00",
-  "expectedSession": "2026-10-22",
-  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39789460189",
-  "status": "PASS",
+  "attemptedAt": "2026-10-23T12:52:45.844616+00:00",
+  "expectedSession": "2026-10-23",
+  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/39956559720",
+  "status": "FAILED",
   "lastSuccessAt": "2026-10-22T13:44:29.317584+00:00",
   "asOf": "2026-10-22",
   "count": 317,
   "universe": 318,
   "failed": 1,
-  "error": null
+  "error": "가격 확보 0/318 — 90% 미만이라 이번 결과를 쓰지 않음 · 예: ['2330.TW: query1.finance.yahoo.com: 기대 거래일 2026-10-23, 응답 가격일 2026-10-22 / query2.finance.yahoo.com: 기대 거래일 2026-10-23, 응답 가격일 2026-10-22', '2454.TW: query1.finance.yahoo.com: 기대 거래일 2026-10-23, 응답 가격일 2026-10-22 / query2.finance.yahoo.com: 기대 거래일 2026-10-23"
  }
 }
