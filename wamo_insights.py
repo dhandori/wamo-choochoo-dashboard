@@ -160,6 +160,26 @@ def industry_map_kr():
         return {}
 
 
+def investor_flow(stock):
+    """KR 갱신기가 붙인 외국인·기관 추정 순매수(원)를 검증된 숫자만 통과시킨다."""
+    fields={}
+    for who,out in (('foreign','foreign'),('institution','inst')):
+        for n in (5,20,60):
+            value=number(stock.get(f'{who}_netbuy_{n}d'))
+            if value is not None: fields[f'{out}Net{n}d']=round(value)
+            pct=number(stock.get(f'{who}_netbuy_{n}d_pct_mcap'))
+            if pct is not None: fields[f'{out}Pct{n}d']=round(pct,3)
+    if not fields: return None
+    asof=day(stock.get('flow_asof'))
+    if asof: fields['asOf']=asof
+    sessions=number(stock.get('flow_sessions'))
+    if sessions and sessions>0: fields['sessions']=int(sessions)
+    hold=number(stock.get('foreign_hold_pct'))
+    if hold is not None and 0<=hold<=100: fields['foreignHoldPct']=round(hold,2)
+    fields['estimate']=True
+    return fields
+
+
 def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
@@ -199,7 +219,9 @@ def project(stock,market,asof):
         return latest>prior+max(abs(prior)*1e-8,1e-8)
     ticker=stock.get('ticker') or symbol
     market_cap=number(stock.get(CAP_KEY.get(market,'market_cap_usd')))
+    flow=investor_flow(stock) if market=='KR' else None
     return {'id':f'{market}:{symbol}','symbol':symbol,'ticker':ticker,'name':stock.get('name') or symbol,'market':market,
+            **({'investorFlow':flow} if flow else {}),
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
             'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,

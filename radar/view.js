@@ -199,6 +199,43 @@ function stat(label, value, cls = '', barNode = null) {
   const box = el('div', null, 'stat'), caption = el('span'); caption.append(helpLabel(label));
   box.append(caption, el('strong', value, cls)); if (barNode) box.append(barNode); return box;
 }
+// 외국인·기관 추정 순매수(원)를 억·조 단위로 읽기 쉽게. 숫자 없는 기간은 '—'로 그대로 보여 준다.
+const flowKrw = v => {
+  if (!numeric(v)) return '—';
+  const sign = v > 0 ? '+' : v < 0 ? '-' : '';
+  const a = Math.abs(v);
+  if (a >= 1e12) return `${sign}${fmt(a / 1e12, 2)}조원`;
+  if (a >= 1e8) return `${sign}${fmt(a / 1e8, a >= 1e10 ? 0 : 1)}억원`;
+  if (a >= 1e4) return `${sign}${fmt(a / 1e4, 0)}만원`;
+  return `${sign}${fmt(a, 0)}원`;
+};
+// KR 종목 상세의 수급 카드. 갱신기가 수급을 붙인 종목(후보군)에만 나타난다.
+function flowSection(s) {
+  const f = s.investorFlow;
+  if (!f) return null;
+  const sec = el('section', null, 'flow-box');
+  const head = el('div', null, 'flow-box-head');
+  head.append(el('h3', '외국인·기관 순매수 (추정)'), el('span', `${f.asOf || s.asOf} 기준 · 거래일 합산${numeric(f.foreignHoldPct) ? ` · 외국인 보유율 ${fmt(f.foreignHoldPct, 2)}%` : ''}`, 'flow-box-sub'));
+  sec.append(head);
+  const grid = el('div', null, 'flow-box-grid');
+  [['외국인', 'foreign'], ['기관 합계', 'inst']].forEach(([label, key]) => {
+    const row = el('div', null, 'flow-box-row');
+    row.append(el('b', label));
+    const cells = el('div', null, 'flow-box-cells');
+    [[5, '5일'], [20, '20일'], [60, '60일']].forEach(([n, periodLabel]) => {
+      const v = f[`${key}Net${n}d`];
+      const cell = el('span', null, 'flow-box-cell');
+      cell.append(el('small', periodLabel), el('strong', flowKrw(v), numeric(v) ? tone(v) : 'neutral'));
+      const pct = f[`${key}Pct${n}d`];
+      if (numeric(pct)) cell.append(el('em', `시총 대비 ${pct > 0 ? '+' : ''}${fmt(pct, 2)}%`));
+      cells.append(cell);
+    });
+    row.append(cells); grid.append(row);
+  });
+  sec.append(grid);
+  sec.append(el('p', '순매수수량 × 당일 종가로 계산한 추정 금액이라 거래소 공식 결제 금액과 다를 수 있어요. 연기금·사모 같은 세부 수급은 자료가 없어 만들지 않아요. 수급은 스크리닝 후보 종목에만 수집합니다.', 'flow-box-note'));
+  return sec;
+}
 // Wait briefly for the chart data so the drawer does not jump after opening.
 function detail(s) {
   closeHelp();
@@ -225,6 +262,7 @@ function renderDetail(s, data) {
     ['거래량 배수', volume(s)], ['RS', fmt(s.rs, 0)], ['Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음']]
     .forEach(([label, value, cls]) => grid.append(stat(label, value, cls)));
   d.append(grid);
+  const flowBox = flowSection(s); if (flowBox) d.append(flowBox);
   const signalBox = el('div', null, 'detail-signals');
   const reasons = signals(s); (reasons.length ? reasons : ['특징주 신호 없음']).forEach(t => signalBox.append(el('span', t, 'badge'))); d.append(signalBox);
   const transition=changes(s),comparison=snapshot.markets[state.market].comparison;

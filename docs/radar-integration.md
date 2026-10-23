@@ -66,3 +66,15 @@ pipelines remain independent. Review Actions when a FAILED badge appears.
 The discovery `다시 확인` button reloads the latest published catalog and radar snapshots; it
 does not call a market-data API directly. A connection failure keeps search controls available,
 but current candidates remain hidden until a valid, recent published radar response is loaded.
+
+## 외국인·기관 추정 수급 (2026-10-23)
+
+- `wamo_update_business_dart.py`의 8/12 단계가 후보 종목(최대 140개)에 대해 NAVER 모바일
+  투자자별 매매동향 JSON(`m.stock.naver.com/api/stock/{code}/trend`, pageSize 최대 60)을 읽는다.
+  구 PC `frgn.naver` HTML 표는 2026-10 개편으로 사라져 사용하지 않는다.
+- 저장 필드: `foreign/institution_netbuy_{5,20,60}d`(순매수수량×당일 종가 추정, 원),
+  `*_pct_mcap`(시총 대비 %), `flow_asof`, `flow_sessions`, `foreign_hold_pct`(제공사 표기 보유율).
+  보유 일수가 기간보다 짧으면 그 기간 값은 만들지 않는다. 연기금·사모 세부 수급은 자료가 없어 만들지 않는다.
+- `wamo_insights.py`가 검증된 숫자만 `stocks[].investorFlow`로 통과시키고(KR 한정),
+  레이더 종목 상세의 '외국인·기관 순매수 (추정)' 카드가 이를 표시한다. 데이터가 없는 종목은 카드가 나타나지 않는다.
+- 수급은 보조정보다: 조회 실패·예산 초과(7분)여도 가격·후보 게시를 막지 않는다. 메타는 `meta.flowMeta`.

@@ -2087,47 +2087,40 @@ def _naver_num(v):
     except Exception:
         return None
 
-def _naver_flow_rows(code, pages=5):
-    """Return newest-first daily rows: date, close, institution shares, foreign shares."""
+def _naver_flow_rows(code, count=60):
+    """Return newest-first daily rows: date, close, institution/foreign net-buy shares.
+
+    NAVER의 모바일 투자자별 매매동향 JSON을 사용한다 (구 PC frgn.naver HTML 표는
+    2026-10 개편으로 사라짐). pageSize 최대값이 60이라 한 번 호출로 60거래일을 받는다.
+    """
+    url = f"https://m.stock.naver.com/api/stock/{code}/trend?pageSize={min(count, 60)}"
+    try:
+        data = json.loads(http_text(url, timeout=18))
+    except Exception:
+        return []
     rows = {}
-    for page in range(1, pages + 1):
-        url = f"https://finance.naver.com/item/frgn.naver?code={code}&page={page}"
-        try:
-            html = http_text(url, timeout=18, encoding="euc-kr")
-            soup = BeautifulSoup(html, "html.parser")
-        except Exception:
+    for item in data if isinstance(data, list) else []:
+        if not isinstance(item, dict):
             continue
-
-        table = soup.find("table", class_="type2")
-        if table is None:
+        ds = str(item.get("bizdate") or "")
+        if not re.fullmatch(r"\d{8}", ds):
             continue
-
-        for tr in table.find_all("tr"):
-            tds = tr.find_all("td")
-            if len(tds) < 7:
-                continue
-            vals = [td.get_text(" ", strip=True) for td in tds]
-            ds = vals[0].replace(".", "-")
-            if not re.match(r"^\d{4}-\d{2}-\d{2}$", ds):
-                continue
-
-            close = _naver_num(vals[1])
-            inst_shares = _naver_num(vals[5])
-            foreign_shares = _naver_num(vals[6])
-            if close is None:
-                continue
-
-            rows[ds] = {
-                "date": ds,
-                "close": close,
-                "institution_shares": inst_shares,
-                "foreign_shares": foreign_shares,
-            }
-
+        ds = f"{ds[:4]}-{ds[4:6]}-{ds[6:]}"
+        close = _naver_num(item.get("closePrice"))
+        if close is None or close <= 0:
+            continue
+        hold = str(item.get("foreignerHoldRatio") or "").strip().rstrip("%")
+        rows[ds] = {
+            "date": ds,
+            "close": close,
+            "institution_shares": _naver_num(item.get("organPureBuyQuant")),
+            "foreign_shares": _naver_num(item.get("foreignerPureBuyQuant")),
+            "foreign_hold_pct": _naver_num(hold) if re.fullmatch(r"-?\d+(\.\d+)?", hold) else None,
+        }
     return [rows[k] for k in sorted(rows, reverse=True)]
 
 def _naver_flow_one(code):
-    daily = _naver_flow_rows(code, pages=5)
+    daily = _naver_flow_rows(code)
     if len(daily) < 20:
         return {}
 
@@ -2135,9 +2128,17 @@ def _naver_flow_one(code):
         "flow_source": "NAVER 순매수수량×종가 추정",
         "flow_is_estimate": True,
         "flow_sessions": len(daily),
+        "flow_asof": daily[0]["date"],
     }
+    # 외국인 보유율은 제공사 표기값 그대로(최신일).
+    hold = next((r.get("foreign_hold_pct") for r in daily if r.get("foreign_hold_pct") is not None), None)
+    if hold is not None and 0 <= hold <= 100:
+        out["foreign_hold_pct"] = hold
     for n in (5, 20, 60):
-        chunk = daily[: min(n, len(daily))]
+        # 보유 일수가 기간보다 짧으면 그 기간 값은 만들지 않는다 (30일치 합을 60일로 표기하지 않음).
+        if len(daily) < n:
+            continue
+        chunk = daily[:n]
         f = 0.0
         inst = 0.0
         f_ok = 0
@@ -2194,8 +2195,12 @@ def investor_flow_enrich(raw):
         target = candidates[: min(100, len(candidates))]
 
     errors = []
+    started = time.monotonic()
 
     def one(x):
+        # 수급은 보조정보: 전체 갱신을 붙들지 않게 예산(7분)을 넘기면 남은 종목은 건너뛴다.
+        if time.monotonic() - started > 420:
+            return x, {}
         code = str(x.get("stock_code") or "").zfill(6)
         return x, _naver_flow_one(code)
 
@@ -5182,8 +5187,16 @@ def main():
         "strongRule": "각 기간 5조건 중 4개 이상 + 중앙값 수익률·시장대비 모두 플러스",
     })
 
-    print("8/12 수급 생략 · 컨센서스는 후보 선별 후 제한 확인")
-    flow_meta = {"connected": False, "coverage": 0, "source": "사용 안 함", "message": "수급 미사용"}
+    print("8/12 외국인·기관 수급 — NAVER 순매수수량×종가 추정 (후보 종목 한정)")
+    try:
+        flow_meta = investor_flow_enrich(raw)
+    except Exception as e:
+        # 수급은 보조정보: 실패해도 가격·후보 게시를 막지 않는다.
+        print("  수급 연결 실패:", e)
+        flow_meta = {"connected": False, "coverage": 0,
+                     "source": "NAVER investor net-buy shares × daily close (approximate KRW)",
+                     "message": "수급 조회 실패 · 다음 갱신에서 재시도"}
+    print("  ", flow_meta.get("message"))
 
     print("9/12 점수 / 신호 / CAN SLIM 계산")
     today = datetime.now(KST).date().isoformat()
@@ -5370,7 +5383,7 @@ def main():
             },
             "dartMeta": dart_meta,
             "profileMeta": profile_meta,
-            "marketContextMeta": {"status": "NOT_USED", "source": "사용 안 함", "message": "수급 미사용(사용자 설정)"},
+            "marketContextMeta": {"status": "NOT_USED", "source": "사용 안 함", "message": "시장 단위 수급 지표 미사용 · 종목별 외국인·기관 추정수급은 flowMeta 참조"},
             "flowMeta": flow_meta,
             "sectorFlowMeta": sector_flow_meta,
             "consensusMeta": consensus_meta,
