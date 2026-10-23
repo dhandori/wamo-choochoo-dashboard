@@ -1,6 +1,6 @@
 // Leading stocks and leading industries. Reads wamo_trend.json → markets[X].leadership.
-import { helpButton, addTerms } from './help.js?v=20261020-asia1';
-import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261021-lq1';
+import { helpButton, addTerms } from './help.js?v=20261023-tx1';
+import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs?v=20261023-tx1';
 addTerms(LEADER_TERMS);
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
@@ -18,7 +18,7 @@ const clip = (t, k) => { t = short(t); return t.length > k ? `${t.slice(0, k - 1
 const EMERGENCE = {
   CONFIRMED: ['출현 확인', 'good', 'FTD 뒤 10거래일 안에 기준 이상의 선도주가 신고가를 뚫었어요. 상승장이 진짜일 가능성이 커졌다는 뜻이에요. 비중 확대를 따져 볼 수 있는 단계예요.'],
   WATCHING: ['확인 중', 'mid', 'FTD 뒤 10거래일이 아직 지나지 않았어요. 신고가를 뚫는 선도주 수를 매일 세고 있어요.'],
-  WEAK: ['선도주 부족', 'bad', 'FTD 뒤 10거래일이 지났는데 신고가를 뚫은 선도주가 기준보다 적어요. FTD 신뢰도가 낮다는 뜻이라 10% 이내 원칙을 지켜요.'],
+  WEAK: ['선도주 부족', 'bad', 'FTD 뒤 10거래일이 지났는데 신고가를 뚫은 선도주가 기준보다 적어요. FTD를 믿기 어렵다는 뜻이라 총자금 10% 이내 원칙을 지켜요.'],
   NO_FTD: ['FTD 없음', 'none', '지금 살아 있는 FTD가 없어서 "출현" 판정은 하지 않아요. 아래 숫자는 최근 10거래일 신고가 돌파 수(참고용)예요.'],
 };
 
@@ -99,7 +99,7 @@ function rankDelta(v) {
 
 function condDots(c) {
   const wrap = n('div', null, 'ld-conds');
-  [['rsTop', 'RS 상위20%'], ['newHighs', '신고가 3+'], ['above50', '50일선 위 60%+'], ['persist', '10일 중 5일+']].forEach(([k, label]) => {
+  [['rsTop', 'RS 상위 20%'], ['newHighs', '신고가 3+'], ['above50', '50일선 위 60%+'], ['persist', '10일 중 5일+']].forEach(([k, label]) => {
     wrap.append(n('span', `${c?.[k] ? '✓' : '·'} ${label}`, c?.[k] ? 'ok' : ''));
   });
   return wrap;
@@ -161,7 +161,7 @@ function leaderCard(L, openStock, rerender, no) {
   const h = n('h3'); h.append(`${no} `, term('leader', '선도주'), ' 목록');
   head.append(h, n('span', `${ld.count ?? 0}종목 · 핵심 ${ld.coreCount ?? 0}`, 'ld-status tone-none'));
   card.append(head);
-  card.append(n('p', 'RS 80 이상 · 신고가 15% 이내 · Stage 2 · 유동성을 모두 채운 종목이에요. 표시(★·돌파·버팀)를 누르면 뜻이 나와요. 종목을 누르면 차트가 열려요.', 'ld-meaning'));
+  card.append(n('p', 'RS 80 이상 · 52주 고점 15% 이내 · Stage 2 · 유동성을 모두 채운 종목이에요. 표시(★·돌파·버팀)를 누르면 뜻이 나와요. 종목을 누르면 차트가 열려요.', 'ld-meaning'));
   const filters = n('div', null, 'ld-filters');
   [['all', `전체 ${ld.count ?? 0}`], ['core', `핵심 ${ld.coreCount ?? 0}`], ['rsLead', `RS선 선행 ★ ${ld.rsLeadCount ?? 0}`], ['breakout', `돌파 ${ld.breakoutCount ?? 0}`]].forEach(([k, label]) => {
     const b = n('button', label, stockFilter === k ? 'active' : ''); b.type = 'button';
@@ -235,14 +235,14 @@ function mapCard(L, no) {
   svg.append(sv('line', { x1: X(xLine), x2: X(xLine), y1: mt, y2: mt + ph, class: 'ld-map-rule' }), sv('line', { x1: ml, x2: ml + pw, y1: Y(yLine), y2: Y(yLine), class: 'ld-map-rule' }));
   svg.append(sv('line', { x1: ml, x2: ml, y1: mt, y2: mt + ph, class: 'ld-map-axis' }), sv('line', { x1: ml, x2: ml + pw, y1: mt + ph, y2: mt + ph, class: 'ld-map-axis' }));
   svg.append(sv('text', { x: ml + pw / 2, y: H - 4, class: 'ld-map-label', 'text-anchor': 'middle' }, '업종 RS (오른쪽 = 시장보다 강함) →'));
-  svg.append(sv('text', { x: 10, y: mt + ph / 2, class: 'ld-map-label', 'text-anchor': 'middle', transform: `rotate(-90 10 ${mt + ph / 2})` }, '신고가 15% 이내 종목 비율 →'));
+  svg.append(sv('text', { x: 10, y: mt + ph / 2, class: 'ld-map-label', 'text-anchor': 'middle', transform: `rotate(-90 10 ${mt + ph / 2})` }, '52주 고점 15% 이내 종목 비율 →'));
   const maxM = Math.max(...pts.map(p => p.members));
   const watchMin = pol.watchScoreMin ?? 4;
   const kind = p => p.leading ? 'lead' : p.watchScore >= watchMin ? 'watch' : 'other';
   const order = { other: 0, watch: 1, lead: 2 };
   pts.slice().sort((a, b) => order[kind(a)] - order[kind(b)]).forEach(p => {
     const c = sv('circle', { cx: X(p.rs), cy: Y(p.nearHighPct), r: (3 + 6 * Math.sqrt(p.members / maxM)).toFixed(1), class: `ld-dot ${kind(p)}` });
-    c.append(sv('title', {}, `${short(p.name)} · RS ${num(p.rs)} · 신고가 15% 이내 ${num(p.nearHighPct)}% · ${p.members}종목 · 준비도 ${p.watchScore}/6`));
+    c.append(sv('title', {}, `${short(p.name)} · RS ${num(p.rs)} · 고점 15% 이내 ${num(p.nearHighPct)}% · ${p.members}종목 · 준비도 ${p.watchScore}/6`));
     svg.append(c);
   });
   // Label the coloured dots, strongest first, skipping labels that would overlap.
@@ -258,7 +258,7 @@ function mapCard(L, no) {
   });
   card.append(svg);
   const legend = n('div', null, 'ld-map-legend');
-  legend.append(n('span', '● 선도업종', 'lead'), n('span', `● 워치리스트(준비도 ${watchMin}점 이상)`, 'watch'), n('span', '● 그 밖의 업종', 'other'), n('span', `초록 칠한 칸 = RS ${xLine} 이상 · 비율 ${yLine}% 이상 (강함 + 고점 근처)`, 'zone'));
+  legend.append(n('span', '● 선도업종', 'lead'), n('span', `● 워치리스트(준비도 ${watchMin}점 이상)`, 'watch'), n('span', '● 그 밖의 업종', 'other'), n('span', `초록 칸 = RS ${xLine} 이상이면서 비율 ${yLine}% 이상 (강하고 고점에 가까움)`, 'zone'));
   card.append(legend);
   return card;
 }
@@ -395,9 +395,9 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
     n('p', `기준일 ${L.asOf || '—'} · 분석 대상 ${L.universe ?? '—'}종목 (와모 스크리닝 목록 안에서의 비교이며 시장 전체가 아닙니다).`),
     n('p', `선도주: RS(오닐 방식) ${pol.rsMin} 이상, 52주 고점 ${pol.highDistanceMax}% 이내, Stage 2, 유동성(${({US:'시총 10억 달러 이상',KR:'20일 평균 거래대금 50억 원 이상',JP:'20일 평균 거래대금 5억 엔 이상',TW:'20일 평균 거래대금 1억 대만달러 이상'})[market]}). 핵심은 RS ${pol.rsCore} 이상.`),
     n('p', `선도주 출현: FTD 뒤 ${pol.emergenceWindow}거래일 안에 RS ${pol.rsMin} 이상 종목이 52주 최고 종가를 50일 평균 ${pol.breakoutVolume}배 이상 거래량으로 돌파한 수. 기준 ${pol.emergenceMin?.[market] ?? pol.emergenceMin?.KR}종목 (와모 기본값).`),
-    n('p', `업종: 구성 ${pol.industryMinMembers}종목 이상인 업종만. 업종 RS는 구성 종목 RS 원점수의 중간값을 업종끼리 순위화. 분류는 가격 화면의 산업 분류를 그대로 씁니다.`),
+    n('p', `업종: 구성 ${pol.industryMinMembers}종목 이상인 업종만. 업종 RS는 구성 종목 RS 원점수의 중간값으로 업종끼리 순위를 매깁니다. 분류는 가격 화면의 산업 분류를 그대로 씁니다.`),
     n('p', `FTD 대기 워치리스트: 선도업종이 아닌 업종 중 6문항(${(L.watchChecks || []).map(c => c.label).join(' · ')}) 가운데 ${pol.watchScoreMin}개 이상을 채운 업종. 문항별 숫자 기준은 워치리스트 카드의 "6가지 질문" 상자에 있습니다(와모 기본값).`),
-    n('p', '모든 숫자는 표시 거래일까지의 종가·거래량만으로 계산하며, 매수 권유가 아닙니다. RS·신고가는 과거 가격의 상대 비교입니다.'),
+    n('p', '모든 숫자는 표시된 거래일까지의 종가·거래량만으로 계산하며, 매수 권유가 아닙니다. RS·신고가는 과거 가격의 상대 비교입니다.'),
   );
   if (L.note) rules.append(n('p', L.note));
   container.append(rules);

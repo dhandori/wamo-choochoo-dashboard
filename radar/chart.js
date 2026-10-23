@@ -155,7 +155,7 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
   maSeries.forEach(m => {
     const v = m.values[n - 1];
     const [back, band] = SLOPE[m.n] || [10, 0.5];
-    item(m.color, m.label, v == null ? '이력 부족' : fmtPrice(v, market), v == null ? null : slope(m.values, back, band), m.dash ? 'dash' : '');
+    item(m.color, m.label, v == null ? '기록 부족' : fmtPrice(v, market), v == null ? null : slope(m.values, back, band), m.dash ? 'dash' : '');
   });
   if (!compact) wrap.append(legend);
 
@@ -212,7 +212,7 @@ export function rsChart(series, { days = 60 } = {}) {
   node('circle', { cx: x(idx.length - 1), cy: y(vals.at(-1)), r: 3.5, class: atHigh ? 'pc-rs-high' : 'pc-last' }, svg);
   wrap.append(svg);
   const cap = el('div', null, 'pc-caption');
-  cap.append(el('b', `RS선 (주가 ÷ ${series.benchLabel})`), el('span', ` 그래프 첫날 = 100 · ${atHigh ? '오늘 1년 중 최고치 ●' : yearVals.length >= 200 ? `1년 최고치보다 ${Math.abs(gapPct).toFixed(1)}% 아래` : '1년 이력 부족'}`));
+  cap.append(el('b', `RS선 (주가 ÷ ${series.benchLabel})`), el('span', ` 그래프 첫날 = 100 · ${atHigh ? '오늘 1년 중 최고치 ●' : yearVals.length >= 200 ? `1년 최고치보다 ${Math.abs(gapPct).toFixed(1)}% 아래` : '1년 기록 부족'}`));
   wrap.prepend(cap);
   return wrap;
 }

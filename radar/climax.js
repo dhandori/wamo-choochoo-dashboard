@@ -1,8 +1,8 @@
 // 천장 신호: 일중전환(장중 반전)과 클라이맥스 런. wamo_trend.json의 markets[시장].climax만 읽습니다.
 // 계산 규칙은 wamo_climax.py에 있고, 이 화면은 그 결과를 지수 차트·기록표·종목 목록으로 보여 줍니다.
-import { MA } from './chart.js?v=20261020-asia1';
-import { addTerms, helpButton } from './help.js?v=20261020-asia1';
-import { glossary } from './terms.mjs?v=20261021-lq1';
+import { MA } from './chart.js?v=20261023-tx1';
+import { addTerms, helpButton } from './help.js?v=20261023-tx1';
+import { glossary } from './terms.mjs?v=20261023-tx1';
 
 const NS = 'http://www.w3.org/2000/svg';
 const isNum = n => typeof n === 'number' && Number.isFinite(n);
@@ -180,7 +180,7 @@ function volText(v) {
 function pointList(points, date) {
   const ul = el('ul', null, 'tr-reasons');
   (points || []).forEach(p => { const li = el('li'); li.append(el('b', p.label), el('span', p.detail)); ul.append(li); });
-  if (!ul.children.length) { const li = el('li'); li.append(el('b', '기본 조건만'), el('span', `${date ? md(date) + ' ' : ''}더해진 강도 점수는 없어요.`)); ul.append(li); }
+  if (!ul.children.length) { const li = el('li'); li.append(el('b', '기본 조건만 충족'), el('span', `${date ? md(date) + ' ' : ''}추가로 붙은 강도 점수는 없어요.`)); ul.append(li); }
   return ul;
 }
 
@@ -206,7 +206,7 @@ function indexCard(rep, market, b) {
   const sc = (b?.liquidity?.groups || []).find(g => g.symbol === rep.symbol)?.sellingClimax || null;
   if (sc) {
     const box = el('div', null, 'cx-dist lead');
-    box.append(el('span', '셀링 클라이맥스'), el('b', `${md(sc.date)} ${pct(sc.changePct)}`), el('small', `급락 + 1년 최대 거래량(50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배) · 그 뒤 ${pct(sc.sinceThenPct)} · 바닥 후보, FTD 대기`));
+    box.append(el('span', '셀링 클라이맥스'), el('b', `${md(sc.date)} ${pct(sc.changePct)}`), el('small', `급락 + 1년 최대 거래량(50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배) · 그 뒤 ${pct(sc.sinceThenPct)} · 바닥 후보 · FTD를 기다리는 중`));
     card.append(box);
   }
   const now = [];
@@ -348,7 +348,7 @@ function stockUse(b) {
     const box = el('div', null, 'cx-guide-stats');
     box.append(el('b', `이 시장 종목 기록 · ${b.scorecard?.since ? `${b.scorecard.since.slice(2).replaceAll('-', '.')}부터` : ''}`));
     rows.forEach(t => box.append(el('p', t)));
-    box.append(el('small', '"지수보다" 마이너스 = 같은 기간 지수보다 더 빠짐 · 기록이 짧아 방향만 참고'));
+    box.append(el('small', '‘지수보다’가 마이너스면 같은 기간 지수보다 더 빠졌다는 뜻 · 기록이 짧아 방향만 참고하세요'));
     sec.append(box);
   }
   return sec;

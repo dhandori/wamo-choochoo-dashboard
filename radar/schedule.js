@@ -1,6 +1,6 @@
 // "갱신 일정·진행 상황": both markets at a glance, from the same status file the
 // "지금 갱신" button reads (published at the start and end of every run).
-import { refreshReason } from './runner.js?v=20261021-late15';
+import { refreshReason } from './runner.js?v=20261023-tx1';
 
 const NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const RULE = {
@@ -44,11 +44,11 @@ function card(market, s, trend, now) {
   const reason = refreshReason(market, s || undefined);
   let label, tone;
   if (!s) [label, tone] = ['상태 확인 중', 'idle'];
-  else if (stuck) [label, tone] = ['수집이 멈춘 것 같음', 'bad'];
+  else if (stuck) [label, tone] = ['수집이 멈춘 것 같아요', 'bad'];
   else if (step) [label, tone] = ['갱신 진행 중', 'run'];
   else if (s.status === 'FAILED') [label, tone] = ['지난 갱신 실패', 'bad'];
   else if (reason) [label, tone] = ['갱신 지연', 'warn'];
-  else if (s.status === 'WARNING') [label, tone] = ['완료 · 참고 경고 있음', 'ok'];
+  else if (s.status === 'WARNING') [label, tone] = ['완료 · 참고할 경고 있음', 'ok'];
   else [label, tone] = ['최신 상태', 'ok'];
   head.append(n('span', label, `sched-chip tone-${tone}`));
   box.append(head);
@@ -90,7 +90,7 @@ function asiaCard(snapshot, now) {
   const blocks = ['JP', 'TW'].map(m => snapshot?.markets?.[m] || null), st = ['JP', 'TW'].map(m => asia?.[m] || null);
   let label, tone;
   if (st.some(x => x?.status === 'FAILED')) [label, tone] = ['지난 갱신 실패', 'bad'];
-  else if (blocks.every(b => !b)) [label, tone] = ['첫 갱신 대기', 'idle'];
+  else if (blocks.every(b => !b)) [label, tone] = ['첫 갱신 기다리는 중', 'idle'];
   else if (blocks.some(b => b && b.status === 'STALE')) [label, tone] = ['갱신 지연', 'warn'];
   else [label, tone] = ['최신 상태', 'ok'];
   head.append(n('span', label, `sched-chip tone-${tone}`));

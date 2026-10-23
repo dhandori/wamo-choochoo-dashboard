@@ -1,5 +1,5 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261020-asia1';
-import { climaxSection, climaxCount } from './climax.js?v=20261023-ui3';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261023-tx1';
+import { climaxSection, climaxCount } from './climax.js?v=20261023-tx1';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -133,7 +133,7 @@ export function renderWeather(container, market, onOpen) {
   const arrow = d => ({ up: '↗', flat: '→', down: '↘' })[d] || '·';
   const si = score('index'), ss = score('slope');
   chip('지수', [idx, idx2].filter(Boolean).map(i => `${i.label} ${pct(i.changePct)}`).join(' · '),
-    { 1: '이평선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
+    { 1: '이동평균선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
   chip('기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '),
     { 1: '상승', 0: '꺾임', '-1': '하락' }[ss] ?? '—', ss);
   const dok = [dist, dist2].filter(d => d?.status === 'OK');
@@ -170,7 +170,7 @@ export function renderTrendMetrics(container, market) {
   add('RS선 선행 신고가', `${b.rsLeaders?.leadingCount ?? 0}`, `RS선 신고가 전체 ${b.rsLeaders?.count ?? 0}종목`);
   add('강한 경고', `${b.sellWarnings?.highCount ?? 0}`, `주의 포함 ${b.sellWarnings?.count ?? 0}종목`);
   const up = b.earnings?.upcoming || [];
-  add('실적발표 14일 내', b.earnings?.status === 'OK' ? `${b.earnings.total ?? up.length}` : '—', b.earnings?.status === 'OK' ? `추세 종목 ${up.filter(x => x.inTrend).length}` : ({KR:'한국',JP:'일본',TW:'대만'})[market] ? `${({KR:'한국',JP:'일본',TW:'대만'})[market]}은 미제공` : '일정 자료 대기');
+  add('실적발표 14일 내', b.earnings?.status === 'OK' ? `${b.earnings.total ?? up.length}` : '—', b.earnings?.status === 'OK' ? `추세 종목 ${up.filter(x => x.inTrend).length}` : ({KR:'한국',JP:'일본',TW:'대만'})[market] ? '일정 자료 없음' : '일정 자료 기다리는 중');
 }
 
 // ------------------------------------------------------------ detail view
@@ -190,7 +190,7 @@ function weatherDetail(b, market) {
     const line = el('div', null, 'tr-index-line');
     const big = el('div', null, 'tr-big'); big.append(el('b', fmt(i.close, 2)), el('span', pct(i.changePct), tone(i.changePct)));
     const word = d => ({ up: '↗ 상승', flat: '→ 평평', down: '↘ 하락' })[d] || '—';
-    const sl = (v, d, back) => d ? `${word(d)} (${v > 0 ? '+' : ''}${fmt(v)}% / ${back}일)` : '계산 불가';
+    const sl = (v, d, back) => d ? `${word(d)} (${v > 0 ? '+' : ''}${fmt(v)}% / ${back}일)` : '계산할 수 없음';
     line.append(el('small', i.label), big,
       el('p', `가격: 50일선 ${i.aboveMa50 ? '위' : '아래'} · 200일선 ${i.aboveMa200 ? '위' : '아래'}`),
       el('p', `기울기: 50일선 ${sl(i.ma50Slope, i.ma50Dir, 10)} · 200일선 ${sl(i.ma200Slope, i.ma200Dir, 20)}`, 'tr-slope'));
@@ -521,7 +521,7 @@ function scoreSection(b, openStock) {
   const sc = b.scorecard || {}, wrap = el('div');
   wrap.append(help(sc.note || ''));
   if (sc.status !== 'OK') return wrap.append(emptyBox('아직 기록된 신호가 없어요. 매일 자동으로 쌓입니다.')), wrap;
-  wrap.append(el('p', `${sc.since} 부터 신호 ${sc.eventCount}건 기록 · 5·20·60거래일이 지나야 해당 칸이 채워져요.`, 'tr-sub'));
+  wrap.append(el('p', `${sc.since}부터 신호 ${sc.eventCount}건 기록 · 5·20·60거래일이 지나야 해당 칸이 채워져요.`, 'tr-sub'));
   const grid = el('div', null, 'tr-score-grid');
   Object.entries(sc.signals || {}).forEach(([key, s]) => {
     const card = el('article', null, `tr-card tr-score ${s.side}`);

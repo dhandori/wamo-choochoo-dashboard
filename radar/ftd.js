@@ -1,7 +1,7 @@
 // Separate market-reversal workspace; individual-stock filters do not apply.
-import { ftdSummary, freshIndex, PHASES, PHASE_MEANING, ftdQuality } from './ftd-model.mjs?v=20261021-lq1';
-import { helpButton, addTerms } from './help.js?v=20261020-asia1';
-import { FTD_TERMS, glossary } from './terms.mjs?v=20261021-lq1';
+import { ftdSummary, freshIndex, PHASES, PHASE_MEANING, ftdQuality } from './ftd-model.mjs?v=20261023-tx1';
+import { helpButton, addTerms } from './help.js?v=20261023-tx1';
+import { FTD_TERMS, glossary } from './terms.mjs?v=20261023-tx1';
 addTerms(FTD_TERMS);
 const n = (tag, text, cls) => { const e=document.createElement(tag); if(text!=null)e.textContent=text; if(cls)e.className=cls; return e; };
 const num = (v,d=1) => typeof v==='number' && Number.isFinite(v) ? v.toLocaleString('ko-KR',{maximumFractionDigits:d,minimumFractionDigits:d}) : '—';
@@ -9,12 +9,12 @@ const pct = v => typeof v==='number'?`${v>0?'+':''}${num(v)}%`:'—';
 const term = (key,label) => helpButton(label||FTD_TERMS[key][0], key);
 const ask = (key) => helpButton(FTD_TERMS[key][0], key, true);
 const selected={KR:0,US:0,JP:0,TW:0};
-const EVENT_NAMES={WINDOW_EXPIRED:'판정 기간 종료 (예전 규칙)',LATE_WINDOW:'반등 Day 8 · 늦은 구간 진입',CORRECTION:'하락장 진입',NEW_CORRECTION:'새 하락장',RALLY:'반등 Day 1',RALLY_FAILED:'반등 무효 (기준 저점 이탈)',FTD:'FTD 나옴',FTD_FAILED:'FTD 무효 (기준 저점 이탈)',RECOVERED:'FTD 없이 전고점 회복 · 탐색 끝',UPTREND:'FTD 뒤 전고점 회복 · 상승 전환 완료'};
+const EVENT_NAMES={WINDOW_EXPIRED:'판정 기간 종료 (예전 규칙)',LATE_WINDOW:'반등 Day 8 · 늦은 구간 진입',CORRECTION:'하락장 진입',NEW_CORRECTION:'새 하락장',RALLY:'반등 Day 1',RALLY_FAILED:'반등 무효 (기준 저점 이탈)',FTD:'FTD 나옴',FTD_FAILED:'FTD 무효 (기준 저점 이탈)',RECOVERED:'FTD 없이 전고점 회복 · FTD 찾기 종료',UPTREND:'FTD 뒤 전고점 회복 · 상승 전환 완료'};
 const NOTE={EXPIRED:'예전 규칙(Day 8 이후 불인정)으로 계산된 결과입니다. 다음 자동 갱신에서 새 규칙으로 다시 계산합니다.',OUTSIDE:'지금은 하락장이 아니라서 FTD를 찾지 않습니다. 하락장이 오면 그때부터 반등 날짜를 셉니다.',
   CORRECTION:'지수가 하락장에 들어왔습니다. 지수가 처음으로 반등하는 날(Day 1)을 기다립니다.',
   RALLY:'반등을 시도하는 중입니다. 기준 저점을 깨지 않고, Day 4 이후에 지수가 +1.7% 넘게 오르면서 거래량도 전날보다 많으면 FTD입니다.',
   LATE:'반등이 Day 8을 넘겼지만 아직 FTD가 없습니다. 지금부터 나오는 FTD는 "늦은 FTD"로 표시하고, 힘이 약하다고 봅니다.',
-  CONFIRMED:'하락장 뒤에 FTD가 나왔습니다. 시장이 다시 오르기 시작했을 수 있다는 신호입니다. 기준 저점을 깨면 무효가 됩니다. 지금은 총자금의 10% 이내에서만 발담그기.',
+  CONFIRMED:'하락장 뒤에 FTD가 나왔습니다. 시장이 다시 오르기 시작했을 수 있다는 신호입니다. 기준 저점을 깨면 무효가 됩니다. 지금은 총자금의 10% 이내에서만 시험 매수합니다.',
   PRESSURE:'FTD 뒤에 힘이 빠지는 경고가 나왔습니다. 아직 무효는 아니지만 비중을 10% 넘게 늘리지 않습니다.',
   UNAVAILABLE:'지수 가격·거래량·거래일 이력이 모두 확인될 때 판정합니다.'};
 // After a correction the index either completed an FTD-led uptrend or simply got back above its old high.
@@ -22,7 +22,7 @@ const lastEvent=s=>(s.events||[]).slice(-1)[0]?.type;
 const uptrendDone=s=>s.phase==='OUTSIDE'&&lastEvent(s)==='UPTREND';
 const phaseName=s=>uptrendDone(s)?'상승 전환 완료':PHASES[s.phase]||s.phase;
 const phaseNote=s=>uptrendDone(s)?'FTD 뒤 지수가 하락 전 고점을 되찾았습니다. 하락장이 끝나 새 FTD는 찾지 않고, 선도주가 계속 버티는지 봅니다.':s.phase==='OUTSIDE'&&lastEvent(s)==='RECOVERED'?'FTD 없이 지수가 하락 전 고점을 되찾았습니다. 지금은 하락장이 아니라서 FTD를 찾지 않습니다.':NOTE[s.phase];
-const DAY_ONE_KIND={UP_CLOSE:'상승 마감한 날',REVERSAL:'장중 새 저점 뒤 위쪽 절반 마감'};
+const DAY_ONE_KIND={UP_CLOSE:'상승 마감한 날',REVERSAL:'장중 새 저점을 찍고 위쪽 절반에서 마감한 날'};
 function link(text,url){const a=n('a',text);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
 function metric(labelNode,value,sub){const box=n('div',null,'ftd-metric');const head=n('span');head.append(labelNode);box.append(head,n('strong',value),n('small',sub));return box;}
 function badge(text,phase){return n('span',text,`ftd-badge ftd-${phase.toLowerCase()}`);}
@@ -44,7 +44,7 @@ function flow(s,fresh){
 function chart(s){
   const all=s.series||[],wrap=n('section',null,'ftd-chart');
   wrap.append(n('h4','지수 흐름과 반등 기준선'));
-  if(all.length<2){wrap.append(n('p','표시할 검증 지수 이력이 없습니다.'));return wrap;}
+  if(all.length<2){wrap.append(n('p','표시할 지수 기록이 없습니다.'));return wrap;}
   // 20-day average from the stored closes; the first 19 sessions have none.
   const ma20=all.map((r,i)=>i<19?null:all.slice(i-19,i+1).reduce((t,x)=>t+x.close,0)/20);
   const phone=window.matchMedia('(max-width:760px)').matches;
@@ -98,7 +98,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   if(active)rule.append(n('em','지금 FTD 신호가 켜져 있어요 → 10% 이내'));
   container.append(rule);
   container.append(glossary(FTD_TERMS,['ftd','correction','dayOne','rallyDay','bottom','ftdLow','distribution','lateFtd','quality','failed','uptrendDone','drawdown','dayChange','volRatio']));
-  if(!indexes.length){container.append(n('div','FTD 지수 이력을 준비 중입니다. 다음 자동 갱신에서 검증된 가격과 거래량을 받은 뒤 표시합니다.','ftd-empty'));return;}
+  if(!indexes.length){container.append(n('div','FTD 지수 기록을 준비 중입니다. 다음 자동 갱신 때 가격과 거래량을 확인한 뒤 보여 드려요.','ftd-empty'));return;}
   const deck=n('div',null,'ftd-indexes');
   indexes.forEach((s,i)=>{const b=n('button',null,`ftd-index ${selected[market]===i?'selected':''}`);b.type='button';b.setAttribute('aria-pressed',String(selected[market]===i));
     const isFresh=freshIndex(s,expected)&&!failed;
@@ -106,7 +106,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
     b.onclick=()=>{selected[market]=i;renderFTD(container,market,block,{expected,failed,openLeaders});};deck.append(b);
   });container.append(deck);
   const s=indexes[selected[market]]||indexes[0],fresh=freshIndex(s,expected)&&!failed;
-  if(!fresh){const messages=[failed?'최신 파일을 다시 확인하지 못했습니다.':null,s.note||'지수 데이터의 최신성 또는 완전성을 확인할 수 없습니다.',expected&&s.asOf!==expected?`최근 마감 거래일 ${expected}`:null];container.append(n('div',messages.filter(Boolean).join(' '),'ftd-data-warning'));}
+  if(!fresh){const messages=[failed?'최신 파일을 다시 불러오지 못했습니다.':null,s.note||'지수 데이터가 최신인지, 빠진 날이 없는지 확인하지 못했습니다.',expected&&s.asOf!==expected?`최근 마감 거래일 ${expected}`:null];container.append(n('div',messages.filter(Boolean).join(' '),'ftd-data-warning'));}
   container.append(flow(s,fresh));
   const panel=n('section',null,`ftd-panel ftd-${fresh?s.phase.toLowerCase():'unavailable'}`);
   const head=n('div',null,'ftd-panel-head'),title=n('div');title.append(n('div',s.label,'eyebrow'),n('h3',fresh?phaseName(s):'현재 판정 보류'),n('p',fresh?phaseNote(s):(s.status==='STALE'?`${s.asOf} 기준 과거 상태: ${PHASES[s.phase]}`:NOTE.UNAVAILABLE)));head.append(title);panel.append(head);
@@ -115,10 +115,10 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
       else if(w.code==='DISTRIBUTION_CLUSTER'){line.append('FTD 뒤 10거래일 안에 ',term('distribution','분산일'),`이 ${w.count}번 나왔어요 (${(w.dates||[]).map(d=>d.slice(5).replace('-','/')).join(', ')}). 큰손이 팔고 있다는 경고예요.`);}
       else line.append(w.code);warn.append(line);});panel.append(warn);}
   const latest=s.latest||{},grid=n('div',null,'ftd-grid');
-  grid.append(metric(term('drawdown','63거래일 고점 대비'),typeof latest.drawdownPct==='number'?`-${num(latest.drawdownPct)}%`:'—',latest.belowMa50?'50일선 아래':'50일선 위 또는 미확인'),
+  grid.append(metric(term('drawdown','63거래일 고점 대비'),typeof latest.drawdownPct==='number'?`-${num(latest.drawdownPct)}%`:'—',latest.belowMa50?'50일선 아래':'50일선 위 또는 확인 안 됨'),
     metric(term('rallyDay','반등 경과'),s.rally?`Day ${s.rally.day}`:'—',s.rally?`${s.rally.date} 시작 · ${DAY_ONE_KIND[s.rally.kind]||'상승 마감'}`:'하락장 안에서 첫 반등부터 계산'),
     metric(term('dayChange','당일 지수 등락'),pct(latest.changePct),'FTD 조건: +1.7% 이상'),
-    metric(term('volRatio','전일 대비 거래량'),typeof latest.volumeRatio==='number'?`${num(latest.volumeRatio,2)}배`:'—',typeof latest.volumeRatio==='number'?`전일 대비 ${pct((latest.volumeRatio-1)*100)} · 1.00배 초과 필요`:'전일 초과 필요'));
+    metric(term('volRatio','전일 대비 거래량'),typeof latest.volumeRatio==='number'?`${num(latest.volumeRatio,2)}배`:'—',typeof latest.volumeRatio==='number'?`전일 대비 ${pct((latest.volumeRatio-1)*100)} · 1.00배보다 커야 함`:'전일보다 많아야 함'));
   panel.append(grid);
   if(s.status!=='UNAVAILABLE'){
     const checks=n('div',null,'ftd-checks'),day=s.rally?.day;
@@ -146,8 +146,8 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   const list=n('ol');[...(s.events||[])].reverse().slice(0,20).forEach(e=>{const li=n('li');li.append(n('time',e.date),n('strong',EVENT_NAMES[e.type]||e.type),n('span',e.type==='FTD'?`${pct(e.changePct)} · ${num(e.volumeRatio,2)}배 · Day ${e.rallyDay}${e.late?' · 늦은 FTD':''}`:e.type==='RALLY'?`${DAY_ONE_KIND[e.dayOneKind]||'상승 마감'} · 기준 저점 ${num(e.low,2)}`:`지수 ${num(e.close,2)}`));list.append(li);});history.append(list);container.append(history);
   const rules=n('details',null,'ftd-rules');rules.append(n('summary','판정 기준·데이터 출처'));const pol=s.policy;
   if(pol){rules.append(n('p',`하락장 전제 (와모 자체 필터): ${pol.correction}`),...(pol.dayOne?[n('p',`Day 1: ${pol.dayOne}`)]:[]),...(pol.bottom?[n('p',`기준 저점: ${pol.bottom}`)]:[]),n('p',`FTD: ${pol.confirmation}`),n('p',`유지·실패: ${pol.failure}`),...(pol.completion?[n('p',`상승 전환 완료: ${pol.completion}`)]:[]),n('p',pol.note));(pol.sources||[]).forEach(src=>rules.append(link(src.title,src.url)));}
-  rules.append(n('p',`${s.source||'지수 출처 미확인'} · ${s.volumeNote||''} · ${s.asOf||'—'} 기준.`));
-  if(s.repairedDates?.length){rules.append(n('p',`네이버 실제 관측으로 보완: ${s.repairedDates.join(', ')} · 겹치는 기간 종가·거래량 단위를 교차검증했습니다.`));rules.append(link('한국 지수 보완 원천 ↗',s.repairSourceUrl));}
-  if(s.sourceUrl)rules.append(link('지수 원천 이력 ↗',s.sourceUrl));container.append(rules);
+  rules.append(n('p',`${s.source||'지수 출처 확인 안 됨'} · ${s.volumeNote||''} · ${s.asOf||'—'} 기준.`));
+  if(s.repairedDates?.length){rules.append(n('p',`네이버 자료로 채운 날짜: ${s.repairedDates.join(', ')} · 겹치는 기간의 종가·거래량을 서로 맞춰 보며 확인했습니다.`));rules.append(link('한국 지수 보완 자료 ↗',s.repairSourceUrl));}
+  if(s.sourceUrl)rules.append(link('지수 원자료 ↗',s.sourceUrl));container.append(rules);
 }
 export { ftdSummary };

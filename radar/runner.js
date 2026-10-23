@@ -63,7 +63,7 @@ function phaseFor(market) {
   return null;
 }
 
-const LABEL = { waiting: '실행 확인 대기', queued: '실행 대기', running: '수집 중', applying: '완료 · 반영 중', done: '완료', failed: '실패' };
+const LABEL = { waiting: '실행 확인 중', queued: '실행 순서 기다리는 중', running: '수집 중', applying: '완료 · 반영 중', done: '완료', failed: '실패' };
 
 export function runnerButton(market) {
   const box = el('span', null, 'run-now'); box.dataset.market = market;
@@ -112,7 +112,7 @@ function waitingTitle(market, now = Date.now()) {
 
 function linkTo(url, text) { const a = el('a', text, 'run-link'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; }
 function cancelLink() {
-  const c = el('button', '추적 그만두기', 'run-cancel'); c.type = 'button';
+  const c = el('button', '진행 확인 그만두기', 'run-cancel'); c.type = 'button';
   c.onclick = () => { savePending(null); repaint(); };
   return c;
 }

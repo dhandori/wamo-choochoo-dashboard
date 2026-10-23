@@ -1,5 +1,5 @@
-import {aiMembership, aiSearchText} from './ai.mjs?v=20261020-asia5';
-export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261020-asia5';
+import {aiMembership, aiSearchText} from './ai.mjs?v=20261023-tx1';
+export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261023-tx1';
 export const numeric = x => typeof x === 'number' && Number.isFinite(x);
 const day = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10)===value;
 const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));
@@ -74,7 +74,7 @@ export function acceptSnapshot(current, incoming) {
   const old=current.markets[k],next=markets[k];
   if(!old||old===next)continue;
   if ((old.asOf||'')>(next.asOf||'') || (old.stocks.length && next.stocks.length<old.stocks.length*.9)) {
-   markets[k]={...old,expectedSession:next.expectedSession,nextScheduledFor:next.nextScheduledFor,status:old.asOf===next.expectedSession?'PARTIAL':'STALE',warnings:[...new Set([...old.warnings,'새 가격 파일의 날짜가 더 오래되거나 유효 종목이 10% 넘게 감소해 이전 검증 가격을 유지합니다.'])]};
+   markets[k]={...old,expectedSession:next.expectedSession,nextScheduledFor:next.nextScheduledFor,status:old.asOf===next.expectedSession?'PARTIAL':'STALE',warnings:[...new Set([...old.warnings,'새 가격 파일의 날짜가 더 오래됐거나 쓸 수 있는 종목이 10% 넘게 줄어서, 이전에 확인된 가격을 그대로 보여 줍니다.'])]};
    if(next.verifiedThrough)markets[k].verifiedThrough=next.verifiedThrough;else delete markets[k].verifiedThrough;
   }
  }
