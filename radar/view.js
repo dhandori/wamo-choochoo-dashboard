@@ -1,8 +1,8 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261021-lq1';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261023-ui3';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261021-lq1';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261020-asia5';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261020-asia1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261022-vc1';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261023-ui3';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261021-late15';
 import { renderSchedule } from './schedule.js?v=20261021-late15';
 import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261020-asia1';
@@ -37,7 +37,7 @@ function fillCardCharts(root) {
 }
 
 const $ = id => document.getElementById(id);
-const defaults = { smallGroups: false, tab: 'near', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false, sort2:'none', minCap:0 };
+const defaults = { smallGroups: false, tab: 'trend', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false, sort2:'none', minCap:0 };
 const PERIODS={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','medianReturn5d','return5dCount'],'20d':['20일','medianReturn20d','return20dCount'],'60d':['60일','medianReturn60d','return60dCount'],'120d':['120일','medianReturn120d','return120dCount'],'200d':['200일','medianReturn200d','return200dCount']};
 const CHANGE_LABELS={near:'신고가권 진입',rs:'RS 80 돌파',stage:'Stage 2 진입'};
 const EXIT_LABELS={near:'신고가권 이탈',rs:'RS 80 하회',stage:'Stage 2 이탈'};
@@ -47,7 +47,7 @@ const MARKET_NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const LITE = new Set(['JP', 'TW']);
 const LITE_OFF = new Set();   // every tab now works for Japan/Taiwan too
 const CURRENCY = { KR: ['₩', '원', 0], US: ['$', '달러', 2], JP: ['¥', '엔', 0], TW: ['NT$', '대만달러', 2] };
-const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'near' };
+const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'trend' };
 let snapshot = null, refreshFailed = false, refreshing = false;
 // Sort settings (cap floor, 1st/2nd key) are remembered per market in this browser.
 const SORT_STORE='wamo-sort-v1';
@@ -60,6 +60,20 @@ const pct = n => numeric(n) ? `${n > 0 ? '+' : ''}${fmt(n)}%` : '—';
 const tone = n => n > 0 ? 'up' : n < 0 ? 'down' : 'neutral';
 const distance = s => numeric(s.highDistancePct) ? `${fmt(s.highDistancePct)}%` : '—';
 const volume = s => numeric(s.volumeRatio) ? `${fmt(s.volumeRatio, 2)}×` : '—';
+// 숫자 옆 보조 막대: 숫자는 그대로 두고, 크기를 한눈에 보이게만 한다.
+const clamp01 = x => Math.max(0, Math.min(1, x));
+function bar(ratio, cls, centered = false, left = 0) {
+  const track = document.createElement('i'); track.className = `cell-bar${centered ? ' centered' : ''}`; track.setAttribute('aria-hidden', 'true');
+  const fill = document.createElement('b'); fill.className = cls; fill.style.width = `${(clamp01(ratio) * (centered ? 50 : 100)).toFixed(1)}%`; fill.style.left = `${left}%`;
+  track.append(fill); return track;
+}
+// 등락률: 가운데 기준선에서 오르면 오른쪽(빨강), 내리면 왼쪽(파랑). scale%에서 가득 찬다.
+const moveBar = (n, scale) => numeric(n) ? bar(Math.abs(n) / scale, n >= 0 ? 'bar-up' : 'bar-down', true, n >= 0 ? 50 : 50 - clamp01(Math.abs(n) / scale) * 50) : null;
+// 고점까지: 고점에 붙을수록 가득(15% 이상 떨어지면 빈 막대).
+const highBar = s => numeric(s.highDistancePct) ? bar(1 - s.highDistancePct / 15, s.highDistancePct <= 5 ? 'bar-good' : 'bar-plain') : null;
+const rsBar = s => numeric(s.rs) ? bar(s.rs / 99, s.rs >= 80 ? 'bar-good' : 'bar-plain') : null;
+const volBar = s => numeric(s.volumeRatio) ? bar(s.volumeRatio / 3, s.volumeRatio >= 1.5 ? 'bar-hot' : 'bar-plain') : null;
+function numCell(text, cls, barNode, tag = 'td') { const c = el(tag, null, `num-cell ${cls || ''}`.trim()); c.append(el('span', text)); if (barNode) c.append(barNode); return c; }
 const price = s => { const [sym, , d] = CURRENCY[s.market] || CURRENCY.US; return `${sym}${fmt(s.close, s.market === 'JP' && !Number.isInteger(s.close) ? 1 : d)}`; };
 const capCurrency = () => (CURRENCY[state.market] || CURRENCY.US)[1];
 function marketCap(s, withCurrency = false) {
@@ -142,7 +156,7 @@ function spark(s, large = false) {
   if (values.length > 1) {
     const low = Math.min(...values), range = Math.max(...values) - low || 1;
     const px = (v, i) => [i / (values.length - 1) * (width - 4) + 2, height - 5 - (v - low) / range * (height - 10)];
-    const up = values.at(-1) >= values[0], color = up ? '#55d5b1' : '#fa8d96';
+    const up = values.at(-1) >= values[0], color = up ? '#ff6176' : '#5ea8ff';
     // Dotted baseline at the first close: above it = gained over the window.
     const base = document.createElementNS(svg.namespaceURI, 'line'), y0 = px(values[0], 0)[1];
     base.setAttribute('x1', 0); base.setAttribute('x2', width); base.setAttribute('y1', y0); base.setAttribute('y2', y0);
@@ -181,9 +195,9 @@ function stockButton(s) {
   b.append(changeBadges(s));
   return b;
 }
-function stat(label, value, cls = '') {
+function stat(label, value, cls = '', barNode = null) {
   const box = el('div', null, 'stat'), caption = el('span'); caption.append(helpLabel(label));
-  box.append(caption, el('strong', value, cls)); return box;
+  box.append(caption, el('strong', value, cls)); if (barNode) box.append(barNode); return box;
 }
 // Wait briefly for the chart data so the drawer does not jump after opening.
 function detail(s) {
@@ -266,18 +280,18 @@ function table(rows) {
   pageRows.forEach(s => {
     const row = el('tr'), name = el('td'); name.append(stockButton(s));
     if (['high','movers','ai'].includes(state.tab)) name.append(el('span', signals(s).join(' · '), 'signal'));
-    row.append(name, capNode(s, 'td'), el('td', price(s)), el('td', pct(s.changePct), tone(s.changePct)), el('td', pct(s.return5d), tone(s.return5d)));
-    if(state.tab==='ai')row.append(el('td',pct(s.return20d),tone(s.return20d)),el('td',pct(s[longKey]),tone(s[longKey])));
-    row.append(el('td', distance(s)), el('td', volume(s)), el('td', fmt(s.rs, 0)));
+    row.append(name, capNode(s, 'td'), el('td', price(s)), numCell(pct(s.changePct), tone(s.changePct), moveBar(s.changePct, 8)), numCell(pct(s.return5d), tone(s.return5d), moveBar(s.return5d, 15)));
+    if(state.tab==='ai')row.append(numCell(pct(s.return20d),tone(s.return20d),moveBar(s.return20d,30)),numCell(pct(s[longKey]),tone(s[longKey]),moveBar(s[longKey],60)));
+    row.append(numCell(distance(s), '', highBar(s)), numCell(volume(s), '', volBar(s)), numCell(fmt(s.rs, 0), '', rsBar(s)));
     const chart = el('td'); chart.append(spark(s)); const link = el('td'); const links = el('span', null, 'row-links'); links.append(naverLink(s)); const tvRow = tvLink(s); if (tvRow) links.append(tvRow); link.append(links); row.append(chart, link); body.append(row);
   });
   table.append(body); wrap.append(table);
   const cards = el('div', null, 'stock-cards');
   pageRows.forEach(s => {
     const card = el('article', null, 'stock-card'), top = el('div', null, 'stock-card-top'); const cardLinks = el('span', null, 'card-links'); cardLinks.append(naverLink(s)); const tvCard = tvLink(s); if (tvCard) cardLinks.append(tvCard); top.append(stockButton(s), cardLinks);
-    const quote = el('div', null, 'card-quote'); quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), spark(s));
-    const stats = el('div', null, 'card-stats'); stats.append(stat('5일', pct(s.return5d), tone(s.return5d)), stat('고점까지', distance(s)), stat('거래량 배수', volume(s)), stat('RS', fmt(s.rs, 0)));
-    if(state.tab==='ai')stats.append(stat('20일',pct(s.return20d),tone(s.return20d)),stat(`${longDays}일`,pct(s[longKey]),tone(s[longKey])));
+    const quote = el('div', null, 'card-quote'); quote.append(el('strong', price(s)), numCell(pct(s.changePct), tone(s.changePct), moveBar(s.changePct, 8), 'span'), spark(s));
+    const stats = el('div', null, 'card-stats'); stats.append(stat('5일', pct(s.return5d), tone(s.return5d), moveBar(s.return5d, 15)), stat('고점까지', distance(s), '', highBar(s)), stat('거래량 배수', volume(s), '', volBar(s)), stat('RS', fmt(s.rs, 0), '', rsBar(s)));
+    if(state.tab==='ai')stats.append(stat('20일',pct(s.return20d),tone(s.return20d),moveBar(s.return20d,30)),stat(`${longDays}일`,pct(s[longKey]),tone(s[longKey]),moveBar(s[longKey],60)));
     const cap = el('div', null, 'card-cap'); cap.append(el('span', '시총'), capNode(s), el('span', capCurrency()));
     const chartBox = el('div', null, 'card-chart'); chartBox.dataset.symbol = s.symbol;
     card.append(top, cap, quote, chartBox, stats);
@@ -556,7 +570,12 @@ function renderMeta(m) {
     b.setAttribute('aria-label', `${b.firstChild.textContent} · ${b.title}`);
   });
   $('metrics').replaceChildren();
-  [['52주 신고가권', near.length, '고점 대비 10% 이내'], ['당일 신고가', highs.length, '장중 또는 종가 경신'], ['산업 동반 강세', groups.length, '확인된 그룹'], ['특징주', moves.length, '상승 · 하락 · 거래량']].forEach(([label, value, sub]) => { const box = el('div', null, 'metric'), caption=el('span'); caption.append(helpLabel(label)); box.append(caption, el('strong', value.toLocaleString()), el('small', sub)); $('metrics').append(box); });
+  const universeN = m.stocks.length, groupN = m.industries.length;
+  [['52주 신고가권', near.length, '고점 대비 10% 이내', universeN, '종목', 'bar-accent'], ['당일 신고가', highs.length, '장중 또는 종가 경신', universeN, '종목', 'bar-accent'], ['산업 동반 강세', groups.length, '확인된 그룹', groupN, '그룹', 'bar-accent'], ['특징주', moves.length, '상승 · 하락 · 거래량', universeN, '종목', 'bar-plain']].forEach(([label, value, sub, total, unit, barCls]) => {
+    const box = el('div', null, 'metric'), caption=el('span'); caption.append(helpLabel(label));
+    const share = total ? value / total : 0;
+    const foot = el('div', null, 'metric-share'); foot.append(bar(share, barCls), el('em', total ? `${unit === '그룹' ? '전체 그룹' : '전체'} ${total.toLocaleString()} 중 ${fmt(share * 100, share < 0.1 ? 1 : 0)}%` : ''));
+    box.append(caption, el('strong', value.toLocaleString()), el('small', sub), foot); $('metrics').append(box); });
   if(state.tab==='ai'){
     $('metrics').replaceChildren();
     [['AI 관찰 종목',`${ai.count}`,`관리 목록 ${ai.catalogCount}종목`],['당일 상승 비율',numeric(ai.advancingPct)?`${fmt(ai.advancingPct,0)}%`:'—',`유효 ${ai.changeCount}종목 중 ${ai.advancingCount}종목`],['AI 신고가권',`${ai.nearHighCount}`,`52주 비교 ${ai.eligible52w}종목 · 10% 이내`],['AI 당일 신고가',`${ai.newHighCount}`,'장중 또는 종가 · 중복 제외']].forEach(([label,value,sub])=>{const box=el('div',null,'metric'),caption=el('span');caption.append(helpLabel(label));box.append(caption,el('strong',value),el('small',sub));$('metrics').append(box);});
@@ -588,6 +607,14 @@ function renderChanges(m) {
   exited.forEach(({stock:s,exited:keys})=>{const b=button('',false,()=>detail(s));b.className='exit-item';b.append(el('strong',shortName(s)),el('span',keys.map(k=>EXIT_LABELS[k]).join(' · ')));list.append(b);});
   panel.append(list);
 }
+// 휴대폰에서 탭 줄이 옆으로 넘칠 때, 선택한 탭이 화면 밖에 숨지 않게 그 줄만 옆으로 움직인다(세로 스크롤은 건드리지 않음).
+function revealActiveTab() {
+  const b = document.querySelector('.tabs button.active'), g = b?.closest('.tab-group');
+  if (!g || g.scrollWidth <= g.clientWidth + 1) return;
+  const br = b.getBoundingClientRect(), gr = g.getBoundingClientRect();
+  if (br.left >= gr.left && br.right <= gr.right) return;
+  g.scrollLeft += br.left - gr.left - (gr.width - br.width) / 2;
+}
 function render() {
   closeHelp();
   if (!snapshot) {
@@ -607,6 +634,7 @@ function render() {
   }
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
+  revealActiveTab();
   document.body.dataset.view = state.tab;
   renderMeta(m); renderWeather($('weather'), state.market, openTrend); paintSchedule();
   const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd','leaders'].includes(state.tab);

@@ -151,7 +151,7 @@ function indexChart(rep, market) {
     const p = v => isNum(v) && v > 0 ? v.toLocaleString('ko-KR', { maximumFractionDigits: 2 }) : '—';
     row('종가', `${p(c.c)}${isNum(prev) ? ` (${pct((c.c / prev - 1) * 100)})` : ''}`, '#eaf0f8');
     row('시가 · 고가 · 저가', `${p(c.o)} · ${p(c.h)} · ${p(c.l)}`, '#5b6f88');
-    if (hasVol && isNum(c.v)) { const pv = cs[k - 1]?.v; row('거래량', `${volText(c.v)}${isNum(pv) && pv > 0 ? ` (전날의 ${fmt(c.v / pv, 2)}배)` : ''}`, isNum(c.o) && c.c < c.o ? 'var(--red)' : 'var(--green)'); }
+    if (hasVol && isNum(c.v)) { const pv = cs[k - 1]?.v; row('거래량', `${volText(c.v)}${isNum(pv) && pv > 0 ? ` (전날의 ${fmt(c.v / pv, 2)}배)` : ''}`, isNum(c.o) && c.c < c.o ? 'var(--down)' : 'var(--up)'); }
     ma.forEach(line => row(line.label, p(line.values[k]), line.color));
     const e = byDate.get(c.d);
     if (e) row('신호', `${KIND[e.type]?.[0] || ''} · 종가 위치 ${fmt(e.closePos, 0)}%`, e.type === 'BOTTOM' ? 'var(--green)' : 'var(--red)');

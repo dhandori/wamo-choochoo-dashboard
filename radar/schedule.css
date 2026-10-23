@@ -14,7 +14,7 @@
 .sched-chip.tone-ok { background: #10332c; border-color: #357d69; color: #76dfbc; }
 .sched-chip.tone-run { background: #1c2a47; border-color: #4d68a3; color: #c4d6ff; }
 .sched-chip.tone-warn { background: #302b20; border-color: #806b42; color: #e9ce91; }
-.sched-chip.tone-bad { background: #34222b; border-color: #855363; color: #ffabb5; }
+.sched-chip.tone-bad { background: #2e2318; border-color: #8a5a2e; color: #ffc996; }
 .sched-progress { margin: 10px 0 2px; }
 .sched-progress ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
 .sched-progress li { font-size: 11px; text-align: center; padding: 5px 4px; border-radius: 6px; background: #17263a; color: #6f86a0; }

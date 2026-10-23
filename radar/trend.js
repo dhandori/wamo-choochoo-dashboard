@@ -1,5 +1,5 @@
 import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261020-asia1';
-import { climaxSection, climaxCount } from './climax.js?v=20261022-lq2';
+import { climaxSection, climaxCount } from './climax.js?v=20261023-ui3';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -81,6 +81,22 @@ function stockName(item, openStock) {
 }
 
 // ------------------------------------------------------------ weather strip
+// 시장 날씨 점수 게이지: 숫자는 그대로 보여 주고, 최저~최고 사이 위치와 판정 구간을 함께 그린다.
+// 항목마다 -1·0·+1점이라 범위는 ±항목 수, +2 이상 공격 가능 / -2 이하 현금 비중 확대.
+function scoreGauge(w, compact = false) {
+  if (!isNum(w?.score) || !(w.factors || []).length) return null;
+  const max = w.factors.length, pos = v => ((v + max) / (2 * max) * 100).toFixed(1);
+  const box = el('span', null, `tr-gauge${compact ? ' compact' : ''}`);
+  box.setAttribute('aria-label', `시장 날씨 점수 ${w.score}점 (범위 -${max}~+${max})`);
+  const track = el('span', null, 'tr-gauge-track');
+  // 구간 경계는 -1.5 / +1.5 (점수는 정수라 -2 이하 = 나쁨, -1~+1 = 보통, +2 이상 = 좋음)
+  [['bad', -max, -1.5], ['mid', -1.5, 1.5], ['good', 1.5, max]].forEach(([cls, a, b]) => {
+    const z = el('i', null, `tr-gauge-zone ${cls}`); z.style.left = `${pos(a)}%`; z.style.width = `${(pos(b) - pos(a)).toFixed(1)}%`; track.append(z);
+  });
+  const mark = el('b', null, 'tr-gauge-mark'); mark.style.left = `${pos(w.score)}%`; track.append(mark);
+  box.append(el('em', `${w.score > 0 ? '+' : ''}${w.score}점`), track, el('small', `-${max} ~ +${max}`));
+  return box;
+}
 export function renderWeather(container, market, onOpen) {
   if (!container) return;
   container.replaceChildren();
@@ -98,6 +114,7 @@ export function renderWeather(container, market, onOpen) {
   container.className = `tr-weather level-${(w.level || 'UNKNOWN').toLowerCase()}`;
   const head = el('div', null, 'tr-weather-head');
   head.append(el('span', null, 'tr-dot'), el('span', '시장 날씨', 'tr-weather-kicker'), el('strong', w.label || '판단 보류'));
+  const gauge = scoreGauge(w); if (gauge) head.append(gauge);
   const text = el('div', w.advice || '', 'tr-weather-text');
   // A late index bar never turns into a fake-index verdict; the last real one stays and says so.
   if (b.kept) text.append(el('span', ` ⏳ 지수 자료 지연 · ${md(b.asOf)} 종가 기준 판정을 유지 중이에요. 다음 정기 확인 때 다시 계산해요.`, 'tr-weather-kept'));
@@ -149,6 +166,7 @@ export function renderTrendMetrics(container, market) {
   const add = (label, value, sub) => { const box = el('div', null, 'metric'); box.append(el('span', label), el('strong', value, /^[\d—.,%+-]+$/.test(value) ? null : 'metric-word'), el('small', sub)); container.append(box); };
   if (!b) { add('시장 날씨', '—', '자료 준비 중'); return; }
   add('시장 날씨', LIGHT[b.weather?.level] || '—', `점수 ${b.weather?.score ?? '—'} · ${b.asOf} 종가`);
+  { const g = scoreGauge(b.weather, true); if (g) container.lastChild.append(g); }
   add('RS선 선행 신고가', `${b.rsLeaders?.leadingCount ?? 0}`, `RS선 신고가 전체 ${b.rsLeaders?.count ?? 0}종목`);
   add('강한 경고', `${b.sellWarnings?.highCount ?? 0}`, `주의 포함 ${b.sellWarnings?.count ?? 0}종목`);
   const up = b.earnings?.upcoming || [];
@@ -256,7 +274,7 @@ function weatherDetail(b, market) {
     const big = el('div', null, 'tr-big'); big.append(el('b', `${hl.newHighs}`, 'up'), el('span', '·'), el('b', `${hl.newLows}`, 'down')); c4.append(big);
     c4.append(mirrorBars(hl.series || [], { upKey: 'newHighs', downKey: 'newLows', upLabel: '신고가', downLabel: '신저가' }));
     const lg = el('div', null, 'pc-legend small');
-    [['var(--green)', '위: 신고가 종목 수'], ['var(--red)', '아래: 신저가 종목 수']].forEach(([c, t]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
+    [['var(--up)', '위: 신고가 종목 수'], ['var(--down)', '아래: 신저가 종목 수']].forEach(([c, t]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
     c4.append(lg);
   } else c4.append(el('p', '자료 없음'));
   c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교해요.'));
@@ -353,7 +371,7 @@ function liquidityCard(b, market) {
   headRow.append(tv);
   detail.append(headRow, volumeChart(g.series || []));
   const lg = el('div', null, 'pc-legend small');
-  [['var(--green)', '지수 오른 날'], ['var(--red)', '지수 내린 날'], [MA.find(m => m.n === 20)?.color || '#f0a35a', '20일 평균'], ['#8aa0b9', '점선 1.0배 = 50일 평균']].forEach(([c, tx]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', tx)); lg.append(k); });
+  [['var(--up)', '지수 오른 날'], ['var(--down)', '지수 내린 날'], [MA.find(m => m.n === 20)?.color || '#f0a35a', '20일 평균'], ['#8aa0b9', '점선 1.0배 = 50일 평균']].forEach(([c, tx]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', tx)); lg.append(k); });
   lg.append(el('span', `${g.label} 공식 거래량 (거래소 전체) · 최근 ${(g.series || []).length}거래일`, 'pc-hint'));
   detail.append(lg);
   // 3. tiles: liquidity (exchange-wide), up/down money (screened stocks), selling climax

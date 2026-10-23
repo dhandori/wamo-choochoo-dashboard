@@ -70,7 +70,7 @@ function chart(s){
   for(const [value,color,label] of [[s.rally?.low,'#f2c474','기준 저점(반등 무효선)'],[s.ftd?.low,'#5bd4b1','FTD 저가']])if(typeof value==='number'){add('line',{x1:L,y1:y(value),x2:W-R,y2:y(value),stroke:color,'stroke-width':1.4,'stroke-dasharray':'6 5'});add('text',{x:L+4,y:y(value)-5,fill:color,'font-size':FS-1},label);}
   // Volume bars with their own baseline.
   const maxVol=Math.max(...rows.map(r=>r.volume)),bw=Math.max(1.5,(W-L-R)/rows.length*.65);
-  rows.forEach((r,i)=>{const h=r.volume/maxVol*VH;add('rect',{x:x(i)-bw/2,y:V+VH-h,width:bw,height:h,fill:i&&r.close<rows[i-1].close?'#a85d70':'#387f76'});});
+  rows.forEach((r,i)=>{const h=r.volume/maxVol*VH;add('rect',{x:x(i)-bw/2,y:V+VH-h,width:bw,height:h,fill:i&&r.close<rows[i-1].close?'#2f5f9e':'#a3404f'});});
   add('line',{x1:L,y1:V+VH,x2:W-R,y2:V+VH,stroke:'#3a4c63','stroke-width':1});
   add('text',{x:W-R+6,y:V+12,fill:'#9fb3c9','font-size':FS-1},'거래량');
   const events=(s.events||[]).filter(e=>['FTD','RALLY'].includes(e.type));
