@@ -210,6 +210,48 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
 @media(max-width:760px){.filter-tools{grid-template-columns:repeat(2,1fr)}.energy-kpis{grid-template-columns:repeat(2,1fr)}.energy-kpi:last-child{grid-column:1/-1}.energy-chartbox{height:290px}}
 @media(max-width:480px){.filter-tools .filter-card:first-child{grid-column:auto}}
 
+/* V43 · 가독성 개선: 본문·보조 텍스트 확대, 흐린 글자 대비 강화 */
+:root{--muted:#a3b3cd}
+.brand .sub{font-size:14px}.meta{font-size:12px}
+.section-note{font-size:12px;line-height:1.6}.hero-desc{font-size:14px;line-height:1.7}
+.table td{font-size:13px;padding:11px 10px}.table th{font-size:11px}
+.namecell b{font-size:14px}.ticker{font-size:11px}.signal{font-size:11px}.scorebadge{font-size:17px}
+.filter-card span{font-size:11px}.filter-card small{font-size:10px;color:#8da0bc;line-height:1.45}
+.stock-name{font-size:16px}.stock-metrics span{font-size:10px}.stock-metrics b{font-size:14px}.stock-reason{font-size:11.5px;line-height:1.62}
+.sector .name{font-size:13px}.mini,.leaders,.rank{font-size:11px}.action{font-size:11px}
+.dcard .k,.whybox .k{font-size:10px}.dcard .v{font-size:18px}
+.whybox>div:last-child{font-size:14px;line-height:1.6}
+.condition-row{font-size:12px}
+.business-box .biz-easy{font-size:14px}.business-box .biz-detail{font-size:12px;line-height:1.75}.business-box .biz-src{font-size:10px}
+.biz-pro-label{font-size:10px}.biz-pro-value{font-size:12px;line-height:1.68}.biz-pro-segments{font-size:10px}
+.detail-sector-flow{font-size:11px}.detail-sector-flow .detail-flow-grid span{font-size:10.5px}
+.catalyst-item{font-size:11px}
+.cs-detail-head b{font-size:12px}.cs-value{font-size:12px}.cs-criterion{font-size:10.5px}.cs-detail-row p{font-size:11px;line-height:1.65}
+.cs-summary b{font-size:15px}.cs-summary span{font-size:11px}.cs-summary small{font-size:10px}
+.alignment-item span{font-size:10px}.alignment-item b{font-size:13px}
+.alignment-event .event-date{font-size:10px}.alignment-event .event-type{font-size:10px}.alignment-event .event-detail{font-size:11px}.alignment-empty{font-size:11px}
+.rules-grid b{font-size:12px}.rules-grid span{font-size:10.5px;line-height:1.6;color:#9cb0ca}
+.glossary-grid summary{font-size:13px}.glossary-grid p{font-size:11.5px;line-height:1.75}
+.health-main b{font-size:13px}.health-main span{font-size:11.5px}.health-pill{font-size:10.5px}
+.quality-panel>summary{font-size:11px}.quality-card span{font-size:9.5px}.quality-note{font-size:10.5px}.quality-error{font-size:10px}
+.funnel-card span{font-size:10.5px}.funnel-card small{font-size:9.5px}.funnel-note{font-size:10.5px}
+.flow-period strong{font-size:11px}.flow-period small{font-size:10px}.flow-period .flow-score{font-size:9.5px}
+.flow-flag{font-size:9.5px}.flow-why{font-size:10.5px;line-height:1.6}
+.flow-members-title{font-size:11px}.flow-members-title span{font-size:9.5px}
+.flow-member{font-size:9.5px}.flow-member-name b{font-size:11px}.flow-member-name small{font-size:9px}
+.flow-member-metric span{font-size:9px}.flow-member-metric b{font-size:10.5px}.flow-member-axis i{font-size:8px}
+.flow-view-button{font-size:10.5px}.flow-empty{font-size:12px}.sector-flow-method{font-size:10.5px}
+.energy-kpi span{font-size:10px}.energy-kpi small{font-size:9.5px}
+.energy-stock b{font-size:11px}.energy-stock small{font-size:9.5px}.energy-stock>span{font-size:10px}
+.energy-method>div{font-size:10.5px}.energy-zone span,.energy-zone small{font-size:10px}.energy-reading{font-size:11px}
+.energy-breakout-title{font-size:12px}.energy-breakout-title span{font-size:10px}.energy-empty{font-size:11px}
+.mini-stat span{font-size:12px}.mini-stat small{font-size:9.5px}
+.data-tag{font-size:9px}
+.drawer-note,.chart-caption{font-size:11px;line-height:1.6}
+.wamo-tooltip{font-size:12px;line-height:1.62}
+.external-check-btn{font-size:12px}.watch-btn{font-size:12px}
+.consensus-metric span{font-size:10px}.consensus-foot{font-size:10px}.source-desc{font-size:11px;line-height:1.6}
+.footer{font-size:11px;line-height:1.75}
 </style>
 <script id="wamo-radar-entry">(()=>{const q=new URLSearchParams(location.search);if(!q.has("stock")&&q.get("legacy")!=="1"&&/(?:\/|\/index\.html|\/us\.html)$/.test(location.pathname)){location.replace("radar.html?market=KR");}})();</script>
 </head>
@@ -637,7 +679,7 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
         <div><b>섹터액션</b><span>신고가와 무관한 네 번째 독립 후보 기준입니다. 같은 사업군 3개 이상이 7일 또는 30일 동안 시장보다 넓게 강하면 해당합니다.</span></div>
       </div>
     </details>
-    <footer class="footer">WAMO는 과거 실적·재무·공시의 공식 원천으로 OpenDART를 사용합니다. 섹터액션은 신고가 여부와 분리해 7·30거래일 실제 수익률·KOSPI/KOSDAQ 대비·상승 확산으로 판정합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 DART와 섞지 않는 보조정보이며, 이세무사·미너비니·신고가권·섹터액션 후보 중 우선순위 상위 20개만 제한 확인하고 3일 캐시를 사용합니다. 종목별 네이버증권 바로가기를 함께 제공합니다. 모든 결과는 연구 우선순위를 정하는 스크리닝 후보이며 매수·매도 추천이 아닙니다.</footer>
+    <footer class="footer">WAMO는 과거 실적·재무·공시의 공식 원천으로 OpenDART를 사용합니다. 섹터액션은 신고가 여부와 분리해 7·30거래일 실제 수익률·KOSPI/KOSDAQ 대비·상승 확산으로 판정합니다. 추정 EPS·추정 PER·목표주가·컨센서스는 DART와 섞지 않는 보조정보이며, 이세무사·미너비니·신고가권·섹터액션 후보 중 우선순위 상위 20개만 제한 확인하고 3일 캐시를 사용합니다. 종목별 네이버증권·트레이딩뷰 바로가기를 함께 제공합니다. 모든 결과는 연구 우선순위를 정하는 스크리닝 후보이며 매수·매도 추천이 아닙니다.</footer>
 </div>
 
 <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
@@ -651,6 +693,7 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
       <div id="detailSignal"></div>
       <div class="detail-actions">
         <a id="naverResearchLink" class="external-check-btn" href="#" target="_blank" rel="noopener noreferrer">네이버증권 바로가기 ↗</a>
+        <a id="tvResearchLink" class="external-check-btn" href="#" target="_blank" rel="noopener noreferrer">트레이딩뷰 차트 ↗</a>
         <button id="detailWatch" class="watch-btn">☆ 관심종목</button>
       </div>
     </div>
@@ -801,13 +844,26 @@ window.WAMO_DATA = {"meta":{"market":"KR","highScreenBasis":"52_WEEK","runTrigge
 
   function updateNaverResearchLink(x){
     const link=$('#naverResearchLink');
-    if(!link) return;
+    const tv=$('#tvResearchLink');
     const code=stockCodeForExternalLink(x);
-    if(!code){link.hidden=true;link.removeAttribute('href');return;}
-    link.hidden=false;
-    link.href=`https://finance.naver.com/item/main.naver?code=${encodeURIComponent(code)}`;
-    link.textContent='네이버증권 바로가기 ↗';
-    link.setAttribute('aria-label',`${x.name||code} 네이버증권 종목화면 새 창에서 열기`);
+    if(link){
+      if(!code){link.hidden=true;link.removeAttribute('href');}
+      else{
+        link.hidden=false;
+        link.href=`https://finance.naver.com/item/main.naver?code=${encodeURIComponent(code)}`;
+        link.textContent='네이버증권 바로가기 ↗';
+        link.setAttribute('aria-label',`${x.name||code} 네이버증권 종목화면 새 창에서 열기`);
+      }
+    }
+    if(tv){
+      if(!code){tv.hidden=true;tv.removeAttribute('href');}
+      else{
+        tv.hidden=false;
+        tv.href=`https://kr.tradingview.com/chart/?symbol=KRX%3A${encodeURIComponent(code)}`;
+        tv.textContent='트레이딩뷰 차트 ↗';
+        tv.setAttribute('aria-label',`${x.name||code} 트레이딩뷰 차트 새 창에서 열기`);
+      }
+    }
   }
 
   function renderSourceSeparation(x){

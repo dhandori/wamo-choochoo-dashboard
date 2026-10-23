@@ -210,6 +210,48 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
 @media(max-width:760px){.filter-tools{grid-template-columns:repeat(2,1fr)}.energy-kpis{grid-template-columns:repeat(2,1fr)}.energy-kpi:last-child{grid-column:1/-1}.energy-chartbox{height:290px}}
 @media(max-width:480px){.filter-tools .filter-card:first-child{grid-column:auto}}
 
+/* V43 · 가독성 개선: 본문·보조 텍스트 확대, 흐린 글자 대비 강화 */
+:root{--muted:#a3b3cd}
+.brand .sub{font-size:14px}.meta{font-size:12px}
+.section-note{font-size:12px;line-height:1.6}.hero-desc{font-size:14px;line-height:1.7}
+.table td{font-size:13px;padding:11px 10px}.table th{font-size:11px}
+.namecell b{font-size:14px}.ticker{font-size:11px}.signal{font-size:11px}.scorebadge{font-size:17px}
+.filter-card span{font-size:11px}.filter-card small{font-size:10px;color:#8da0bc;line-height:1.45}
+.stock-name{font-size:16px}.stock-metrics span{font-size:10px}.stock-metrics b{font-size:14px}.stock-reason{font-size:11.5px;line-height:1.62}
+.sector .name{font-size:13px}.mini,.leaders,.rank{font-size:11px}.action{font-size:11px}
+.dcard .k,.whybox .k{font-size:10px}.dcard .v{font-size:18px}
+.whybox>div:last-child{font-size:14px;line-height:1.6}
+.condition-row{font-size:12px}
+.business-box .biz-easy{font-size:14px}.business-box .biz-detail{font-size:12px;line-height:1.75}.business-box .biz-src{font-size:10px}
+.biz-pro-label{font-size:10px}.biz-pro-value{font-size:12px;line-height:1.68}.biz-pro-segments{font-size:10px}
+.detail-sector-flow{font-size:11px}.detail-sector-flow .detail-flow-grid span{font-size:10.5px}
+.catalyst-item{font-size:11px}
+.cs-detail-head b{font-size:12px}.cs-value{font-size:12px}.cs-criterion{font-size:10.5px}.cs-detail-row p{font-size:11px;line-height:1.65}
+.cs-summary b{font-size:15px}.cs-summary span{font-size:11px}.cs-summary small{font-size:10px}
+.alignment-item span{font-size:10px}.alignment-item b{font-size:13px}
+.alignment-event .event-date{font-size:10px}.alignment-event .event-type{font-size:10px}.alignment-event .event-detail{font-size:11px}.alignment-empty{font-size:11px}
+.rules-grid b{font-size:12px}.rules-grid span{font-size:10.5px;line-height:1.6;color:#9cb0ca}
+.glossary-grid summary{font-size:13px}.glossary-grid p{font-size:11.5px;line-height:1.75}
+.health-main b{font-size:13px}.health-main span{font-size:11.5px}.health-pill{font-size:10.5px}
+.quality-panel>summary{font-size:11px}.quality-card span{font-size:9.5px}.quality-note{font-size:10.5px}.quality-error{font-size:10px}
+.funnel-card span{font-size:10.5px}.funnel-card small{font-size:9.5px}.funnel-note{font-size:10.5px}
+.flow-period strong{font-size:11px}.flow-period small{font-size:10px}.flow-period .flow-score{font-size:9.5px}
+.flow-flag{font-size:9.5px}.flow-why{font-size:10.5px;line-height:1.6}
+.flow-members-title{font-size:11px}.flow-members-title span{font-size:9.5px}
+.flow-member{font-size:9.5px}.flow-member-name b{font-size:11px}.flow-member-name small{font-size:9px}
+.flow-member-metric span{font-size:9px}.flow-member-metric b{font-size:10.5px}.flow-member-axis i{font-size:8px}
+.flow-view-button{font-size:10.5px}.flow-empty{font-size:12px}.sector-flow-method{font-size:10.5px}
+.energy-kpi span{font-size:10px}.energy-kpi small{font-size:9.5px}
+.energy-stock b{font-size:11px}.energy-stock small{font-size:9.5px}.energy-stock>span{font-size:10px}
+.energy-method>div{font-size:10.5px}.energy-zone span,.energy-zone small{font-size:10px}.energy-reading{font-size:11px}
+.energy-breakout-title{font-size:12px}.energy-breakout-title span{font-size:10px}.energy-empty{font-size:11px}
+.mini-stat span{font-size:12px}.mini-stat small{font-size:9.5px}
+.data-tag{font-size:9px}
+.drawer-note,.chart-caption{font-size:11px;line-height:1.6}
+.wamo-tooltip{font-size:12px;line-height:1.62}
+.external-check-btn{font-size:12px}.watch-btn{font-size:12px}
+.consensus-metric span{font-size:10px}.consensus-foot{font-size:10px}.source-desc{font-size:11px;line-height:1.6}
+.footer{font-size:11px;line-height:1.75}
 </style>
 <script id="wamo-radar-entry">(()=>{const q=new URLSearchParams(location.search);if(!q.has("stock")&&q.get("legacy")!=="1"&&/(?:\/|\/index\.html|\/us\.html)$/.test(location.pathname)){location.replace("radar.html?market=US");}})();</script>
 </head>
@@ -650,7 +692,8 @@ button,input,select{font:inherit}.app{max-width:1480px;margin:0 auto;padding:24p
     <div class="detail-topline">
       <div id="detailSignal"></div>
       <div class="detail-actions">
-        <a id="naverResearchLink" class="external-check-btn" href="#" target="_blank" rel="noopener noreferrer">네이버증권 바로가기 ↗</a>
+        <a id="naverResearchLink" class="external-check-btn" href="#" target="_blank" rel="noopener noreferrer">SEC EDGAR 바로가기 ↗</a>
+        <a id="tvResearchLink" class="external-check-btn" href="#" target="_blank" rel="noopener noreferrer">트레이딩뷰 차트 ↗</a>
         <button id="detailWatch" class="watch-btn">☆ 관심종목</button>
       </div>
     </div>
@@ -809,11 +852,23 @@ window.WAMO_DATA = {"meta":{"market":"US","highScreenBasis":"52_WEEK","runTrigge
 
   function updateNaverResearchLink(x){
     const link=$('#naverResearchLink');
-    if(!link) return;
-    link.hidden=false;
-    link.href=x.secFilingUrl||x.secCompanyUrl||`https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(x.displayTicker||x.ticker||'')}`;
-    link.textContent='SEC EDGAR 바로가기 ↗';
-    link.setAttribute('aria-label',`${x.name||x.ticker} SEC EDGAR 공식 공시 새 창에서 열기`);
+    if(link){
+      link.hidden=false;
+      link.href=x.secFilingUrl||x.secCompanyUrl||`https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(x.displayTicker||x.ticker||'')}`;
+      link.textContent='SEC EDGAR 바로가기 ↗';
+      link.setAttribute('aria-label',`${x.name||x.ticker} SEC EDGAR 공식 공시 새 창에서 열기`);
+    }
+    const tv=$('#tvResearchLink');
+    if(tv){
+      const symbol=String(x.displayTicker||x.ticker||'').trim().toUpperCase();
+      if(!symbol){tv.hidden=true;tv.removeAttribute('href');}
+      else{
+        tv.hidden=false;
+        tv.href=`https://kr.tradingview.com/chart/?symbol=${encodeURIComponent(symbol)}`;
+        tv.textContent='트레이딩뷰 차트 ↗';
+        tv.setAttribute('aria-label',`${x.name||symbol} 트레이딩뷰 차트 새 창에서 열기`);
+      }
+    }
   }
 
   function renderSourceSeparation(x){

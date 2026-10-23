@@ -118,6 +118,20 @@ function naverLink(s, prominent = false) {
   a.setAttribute('aria-label', `${s.name} 네이버증권 새 탭`);
   return a;
 }
+// TradingView chart link. Exchange prefixes: KR→KRX, JP→TSE, TW→TWSE; US uses the real exchange when known.
+const TV_PREFIX = { KR: 'KRX', JP: 'TSE', TW: 'TWSE' };
+function tvLink(s, prominent = false) {
+  let symbol = String(s.symbol || '').trim().toUpperCase();
+  if (!symbol || !/^[A-Z0-9.-]{1,12}$/.test(symbol)) return null;
+  const market = s.market || state.market;
+  if (market === 'US') symbol = symbol.replace(/-/g, '.');
+  const exchange = String(s.exchange || '').toUpperCase();
+  const prefix = market === 'US' ? (['NASDAQ', 'NYSE', 'AMEX'].includes(exchange) ? exchange : null) : TV_PREFIX[market];
+  const full = prefix ? `${prefix}:${symbol}` : symbol;
+  const a = safeLink(prominent ? '트레이딩뷰 ↗' : 'TV ↗', `https://kr.tradingview.com/chart/?symbol=${encodeURIComponent(full)}`, prominent ? 'tv-primary' : 'tv-row');
+  a.setAttribute('aria-label', `${s.name} 트레이딩뷰 차트 새 탭`);
+  return a;
+}
 function spark(s, large = false) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   const width = large ? 560 : 120, height = large ? 140 : 40;
@@ -185,7 +199,9 @@ function renderDetail(s, data) {
   const membership=aiMembership(s);
   if(membership)d.append(el('p',`AI 연관 분류: ${AI_SECTORS.filter(g=>membership.sectors.includes(g.id)).map(g=>g.name).join(' · ')} / ${membership.role}`,'ai-detail'));
   const quote = el('div', null, 'detail-quote');
-  quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), naverLink(s, true)); d.append(quote);
+  quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), naverLink(s, true));
+  const tvDetail = tvLink(s, true); if (tvDetail) quote.append(tvDetail);
+  d.append(quote);
   const chart = el('section', null, 'chart-panel');
   chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true)); d.append(chart);
   if (data !== null) fillDetailChart(chart, s, data);
@@ -253,12 +269,12 @@ function table(rows) {
     row.append(name, capNode(s, 'td'), el('td', price(s)), el('td', pct(s.changePct), tone(s.changePct)), el('td', pct(s.return5d), tone(s.return5d)));
     if(state.tab==='ai')row.append(el('td',pct(s.return20d),tone(s.return20d)),el('td',pct(s[longKey]),tone(s[longKey])));
     row.append(el('td', distance(s)), el('td', volume(s)), el('td', fmt(s.rs, 0)));
-    const chart = el('td'); chart.append(spark(s)); const link = el('td'); link.append(naverLink(s)); row.append(chart, link); body.append(row);
+    const chart = el('td'); chart.append(spark(s)); const link = el('td'); const links = el('span', null, 'row-links'); links.append(naverLink(s)); const tvRow = tvLink(s); if (tvRow) links.append(tvRow); link.append(links); row.append(chart, link); body.append(row);
   });
   table.append(body); wrap.append(table);
   const cards = el('div', null, 'stock-cards');
   pageRows.forEach(s => {
-    const card = el('article', null, 'stock-card'), top = el('div', null, 'stock-card-top'); top.append(stockButton(s), naverLink(s));
+    const card = el('article', null, 'stock-card'), top = el('div', null, 'stock-card-top'); const cardLinks = el('span', null, 'card-links'); cardLinks.append(naverLink(s)); const tvCard = tvLink(s); if (tvCard) cardLinks.append(tvCard); top.append(stockButton(s), cardLinks);
     const quote = el('div', null, 'card-quote'); quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), spark(s));
     const stats = el('div', null, 'card-stats'); stats.append(stat('5일', pct(s.return5d), tone(s.return5d)), stat('고점까지', distance(s)), stat('거래량 배수', volume(s)), stat('RS', fmt(s.rs, 0)));
     if(state.tab==='ai')stats.append(stat('20일',pct(s.return20d),tone(s.return20d)),stat(`${longDays}일`,pct(s[longKey]),tone(s[longKey])));
