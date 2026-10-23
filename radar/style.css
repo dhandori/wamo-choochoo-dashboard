@@ -163,7 +163,7 @@ dialog h2 { font-size: 22px; margin: 8px 50px 0 0; line-height: 1.4; overflow-wr
   .disclosure { font-size: 11px; }.section-head { display: block; }.section-head p { font-size: 12px; }h2 { font-size: 17px; }
   .search input { width: 100%; margin-top: 11px; }.controls { gap: 6px; margin: 10px 0; }.filter-group + .filter-group { padding-left: 0; border-left: 0; }
   .controls button, .controls select { padding: 8px 10px; }.checkbox-control { padding: 7px 5px; }.controls select { flex: 1; min-width: 130px; }
-  .table-wrap { display: none; }.stock-cards { display: grid; gap: 9px; }.stock-card { padding: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
+  .table-wrap { display: none; }.stock-cards { display: grid; grid-template-columns: minmax(0,1fr); gap: 9px; }.stock-card { padding: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
   .stock-card-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }.stock-link { max-width: none; min-width: 0; }.stock-link strong { font-size: 14px; }.stock-link small { font-size: 12px; }
   .stock-card-top .naver-row { flex-shrink: 0; }.card-quote { display: flex; align-items: center; gap: 12px; margin: 9px 0 11px; }.card-quote strong { font-size: 18px; }.card-quote > span { font-size: 13px; }.card-quote .spark { margin-left: auto; }
   .card-stats { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }.card-stats .stat strong { font-size: 14px; }.card-stats .stat span { font-size: 11px; }

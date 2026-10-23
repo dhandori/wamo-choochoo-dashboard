@@ -1,5 +1,5 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261023-tx1';
-import { climaxSection, climaxCount } from './climax.js?v=20261023-tx1';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261023-tx2';
+import { climaxSection, climaxCount } from './climax.js?v=20261023-tx2';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -133,7 +133,7 @@ export function renderWeather(container, market, onOpen) {
   const arrow = d => ({ up: '↗', flat: '→', down: '↘' })[d] || '·';
   const si = score('index'), ss = score('slope');
   chip('지수', [idx, idx2].filter(Boolean).map(i => `${i.label} ${pct(i.changePct)}`).join(' · '),
-    { 1: '이동평균선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
+    { 1: '이평선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
   chip('기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '),
     { 1: '상승', 0: '꺾임', '-1': '하락' }[ss] ?? '—', ss);
   const dok = [dist, dist2].filter(d => d?.status === 'OK');

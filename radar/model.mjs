@@ -1,5 +1,5 @@
-import {aiMembership, aiSearchText} from './ai.mjs?v=20261023-tx1';
-export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261023-tx1';
+import {aiMembership, aiSearchText} from './ai.mjs?v=20261023-tx2';
+export {aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED} from './ai.mjs?v=20261023-tx2';
 export const numeric = x => typeof x === 'number' && Number.isFinite(x);
 const day = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10)===value;
 const timestamp = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value) && Number.isFinite(Date.parse(value));

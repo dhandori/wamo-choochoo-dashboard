@@ -39,6 +39,9 @@ with sync_playwright() as p:
             page.route('**/*',lambda route:route.continue_() if route.request.url.startswith(base) else route.abort())
             page.goto(f'{base}/radar.html?market={market}',wait_until='networkidle')
             expect(page.locator('#date-info')).to_contain_text(DATA['markets'][market]['asOf'])
+            # 2026-10-23 개편부터 첫 화면은 '추세 신호'다. 아래 점검은 신고가권 탭에서 이어 간다.
+            expect(page.locator('#section-title')).to_have_text('추세 신호')
+            page.locator('[data-tab=near]').click()
             expect(page.locator('#section-title')).to_have_text('52주 신고가권')
             # The 2026-10-19 layout puts the filters low on phones; bring them up first so the
             # tool's own scroll-into-view (which closes help by design) does not interfere.
@@ -234,7 +237,7 @@ with sync_playwright() as p:
             notice_height=page.locator('#notice').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginTop)+parseFloat(getComputedStyle(node).marginBottom)')
             # The market-weather strip is a deliberate always-on summary; budget the rest.
             weather_height=page.locator('#weather').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginBottom)')
-            if width<760:assert weather_height<=215,weather_height  # 360px wraps the larger 2026-10-19 conclusion line
+            if width<760:assert weather_height<=280,weather_height  # 2026-10-23 개편: 휴대폰에서 점수 막대·'자세히' 버튼이 따로 한 줄을 쓰고, 미국은 지수 두 개라 칩이 한 줄 더 늘 수 있음
             else:assert weather_height<=120,weather_height  # 2026-10-19 redesign: larger weather conclusion line
             # Phone tabs wrap into two rows so every tab stays visible; budget the extra row.
             tabs_extra=max(0,page.locator('.tabs').evaluate('(n)=>n.getBoundingClientRect().height')-56)
@@ -242,7 +245,7 @@ with sync_playwright() as p:
             weather_height+=tabs_extra+legend_extra
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
             if width==1440:assert first_y-notice_height-weather_height<760,first_y  # 2026-10-19 layout: two-row tabs + sort panel open on desktop
-            else:assert first_y-notice_height-weather_height<1000,first_y  # phones: industry-flow strip sits above the list since 2026-10-19
+            else:assert first_y-notice_height-weather_height<1100,first_y  # phones: industry-flow strip sits above the list since 2026-10-19; 2026-10-23 grouped tabs and metric bars add ~70px
             if (ROOT/'wamo_trend.json').exists():
                 page.locator('[data-tab=trend]').click()
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
@@ -272,7 +275,7 @@ with sync_playwright() as p:
                 else:request.fulfill(status=200,content_type='application/json',body='{"schemaVersion":1,"markets":{}}')
             else:request.continue_()
         page.route('**/*',route)
-        page.goto(base+'/radar.html',wait_until='networkidle')
+        page.goto(base+'/radar.html?tab=near',wait_until='networkidle')
         expect(page.locator('.stock-link:visible').first).to_be_visible()
         expect(page.locator('#notice')).to_contain_text('확인된')
         page.get_by_role('button',name='데이터 확인',exact=True).click()
@@ -284,7 +287,7 @@ with sync_playwright() as p:
         context.close();print('RADAR RETENTION PASS',failure)
     context=browser.new_context();page=context.new_page()
     page.add_init_script("window.fetch=()=>new Promise((_,reject)=>setTimeout(()=>reject(new Error('offline')),350))")
-    page.goto(base+'/radar.html',wait_until='networkidle')
+    page.goto(base+'/radar.html?tab=near',wait_until='networkidle')
     refresh=page.get_by_role('button',name='데이터 확인',exact=True)
     refresh.click()
     expect(page.get_by_role('button',name='확인 중…',exact=True)).to_be_disabled()

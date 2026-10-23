@@ -1,11 +1,11 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261023-tx1';
-import { renderLeaders, leadersSummary } from './leaders.js?v=20261023-tx1';
-import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261023-tx1';
-import { helpLabel, helpButton, closeHelp } from './help.js?v=20261023-tx1';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261023-tx1';
-import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261023-tx1';
-import { renderSchedule } from './schedule.js?v=20261023-tx1';
-import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261023-tx1';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261023-tx2';
+import { renderLeaders, leadersSummary } from './leaders.js?v=20261023-tx2';
+import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261023-tx2';
+import { helpLabel, helpButton, closeHelp } from './help.js?v=20261023-tx2';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261023-tx2';
+import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261023-tx2';
+import { renderSchedule } from './schedule.js?v=20261023-tx2';
+import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261023-tx2';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
 let cardObserver = null;
@@ -422,7 +422,7 @@ function sortPanel(){
     sortKeysForTab().forEach(k=>opts.push([k,SORT_KEYS[k][0]]));
     opts.forEach(([value,text])=>{const o=el('option',text);o.value=value;o.selected=state[key]===value;sel.append(o);});
     sel.onchange=()=>change(key,sel.value);wrap.append(sel);return wrap;};
-  const keys=el('div',null,'sort-row sort-keys');keys.append(pick('sort','정렬',false),pick('sort2','동률이면',true));
+  const keys=el('div',null,'sort-row sort-keys');keys.append(pick('sort','정렬',false),pick('sort2','같으면',true));
   const big={KR:1e12,US:1e10,JP:1e12,TW:1e11}[state.market];
   const presets=[[`대형주 중 RS 강한 순`,{minCap:big,sort:'rs',sort2:'highDistancePct'}],['RS 강한 순 → 신고가 가까운 순',{minCap:0,sort:'rs',sort2:'highDistancePct'}],['신고가 가까운 순 → RS',{minCap:0,sort:'highDistancePct',sort2:'rs'}]];
   const preset=el('label',null,'sort-pick sort-presets');preset.append(el('span','빠른 설정','sort-step'));
