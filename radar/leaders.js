@@ -373,14 +373,17 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   container.replaceChildren();
   const flow = moneyFlow(block);
   const rerender = () => renderLeaders(container, market, block, { openStock, openFTD, stale });
-  const intro = n('div', null, 'ld-intro');
+  // 판정('지금 할 일')을 맨 위에, 소개와 용어는 그 아래 접기로(내용은 그대로).
+  const intro = n('details', null, 'intro-fold');
+  const sum = n('summary'); sum.append('선도주·선도업종을 왜 보는지 · 보는 방법'); intro.append(sum);
   const p = n('p'); p.append('상승장은 ', term('leader', '선도주'), '와 ', term('leadingIndustry', '선도업종'), '이 끌고 갑니다. 선도업종은 지수보다 먼저 움직이는 경우가 많아서, FTD 전에 미리 찾아 두는 것이 중요해요. 상대강도(RS)와 52주 신고가를 함께 보고, 준비된 업종을 워치리스트로 관리합니다. 밑줄 친 말을 누르면 뜻이 나와요.');
-  intro.append(p); container.append(intro);
-  container.append(glossary(LEADER_TERMS, ['leader', 'core', 'rsOneil', 'ldDistance', 'rsLead', 'ldBreakout', 'heldUp', 'emergence', 'industryRs', 'rankChange', 'industryRsLine', 'newHighs', 'above50', 'persist', 'leadingIndustry', 'ldStage', 'stageNEW', 'stageUP', 'stageHOLD', 'stageDOWN', 'stageOUT', 'phaseMode', 'industryMap', 'watchlist', 'watchScore', 'candidate', 'growthBack', 'heldUpIndustry', 'leadsIndex']));
+  intro.append(p);
+  const gloss = glossary(LEADER_TERMS, ['leader', 'core', 'rsOneil', 'ldDistance', 'rsLead', 'ldBreakout', 'heldUp', 'emergence', 'industryRs', 'rankChange', 'industryRsLine', 'newHighs', 'above50', 'persist', 'leadingIndustry', 'ldStage', 'stageNEW', 'stageUP', 'stageHOLD', 'stageDOWN', 'stageOUT', 'phaseMode', 'industryMap', 'watchlist', 'watchScore', 'candidate', 'growthBack', 'heldUpIndustry', 'leadsIndex']);
   const L = block?.leadership;
-  if (!L || L.status !== 'OK') { container.append(n('div', L?.note || '선도주·선도업종 자료를 준비 중입니다. 다음 자동 갱신 때 채워집니다.', 'ld-empty')); return; }
+  if (!L || L.status !== 'OK') { container.append(intro, gloss, n('div', L?.note || '선도주·선도업종 자료를 준비 중입니다. 다음 자동 갱신 때 채워집니다.', 'ld-empty')); return; }
   if (stale) container.append(n('div', '최근 마감 거래일 자료가 아니라서 과거 기준으로 보여 주고 있어요.', 'ftd-data-warning'));
   container.append(phaseBanner(L, openFTD));
+  container.append(intro, gloss);
   // Before an FTD the job is preparing the watchlist; after one, checking that leaders break out.
   const mode = L.phase?.mode;
   const builders = mode === 'WAIT'

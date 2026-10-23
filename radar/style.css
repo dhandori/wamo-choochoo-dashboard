@@ -506,3 +506,15 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
 }
 @media (max-width: 760px) { .tr-weather-head { flex-wrap: wrap; } }
 @media (max-width: 760px) { .metric strong.metric-word { white-space: normal; font-size: 14px; line-height: 1.2; } }
+
+/* ===== 2026-10-23 2차: 표 머리줄 고정 · 설명 접기 ===== */
+/* 표가 가로 스크롤 없이 다 들어갈 때(.fits)만 머리줄을 화면 위에 고정한다. 넘칠 때는 기존 가로 스크롤 유지. */
+.table-wrap.fits { overflow-x: visible; }
+.table-wrap.fits th { position: sticky; top: 0; z-index: 4; box-shadow: 0 1px 0 var(--line); }
+.table-wrap.fits th:first-child { border-top-left-radius: 9px; }
+.table-wrap.fits th:last-child { border-top-right-radius: 9px; }
+/* 긴 소개문을 담는 접기: 내용은 그대로, 평소에는 한 줄 요약만 보인다. */
+.intro-fold { margin: 0 0 14px; color: var(--muted); }
+.intro-fold > summary { cursor: pointer; width: fit-content; padding: 6px 0; font-size: 13px; color: #b9c9dd; display: flex; align-items: center; gap: 10px; }
+.intro-fold > summary:hover { color: var(--text); }
+.intro-fold p { max-width: 820px; margin: 8px 0 4px; font-size: 13px; line-height: 1.8; color: #a7b8cd; }

@@ -156,6 +156,17 @@ export function renderWeather(container, market, onOpen) {
   const more = btn('자세히', false, onOpen, 'tr-more');
   more.setAttribute('aria-label', '시장 날씨 자세히 보기');
   head.append(more);
+  // 휴대폰에서는 띠가 첫 화면을 다 차지하지 않게 설명·항목 칩을 접을 수 있다.
+  // 판정·점수가 있는 머리줄은 항상 보이고, 접힘 상태는 브라우저가 기억한다. 화면이 넓으면 항상 펼쳐진 모양 그대로다.
+  const FOLD_KEY = 'wamo-weather-fold';
+  let folded = true;
+  try { const saved = localStorage.getItem(FOLD_KEY); if (saved) folded = saved === '1'; } catch {}
+  const fold = btn('', false, null, 'tr-fold');
+  const paintFold = () => { container.classList.toggle('collapsed', folded); fold.textContent = folded ? '펼치기 ▾' : '접기 ▴'; fold.setAttribute('aria-expanded', String(!folded)); };
+  fold.onclick = () => { folded = !folded; try { localStorage.setItem(FOLD_KEY, folded ? '1' : '0'); } catch {} paintFold(); };
+  fold.setAttribute('aria-label', '시장 날씨 설명과 항목별 판정 접기/펼치기');
+  head.append(fold);
+  paintFold();
   container.append(head, text, chips);
 }
 
@@ -164,9 +175,9 @@ export function renderTrendMetrics(container, market) {
   const b = block(market);
   container.replaceChildren();
   const add = (label, value, sub) => { const box = el('div', null, 'metric'); box.append(el('span', label), el('strong', value, /^[\d—.,%+-]+$/.test(value) ? null : 'metric-word'), el('small', sub)); container.append(box); };
-  if (!b) { add('시장 날씨', '—', '자료 준비 중'); return; }
-  add('시장 날씨', LIGHT[b.weather?.level] || '—', `점수 ${b.weather?.score ?? '—'} · ${b.asOf} 종가`);
-  { const g = scoreGauge(b.weather, true); if (g) container.lastChild.append(g); }
+  if (!b) { add('천장 신호', '—', '자료 준비 중'); return; }
+  // 시장 날씨는 바로 위 띠에 전부 있으니 여기서는 서브탭에 묻혀 있던 천장 신호 수를 보여 준다.
+  add('천장 신호', `${climaxCount(b)}`, `과열·반전 관찰 · ${b.asOf} 종가`);
   add('RS선 선행 신고가', `${b.rsLeaders?.leadingCount ?? 0}`, `RS선 신고가 전체 ${b.rsLeaders?.count ?? 0}종목`);
   add('강한 경고', `${b.sellWarnings?.highCount ?? 0}`, `주의 포함 ${b.sellWarnings?.count ?? 0}종목`);
   const up = b.earnings?.upcoming || [];

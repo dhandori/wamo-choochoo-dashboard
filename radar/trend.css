@@ -504,3 +504,10 @@ dialog[open] ~ .to-top { display: none; }
 
 .tr-prelim{margin:6px 0 2px;padding:6px 9px;border-radius:8px;background:var(--soft,rgba(127,127,127,.08));color:var(--muted,#667);font-size:12px;line-height:1.45}
 .tr-prelim.ok{color:var(--good,#2a8a57)}
+
+/* 휴대폰: 시장 날씨 띠 접기. 판정·점수가 있는 머리줄은 항상 보인다. 넓은 화면에서는 항상 펼친 모양. */
+.tr-fold { display: none; }
+@media (max-width: 760px) {
+  .tr-fold { display: inline-flex; align-items: center; min-height: 32px; margin-left: 6px; padding: 3px 10px; font-size: 11px; background: transparent; white-space: nowrap; }
+  .tr-weather.collapsed .tr-weather-text, .tr-weather.collapsed .tr-chips { display: none; }
+}

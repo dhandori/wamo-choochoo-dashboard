@@ -88,8 +88,14 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   container.replaceChildren();
   const indexes=block?.ftd?.indexes || [];
   const emergence=block?.leadership?.emergence||null;
-  const intro=n('div',null,'ftd-intro');const p=n('p');p.append(term('ftd','FTD(Follow-Through Day)'),'는 하락장이 끝나고 다시 오르기 시작했는지 확인하는 신호입니다. 지수가 크게 떨어진 뒤 반등을 시작하고, Day 4 이후에 +1.7% 넘게 오르면서 거래량도 늘면 FTD로 봅니다. 밑줄 친 말을 누르면 뜻이 나와요.');intro.append(p);
-  intro.append(badge('종가 기준 · 자체 규칙','OUTSIDE'));container.append(intro);
+  // 판정 먼저: 지수별 현재 단계 카드를 맨 위에 둔다. 설명은 그 아래 접기로(내용은 그대로).
+  const deck=n('div',null,'ftd-indexes');
+  indexes.forEach((s,i)=>{const b=n('button',null,`ftd-index ${selected[market]===i?'selected':''}`);b.type='button';b.setAttribute('aria-pressed',String(selected[market]===i));
+    const isFresh=freshIndex(s,expected)&&!failed;
+    b.append(n('span',s.label),badge(isFresh?phaseName(s):'판정 보류',isFresh?s.phase:'UNAVAILABLE'),n('small',isFresh?(uptrendDone(s)?'FTD 뒤 하락 전 고점을 되찾았어요.':PHASE_MEANING[s.phase]||''):'자료 확인 전에는 판정하지 않아요.'),n('small',`${s.asOf||'—'} 종가${s.rally?` · 반등 Day ${s.rally.day}`:['CORRECTION'].includes(s.phase)?' · 반등 대기':''}`,'ftd-index-sub'));
+    b.onclick=()=>{selected[market]=i;renderFTD(container,market,block,{expected,failed,openLeaders});};deck.append(b);
+  });
+  if(indexes.length)container.append(deck);
   // The user's own position-size rule, shown on every FTD screen.
   const active=indexes.some(x=>freshIndex(x,expected)&&!failed&&['CONFIRMED','PRESSURE'].includes(x.phase));
   const rule=n('div',null,`ftd-rule${active?' active':''}`);
@@ -97,14 +103,11 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
     n('span','FTD는 "이제 사도 된다"가 아니라 "조금 시험해 봐도 된다"는 신호입니다. 처음에는 총자금의 10% 안에서만 삽니다. 비중을 더 늘리는 것은 선도주가 실제로 신고가를 뚫고(선도주 출현), 시장이 계속 버텨 줄 때 따로 판단합니다.'));
   if(active)rule.append(n('em','지금 FTD 신호가 켜져 있어요 → 10% 이내'));
   container.append(rule);
+  const intro=n('details',null,'intro-fold');const sum=n('summary');sum.append('FTD가 무엇인지 · 판정 방식 보기',badge('종가 기준 · 자체 규칙','OUTSIDE'));intro.append(sum);
+  const p=n('p');p.append(term('ftd','FTD(Follow-Through Day)'),'는 하락장이 끝나고 다시 오르기 시작했는지 확인하는 신호입니다. 지수가 크게 떨어진 뒤 반등을 시작하고, Day 4 이후에 +1.7% 넘게 오르면서 거래량도 늘면 FTD로 봅니다. 밑줄 친 말을 누르면 뜻이 나와요.');intro.append(p);
+  container.append(intro);
   container.append(glossary(FTD_TERMS,['ftd','correction','dayOne','rallyDay','bottom','ftdLow','distribution','lateFtd','quality','failed','uptrendDone','drawdown','dayChange','volRatio']));
   if(!indexes.length){container.append(n('div','FTD 지수 기록을 준비 중입니다. 다음 자동 갱신 때 가격과 거래량을 확인한 뒤 보여 드려요.','ftd-empty'));return;}
-  const deck=n('div',null,'ftd-indexes');
-  indexes.forEach((s,i)=>{const b=n('button',null,`ftd-index ${selected[market]===i?'selected':''}`);b.type='button';b.setAttribute('aria-pressed',String(selected[market]===i));
-    const isFresh=freshIndex(s,expected)&&!failed;
-    b.append(n('span',s.label),badge(isFresh?phaseName(s):'판정 보류',isFresh?s.phase:'UNAVAILABLE'),n('small',isFresh?(uptrendDone(s)?'FTD 뒤 하락 전 고점을 되찾았어요.':PHASE_MEANING[s.phase]||''):'자료 확인 전에는 판정하지 않아요.'),n('small',`${s.asOf||'—'} 종가${s.rally?` · 반등 Day ${s.rally.day}`:['CORRECTION'].includes(s.phase)?' · 반등 대기':''}`,'ftd-index-sub'));
-    b.onclick=()=>{selected[market]=i;renderFTD(container,market,block,{expected,failed,openLeaders});};deck.append(b);
-  });container.append(deck);
   const s=indexes[selected[market]]||indexes[0],fresh=freshIndex(s,expected)&&!failed;
   if(!fresh){const messages=[failed?'최신 파일을 다시 불러오지 못했습니다.':null,s.note||'지수 데이터가 최신인지, 빠진 날이 없는지 확인하지 못했습니다.',expected&&s.asOf!==expected?`최근 마감 거래일 ${expected}`:null];container.append(n('div',messages.filter(Boolean).join(' '),'ftd-data-warning'));}
   container.append(flow(s,fresh));

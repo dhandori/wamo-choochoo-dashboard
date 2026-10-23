@@ -1,8 +1,8 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261023-tx2';
-import { renderLeaders, leadersSummary } from './leaders.js?v=20261023-tx2';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261023-ui3';
+import { renderLeaders, leadersSummary } from './leaders.js?v=20261023-ui3';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261023-tx2';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261023-tx2';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261023-tx2';
+import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261023-ui3';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261023-tx2';
 import { renderSchedule } from './schedule.js?v=20261023-tx2';
 import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261023-tx2';
@@ -299,9 +299,13 @@ function table(rows) {
     cards.append(card);
   });
   const container = el('div'); container.append(wrap, cardLegend(), cards);
-  requestAnimationFrame(() => fillCardCharts(container));
+  requestAnimationFrame(() => { fillCardCharts(container); fitTable(wrap); });
   return container;
 }
+// 표가 가로 스크롤 없이 다 들어가면(.fits) 세로 스크롤 중에도 컬럼 제목 줄이 화면 위에 붙어 따라온다.
+// 표가 옆으로 넘치는 좁은 화면에서는 가로 스크롤을 그대로 유지한다.
+function fitTable(wrap) { if (wrap?.isConnected) wrap.classList.toggle('fits', wrap.scrollWidth <= wrap.clientWidth + 1); }
+window.addEventListener('resize', () => document.querySelectorAll('.table-wrap').forEach(fitTable), { passive: true });
 // 3종목 미만 그룹은 보통 숨기지만, 2차전지 대장(삼성SDI·LG엔솔)만 있는 '배터리 셀'은 꼭 보여 준다.
 const ALWAYS_SHOW = new Set(['배터리 셀']);
 const bigEnough = g => g.memberCount >= 3 || (ALWAYS_SHOW.has(g.name) && g.memberCount >= 2);
