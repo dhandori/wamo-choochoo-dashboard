@@ -1,7 +1,7 @@
 // Separate market-reversal workspace; individual-stock filters do not apply.
-import { ftdSummary, freshIndex, PHASES, PHASE_MEANING, ftdQuality } from './ftd-model.mjs?v=20261024-dd1';
-import { helpButton, addTerms } from './help.js?v=20261024-dd1';
-import { FTD_TERMS, glossary } from './terms.mjs?v=20261024-dd1';
+import { ftdSummary, freshIndex, PHASES, PHASE_MEANING, ftdQuality } from './ftd-model.mjs?v=20261024-dd2';
+import { helpButton, addTerms } from './help.js?v=20261024-dd2';
+import { FTD_TERMS, glossary } from './terms.mjs?v=20261024-dd2';
 addTerms(FTD_TERMS);
 const n = (tag, text, cls) => { const e=document.createElement(tag); if(text!=null)e.textContent=text; if(cls)e.className=cls; return e; };
 const num = (v,d=1) => typeof v==='number' && Number.isFinite(v) ? v.toLocaleString('ko-KR',{maximumFractionDigits:d,minimumFractionDigits:d}) : '—';
