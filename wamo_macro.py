@@ -12,7 +12,7 @@
   공포탐욕지수는 0~100 점수 자체가 기준이라 고정 구간을 쓴다.
 
 자료 출처(모두 무료·공개)
-  한국은행 ECOS(인증키 ECOS_API_KEY), 미국 연준 FRED, Yahoo(MOVE),
+  한국은행 ECOS(인증키 ECOS_API_KEY — GitHub 비밀값), 미국 연준 FRED, Yahoo(MOVE),
   한국투자증권 API(VKOSPI, 지수코드 0503), feargreedmeter.com·finhacker.cz(CNN 공포탐욕)
 """
 from __future__ import annotations
