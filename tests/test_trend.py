@@ -89,19 +89,28 @@ class TrendMathTests(unittest.TestCase):
         self.assertEqual((day['volume'], day['prevVolume'], day['volumeRatio']), (150.0, 100.0, 1.5))
 
     def test_stall_day_counts_and_strong_days_raise_the_stage(self):
-        from wamo_ftd import distribution_kind
-        flat = lambda c, v, hi=None, lo=None: {'close': c, 'high': hi or c * 1.005, 'low': lo or c * 0.995, 'volume': v}
-        self.assertEqual(distribution_kind(flat(100, 100), flat(100.05, 130)), 'STALL')      # +0.05% on more volume
-        self.assertEqual(distribution_kind(flat(100, 100), flat(99.9, 130)), 'STALL')        # -0.1%: flat, not a 0.2% drop
-        self.assertIsNone(distribution_kind(flat(100, 100), flat(100.05, 90)))               # less volume: not counted
-        self.assertIsNone(distribution_kind(flat(100, 100), flat(100.05, 103)))              # +3% volume: too small, not counted
-        from wamo_ftd import is_stall_watch
-        self.assertTrue(is_stall_watch(flat(100, 100), flat(100.05, 103)))                 # ...but shown as a stall candidate
-        self.assertFalse(is_stall_watch(flat(100, 100), flat(100.05, 130)))                # a real stall is not a candidate
-        self.assertIsNone(distribution_kind(flat(100, 100), flat(100.5, 130, 100.6, 99.9)))  # real up day, closes high
-        # bottom 25% of the range = strong (HEAVY); 30% is now an ordinary distribution day
-        self.assertEqual(distribution_kind(flat(100, 100), {'close': 99.2, 'high': 100, 'low': 99.0, 'volume': 130}), 'HEAVY')
-        self.assertEqual(distribution_kind(flat(100, 100), {'close': 99.3, 'high': 100, 'low': 99.0, 'volume': 130}), 'NORMAL')
+        from wamo_ftd import distribution_kind, watch_reason
+        bar = lambda c, v, hi=None, lo=None: {'close': c, 'high': hi or c * 1.005, 'low': lo or c * 0.995, 'volume': v}
+        prev = bar(100, 100)
+        stall = bar(100.05, 130, 100.3, 99.9)                                      # +0.05%, closes low in range
+        self.assertEqual(distribution_kind(prev, stall), 'STALL')                  # near a high: counted
+        self.assertIsNone(distribution_kind(prev, stall, advancing=False))         # in a decline: not a stall
+        self.assertIn('고점 근처가 아니라서', watch_reason(prev, stall, advancing=False))
+        small = bar(100.05, 103, 100.3, 99.9)                                      # only +3% volume
+        self.assertIsNone(distribution_kind(prev, small))
+        self.assertIn('5% 미만', watch_reason(prev, small))
+        dip = bar(99.9, 130)                                                       # -0.1%: under the 0.2% rule
+        self.assertIsNone(distribution_kind(prev, dip))
+        self.assertIn('0.2% 미만', watch_reason(prev, dip))
+        high_close = bar(100.05, 130, 100.1, 99.5)                                 # flat but closes near the top
+        self.assertIsNone(distribution_kind(prev, high_close))
+        self.assertIn('위쪽', watch_reason(prev, high_close))
+        self.assertIsNone(distribution_kind(prev, bar(100.05, 90)))                 # less volume: nothing at all
+        self.assertIsNone(watch_reason(prev, bar(100.05, 90)))
+        self.assertIsNone(distribution_kind(prev, bar(100.5, 130, 100.6, 99.9)))   # a real up day
+        # bottom 25% of the range = strong (HEAVY); 30% is an ordinary distribution day
+        self.assertEqual(distribution_kind(prev, {'close': 99.2, 'high': 100, 'low': 99.0, 'volume': 130}), 'HEAVY')
+        self.assertEqual(distribution_kind(prev, {'close': 99.3, 'high': 100, 'low': 99.0, 'volume': 130}), 'NORMAL')
         st = trend.distribution_stage
         self.assertEqual([st(n, 0)['key'] for n in (0, 2, 3, 4, 5, 6, 9)],
                          ['HEALTHY', 'HEALTHY', 'CAUTION', 'WARNING', 'WARNING', 'DANGER', 'DANGER'])
@@ -118,6 +127,18 @@ class TrendMathTests(unittest.TestCase):
         self.assertEqual(out['count'], 0)                       # never counted as distribution
         self.assertEqual((out['thinRally']['upDays5'], out['thinRally']['thinDays5']), (5, 5))
         self.assertTrue(out['thinRally']['warn'])
+
+    def test_follow_through_day_wipes_earlier_distribution_days(self):
+        dates = sessions(26)
+        bench = [{'date': d, 'close': 100.0, 'high': 100.5, 'low': 99.5, 'volume': 100.0} for d in dates]
+        for k in (5, 15):
+            bench[k] = {'date': dates[k], 'close': 99.0, 'high': 100.2, 'low': 98.9, 'volume': 150.0}
+            bench[k + 1]['volume'] = 100.0
+        self.assertEqual(trend.distribution_days(bench)['count'], 2)
+        out = trend.distribution_days(bench, reset_on=dates[10])
+        self.assertEqual(out['count'], 1)                                          # only the day after the FTD remains
+        gone = next(x for x in out['days'] if x['date'] == dates[5])
+        self.assertEqual((gone['expired'], gone['expiredByFtd']), (True, dates[10]))
 
     def test_distribution_days_need_volume(self):
         bench = [{'date': d, 'close': 100.0, 'volume': None} for d in sessions(30)]

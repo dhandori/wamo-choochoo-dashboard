@@ -36,7 +36,7 @@ DIST_KIND_TEXT = {
     'NORMAL': '보통 분산일',
     'LIGHT': '긴 아랫꼬리 · 저가에서 회복해 위쪽 마감 (덜 위험)',
     'HIDDEN': '위장 분산일 · 올랐지만 아래쪽 마감',
-    'STALL': '정체일 · 보합(+0.1% 미만)인데 거래량 5% 이상 늘어남',
+    'STALL': '정체일 · 고점 근처에서 찔끔(+0.1% 미만) 오르고 아래쪽 마감, 거래량 5% 이상 늘어남',
 }
 
 
@@ -47,15 +47,16 @@ def close_position(row):
     return min(1.0, max(0.0, (close - low) / (high - low)))
 
 
-def distribution_kind(prev, cur, drop_pct=0.2):
-    """None, or HEAVY / NORMAL / LIGHT (classic: down >= 0.2% on higher volume), HIDDEN or STALL.
+def distribution_kind(prev, cur, drop_pct=0.2, advancing=True):
+    """None, or HEAVY / NORMAL / LIGHT (the O'Neil/IBD rule: down >= 0.2% on higher volume), STALL or HIDDEN.
 
     HEAVY: close in the bottom 25% of the day's range (strong selling); LIGHT: close in the top half.
-    HIDDEN: an up close on higher volume whose close sank into the bottom third of a real
-    (>= 0.6%) range - late selling pushed it down, a disguised distribution day.
-    STALL: flat or barely up (< +0.1%) on volume at least 5% higher - big hands sold into the buying.
-    Conservative on purpose (the book calls the stall call subjective): a smaller uptick is only a
-    'stall watch' day, shown but never counted (see is_stall_watch).
+    Stall-type days follow O'Neil's stalling idea and are counted conservatively - IBD leaves them to
+    the analyst, so all of these must hold, otherwise the day is only a candidate (see watch_reason):
+      * the index is near its recent high (stalling happens after an advance, not in a decline),
+      * volume is at least 5% higher than the day before,
+      * STALL: up 0 ~ +0.1% and the close sits in the bottom half of the day's range,
+      * HIDDEN: up, but the close sank into the bottom third of a real (>= 0.6%) range.
     """
     if not (valid_num(prev.get('close')) and valid_num(cur.get('close'))
             and valid_num(prev.get('volume')) and valid_num(cur.get('volume'))):
@@ -68,22 +69,50 @@ def distribution_kind(prev, cur, drop_pct=0.2):
         if pos is None:
             return 'NORMAL'
         return 'HEAVY' if pos <= DIST_RULE['heavyPosMax'] else 'LIGHT' if pos >= DIST_RULE['lightPosMin'] else 'NORMAL'
-    if change > 0 and pos is not None and pos <= DIST_RULE['hiddenPosMax'] \
-            and (cur['high'] - cur['low']) / prev['close'] * 100 >= DIST_RULE['hiddenRangeMinPct']:
+    return _stall_type(prev, cur, change, pos) if advancing and _stall_volume(prev, cur) else None
+
+
+def _stall_volume(prev, cur):
+    return cur['volume'] >= prev['volume'] * DIST_RULE['stallMinVolRatio']
+
+
+def _stall_type(prev, cur, change, pos):
+    if change < 0 or pos is None:
+        return None
+    if pos <= DIST_RULE['hiddenPosMax'] and (cur['high'] - cur['low']) / prev['close'] * 100 >= DIST_RULE['hiddenRangeMinPct']:
         return 'HIDDEN'
-    if change < DIST_RULE['stallMaxPct'] - 1e-9 and cur['volume'] >= prev['volume'] * DIST_RULE['stallMinVolRatio']:
+    if change < DIST_RULE['stallMaxPct'] - 1e-9 and pos < 0.5:
         return 'STALL'
     return None
 
 
-def is_stall_watch(prev, cur):
-    """Flat/barely-up day on only slightly higher volume (< +5%): shown as a stall candidate, not counted."""
-    if distribution_kind(prev, cur) is not None:
-        return False
+def watch_reason(prev, cur, advancing=True, drop_pct=0.2):
+    """Why a selling-looking day was NOT counted (shown on the page as a candidate), or None."""
+    if distribution_kind(prev, cur, drop_pct, advancing) is not None:
+        return None
     if not all(valid_num(x.get(k)) for x in (prev, cur) for k in ('close', 'volume')) or cur['volume'] <= prev['volume']:
-        return False
+        return None
     change = (cur['close'] / prev['close'] - 1) * 100
-    return -0.2 < change < DIST_RULE['stallMaxPct']
+    pos = close_position(cur)
+    if -drop_pct < change < 0:
+        return '0.2% 미만 하락이라 공식 기준(0.2%)에 못 미침'
+    if change < 0:
+        return None
+    shape = _stall_type(prev, cur, change, pos)
+    flat = change < DIST_RULE['stallMaxPct'] - 1e-9
+    if shape and not advancing:
+        return '고점 근처가 아니라서(하락 중) 정체로 안 셈'
+    if shape and not _stall_volume(prev, cur):
+        return '거래량이 5% 미만으로만 늘어 애매함'
+    if flat and pos is not None and pos >= 0.5:
+        return '종가가 범위 위쪽에서 끝나 매도 압력이 약함'
+    return None
+
+
+def near_recent_high(rows, i, lookback=25, within_pct=3.0):
+    """O'Neil's stalling comes after an advance: close within 3% of the highest close of the last 25 sessions."""
+    closes = [r['close'] for r in rows[max(0, i - lookback + 1):i + 1] if valid_num(r.get('close'))]
+    return bool(closes) and rows[i]['close'] >= max(closes) * (1 - within_pct / 100)
 
 
 def valid_num(value):
