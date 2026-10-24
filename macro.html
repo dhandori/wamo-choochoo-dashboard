@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WAMO | 매크로 지수</title>
+  <meta name="description" content="한·미 신용스프레드, 금리차, 유동성, 변동성, 공포탐욕지수를 5단계 위험 단계로 보는 매크로 지수">
+  <style>
+:root{color-scheme:dark;--bg:#0c121d;--panel:#131e2c;--panel2:#0f1825;--line:#263447;--muted:#9aacc3;--text:#eaf0f8;--green:#62d7b5;--blue:#a6c4f5;
+  --l5:#3ecf8e;--l4:#5ea8ff;--l3:#f2c94c;--l2:#ff9a3c;--l1:#ff5c6c;--l0:#6b7a90;--ma20:#ffb347;--ma60:#7fb2ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.shell{max-width:1580px;margin:auto;padding:16px 28px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.brand{color:var(--text);font-size:23px;font-weight:850;letter-spacing:2px}.brand span{font-size:11px;color:var(--muted);letter-spacing:1.8px;margin-left:10px}
+.intro{display:flex;justify-content:space-between;align-items:center;margin:12px 0 10px;gap:14px}
+.eyebrow{color:var(--green);font-size:11px;letter-spacing:1.8px;font-weight:600}
+h1{font-size:23px;letter-spacing:-.7px;margin:3px 0 0}h2{font-size:17px;margin:0;letter-spacing:-.3px}
+p{color:var(--muted);line-height:1.65;margin:6px 0}
+.date-info{color:var(--muted);font-size:13px;text-align:right}.date-info b{color:var(--text)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px 36px;border-bottom:1px solid var(--line);margin:12px 0 16px}
+.tab-group{display:flex;align-items:flex-end;gap:22px}
+.tab-group-label{align-self:center;margin-right:-6px;padding:2px 7px;border-radius:4px;background:#1a2636;color:#8ea4c0;font-size:11px;font-weight:700;letter-spacing:.6px;white-space:nowrap}
+.tabs a{display:inline-block;padding:10px 1px;color:var(--muted);font-weight:650;font-size:14px;white-space:nowrap}
+.tabs a:hover{color:var(--text);text-decoration:none}
+.tabs a.active{color:var(--green);box-shadow:inset 0 -2px var(--green)}
+/* 종합 */
+.hero{display:grid;grid-template-columns:minmax(260px,1fr) 2fr;gap:14px;margin-bottom:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.verdict{padding:18px 20px;border-left:6px solid var(--lv,var(--l0))}
+.verdict .k{color:var(--muted);font-size:12px;font-weight:700}
+.verdict .big{display:flex;align-items:baseline;gap:10px;margin-top:6px}
+.verdict .big b{font-size:44px;line-height:1;color:var(--lv)}.verdict .big span{font-size:22px;font-weight:800}
+.verdict p{font-size:13px;margin-top:10px;color:#c3d0e1}
+.ladder{padding:14px 16px}
+.ladder-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.step{border-radius:10px;padding:10px 8px;text-align:center;background:var(--panel2);border:1px solid var(--line);position:relative}
+.step .n{font-size:26px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.step .t{font-size:11px;color:var(--muted);margin-top:3px}
+.step.on{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+.step .bar{height:4px;border-radius:2px;background:var(--c);margin-top:8px;opacity:.9}
+.ladder .rule{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6}
+.alarms{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);white-space:nowrap}
+/* 지표 */
+.group{margin:22px 0 10px;display:flex;align-items:baseline;gap:10px}.group small{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:1400px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ind{padding:14px 16px 12px;border-top:4px solid var(--c);display:flex;flex-direction:column;min-width:0}
+.ind-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ind-name{font-weight:750;font-size:14px}
+.ind-val{display:flex;align-items:baseline;gap:10px;margin-top:6px;flex-wrap:wrap}
+.ind-val b{font-size:28px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1.1}
+.chg{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}.chg.worse{color:var(--l2)}.chg.better{color:var(--l5)}.chg.flat{color:var(--muted)}
+.chg small{color:var(--muted);font-weight:500;margin-right:3px}
+.pos{margin-top:10px}
+.pos-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.pos-track{position:relative;height:10px;border-radius:5px;margin-top:4px;background:linear-gradient(90deg,var(--l5) 0 50%,var(--l4) 50% 75%,var(--l3) 75% 90%,var(--l2) 90% 97%,var(--l1) 97% 100%);opacity:.85}
+.pos-mark{position:absolute;top:-4px;width:4px;height:18px;margin-left:-2px;border-radius:2px;background:#fff;box-shadow:0 0 0 2px var(--bg)}
+.pos-ticks{position:relative;height:13px;font-size:9.5px;color:var(--muted)}.pos-ticks span{position:absolute;transform:translateX(-50%)}
+.chart{margin-top:10px}.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-top:4px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:0;border-top:2px solid;vertical-align:middle;margin-right:4px}
+.why{font-size:12px;color:#b9c7da;margin-top:8px;line-height:1.6}
+.meta-line{font-size:11px;color:var(--muted);margin-top:6px}
+.fng-compare{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+.fng-compare div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 4px;text-align:center}
+.fng-compare b{display:block;font-size:17px;font-variant-numeric:tabular-nums}.fng-compare span{font-size:10.5px;color:var(--muted)}
+.fng-gauge{position:relative;height:12px;border-radius:6px;margin-top:12px;background:linear-gradient(90deg,var(--l1) 0 10%,var(--l2) 10% 25%,var(--l3) 25% 40%,var(--l4) 40% 55%,var(--l5) 55% 75%,#c58cff 75% 100%)}
+.empty{padding:22px;text-align:center;color:var(--muted);background:var(--panel2);border:1px dashed var(--line);border-radius:10px;margin-top:10px;font-size:12px}
+details.method{margin:22px 0 10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-size:13px;color:#c3d0e1}
+details.method summary{cursor:pointer;font-weight:700;color:var(--text)}
+details.method li{margin:5px 0;line-height:1.6}
+footer{color:var(--muted);font-size:11px;padding:16px 0 30px;line-height:1.7}
+@media (max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.shell{padding:12px 16px}.hero{grid-template-columns:1fr}.grid{grid-template-columns:1fr}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;gap:18px}.tab-group{gap:16px}.intro{flex-direction:column;align-items:flex-start}.date-info{text-align:left}
+  .ladder-row{gap:5px}.step .n{font-size:21px}.verdict .big b{font-size:38px}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar"><a class="brand" href="radar.html">WAMO <span>MARKET RADAR</span></a></header>
+  <section class="intro">
+    <div><div class="eyebrow">MACRO RISK MONITOR</div><h1>매크로 지수</h1></div>
+    <div id="date-info" class="date-info">불러오는 중…</div>
+  </section>
+  <nav class="tabs" aria-label="분석 화면">
+    <div class="tab-group"><span class="tab-group-label">① 시장</span><a href="radar.html?tab=trend">추세 신호</a><a href="radar.html?tab=ftd">시장 전환·FTD</a><a class="active" href="macro.html" aria-current="page">매크로 지수</a></div>
+    <div class="tab-group"><span class="tab-group-label">② 업종</span><a href="radar.html?tab=leaders">선도주·선도업종</a><a href="radar.html?tab=industries">인더스트리 액션</a><a href="radar.html?tab=ai">AI 섹터</a></div>
+    <div class="tab-group"><span class="tab-group-label">③ 종목</span><a href="radar.html?tab=near">52주 신고가권</a><a href="radar.html?tab=high">당일 신고가</a><a href="radar.html?tab=movers">특징주</a></div>
+  </nav>
+  <main id="root"><p>자료를 불러오는 중이에요…</p></main>
+  <details class="method">
+    <summary>판정 방법 자세히 보기</summary>
+    <ul>
+      <li><b>수준</b>: 지표가 최근 5년 동안 ‘위험한 쪽’으로 몇 % 위치에 있는지 봅니다. 하위 50%는 🟢정상, 50~75%는 🔵관심, 75~90%는 🟡주의, 90~97%는 🟠경계, 97% 이상은 🔴위기입니다.</li>
+      <li><b>속도</b>: 최근 1개월(21거래일) 변화가 지난 5년의 1개월 변화들보다 유난히 크면(표준점수 2 이상) 한 단계, 아주 크면(3 이상) 두 단계 더 위험하게 봅니다. 숫자는 아직 낮아도 빠르게 나빠지는 지표를 놓치지 않기 위해서입니다.</li>
+      <li><b>장단기 금리차</b>는 너무 좁아지거나 뒤집혀도, 갑자기 크게 벌어져도 경기 신호라서 5년 중간값에서 양쪽으로 멀어질수록 위험하게 봅니다.</li>
+      <li><b>공포탐욕지수</b>는 점수 자체가 기준이라 고정 구간을 씁니다. 10 이하 🔴, 25 이하 🟠, 40 이하 🟡, 55 이하 🔵, 그 위 🟢이고, 75 이상은 과열 주의(⚠️)를 따로 붙입니다. 1개월 사이 20점 넘게 떨어지면 한 단계 더 위험하게 봅니다.</li>
+      <li><b>종합 단계</b>는 13개 지표의 평균 위험도에, 🔴가 3개 이상이거나 🟠·🔴가 절반 이상이면 반 단계씩 더해 정합니다.</li>
+      <li><b>그래프</b>는 최근 약 1년이며, 주황 점선은 20일 이동평균(약 1개월), 파란 점선은 60일 이동평균(약 3개월)입니다. 현재 값이 두 평균선 위에 있으면 올라가는 흐름입니다.</li>
+    </ul>
+  </details>
+  <footer>자료: 한국은행 ECOS(시장금리) · 미국 연준 FRED(ICE BofA 스프레드, 금리차, VIX, 연준 자산·TGA·역레포) · Yahoo(MOVE) · 한국투자증권(VKOSPI) · feargreedmeter.com / finhacker.cz(CNN 공포탐욕지수). 매일 아침 07시대에 자동 갱신됩니다. 투자 판단의 참고 자료이며 위험을 예측하거나 보증하지 않습니다.</footer>
+</div>
+<script>
+(() => {
+  const LV = {1:['🔴','위기','--l1'],2:['🟠','경계','--l2'],3:['🟡','주의','--l3'],4:['🔵','관심','--l4'],5:['🟢','정상','--l5']};
+  const cvar = lv => `var(${lv ? LV[lv][2] : '--l0'})`;
+  const $root = document.getElementById('root');
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const fmtNum = (v, unit) => v == null ? '-' : unit === 'x' ? v.toFixed(2) : Math.abs(v) >= 100 ? Math.round(v).toLocaleString() : (+v.toFixed(1)).toLocaleString();
+
+  function ma(vals, n) {
+    const out = []; let sum = 0;
+    vals.forEach((v, i) => { sum += v; if (i >= n) sum -= vals[i - n]; out.push(i >= n - 1 ? sum / n : null); });
+    return out;
+  }
+
+  function chart(row) {
+    const s = row.series || [];
+    if (s.length < 15) return '';
+    const W = 560, H = 190, L = 46, R = 10, T = 10, B = 26;
+    const dates = s.map(p => p[0]), vals = s.map(p => p[1]);
+    const m20 = ma(vals, 20), m60 = ma(vals, 60);
+    const all = vals.concat(m20.filter(v => v != null), m60.filter(v => v != null));
+    let lo = Math.min(...all), hi = Math.max(...all);
+    const pad = (hi - lo) * 0.08 || Math.abs(hi) * 0.05 || 1; lo -= pad; hi += pad;
+    const x = i => L + (W - L - R) * i / (s.length - 1);
+    const y = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+    const path = arr => arr.map((v, i) => v == null ? null : `${x(i).toFixed(1)},${y(v).toFixed(1)}`)
+      .reduce((acc, p) => { if (!p) { acc.pen = false; return acc; } acc.d += (acc.pen ? 'L' : 'M') + p; acc.pen = true; return acc; }, {d:'', pen:false}).d;
+    // 세로축 눈금 4개
+    let grid = '';
+    for (let k = 0; k <= 4; k++) {
+      const v = lo + (hi - lo) * k / 4, yy = y(v);
+      grid += `<line x1="${L}" x2="${W - R}" y1="${yy}" y2="${yy}" stroke="#263447" stroke-width="1"/>` +
+              `<text x="${L - 6}" y="${yy + 3.5}" text-anchor="end" font-size="10.5" fill="#9aacc3">${fmtNum(v, row.unit)}</text>`;
+    }
+    // 가로축: 달이 바뀌는 곳마다(2개월 간격) 표시
+    let xt = '', lastM = '';
+    dates.forEach((d, i) => {
+      const m = d.slice(0, 7);
+      if (m !== lastM) {
+        const mon = +d.slice(5, 7);
+        if (lastM && mon % 2 === 1) {
+          const xx = x(i);
+          xt += `<line x1="${xx}" x2="${xx}" y1="${H - B}" y2="${H - B + 4}" stroke="#4a5c75"/>` +
+                `<text x="${xx}" y="${H - 7}" text-anchor="middle" font-size="10.5" fill="#9aacc3">${d.slice(2, 4)}.${d.slice(5, 7)}</text>`;
+        }
+        lastM = m;
+      }
+    });
+    // 기준선(0, VIX 20·30, 비율 1.0)
+    const refs = [];
+    if (row.unit === 'bp' && lo < 0 && hi > 0) refs.push([0, '0']);
+    if (row.key === 'vix') refs.push([20, '20'], [30, '30']);
+    if (row.key === 'vix_ratio') refs.push([1, '1.0']);
+    if (row.key === 'fng') refs.push([25, '25'], [75, '75']);
+    const refSvg = refs.filter(([v]) => v > lo && v < hi).map(([v, t]) =>
+      `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#8a6a3a" stroke-dasharray="2 3"/>`).join('');
+    const lx = x(s.length - 1), ly = y(vals[vals.length - 1]);
+    const color = cvar(row.level);
+    return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(row.name)} 최근 1년 추이">
+      ${grid}${refSvg}
+      <line x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}" stroke="#4a5c75"/>
+      <line x1="${L}" x2="${L}" y1="${T}" y2="${H - B}" stroke="#4a5c75"/>
+      ${xt}
+      <path d="${path(m60)}" fill="none" stroke="var(--ma60)" stroke-width="1.6" stroke-dasharray="5 3"/>
+      <path d="${path(m20)}" fill="none" stroke="var(--ma20)" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <path d="${path(vals)}" fill="none" stroke="#eaf0f8" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="${lx}" cy="${ly}" r="4" fill="${color}" stroke="#0c121d" stroke-width="2"/>
+    </svg>
+    <div class="legend"><span><i style="border-color:#eaf0f8"></i>값</span><span><i style="border-color:var(--ma20);border-top-style:dashed"></i>20일 평균</span><span><i style="border-color:var(--ma60);border-top-style:dashed"></i>60일 평균</span></div></div>`;
+  }
+
+  function changeHtml(row) {
+    if (row.change1m == null) return '';
+    const worse = row.risk === 'high' ? row.change1m > 0 : row.risk === 'low' ? row.change1m < 0
+      : row.risk === 'fng' ? row.change1m < 0 : (row.speedZ ?? 0) > 0;
+    const flat = Math.abs(row.change1m) < 1e-9;
+    return `<span class="chg ${flat ? 'flat' : worse ? 'worse' : 'better'}"><small>1개월</small>${esc(row.changeText)}</span>`;
+  }
+
+  function positionHtml(row) {
+    if (row.riskPct == null) return '';
+    const p = Math.max(0, Math.min(100, row.riskPct));
+    const side = row.risk === 'both' ? '5년 중간값에서 떨어진 정도' : '5년 중 위험한 쪽 위치';
+    const speed = row.speedBump ? ` · 속도 보정 +${row.speedBump}단계` : '';
+    return `<div class="pos"><div class="pos-label"><span>${side}</span><span><b style="color:var(--text)">${p.toFixed(0)}%</b>${speed}</span></div>
+      <div class="pos-track"><div class="pos-mark" style="left:${p}%"></div></div>
+      <div class="pos-ticks"><span style="left:50%">50</span><span style="left:75%">75</span><span style="left:90%">90</span><span style="left:97%">97</span></div></div>`;
+  }
+
+  function fngHtml(row) {
+    const c = row.compare || {};
+    const cell = (k, t) => `<div><b>${c[k] ?? '-'}</b><span>${t}</span></div>`;
+    const p = Math.max(0, Math.min(100, row.value));
+    return `<div class="fng-gauge"><div class="pos-mark" style="left:${p}%"></div></div>
+      <div class="pos-ticks"><span style="left:10%">10</span><span style="left:25%">25</span><span style="left:40%">40</span><span style="left:55%">55</span><span style="left:75%">75</span></div>
+      <div class="fng-compare"><div><b>${row.value}</b><span>오늘</span></div>${cell('prev','전일')}${cell('week_ago','1주 전')}${cell('month_ago','1개월 전')}${cell('year_ago','1년 전')}</div>
+      ${row.crossCheck != null ? `<div class="meta-line">교차 확인(finhacker.cz): ${row.crossCheck}${row.crossCheck === row.value ? ' · 일치' : ' · 차이 있음'}</div>` : ''}
+      ${(row.series || []).length >= 15 ? chart(row) : '<div class="meta-line">추이 그래프는 매일 값이 쌓이면(약 3주 뒤) 나타납니다.</div>'}`;
+  }
+
+  function card(row) {
+    const color = cvar(row.level);
+    const head = `<div class="ind-head"><div class="ind-name">${esc(row.name)}</div>
+      <span class="chip" style="--c:${color}">${row.emoji} ${esc(row.label)}${row.overheat ? ' · ⚠️과열' : ''}</span></div>`;
+    if (!row.level) {
+      return `<article class="card ind" style="--c:${color}">${head}<div class="empty">오늘은 자료를 받지 못했어요.<br>${esc(row.error || '')}</div><div class="why">${esc(row.help)}</div></article>`;
+    }
+    const unit = row.unit && !['bp', 'x', '점'].includes(row.unit) ? `<small style="color:var(--muted)">${esc(row.unit)}</small>` : '';
+    const zone = row.zone ? `<span class="chip" style="--c:${color}">${esc(row.zone)}</span>` : '';
+    return `<article class="card ind" style="--c:${color}">${head}
+      <div class="ind-val"><b>${esc(row.valueText)}</b>${unit}${zone}${changeHtml(row)}</div>
+      ${row.key === 'fng' ? fngHtml(row) : positionHtml(row) + chart(row)}
+      <div class="why">${esc(row.help)}</div>
+      <div class="meta-line">기준일 ${esc(row.date || '-')}${row.stale ? ' · <b style="color:var(--l2)">오늘 새 자료를 못 받아 이전 값을 보여 드려요</b>' : ''}</div></article>`;
+  }
+
+  function summarySentence(d) {
+    const rows = d.indicators.filter(r => r.level);
+    const bad = rows.filter(r => r.level <= 2);
+    const fast = rows.filter(r => r.speedBump > 0);
+    const parts = [];
+    parts.push(bad.length ? `${d.composite.available}개 지표 중 ${bad.length}개가 경계 이상입니다.` : `${d.composite.available}개 지표 모두 경계 아래입니다.`);
+    if (fast.length) parts.push(`${fast.map(r => r.name).join(', ')}은(는) 최근 1개월 사이 평소보다 빠르게 나빠졌습니다.`);
+    const fng = rows.find(r => r.key === 'fng');
+    if (fng) parts.push(`투자 심리는 ${fng.zone}(${fng.value})입니다.`);
+    return parts.join(' ');
+  }
+
+  function render(d) {
+    const c = d.composite, color = cvar(c.level);
+    const t = new Date(d.asOf);
+    document.getElementById('date-info').innerHTML =
+      `갱신 <b>${t.getMonth() + 1}월 ${t.getDate()}일 ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}</b> KST · 지표 ${c.available}/${c.total}`;
+    const steps = [1, 2, 3, 4, 5].map(lv => `<div class="step ${lv === c.level ? 'on' : ''}" style="--c:var(${LV[lv][2]})">
+      <div class="n">${c.counts[lv] ?? 0}</div><div class="t">${LV[lv][0]} ${lv} ${LV[lv][1]}</div><div class="bar" style="opacity:${(c.counts[lv] ?? 0) ? .9 : .15}"></div></div>`).join('');
+    const alarms = d.indicators.filter(r => r.level && r.level <= 2)
+      .map(r => `<span class="chip" style="--c:${cvar(r.level)}">${r.emoji} ${esc(r.name)}</span>`).join('');
+    let html = `<section class="hero">
+      <div class="card verdict" style="--lv:${color}"><div class="k">오늘의 종합 위험 단계</div>
+        <div class="big"><b>${c.level ?? '-'}</b><span>단계 · ${esc(c.label)} ${c.emoji}</span></div>
+        <p>${esc(summarySentence(d))}</p></div>
+      <div class="card ladder"><div class="ladder-row">${steps}</div>
+        ${alarms ? `<div class="alarms">${alarms}</div>` : ''}
+        <div class="rule">숫자는 단계별 지표 개수입니다. 1단계(위기)에 가까울수록 위험합니다. 단계는 최근 5년 중 위치와 1개월 변화 속도를 함께 보고 정합니다.</div></div>
+    </section>`;
+    const groups = [];
+    d.indicators.forEach(r => { let g = groups.find(x => x.name === r.group); if (!g) groups.push(g = {name: r.group, rows: []}); g.rows.push(r); });
+    const order = [['한국', ['한국 신용', '한국 금리']], ['미국', ['미국 신용', '미국 금리', '미국 유동성']], ['변동성', ['변동성']], ['투자 심리', ['심리']]];
+    order.forEach(([title, names]) => {
+      const rows = groups.filter(g => names.includes(g.name)).flatMap(g => g.rows);
+      if (!rows.length) return;
+      const worst = Math.min(...rows.filter(r => r.level).map(r => r.level), 6);
+      html += `<div class="group"><h2>${title}</h2><small>${rows.length}개 지표${worst <= 5 ? ` · 가장 나쁜 단계 ${LV[worst][0]} ${LV[worst][1]}` : ''}</small></div><div class="grid">${rows.map(card).join('')}</div>`;
+    });
+    $root.innerHTML = html;
+  }
+
+  fetch('wamo_macro.json?t=' + Date.now(), {cache: 'no-store'})
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(() => { $root.innerHTML = '<div class="empty">매크로 지수 자료를 아직 불러오지 못했어요. 첫 자동 갱신이 끝나면 여기에 나타납니다.</div>'; });
+})();
+</script>
+</body>
+</html>
