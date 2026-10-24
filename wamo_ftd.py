@@ -28,13 +28,15 @@ POLICY = {
 
 # Where the close lands in the day's range matters as much as the volume.
 # pos = (close - low) / (high - low): 0 = closed at the low, 1 = closed at the high.
-DIST_RULE = {'heavyPosMax': 1 / 3, 'lightPosMin': 0.5, 'hiddenPosMax': 1 / 3, 'hiddenRangeMinPct': 0.6,
-             'weights': {'HEAVY': 1.5, 'NORMAL': 1.0, 'LIGHT': 0.5, 'HIDDEN': 1.0}}
+DIST_RULE = {'heavyPosMax': 0.25, 'lightPosMin': 0.5, 'hiddenPosMax': 1 / 3, 'hiddenRangeMinPct': 0.6,
+             'stallMaxPct': 0.1,
+             'weights': {'HEAVY': 1.5, 'NORMAL': 1.0, 'LIGHT': 0.5, 'HIDDEN': 1.0, 'STALL': 1.0}}
 DIST_KIND_TEXT = {
     'HEAVY': '꽉 찬 음봉 · 저가 근처 마감 (위험)',
     'NORMAL': '보통 분산일',
     'LIGHT': '긴 아랫꼬리 · 저가에서 회복해 위쪽 마감 (덜 위험)',
     'HIDDEN': '위장 분산일 · 올랐지만 아래쪽 마감',
+    'STALL': '정체일 · 보합(+0.1% 미만)인데 거래량 늘어남',
 }
 
 
@@ -46,10 +48,12 @@ def close_position(row):
 
 
 def distribution_kind(prev, cur, drop_pct=0.2):
-    """None, or HEAVY / NORMAL / LIGHT (classic: down >= 0.2% on higher volume) or HIDDEN.
+    """None, or HEAVY / NORMAL / LIGHT (classic: down >= 0.2% on higher volume), HIDDEN or STALL.
 
+    HEAVY: close in the bottom 25% of the day's range (strong selling); LIGHT: close in the top half.
     HIDDEN: an up close on higher volume whose close sank into the bottom third of a real
     (>= 0.6%) range - late selling pushed it down, a disguised distribution day.
+    STALL: flat or barely up (< +0.1%) on higher volume - big hands sold into the buying (stalling).
     """
     if not (valid_num(prev.get('close')) and valid_num(cur.get('close'))
             and valid_num(prev.get('volume')) and valid_num(cur.get('volume'))):
@@ -65,6 +69,8 @@ def distribution_kind(prev, cur, drop_pct=0.2):
     if change > 0 and pos is not None and pos <= DIST_RULE['hiddenPosMax'] \
             and (cur['high'] - cur['low']) / prev['close'] * 100 >= DIST_RULE['hiddenRangeMinPct']:
         return 'HIDDEN'
+    if change < DIST_RULE['stallMaxPct'] - 1e-9:
+        return 'STALL'
     return None
 
 

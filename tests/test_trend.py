@@ -82,11 +82,38 @@ class TrendMathTests(unittest.TestCase):
             bench[k]['volume'] = 100.0
         out = trend.distribution_days(bench)
         self.assertEqual(out['count'], 3)
-        self.assertEqual(out['kinds'], {'HEAVY': 1, 'NORMAL': 0, 'LIGHT': 1, 'HIDDEN': 1})
+        self.assertEqual(out['kinds'], {'HEAVY': 1, 'NORMAL': 0, 'LIGHT': 1, 'HIDDEN': 1, 'STALL': 0})
         self.assertEqual(out['score'], 3.0)
         day = next(x for x in out['days'] if x['date'] == dates[16])
         self.assertEqual((day['kind'], day['closePos']), ('HIDDEN', 13))
         self.assertEqual((day['volume'], day['prevVolume'], day['volumeRatio']), (150.0, 100.0, 1.5))
+
+    def test_stall_day_counts_and_strong_days_raise_the_stage(self):
+        from wamo_ftd import distribution_kind
+        flat = lambda c, v, hi=None, lo=None: {'close': c, 'high': hi or c * 1.005, 'low': lo or c * 0.995, 'volume': v}
+        self.assertEqual(distribution_kind(flat(100, 100), flat(100.05, 130)), 'STALL')      # +0.05% on more volume
+        self.assertEqual(distribution_kind(flat(100, 100), flat(99.9, 130)), 'STALL')        # -0.1%: flat, not a 0.2% drop
+        self.assertIsNone(distribution_kind(flat(100, 100), flat(100.05, 90)))               # less volume: not counted
+        self.assertIsNone(distribution_kind(flat(100, 100), flat(100.5, 130, 100.6, 99.9)))  # real up day, closes high
+        # bottom 25% of the range = strong (HEAVY); 30% is now an ordinary distribution day
+        self.assertEqual(distribution_kind(flat(100, 100), {'close': 99.2, 'high': 100, 'low': 99.0, 'volume': 130}), 'HEAVY')
+        self.assertEqual(distribution_kind(flat(100, 100), {'close': 99.3, 'high': 100, 'low': 99.0, 'volume': 130}), 'NORMAL')
+        st = trend.distribution_stage
+        self.assertEqual([st(n, 0)['key'] for n in (0, 2, 3, 4, 5, 6, 9)],
+                         ['HEALTHY', 'HEALTHY', 'CAUTION', 'WARNING', 'WARNING', 'DANGER', 'DANGER'])
+        self.assertEqual((st(3, 2)['key'], st(3, 2)['bumped']), ('WARNING', True))   # 3번 중 강한 날 2번 → 한 단계 위
+        self.assertEqual(st(5, 3)['key'], 'DANGER')
+        self.assertFalse(st(4, 1)['bumped'])
+        self.assertEqual(st(7, 7)['key'], 'DANGER')
+
+    def test_up_days_on_falling_volume_are_an_auxiliary_warning(self):
+        dates = sessions(26)
+        bench = [{'date': d, 'close': 100.0 + i, 'high': 101.0 + i, 'low': 99.5 + i, 'volume': 1000.0 - i * 10}
+                 for i, d in enumerate(dates)]
+        out = trend.distribution_days(bench)
+        self.assertEqual(out['count'], 0)                       # never counted as distribution
+        self.assertEqual((out['thinRally']['upDays5'], out['thinRally']['thinDays5']), (5, 5))
+        self.assertTrue(out['thinRally']['warn'])
 
     def test_distribution_days_need_volume(self):
         bench = [{'date': d, 'close': 100.0, 'volume': None} for d in sessions(30)]
