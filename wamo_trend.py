@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 19
+TREND_VERSION = 20
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -348,29 +348,37 @@ def load_fixture(market):
 
 
 # --------------------------------------------------------------- weather
-def distribution_days(bench, window=25):
+def distribution_days(bench, window=25, reset_on=None):
+    """reset_on: follow-through day date - a new uptrend starts the count fresh (IBD practice)."""
+    from wamo_ftd import near_recent_high
+    offset = max(0, len(bench) - (window + 1))
     rows = bench[-(window + 1):]
     vols = [r.get('volume') for r in rows]
     if len(rows) < window + 1 or sum(1 for v in vols if v) < window * 0.8:
         return {'status': 'UNAVAILABLE', 'count': None, 'window': window, 'days': [],
                 'note': '지수 거래량 자료가 부족해 분산일을 셀 수 없습니다.'}
-    from wamo_ftd import distribution_kind, close_position, DIST_RULE, is_stall_watch
+    from wamo_ftd import distribution_kind, close_position, DIST_RULE, watch_reason
     days, count, score, kinds = [], 0, 0.0, {k: 0 for k in DIST_RULE['weights']}
     for i in range(1, len(rows)):
         prev, cur = rows[i - 1], rows[i]
         chg = cur['close'] / prev['close'] - 1
-        kind = distribution_kind(prev, cur)
+        advancing = near_recent_high(bench, offset + i)
+        kind = distribution_kind(prev, cur, advancing=advancing)
         is_dist = kind is not None
         # 지운 이유를 화면에 적기 위해, 분산일 종가 대비 처음으로 5% 이상 오른 날을 기록
         hit = next((r for r in rows[i + 1:] if is_dist and r['close'] >= cur['close'] * 1.05), None)
-        expired = hit is not None
+        ftd_reset = bool(is_dist and hit is None and reset_on and cur['date'] < reset_on)
+        expired = hit is not None or ftd_reset
         if is_dist and not expired:
             count += 1
             kinds[kind] += 1
             score += DIST_RULE['weights'][kind]
         day = {'date': cur['date'], 'changePct': rnd(chg * 100), 'distribution': is_dist, 'expired': expired}
-        if not is_dist and is_stall_watch(prev, cur):
-            day.update(stallWatch=True, volumeRatio=rnd(cur['volume'] / prev['volume'], 3))
+        why = None if is_dist else watch_reason(prev, cur, advancing)
+        if why:
+            day.update(stallWatch=True, watchReason=why, volumeRatio=rnd(cur['volume'] / prev['volume'], 3))
+        if ftd_reset:
+            day['expiredByFtd'] = reset_on
         if is_dist:
             pos = close_position(cur)
             day.update(close=rnd(cur['close']), kind=kind, closePos=None if pos is None else rnd(pos * 100, 0),
@@ -399,11 +407,13 @@ def distribution_days(bench, window=25):
     return {'status': 'OK', 'count': count, 'score': rnd(score, 1), 'kinds': kinds, 'window': window, 'days': days,
             'weights': DIST_RULE['weights'], 'stage': distribution_stage(count, kinds.get('HEAVY', 0)),
             'thinRally': thin_rally,
-            'note': ('분산일: 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 지수가 보합이거나 +0.1% 미만으로 찔끔 올랐는데 거래량이 전날보다 5% 이상 늘면 '
-                     '정체일로 같이 셉니다(큰손이 팔았지만 매수세가 아직 버틴 것). 거래량이 5% 미만으로 조금만 늘었다면 애매해서 세지 않고 정체 후보로만 표시합니다. 같은 날이라도 종가가 어디서 끝났는지가 중요해서, '
+            'resetOn': reset_on,
+            'note': ('분산일(오닐·IBD 기준): 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 같은 날이라도 종가가 중요해서, '
                      '그날 고가~저가 범위의 아래쪽 25% 안에서 끝나면(꽉 찬 음봉) 강한 분산일, 위쪽 절반에서 끝나면(긴 아랫꼬리) 약한 분산일로 봅니다. '
-                     '지수가 올랐어도 거래량이 늘고 종가가 범위 아래쪽 1/3에 처지면(윗꼬리) 막판 매물이 끌어내린 위장 분산일로 셉니다. '
-                     '그 뒤 지수가 5% 넘게 오르면 지웁니다.')}
+                     '정체일·위장 분산일은 IBD도 사람이 판단해 더하는 날이라 보수적으로 셉니다: 지수가 최근 고점 3% 안에 있고(오른 뒤), '
+                     '거래량이 전날보다 5% 이상 늘었고, 찔끔(+0.1% 미만) 올라 범위 아래쪽 절반에서 끝났거나(정체일) 올랐지만 범위 아래쪽 1/3에 처졌을 때(위장)만 셉니다. '
+                     '조건이 하나라도 모자라면 세지 않고 후보로만 표시합니다. 25거래일이 지나거나, 그 뒤 지수가 그날 종가보다 5% 넘게 오르거나, '
+                     '팔로우스루데이(FTD)로 새 상승 추세가 시작되면 지웁니다.')}
 
 
 DIST_STAGES = [
@@ -582,9 +592,14 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None):
             return f"{d['count']}번" + (f" ({' · '.join(parts)})" if parts else '') + f" · {stage_of(d)['label']}"
         detail = ' / '.join(f'{label} {one(d)}' for label, d in counted) if len(counted) > 1 else one(counted[0][1])
         score_ = {0: 1, 1: 0}.get(worst['level'], -1)
+        in_corr = all(d.get('inCorrection') for _, d in counted)
+        if in_corr and score_ == 1:
+            score_ = 0
         add('distribution', '분산일', score_,
             f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail}이에요. '
-            + (f"대응: {worst['action']}." if worst['level'] else '정상 매매를 이어가도 돼요.'))
+            + (f"대응: {worst['action']}." if worst['level']
+               else '지금은 조정 중이라 분산일이 적어도 안심할 때가 아니에요. 새 매수는 FTD를 기다려요.' if in_corr
+               else '정상 매매를 이어가도 돼요.'))
     if br.get('status') == 'OK':
         p = br['above50Pct']
         add('breadth', '시장 체력', 1 if p >= 60 else -1 if p < 40 else 0,
@@ -1147,6 +1162,26 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
                           repairSourceUrl='https://m.stock.naver.com/domestic/index/' + {'^KS11':'KOSPI','^KQ11':'KOSDAQ'}[sym] + '/total')
         ftd_indexes.append(signal)
     write_json(root / "wamo_ftd_history.json", ftd_history, compact=True)
+    # IBD practice: a follow-through day starts a new uptrend, so distribution days from the
+    # correction before it are wiped. Recount with that reset when an FTD sits inside the window.
+    last_ftd = {sig.get('symbol'): max((e['date'] for e in sig.get('events') or [] if e.get('type') == 'FTD'), default=None)
+                for sig in ftd_indexes}
+    for sym_, rows_, holder in ((symbol, bench, None), (sym2, bench2, secondary)):
+        reset = last_ftd.get(sym_)
+        cur = dist if holder is None else (holder or {}).get('distribution')
+        if not (reset and rows_ and cur and cur.get('status') == 'OK') or reset < cur['days'][0]['date']:
+            continue
+        new = dict(distribution_days(rows_, reset_on=reset), prelim=cur.get('prelim'), confirmed=cur.get('confirmed'), resetOn=reset)
+        if holder is None:
+            dist = new
+        else:
+            holder['distribution'] = new
+    # Distribution days catch the top of a RISING market. In a correction / rally attempt the count is
+    # naturally low because the selling already happened, so a low count must not read as "healthy".
+    phase_of = {sig.get('symbol'): sig.get('phase') for sig in ftd_indexes}
+    for sym_, d_ in ((symbol, dist), (sym2, (secondary or {}).get('distribution'))):
+        if d_ and d_.get('status') == 'OK' and phase_of.get(sym_) in ('CORRECTION', 'RALLY', 'LATE'):
+            d_['inCorrection'] = phase_of[sym_]
     try:
         import wamo_liquidity
         # Use the same verified index history as FTD (Yahoo merged with stored rows, and for Korea

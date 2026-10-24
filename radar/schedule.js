@@ -1,6 +1,6 @@
 // "갱신 일정·진행 상황": both markets at a glance, from the same status file the
 // "지금 갱신" button reads (published at the start and end of every run).
-import { refreshReason } from './runner.js?v=20261024-dd2';
+import { refreshReason } from './runner.js?v=20261024-dd3';
 
 const NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const RULE = {

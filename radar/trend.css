@@ -540,3 +540,5 @@ dialog[open] ~ .to-top { display: none; }
 .tr-stage-now.bad { background: color-mix(in srgb, var(--bad) 14%, transparent); }
 .tr-d.watch { box-shadow: inset 0 0 0 1.5px #6fa8dc; background: transparent; }
 .tr-watch b { color: #9cc6ee; }
+.tr-watch { flex-direction: column; align-items: flex-start; }
+.tr-watch-row { margin: 0; color: var(--ink-3, #8aa0b9); font-size: 12px; }
