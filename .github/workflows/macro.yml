@@ -1,6 +1,7 @@
 name: WAMO 매크로 지수
 # 다른 WAMO 갱신과 섞이지 않도록 별도 대기 줄(wamo-macro)에서 혼자 돈다.
 # 바꾸는 파일은 wamo_macro.json / wamo_macro_history.json 두 개뿐이다.
+# 화면은 산업강도판(dhandori/industry-strength) 세 번째 탭이 이 JSON을 읽어 그린다.
 on:
   workflow_dispatch:
   schedule:
@@ -8,7 +9,7 @@ on:
     - cron: '5 22 * * 0-5'
   push:
     branches: [main]
-    paths: ['wamo_macro.py', 'macro.html', '.github/workflows/macro.yml']
+    paths: ['wamo_macro.py', '.github/workflows/macro.yml']
 permissions:
   contents: write
 concurrency:

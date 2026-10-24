@@ -1,6 +1,6 @@
 """매크로 지수 — 한·미 유동성·신용·변동성·심리 지표를 모아 5단계 위험 단계로 판정한다.
 
-화면(macro.html)과 매일 아침 텔레그램 알림이 이 파일의 결과(wamo_macro.json)를 쓴다.
+산업강도판(dhandori/industry-strength)의 '🌐 매크로 지수' 탭과 매일 아침 텔레그램 알림이 이 파일의 결과(wamo_macro.json)를 쓴다.
 다른 WAMO 갱신 작업과 섞이지 않도록 별도 파일·별도 실행(macro.yml)으로 돈다.
 
 판정 방식
@@ -435,8 +435,8 @@ def telegram_text(data):
         ch = f' (1M {r["changeText"]})' if r.get('changeText') else ''
         stale = ' (이전 자료)' if r.get('stale') else ''
         lines.append(f'{r["emoji"]} {r["name"]}: {r["valueText"]}{extra}{ch}{warn}{stale}')
-    url = os.getenv('WAMO_SITE_URL', 'https://dhandori.github.io/wamo-choochoo-dashboard').rstrip('/')
-    lines += ['', f'👉 {url}/macro.html']
+    # 화면은 산업강도판의 세 번째 탭(🌐 매크로 지수)에 있다
+    lines += ['', '👉 https://dhandori.github.io/industry-strength/#KR-macro']
     return '\n'.join(lines)
 
 
