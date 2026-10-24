@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 18
+TREND_VERSION = 19
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -354,7 +354,7 @@ def distribution_days(bench, window=25):
     if len(rows) < window + 1 or sum(1 for v in vols if v) < window * 0.8:
         return {'status': 'UNAVAILABLE', 'count': None, 'window': window, 'days': [],
                 'note': '지수 거래량 자료가 부족해 분산일을 셀 수 없습니다.'}
-    from wamo_ftd import distribution_kind, close_position, DIST_RULE
+    from wamo_ftd import distribution_kind, close_position, DIST_RULE, is_stall_watch
     days, count, score, kinds = [], 0, 0.0, {k: 0 for k in DIST_RULE['weights']}
     for i in range(1, len(rows)):
         prev, cur = rows[i - 1], rows[i]
@@ -369,6 +369,8 @@ def distribution_days(bench, window=25):
             kinds[kind] += 1
             score += DIST_RULE['weights'][kind]
         day = {'date': cur['date'], 'changePct': rnd(chg * 100), 'distribution': is_dist, 'expired': expired}
+        if not is_dist and is_stall_watch(prev, cur):
+            day.update(stallWatch=True, volumeRatio=rnd(cur['volume'] / prev['volume'], 3))
         if is_dist:
             pos = close_position(cur)
             day.update(close=rnd(cur['close']), kind=kind, closePos=None if pos is None else rnd(pos * 100, 0),
@@ -397,8 +399,8 @@ def distribution_days(bench, window=25):
     return {'status': 'OK', 'count': count, 'score': rnd(score, 1), 'kinds': kinds, 'window': window, 'days': days,
             'weights': DIST_RULE['weights'], 'stage': distribution_stage(count, kinds.get('HEAVY', 0)),
             'thinRally': thin_rally,
-            'note': ('분산일: 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 지수가 보합이거나 +0.1% 미만으로 찔끔 올랐는데 거래량이 늘면 '
-                     '정체일로 같이 셉니다(큰손이 팔았지만 매수세가 아직 버틴 것). 같은 날이라도 종가가 어디서 끝났는지가 중요해서, '
+            'note': ('분산일: 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 지수가 보합이거나 +0.1% 미만으로 찔끔 올랐는데 거래량이 전날보다 5% 이상 늘면 '
+                     '정체일로 같이 셉니다(큰손이 팔았지만 매수세가 아직 버틴 것). 거래량이 5% 미만으로 조금만 늘었다면 애매해서 세지 않고 정체 후보로만 표시합니다. 같은 날이라도 종가가 어디서 끝났는지가 중요해서, '
                      '그날 고가~저가 범위의 아래쪽 25% 안에서 끝나면(꽉 찬 음봉) 강한 분산일, 위쪽 절반에서 끝나면(긴 아랫꼬리) 약한 분산일로 봅니다. '
                      '지수가 올랐어도 거래량이 늘고 종가가 범위 아래쪽 1/3에 처지면(윗꼬리) 막판 매물이 끌어내린 위장 분산일로 셉니다. '
                      '그 뒤 지수가 5% 넘게 오르면 지웁니다.')}

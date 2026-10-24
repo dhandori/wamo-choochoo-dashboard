@@ -1,5 +1,5 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261024-dd1';
-import { climaxSection, climaxCount } from './climax.js?v=20261024-dd1';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261024-dd2';
+import { climaxSection, climaxCount } from './climax.js?v=20261024-dd2';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -39,7 +39,7 @@ export function trendTabLabel(market) {
 // Same order and weights as wamo_ftd.DIST_RULE (heavy 1.5 · normal 1 · light 0.5 · hidden 1).
 const DIST_KINDS = [['HEAVY', '꽉 찬 음봉', 1.5], ['NORMAL', '보통', 1], ['STALL', '정체(보합)', 1], ['HIDDEN', '위장(윗꼬리)', 1], ['LIGHT', '긴 아랫꼬리', 0.5]];
 const DIST_SHORT = { HEAVY: '꽉 찬 음봉', NORMAL: '보통', LIGHT: '긴 아랫꼬리', HIDDEN: '위장 분산일', STALL: '정체일' };
-const DIST_NAME = { HEAVY: '꽉 찬 음봉 · 위험', NORMAL: '보통 분산일', LIGHT: '긴 아랫꼬리 · 저가에서 회복 · 덜 위험', HIDDEN: '위장 분산일 · 올랐지만 아래쪽 마감', STALL: '정체일 · 보합인데 거래량 늘어남' };
+const DIST_NAME = { HEAVY: '꽉 찬 음봉 · 위험', NORMAL: '보통 분산일', LIGHT: '긴 아랫꼬리 · 저가에서 회복 · 덜 위험', HIDDEN: '위장 분산일 · 올랐지만 아래쪽 마감', STALL: '정체일 · 보합인데 거래량 5% 이상 늘어남' };
 
 // Tiny candle for one day with its volume underneath.
 // Top: wick = high~low, body = open~close (green = 양봉 close above open, red = 음봉).
@@ -230,11 +230,18 @@ function weatherDetail(b, market) {
       const dots = el('div', null, 'tr-dots');
       (d.days || []).forEach(x => {
         const kind = x.kind ? x.kind.toLowerCase() : '';
-        const s = el('span', null, `tr-d ${x.distribution ? (x.expired ? 'expired' : `hit ${kind}`) : ''}`);
-        s.title = `${x.date} ${pct(x.changePct)}${x.distribution ? ` · ${DIST_NAME[x.kind] || '분산일'}${isNum(x.closePos) ? ` · 종가 위치 ${x.closePos}%` : ''}${x.expired ? ' (지워짐)' : ''}` : ''}`;
+        const s = el('span', null, `tr-d ${x.distribution ? (x.expired ? 'expired' : `hit ${kind}`) : x.stallWatch ? 'watch' : ''}`);
+        s.title = `${x.date} ${pct(x.changePct)}${x.stallWatch ? ` · 정체 후보(안 셈) · 거래량 ${fmt(x.volumeRatio, 2)}배` : ''}${x.distribution ? ` · ${DIST_NAME[x.kind] || '분산일'}${isNum(x.closePos) ? ` · 종가 위치 ${x.closePos}%` : ''}${x.expired ? ' (지워짐)' : ''}` : ''}`;
         dots.append(s);
       });
       c2.append(dots);
+      const watch = (d.days || []).filter(x => x.stallWatch);
+      if (watch.length) {
+        const p = el('p', null, 'tr-thin tr-watch');
+        p.append(el('b', `정체 후보 ${watch.length}번 (안 셈)`), el('span', watch.map(x => `${md(x.date)} ${pct(x.changePct)} · 거래량 ${fmt(x.volumeRatio, 2)}배`).join(' / ')),
+          el('em', '보합인데 거래량이 5% 미만으로 조금만 늘어 애매한 날이에요. 횟수에는 넣지 않았어요.'));
+        c2.append(p);
+      }
       if (d.thinRally) c2.append(thinRallyLine(d.thinRally));
       const days = d.days || [];
       if (days.length) { const ax = el('div', null, 'tr-dots-axis'); ax.append(el('span', md(days[0].date)), el('span', d.kinds ? '테두리만 = 지워진 날' : '빨강 = 분산일 · 테두리 = 지워진 분산일'), el('span', md(days.at(-1).date))); c2.append(ax); }

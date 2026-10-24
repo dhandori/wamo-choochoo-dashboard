@@ -94,6 +94,10 @@ class TrendMathTests(unittest.TestCase):
         self.assertEqual(distribution_kind(flat(100, 100), flat(100.05, 130)), 'STALL')      # +0.05% on more volume
         self.assertEqual(distribution_kind(flat(100, 100), flat(99.9, 130)), 'STALL')        # -0.1%: flat, not a 0.2% drop
         self.assertIsNone(distribution_kind(flat(100, 100), flat(100.05, 90)))               # less volume: not counted
+        self.assertIsNone(distribution_kind(flat(100, 100), flat(100.05, 103)))              # +3% volume: too small, not counted
+        from wamo_ftd import is_stall_watch
+        self.assertTrue(is_stall_watch(flat(100, 100), flat(100.05, 103)))                 # ...but shown as a stall candidate
+        self.assertFalse(is_stall_watch(flat(100, 100), flat(100.05, 130)))                # a real stall is not a candidate
         self.assertIsNone(distribution_kind(flat(100, 100), flat(100.5, 130, 100.6, 99.9)))  # real up day, closes high
         # bottom 25% of the range = strong (HEAVY); 30% is now an ordinary distribution day
         self.assertEqual(distribution_kind(flat(100, 100), {'close': 99.2, 'high': 100, 'low': 99.0, 'volume': 130}), 'HEAVY')
