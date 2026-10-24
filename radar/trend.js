@@ -1,5 +1,5 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261023-tx2';
-import { climaxSection, climaxCount } from './climax.js?v=20261023-tx2';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261024-dd1';
+import { climaxSection, climaxCount } from './climax.js?v=20261024-dd1';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -37,9 +37,9 @@ export function trendTabLabel(market) {
 }
 
 // Same order and weights as wamo_ftd.DIST_RULE (heavy 1.5 · normal 1 · light 0.5 · hidden 1).
-const DIST_KINDS = [['HEAVY', '꽉 찬 음봉', 1.5], ['NORMAL', '보통', 1], ['LIGHT', '긴 아랫꼬리', 0.5], ['HIDDEN', '위장(윗꼬리)', 1]];
-const DIST_SHORT = { HEAVY: '꽉 찬 음봉', NORMAL: '보통', LIGHT: '긴 아랫꼬리', HIDDEN: '위장 분산일' };
-const DIST_NAME = { HEAVY: '꽉 찬 음봉 · 위험', NORMAL: '보통 분산일', LIGHT: '긴 아랫꼬리 · 저가에서 회복 · 덜 위험', HIDDEN: '위장 분산일 · 올랐지만 아래쪽 마감' };
+const DIST_KINDS = [['HEAVY', '꽉 찬 음봉', 1.5], ['NORMAL', '보통', 1], ['STALL', '정체(보합)', 1], ['HIDDEN', '위장(윗꼬리)', 1], ['LIGHT', '긴 아랫꼬리', 0.5]];
+const DIST_SHORT = { HEAVY: '꽉 찬 음봉', NORMAL: '보통', LIGHT: '긴 아랫꼬리', HIDDEN: '위장 분산일', STALL: '정체일' };
+const DIST_NAME = { HEAVY: '꽉 찬 음봉 · 위험', NORMAL: '보통 분산일', LIGHT: '긴 아랫꼬리 · 저가에서 회복 · 덜 위험', HIDDEN: '위장 분산일 · 올랐지만 아래쪽 마감', STALL: '정체일 · 보합인데 거래량 늘어남' };
 
 // Tiny candle for one day with its volume underneath.
 // Top: wick = high~low, body = open~close (green = 양봉 close above open, red = 음봉).
@@ -215,8 +215,10 @@ function weatherDetail(b, market) {
   if (distRows.length) {
     distRows.forEach(([label, d]) => {
       const big = el('div', null, 'tr-big'); big.append(el('b', `${d.count}`), el('span', `${distRows.length > 1 ? label + ' · ' : ''}최근 25거래일`));
-      if (isNum(d.score)) big.append(el('span', `위험 점수 ${fmt(d.score, 1)}`, `tr-dist-score ${d.score >= 6 ? 'bad' : d.score >= 4 ? 'mid' : 'good'}`));
+      const st = d.stage;
+      if (st) big.append(el('span', st.label, `tr-dist-score ${STAGE_TONE[st.key]}`));
       c2.append(big);
+      if (st) c2.append(stageLadder(st, d.count));
       if (d.prelim) c2.append(prelimNote(d.prelim, b.volumeSchedule));
       else if (d.confirmed) c2.append(confirmedNote(d.confirmed));
       const k = d.kinds || {};
@@ -233,6 +235,7 @@ function weatherDetail(b, market) {
         dots.append(s);
       });
       c2.append(dots);
+      if (d.thinRally) c2.append(thinRallyLine(d.thinRally));
       const days = d.days || [];
       if (days.length) { const ax = el('div', null, 'tr-dots-axis'); ax.append(el('span', md(days[0].date)), el('span', d.kinds ? '테두리만 = 지워진 날' : '빨강 = 분산일 · 테두리 = 지워진 분산일'), el('span', md(days.at(-1).date))); c2.append(ax); }
       // 지금 세고 있는 분산일: 날짜 · 등락 · 종가가 그날 범위 어디서 끝났는지
@@ -325,6 +328,31 @@ function volumeChart(series) {
 
 // Yahoo의 최신일 지수 거래량은 장 마감 직후 '확정 전' 값이라 다음 날 더 크게 고쳐져요.
 // 전날도 확정 전 값 기준으로 맞춰 비교했다는 걸 알려 줌.
+// 책의 표: 25거래일 안 분산일 누적 횟수에 따른 시장 상태와 대응
+const STAGE_TONE = { HEALTHY: 'good', CAUTION: 'mid', WARNING: 'warn', DANGER: 'bad' };
+function stageLadder(st, count) {
+  const box = el('div', null, 'tr-stage');
+  const head = el('p', null, `tr-stage-now ${STAGE_TONE[st.key]}`);
+  head.append(el('b', `지금 ${count}번 · ${st.label}`), el('span', `대응: ${st.action}`));
+  box.append(head);
+  if (st.bumped) box.append(el('p', `⚠ ${st.reason}`, 'tr-stage-bump'));
+  const ladder = el('div', null, 'tr-stage-ladder');
+  (st.ladder || []).forEach(x => {
+    const cell = el('div', null, `tr-stage-step ${STAGE_TONE[x.key]}${x.key === st.key ? ' on' : ''}`);
+    cell.append(el('b', x.range), el('strong', x.label), el('span', x.action));
+    ladder.append(cell);
+  });
+  box.append(ladder, el('p', '절대 기준이 아니라 가이드라인이에요. 숫자가 쌓였다고 바로 전량 매도하라는 뜻은 아니고, 보유 종목에서도 매도 신호가 함께 나오는지 확인하세요.', 'tr-help'));
+  return box;
+}
+// 보조 신호: 올랐는데 거래량이 줄어든 날 (분산일로 세지는 않음)
+function thinRallyLine(t) {
+  const p = el('p', null, `tr-thin ${t.warn ? 'warn' : ''}`);
+  p.append(el('b', '보조 신호 · 거래량 줄며 오른 날'),
+    el('span', `최근 5거래일 상승 ${t.upDays5}일 중 ${t.thinDays5}일 · 25거래일 상승 ${t.upDays}일 중 ${t.thinDays}일`),
+    el('em', t.warn ? '매수세가 약해지는 중 — 분산일과 같이 나오면 더 조심' : '오르는 날 거래량이 대체로 받쳐 줘요'));
+  return p;
+}
 function prelimNote(p, sched) {
   const when = sched ? ' 저녁 6시 10분에 확정 값으로 다시 계산해요.' : ' 확정되면 다시 계산해요.';
   return el('p', `ⓘ ${md(p.date)} 거래량은 아직 확정 전이에요. 전날 거래량이 확정되며 ${fmt(p.scale, 2)}배로 늘어난 만큼 이날도 늘려 잡아 비교했어요.${when}`, 'tr-prelim');

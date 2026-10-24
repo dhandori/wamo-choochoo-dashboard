@@ -36,7 +36,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 17
+TREND_VERSION = 18
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -355,7 +355,7 @@ def distribution_days(bench, window=25):
         return {'status': 'UNAVAILABLE', 'count': None, 'window': window, 'days': [],
                 'note': '지수 거래량 자료가 부족해 분산일을 셀 수 없습니다.'}
     from wamo_ftd import distribution_kind, close_position, DIST_RULE
-    days, count, score, kinds = [], 0, 0.0, {'HEAVY': 0, 'NORMAL': 0, 'LIGHT': 0, 'HIDDEN': 0}
+    days, count, score, kinds = [], 0, 0.0, {k: 0 for k in DIST_RULE['weights']}
     for i in range(1, len(rows)):
         prev, cur = rows[i - 1], rows[i]
         chg = cur['close'] / prev['close'] - 1
@@ -383,12 +383,48 @@ def distribution_days(bench, window=25):
             day['expiredClose'] = rnd(hit['close'])
             day['expiredRisePct'] = rnd((hit['close'] / cur['close'] - 1) * 100)
         days.append(day)
+    # 보조 신호: 올랐는데 거래량이 전날보다 줄어든 날 (분산일로 세지는 않음 — 매수세가 약해지는 뜻)
+    thin = []
+    for i in range(1, len(rows)):
+        prev, cur = rows[i - 1], rows[i]
+        if cur['close'] > prev['close'] * (1 + DIST_RULE['stallMaxPct'] / 100) and cur.get('volume') and prev.get('volume'):
+            thin.append((cur['date'], cur['volume'] < prev['volume']))
+    last5 = {r['date'] for r in rows[-5:]}
+    up5 = [t for d, t in thin if d in last5]
+    thin_rally = {'upDays': len(thin), 'thinDays': sum(t for _, t in thin),
+                  'upDays5': len(up5), 'thinDays5': sum(up5),
+                  'warn': len(up5) >= 2 and sum(up5) >= 2 and sum(up5) / len(up5) >= 0.6}
     return {'status': 'OK', 'count': count, 'score': rnd(score, 1), 'kinds': kinds, 'window': window, 'days': days,
-            'weights': DIST_RULE['weights'],
-            'note': ('분산일: 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 같은 날이라도 종가가 어디서 끝났는지가 중요해서, '
-                     '그날 고가~저가 범위에서 아래쪽 1/3에서 끝나면(꽉 찬 음봉) 위험, 위쪽 절반에서 끝나면(긴 아랫꼬리 · 저가에서 회복) 덜 위험으로 봅니다. '
+            'weights': DIST_RULE['weights'], 'stage': distribution_stage(count, kinds.get('HEAVY', 0)),
+            'thinRally': thin_rally,
+            'note': ('분산일: 지수가 0.2% 이상 내리면서 거래량이 전날보다 많았던 날. 지수가 보합이거나 +0.1% 미만으로 찔끔 올랐는데 거래량이 늘면 '
+                     '정체일로 같이 셉니다(큰손이 팔았지만 매수세가 아직 버틴 것). 같은 날이라도 종가가 어디서 끝났는지가 중요해서, '
+                     '그날 고가~저가 범위의 아래쪽 25% 안에서 끝나면(꽉 찬 음봉) 강한 분산일, 위쪽 절반에서 끝나면(긴 아랫꼬리) 약한 분산일로 봅니다. '
                      '지수가 올랐어도 거래량이 늘고 종가가 범위 아래쪽 1/3에 처지면(윗꼬리) 막판 매물이 끌어내린 위장 분산일로 셉니다. '
                      '그 뒤 지수가 5% 넘게 오르면 지웁니다.')}
+
+
+DIST_STAGES = [
+    # (최소 횟수, key, 시장 상태, 대응) — 25거래일 안 분산일 누적 횟수 기준
+    (0, 'HEALTHY', '건강함', '정상 매매 계속'),
+    (3, 'CAUTION', '주의 필요', '신규 매수 자제, 보유 종목 점검 강화'),
+    (4, 'WARNING', '경고', '신규 매수 중단, 보유 종목 축소 시작(현금화)'),
+    (6, 'DANGER', '위험', '보유 물량 대부분 정리, 현금 비중 극대화'),
+]
+
+
+def distribution_stage(count, heavy):
+    """누적 횟수로 단계를 정하고, 3번 이상인데 그중 강한 분산일(꽉 찬 음봉)이 절반 이상이면 한 단계 올린다."""
+    base = max(i for i, st in enumerate(DIST_STAGES) if count >= st[0])
+    bumped = count >= 3 and heavy >= 2 and heavy * 2 >= count and base < len(DIST_STAGES) - 1
+    _, key, label, action = DIST_STAGES[base + bumped]
+    out = {'key': key, 'label': label, 'action': action, 'level': base + bumped, 'baseKey': DIST_STAGES[base][1],
+           'baseLabel': DIST_STAGES[base][2], 'bumped': bumped,
+           'ladder': [{'key': k, 'label': lb, 'range': r, 'action': a}
+                      for (_, k, lb, a), r in zip(DIST_STAGES, ('0~2번', '3번', '4~5번', '6번 이상'))]}
+    if bumped:
+        out['reason'] = f'{count}번 중 {heavy}번이 꽉 찬 음봉(강한 분산일)이라, 횟수 기준({DIST_STAGES[base][2]})보다 한 단계 높여 봐요.'
+    return out
 
 
 def breadth(universe, sessions=60):
@@ -535,16 +571,18 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None):
         dists.append((secondary.get('label'), secondary['distribution']))
     counted = [(label, d) for label, d in dists if d.get('status') == 'OK']
     if counted:
-        # Judge on the risk score (heavy 1.5 · normal 1 · light 0.5 · hidden 1), same 4/6 lines as the plain count.
-        risk = lambda d: d.get('score', d['count'])
-        c = max(risk(d) for _, d in counted)
+        # Judge on the 4-step stage (count, raised one step when strong distribution days dominate).
+        stage_of = lambda d: d.get('stage') or distribution_stage(d['count'], (d.get('kinds') or {}).get('HEAVY', 0))
+        worst_label, worst = max(((label, stage_of(d)) for label, d in counted), key=lambda x: x[1]['level'])
         def one(d):
             k = d.get('kinds') or {}
-            parts = [f'{name} {k[key]}' for key, name in (('HEAVY', '꽉 찬 음봉'), ('HIDDEN', '위장'), ('LIGHT', '긴 아랫꼬리')) if k.get(key)]
-            return f"{d['count']}번" + (f" ({' · '.join(parts)}) · 위험 점수 {risk(d):g}" if parts else '')
+            parts = [f'{name} {k[key]}' for key, name in (('HEAVY', '꽉 찬 음봉'), ('HIDDEN', '위장'), ('STALL', '정체'), ('LIGHT', '긴 아랫꼬리')) if k.get(key)]
+            return f"{d['count']}번" + (f" ({' · '.join(parts)})" if parts else '') + f" · {stage_of(d)['label']}"
         detail = ' / '.join(f'{label} {one(d)}' for label, d in counted) if len(counted) > 1 else one(counted[0][1])
-        add('distribution', '분산일', -1 if c >= 6 else 0 if c >= 4 else 1,
-            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail} 있었어요.' + (' 위험 점수 6 이상은 경고 신호예요.' if c >= 6 else ''))
+        score_ = {0: 1, 1: 0}.get(worst['level'], -1)
+        add('distribution', '분산일', score_,
+            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail}이에요. '
+            + (f"대응: {worst['action']}." if worst['level'] else '정상 매매를 이어가도 돼요.'))
     if br.get('status') == 'OK':
         p = br['above50Pct']
         add('breadth', '시장 체력', 1 if p >= 60 else -1 if p < 40 else 0,
