@@ -21,7 +21,7 @@ HEADER = '''/* 밝은 테마. <html data-theme="light">일 때만 적용돼요. 
    상승·유입 = 빨강, 하락·유출 = 파랑, 나쁨·경고 = 주황, 좋음 = 초록, 보통 = 노랑 */
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #ffffff; --panel: #ffffff; --line: #aebcce; --muted: #3d4d62;
+  --bg: #edf0f4; --panel: #ffffff; --line: #a9b7ca; --muted: #34455b;
   --text: #080f1a; --green: #076b4a; --blue: #1347a0;
   --up: #c4132c; --down: #1553b5; --bad: #a85000; --red: var(--bad);
   --up-bg: rgba(209, 35, 59, .10); --down-bg: rgba(27, 99, 196, .10);
@@ -67,6 +67,28 @@ def flip(c, prop=''):
     return 'rgba(%d, %d, %d, %s)' % (round(r2 * 255), round(g2 * 255), round(b2 * 255), ('%.2f' % a).rstrip('0').rstrip('.'))
 
 
+DARK_PREFIX = ':root:not([data-theme="light"])'
+
+
+def boost(c, prop=''):
+    """어두운 테마에서 흐린 글씨를 더 밝게. 글씨(color)만 바꾸고 배경과 선은 그대로 둬요."""
+    if prop != 'color':
+        return c
+    r, g, b, a = parse(c)
+    h, l, s = colorsys.rgb_to_hls(r, g, b)
+    if l < 0.3 or (a is not None and a < 0.5):
+        return c                        # 어두운 글씨는 밝은 칩 위에 있는 경우라 건드리지 않음
+    if s < 0.35:
+        l2 = max(l, 0.78)               # 회색 설명 글씨
+    else:
+        l2 = max(l, 0.70)               # 색 있는 강조 글씨
+    if abs(l2 - l) < 0.01:
+        return c
+    r2, g2, b2 = colorsys.hls_to_rgb(h, l2, s)
+    hexs = '#%02x%02x%02x' % tuple(round(x * 255) for x in (r2, g2, b2))
+    return hexs if a is None else 'rgba(%d, %d, %d, %s)' % (round(r2 * 255), round(g2 * 255), round(b2 * 255), ('%.2f' % a).rstrip('0').rstrip('.'))
+
+
 def split_rules(css):
     """최상위 규칙(선택자 { 내용 }) 목록. @media 안은 재귀로 푼다."""
     css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
@@ -88,13 +110,15 @@ def declarations(body):
     return [d.strip() for d in re.split(r';(?![^()]*\))', body) if ':' in d]
 
 
-def convert(rules, wrap=None):
+def convert(rules, wrap=None, fn=None, prefix=None):
+    fn = fn or flip
+    prefix = prefix or PREFIX
     lines = []
     for head, body in rules:
         if head.startswith('@keyframes') or head.startswith('@font-face'):
             continue
         if head.startswith('@'):
-            inner = convert(split_rules(body), head)
+            inner = convert(split_rules(body), head, fn, prefix)
             if inner:
                 lines.append(head + ' {\n' + inner + '}\n')
             continue
@@ -107,12 +131,12 @@ def convert(rules, wrap=None):
             prop, value = prop.strip(), value.strip()
             if prop.startswith('--') or not COLOR.search(value):
                 continue
-            new = COLOR.sub(lambda m: flip(m.group(0), prop), value)
+            new = COLOR.sub(lambda m: fn(m.group(0), prop), value)
             if new != value:
                 decls.append(f'{prop}: {new}')
         if not decls:
             continue
-        pre = lambda s: f'{PREFIX} {s[4:].strip()}' if s.startswith('body') and not s.startswith('body.') else f'{PREFIX} {s}'
+        pre = lambda s: f'{prefix} {s[4:].strip()}' if s.startswith('body') and not s.startswith('body.') else f'{prefix} {s}'
         lines.append(', '.join(pre(s) for s in sels) + ' { ' + '; '.join(decls) + '; }\n')
     return ''.join(lines)
 
@@ -137,11 +161,52 @@ FIXES = '''
 '''
 
 
+SHARED = '''
+/* ===== 두 테마 공통: 차트와 흐린 요소를 더 진하게 ===== */
+.cx-vol.up, .cx-vol.down { opacity: .92; }
+.lq-bar.up, .lq-bar.down { opacity: .85; }
+.tr-vol.prev { opacity: .62; }
+.tr-cal-row:not(.trend) { opacity: .88; }
+.tr-stage-step { opacity: .78; }
+.tr-gauge-zone { opacity: .75; }
+.cx-strip-mark { opacity: .22; }
+
+/* ===== 어두운 테마: 글씨와 칸막이를 조금 더 또렷하게 ===== */
+:root:not([data-theme="light"]) {
+  --text: #f4f7fb; --muted: #c2cfe0; --line: #34465d; --ink-2: #dde6f1; --ink-3: #b6c5d8;
+}
+'''
+
+
+def small_fonts(rules, wrap=None):
+    """11px 이하 작은 글씨는 1px씩 키워요. 두 테마 공통."""
+    out = []
+    for head, body in rules:
+        if head.startswith('@keyframes') or head.startswith('@font-face'):
+            continue
+        if head.startswith('@'):
+            inner = small_fonts(split_rules(body), head)
+            if inner:
+                out.append(head + ' {\n' + inner + '}\n')
+            continue
+        for d in declarations(body):
+            prop, _, value = d.partition(':')
+            m = re.fullmatch(r'\s*(\d+(?:\.\d+)?)px\s*', value)
+            if prop.strip() == 'font-size' and m and float(m.group(1)) <= 11:
+                size = float(m.group(1)) + 1
+                sels = ', '.join(f':root {x.strip()}' for x in head.split(','))
+                out.append(f'{sels} {{ font-size: {size:g}px; }}\n')
+    return ''.join(out)
+
+
 def main():
-    parts = [HEADER, TOGGLE]
+    parts = [HEADER, TOGGLE, SHARED]
     for name in SOURCES:
         css = (ROOT / 'radar' / name).read_text(encoding='utf-8')
-        parts.append(f'\n/* ===== {name} ===== */\n' + convert(split_rules(css)))
+        rules = split_rules(css)
+        parts.append(f'\n/* ===== {name} (밝은 테마) ===== */\n' + convert(rules))
+        parts.append(f'\n/* ===== {name} (어두운 테마 글씨 보정) ===== */\n' + convert(rules, fn=boost, prefix=DARK_PREFIX))
+        parts.append(f'\n/* ===== {name} (작은 글씨 키우기) ===== */\n' + small_fonts(rules))
     parts.append(FIXES)
     (ROOT / 'radar' / 'light.css').write_text(''.join(parts), encoding='utf-8')
     print('radar/light.css', sum(len(p) for p in parts), 'bytes')
