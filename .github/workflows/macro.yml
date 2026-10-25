@@ -7,6 +7,8 @@ on:
   schedule:
     # 한국 시간 월~토 아침 07:05 (미국장 마감·한국 전일 금리 반영 후)
     - cron: '5 22 * * 0-5'
+    # 한국 시간 월~금 저녁 06:30 (한국장 마감 뒤 당일 한국 금리·VKOSPI 반영, 알림 없이 화면만 갱신)
+    - cron: '30 9 * * 1-5'
   push:
     branches: [main]
     paths: ['wamo_macro.py', '.github/workflows/macro.yml']
@@ -34,8 +36,8 @@ jobs:
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          # 코드를 고쳐 올렸을 때는 알림을 보내지 않고, 정해진 아침 실행과 수동 실행에서만 보낸다
-          SEND: ${{ github.event_name != 'push' && '--telegram' || '' }}
+          # 알림은 아침 실행(07:05)과 수동 실행에서만 보낸다. 저녁 실행(18:30)과 코드 수정 실행은 화면만 갱신
+          SEND: ${{ (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '5 22 * * 0-5')) && '--telegram' || '' }}
         run: python wamo_macro.py $SEND
       - name: 결과 올리기 (다른 작업이 먼저 올렸으면 받아서 다시 시도)
         run: |
