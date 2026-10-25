@@ -12,8 +12,8 @@ SOURCES = ['style.css', 'trend.css', 'ftd.css', 'leaders.css', 'schedule.css']
 PREFIX = ':root[data-theme="light"]'
 
 TOGGLE = '''
-/* 밝게/어둡게 버튼: 왼쪽 아래에 떠 있어서 화면 배치를 밀지 않아요 */
-.theme-toggle { position: fixed; left: 14px; bottom: 14px; z-index: 30; min-height: 36px; padding: 6px 14px; border-radius: 999px; font-size: 13px; box-shadow: 0 2px 10px rgba(0, 0, 0, .25); }
+/* 밝게/어둡게 버튼: 맨 위 제목 오른쪽에 붙어요 */
+.theme-toggle { margin: 0 auto 0 12px; min-height: 32px; padding: 4px 12px; border-radius: 999px; font-size: 13px; white-space: nowrap; }
 '''
 
 HEADER = '''/* 밝은 테마. <html data-theme="light">일 때만 적용돼요. 자동 생성 파일이라 직접 고치지 말고
@@ -21,12 +21,12 @@ HEADER = '''/* 밝은 테마. <html data-theme="light">일 때만 적용돼요. 
    상승·유입 = 빨강, 하락·유출 = 파랑, 나쁨·경고 = 주황, 좋음 = 초록, 보통 = 노랑 */
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #f3f5f9; --panel: #ffffff; --line: #d3dbe6; --muted: #536479;
-  --text: #141d2b; --green: #0b7d5a; --blue: #1a56b3;
-  --up: #d1233b; --down: #1b63c4; --bad: #bd5f00; --red: var(--bad);
+  --bg: #ffffff; --panel: #ffffff; --line: #aebcce; --muted: #3d4d62;
+  --text: #080f1a; --green: #076b4a; --blue: #1347a0;
+  --up: #c4132c; --down: #1553b5; --bad: #a85000; --red: var(--bad);
   --up-bg: rgba(209, 35, 59, .10); --down-bg: rgba(27, 99, 196, .10);
-  --amber: #8f6500; --amber-bg: #fff4d6; --green-bg: #e0f4ec; --red-bg: #ffeedb;
-  --ink-2: #26364a; --ink-3: #566a82; --rule: #e1e7f0; --chip: #eef2f8;
+  --amber: #7a5500; --amber-bg: #fff4d6; --green-bg: #e0f4ec; --red-bg: #ffeedb;
+  --ink-2: #172536; --ink-3: #3d4f66; --rule: #c9d4e2; --chip: #eef2f8;
   --ma20: #b36f00; --ma50: #1f6fd1; --ma150: #0e8a5f; --ma200: #c2336c;
 }
 '''
@@ -51,13 +51,15 @@ def flip(c, prop=''):
     h, l, s = colorsys.rgb_to_hls(r, g, b)
     text = prop == 'color'
     if s > 0.45 and 0.45 < l <= 0.8:
-        l2 = l * 0.6                    # 어두운 바탕 위의 밝은 강조색 -> 흰 바탕에서도 읽히는 진한 색
+        l2 = l * 0.52                   # 어두운 바탕 위의 밝은 강조색 -> 흰 바탕에서도 읽히는 진한 색
     elif s < 0.55 and l < 0.35 and not text:
         l2 = 1 - 0.55 * l               # 어두운 회색 바탕은 아주 밝게 (칸막이가 너무 무겁지 않도록)
     else:
         l2 = 1 - l                      # 나머지는 밝기를 뒤집음 (배경은 밝게, 글씨는 어둡게)
     if text:
-        l2 = min(l2, 0.31)              # 글씨는 항상 흰 바탕에서 읽힐 만큼 어둡게
+        l2 = min(l2, 0.22)              # 글씨는 항상 흰 바탕에서 읽힐 만큼 어둡게
+    if prop.startswith('border') or prop == 'outline-color':
+        l2 = min(l2, 0.74)             # 테두리는 흰 바탕에서도 또렷하게
     sat = min(0.9, s) if l2 >= 0.7 else s * 0.9
     r2, g2, b2 = colorsys.hls_to_rgb(h, l2, sat)
     if a is None:

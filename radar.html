@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./radar/ftd.css?v=20261024-dd3">
   <link rel="stylesheet" href="./radar/leaders.css?v=20261024-dd3">
   <link rel="stylesheet" href="./radar/schedule.css?v=20261024-dd3">
-  <link rel="stylesheet" href="./radar/light.css?v=20261025-lt2">
+  <link rel="stylesheet" href="./radar/light.css?v=20261025-lt4">
   <script>
 (function(){
   var root=document.documentElement,store=function(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){}return null;};
@@ -20,7 +20,7 @@
     var b=document.createElement("button");b.type="button";b.className="theme-toggle";
     var sync=function(){var light=root.dataset.theme==="light";b.textContent=light?"어둡게":"밝게";b.setAttribute("aria-label",light?"어두운 화면으로 바꾸기":"밝은 화면으로 바꾸기");};
     b.addEventListener("click",function(){var next=root.dataset.theme==="light"?"dark":"light";if(next==="light")root.dataset.theme="light";else delete root.dataset.theme;store("wamoTheme",next);sync();});
-    sync();document.body.append(b);
+    sync();var br=document.querySelector(".topbar .brand");if(br)br.after(b);else document.body.append(b);
   });
 })();
 </script>
