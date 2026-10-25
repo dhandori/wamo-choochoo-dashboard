@@ -35,7 +35,7 @@ HISTORY = ROOT / 'wamo_macro_history.json'   # 출처가 과거치를 주지 않
 KST = timezone(timedelta(hours=9))
 YEARS = 5
 CHANGE_DAYS = 21          # 1개월 ≈ 21거래일
-CHART_DAYS = 260          # 화면 그래프: 최근 약 1년
+CHART_DAYS = 520          # 화면 그래프: 최근 약 2년 (2026-10-25 1년→2년)
 UA = {'User-Agent': 'Mozilla/5.0'}
 LEVELS = {
     5: ('🟢', '정상'), 4: ('🔵', '관심'), 3: ('🟡', '주의'), 2: ('🟠', '경계'), 1: ('🔴', '위기'),
@@ -44,32 +44,32 @@ LEVELS = {
 # ── 지표 정의 ───────────────────────────────────────────────────────────────
 # risk: 'high' 높을수록 위험 / 'low' 낮을수록 위험 / 'both' 양쪽 끝 모두 경계
 INDICATORS = [
-    dict(key='kr_aa', group='한국 신용', name='회사채 AA- - 국고채 (3년)', unit='bp', risk='high',
-         help='우량 회사채가 국채보다 얼마나 더 이자를 줘야 팔리는지. 벌어질수록 회사 돈줄이 마른다는 뜻입니다.'),
-    dict(key='kr_bbb', group='한국 신용', name='회사채 BBB- - 국고채 (3년)', unit='bp', risk='high',
-         help='투자등급 끝자락 회사의 웃돈. 신용 경색이 오면 가장 먼저 크게 벌어집니다.'),
-    dict(key='kr_cpcd', group='한국 신용', name='CP 91일 - CD 91일', unit='bp', risk='high',
-         help='기업 단기어음(CP)과 은행 예금증서(CD)의 금리 차이. 벌어지면 기업 단기자금 시장이 불안하다는 신호입니다.'),
-    dict(key='kr_curve', group='한국 금리', name='국고채 10년 - 3년', unit='bp', risk='both',
-         help='장기와 단기 국채 금리 차이. 너무 좁아지거나 뒤집히면 경기 둔화, 갑자기 크게 벌어지면 불안 신호입니다.'),
-    dict(key='us_hy', group='미국 신용', name='미국 하이일드 스프레드', unit='bp', risk='high',
-         help='신용등급 낮은 회사채가 국채보다 더 주는 이자. 위기 때 가장 빨리 치솟는 대표 경보등입니다.'),
-    dict(key='us_ig', group='미국 신용', name='미국 투자등급 스프레드', unit='bp', risk='high',
-         help='우량 회사채의 웃돈. 하이일드보다 느리지만 함께 오르면 신용 불안이 넓게 퍼진 것입니다.'),
-    dict(key='us_liq', group='미국 유동성', name='미국 순유동성', unit='십억$', risk='low',
-         help='연준 자산 - 재무부 계좌(TGA) - 역레포(RRP). 시장에 실제로 풀린 돈의 양으로, 줄어들면 주식에 부담입니다.'),
-    dict(key='us_curve', group='미국 금리', name='미국 10년 - 2년', unit='bp', risk='both',
-         help='미국 장단기 금리차. 역전은 경기침체 예고, 역전 뒤 급하게 다시 벌어지는 시기도 과거 침체 직전에 자주 나왔습니다.'),
-    dict(key='vix', group='변동성', name='VIX', unit='', risk='high',
-         help='미국 주식의 앞으로 30일 예상 출렁임. 20 아래면 평온, 30 위면 공포 구간입니다.'),
-    dict(key='vix_ratio', group='변동성', name='VIX / VIX3M', unit='x', risk='high',
-         help='단기(1개월) 공포 ÷ 중기(3개월) 공포. 1을 넘으면 지금 당장의 공포가 더 크다는 뜻으로 급락장에서 나타납니다.'),
-    dict(key='move', group='변동성', name='MOVE', unit='', risk='high',
-         help='미국 국채 시장의 예상 출렁임(채권판 VIX). 높으면 금리가 불안해 모든 자산에 부담입니다.'),
-    dict(key='vkospi', group='변동성', name='VKOSPI', unit='', risk='high',
-         help='코스피200의 예상 출렁임(한국판 VIX). 높을수록 한국 시장이 불안하다는 뜻입니다.'),
-    dict(key='fng', group='심리', name='공포탐욕지수 (CNN)', unit='점', risk='fng',
-         help='0(극단적 공포)~100(극단적 탐욕). 25 이하는 겁먹은 시장, 75 이상은 과열 주의 구간입니다.'),
+    dict(key='kr_aa', group='한국 신용', name='우량 회사채 가산금리 (AA- − 국고채 3년)', unit='bp', risk='high',
+         help='튼튼한 회사가 나라보다 돈을 빌릴 때 더 내는 이자예요. 이 차이가 벌어지면 회사들이 돈 빌리기 어려워졌다는 뜻이에요.'),
+    dict(key='kr_bbb', group='한국 신용', name='비우량 회사채 가산금리 (BBB- − 국고채 3년)', unit='bp', risk='high',
+         help='신용등급이 낮은 편인 회사가 나라보다 더 내는 이자예요. 돈줄이 막히기 시작하면 가장 먼저, 가장 크게 벌어져요.'),
+    dict(key='kr_cpcd', group='한국 신용', name='기업 단기자금 금리차 (CP − CD 91일)', unit='bp', risk='high',
+         help='회사가 3개월짜리로 급히 빌리는 돈(CP)의 이자에서 은행 단기 금리(CD)를 뺀 값이에요. 벌어지면 회사들의 당장 쓸 돈 사정이 나빠졌다는 신호예요.'),
+    dict(key='kr_curve', group='한국 금리', name='한국 장단기 금리차 (국고채 10년 − 3년)', unit='bp', risk='both',
+         help='10년 국채 금리에서 3년 국채 금리를 뺀 값이에요. 0 아래로 뒤집히면 경기 둔화 신호이고, 갑자기 크게 벌어져도 불안 신호예요.'),
+    dict(key='us_hy', group='미국 신용', name='미국 하이일드 스프레드 (저신용 회사채)', unit='bp', risk='high',
+         help='신용등급이 낮은 미국 회사가 국채보다 더 내는 이자예요. 위기가 오면 가장 먼저, 가장 빠르게 치솟는 대표 경보등이에요.'),
+    dict(key='us_ig', group='미국 신용', name='미국 투자등급 스프레드 (우량 회사채)', unit='bp', risk='high',
+         help='튼튼한 미국 회사가 국채보다 더 내는 이자예요. 하이일드보다 느리게 움직이지만, 이것까지 오르면 불안이 넓게 퍼졌다는 뜻이에요.'),
+    dict(key='us_liq', group='미국 유동성', name='미국 순유동성 (시장에 풀린 달러)', unit='십억$', risk='low',
+         help='연준이 푼 돈에서 정부 통장(TGA)과 역레포(RRP)에 묶인 돈을 뺀 값이에요. 시장에서 실제로 돌고 있는 돈이라 줄어들면 주식에 부담이에요.'),
+    dict(key='us_curve', group='미국 금리', name='미국 장단기 금리차 (10년 − 2년)', unit='bp', risk='both',
+         help='10년 국채 금리에서 2년 국채 금리를 뺀 값이에요. 0 아래로 뒤집히면 경기침체 예고이고, 뒤집혔다가 빠르게 다시 벌어질 때도 과거 침체 직전에 자주 나왔어요.'),
+    dict(key='vix', group='변동성', name='VIX (미국 주식 공포지수)', unit='', risk='high',
+         help='미국 주식이 앞으로 한 달 동안 얼마나 출렁일지 시장이 예상하는 값이에요. 20 아래면 평온, 30 위면 공포 구간이에요.'),
+    dict(key='vix_ratio', group='변동성', name='VIX ÷ VIX3M (단기 공포 쏠림)', unit='x', risk='high',
+         help='한 달짜리 공포(VIX)를 석 달짜리 공포(VIX3M)로 나눈 값이에요. 1을 넘으면 먼 미래보다 지금 당장이 더 무섭다는 뜻이고, 급락장에서 나타나요.'),
+    dict(key='move', group='변동성', name='MOVE (미국 채권 공포지수)', unit='', risk='high',
+         help='미국 국채 금리가 앞으로 얼마나 출렁일지 예상하는 값이에요(채권판 VIX). 높으면 금리가 불안해서 주식과 채권 모두에 부담이에요.'),
+    dict(key='vkospi', group='변동성', name='VKOSPI (한국 주식 공포지수)', unit='', risk='high',
+         help='코스피200이 앞으로 한 달 동안 얼마나 출렁일지 예상하는 값이에요(한국판 VIX). 높을수록 한국 시장이 불안하다는 뜻이에요.'),
+    dict(key='fng', group='심리', name='CNN 공포탐욕지수', unit='점', risk='fng',
+         help='미국 투자자들의 분위기를 0~100점으로 나타낸 값이에요. 25점 아래면 겁먹은 시장, 75점 위면 너무 들뜬(과열) 시장이에요.'),
 ]
 
 
