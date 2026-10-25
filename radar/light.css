@@ -3,7 +3,7 @@
    상승·유입 = 빨강, 하락·유출 = 파랑, 나쁨·경고 = 주황, 좋음 = 초록, 보통 = 노랑 */
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #ffffff; --panel: #ffffff; --line: #aebcce; --muted: #3d4d62;
+  --bg: #edf0f4; --panel: #ffffff; --line: #a9b7ca; --muted: #34455b;
   --text: #080f1a; --green: #076b4a; --blue: #1347a0;
   --up: #c4132c; --down: #1553b5; --bad: #a85000; --red: var(--bad);
   --up-bg: rgba(209, 35, 59, .10); --down-bg: rgba(27, 99, 196, .10);
@@ -15,7 +15,21 @@
 /* 밝게/어둡게 버튼: 맨 위 제목 오른쪽에 붙어요 */
 .theme-toggle { margin: 0 auto 0 12px; min-height: 32px; padding: 4px 12px; border-radius: 999px; font-size: 13px; white-space: nowrap; }
 
-/* ===== style.css ===== */
+/* ===== 두 테마 공통: 차트와 흐린 요소를 더 진하게 ===== */
+.cx-vol.up, .cx-vol.down { opacity: .92; }
+.lq-bar.up, .lq-bar.down { opacity: .85; }
+.tr-vol.prev { opacity: .62; }
+.tr-cal-row:not(.trend) { opacity: .88; }
+.tr-stage-step { opacity: .78; }
+.tr-gauge-zone { opacity: .75; }
+.cx-strip-mark { opacity: .22; }
+
+/* ===== 어두운 테마: 글씨와 칸막이를 조금 더 또렷하게 ===== */
+:root:not([data-theme="light"]) {
+  --text: #f4f7fb; --muted: #c2cfe0; --line: #34465d; --ink-2: #dde6f1; --ink-3: #b6c5d8;
+}
+
+/* ===== style.css (밝은 테마) ===== */
 :root[data-theme="light"] button, :root[data-theme="light"] select { background: #e3eaf2; }
 :root[data-theme="light"] button:hover:not(:disabled), :root[data-theme="light"] select:hover { border-color: #6a7f9c; }
 :root[data-theme="light"] button.active { background: #d9ebe4; border-color: #68a994; color: #033726; }
@@ -113,7 +127,94 @@
 :root[data-theme="light"] .flow-box-cell { background: #ecf2fa; border: 1px solid #a4bad5; }
 :root[data-theme="light"] .flow-box-note { color: #2c3644; }
 
-/* ===== trend.css ===== */
+/* ===== style.css (어두운 테마 글씨 보정) ===== */
+:root:not([data-theme="light"]) .ai-sector-card small { color: #b7c6d7; }
+:root:not([data-theme="light"]) .exit-count { color: #cdc1c3; }
+:root:not([data-theme="light"]) .sort-summary { color: #b7c6d7; }
+:root:not([data-theme="light"]) .sort-summary small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .tab-group-label { color: #b7c5d7; }
+:root:not([data-theme="light"]) .status-partial, :root:not([data-theme="light"]) .status-stale, :root:not([data-theme="light"]) .status-unavailable { color: #e4cb81; }
+:root:not([data-theme="light"]) .sort-fold > summary { color: #b7c6d7; }
+:root:not([data-theme="light"]) .sort-fold > summary::before { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ind-list-note { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ind-header { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ind-row .c-rank { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ind-foot { color: #b9c6d5; }
+@media (max-width: 760px) {
+:root:not([data-theme="light"]) .ind-row .c-ret::before { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ind-row .c-adv > span::before { color: #b9c6d5; }
+}
+:root:not([data-theme="light"]) .intro-fold p { color: #b7c5d6; }
+:root:not([data-theme="light"]) .flow-box-note { color: #bac5d4; }
+
+/* ===== style.css (작은 글씨 키우기) ===== */
+:root .brand span { font-size: 12px; }
+:root .eyebrow { font-size: 12px; }
+:root .metric small { font-size: 12px; }
+:root .ai-heading p { font-size: 12px; }
+:root .ai-card-title span { font-size: 12px; }
+:root .ai-card-return span { font-size: 12px; }
+:root .ai-missing { font-size: 12px; }
+:root .ai-method { font-size: 12px; }
+:root .ai-tags { font-size: 12px; }
+:root .card-cap { font-size: 12px; }
+:root .rail-group-top strong { font-size: 12px; }
+:root .rail-group small { font-size: 12px; }
+:root .flow-status { font-size: 12px; }
+:root footer { font-size: 12px; }
+:root .stat span { font-size: 12px; }
+:root .news-item small { font-size: 12px; }
+@media (max-width: 760px) {
+:root .date-info { font-size: 12px; }
+:root .metric small { font-size: 12px; }
+:root .tabs button { font-size: 12px; }
+:root .disclosure { font-size: 12px; }
+:root .card-stats .stat span { font-size: 12px; }
+}
+@media (max-width: 760px) {
+:root .rail-jump { font-size: 12px; }
+}
+@media (max-width: 760px) {
+:root .tab-count { font-size: 12px; }
+}
+@media (max-width: 760px) {
+:root .card-stats .stat span { font-size: 12px; }
+}
+:root .ai-toolbar button { font-size: 12px; }
+:root .trend-label, :root .trend-change { font-size: 12px; }
+:root .ai-heatmap thead th:first-child { font-size: 12px; }
+:root .ai-heatmap th button { font-size: 12px; }
+:root .heat-cell small { font-size: 12px; }
+:root .change-badge { font-size: 12px; }
+:root .change-dates { font-size: 12px; }
+:root .exit-item span { font-size: 12px; }
+@media (max-width:760px) {
+:root .ai-heading-help { font-size: 12px; }
+:root .change-dates { font-size: 12px; }
+}
+:root .tab-group-label { font-size: 12px; }
+@media (max-width: 760px) {
+:root .tab-count { font-size: 12px; }
+}
+:root .ind-list-note { font-size: 12px; }
+:root .ind-header { font-size: 12px; }
+:root .ind-chip { font-size: 11px; }
+:root .ind-foot { font-size: 12px; }
+@media (max-width: 760px) {
+:root .industry-rail .rail-group small { font-size: 11px; }
+}
+@media (max-width: 760px) {
+:root .metric span { font-size: 12px; }
+}
+:root .metric .metric-share em { font-size: 12px; }
+@media (max-width: 760px) {
+:root .metric .metric-share em { font-size: 11px; }
+}
+:root .tr-gauge small { font-size: 11.5px; }
+:root .flow-box-cell small { font-size: 12px; }
+:root .flow-box-cell em { font-size: 12px; }
+
+/* ===== trend.css (밝은 테마) ===== */
 :root[data-theme="light"] .tr-weather-text { color: #151f2b; }
 :root[data-theme="light"] .tr-chip-dot { background: #798ba2; }
 :root[data-theme="light"] .tr-factor.good .tr-factor-tag { border-color: #a6d3c5; }
@@ -279,7 +380,68 @@
 :root[data-theme="light"] .tr-watch b { color: #14395c; }
 :root[data-theme="light"] .tr-watch-row { color: var(--ink-3, #2b3745); }
 
-/* ===== ftd.css ===== */
+/* ===== trend.css (어두운 테마 글씨 보정) ===== */
+:root:not([data-theme="light"]) .tr-help { color: #bbc6d3; }
+:root:not([data-theme="light"]) .tr-legend { color: #bbc6d3; }
+:root:not([data-theme="light"]) .tr-dots-axis span:nth-child(2) { color: #bdc6d1; }
+:root:not([data-theme="light"]) .tr-mini-wait { color: #bcc6d2; }
+:root:not([data-theme="light"]) .tr-why { color: #b9c6d5; }
+:root:not([data-theme="light"]) .tr-foot { color: #bcc6d2; }
+:root:not([data-theme="light"]) .pc-hint { color: #bcc6d2; }
+:root:not([data-theme="light"]) .chart-note { color: #bbc6d3; }
+:root:not([data-theme="light"]) .tr-dist-score.good { color: #87dec0; }
+:root:not([data-theme="light"]) .tr-dist-chip span { color: var(--ink-3, #b9c6d5); }
+:root:not([data-theme="light"]) .tr-dist-list > small { color: var(--ink-3, #b9c6d5); }
+:root:not([data-theme="light"]) .tr-dist-row time { color: var(--ink-3, #b9c6d5); }
+:root:not([data-theme="light"]) .tr-dist-head { color: var(--ink-3, #b9c6d5); }
+:root:not([data-theme="light"]) .cx-guide-stats small { color: var(--ink-3, #b9c6d5); }
+:root:not([data-theme="light"]) .tr-prelim { color: var(--muted,#c3c3cb); }
+:root:not([data-theme="light"]) .tr-prelim.ok { color: var(--good,#8adbb0); }
+:root:not([data-theme="light"]) .tr-dist-score.warn { color: #f7c36e; }
+:root:not([data-theme="light"]) .tr-stage-now.good { color: #87dec0; }
+:root:not([data-theme="light"]) .tr-stage-now.warn { color: #f7c36e; }
+:root:not([data-theme="light"]) .tr-stage-bump { color: #f7c36e; }
+:root:not([data-theme="light"]) .tr-stage-step b { color: var(--ink-3, #b9c6d5); }
+:root:not([data-theme="light"]) .tr-stage-step.good strong { color: #87dec0; }
+:root:not([data-theme="light"]) .tr-stage-step.warn strong { color: #f7c36e; }
+:root:not([data-theme="light"]) .tr-stage-step.on.good { color: #87dec0; }
+:root:not([data-theme="light"]) .tr-stage-step.on.warn { color: #f7c36e; }
+:root:not([data-theme="light"]) .tr-thin span { color: var(--ink-3, #b9c6d5); }
+:root:not([data-theme="light"]) .tr-thin.warn em { color: #f7c36e; }
+:root:not([data-theme="light"]) .tr-watch-row { color: var(--ink-3, #b9c6d5); }
+
+/* ===== trend.css (작은 글씨 키우기) ===== */
+:root .tr-weather-kicker { font-size: 12px; }
+:root .tr-more { font-size: 12px; }
+:root .tr-subtabs .tab-count { font-size: 12px; }
+:root .tr-seg button { font-size: 12px; }
+:root .tr-cal-day header span { font-size: 12px; }
+:root .tr-score-table .muted { font-size: 12px; }
+:root .tr-recent summary { font-size: 12px; }
+:root .pc-legend.small { font-size: 12px; }
+:root .chart-toggle button { font-size: 12px; }
+:root .run-now-button { font-size: 12px; }
+@media (max-width: 760px) {
+:root .date-info .refresh-button, :root .run-now-button { font-size: 12px; }
+:root .tr-stock small { font-size: 12px; }
+:root .pc-tip { font-size: 12px; }
+:root .chart-head .chart-caption { font-size: 12px; }
+:root .pc-legend { font-size: 12px; }
+}
+@media (max-width: 380px) {
+:root .date-info { font-size: 12px; }
+}
+:root .tr-dist-list > small { font-size: 12px; }
+:root .tr-dist-head { font-size: 11.5px; }
+:root .cx-label { font-size: 12px; }
+:root .cx-strip-wrap figcaption { font-size: 11.5px; }
+:root .cx-vol-label { font-size: 11.5px; }
+@media (max-width: 760px) {
+:root .tr-fold { font-size: 12px; }
+}
+:root .tr-stage-step span { font-size: 12px; }
+
+/* ===== ftd.css (밝은 테마) ===== */
 :root[data-theme="light"] .ftd-intro p { color: #2a3746; }
 :root[data-theme="light"] .ftd-badge { border: 1px solid #abbacf; background: #e1e9f4; color: #273649; }
 :root[data-theme="light"] .ftd-badge.ftd-confirmed { border-color: #a2d8c9; background: #e3f6f2; color: #195743; }
@@ -364,7 +526,51 @@
 :root[data-theme="light"] .glossary dt { color: #070f18; }
 :root[data-theme="light"] .glossary dd { color: #2a3747; }
 
-/* ===== leaders.css ===== */
+/* ===== ftd.css (어두운 테마 글씨 보정) ===== */
+:root:not([data-theme="light"]) .ftd-intro p { color: #b7c5d6; }
+:root:not([data-theme="light"]) .ftd-badge { color: #b4c5da; }
+:root:not([data-theme="light"]) .ftd-badge.ftd-confirmed { color: #83e2c2; }
+:root:not([data-theme="light"]) .ftd-badge.ftd-unavailable { color: #bbc5d3; }
+:root:not([data-theme="light"]) .ftd-index small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ftd-panel-head p { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ftd-progress li { color: #bcc6d2; }
+:root:not([data-theme="light"]) .ftd-metric>span { color: #b8c5d6; }
+:root:not([data-theme="light"]) .ftd-metric small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ftd-check-icon { color: #bcc7d2; }
+:root:not([data-theme="light"]) .ftd-check.pass .ftd-check-icon { color: #84e1c1; }
+:root:not([data-theme="light"]) .ftd-check small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ftd-caption { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ftd-legend { color: #b7c6d7; }
+:root:not([data-theme="light"]) .ftd-legend small { color: #bac7d4; }
+:root:not([data-theme="light"]) .ftd-history, :root:not([data-theme="light"]) .ftd-rules { color: #b7c5d7; }
+:root:not([data-theme="light"]) .ftd-history time { color: #b8c7d6; }
+:root:not([data-theme="light"]) .ftd-empty { color: #b6c6d8; }
+:root:not([data-theme="light"]) .ftd-signal.ftd-past { color: #b4c5da; }
+:root:not([data-theme="light"]) .ftd-index small.ftd-index-sub { color: #bac6d4; }
+:root:not([data-theme="light"]) .ftd-flow-hint { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ftd-flow li { color: #bbc6d2; }
+:root:not([data-theme="light"]) .ftd-flow li b { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ftd-flow-foot { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ftd-check.unknown .ftd-check-icon { color: #d9c28c; }
+:root:not([data-theme="light"]) .ftd-quality li.wait { color: #d1bf94; }
+:root:not([data-theme="light"]) .glossary dd { color: #b7c6d7; }
+
+/* ===== ftd.css (작은 글씨 키우기) ===== */
+:root .ftd-badge { font-size: 12px; }
+:root .ftd-index small { font-size: 12px; }
+:root .ftd-metric>span { font-size: 12px; }
+:root .ftd-check b { font-size: 12px; }
+:root .ftd-legend { font-size: 12px; }
+@media(max-width:760px) {
+:root .ftd-history li { font-size: 12px; }
+}
+:root .ftd-flow-hint { font-size: 12px; }
+:root .ftd-flow li small { font-size: 12px; }
+:root .ftd-flow-no { font-size: 12px; }
+:root .ftd-flow li em { font-size: 12px; }
+:root .ftd-flow-foot { font-size: 12px; }
+
+/* ===== leaders.css (밝은 테마) ===== */
 :root[data-theme="light"] .ld-intro p { color: #2a3746; }
 :root[data-theme="light"] .ld-card { border: 1px solid #a8bbd2; background: #eaf0f8; }
 :root[data-theme="light"] .ld-card h3 { color: #050b11; }
@@ -471,7 +677,53 @@
 :root[data-theme="light"] .ld-chip.money { background: #e4f2ed; color: #175940; border-color: #a5d5c1; }
 :root[data-theme="light"] .ld-chip.money-out { background: #ede3e8; color: #441014; border-color: #d2a8b3; }
 
-/* ===== schedule.css ===== */
+/* ===== leaders.css (어두운 테마 글씨 보정) ===== */
+:root:not([data-theme="light"]) .ld-intro p { color: #b7c5d6; }
+:root:not([data-theme="light"]) .ld-meaning { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-status { color: #b4c5da; }
+:root:not([data-theme="light"]) .ld-status.tone-good { color: #83e2c2; }
+:root:not([data-theme="light"]) .ld-meter-count span { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-meter small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-reps>span { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-stock small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-stage-meaning { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-chip.soft { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-stage.none { color: #bbc6d2; }
+:root:not([data-theme="light"]) .ld-ind-stats span { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-delta.flat { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-conds span { color: #bcc6d2; }
+:root:not([data-theme="light"]) .ld-dropped { color: #d3bbc0; }
+:root:not([data-theme="light"]) .ld-nums { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-empty { color: #b6c6d8; }
+:root:not([data-theme="light"]) .ld-phase-idx { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-map-legend { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-map-legend .lead { color: #86dfc5; }
+:root:not([data-theme="light"]) .ld-map-legend .other { color: #bcc6d2; }
+:root:not([data-theme="light"]) .ld-map-legend .zone { color: #83e2c2; }
+:root:not([data-theme="light"]) .ld-questions span { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-checks li { color: #bcc6d2; }
+:root:not([data-theme="light"]) .ld-matrix th { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-matrix td { color: #bbc6d2; }
+:root:not([data-theme="light"]) .ld-matrix tr.lead td.sc { color: #86dfc5; }
+:root:not([data-theme="light"]) .ld-matrix em { color: #86dfc5; }
+
+/* ===== leaders.css (작은 글씨 키우기) ===== */
+:root .ld-meter small { font-size: 12px; }
+:root .ld-reps>span { font-size: 12px; }
+:root .ld-stock small { font-size: 12px; }
+:root .ld-stage-meaning { font-size: 12px; }
+:root .ld-chip { font-size: 12px; }
+:root .ld-ind-stats span { font-size: 12px; }
+:root .ld-conds span { font-size: 12px; }
+:root .ld-phase-idx { font-size: 12px; }
+:root .ld-map-legend { font-size: 12px; }
+:root .ld-questions span { font-size: 12px; }
+:root .ld-checks li { font-size: 12px; }
+@media(max-width:760px) {
+:root .ld-matrix { font-size: 12px; }
+}
+
+/* ===== schedule.css (밝은 테마) ===== */
 :root[data-theme="light"] .schedule-wrap[open] { border: 1px solid #a8bad1; background: #e8eff8; }
 :root[data-theme="light"] .schedule-wrap[open] > summary { color: #0e1a28; }
 :root[data-theme="light"] .sched-hint { color: #2c3745; }
@@ -494,6 +746,27 @@
 :root[data-theme="light"] .sched-rule { color: #2e3742; }
 :root[data-theme="light"] .sched-rule a { color: #0f3661; }
 :root[data-theme="light"] .sched-note { color: #2e3742; }
+
+/* ===== schedule.css (어두운 테마 글씨 보정) ===== */
+:root:not([data-theme="light"]) .sched-hint { color: #b9c6d5; }
+:root:not([data-theme="light"]) .sched-chip { color: #b4c5da; }
+:root:not([data-theme="light"]) .sched-chip.tone-ok { color: #83e2c2; }
+:root:not([data-theme="light"]) .sched-progress li { color: #bbc6d2; }
+:root:not([data-theme="light"]) .sched-progress p { color: #b7c6d7; }
+:root:not([data-theme="light"]) .sched-rows dt { color: #b9c6d5; }
+:root:not([data-theme="light"]) .sched-rows dd small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .sched-warn { color: #cfbb96; }
+:root:not([data-theme="light"]) .sched-rule { color: #bbc6d2; }
+:root:not([data-theme="light"]) .sched-note { color: #bbc6d2; }
+
+/* ===== schedule.css (작은 글씨 키우기) ===== */
+:root .sched-hint { font-size: 12px; }
+:root .sched-progress li { font-size: 12px; }
+:root .sched-progress p { font-size: 12px; }
+:root .sched-rows dd small { font-size: 12px; }
+:root .sched-warn { font-size: 12px; }
+:root .sched-rule { font-size: 12px; }
+:root .sched-note { font-size: 12px; }
 
 /* ===== 진한 색 바탕 위 글씨는 흰색 유지 ===== */
 :root[data-theme="light"] .ftd-flow li.now .ftd-flow-no,
