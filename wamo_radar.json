@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-26T20:50:05.636270+00:00",
+  "checkedAt": "2026-10-26T23:40:23.099436+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-26T20:50:05.636270+00:00",
+      "generatedAt": "2026-10-26T23:40:23.099436+00:00",
       "sessions": {
         "US-NASDAQ": "20261026",
         "US-NYSE": "20261026",
@@ -206,29 +206,6 @@
           }
         },
         {
-          "key": "US-NYSE:XOM",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "XOM",
-          "name": "ExxonMobil Holdings Corporation Common Stock",
-          "currency": "USD",
-          "as_of": "20261026",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 184.54,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
           "key": "US-NYSE:ESTC",
           "market": "US-NYSE",
           "country": "US",
@@ -248,6 +225,29 @@
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:XOM",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "XOM",
+          "name": "ExxonMobil Holdings Corporation Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 184.54,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
             "close_252": true
           }
         },
@@ -528,29 +528,6 @@
           }
         },
         {
-          "key": "US-NYSE:AVTR",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "AVTR",
-          "name": "Avantor Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261026",
-          "industry_path": [
-            "Industrials"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 17.29,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
           "key": "US-NASDAQ:RPRX",
           "market": "US-NASDAQ",
           "country": "US",
@@ -570,6 +547,29 @@
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:AVTR",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "AVTR",
+          "name": "Avantor Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Industrials"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 17.29,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
             "close_252": true
           }
         },
@@ -990,7 +990,7 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-26T20:50:05.636270+00:00",
+      "generatedAt": "2026-10-26T23:40:23.099436+00:00",
       "sessions": {
         "KR-KOSPI": "20261026",
         "KR-KOSDAQ": "20261026"
