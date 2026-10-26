@@ -16,7 +16,12 @@ import urllib.request
 STATE = 'wamo_alert_state.json'
 WATCHLIST = 'wamo_watchlist.json'
 LIGHT = {'GREEN': '🟢', 'YELLOW': '🟡', 'RED': '🔴', 'UNKNOWN': '⚪'}
-TITLE = {'KR': '한국장', 'US': '미국장'}
+TITLE = {'KR': '한국장', 'US': '미국장', 'JP': '일본장', 'TW': '대만장'}
+# Same words as the radar's FTD tab (radar/ftd-model.mjs PHASES).
+FTD_PHASE = {'OUTSIDE': '하락장 아님', 'CORRECTION': '하락장', 'RALLY': '반등 시도 중',
+             'LATE': '반등 시도 중 · 늦은 구간', 'CONFIRMED': 'FTD 나옴 · 상승 전환 신호',
+             'PRESSURE': 'FTD 흔들림 · 경고', 'UNAVAILABLE': '판정 보류'}
+FTD_FRESH_SESSIONS = 3  # only alert on an FTD from the last few sessions (catch-up after a failed run)
 
 
 def read_json(path, default):
@@ -45,6 +50,12 @@ def compose(market, block, watchlist):
              w.get('advice', '')]
     for f in w.get('factors', [])[:4]:
         lines.append(f"· {f['text']}")
+    for idx in (block.get('ftd') or {}).get('indexes', []):
+        if idx.get('status') != 'OK':
+            continue
+        phase = idx.get('phase')
+        extra = f" (Day {idx['rally']['day']})" if phase in ('RALLY', 'LATE') and idx.get('rally') else ''
+        lines.append(f"FTD 상태 · {idx.get('label', idx.get('symbol', '지수'))}: {FTD_PHASE.get(phase, phase)}{extra}")
 
     watch = watch_symbols(watchlist, market)
     if watch:
@@ -89,6 +100,38 @@ def compose(market, block, watchlist):
     return text[:4000]
 
 
+def fresh_ftds(market, block):
+    """[(key, index, event)] for FTD events in the last few sessions of each index."""
+    found = []
+    for idx in (block.get('ftd') or {}).get('indexes', []):
+        if idx.get('status') not in ('OK', 'STALE'):
+            continue
+        recent = {r.get('date') for r in (idx.get('series') or [])[-FTD_FRESH_SESSIONS:]}
+        for ev in idx.get('events') or []:
+            if ev.get('type') == 'FTD' and ev.get('date') in recent:
+                found.append((f"{market}:{idx.get('symbol')}:{ev['date']}", idx, ev))
+    return found
+
+
+def compose_ftd(market, idx, ev):
+    q = sum(1 for ok in (not ev.get('late'), (ev.get('changePct') or 0) >= 2.0,
+                         (ev.get('volumeVsAvg') or 0) > 1) if ok)
+    name = idx.get('label') or idx.get('symbol')
+    lines = [f"🚨 FTD 발생 · {TITLE.get(market, market)} {name} · {ev['date']} 종가",
+             f"반등 {ev.get('rallyDay')}일째에 {ev.get('changePct', 0):+.2f}% 상승, 거래량은 전일의 {ev.get('volumeRatio', 0):.2f}배예요."]
+    if ev.get('volumeVsAvg'):
+        lines.append(f"50일 평균 거래량의 {ev['volumeVsAvg']:.2f}배")
+    lines.append(f"신호 품질 {q}/3" + (" · 늦은 FTD(반등 8일째 이후)" if ev.get('late') else ''))
+    lines.append('')
+    lines.append('하락장이 끝나고 상승으로 바뀔 수 있다는 첫 신호예요. 보통은 총자금 10% 이내 시험 매수부터 해요.')
+    if ev.get('low'):
+        lines.append(f"FTD 당일 저가 {ev['low']:,.2f} 아래로 마감하면 신호가 약해진 거예요.")
+    lines.append('WAMO 고정 규칙에 따른 참고 신호이고, 상승을 보장하지 않아요.')
+    lines.append('')
+    lines.append(f"자세히 보기: {site_url()}radar.html?market={market}&tab=ftd")
+    return '\n'.join(lines)[:4000]
+
+
 def telegram_send(token, chat_id, text, opener=None):
     body = urllib.parse.urlencode({'chat_id': chat_id, 'text': text,
                                    'disable_web_page_preview': 'true'}).encode()
@@ -112,9 +155,23 @@ def send_for_markets(root, markets, sender=telegram_send, env=None):
     watchlist = read_json(root / WATCHLIST, {})
     state = read_json(root / STATE, {'sent': {}})
     sent_any = False
+    ftd_sent = state.setdefault('ftdSent', [])
+    for market in markets:
+        for key, idx, ev in fresh_ftds(market, trend.get(market) or {}):
+            if key in ftd_sent:
+                continue
+            try:
+                sender(token, chat, compose_ftd(market, idx, ev))
+                ftd_sent.append(key)
+                del ftd_sent[:-50]
+                state['updatedAt'] = datetime.now(timezone.utc).isoformat()
+                sent_any = True
+                print(f'텔레그램 FTD 알림 전송 · {key}', flush=True)
+            except Exception as exc:  # noqa: BLE001 - never print the token
+                print(f'텔레그램 FTD 알림 실패 · {key}: {type(exc).__name__}', flush=True)
     for market in markets:
         block = trend.get(market)
-        if not block or state['sent'].get(market) == block.get('asOf'):
+        if not block or market not in ('KR', 'US') or state['sent'].get(market) == block.get('asOf'):
             continue
         try:
             sender(token, chat, compose(market, block, watchlist))

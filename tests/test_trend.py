@@ -461,3 +461,37 @@ class IndexSafeguards(unittest.TestCase):
             self.assertFalse(kept['index']['synthetic'])
             self.assertEqual(kept['kept']['reason'], '지수 자료 지연')
             self.assertFalse((root / 'wamo_chart_US.json').exists())   # nothing built on the fake index
+
+
+class FtdAlertTest(unittest.TestCase):
+    def block(self, ftd_date, last_dates):
+        series = [{'date': d} for d in last_dates]
+        ev = {'type': 'FTD', 'date': ftd_date, 'close': 100, 'low': 98.5, 'changePct': 2.3,
+              'volumeRatio': 1.2, 'rallyDay': 5, 'late': False, 'volumeVsAvg': 1.1}
+        idx = {'status': 'OK', 'phase': 'CONFIRMED', 'symbol': '^KS11', 'label': '코스피',
+               'series': series, 'events': [{'type': 'RALLY', 'date': '2026-10-23'}, ev]}
+        return {'asOf': last_dates[-1], 'weather': {}, 'ftd': {'indexes': [idx]}}
+
+    def test_fresh_ftd_sent_once_and_old_ftd_ignored(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            env = {'TELEGRAM_BOT_TOKEN': 't', 'TELEGRAM_CHAT_ID': 'c'}
+            sent = []
+            send = lambda *a: sent.append(a[2])
+            block = self.block('2026-10-29', ['2026-10-27', '2026-10-28', '2026-10-29'])
+            (root / 'wamo_trend.json').write_text(json.dumps({'markets': {'KR': block}}))
+            with contextlib.redirect_stdout(io.StringIO()):
+                alerts.send_for_markets(root, ['KR'], sender=send, env=env)
+                alerts.send_for_markets(root, ['KR'], sender=send, env=env)
+            ftd_msgs = [m for m in sent if 'FTD 발생' in m]
+            self.assertEqual(len(ftd_msgs), 1)
+            self.assertIn('코스피', ftd_msgs[0])
+            self.assertIn('tab=ftd', ftd_msgs[0])
+            self.assertIn('신호 품질 3/3', ftd_msgs[0])
+            old = alerts.fresh_ftds('KR', self.block('2026-04-15', ['2026-10-27', '2026-10-28', '2026-10-29']))
+            self.assertEqual(old, [])
+
+    def test_daily_message_shows_ftd_phase(self):
+        block = self.block('2026-04-15', ['2026-10-26'])
+        block['ftd']['indexes'][0].update(phase='RALLY', rally={'day': 2})
+        self.assertIn('FTD 상태 · 코스피: 반등 시도 중 (Day 2)', alerts.compose('KR', block, {}))
