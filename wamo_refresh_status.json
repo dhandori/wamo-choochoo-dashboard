@@ -87,7 +87,7 @@
     "moversCompletedAt": "2026-10-26T20:50:03.080249+00:00",
     "refreshMode": "FULL",
     "catalogStatus": "PASS",
-    "radarStatus": "RUNNING",
+    "radarStatus": "PASS",
     "partialRerun": "누락 종목 재수집 · 1 → 0종목"
   }
 }

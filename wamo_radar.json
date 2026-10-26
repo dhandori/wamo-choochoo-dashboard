@@ -1,210 +1,26 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-26T16:14:01.856738+00:00",
+  "checkedAt": "2026-10-26T20:50:05.636270+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-26T16:14:01.856738+00:00",
+      "generatedAt": "2026-10-26T20:50:05.636270+00:00",
       "sessions": {
-        "US-NYSE": "20261023",
-        "US-NASDAQ": "20261023",
-        "US-AMEX": "20261023"
+        "US-NASDAQ": "20261026",
+        "US-NYSE": "20261026",
+        "US-AMEX": "20261026"
       },
       "source": "WAMO_52W",
       "scope": "WAMO US 검증 종목군 · 최근 252거래일",
       "coverage": {
         "totalCount": 880,
-        "currentCount": 880,
-        "validatedCount": 880,
-        "eligible52WeekCount": 866,
+        "currentCount": 879,
+        "validatedCount": 879,
+        "eligible52WeekCount": 865,
         "excludedCount": 0
       },
       "exclusions": [],
       "signals": [
-        {
-          "key": "US-NYSE:RBRK",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "RBRK",
-          "name": "Rubrik Inc. Class A Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 128.74,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:SSL",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "SSL",
-          "name": "Sasol Ltd. American Depositary Shares",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 18.03,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:APA",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "APA",
-          "name": "APA Corporation Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 51.9,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:EQNR",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "EQNR",
-          "name": "Equinor ASA",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 48.82,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:PBR",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "PBR",
-          "name": "Petroleo Brasileiro S.A. Petrobras ADS",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 26.16,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:E",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "E",
-          "name": "ENI S.p.A. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 62.08,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:PAYC",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "PAYC",
-          "name": "Paycom Software Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 274.59,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:COP",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "COP",
-          "name": "ConocoPhillips Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 150.8,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
         {
           "key": "US-NASDAQ:CART",
           "market": "US-NASDAQ",
@@ -212,7 +28,7 @@
           "symbol": "CART",
           "name": "Maplebear Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Consumer Discretionary"
           ],
@@ -221,7 +37,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 56.44,
+          "current_close": 60.88,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -229,13 +45,13 @@
           }
         },
         {
-          "key": "US-NYSE:VEEV",
+          "key": "US-NYSE:RBRK",
           "market": "US-NYSE",
           "country": "US",
-          "symbol": "VEEV",
-          "name": "Veeva Systems Inc. Class A Common Stock",
+          "symbol": "RBRK",
+          "name": "Rubrik Inc. Class A Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Technology"
           ],
@@ -244,30 +60,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 323.04,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:PR",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "PR",
-          "name": "Permian Resources Corporation Class A Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 25.49,
+          "current_close": 133.4,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -275,13 +68,13 @@
           }
         },
         {
-          "key": "US-NYSE:CVX",
+          "key": "US-NYSE:RRC",
           "market": "US-NYSE",
           "country": "US",
-          "symbol": "CVX",
-          "name": "Chevron Corporation Common Stock",
+          "symbol": "RRC",
+          "name": "Range Resources Corporation Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Energy"
           ],
@@ -290,76 +83,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 233.21,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:LNG",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "LNG",
-          "name": "Cheniere Energy Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Utilities"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 298.67,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:DVN",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "DVN",
-          "name": "Devon Energy Corporation Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 51.39,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:BBY",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "BBY",
-          "name": "Best Buy Co. Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Consumer Discretionary"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 99.87,
+          "current_close": 53.56,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -373,7 +97,7 @@
           "symbol": "CRL",
           "name": "Charles River Laboratories International Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Health Care"
           ],
@@ -382,10 +106,79 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 345.37,
+          "current_close": 357.27,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:LNG",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "LNG",
+          "name": "Cheniere Energy Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Utilities"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 300.59,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:COP",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "COP",
+          "name": "ConocoPhillips Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 151.37,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:PR",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "PR",
+          "name": "Permian Resources Corporation Class A Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 25.77,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
             "close_252": true
           }
         },
@@ -396,7 +189,7 @@
           "symbol": "HALO",
           "name": "Halozyme Therapeutics Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Health Care"
           ],
@@ -405,76 +198,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 125.63,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:BP",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "BP",
-          "name": "BP p.l.c. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 51.32,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:CNQ",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "CNQ",
-          "name": "Canadian Natural Resources Limited Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 55.06,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:OVV",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "OVV",
-          "name": "Ovintiv Inc. (DE)",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 72.27,
+          "current_close": 128.01,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -488,7 +212,7 @@
           "symbol": "XOM",
           "name": "ExxonMobil Holdings Corporation Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Energy"
           ],
@@ -497,240 +221,10 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 183.21,
+          "current_close": 184.54,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:EOG",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "EOG",
-          "name": "EOG Resources Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 163.03,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:MANH",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "MANH",
-          "name": "Manhattan Associates Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 238.19,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:SU",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "SU",
-          "name": "Suncor Energy  Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 79.38,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:SHEL",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "SHEL",
-          "name": "Shell PLC American Depositary Shares (each representing two (2) Ordinary Shares)",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 108.18,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:DOCU",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "DOCU",
-          "name": "DocuSign Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 85.27,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:TEAM",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "TEAM",
-          "name": "Atlassian Corporation Class A Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 227.61,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:RVTY",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "RVTY",
-          "name": "Revvity Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Industrials"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 158.77,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:MEDP",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "MEDP",
-          "name": "Medpace Holdings Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Health Care"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 669.2,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:CDW",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "CDW",
-          "name": "CDW Corporation Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Consumer Discretionary"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 165.11,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:TRGP",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "TRGP",
-          "name": "Targa Resources Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Utilities"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 302.37,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": false,
             "close_252": true
           }
         },
@@ -741,7 +235,7 @@
           "symbol": "ESTC",
           "name": "Elastic N.V. Ordinary Shares",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Technology"
           ],
@@ -750,7 +244,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 102.43,
+          "current_close": 106.29,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
@@ -758,22 +252,45 @@
           }
         },
         {
-          "key": "US-NYSE:RNR",
+          "key": "US-NYSE:OVV",
           "market": "US-NYSE",
           "country": "US",
-          "symbol": "RNR",
-          "name": "RenaissanceRe Holdings Ltd. Common Stock",
+          "symbol": "OVV",
+          "name": "Ovintiv Inc. (DE)",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
-            "Finance"
+            "Energy"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 352.6,
+          "current_close": 72.55,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:CVX",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "CVX",
+          "name": "Chevron Corporation Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 232.01,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -781,13 +298,13 @@
           }
         },
         {
-          "key": "US-NYSE:IQV",
-          "market": "US-NYSE",
+          "key": "US-NASDAQ:MEDP",
+          "market": "US-NASDAQ",
           "country": "US",
-          "symbol": "IQV",
-          "name": "IQVIA Holdings Inc. Common Stock",
+          "symbol": "MEDP",
+          "name": "Medpace Holdings Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Health Care"
           ],
@@ -796,11 +313,218 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 279.36,
+          "current_close": 676.77,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
             "close_252": true
+          }
+        },
+        {
+          "key": "US-NASDAQ:EXEL",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "EXEL",
+          "name": "Exelixis Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Health Care"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 65.11,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
+          }
+        },
+        {
+          "key": "US-NYSE:RVTY",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "RVTY",
+          "name": "Revvity Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Industrials"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 160.39,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:DVN",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "DVN",
+          "name": "Devon Energy Corporation Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 51.64,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:CNQ",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "CNQ",
+          "name": "Canadian Natural Resources Limited Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 55.11,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:SU",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "SU",
+          "name": "Suncor Energy  Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 79.48,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:EOG",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "EOG",
+          "name": "EOG Resources Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 163.68,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NASDAQ:DOCU",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "DOCU",
+          "name": "DocuSign Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Technology"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 84.89,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
+          }
+        },
+        {
+          "key": "US-NYSE:TRGP",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "TRGP",
+          "name": "Targa Resources Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Utilities"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 304.68,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:PSO",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "PSO",
+          "name": "Pearson Plc Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Consumer Discretionary"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 18.3,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
           }
         },
         {
@@ -810,7 +534,7 @@
           "symbol": "AVTR",
           "name": "Avantor Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Industrials"
           ],
@@ -827,49 +551,49 @@
           }
         },
         {
-          "key": "US-NYSE:EG",
-          "market": "US-NYSE",
+          "key": "US-NASDAQ:RPRX",
+          "market": "US-NASDAQ",
           "country": "US",
-          "symbol": "EG",
-          "name": "Everest Group Ltd. Common Stock",
+          "symbol": "RPRX",
+          "name": "Royalty Pharma plc Class A Ordinary Shares",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
-            "Finance"
+            "Health Care"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 398.6,
+          "current_close": 64.76,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
-            "close_252": false
+            "close_252": true
           }
         },
         {
-          "key": "US-NASDAQ:ADP",
-          "market": "US-NASDAQ",
+          "key": "US-NYSE:WST",
+          "market": "US-NYSE",
           "country": "US",
-          "symbol": "ADP",
-          "name": "Automatic Data Processing Inc. Common Stock",
+          "symbol": "WST",
+          "name": "West Pharmaceutical Services Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
-            "Technology"
+            "Health Care"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 304.16,
+          "current_close": 394.73,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": true,
-            "close_252": false
+            "intraday_252": false,
+            "close_252": true
           }
         },
         {
@@ -879,7 +603,7 @@
           "symbol": "IFF",
           "name": "International Flavors & Fragrances Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Industrials"
           ],
@@ -888,57 +612,34 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 94.15,
+          "current_close": 93.69,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": false
+          }
+        },
+        {
+          "key": "US-NYSE:TTE",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "TTE",
+          "name": "TotalEnergies SE Ordinary Shares",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Energy"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 93.76,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:ROKU",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "ROKU",
-          "name": "Roku Inc. Class A Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Telecommunications"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 158.58,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NASDAQ:KDP",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "KDP",
-          "name": "Keurig Dr Pepper Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Consumer Staples"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 34.68,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
           }
         },
         {
@@ -948,7 +649,7 @@
           "symbol": "GMAB",
           "name": "Genmab A/S ADS",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Health Care"
           ],
@@ -957,7 +658,53 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 43.79,
+          "current_close": 44.69,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NASDAQ:CTAS",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "CTAS",
+          "name": "Cintas Corporation Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Industrials"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 225.93,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NYSE:R",
+          "market": "US-NYSE",
+          "country": "US",
+          "symbol": "R",
+          "name": "Ryder System Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261026",
+          "industry_path": [
+            "Consumer Discretionary"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 282.11,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -971,7 +718,7 @@
           "symbol": "HAS",
           "name": "Hasbro Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Consumer Discretionary"
           ],
@@ -980,7 +727,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 117.44,
+          "current_close": 117.96,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -988,45 +735,22 @@
           }
         },
         {
-          "key": "US-NASDAQ:FCNCA",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "FCNCA",
-          "name": "First Citizens BancShares Inc. Class A Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Finance"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 2375.84,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:ALLE",
+          "key": "US-NYSE:BRK-B",
           "market": "US-NYSE",
           "country": "US",
-          "symbol": "ALLE",
-          "name": "Allegion plc Ordinary Shares",
+          "symbol": "BRK-B",
+          "name": "Berkshire Hathaway Inc.",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
-            "Consumer Discretionary"
+            "산업 미분류"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 178.98,
+          "current_close": 548.56,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
@@ -1034,233 +758,49 @@
           }
         },
         {
-          "key": "US-NYSE:KMI",
-          "market": "US-NYSE",
+          "key": "US-NASDAQ:GILD",
+          "market": "US-NASDAQ",
           "country": "US",
-          "symbol": "KMI",
-          "name": "Kinder Morgan Inc. Common Stock",
+          "symbol": "GILD",
+          "name": "Gilead Sciences Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
-            "Utilities"
+            "Health Care"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 34.43,
+          "current_close": 158.69,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
-            "intraday_252": true,
+            "intraday_252": false,
             "close_252": true
           }
         },
         {
-          "key": "US-NYSE:CHT",
+          "key": "US-NYSE:TAK",
           "market": "US-NYSE",
           "country": "US",
-          "symbol": "CHT",
-          "name": "Chunghwa Telecom Co. Ltd.",
+          "symbol": "TAK",
+          "name": "Takeda Pharmaceutical Company Limited American Depositary Shares (each representing 1/2 of a share of Common Stock)",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
-            "Telecommunications"
+            "Health Care"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 48.51,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NASDAQ:CTAS",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "CTAS",
-          "name": "Cintas Corporation Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Industrials"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 224.1,
+          "current_close": 20.43,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
             "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:AFG",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "AFG",
-          "name": "American Financial Group Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Finance"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 150.62,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:RSG",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "RSG",
-          "name": "Republic Services Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Utilities"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 240.45,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:ED",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "ED",
-          "name": "Consolidated Edison Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Utilities"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 115.74,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:AMT",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "AMT",
-          "name": "American Tower Corporation (REIT) Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Real Estate"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 188.97,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:WTRG",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "WTRG",
-          "name": "Essential Utilities Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Utilities"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 43.11,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:AMG",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "AMG",
-          "name": "Affiliated Managers Group Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Finance"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 383.42,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NASDAQ:AAPL",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "AAPL",
-          "name": "Apple Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 347.73,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
           }
         },
         {
@@ -1270,7 +810,7 @@
           "symbol": "NDAQ",
           "name": "Nasdaq Inc. Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Finance"
           ],
@@ -1279,11 +819,11 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 102.56,
+          "current_close": 104.72,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
-            "close_252": false
+            "close_252": true
           }
         },
         {
@@ -1293,7 +833,7 @@
           "symbol": "WCN",
           "name": "Waste Connections Inc. Common Shares",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Utilities"
           ],
@@ -1302,7 +842,7 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 186.6,
+          "current_close": 186.72,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -1310,82 +850,13 @@
           }
         },
         {
-          "key": "US-NYSE:TTE",
+          "key": "US-NYSE:TD",
           "market": "US-NYSE",
           "country": "US",
-          "symbol": "TTE",
-          "name": "TotalEnergies SE Ordinary Shares",
+          "symbol": "TD",
+          "name": "Toronto Dominion Bank (The) Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Energy"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 92.78,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NYSE:BJ",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "BJ",
-          "name": "BJ's Wholesale Club Holdings Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Consumer Discretionary"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 105.84,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:AWK",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "AWK",
-          "name": "American Water Works Company Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
-          "industry_path": [
-            "Utilities"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 142.75,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": false
-          }
-        },
-        {
-          "key": "US-NYSE:MRSH",
-          "market": "US-NYSE",
-          "country": "US",
-          "symbol": "MRSH",
-          "name": "Marsh Common Stock",
-          "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
             "Finance"
           ],
@@ -1394,34 +865,34 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 197.48,
+          "current_close": 125.32,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
-            "close_252": false
+            "close_252": true
           }
         },
         {
-          "key": "US-NYSE:VLTO",
-          "market": "US-NYSE",
+          "key": "US-NASDAQ:TECH",
+          "market": "US-NASDAQ",
           "country": "US",
-          "symbol": "VLTO",
-          "name": "Veralto Corp Common Stock",
+          "symbol": "TECH",
+          "name": "Bio-Techne Corp Common Stock",
           "currency": "USD",
-          "as_of": "20261023",
+          "as_of": "20261026",
           "industry_path": [
-            "Industrials"
+            "Health Care"
           ],
           "micro_verified": false,
           "classification_status": "WAMO_SECTOR",
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 104.33,
+          "current_close": 72.69,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
-            "close_252": false
+            "close_252": true
           }
         }
       ],
@@ -1429,10 +900,21 @@
         {
           "market": "US",
           "industry_path": [
+            "Consumer Discretionary"
+          ],
+          "eligible_classified_issuers": 147,
+          "current_signal_issuers": 4,
+          "micro_verified": false,
+          "phase": "52주 신고가 관측",
+          "comparison_scope": "WAMO 검증 종목군"
+        },
+        {
+          "market": "US",
+          "industry_path": [
             "Technology"
           ],
           "eligible_classified_issuers": 142,
-          "current_signal_issuers": 9,
+          "current_signal_issuers": 3,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
           "comparison_scope": "WAMO 검증 종목군"
@@ -1443,29 +925,7 @@
             "Energy"
           ],
           "eligible_classified_issuers": 39,
-          "current_signal_issuers": 17,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "Consumer Discretionary"
-          ],
-          "eligible_classified_issuers": 147,
-          "current_signal_issuers": 6,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "Utilities"
-          ],
-          "eligible_classified_issuers": 52,
-          "current_signal_issuers": 8,
+          "current_signal_issuers": 11,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
           "comparison_scope": "WAMO 검증 종목군"
@@ -1475,8 +935,19 @@
           "industry_path": [
             "Health Care"
           ],
-          "eligible_classified_issuers": 102,
-          "current_signal_issuers": 5,
+          "eligible_classified_issuers": 100,
+          "current_signal_issuers": 10,
+          "micro_verified": false,
+          "phase": "52주 신고가 관측",
+          "comparison_scope": "WAMO 검증 종목군"
+        },
+        {
+          "market": "US",
+          "industry_path": [
+            "Utilities"
+          ],
+          "eligible_classified_issuers": 53,
+          "current_signal_issuers": 3,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
           "comparison_scope": "WAMO 검증 종목군"
@@ -1487,7 +958,7 @@
             "Industrials"
           ],
           "eligible_classified_issuers": 131,
-          "current_signal_issuers": 5,
+          "current_signal_issuers": 4,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
           "comparison_scope": "WAMO 검증 종목군"
@@ -1497,18 +968,7 @@
           "industry_path": [
             "Finance"
           ],
-          "eligible_classified_issuers": 135,
-          "current_signal_issuers": 7,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "Telecommunications"
-          ],
-          "eligible_classified_issuers": 19,
+          "eligible_classified_issuers": 136,
           "current_signal_issuers": 2,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
@@ -1517,20 +977,9 @@
         {
           "market": "US",
           "industry_path": [
-            "Consumer Staples"
+            "산업 미분류"
           ],
-          "eligible_classified_issuers": 24,
-          "current_signal_issuers": 1,
-          "micro_verified": false,
-          "phase": "52주 신고가 관측",
-          "comparison_scope": "WAMO 검증 종목군"
-        },
-        {
-          "market": "US",
-          "industry_path": [
-            "Real Estate"
-          ],
-          "eligible_classified_issuers": 35,
+          "eligible_classified_issuers": 2,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
@@ -1541,7 +990,7 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-26T16:14:01.856738+00:00",
+      "generatedAt": "2026-10-26T20:50:05.636270+00:00",
       "sessions": {
         "KR-KOSPI": "20261026",
         "KR-KOSDAQ": "20261026"
