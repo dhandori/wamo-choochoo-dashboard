@@ -4,7 +4,9 @@
 // unchanged answers do not count against the 60-per-hour limit.
 const PENDING_KEY = 'wamo-run-pending-v1';
 const MAX_WAIT = 100 * 60000;
-const NAMES = { KR: '한국', US: '미국' };
+const NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
+// Japan/Taiwan run in their own light job (asia.yml, wamo_asia_status.json).
+const ASIA = new Set(['JP', 'TW']);
 // GitHub's free scheduler is often late; offer a manual run after 15 minutes.
 const LATE_AFTER = 15 * 60000;
 
@@ -14,13 +16,16 @@ function repoSlug() {
   return 'dhandori/wamo-choochoo-dashboard';
 }
 const REPO = repoSlug();
-const WORKFLOW_URL = `https://github.com/${REPO}/actions/workflows/main.yml`;
-const API = `https://api.github.com/repos/${REPO}/actions/workflows/main.yml/runs?event=workflow_dispatch&per_page=5`;
+const workflowOf = market => ASIA.has(market) ? 'asia.yml' : 'main.yml';
+const workflowUrl = market => `https://github.com/${REPO}/actions/workflows/${workflowOf(market)}`;
+const apiUrl = market => `https://api.github.com/repos/${REPO}/actions/workflows/${workflowOf(market)}/runs?event=workflow_dispatch&per_page=5`;
 
-let status = null, statusAt = 0, statusTimer = null, pollTimer = null, onDone = () => {}, getMarketStatus = () => null, onStatus = () => {};
+let status = null, asiaStatus = null, statusAt = 0, statusTimer = null, pollTimer = null, onDone = () => {}, getMarketStatus = () => null, onStatus = () => {};
 /** Latest wamo_refresh_status.json (null until the first read). */
 export const getRefreshStatus = () => status;
-let gh = { etag: null, runs: null, limited: false };
+const ghCache = {};
+const ghFor = market => ghCache[workflowOf(market)] ||= { etag: null, runs: null, limited: false };
+const statusOf = market => ASIA.has(market) ? asiaStatus?.[market] : status?.[market];
 let pending = readPending();
 
 function readPending() {
@@ -37,7 +42,7 @@ function el(tag, text, cls) { const n = document.createElement(tag); if (text !=
 const parse = v => { const t = Date.parse(v || ''); return Number.isFinite(t) ? t : null; };
 
 /** Why a market needs a fresh collection, or null when it looks current. */
-export function refreshReason(market, s = status?.[market], radarStatus = getMarketStatus(market), now = Date.now()) {
+export function refreshReason(market, s = statusOf(market), radarStatus = getMarketStatus(market), now = Date.now()) {
   if (!s) return radarStatus === 'STALE' ? '지난 거래일 데이터예요' : null;
   const attempted = parse(s.attemptedAt), next = parse(s.nextScheduledFor);
   if (s.status === 'RUNNING' && attempted && now - attempted > 40 * 60000) return '수집이 중간에 멈춘 것 같아요';
@@ -52,7 +57,7 @@ export function refreshReason(market, s = status?.[market], radarStatus = getMar
 }
 
 function runningNow(market) {
-  const s = status?.[market];
+  const s = statusOf(market);
   const attempted = parse(s?.attemptedAt);
   return s?.status === 'RUNNING' && attempted && Date.now() - attempted <= 40 * 60000;
 }
@@ -80,7 +85,7 @@ function paint(box) {
     b.append(el('span', null, 'run-spin'), document.createTextNode(LABEL[p.phase]));
     b.title = '이미 요청했어요. 끝날 때까지 다시 누를 필요가 없어요.';
     box.append(b);
-    if (p.phase === 'waiting') box.append(linkTo(WORKFLOW_URL, 'GitHub 창 다시 열기'));
+    if (p.phase === 'waiting') box.append(linkTo(workflowUrl(market), 'GitHub 창 다시 열기'));
     if (p.runUrl) box.append(linkTo(p.runUrl, '실행 기록'));
     if (p.market === market && pending) box.append(cancelLink());
     return;
@@ -104,7 +109,7 @@ function paint(box) {
 const kstTime = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
 /** Honest tooltip for a disabled button: either current, or waiting for the next scheduled run. */
 function waitingTitle(market, now = Date.now()) {
-  const next = parse(status?.[market]?.nextScheduledFor);
+  const next = parse(statusOf(market)?.nextScheduledFor);
   if (next && now >= next) return `예약 갱신(${kstTime.format(new Date(next))})을 기다리는 중이에요. ${Math.ceil((next + LATE_AFTER - now) / 60000)}분 안에 시작되지 않으면 이 버튼이 켜져요.`;
   if (next) return `마지막 장 마감 데이터까지 반영돼 있어요. 다음 예약 갱신: ${kstTime.format(new Date(next))}`;
   return '마지막 장 마감 데이터까지 반영돼 있어요.';
@@ -125,23 +130,27 @@ function openDialog(market, reason) {
   d.replaceChildren();
   d.append(el('div', 'DATA REFRESH', 'eyebrow'), el('h2', `${NAMES[market]} 데이터 지금 갱신`), el('p', `이유: ${reason}`, 'run-why'));
   const steps = el('ol', null, 'run-steps');
-  [
+  (ASIA.has(market) ? [
+    ['아래 초록 버튼을 누르면', 'GitHub 실행 화면이 새 창으로 열려요. (저장소 주인 계정으로 로그인되어 있어야 해요)'],
+    ["오른쪽 'Run workflow' 버튼을 누르세요.", "작은 창이 열려요. 체크칸은 비워 둔 채로 두면 돼요. 일본과 대만이 함께 갱신돼요."],
+    ["초록색 'Run workflow'를 한 번 더 누르면 끝!", '이 화면으로 돌아오면 실행 대기 → 수집 중 → 완료 순서로 보여드려요. 보통 1~3분 걸려요.'],
+  ] : [
     ['아래 초록 버튼을 누르면', 'GitHub 실행 화면이 새 창으로 열려요. (저장소 주인 계정으로 로그인되어 있어야 해요)'],
     ["오른쪽 'Run workflow' 버튼을 누르세요.", "작은 창이 열려요. 갱신할 시장은 그대로 두거나 " + `'${market}'` + "를 고르고, '검증 결과를 실제 게시'가 체크된 걸 확인하세요."],
     ["초록색 'Run workflow'를 한 번 더 누르면 끝!", '이 화면으로 돌아오면 실행 대기 → 수집 중 → 완료 순서로 보여드려요. 보통 10~25분 걸려요.'],
-  ].forEach(([title, text]) => { const li = el('li'); li.append(el('b', title), el('span', text)); steps.append(li); });
+  ]).forEach(([title, text]) => { const li = el('li'); li.append(el('b', title), el('span', text)); steps.append(li); });
   d.append(steps);
   d.append(el('p', '이미 실행 중인 작업이 있으면 GitHub이 순서대로 처리해서 겹치지 않아요. 빠진 종목만 있으면 그 시장만 다시 모으고, 결과가 더 나빠지면 이전 데이터를 그대로 둬요.', 'run-note'));
   const actions = el('div', null, 'run-actions');
   const go = el('button', 'GitHub 실행창 열기', 'run-go'); go.type = 'button';
   const cancel = el('button', '닫기'); cancel.type = 'button'; cancel.onclick = () => d.close();
   go.onclick = async () => {
-    const existing = await activeRun();
+    const existing = await activeRun(market);
     if (existing) {
       savePending({ market, at: Date.now(), phase: existing.status === 'in_progress' ? 'running' : 'queued', runId: existing.id, runUrl: existing.html_url });
       d.close(); repaint(); schedulePoll(5000); return;
     }
-    window.open(WORKFLOW_URL, '_blank', 'noopener');
+    window.open(workflowUrl(market), '_blank', 'noopener');
     savePending({ market, at: Date.now(), phase: 'waiting' });
     d.close(); repaint(); schedulePoll(20000);
   };
@@ -150,11 +159,12 @@ function openDialog(market, reason) {
   d.showModal();
 }
 
-async function fetchRuns() {
+async function fetchRuns(market) {
+  const gh = ghFor(market);
   try {
     const headers = { Accept: 'application/vnd.github+json' };
     if (gh.etag) headers['If-None-Match'] = gh.etag;
-    const r = await fetch(API, { headers, cache: 'no-store' });
+    const r = await fetch(apiUrl(market), { headers, cache: 'no-store' });
     if (r.status === 304) return gh.runs;
     if (r.status === 403 || r.status === 429) { gh.limited = true; return null; }
     if (!r.ok) return null;
@@ -164,8 +174,8 @@ async function fetchRuns() {
   } catch { return null; }
 }
 
-async function activeRun() {
-  const runs = await fetchRuns();
+async function activeRun(market) {
+  const runs = await fetchRuns(market);
   return (runs || []).find(r => ['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(r.status)) || null;
 }
 
@@ -173,6 +183,10 @@ async function fetchStatus() {
   try {
     const r = await fetch('wamo_refresh_status.json', { cache: 'no-store' });
     if (r.ok) { status = await r.json(); statusAt = Date.now(); }
+  } catch {}
+  try {
+    const r = await fetch('wamo_asia_status.json', { cache: 'no-store' });
+    if (r.ok) asiaStatus = await r.json();
   } catch {}
 }
 
@@ -192,12 +206,12 @@ async function poll() {
   }
   if (age > MAX_WAIT) { savePending({ ...pending, phase: 'failed', failedAt: Date.now() }); repaint(); return; }
   await fetchStatus();
-  const s = status?.[pending.market] || {};
+  const s = statusOf(pending.market) || {};
   // GitHub every ~2 minutes after the first 10 minutes (304s are free anyway).
   const checkGithub = age < 10 * 60000 || !pending.lastGh || Date.now() - pending.lastGh > 110000;
   let run = null;
   if (checkGithub) {
-    const runs = await fetchRuns();
+    const runs = await fetchRuns(pending.market);
     pending.lastGh = Date.now();
     run = (runs || []).filter(r => Date.parse(r.created_at) >= pending.at - 120000).sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))[0]
       || (pending.runId && (runs || []).find(r => r.id === pending.runId)) || null;

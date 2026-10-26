@@ -1,10 +1,10 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261024-dd3';
-import { renderLeaders, leadersSummary } from './leaders.js?v=20261024-dd3';
-import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261024-dd3';
-import { helpLabel, helpButton, closeHelp } from './help.js?v=20261024-dd3';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261026-rn1';
+import { renderLeaders, leadersSummary } from './leaders.js?v=20261026-rn1';
+import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261026-rn1';
+import { helpLabel, helpButton, closeHelp } from './help.js?v=20261026-rn1';
 import { loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261026-sp1';
-import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261024-dd3';
-import { renderSchedule } from './schedule.js?v=20261024-dd3';
+import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261026-rn1';
+import { renderSchedule } from './schedule.js?v=20261026-rn1';
 import { renderSpMovers } from './spmovers.js?v=20261026-sp1';
 import { loadChartData, stockSeries, priceChart, benchChart, rsChart, MA } from './chart.js?v=20261026-ix1';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
@@ -601,7 +601,7 @@ function renderMeta(m) {
   if (refreshFailed) messages.push('가격 파일을 다시 불러오지 못해 마지막으로 확인된 데이터를 보여 줍니다.');
   $('notice').hidden = messages.length === 0; $('notice').textContent = messages.join(' ');
   $('date-info').replaceChildren(el('span', `${m.asOf || '—'} 거래일 종가`, 'session-date'), el('span', ({ CURRENT: '최신 거래일', PARTIAL: '일부 제외', STALE: '지난 거래일 자료', UNAVAILABLE: '데이터 없음' })[status], `badge status-${status.toLowerCase()}`));
-  const refreshButton = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); refreshButton.className = 'refresh-button'; refreshButton.disabled = refreshing; $('date-info').append(refreshButton); if (!LITE.has(state.market)) $('date-info').append(runnerButton(state.market));
+  const refreshButton = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); refreshButton.className = 'refresh-button'; refreshButton.disabled = refreshing; $('date-info').append(refreshButton); $('date-info').append(runnerButton(state.market));
   const near = m.stocks.filter(s => numeric(s.highDistancePct) && s.highDistancePct <= 10), highs = m.stocks.filter(s => s.intradayHigh52 === true || s.closeHigh52 === true);
   const groups = m.industries.filter(g => g.confirmed), moves = selectStocks(m, { tab: 'movers' });
   const ai=aiOverview(m,state.market).total;
