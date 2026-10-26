@@ -2,8 +2,14 @@ name: WAMO 자동갱신
 
 on:
   schedule:
-    # KR close: 16:00 KST. US close: 16:20 New York (DST-aware).
-    # wamo_run.py permits only one collection per market trading session.
+    # Publication slots: KR 15:50 KST, US 16:10 New York (wamo_runtime.SLOTS).
+    # GitHub starts schedules 10-40 minutes late, so these start early and
+    # wamo_wait.py holds the run until the slot (KR 15:20/15:35 KST;
+    # US 15:35/15:50 ET in daylight time, 20:35/20:50 UTC in standard time).
+    - cron: '20,35 6 * * 1-5'
+    - cron: '35,50 19,20 * * 1-5'
+    # Former exact-slot starts stay as backups; wamo_run.py permits only one
+    # collection per market trading session, so these exit if already done.
     - cron: '0 7 * * 1-5'
     - cron: '20 20 * * 1-5'
     - cron: '20 21 * * 1-5'
@@ -73,7 +79,7 @@ jobs:
         timeout-minutes: 5
         run: >-
           python -m unittest -v
-          tests.test_refresh.RefreshTests.test_korean_close_runs_once_at_1600_kst
+          tests.test_refresh.RefreshTests.test_korean_close_runs_once_after_close
           tests.test_refresh.RefreshTests.test_us_dst_standard_time_and_early_close
           tests.test_refresh.RefreshTests.test_two_us_cron_candidates_publish_only_once_per_session
           tests.test_refresh.RefreshTests.test_prices_do_not_become_fresh_by_advancing_update_timestamp
@@ -106,6 +112,8 @@ jobs:
           recovery=''
           if [[ "${GITHUB_EVENT_NAME}" == 'schedule' ]]; then
             case "$EVENT_SCHEDULE" in
+              '20,35 6 * * 1-5') market='KR'; python -u wamo_wait.py --market KR ;;
+              '35,50 19,20 * * 1-5') market='US'; python -u wamo_wait.py --market US ;;
               '0 7 * * 1-5') market='KR' ;;
               '20 20 * * 1-5'|'20 21 * * 1-5') market='US' ;;
               *) market='auto'; recovery='yes' ;;

@@ -22,7 +22,7 @@ def instant(value):
 
 class RefreshTests(unittest.TestCase):
     def test_explicit_recovery_retries_failed_latest_close_after_twelve_hours(self):
-        slot = instant('2026-10-05T20:20')
+        slot = instant('2026-10-05T20:10')
         state = {'US': {'slot': slot.isoformat(), 'success': False, 'attempts': 1}}
         now = instant('2026-10-06T08:30')
         self.assertEqual(runner.select_targets(state, now, 'US', recovery=True), [('US', slot)])
@@ -51,53 +51,69 @@ class RefreshTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, '교차검증 실패'):
                 core.resolve_market_energy_members([], {}, '2026-09-07')
 
-    def test_korean_close_runs_once_at_1600_kst(self):
-        close = instant('2026-09-07T07:00')
+    def test_korean_close_runs_once_after_close(self):
+        close = instant('2026-09-07T06:50')
         self.assertEqual(runner.select_targets({}, close), [('KR', close)])
         state = {'KR': {'slot': close.isoformat(), 'success': True, 'attempts': 1}}
         self.assertEqual(runner.select_targets(state, instant('2026-09-07T08:00')), [])
 
+    def test_csat_day_late_close_is_not_collected_at_the_regular_slot(self):
+        # 2026-11-19: KRX trades 10:00-16:30 KST. 15:50 must not publish intraday prices.
+        self.assertEqual(runner.select_targets({}, instant('2026-11-19T06:50:20'), 'KR'), [])
+        self.assertEqual(rt.expected_session('KR', instant('2026-11-19T07:49')), '2026-11-18')
+        self.assertEqual(runner.select_targets({}, instant('2026-11-19T07:54'), 'KR'), [('KR', instant('2026-11-19T06:50'))])
+
+    def test_wait_holds_early_starts_until_the_slot_only(self):
+        import wamo_wait
+        seconds, slot = wamo_wait.wait_seconds('KR', instant('2026-10-27T06:20'))
+        self.assertEqual(slot, instant('2026-10-27T06:50'))
+        self.assertAlmostEqual(seconds, 30 * 60 + 20)
+        # Already past the slot, or the other DST candidate an hour early: no wait beyond the limit.
+        self.assertEqual(wamo_wait.wait_seconds('KR', instant('2026-10-27T06:55'))[0], 0)
+        self.assertAlmostEqual(wamo_wait.wait_seconds('US', instant('2026-11-03T20:35'))[0], 35 * 60 + 20)
+        self.assertEqual(wamo_wait.wait_seconds('US', instant('2026-11-03T19:35'))[0], 0)
+
     def test_friday_us_close_and_holiday(self):
-        close = instant('2026-09-04T20:20')
+        close = instant('2026-09-04T20:10')
         self.assertEqual(rt.latest_slot('US', close), close)
-        self.assertEqual(close.astimezone(rt.KST).strftime('%a %H:%M'), 'Sat 05:20')
+        self.assertEqual(close.astimezone(rt.KST).strftime('%a %H:%M'), 'Sat 05:10')
         # Labor Day has no US update slots; next session is Tuesday.
-        self.assertEqual(rt.next_slot('US', close), instant('2026-09-08T20:20'))
+        self.assertEqual(rt.next_slot('US', close), instant('2026-09-08T20:10'))
         self.assertEqual(rt.expected_session('US', instant('2026-09-07T20:00')), '2026-09-04')
 
     def test_us_dst_standard_time_and_early_close(self):
-        self.assertEqual(rt.latest_slot('US', instant('2026-03-09T20:20')), instant('2026-03-09T20:20'))
-        self.assertEqual(rt.latest_slot('US', instant('2026-11-03T21:20')), instant('2026-11-03T21:20'))
+        self.assertEqual(rt.latest_slot('US', instant('2026-03-09T20:10')), instant('2026-03-09T20:10'))
+        self.assertEqual(rt.latest_slot('US', instant('2026-11-03T21:10')), instant('2026-11-03T21:10'))
         self.assertEqual(rt.expected_session('US', instant('2026-11-27T18:20')), '2026-11-27')
-        # Even on a 13:00 ET early close, the publication slot remains 16:20 ET.
+        # Even on a 13:00 ET early close, the publication slot remains 16:10 ET.
         self.assertEqual(runner.select_targets({}, instant('2026-11-27T18:20'), 'US'), [])
-        self.assertEqual(runner.select_targets({}, instant('2026-11-27T21:20'), 'US'), [('US', instant('2026-11-27T21:20'))])
+        self.assertEqual(runner.select_targets({}, instant('2026-11-27T21:10'), 'US'), [('US', instant('2026-11-27T21:10'))])
 
     def test_two_us_cron_candidates_publish_only_once_per_session(self):
-        # During standard time, 20:20 UTC is before the logical 16:20 ET slot.
-        self.assertEqual(runner.select_targets({}, instant('2026-11-03T20:20')), [])
-        slot = instant('2026-11-03T21:20')
+        # During standard time, 20:10 UTC is before the logical 16:10 ET slot.
+        self.assertEqual(runner.select_targets({}, instant('2026-11-03T20:10')), [])
+        slot = instant('2026-11-03T21:10')
         self.assertEqual(runner.select_targets({}, slot), [('US', slot)])
         state = {'US': {'slot': slot.isoformat(), 'success': True, 'attempts': 1}}
         self.assertEqual(runner.select_targets(state, instant('2026-11-03T22:20')), [])
         self.assertEqual(runner.select_targets(state, instant('2026-11-03T22:20'), 'US', True), [])
 
     def test_second_us_cron_recovers_failed_close_automatically(self):
-        slot = instant('2026-03-09T20:20')
+        slot = instant('2026-03-09T20:10')
         failed = {'US': {'slot': slot.isoformat(), 'success': False, 'attempts': 1}}
-        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US'), [('US', slot)])
-        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US', True), [('US', slot)])
+        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:10'), 'US'), [('US', slot)])
+        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:10'), 'US', True), [('US', slot)])
         failed['US']['attempts'] = 3
-        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:20'), 'US', True), [('US', slot)])
+        self.assertEqual(runner.select_targets(failed, instant('2026-03-09T21:10'), 'US', True), [('US', slot)])
 
     def test_schedule_migration_deduplicates_by_market_session(self):
-        legacy = {'US': {'slot': instant('2026-09-14T21:20').isoformat(),
+        legacy = {'US': {'slot': instant('2026-09-14T21:10').isoformat(),
                          'success': True, 'attempts': 1}}
         self.assertEqual(runner.select_targets(legacy, instant('2026-09-15T05:45'), 'US', True), [])
         malformed = {'US': {'slot': '0001-01-01T00:00:00+14:00',
                             'success': True, 'attempts': 1}}
         self.assertEqual(runner.select_targets(malformed, instant('2026-09-15T05:45'), 'US', True),
-                         [('US', instant('2026-09-14T20:20'))])
+                         [('US', instant('2026-09-14T20:10'))])
 
     def test_workflow_has_close_candidates_and_both_market_recovery_windows(self):
         import inspect
@@ -156,8 +172,8 @@ class RefreshTests(unittest.TestCase):
         # New York close arrives on the next Korean calendar day. Even a late
         # retry must select that actual session, not relabel an older close.
         for today, previous, retry in [
-            ('2026-10-15T20:20', '2026-10-14T20:20', '2026-10-16T02:41'),
-            ('2026-11-03T21:20', '2026-11-02T21:20', '2026-11-04T02:41'),
+            ('2026-10-15T20:10', '2026-10-14T20:10', '2026-10-16T02:41'),
+            ('2026-11-03T21:10', '2026-11-02T21:10', '2026-11-04T02:41'),
         ]:
             with self.subTest(today=today):
                 slot = instant(today)
@@ -167,7 +183,7 @@ class RefreshTests(unittest.TestCase):
                 self.assertEqual(runner.select_targets(state, instant(retry), 'US', recovery=True), [])
 
     def test_repeated_price_failures_never_defer_a_retry_beyond_thirty_minutes(self):
-        for market, timestamp in [('KR', '2026-10-16T07:00'), ('US', '2026-10-15T20:20')]:
+        for market, timestamp in [('KR', '2026-10-16T06:50'), ('US', '2026-10-15T20:10')]:
             slot = instant(timestamp)
             for attempts in (1, 2, 4, 8):
                 with self.subTest(market=market, attempts=attempts):
@@ -179,9 +195,9 @@ class RefreshTests(unittest.TestCase):
     def test_missed_october_16_close_is_recovered_by_later_radar_trigger_only_once(self):
         # On Oct 16 the 19:57 Radar Sync rebuilt Oct 15 prices without collecting.
         # Route that trigger through the real session selector, then deduplicate.
-        state = {'KR': {'slot': instant('2026-10-15T07:00').isoformat(), 'success': True},
-                 'US': {'slot': instant('2026-10-15T20:20').isoformat(), 'success': True}}
-        slot = instant('2026-10-16T07:00')
+        state = {'KR': {'slot': instant('2026-10-15T06:50').isoformat(), 'success': True},
+                 'US': {'slot': instant('2026-10-15T20:10').isoformat(), 'success': True}}
+        slot = instant('2026-10-16T06:50')
         self.assertEqual(runner.select_targets(state, instant('2026-10-16T10:57'), recovery=True), [('KR', slot)])
         state['KR'] = {'slot': slot.isoformat(), 'success': True}
         self.assertEqual(runner.select_targets(state, instant('2026-10-16T11:52'), recovery=True), [])
@@ -203,18 +219,19 @@ class RefreshTests(unittest.TestCase):
             with self.subTest(name=name):
                 for label in obsolete:
                     self.assertNotIn(label, content)
-                self.assertIn('한국 16:00', content)
-                self.assertIn('미국 뉴욕 16:20 이후', content)
+                self.assertIn('한국 15:50', content)
+                self.assertIn('미국 뉴욕 16:10 이후', content)
         status_script = (runner.ROOT / 'wamo_status.js').read_text(encoding='utf-8')
         self.assertIn("querySelectorAll('small, #wamo-update-schedule, .sub b')", status_script)
         for market, name in [('KR', 'index.html'), ('US', 'us.html')]:
             revised = rt.patch_status_ui((runner.ROOT / name).read_text(encoding='utf-8'), market)
             self.assertNotIn('시장별 거래일 8회', revised)
-            self.assertIn('한국 16:00', revised)
-            self.assertIn('미국 뉴욕 16:20 이후', revised)
+            self.assertIn('한국 15:50', revised)
+            self.assertIn('미국 뉴욕 16:10 이후', revised)
 
     def test_2026_cron_candidates_produce_one_update_per_market_session(self):
-        cases = {'KR': [(7, 0)], 'US': [(20, 20), (21, 20)]}
+        # KR includes the 16:54 KST backup, which collects the 16:30 수능-day close.
+        cases = {'KR': [(6, 50), (7, 54)], 'US': [(20, 10), (21, 10)]}
         for market, candidates in cases.items():
             state, sessions = {}, []
             day = date(2026, 1, 1)
@@ -242,7 +259,7 @@ class RefreshTests(unittest.TestCase):
 
     def test_no_weekend_holiday_or_stale_manual_publication(self):
         self.assertEqual(runner.select_targets({}, instant('2026-09-06T12:00')), [])
-        self.assertEqual(runner.select_targets({}, instant('2026-09-07T20:20'), 'US', True), [])
+        self.assertEqual(runner.select_targets({}, instant('2026-09-07T20:10'), 'US', True), [])
         self.assertEqual(runner.select_targets({}, instant('2026-09-07T03:00'), 'KR', True), [])
 
     def test_prices_do_not_become_fresh_by_advancing_update_timestamp(self):
@@ -257,7 +274,7 @@ class RefreshTests(unittest.TestCase):
     def test_intraday_date_cannot_pass_as_previous_us_close(self):
         payload = {'meta': {}, 'stocks': [{'date': '2026-11-03', 'dataStatus': 'LIVE'}]}
         with self.assertRaisesRegex(RuntimeError, '최신성 부족'):
-            rt.validate_freshness(payload, 'US', instant('2026-11-03T20:20'))
+            rt.validate_freshness(payload, 'US', instant('2026-11-03T20:10'))
 
     def test_future_price_rejected_and_optional_failure_visible(self):
         p = {'meta': {'marketEnergy': {'status': 'FAILED', 'fallbackReason': '201개'}},

@@ -43,7 +43,7 @@ jobs:
         timeout-minutes: 5
         run: >-
           python -m unittest -v
-          tests.test_refresh.RefreshTests.test_korean_close_runs_once_at_1600_kst
+          tests.test_refresh.RefreshTests.test_korean_close_runs_once_after_close
           tests.test_refresh.RefreshTests.test_us_dst_standard_time_and_early_close
           tests.test_refresh.RefreshTests.test_two_us_cron_candidates_publish_only_once_per_session
           tests.test_refresh.RefreshTests.test_prices_do_not_become_fresh_by_advancing_update_timestamp

@@ -9,7 +9,7 @@
   const meta = data?.meta || {};
   const isMovers = !data;
   const market = meta.market === 'US' || /\/us\.html$/.test(location.pathname) ? 'US' : 'KR';
-  const scheduleLabel = '갱신예약 · 한국 16:00 KST · 미국 뉴욕 16:20 이후 (한국 05:20/06:20) · 시장별 거래일 1회 · 실패·누락은 2시간 간격 복구 확인';
+  const scheduleLabel = '갱신예약 · 한국 15:50 KST · 미국 뉴욕 16:10 이후 (한국 05:10/06:10) · 시장별 거래일 1회 · 실패·누락은 2시간 간격 복구 확인';
   document.querySelectorAll('small, #wamo-update-schedule, .sub b').forEach(el => {
     if (/자동갱신/.test(el.textContent || '')) el.textContent = scheduleLabel;
   });

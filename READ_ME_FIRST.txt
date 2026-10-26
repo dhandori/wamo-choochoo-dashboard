@@ -3,4 +3,4 @@
 3. 별도 main.yml 파일은 GitHub의 .github/workflows 폴더에서 기존 main.yml과 교체.
 4. Commit 후 Actions > WAMO 자동갱신 > Run workflow 1회 실행.
 
-자동갱신: 한국 16:00 KST, 미국 뉴욕 16:20 이후(한국 05:20/06:20). 시장별 거래일 1회.
+자동갱신: 한국 15:50 KST, 미국 뉴욕 16:10 이후(한국 05:10/06:10). 시장별 거래일 1회.

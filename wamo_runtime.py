@@ -10,13 +10,21 @@ import re
 UTC = timezone.utc
 KST = timezone(timedelta(hours=9))
 NEW_YORK = ZoneInfo('America/New_York')
-# Logical market-local publication times. Two US UTC cron candidates preserve
-# 16:20 America/New_York across daylight-saving transitions.
-SLOTS = {'KR': ((16, 0),), 'US': ((16, 20),), 'JP': ((16, 40),), 'TW': ((15, 40),)}
+# Logical market-local publication times: close + the provider buffer below.
+# Workflows start early and wait for these (wamo_wait.py), so GitHub's late
+# schedule start no longer delays the update. US slots follow New York time
+# across daylight-saving transitions.
+SLOTS = {'KR': ((15, 50),), 'US': ((16, 10),), 'JP': ((16, 40),), 'TW': ((15, 40),)}
+# Minutes after the official close before a session's prices count as final.
+# Yahoo's Korean daily bar settles about 20 minutes after the close; US quotes are real time.
+CLOSE_BUFFER = {'US': 10}
+# Sessions whose close the calendar package does not know. KRX opens an hour late
+# and closes at 16:30 on the college entrance exam (수능) day.
+CLOSE_OVERRIDE = {'KR': {'2026-11-19': (16, 30)}}
 MARKET_TZ = {'KR': KST, 'US': NEW_YORK, 'JP': ZoneInfo('Asia/Tokyo'), 'TW': ZoneInfo('Asia/Taipei')}
 CALENDARS = {'KR': 'XKRX', 'US': 'XNYS', 'JP': 'XTKS', 'TW': 'XTAI'}
-SCHEDULE_LABEL = {'KR': '한국 16:00',
-                  'US': '미국 뉴욕 16:20 이후 (한국 05:20/06:20)'}
+SCHEDULE_LABEL = {'KR': '한국 15:50',
+                  'US': '미국 뉴욕 16:10 이후 (한국 05:10/06:10)'}
 # Japan/Taiwan run in their own job; the old Korea/US pages list only the two labels above.
 ASIA_SCHEDULE_LABEL = '일본·대만 한국시간 16:40'
 
@@ -32,7 +40,15 @@ def expected_session(market, now=None):
     now = now or datetime.now(UTC)
     # A session becomes publishable only after its official close plus buffer.
     schedule = calendar(market).schedule
-    eligible = schedule[schedule['close'] <= now - timedelta(minutes=20)]
+    closes = schedule['close']
+    overrides = CLOSE_OVERRIDE.get(market) or {}
+    if overrides:
+        closes = closes.copy()
+        for day, (hour, minute) in overrides.items():
+            if day in closes.index.strftime('%Y-%m-%d'):
+                local = datetime.fromisoformat(day).replace(hour=hour, minute=minute, tzinfo=MARKET_TZ[market])
+                closes.loc[day] = local.astimezone(UTC)
+    eligible = schedule[closes <= now - timedelta(minutes=CLOSE_BUFFER.get(market, 20))]
     if eligible.empty or now.date() > calendar(market).last_session.date():
         raise RuntimeError('거래일 달력 범위를 확인해야 합니다')
     return eligible.index[-1].date().isoformat()
@@ -124,12 +140,13 @@ def patch_status_ui(html, market):
         html = html.replace('function openDetail(x){',
             "window.WAMO_OPEN_DETAIL = ticker => { const stock = data.stocks.find(s => s.ticker === ticker); if (!stock) return false; openDetail(stock); return true; };\nfunction openDetail(x){", 1)
     html = re.sub(r'\s*<a\b[^>]*href=["\x27](?:\./)?kkangto\.html["\x27][^>]*>.*?</a>', '', html, flags=re.S)
-    for old in ('한국 12:00 / 16:00', '한국 09:30 / 12:00 / 16:00',
-                '한국 09:30 / 10:30 / 11:30 / 12:00 / 13:00 / 14:00 / 15:00 / 16:00'):
+    for old in ('한국 09:30 / 10:30 / 11:30 / 12:00 / 13:00 / 14:00 / 15:00 / 16:00',
+                '한국 09:30 / 12:00 / 16:00', '한국 12:00 / 16:00', '한국 16:00'):
         html = html.replace(old, SCHEDULE_LABEL['KR'])
     for old in ('미국 00:00 / 05:00', '미국 00:00 / 06:20',
                 '미국 22:40 / 01:00 / 06:20',
-                '미국 22:40 / 23:40 / 01:00 / 02:00 / 03:00 / 04:00 / 05:00 / 06:20'):
+                '미국 22:40 / 23:40 / 01:00 / 02:00 / 03:00 / 04:00 / 05:00 / 06:20',
+                '미국 뉴욕 16:20 이후 (한국 05:20/06:20)'):
         html = html.replace(old, SCHEDULE_LABEL['US'])
     html = re.sub(r'시장별 (?:하루|거래일) \d+회', '시장별 거래일 1회', html)
     html = html.replace('미국 현지 장 마감 기준일', '미국 현지 가격 기준일')

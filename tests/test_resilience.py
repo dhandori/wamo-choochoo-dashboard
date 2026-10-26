@@ -18,7 +18,7 @@ class RecoveryTests(unittest.TestCase):
         import io
         import sys
         now = at('2026-10-08T01:56')
-        slot = at('2026-10-07T20:20')
+        slot = at('2026-10-07T20:10')
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
             (root/'state.json').write_text(json.dumps({'US':{'slot':slot.isoformat(), 'success':False,
@@ -30,14 +30,14 @@ class RecoveryTests(unittest.TestCase):
             self.assertIn("('US',",output.getvalue())
 
     def test_failed_close_retries_after_cooldown(self):
-        slot = at('2026-10-06T20:20')
+        slot = at('2026-10-06T20:10')
         state = {'US': {'slot': slot.isoformat(), 'attempts': 1, 'success': False,
                         'lastAttemptAt': slot.isoformat()}}
         self.assertEqual(runner.select_targets(state, slot + timedelta(minutes=29), 'US'), [])
         self.assertEqual(runner.select_targets(state, slot + timedelta(minutes=30), 'US'), [('US', slot)])
 
     def test_watchdog_recovers_missed_and_repeatedly_failed_session(self):
-        slot = at('2026-10-06T20:20')
+        slot = at('2026-10-06T20:10')
         now = at('2026-10-07T10:00')
         self.assertEqual(runner.select_targets({}, now, 'US', recovery=True), [('US', slot)])
         state = {'US': {'slot': slot.isoformat(), 'attempts': 8, 'success': False,
@@ -112,7 +112,7 @@ class AuxiliaryRecoveryTests(unittest.TestCase):
     def test_interrupted_radar_recovers_without_collecting_prices(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
-            slot=at('2026-10-08T07:00')
+            slot=at('2026-10-08T06:50')
             state={'KR':{'success':True,'slot':slot.isoformat()}}
             status={'KR':{'status':'PASS','asOf':'2026-10-08','radarStatus':'RUNNING','warnings':[]}}
             def run(script,**kwargs):
@@ -165,7 +165,7 @@ class AuxiliaryRecoveryTests(unittest.TestCase):
         import sys
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            slot = at('2026-10-06T20:20')
+            slot = at('2026-10-06T20:10')
             (root/'state.json').write_text(json.dumps({'US': {'success': True, 'slot': slot.isoformat()}}))
             (root/'status.json').write_text(json.dumps({'US': {'status': 'WARNING', 'moversStatus': 'FAILED', 'warnings': ['SEC 확인 필요', '상승률 TOP 30 갱신 실패 · 이전 결과 유지']}}))
             (root/'movers.html').write_text('old')
@@ -183,6 +183,6 @@ class AuxiliaryRecoveryTests(unittest.TestCase):
 class HolidayRecoveryTests(unittest.TestCase):
     def test_long_korean_holiday_does_not_block_us_recovery(self):
         now = at('2025-10-10T01:00')
-        expected_us = at('2025-10-09T20:20')
+        expected_us = at('2025-10-09T20:10')
         targets = runner.select_targets({}, now, recovery=True)
         self.assertIn(('US', expected_us), targets)
