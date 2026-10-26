@@ -6,7 +6,7 @@
   <title>WAMO | 데일리 마켓 레이더</title>
   <meta name="description" content="한국과 미국 시장의 52주 신고가권, 당일 신고가, 산업 동반 강세와 특징주">
   <link rel="stylesheet" href="./radar/style.css?v=20261024-dd3">
-  <link rel="stylesheet" href="./radar/trend.css?v=20261026-dc1">
+  <link rel="stylesheet" href="./radar/trend.css?v=20261026-sp1">
   <link rel="stylesheet" href="./radar/ftd.css?v=20261024-dd3">
   <link rel="stylesheet" href="./radar/leaders.css?v=20261024-dd3">
   <link rel="stylesheet" href="./radar/schedule.css?v=20261024-dd3">
@@ -35,6 +35,7 @@
       <div><div class="eyebrow">DAILY SCANNER</div><h1>데일리 마켓 레이더</h1></div>
       <div id="date-info" class="date-info"></div>
     </section>
+    <section id="index-strip" class="ix-strip" aria-label="주요 지수" hidden></section>
     <section id="weather" class="tr-weather" aria-label="시장 날씨" hidden></section>
     <div id="notice" class="notice" hidden></div>
     <div id="metrics" class="metrics" aria-label="전체 스크리닝 대상 집계"></div>
@@ -53,6 +54,7 @@
         <div><h2 id="section-title"></h2><p id="section-description"></p></div>
         <label class="search"><span class="sr-only">종목 검색</span><input id="search" placeholder="종목명 · 티커 · 산업 검색" type="search"></label>
       </div>
+      <section id="sp-movers" class="sp-movers" aria-label="S&amp;P 500 상승·하락 상위" hidden></section>
       <section id="ai-overview" class="ai-overview" aria-label="AI 분야별 흐름" hidden></section>
       <div id="controls" class="controls"></div>
       <div class="scanner-layout">
@@ -64,6 +66,6 @@
   </div>
   <dialog id="drawer" aria-labelledby="stock-detail-title"><button id="close-drawer" class="close" aria-label="상세 닫기">×</button><div id="detail"></div></dialog>
   <!--WAMO_INSIGHTS-->
-  <script type="module" src="./radar/view.js?v=20261026-dc1"></script>
+  <script type="module" src="./radar/view.js?v=20261026-sp1"></script>
 </body>
 </html>

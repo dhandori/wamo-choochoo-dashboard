@@ -79,6 +79,19 @@ def build_trend(markets):
         return []
 
 
+def build_sp500(market):
+    """S&P 500 상승·하락 상위(특징주 탭 카드). 실패해도 가격 갱신은 그대로 둔다."""
+    if market != 'US':
+        return []
+    try:
+        from wamo_sp500_movers import build, OUTPUT, MEMBERS
+        build(ROOT)
+        return [n for n in (OUTPUT, MEMBERS) if (ROOT / n).exists()]
+    except Exception as exc:  # noqa: BLE001
+        print(f'S&P 500 상승·하락 상위 미완료 · 이전 결과 유지: {type(exc).__name__}: {exc}', flush=True)
+        return []
+
+
 def send_alerts(markets):
     try:
         from wamo_alerts import send_for_markets
@@ -484,6 +497,7 @@ def main():
         insight_files = refresh_insights()
         changed.extend(insight_files)
         trend_files = build_trend([market]) if market in refreshed else []
+        trend_files += build_sp500(market) if market in refreshed else []
         changed.extend(trend_files)
         if args.publish:
             publish([page, *caches, STATE.name, STATUS.name, *insight_files, *trend_files])

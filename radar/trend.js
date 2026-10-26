@@ -170,6 +170,39 @@ export function renderWeather(container, market, onOpen) {
   container.append(head, text, chips);
 }
 
+// --------------------------------------------------------------- index strip
+// 화면 맨 위 지수 띠: 지수마다 종가, 전일 대비, 최근 20거래일 작은 선. 띠 자료가 없으면 주지수·보조지수로 대신 채운다.
+function spark(values) {
+  const NS = 'http://www.w3.org/2000/svg', W = 64, H = 22;
+  const v = (values || []).filter(isNum);
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('class', 'ix-spark'); svg.setAttribute('aria-hidden', 'true');
+  if (v.length < 2) return svg;
+  const lo = Math.min(...v), hi = Math.max(...v), span = hi - lo || 1;
+  const pts = v.map((x, i) => `${(i / (v.length - 1) * (W - 2) + 1).toFixed(1)},${(H - 2 - (x - lo) / span * (H - 4)).toFixed(1)}`).join(' ');
+  const line = document.createElementNS(NS, 'polyline'); line.setAttribute('points', pts); line.setAttribute('class', 'ix-line');
+  svg.append(line); return svg;
+}
+export function renderStrip(container, market) {
+  if (!container) return;
+  container.replaceChildren();
+  const b = block(market);
+  let items = b?.strip || [];
+  if (!items.length && b) items = [b.index, b.index2].filter(i => i && isNum(i.close)).map(i => ({ label: i.label, close: i.close, changePct: i.changePct, change: isNum(i.changePct) ? i.close - i.close / (1 + i.changePct / 100) : null, date: i.date }));
+  container.hidden = !items.length;
+  if (!items.length) return;
+  items.forEach(i => {
+    const t = tone(isNum(i.change) ? i.change : i.changePct), cell = el('div', null, `ix-cell ix-${t}`);
+    const top = el('div', null, 'ix-top'); top.append(el('b', i.label, 'ix-name'), el('strong', fmt(i.close, 2), 'ix-close'));
+    const bottom = el('div', null, 'ix-bottom');
+    const mv = el('span', null, `ix-move ${t}`);
+    mv.append(el('i', t === 'up' ? '▲' : t === 'down' ? '▼' : '–'), el('span', isNum(i.change) ? `${i.change > 0 ? '+' : ''}${fmt(i.change, 2)}` : ''), el('span', pct(i.changePct)));
+    bottom.append(mv, spark(i.spark));
+    cell.append(top, bottom, el('small', `${i.date ? md(i.date) : ''} 종가${i.stale ? ' · 최신 아님' : ''}${i.spark ? ' · 선 = 20일' : ''}`, `ix-date${i.stale ? ' stale' : ''}`));
+    cell.title = `${i.label} ${fmt(i.close, 2)} (${pct(i.changePct)})${i.spark ? ' · 작은 선 = 최근 20거래일' : ''}`;
+    container.append(cell);
+  });
+}
+
 // --------------------------------------------------------------- metrics
 export function renderTrendMetrics(container, market) {
   const b = block(market);

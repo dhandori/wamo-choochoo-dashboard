@@ -2,9 +2,10 @@ import { renderFTD, ftdSummary } from './ftd.js?v=20261024-dd3';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261024-dd3';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261024-dd3';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261024-dd3';
-import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261026-dc1';
+import { loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261026-sp1';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261024-dd3';
 import { renderSchedule } from './schedule.js?v=20261024-dd3';
+import { renderSpMovers } from './spmovers.js?v=20261026-sp1';
 import { loadChartData, stockSeries, priceChart, benchChart, rsChart, MA } from './chart.js?v=20261026-ix1';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
@@ -671,7 +672,7 @@ function render() {
   document.querySelectorAll('[data-tab]').forEach(b => { const off = LITE.has(state.market) && LITE_OFF.has(b.dataset.tab); b.disabled = off; b.classList.toggle('tab-off', off); b.title = off ? `${MARKET_NAMES[state.market]} 시장은 아직 이 탭이 없어요 (신고가권·당일 신고가·인더스트리 액션·특징주만 제공)` : b.title; });
   if (!m) {
     document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
-    $('weather').hidden = true; $('metrics').replaceChildren(); $('controls').replaceChildren(); $('industry-rail').hidden = true; $('pagination').replaceChildren(); $('result-summary').textContent = '';
+    $('weather').hidden = true; if ($('index-strip')) $('index-strip').hidden = true; $('metrics').replaceChildren(); $('controls').replaceChildren(); $('industry-rail').hidden = true; $('pagination').replaceChildren(); $('result-summary').textContent = '';
     $('date-info').replaceChildren(el('span', '자료 준비 중', 'badge status-unavailable'));
     $('section-title').textContent = `${MARKET_NAMES[state.market]} 시장`; $('section-description').textContent = '';
     $('content').replaceChildren(el('div', `${MARKET_NAMES[state.market]} 자료는 평일 오후 4시 40분 첫 자동 갱신 뒤부터 보여요. 그 전에는 다른 시장을 확인해 주세요.`, 'empty'));
@@ -681,10 +682,11 @@ function render() {
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
   revealActiveTab();
   document.body.dataset.view = state.tab;
-  renderMeta(m); renderWeather($('weather'), state.market, openTrend); paintSchedule();
+  renderMeta(m); renderStrip($('index-strip'), state.market); renderWeather($('weather'), state.market, openTrend); paintSchedule();
   const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd','leaders'].includes(state.tab);
-  if (['trend','ftd','leaders'].includes(state.tab)) { renderTrendTab(); return; }
+  if (['trend','ftd','leaders'].includes(state.tab)) { if ($('sp-movers')) $('sp-movers').hidden = true; renderTrendTab(); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
+  renderSpMovers($('sp-movers'), { market: state.market, tab: state.tab, onPick: t => { const s = (m.stocks || []).find(x => x.ticker === t); if (s) detail(s); else window.open(`https://finance.yahoo.com/quote/${encodeURIComponent(t.replace('.', '-'))}`, '_blank', 'noopener'); } });
   const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에서 봐요'], high: ['당일 신고가', '이 거래일에 52주 고점을 실제로 넘긴 종목'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 보여요'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿔요'] };
   $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();

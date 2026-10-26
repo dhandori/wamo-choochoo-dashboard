@@ -31,6 +31,9 @@ INDEX = {'KR': ('^KS11', 'KOSPI'), 'US': ('^GSPC', 'S&P 500'), 'JP': ('^N225', '
 # Growth-heavy second index: market weather needs both (O'Neil watches both).
 # Japan/Taiwan: Yahoo has no free second index with volume (TOPIX, TPEx), so they run on one index.
 SECONDARY = {'KR': ('^KQ11', 'KOSDAQ'), 'US': ('^IXIC', '나스닥')}
+# 화면 맨 위 지수 띠: 주지수·보조지수는 이미 받은 자료를 쓰고, 나머지만 따로 받는다.
+STRIP = {'US': [('^DJI', '다우'), ('^GSPC', None), ('^IXIC', None), ('^NDX', '나스닥100'), ('^RUT', '러셀2000')],
+         'KR': [('^KS11', None), ('^KQ11', None), ('^KS200', '코스피200')]}
 EARNINGS_NOTE = {
     'KR': '한국은 실적발표 예정일을 한곳에서 공식으로 모아 주는 자료가 없어 아직 표시하지 않아요. 공시(DART) 탭에서 확인하세요.',
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
@@ -504,6 +507,54 @@ def ma_slope(closes, n):
         return None, None
     change = (now / before - 1) * 100
     return round(change, 2), 'up' if change > band else 'down' if change < -band else 'flat'
+
+
+def strip_item(rows, symbol, label, asof):
+    """지수 띠 한 칸: 기준일까지의 마지막 두 종가로 등락을 계산한다."""
+    rows = [r for r in (rows or []) if r.get('date') and r['date'] <= asof and num(r.get('close'))]
+    if len(rows) < 2:
+        return None
+    last, prev = rows[-1], rows[-2]
+    return {'symbol': symbol, 'label': label, 'close': rnd(last['close']),
+            'change': rnd(last['close'] - prev['close']) + 0.0, 'changePct': rnd((last['close'] / prev['close'] - 1) * 100) + 0.0,
+            'date': last['date'], 'stale': last['date'] != asof,
+            'spark': [rnd(r['close']) for r in rows[-20:]]}
+
+
+STRIP_NAMES = {'^GSPC': 'S&P 500', '^IXIC': '나스닥', '^KS11': 'KOSPI', '^KQ11': 'KOSDAQ'}
+
+
+def fetch_naver_kospi200():
+    """야후에는 코스피200 일봉 이력이 없어 네이버 KRX 지수 일봉을 쓴다(하루 한 번 호출)."""
+    req = urllib.request.Request('https://api.stock.naver.com/chart/domestic/index/KPI200?periodType=dayCandle',
+                                 headers={'User-Agent': UA, 'Accept': 'application/json'})
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read().decode('utf-8'))
+    if data.get('code') != 'KPI200' or data.get('infoType') != 'index':
+        raise ValueError('코스피200 식별자 불일치')
+    rows = []
+    for r in data.get('priceInfos') or []:
+        d = str(r.get('localDate') or '')
+        c = num(r.get('closePrice'))
+        if len(d) == 8 and c:
+            rows.append({'date': f'{d[:4]}-{d[4:6]}-{d[6:]}', 'close': c})
+    return rows
+
+
+def index_strip(market, asof, known, fetch_network, index_fetcher):
+    """known: {symbol: (label, rows)} — 이미 받은 지수. 띠에 필요한 나머지 지수는 실패해도 그냥 빠진다."""
+    out = []
+    for sym, label in STRIP.get(market, [(INDEX[market][0], None)]):
+        name, rows = known.get(sym, (label, None))
+        if rows is None and fetch_network and not os.getenv('WAMO_INDEX_FIXTURE'):
+            try:
+                rows = fetch_naver_kospi200() if sym == '^KS200' else index_fetcher(sym)
+            except Exception as exc:  # noqa: BLE001 - 띠 한 칸이 빠질 뿐 나머지는 계속
+                print(f'{market} 지수 띠 {label or sym} 실패: {exc}', flush=True)
+        item = strip_item(rows, sym, label or name or STRIP_NAMES.get(sym, sym), asof)
+        if item:
+            out.append(item)
+    return out
 
 
 def index_trend(bench):
@@ -1227,8 +1278,13 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         climax = {'status': 'UNAVAILABLE', 'note': '천장 신호 계산에 실패했습니다. 다음 갱신 때 다시 계산합니다.'}
     charts = chart_payload(universe, bench, asof, market)
     charts['benchLabel'] = idx['label']
+    known = {} if synthetic else {symbol: (label, bench)}
+    if secondary and bench2:
+        known[sym2] = (label2, bench2)
+    strip = index_strip(market, asof, known, fetch_network, index_fetcher)
     return {
         'asOf': asof, 'universe': len(universe), 'version': TREND_VERSION,
+        'strip': strip,
         'ftd': {'indexes': ftd_indexes},
         'leadership': leadership,
         'index2': secondary,
