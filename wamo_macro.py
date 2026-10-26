@@ -419,24 +419,65 @@ def build():
     return data, history
 
 
+def _market_of(r):
+    return 'KR' if r['key'] == 'vkospi' or r['key'].startswith('kr_') else 'US'
+
+
+def _vix_temp(v):
+    return 0 if v < 15 else 1 if v < 20 else 2 if v < 25 else 3 if v < 30 else 4
+
+
+def _fng_temp(v):
+    return 0 if v >= 55 else 1 if v >= 45 else 2 if v >= 35 else 3 if v >= 25 else 4
+
+
+def market_summary(rows, mk):
+    """시장 하나의 종합 단계와 한두 줄 결론(화면의 문장과 같은 기준)."""
+    ok = [r for r in rows if r.get('level')]
+    if not ok:
+        return ['종합 확인 불가']
+    lv = composite([r['level'] for r in ok])
+    cnt = {k: sum(1 for r in ok if r['level'] == k) for k in range(1, 6)}
+    out = [f'종합 {lv}단계({LEVELS[lv][1]}) {LEVELS[lv][0]}, 🔴{cnt[1]} 🟠{cnt[2]} 🟡{cnt[3]} 🔵{cnt[4]} 🟢{cnt[5]}']
+    bad = [r for r in ok if r['level'] <= 2]
+    fast = [r for r in ok if (r.get('speedBump') or 0) > 0]
+    words = [f'{len(ok)}개 지표 중 {len(bad)}개가 경계 이상' if bad else f'{len(ok)}개 지표 모두 경계보다 아래']
+    if bad:
+        words.append('경보: ' + ', '.join(r['name'].split(' (')[0] for r in bad))
+    if fast:
+        words.append('한 달 사이 빠르게 나빠짐: ' + ', '.join(r['name'].split(' (')[0] for r in fast))
+    if mk == 'US':
+        vx = next((r for r in ok if r['key'] == 'vix'), None)
+        fg = next((r for r in ok if r['key'] == 'fng'), None)
+        if vx and fg and abs(_fng_temp(fg['value']) - _vix_temp(vx['value'])) >= 2:
+            words.append('VIX와 공포탐욕지수가 엇갈림')
+    out.append('결론: ' + '. '.join(words) + '.')
+    return out
+
+
 def telegram_text(data):
     c = data['composite']
     cnt = c['counts']
     d = datetime.fromisoformat(data['asOf'])
     lines = [f'📊 매크로 지수 {d.month}/{d.day}',
-             f'종합 {c["level"]}단계({c["label"]}) {c["emoji"]} · 🔴{cnt["1"]} 🟠{cnt["2"]} 🟡{cnt["3"]} 🔵{cnt["4"]} 🟢{cnt["5"]}']
-    alarms = [r['name'] for r in data['indicators'] if r['level'] in (1, 2)]
-    if alarms:
-        lines.append('경보 · ' + ', '.join(alarms))
-    lines.append('')
-    for r in data['indicators']:
-        extra = f' ({r["zone"]})' if r.get('zone') else ''
-        warn = ' ⚠️과열' if r.get('overheat') else ''
-        ch = f' (1M {r["changeText"]})' if r.get('changeText') else ''
-        stale = ' (이전 자료)' if r.get('stale') else ''
-        lines.append(f'{r["emoji"]} {r["name"]}: {r["valueText"]}{extra}{ch}{warn}{stale}')
+             f'전체 종합 {c["level"]}단계({c["label"]}) {c["emoji"]}, 🔴{cnt["1"]} 🟠{cnt["2"]} 🟡{cnt["3"]} 🔵{cnt["4"]} 🟢{cnt["5"]}']
+    # 미국 먼저, 굵은 구분선 뒤에 한국 (화면과 같은 순서)
+    bar = '━━━━━━━━━━━━━━'
+    for mk, title in (('US', '🇺🇸 미국'), ('KR', '🇰🇷 한국')):
+        rows = [r for r in data['indicators'] if _market_of(r) == mk]
+        if not rows:
+            continue
+        lines += ['', bar, f'{title} 지표 {len(rows)}개', bar]
+        lines += market_summary(rows, mk)
+        lines.append('')
+        for r in rows:
+            extra = f' ({r["zone"]})' if r.get('zone') else ''
+            warn = ' ⚠️과열' if r.get('overheat') else ''
+            ch = f' (1M {r["changeText"]})' if r.get('changeText') else ''
+            stale = ' (이전 자료)' if r.get('stale') else ''
+            lines.append(f'{r["emoji"]} {r["name"]}: {r["valueText"]}{extra}{ch}{warn}{stale}')
     # 화면은 산업강도판의 세 번째 탭(🌐 매크로 지수)에 있다
-    lines += ['', '👉 https://dhandori.github.io/industry-strength/#KR-macro']
+    lines += ['', '👉 https://dhandori.github.io/industry-strength/#US-macro (한국은 #KR-macro)']
     return '\n'.join(lines)
 
 
