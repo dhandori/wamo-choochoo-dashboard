@@ -212,14 +212,20 @@ function weatherDetail(b, market) {
   const dist = w.distribution || {}, c2 = el('article', null, 'tr-card');
   c2.append(el('h3', '분산일 (기관이 판 흔적)'));
   const distRows = [[idx.label, dist], [idx2?.label, idx2?.distribution]].filter(([, d]) => d?.status === 'OK');
+  // 접힌 상태에서는 지수별 횟수와 지금 단계만 보여 주고, 나머지(단계표·점·목록·설명)는 '자세히'를 누르면 아래로 펼쳐진다.
+  const summary = el('div', null, 'tr-dist-summary');
+  const more = el('div', null, 'tr-dist-more');
   if (distRows.length) {
     distRows.forEach(([label, d]) => {
       const big = el('div', null, 'tr-big'); big.append(el('b', `${d.count}`), el('span', `${distRows.length > 1 ? label + ' · ' : ''}최근 25거래일`));
       const st = d.stage;
       const corrHealthy = st && d.inCorrection && st.key === 'HEALTHY';
       if (st) big.append(el('span', corrHealthy ? '조정 중' : st.label, `tr-dist-score ${corrHealthy ? 'mid' : STAGE_TONE[st.key]}`));
-      c2.append(big);
-      if (st) c2.append(stageLadder(st, d.count, corrHealthy));
+      summary.append(big);
+      if (st) summary.append(stageHead(st, d.count, corrHealthy));
+      const c2 = more;
+      if (distRows.length > 1) c2.append(el('h4', label, 'tr-dist-sub'));
+      if (st) c2.append(stageLadder(st, d.count, corrHealthy, false));
       if (d.inCorrection) c2.append(el('p', `ⓘ ${distRows.length > 1 ? label + '는 ' : ''}지금 상승 추세가 아니라 조정 중이에요. 분산일은 오르는 시장의 꼭대기를 잡는 신호라, 이미 내린 조정장에서는 숫자가 적어도 '건강함'이 아니에요. 새 매수는 FTD(상승 전환 신호)를 기다리세요.`, 'tr-prelim'));
       if (d.resetOn) c2.append(el('p', `ⓘ ${md(d.resetOn)} FTD로 새 상승 추세가 시작돼, 그 전 분산일은 지우고 새로 셌어요.`, 'tr-prelim'));
       if (d.prelim) c2.append(prelimNote(d.prelim, b.volumeSchedule));
@@ -279,8 +285,21 @@ function weatherDetail(b, market) {
         c2.append(box);
       }
     });
-  } else c2.append(el('p', '자료 없음'));
-  c2.append(help(dist.note || ''));
+    more.append(help(dist.note || ''));
+    more.hidden = true;
+    const toggle = btn('자세히 보기 ▾', false, null, 'tr-dist-toggle');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.onclick = () => {
+      const open = more.hidden;
+      more.hidden = !open;
+      c2.classList.toggle('open', open);
+      toggle.textContent = open ? '간단히 보기 ▴' : '자세히 보기 ▾';
+      toggle.setAttribute('aria-expanded', String(open));
+      if (!open) c2.scrollIntoView({ block: 'nearest' });
+    };
+    c2.classList.add('tr-dist-card');
+    c2.append(summary, toggle, more);
+  } else { c2.append(el('p', '자료 없음')); c2.append(help(dist.note || '')); }
   // Breadth
   const br = w.breadth || {}, c3 = el('article', null, 'tr-card');
   c3.append(el('h3', '시장 체력 (50일선 위 종목 비율)'));
@@ -342,11 +361,14 @@ function volumeChart(series) {
 // 전날도 확정 전 값 기준으로 맞춰 비교했다는 걸 알려 줌.
 // 책의 표: 25거래일 안 분산일 누적 횟수에 따른 시장 상태와 대응
 const STAGE_TONE = { HEALTHY: 'good', CAUTION: 'mid', WARNING: 'warn', DANGER: 'bad' };
-function stageLadder(st, count, corrHealthy = false) {
-  const box = el('div', null, 'tr-stage');
+function stageHead(st, count, corrHealthy = false) {
   const head = el('p', null, `tr-stage-now ${corrHealthy ? 'mid' : STAGE_TONE[st.key]}`);
   head.append(el('b', `지금 ${count}번 · ${corrHealthy ? '조정 중' : st.label}`), el('span', corrHealthy ? '대응: 분산일은 적지만 조정 중이라 새 매수는 FTD를 기다려요' : `대응: ${st.action}`));
-  box.append(head);
+  return head;
+}
+function stageLadder(st, count, corrHealthy = false, withHead = true) {
+  const box = el('div', null, 'tr-stage');
+  if (withHead) box.append(stageHead(st, count, corrHealthy));
   if (st.bumped) box.append(el('p', `⚠ ${st.reason}`, 'tr-stage-bump'));
   const ladder = el('div', null, 'tr-stage-ladder');
   (st.ladder || []).forEach(x => {

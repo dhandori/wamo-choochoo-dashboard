@@ -546,3 +546,16 @@ dialog[open] ~ .to-top { display: none; }
 /* 종목 상세: 소속 시장 지수 차트 (같은 기간, RS 눈 비교용) */
 .pc-bench { margin-top: 6px; }
 .pc-benchline { fill: none; stroke: #7b9fc6; stroke-width: 1.8; stroke-linejoin: round; }
+
+/* 분산일 카드: 접힌 상태에서는 옆 카드들과 아래 끝을 맞추고, '자세히 보기'를 누르면 그 카드만 아래로 펼쳐진다 */
+.tr-dist-card { align-self: stretch; }
+.tr-dist-card.open { align-self: start; }
+.tr-dist-summary { display: flex; flex-direction: column; gap: 6px; }
+.tr-dist-summary .tr-stage-now { margin: 0; }
+.tr-dist-toggle { margin-top: auto; align-self: stretch; min-height: 32px; padding: 5px 10px; font-size: 11.5px; background: transparent; border: 1px solid var(--line); border-radius: 8px; color: inherit; cursor: pointer; }
+.tr-dist-toggle:hover { border-color: #5b6f88; }
+.tr-dist-card.open .tr-dist-toggle { margin-top: 4px; }
+.tr-dist-more { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.tr-dist-more[hidden] { display: none; }
+.tr-dist-sub { margin: 6px 0 0; font-size: 12px; font-weight: 600; color: #bccbdd; }
+:root[data-theme="light"] .tr-dist-sub { color: #243141; }
