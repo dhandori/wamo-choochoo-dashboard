@@ -3,8 +3,11 @@ on:
   schedule:
     # 16:40 KST: Taiwan (13:30 local) and Japan (15:30 JST) have both closed.
     - cron: '40 7 * * 1-5'
-    # Retries until 21:40 KST. A run exits in seconds once the session is already in.
-    - cron: '10,40 8-12 * * 1-5'
+    # Retries until 08:40 KST next morning. GitHub often fires scheduled runs
+    # 5+ hours late (10/22 first run 22:11 KST, 10/26 none by 18:40 KST), so the
+    # old 21:40 KST cutoff left Taiwan/Japan stale. A run exits in seconds once
+    # the session is already in.
+    - cron: '10,40 8-23 * * 1-5'
   workflow_dispatch:
     inputs:
       force:
