@@ -130,8 +130,14 @@ def validate_freshness(payload, market, now=None):
     return result
 
 
+GOATCOUNTER_TAG = '<script data-goatcounter="https://wamo-dhandori.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>'
+
+
 def patch_status_ui(html, market):
     html = patch_52week_ui(html)
+    # 방문자 집계(GoatCounter) 코드가 빠지지 않게 매번 확인
+    if 'gc.zgo.at/count.js' not in html:
+        html = html.replace('</head>', GOATCOUNTER_TAG + '\n</head>', 1)
     # The compact radar is the default; retain all bookmarked stock details.
     if 'id="wamo-radar-entry"' not in html:
         redirect = '<script id="wamo-radar-entry">(()=>{const q=new URLSearchParams(location.search);if(!q.has("stock")&&q.get("legacy")!=="1"&&/(?:\\/|\\/index\\.html|\\/us\\.html)$/.test(location.pathname)){location.replace("radar.html?market=' + market + '");}})();</script>'
