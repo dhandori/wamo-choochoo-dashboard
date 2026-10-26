@@ -188,6 +188,41 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
   return wrap;
 }
 
+/** Benchmark index line for the same window as the price chart above it.
+ *  종목 차트와 같은 기간의 지수 흐름을 나란히 보여 줘서 상대강도를 눈으로 확인한다.
+ *  기간 수익률(종목 vs 지수)을 캡션에 함께 적는다. */
+export function benchChart(series, { days = 60 } = {}) {
+  const n = series.closes.length, start = Math.max(0, n - days), idx = [];
+  for (let i = start; i < n; i++) if (series.bench[i] != null) idx.push(i);
+  if (idx.length < 10) return null;
+  const vals = idx.map(i => series.bench[i]);
+  const narrow = typeof window !== 'undefined' && window.innerWidth < 700;
+  const W = narrow ? 360 : 680, H = narrow ? 120 : 130, pad = { l: 8, r: narrow ? 44 : 60, t: 10, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  let lo = Math.min(...vals), hi = Math.max(...vals); const m = (hi - lo) * 0.08 || Math.abs(hi) * 0.01 || 1; lo -= m; hi += m;
+  const x = k => pad.l + k / (idx.length - 1) * plotW, y = v => pad.t + (1 - (v - lo) / (hi - lo)) * plotH;
+  const wrap = el('div', null, 'pc pc-bench');
+  const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg', role: 'img', 'aria-label': `${series.benchLabel} 지수 · 종목 차트와 같은 기간` });
+  niceTicks(lo, hi, 3).forEach(t => { node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(t), y2: y(t), class: 'pc-grid' }, svg); text(svg, W - pad.r + 6, y(t) + 4, t.toLocaleString('ko-KR', { maximumFractionDigits: 0 }), { class: 'pc-axis' }); });
+  const axisY = H - pad.b; node('line', { x1: pad.l, x2: pad.l + plotW, y1: axisY, y2: axisY, class: 'pc-baseline' }, svg);
+  [0, Math.floor((idx.length - 1) / 2), idx.length - 1].forEach((k, j) => text(svg, x(k), axisY + 15, md(series.dates[idx[k]]), { class: 'pc-axis', 'text-anchor': ['start', 'middle', 'end'][j] }));
+  node('polyline', { points: vals.map((v, k) => `${x(k)},${y(v)}`).join(' '), class: 'pc-benchline' }, svg);
+  node('circle', { cx: x(idx.length - 1), cy: y(vals.at(-1)), r: 3.5, class: 'pc-last' }, svg);
+  wrap.append(svg);
+  const first = series.closes[idx[0]], last = series.closes[idx.at(-1)];
+  const stockRet = first && last != null ? (last / first - 1) * 100 : null;
+  const benchRet = (vals.at(-1) / vals[0] - 1) * 100;
+  const sgn = v => `${v > 0 ? '+' : ''}${v.toFixed(1)}%`;
+  const cap = el('div', null, 'pc-caption');
+  cap.append(el('b', `${series.benchLabel} · 같은 기간`));
+  if (stockRet != null) {
+    const diff = stockRet - benchRet;
+    cap.append(el('span', ` 기간 수익률: 종목 ${sgn(stockRet)} · ${series.benchLabel} ${sgn(benchRet)} → `));
+    cap.append(el('strong', `지수 대비 ${diff > 0 ? '+' : ''}${diff.toFixed(1)}%p`, diff > 0 ? 'up' : diff < 0 ? 'down' : 'neutral'));
+  } else cap.append(el('span', ` 기간 수익률 ${sgn(benchRet)}`));
+  wrap.prepend(cap);
+  return wrap;
+}
+
 /** RS line (close ÷ benchmark) with its own axis and the 52-week high marked. */
 export function rsChart(series, { days = 60 } = {}) {
   const n = series.closes.length;

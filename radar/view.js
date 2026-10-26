@@ -5,7 +5,7 @@ import { helpLabel, helpButton, closeHelp } from './help.js?v=20261024-dd3';
 import { loadTrend, trendTabLabel, renderWeather, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261024-dd3';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261024-dd3';
 import { renderSchedule } from './schedule.js?v=20261024-dd3';
-import { loadChartData, stockSeries, priceChart, rsChart, MA } from './chart.js?v=20261024-dd3';
+import { loadChartData, stockSeries, priceChart, benchChart, rsChart, MA } from './chart.js?v=20261026-ix1';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
 let cardObserver = null;
@@ -300,6 +300,9 @@ function fillDetailChart(panel, s, ready) {
       head.append(toggle);
       const body = [head, priceChart(series, { market, days: chartDays })];
       if (chartDays > series.closes.length - 199) body.push(el('p', `저장된 가격 기록이 ${series.closes.length}거래일뿐이라 200일선은 최근 ${series.closes.length - 199}거래일만 그려져요.`, 'chart-note'));
+      // 같은 기간의 소속 시장 지수: 종목 차트와 위아래로 비교해 RS를 눈으로 확인한다.
+      const bench = benchChart(series, { days: chartDays });
+      if (bench) body.push(bench);
       const rs = rsChart(series, { days: chartDays });
       if (rs) body.push(rs);
       panel.replaceChildren(...body);

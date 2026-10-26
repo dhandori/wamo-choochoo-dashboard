@@ -542,3 +542,7 @@ dialog[open] ~ .to-top { display: none; }
 .tr-watch b { color: #9cc6ee; }
 .tr-watch { flex-direction: column; align-items: flex-start; }
 .tr-watch-row { margin: 0; color: var(--ink-3, #8aa0b9); font-size: 12px; }
+
+/* 종목 상세: 소속 시장 지수 차트 (같은 기간, RS 눈 비교용) */
+.pc-bench { margin-top: 6px; }
+.pc-benchline { fill: none; stroke: #7b9fc6; stroke-width: 1.8; stroke-linejoin: round; }

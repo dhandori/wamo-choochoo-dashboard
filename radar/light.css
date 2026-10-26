@@ -784,3 +784,5 @@
 :root[data-theme="light"] svg [stroke="#9aacc3"] { stroke: #6b7c92; }
 :root[data-theme="light"] i[style*="#ecf3fc"], :root[data-theme="light"] i[style*="#eaf0f8"] { background: #1b2635 !important; }
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
+
+:root[data-theme="light"] .pc-benchline { stroke: #3a5a86; }
