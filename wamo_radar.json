@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-27T06:26:55.534652+00:00",
+  "checkedAt": "2026-10-27T07:22:20.208914+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-27T06:26:55.534652+00:00",
+      "generatedAt": "2026-10-27T07:22:20.208914+00:00",
       "sessions": {
         "US-NASDAQ": "20261026",
         "US-NYSE": "20261026",
@@ -990,23 +990,59 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-27T06:26:55.534652+00:00",
+      "generatedAt": "2026-10-27T07:22:20.208914+00:00",
       "sessions": {
-        "KR-KOSPI": "20261026",
-        "KR-KOSDAQ": "20261026"
+        "KR-KOSPI": "20261027",
+        "KR-KOSDAQ": "20261027"
       },
       "source": "WAMO_52W",
       "scope": "WAMO KR 검증 종목군 · 최근 252거래일",
       "coverage": {
-        "totalCount": 209,
-        "currentCount": 209,
-        "validatedCount": 209,
-        "eligible52WeekCount": 208,
+        "totalCount": 213,
+        "currentCount": 213,
+        "validatedCount": 213,
+        "eligible52WeekCount": 212,
         "excludedCount": 0
       },
       "exclusions": [],
-      "signals": [],
-      "industries": [],
+      "signals": [
+        {
+          "key": "KR-KOSDAQ:053800",
+          "market": "KR-KOSDAQ",
+          "country": "KR",
+          "symbol": "053800",
+          "name": "안랩",
+          "currency": "KRW",
+          "as_of": "20261027",
+          "industry_path": [
+            "IT서비스·소프트웨어"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 92200.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": false,
+            "close_252": true
+          }
+        }
+      ],
+      "industries": [
+        {
+          "market": "KR",
+          "industry_path": [
+            "IT서비스·소프트웨어"
+          ],
+          "eligible_classified_issuers": 4,
+          "current_signal_issuers": 1,
+          "micro_verified": false,
+          "phase": "52주 신고가 관측",
+          "comparison_scope": "WAMO 검증 종목군"
+        }
+      ],
       "upstreamError": "UPSTREAM_NOT_READY"
     }
   },
