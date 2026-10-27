@@ -32418,7 +32418,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 50.9,
-      "volumeRatio20": 3.15,
+      "volumeRatio20": 3.16,
       "historyDays": 260,
       "history": [
         {
@@ -35667,7 +35667,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 55.3,
-      "volumeRatio20": 0.88,
+      "volumeRatio20": 0.92,
       "historyDays": 260,
       "history": [
         {
@@ -37833,7 +37833,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 95.3,
-      "volumeRatio20": 2.46,
+      "volumeRatio20": 2.48,
       "historyDays": 260,
       "history": [
         {
@@ -39999,7 +39999,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 61.1,
-      "volumeRatio20": 1.0,
+      "volumeRatio20": 1.03,
       "historyDays": 260,
       "history": [
         {
@@ -43248,7 +43248,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 51.1,
-      "volumeRatio20": 0.87,
+      "volumeRatio20": 0.89,
       "historyDays": 260,
       "history": [
         {
@@ -43541,7 +43541,7 @@
         },
         {
           "date": "2026-01-29",
-          "close": 278.12
+          "close": 278.11
         },
         {
           "date": "2026-01-30",
@@ -44331,7 +44331,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 82.4,
-      "volumeRatio20": 1.88,
+      "volumeRatio20": 1.92,
       "historyDays": 260,
       "history": [
         {
@@ -46497,7 +46497,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 58.7,
-      "volumeRatio20": 0.84,
+      "volumeRatio20": 0.91,
       "historyDays": 260,
       "history": [
         {
@@ -47580,7 +47580,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 64.9,
-      "volumeRatio20": 0.96,
+      "volumeRatio20": 1.2,
       "historyDays": 260,
       "history": [
         {
@@ -50829,7 +50829,7 @@
       "aligned": true,
       "alignmentStatus": "YES",
       "high52Ratio": 88.4,
-      "volumeRatio20": 0.8,
+      "volumeRatio20": 0.81,
       "historyDays": 260,
       "history": [
         {
@@ -54078,7 +54078,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 86.3,
-      "volumeRatio20": 0.96,
+      "volumeRatio20": 0.98,
       "historyDays": 260,
       "history": [
         {
@@ -55161,7 +55161,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 86.3,
-      "volumeRatio20": 1.05,
+      "volumeRatio20": 1.06,
       "historyDays": 260,
       "history": [
         {
@@ -56244,7 +56244,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 88.4,
-      "volumeRatio20": 1.26,
+      "volumeRatio20": 1.27,
       "historyDays": 260,
       "history": [
         {
@@ -57327,7 +57327,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 91.5,
-      "volumeRatio20": 2.06,
+      "volumeRatio20": 2.1,
       "historyDays": 260,
       "history": [
         {
@@ -58410,7 +58410,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 85.3,
-      "volumeRatio20": 2.03,
+      "volumeRatio20": 2.06,
       "historyDays": 260,
       "history": [
         {
@@ -62742,7 +62742,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 66.9,
-      "volumeRatio20": 1.31,
+      "volumeRatio20": 1.38,
       "historyDays": 260,
       "history": [
         {
@@ -63825,7 +63825,7 @@
       "aligned": false,
       "alignmentStatus": "NO",
       "high52Ratio": 61.9,
-      "volumeRatio20": 1.16,
+      "volumeRatio20": 1.19,
       "historyDays": 260,
       "history": [
         {
@@ -64906,7 +64906,7 @@
     },
     "us": {
       "asOf": "2026-10-27",
-      "updatedAt": "2026-10-28T05:49:20+09:00",
+      "updatedAt": "2026-10-28T08:04:15+09:00",
       "count": 30,
       "candidateCount": 450,
       "financialFailCount": 21,
