@@ -534,3 +534,88 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
 .flow-box-cell em { font-style: normal; color: var(--muted); font-size: 11px; }
 .flow-box-note { margin: 10px 0 0; font-size: 11.5px; color: #8296b2; line-height: 1.7; }
 @media (max-width: 760px) { .flow-box-row { grid-template-columns: 1fr; gap: 5px; } .flow-box-cell strong { font-size: 14px; } }
+
+/* ===== 2026-10-28 흐름 개편: 시장 → 업종 → 종목 3단계 탭(화면 위 고정) · 종목 상세 재배치 ===== */
+/* 탭 줄은 스크롤해도 화면 위에 남는다. 아래 고정 요소(추세 하위 탭·표 머리줄)는 --tabs-h 만큼 내려 겹치지 않게 한다. */
+.tabs.steps { position: sticky; top: 0; z-index: 8; display: flex; flex-wrap: nowrap; align-items: stretch; gap: 0 6px; margin: 10px 0 12px; padding: 4px 0 0; background: var(--bg); border-bottom: 1px solid var(--line); }
+.tabs.steps .tab-group { display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 5px 14px 0; border: 1px solid transparent; border-bottom: 0; border-radius: 10px 10px 0 0; }
+.tabs.steps .tab-group.active { background: #111c29; border-color: var(--line); }
+.tabs.steps .tab-group-label { margin: 0; }
+.step-head { display: inline-flex; align-items: baseline; gap: 8px; min-height: 0; padding: 0 0 2px; border: 0; border-radius: 4px; background: none; color: var(--muted); text-align: left; cursor: pointer; }
+.step-head:hover { color: var(--text); border: 0; }
+.tabs.steps .tab-group.active .tab-group-label { background: #254538; color: #c5ffec; }
+.step-hint { font-size: 11.5px; color: #8ea4c0; white-space: nowrap; }
+.hint-short { display: none; }
+.step-tabs { display: flex; gap: 22px; }
+.tabs.steps .step-tabs button { padding: 4px 1px 7px; }
+.step-arrow { align-self: center; color: #4f6482; font-size: 20px; line-height: 1; padding-bottom: 8px; }
+/* 단계 이름은 제목과 같은 줄에 둔다(세로 공간 절약). */
+.section-step { display: inline-block; margin-right: 8px; padding: 2px 7px; border-radius: 4px; background: #1a2636; font-size: 11.5px; font-weight: 700; letter-spacing: .4px; color: #8ea4c0; vertical-align: 3px; }
+.section-step:empty { display: none; }
+.section-head h2 { display: inline; }
+.tr-subtabs { top: var(--tabs-h, 0px) !important; }
+.table-wrap.fits th { top: var(--tabs-h, 0px); }
+@media (max-width: 760px) {
+  /* 휴대폰: 1줄 = 3단계 칸, 2줄 = 고른 단계의 탭만. 전부 펼치면 세 줄이 잘려 보이던 것을 고친다. */
+  nav.tabs.steps { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 4px !important; margin: 8px -14px 10px; padding: 8px 14px 8px; border-bottom: 1px solid var(--line); overflow: visible; }
+  .tabs.steps .tab-group { display: contents !important; }
+  .step-arrow { display: none; }
+  .tabs.steps .step-head { grid-row: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%; min-height: 46px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); }
+  .tabs.steps .tab-group.active .step-head { background: #1d3b33; border-color: #3b7f69; }
+  .tabs.steps .step-head .tab-group-label { padding: 0; background: transparent; font-size: 13px; color: var(--text); }
+  .tabs.steps .tab-group.active .step-head .tab-group-label { background: transparent; color: #c5ffec; }
+  .hint-long { display: none; } .hint-short { display: inline; font-size: 10.5px; color: var(--muted); }
+  .tabs.steps .tab-group.active .hint-short { color: #9fe3cc; }
+  .tabs.steps .step-tabs { grid-row: 2; grid-column: 1 / -1; display: none; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 2px 0; }
+  .tabs.steps .step-tabs::-webkit-scrollbar { display: none; }
+  .tabs.steps .tab-group.active .step-tabs { display: flex; }
+}
+/* 종목 상세: 넓은 창 · 제목줄 고정 · 핵심 수치는 차트 옆(휴대폰은 차트 위) */
+#drawer { width: min(1120px, 96vw); max-width: none; max-height: 92vh; padding: 0; overflow: hidden; }
+#drawer[open] { display: flex; flex-direction: column; }
+#detail { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 26px 26px; }
+.detail-head { position: sticky; top: 0; z-index: 3; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin: 0 -26px 12px; padding: 18px 26px 12px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.detail-head .close { float: none; flex: none; margin: -4px -6px 0 0; }
+.detail-head h2 { margin: 3px 0 0; font-size: 22px; }
+.detail-head p { margin: 3px 0 0; font-size: 13px; }
+.detail-head .ai-detail { margin-top: 4px; }
+.detail-quote { margin: 4px 0 16px; gap: 10px 16px; }
+.detail-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.detail-chips .chip { display: inline-flex; align-items: center; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: #0f1926; color: #c7d5e6; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.detail-chips .chip.good { border-color: #3b7f69; background: #10332c; color: #9fe3cc; }
+.detail-chips .chip.hot { border-color: #7a6436; background: #2a2214; color: #f2c474; }
+.detail-chips .chip.weak { border-color: #4a5a70; color: #93a4ba; }
+.detail-links { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.detail-links .naver-primary { margin-left: 0; }
+.detail-body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 18px; align-items: start; }
+.detail-body .chart-panel { grid-row: span 2; min-width: 0; }
+.detail-side, .detail-extra { min-width: 0; }
+.detail-sub { margin: 0 0 8px; font-size: 13px; color: #b9c9dd; }
+.detail-body .detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 0 14px; }
+.detail-body .stat { padding: 9px 12px; background: #0e1b2b; border: 1px solid var(--line); border-radius: 9px; }
+.detail-body .stat strong { font-size: 18px; margin-top: 2px; }
+.detail-body .stat .cell-bar { max-width: none; }
+.detail-body .flow-box { margin: 0 0 14px; }
+.detail-body .detail-signals { margin: 0 0 14px; }
+.detail-body .detail-changes { margin: 0; }
+.detail-evidence { margin-top: 18px; }
+@media (max-width: 1000px) {
+  .detail-body { grid-template-columns: 1fr; }
+  .detail-body .chart-panel { grid-row: auto; }
+  .detail-side { order: -1; }   /* 좁은 화면: 숫자가 차트보다 먼저 보인다 */
+}
+@media (max-width: 760px) {
+  #drawer { width: 100vw; height: 100dvh; max-height: none; margin: 0; inset: 0; border: 0; border-radius: 0; }
+  #detail { padding: 0 14px 24px; }
+  .detail-head { margin: 0 -14px 10px; padding: 12px 14px 10px; }
+  .detail-head h2 { font-size: 19px; }
+  .detail-quote { margin-bottom: 12px; }
+  .detail-links { width: 100%; margin-left: 0; }
+  .detail-links a { flex: 1; justify-content: center; }
+  .detail-body .detail-grid { gap: 6px; }
+  .detail-body .stat { padding: 8px 10px; }
+  .detail-body .stat strong { font-size: 16px; }
+}
+.stat strong.good { color: var(--green); }
+/* 아주 좁은 화면(360px): 시장 버튼 네 개 + 밝기 버튼이 가로로 넘치지 않게 */
+@media (max-width: 380px) { .market-switch { gap: 3px; } .market-switch button { padding: 7px 6px; font-size: 12px; } .theme-toggle { padding-left: 8px; padding-right: 8px; } }

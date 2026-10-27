@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>WAMO | 데일리 마켓 레이더</title>
   <meta name="description" content="한국과 미국 시장의 52주 신고가권, 당일 신고가, 산업 동반 강세와 특징주">
-  <link rel="stylesheet" href="./radar/style.css?v=20261026-rn1">
-  <link rel="stylesheet" href="./radar/trend.css?v=20261026-sp1">
+  <link rel="stylesheet" href="./radar/style.css?v=20261028-st1">
+  <link rel="stylesheet" href="./radar/trend.css?v=20261028-st1">
   <link rel="stylesheet" href="./radar/ftd.css?v=20261026-rn1">
   <link rel="stylesheet" href="./radar/leaders.css?v=20261026-rn1">
   <link rel="stylesheet" href="./radar/schedule.css?v=20261026-rn1">
-  <link rel="stylesheet" href="./radar/light.css?v=20261026-ix1">
+  <link rel="stylesheet" href="./radar/light.css?v=20261028-st1">
   <script>
 (function(){
   var root=document.documentElement,store=function(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){}return null;};
@@ -45,14 +45,25 @@
       <span class="color-legend" aria-label="색 안내"><i class="lg up"></i>상승 <i class="lg down"></i>하락 <i class="lg bad"></i>경고·나쁨 <i class="lg good"></i>좋음</span>
       <details id="schedule-wrap" class="schedule-wrap"><summary>갱신 일정·진행 상황</summary><section id="schedule" class="schedule" aria-label="갱신 일정과 진행 상황" hidden></section></details>
     </div>
-    <nav class="tabs" aria-label="분석 화면">
-      <div class="tab-group" aria-label="1단계 시장 판단"><span class="tab-group-label">① 시장</span><button data-tab="trend">추세 신호</button><button data-tab="ftd">시장 전환·FTD</button></div>
-      <div class="tab-group" aria-label="2단계 주도 업종"><span class="tab-group-label">② 업종</span><button data-tab="leaders">선도주·선도업종</button><button data-tab="industries">인더스트리 액션</button><button data-tab="ai">AI 섹터</button></div>
-      <div class="tab-group" aria-label="3단계 종목 찾기"><span class="tab-group-label">③ 종목</span><button data-tab="near">52주 신고가권</button><button data-tab="high">당일 신고가</button><button data-tab="movers">특징주</button></div>
+    <nav class="tabs steps" aria-label="분석 화면 · 시장 → 업종 → 종목 순서로 봅니다">
+      <div class="tab-group" data-step="market" aria-label="1단계 시장 판단">
+        <button type="button" class="step-head" data-step-go="market" title="1단계 · 지금 사도 되는 장인지 먼저 봅니다"><span class="tab-group-label">① 시장</span><small class="step-hint"><span class="hint-long">지금 사도 되는 장인가</span><span class="hint-short">장 상태</span></small></button>
+        <div class="step-tabs"><button data-tab="trend">추세 신호</button><button data-tab="ftd">시장 전환·FTD</button></div>
+      </div>
+      <span class="step-arrow" aria-hidden="true">›</span>
+      <div class="tab-group" data-step="sector" aria-label="2단계 주도 업종">
+        <button type="button" class="step-head" data-step-go="sector" title="2단계 · 시장보다 강한 업종을 찾습니다"><span class="tab-group-label">② 업종</span><small class="step-hint"><span class="hint-long">어느 업종이 앞서가나</span><span class="hint-short">강한 업종</span></small></button>
+        <div class="step-tabs"><button data-tab="leaders">선도주·선도업종</button><button data-tab="industries">인더스트리 액션</button><button data-tab="ai">AI 섹터</button></div>
+      </div>
+      <span class="step-arrow" aria-hidden="true">›</span>
+      <div class="tab-group" data-step="stock" aria-label="3단계 종목 찾기">
+        <button type="button" class="step-head" data-step-go="stock" title="3단계 · 그 업종 안에서 종목을 고릅니다"><span class="tab-group-label">③ 종목</span><small class="step-hint"><span class="hint-long">어떤 종목을 고를까</span><span class="hint-short">종목 찾기</span></small></button>
+        <div class="step-tabs"><button data-tab="near">52주 신고가권</button><button data-tab="high">당일 신고가</button><button data-tab="movers">특징주</button></div>
+      </div>
     </nav>
     <section class="workspace">
       <div class="section-head">
-        <div><h2 id="section-title"></h2><p id="section-description"></p></div>
+        <div><span id="section-step" class="section-step"></span><h2 id="section-title"></h2><p id="section-description"></p></div>
         <label class="search"><span class="sr-only">종목 검색</span><input id="search" placeholder="종목명 · 티커 · 산업 검색" type="search"></label>
       </div>
       <section id="sp-movers" class="sp-movers" aria-label="S&amp;P 500 상승·하락 상위" hidden></section>
@@ -67,6 +78,6 @@
   </div>
   <dialog id="drawer" aria-labelledby="stock-detail-title"><button id="close-drawer" class="close" aria-label="상세 닫기">×</button><div id="detail"></div></dialog>
   <!--WAMO_INSIGHTS-->
-  <script type="module" src="./radar/view.js?v=20261026-rn1"></script>
+  <script type="module" src="./radar/view.js?v=20261028-st1"></script>
 </body>
 </html>

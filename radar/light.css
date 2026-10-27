@@ -786,3 +786,20 @@
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
 
 :root[data-theme="light"] .pc-benchline { stroke: #3a5a86; }
+/* 2026-10-28 3단계 탭·종목 상세 밝은 화면 색 */
+:root[data-theme="light"] .tabs.steps { background: #f4f7fb; }
+:root[data-theme="light"] .tabs.steps .tab-group.active { background: #e8eef6; border-color: #adbacd; }
+:root[data-theme="light"] .tabs.steps .tab-group.active .tab-group-label { background: #dfefeb; color: #033726; }
+:root[data-theme="light"] .step-hint, :root[data-theme="light"] .section-step { color: #4e6078; }
+:root[data-theme="light"] .step-arrow { color: #8a9bb3; }
+:root[data-theme="light"] .detail-head { background: #ffffff; border-color: #adbacd; }
+:root[data-theme="light"] .detail-chips .chip { background: #eef2f8; border-color: #adbacd; color: #2a3646; }
+:root[data-theme="light"] .detail-chips .chip.good { background: #dfefeb; border-color: #83c1ad; color: #033726; }
+:root[data-theme="light"] .detail-chips .chip.hot { background: #fbf0d8; border-color: #d9b56a; color: #5a3f08; }
+:root[data-theme="light"] .detail-body .stat { background: #f4f7fb; border-color: #adbacd; }
+:root[data-theme="light"] .detail-sub { color: #2a3646; }
+@media (max-width: 760px) {
+  :root[data-theme="light"] .tabs.steps .step-head { background: #ffffff; border-color: #adbacd; }
+  :root[data-theme="light"] .tabs.steps .tab-group.active .step-head { background: #dfefeb; border-color: #83c1ad; }
+  :root[data-theme="light"] .tabs.steps .tab-group.active .step-head .tab-group-label, :root[data-theme="light"] .tabs.steps .tab-group.active .hint-short { color: #033726; }
+}

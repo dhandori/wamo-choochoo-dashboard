@@ -47,6 +47,10 @@ const params = new URLSearchParams(location.search);
 const MARKET_NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const LITE = new Set(['JP', 'TW']);
 const LITE_OFF = new Set();   // every tab now works for Japan/Taiwan too
+// 읽는 순서: ① 시장(지금 사도 되는 장인가) → ② 업종(어느 업종이 앞서가나) → ③ 종목. 탭은 이 세 묶음으로 보여 준다.
+const STEP_OF = { trend: 'market', ftd: 'market', leaders: 'sector', industries: 'sector', ai: 'sector', near: 'stock', high: 'stock', movers: 'stock' };
+const STEP_LABEL = { market: '① 시장 판단', sector: '② 주도 업종', stock: '③ 종목 찾기' };
+const lastTabOfStep = { market: 'trend', sector: 'leaders', stock: 'near' };   // 단계 칸을 누르면 그 단계에서 마지막으로 보던 탭으로
 const CURRENCY = { KR: ['₩', '원', 0], US: ['$', '달러', 2], JP: ['¥', '엔', 0], TW: ['NT$', '대만달러', 2] };
 const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'trend' };
 let snapshot = null, refreshFailed = false, refreshing = false;
@@ -244,34 +248,60 @@ function detail(s) {
   const timeout = new Promise(resolve => setTimeout(() => resolve(undefined), 1500));
   Promise.race([loadChartData(market), timeout]).then(data => renderDetail(s, data));
 }
+// 상세창 닫기 버튼은 제목줄(화면 위 고정) 안으로 옮겨 쓴다. 같은 요소를 매번 다시 붙이므로 id와 핸들러가 유지된다.
+const closeButton = $('close-drawer');
+// 한눈에 보는 선별 조건 네 가지: RS · 고점까지 · 거래량 · Stage 2. 아래 수치 표와 같은 값이고, 좋은 쪽만 색을 입힌다.
+function detailChips(s) {
+  const chips = el('div', null, 'detail-chips'); chips.setAttribute('aria-label', '핵심 선별 조건');
+  const stage = s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음';
+  [[`RS ${fmt(s.rs, 0)}`, numeric(s.rs) ? (s.rs >= 80 ? 'good' : s.rs < 50 ? 'weak' : '') : 'weak'],
+    [`고점까지 ${numeric(s.highDistancePct) ? distance(s) : '기록 부족'}`, numeric(s.highDistancePct) ? (s.highDistancePct <= 5 ? 'good' : s.highDistancePct > 15 ? 'weak' : '') : 'weak'],
+    [`거래량 ${volume(s)}`, numeric(s.volumeRatio) ? (s.volumeRatio >= 1.5 ? 'hot' : s.volumeRatio < 0.7 ? 'weak' : '') : 'weak'],
+    [`Stage 2 ${stage}`, s.stage2 === true ? 'good' : s.stage2 === false ? 'weak' : 'weak']].forEach(([t, c]) => chips.append(el('span', t, `chip ${c}`.trim())));
+  return chips;
+}
 function renderDetail(s, data) {
   const d = $('detail');
+  // 제목줄: 종목명·분류·닫기. 스크롤해도 창 위에 남는다.
+  const head = el('header', null, 'detail-head'), titles = el('div', null, 'detail-titles');
   const heading = el('h2', s.name); heading.id = 'stock-detail-title';
-  d.replaceChildren(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), heading, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
+  titles.append(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), heading, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
   const membership=aiMembership(s);
-  if(membership)d.append(el('p',`AI 연관 분류: ${AI_SECTORS.filter(g=>membership.sectors.includes(g.id)).map(g=>g.name).join(' · ')} / ${membership.role}`,'ai-detail'));
+  if(membership)titles.append(el('p',`AI 연관 분류: ${AI_SECTORS.filter(g=>membership.sectors.includes(g.id)).map(g=>g.name).join(' · ')} / ${membership.role}`,'ai-detail'));
+  head.append(titles, closeButton);
+  d.replaceChildren(head);
+  // 가격 줄: 종가·등락 → 핵심 조건 네 칩 → 바로가기.
   const quote = el('div', null, 'detail-quote');
-  quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), naverLink(s, true));
-  const tvDetail = tvLink(s, true); if (tvDetail) quote.append(tvDetail);
-  d.append(quote);
+  quote.append(el('strong', price(s)), el('span', pct(s.changePct), tone(s.changePct)), detailChips(s));
+  const links = el('div', null, 'detail-links'); links.append(naverLink(s, true));
+  const tvDetail = tvLink(s, true); if (tvDetail) links.append(tvDetail);
+  quote.append(links); d.append(quote);
+  // 본문: 왼쪽 차트, 오른쪽 수치·수급·신호·전일 변화. 좁은 화면에서는 수치가 차트보다 먼저 온다.
+  const body = el('div', null, 'detail-body');
   const chart = el('section', null, 'chart-panel');
-  chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true)); d.append(chart);
-  if (data !== null) fillDetailChart(chart, s, data);
+  chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true));
+  const side = el('div', null, 'detail-side'); side.append(el('h3', '핵심 수치', 'detail-sub'));
   const grid = el('div', null, 'detail-grid');
-  [['시가총액', marketCap(s, true)], ['5일 수익률', pct(s.return5d), tone(s.return5d)], ['20일 수익률', pct(s.return20d), tone(s.return20d)], ['60일 수익률', pct(s.return60d), tone(s.return60d)], ['120일 수익률', pct(s.return120d), tone(s.return120d)], ['200일 수익률', pct(s.return200d), tone(s.return200d)],
-    ['52주 고점까지', numeric(s.highDistancePct) ? distance(s) : '기록 부족'], ['52주 장중 고점', fmt(s.high52, 2)],
-    ['거래량 배수', volume(s)], ['RS', fmt(s.rs, 0)], ['Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음']]
-    .forEach(([label, value, cls]) => grid.append(stat(label, value, cls)));
-  d.append(grid);
-  const flowBox = flowSection(s); if (flowBox) d.append(flowBox);
-  const signalBox = el('div', null, 'detail-signals');
-  const reasons = signals(s); (reasons.length ? reasons : ['특징주 신호 없음']).forEach(t => signalBox.append(el('span', t, 'badge'))); d.append(signalBox);
+  [['시가총액', marketCap(s, true)], ['RS', fmt(s.rs, 0), '', rsBar(s)],
+    ['당일 등락', pct(s.changePct), tone(s.changePct), moveBar(s.changePct, 8)], ['5일 수익률', pct(s.return5d), tone(s.return5d), moveBar(s.return5d, 15)],
+    ['20일 수익률', pct(s.return20d), tone(s.return20d), moveBar(s.return20d, 30)], ['60일 수익률', pct(s.return60d), tone(s.return60d), moveBar(s.return60d, 60)],
+    ['120일 수익률', pct(s.return120d), tone(s.return120d), moveBar(s.return120d, 80)], ['200일 수익률', pct(s.return200d), tone(s.return200d), moveBar(s.return200d, 100)],
+    ['52주 고점까지', numeric(s.highDistancePct) ? distance(s) : '기록 부족', '', highBar(s)], ['52주 장중 고점', fmt(s.high52, 2)],
+    ['거래량 배수', volume(s), '', volBar(s)], ['Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', s.stage2 === true ? 'good' : '']]
+    .forEach(([label, value, cls, barNode]) => grid.append(stat(label, value, cls, barNode)));
+  side.append(grid);
+  const extra = el('div', null, 'detail-extra');
+  const flowBox = flowSection(s); if (flowBox) extra.append(flowBox);
+  const signalBox = el('div', null, 'detail-signals'); signalBox.setAttribute('aria-label', '특징주 신호');
+  const reasons = signals(s); (reasons.length ? reasons : ['특징주 신호 없음']).forEach(t => signalBox.append(el('span', t, 'badge'))); extra.append(signalBox);
   const transition=changes(s),comparison=snapshot.markets[state.market].comparison;
   const changeNote=el('section',null,'detail-changes');changeNote.append(helpLabel('전일 변화'));
   const eventLabels=[...transition.entered.map(k=>CHANGE_LABELS[k]),...transition.exited.map(k=>EXIT_LABELS[k])];
   changeNote.append(el('p',transition.comparable.length?`${comparison.asOf} → ${s.asOf} · ${eventLabels.join(' · ')||'조건에 새로 들거나 빠진 것 없음'}`:'직전 거래일 자료가 없어 비교할 수 없습니다.'));
-  d.append(changeNote);
-  const evidence = el('section', null, 'evidence'); evidence.append(el('h3', '공시·공식 자료'));
+  extra.append(changeNote);
+  body.append(chart, side, extra); d.append(body);
+  if (data !== null) fillDetailChart(chart, s, data);   // 패널이 문서에 붙은 뒤에 그려야 한다(isConnected 검사)
+  const evidence = el('section', null, 'evidence detail-evidence'); evidence.append(el('h3', '공시·공식 자료'));
   const cats = Array.isArray(s.catalysts) ? s.catalysts : [];
   if (!cats.length) evidence.append(el('p', '등록된 공식 자료가 없습니다.'));
   cats.forEach(c => { const box = el('div', null, 'news-item'); box.append(safeLink(c.title, c.url), el('small', c.date)); evidence.append(box); });
@@ -285,7 +315,7 @@ function renderDetail(s, data) {
   }
   evidence.append(el('p', '공시·뉴스가 이 주가 움직임의 원인이라고 확인된 것은 아닙니다.', 'evidence-note')); d.append(evidence);
   d.append(el('p', `가격 출처: ${s.source} · 산업 분류: ${s.industrySource}`, 'source-note'));
-  $('drawer').showModal(); $('drawer').scrollTop = 0;
+  $('drawer').showModal(); d.scrollTop = 0;
 }
 let chartDays = 60;
 function fillDetailChart(panel, s, ready) {
@@ -655,7 +685,7 @@ function renderChanges(m) {
 }
 // 휴대폰에서 탭 줄이 옆으로 넘칠 때, 선택한 탭이 화면 밖에 숨지 않게 그 줄만 옆으로 움직인다(세로 스크롤은 건드리지 않음).
 function revealActiveTab() {
-  const b = document.querySelector('.tabs button.active'), g = b?.closest('.tab-group');
+  const b = document.querySelector('.tabs button.active'), g = b?.closest('.step-tabs') || b?.closest('.tab-group');
   if (!g || g.scrollWidth <= g.clientWidth + 1) return;
   const br = b.getBoundingClientRect(), gr = g.getBoundingClientRect();
   if (br.left >= gr.left && br.right <= gr.right) return;
@@ -674,12 +704,14 @@ function render() {
     document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
     $('weather').hidden = true; if ($('index-strip')) $('index-strip').hidden = true; $('metrics').replaceChildren(); $('controls').replaceChildren(); $('industry-rail').hidden = true; $('pagination').replaceChildren(); $('result-summary').textContent = '';
     $('date-info').replaceChildren(el('span', '자료 준비 중', 'badge status-unavailable'));
+    markStep();
     $('section-title').textContent = `${MARKET_NAMES[state.market]} 시장`; $('section-description').textContent = '';
     $('content').replaceChildren(el('div', `${MARKET_NAMES[state.market]} 자료는 평일 오후 4시 40분 첫 자동 갱신 뒤부터 보여요. 그 전에는 다른 시장을 확인해 주세요.`, 'empty'));
     paintSchedule(); return;
   }
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
   document.querySelectorAll('[data-tab]').forEach(b => { b.classList.toggle('active', b.dataset.tab === state.tab); b.setAttribute('aria-current', b.dataset.tab === state.tab ? 'page' : 'false'); });
+  markStep();
   revealActiveTab();
   document.body.dataset.view = state.tab;
   renderMeta(m); renderStrip($('index-strip'), state.market); renderWeather($('weather'), state.market, openTrend); paintSchedule();
@@ -696,7 +728,7 @@ function render() {
     const rows = selectStocks(m, { ...state, tab: state.industry ? 'industry' : state.tab }), pages = Math.max(1, Math.ceil(rows.length / 30));
     state.page = Math.min(state.page, pages); content.append(table(rows));
     $('result-summary').textContent = `${rows.length}종목 · ${state.newOnly?'새로 들어온 종목 · 현재 조건 기준':'현재 조건 기준'}${state.industry ? ' · 선택한 산업 종목' : ''}${state.tab==='ai'?` · ${AI_SECTORS.find(g=>g.id===state.aiSector)?.name||'AI 전체'} · 중복 제외`:''}`;
-    const toList = () => { const t = $('section-title'); const top = t?.getBoundingClientRect().top ?? 0; if (top < 0) window.scrollTo({ top: window.scrollY + top - 8, behavior: 'instant' }); };
+    const toList = () => { const t = $('section-title'); const tabsH = document.querySelector('.tabs')?.getBoundingClientRect().height ?? 0; const top = (t?.getBoundingClientRect().top ?? 0) - tabsH; if (top < 0) window.scrollTo({ top: window.scrollY + top - 8, behavior: 'instant' }); };
     const prev = button('이전', false, () => { state.page--; render(); toList(); }), next = button('다음', false, () => { state.page++; render(); toList(); });
     prev.disabled = state.page <= 1; next.disabled = state.page >= pages;
     pagination.append(prev, el('span', `${rows.length}종목 · ${state.page} / ${pages}`), next);
@@ -712,13 +744,33 @@ function openTrend() {
   Object.assign(state, { tab: 'trend', rs: false, stage: false, newOnly:false, query: '', industry: null, page: 1 }); $('search').value = ''; syncUrl(); render();
   keepTabsInView();
 }
-// After switching tabs from far down the page, bring the tab bar back into view
-// instead of leaving the reader in the middle of a different list.
+// 현재 탭이 속한 단계 칸을 켜고, 그 단계에서 마지막으로 본 탭을 기억한다. 제목 위에는 단계 이름을 적는다.
+function markStep() {
+  const step = STEP_OF[state.tab] || 'market';
+  lastTabOfStep[step] = state.tab;
+  document.querySelectorAll('.tabs .tab-group').forEach(g => { const on = g.dataset.step === step; g.classList.toggle('active', on); g.querySelector('.step-head')?.setAttribute('aria-current', on ? 'step' : 'false'); });
+  const label = $('section-step'); if (label) label.textContent = STEP_LABEL[step];
+}
+// After switching tabs from far down the page, bring the list back to its start
+// instead of leaving the reader in the middle of a different list. The tab bar is
+// sticky, so "in view" means its natural position (just under the header), not the stuck one.
 function keepTabsInView() {
   const tabs = document.querySelector('.tabs'); if (!tabs) return;
-  const top = tabs.getBoundingClientRect().top;
-  if (top < 0) window.scrollTo({ top: window.scrollY + top - 8, behavior: 'instant' });
+  const prev = tabs.previousElementSibling, naturalTop = prev ? prev.getBoundingClientRect().bottom + window.scrollY : tabs.getBoundingClientRect().top + window.scrollY;
+  if (window.scrollY > naturalTop) window.scrollTo({ top: Math.max(0, naturalTop - 4), behavior: 'instant' });
 }
+// 고정된 탭 줄 높이를 CSS 변수로 알려 주어, 추세 하위 탭과 표 머리줄이 그 아래에 붙게 한다.
+(() => {
+  const tabs = document.querySelector('.tabs'); if (!tabs) return;
+  const set = () => document.documentElement.style.setProperty('--tabs-h', `${Math.ceil(tabs.getBoundingClientRect().height)}px`);
+  set(); if ('ResizeObserver' in window) new ResizeObserver(set).observe(tabs); window.addEventListener('resize', set, { passive: true });
+})();
+document.querySelectorAll('[data-step-go]').forEach(b => b.onclick = () => {
+  const step = b.dataset.stepGo, tab = lastTabOfStep[step];
+  if (!tab || tab === state.tab) { keepTabsInView(); return; }
+  if (tab === 'trend') setSubtab('weather');
+  switchTab(tab);
+});
 function openStockById(id) {
   const s = snapshot?.markets?.[state.market]?.stocks?.find(x => x.id === id);
   if (s) detail(s);

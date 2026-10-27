@@ -23,6 +23,13 @@ def check_help_bounds(page):
     assert box['y']+box['height']<=page.viewport_size['height'],box
     assert page.get_by_role('tooltip').evaluate('(e)=>e.contains(document.elementFromPoint(e.getBoundingClientRect().x+e.clientWidth/2,e.getBoundingClientRect().y+e.clientHeight/2))')
 
+STEP_OF={'trend':'market','ftd':'market','leaders':'sector','industries':'sector','ai':'sector','near':'stock','high':'stock','movers':'stock'}
+def go_tab(page,tab):
+    # 2026-10-28 3단계 탭: 휴대폰은 고른 단계의 탭만 보이므로 다른 단계 탭은 단계 칸을 먼저 누른다.
+    b=page.locator(f'[data-tab={tab}]')
+    if not b.is_visible():page.locator(f'[data-step-go={STEP_OF[tab]}]').click()
+    b.click()
+
 def sort_box(page):
     # The sort/cap panel folds into one summary line (closed by default on phones).
     fold=page.locator('.sort-fold')
@@ -41,7 +48,7 @@ with sync_playwright() as p:
             expect(page.locator('#date-info')).to_contain_text(DATA['markets'][market]['asOf'])
             # 2026-10-23 개편부터 첫 화면은 '추세 신호'다. 아래 점검은 신고가권 탭에서 이어 간다.
             expect(page.locator('#section-title')).to_have_text('추세 신호')
-            page.locator('[data-tab=near]').click()
+            go_tab(page,'near')
             expect(page.locator('#section-title')).to_have_text('52주 신고가권')
             # The 2026-10-19 layout puts the filters low on phones; bring them up first so the
             # tool's own scroll-into-view (which closes help by design) does not interfere.
@@ -104,21 +111,21 @@ with sync_playwright() as p:
                 if width<=390:expect(page.locator('.card-cap').first).to_contain_text(currency)
                 else:expect(page.get_by_role('columnheader',name=f'시총 ({currency})',exact=True)).to_be_visible()
                 sort_box(page).select_option('default')
-            page.locator('[data-tab=high]').click()
+            go_tab(page,'high')
             highs=[s for s in rows if s['intradayHigh52'] or s['closeHigh52']]
             expect(page.locator('#pagination')).to_contain_text(f'{len(highs)}종목')
             page.get_by_role('button',name='장중 고점',exact=True).click()
             expect(page.locator('#pagination')).to_contain_text(f'{sum(s["intradayHigh52"] is True for s in rows)}종목')
-            page.locator('[data-tab=movers]').click()
+            go_tab(page,'movers')
             page.get_by_role('button',name='하락 ≤−3%',exact=True).click()
             expect(page.locator('#pagination')).to_contain_text(f'{sum(s["changePct"] is not None and s["changePct"]<=-3 for s in rows)}종목')
             page.screenshot(path=str(OUT/f'radar-{market}-{width}-movers.png'),full_page=False)
-            page.locator('[data-tab=industries]').click()
+            go_tab(page,'industries')
             if page.locator('.industry-card').count():
                 page.locator('.industry-card').first.click()
                 expect(page.get_by_role('button',name='← 전체 산업')).to_be_visible()
                 expect(page.locator('.stock-link:visible').first).to_be_visible()
-            page.locator('[data-tab=near]').click()
+            go_tab(page,'near')
             page.locator('#search').fill('__does_not_exist__')
             expect(page.locator('.empty')).to_contain_text('조건에 맞는 종목이 없습니다')
             page.get_by_role('button',name='필터 초기화',exact=True).click()
@@ -132,8 +139,8 @@ with sync_playwright() as p:
                 page.locator('.rail-group').first.click()
                 expect(page.get_by_role('button',name='← 전체 산업')).to_be_visible()
                 expect(page.locator('.stock-link:visible').first).to_be_visible()
-                page.locator('[data-tab=near]').click()
-            page.locator('[data-tab=ai]').click()
+                go_tab(page,'near')
+            go_tab(page,'ai')
             expect(page.locator('#section-title')).to_have_text('AI 섹터')
             expect(page.locator('.ai-sector-card')).to_have_count(AI_CARDS)
             expect(page.locator('#industry-rail')).to_be_hidden()
@@ -223,7 +230,7 @@ with sync_playwright() as p:
             page.screenshot(path=str(OUT/f'radar-{market}-{width}-ai.png'),full_page=False)
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
             assert dimensions['scroll']<=dimensions['client'],dimensions
-            page.locator('[data-tab=near]').click()
+            go_tab(page,'near')
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
             assert dimensions['scroll']<=dimensions['client'],dimensions
             assert not errors,errors
@@ -244,10 +251,10 @@ with sync_playwright() as p:
             legend_extra=page.locator('.card-legend').first.evaluate('(n)=>n.offsetParent?n.getBoundingClientRect().height+8:0') if page.locator('.card-legend').count() else 0
             weather_height+=tabs_extra+legend_extra
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
-            if width==1440:assert first_y-notice_height-weather_height<760,first_y  # 2026-10-19 layout: two-row tabs + sort panel open on desktop
+            if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs + sort panel open on desktop; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가
             else:assert first_y-notice_height-weather_height<1100,first_y  # phones: industry-flow strip sits above the list since 2026-10-19; 2026-10-23 grouped tabs and metric bars add ~70px
             if (ROOT/'wamo_trend.json').exists():
-                page.locator('[data-tab=trend]').click()
+                go_tab(page,'trend')
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
                 expect(page.locator('.tr-weather-detail')).to_be_visible()
                 for key in ('sell','score','earnings','rs','weather'):
@@ -258,7 +265,9 @@ with sync_playwright() as p:
                 page.evaluate('window.scrollBy(0,2000)'); page.wait_for_timeout(200)
                 page.locator('.tr-subtabs button[data-sub=score]').click(); page.wait_for_timeout(200)
                 bar=page.locator('.tr-subtabs').bounding_box()
-                assert -1<=bar['y']<=2,bar
+                # 2026-10-28: 탭 줄이 화면 위에 고정되므로 하위 탭 줄은 그 바로 아래에 붙는다.
+                tabs_h=page.locator('.tabs').bounding_box()['height']
+                assert tabs_h-1<=bar['y']<=tabs_h+2,(bar,tabs_h)
                 page.locator('.tr-subtabs button[data-sub=weather]').click()
                 dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
                 assert dimensions['scroll']<=dimensions['client'],dimensions
@@ -280,8 +289,8 @@ with sync_playwright() as p:
         expect(page.locator('#notice')).to_contain_text('확인된')
         page.get_by_role('button',name='데이터 확인',exact=True).click()
         expect(page.locator('.stock-link:visible').first).to_be_visible()
-        page.locator('[data-tab=movers]').click();expect(page.locator('.stock-link:visible').first).to_be_visible()
-        page.locator('[data-tab=ai]').click();expect(page.locator('.stock-link:visible').first).to_be_visible()
+        go_tab(page,'movers');expect(page.locator('.stock-link:visible').first).to_be_visible()
+        go_tab(page,'ai');expect(page.locator('.stock-link:visible').first).to_be_visible()
         expect(page.locator('.ai-sector-card')).to_have_count(AI_CARDS)
         assert not errors,errors
         context.close();print('RADAR RETENTION PASS',failure)
@@ -312,10 +321,10 @@ with sync_playwright() as p:
     page.on('pageerror',lambda error:errors.append(str(error)))
     page.goto(base+'/radar.html',wait_until='networkidle')
     page.evaluate("document.querySelector('#session-changes').remove();document.querySelector('#signal-filter').remove()")
-    page.locator('[data-tab=ai]').click()
+    go_tab(page,'ai')
     expect(page.locator('.ai-sector-card')).to_have_count(AI_CARDS)
     expect(page.locator('.stock-link:visible').first).to_be_visible()
-    page.locator('[data-tab=near]').click()
+    go_tab(page,'near')
     expect(page.locator('.stock-link:visible').first).to_be_visible()
     assert not errors,errors
     context.close();print('RADAR PREVIOUS TEMPLATE RETENTION PASS')
