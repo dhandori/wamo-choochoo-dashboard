@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-27T20:49:23.070099+00:00",
+  "checkedAt": "2026-10-27T23:04:18.746722+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-27T20:49:23.070099+00:00",
+      "generatedAt": "2026-10-27T23:04:18.746722+00:00",
       "sessions": {
         "US-NASDAQ": "20261027",
         "US-NYSE": "20261027",
@@ -68,6 +68,29 @@
           }
         },
         {
+          "key": "US-NASDAQ:HALO",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "HALO",
+          "name": "Halozyme Therapeutics Inc. Common Stock",
+          "currency": "USD",
+          "as_of": "20261027",
+          "industry_path": [
+            "Health Care"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 128.5,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
           "key": "US-NYSE:LNG",
           "market": "US-NYSE",
           "country": "US",
@@ -107,29 +130,6 @@
             "WAMO 기존 업종 분류"
           ],
           "current_close": 135.74,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
-          "key": "US-NASDAQ:HALO",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "HALO",
-          "name": "Halozyme Therapeutics Inc. Common Stock",
-          "currency": "USD",
-          "as_of": "20261027",
-          "industry_path": [
-            "Health Care"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 128.5,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -390,29 +390,6 @@
           }
         },
         {
-          "key": "US-NASDAQ:NTSK",
-          "market": "US-NASDAQ",
-          "country": "US",
-          "symbol": "NTSK",
-          "name": "Netskope Inc. Class A Common Stock",
-          "currency": "USD",
-          "as_of": "20261027",
-          "industry_path": [
-            "Technology"
-          ],
-          "micro_verified": false,
-          "classification_status": "WAMO_SECTOR",
-          "classification_caveats": [
-            "WAMO 기존 업종 분류"
-          ],
-          "current_close": 26.15,
-          "entry_status": "52주 신고가 · 매매판단은 별도",
-          "flags": {
-            "intraday_252": true,
-            "close_252": true
-          }
-        },
-        {
           "key": "US-NYSE:WST",
           "market": "US-NYSE",
           "country": "US",
@@ -429,6 +406,29 @@
             "WAMO 기존 업종 분류"
           ],
           "current_close": 398.29,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "US-NASDAQ:NTSK",
+          "market": "US-NASDAQ",
+          "country": "US",
+          "symbol": "NTSK",
+          "name": "Netskope Inc. Class A Common Stock",
+          "currency": "USD",
+          "as_of": "20261027",
+          "industry_path": [
+            "Technology"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 26.15,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": true,
@@ -749,7 +749,7 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-27T20:49:23.070099+00:00",
+      "generatedAt": "2026-10-27T23:04:18.746722+00:00",
       "sessions": {
         "KR-KOSPI": "20261027",
         "KR-KOSDAQ": "20261027"
