@@ -5134,5 +5134,56 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-10-14",
     "failed": false
+  },
+  "053800": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "OpenDART 사업보고서 원문에서 회사별 핵심사업 문장을 충분히 확인하지 못했습니다.",
+      "products": "핵심 제품·서비스 세부 확인 필요",
+      "customers": "사업보고서 원문에서 확인 필요",
+      "revenue": "사업보고서 원문에서 확인 필요",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": []
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260320",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260320000868",
+    "detailSector": "IT서비스·소프트웨어",
+    "sectorTags": [
+      "IT서비스·소프트웨어"
+    ],
+    "sectorConfidence": "LOW",
+    "updatedAt": "2026-10-27",
+    "failed": false
+  },
+  "328130": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "생산 설비에 관한 사항 당사 및 주요 종속회사는 사업 구조상 소프트웨어 개발 및 서비스 공급을 주업으로 하고 있으므로, 일반적인 제조업 형태의 생산설비를 구비하고 있지 않습니다.",
+      "products": "사업 구조상 소프트웨어 개발 및 서비스 공급을 주업으로 하고 있으므로, 주요 제품 특성상 원재료의 주요 매입처가 존재하지 않습니다.",
+      "customers": "당사의 병원고객이 구버전의 엑스레이 기기를 보유한 경우, 당사 제품인 Lunit INSIGHT를 사용하기 위해서는 별도의 하드웨어가 필요합니다.",
+      "revenue": "동반진단개념의 제품판매에 따른 소프트웨어 매출)이 발생할 것으로 예상됩니다.",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": [
+        "소프트웨어·플랫폼",
+        "유통·커머스",
+        "식품·음료",
+        "바이오·신약",
+        "전력·에너지"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260323",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001574",
+    "detailSector": "증권",
+    "sectorTags": [
+      "증권",
+      "제약·바이오",
+      "인터넷 플랫폼",
+      "AI·클라우드·IT서비스"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-10-27",
+    "failed": false
   }
 }

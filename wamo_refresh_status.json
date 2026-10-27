@@ -1,25 +1,25 @@
 {
   "KR": {
-    "status": "RUNNING",
+    "status": "PASS",
     "attemptedAt": "2026-10-27T07:08:28.908982+00:00",
     "scheduledFor": "2026-10-27T06:50:00+00:00",
     "nextScheduledFor": "2026-10-28T06:50:00+00:00",
     "trigger": "수동실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/40465227574",
-    "moversStatus": "PASS",
+    "moversStatus": "RUNNING",
     "warnings": [],
-    "lastSuccessAt": "2026-10-26T07:55:53.421142+00:00",
-    "asOf": "2026-10-26",
+    "lastSuccessAt": "2026-10-27T07:17:39.528374+00:00",
+    "asOf": "2026-10-27",
     "freshness": {
       "status": "PASS",
-      "expectedSession": "2026-10-26",
-      "currentCount": 209,
+      "expectedSession": "2026-10-27",
+      "currentCount": 213,
       "currentPct": 100.0,
-      "checkedAt": "2026-10-26T16:55:53+09:00",
+      "checkedAt": "2026-10-27T16:17:39+09:00",
       "warnings": [],
       "calendar": "XKRX"
     },
-    "count": 209,
+    "count": 213,
     "error": null,
     "kis": {
       "status": "LIVE",
@@ -40,7 +40,7 @@
     "refreshMode": "FULL",
     "auxiliaryCheckedAt": "2026-10-01T23:46:06.076117+00:00",
     "catalogStatus": "PASS",
-    "radarStatus": "PASS",
+    "radarStatus": "RUNNING",
     "partialRerun": "누락 종목 재수집 · 7 → 0종목"
   },
   "US": {
