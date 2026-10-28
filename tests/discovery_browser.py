@@ -70,6 +70,18 @@ def identity_for_signal(signal):
     return f"{signal['market'].split('-', 1)[0]}:{str(signal['symbol']).upper()}"
 
 
+def kr_search_probe():
+    """KR stock that is in the catalog but not a radar candidate, for the search/detail checks.
+
+    현대해상 by default; if today's data makes it a candidate (or drops it), use another such stock
+    instead of failing on the day's market.
+    """
+    candidates = {identity_for_signal(row) for row in all_pass_signals(fresh_radar())}
+    rows = [row for row in CATALOG["stocks"] if row["country"] == "KR" and row["id"] not in candidates]
+    assert rows, "catalog needs a KR stock that is not a radar candidate"
+    return next((row for row in rows if row["id"] == "KR:001450"), rows[0])
+
+
 def public_counts(catalog, radar):
     catalog_ids = {row["id"] for row in catalog["stocks"]}
     signal_ids = {identity_for_signal(row) for row in all_pass_signals(radar)}
@@ -247,23 +259,25 @@ def test_real_snapshot_interactions(browser, base_url, width):
         assert page.locator("#discovery-technical").input_value() == ""
 
         page.locator("#discovery-mode").select_option("search")
-        query.fill("현대해상")
-        expect(page.locator('.discovery-stock[data-id="KR:001450"]')).to_have_count(1)
-        assert "현재 공개 후보 목록에 없음" in page.locator('.discovery-stock[data-id="KR:001450"]').inner_text()
-        trigger = page.locator('.discovery-stock[data-id="KR:001450"] button')
+        probe = kr_search_probe()
+        card = page.locator(f'.discovery-stock[data-id="{probe["id"]}"]')
+        query.fill(probe["name"])
+        expect(card).to_have_count(1)
+        assert "현재 공개 후보 목록에 없음" in card.inner_text()
+        trigger = card.locator("button")
         trigger.click()
         detail = page.locator("#discovery-detail")
         expect(detail).to_be_visible()
-        assert detail.locator(".discovery-original-link").get_attribute("href") == "index.html?stock=001450.KS"
+        assert detail.locator(".discovery-original-link").get_attribute("href") == probe["detailUrl"]
         detail.get_by_role("button", name="닫기", exact=True).click()
         expect(detail).to_have_count(0)
-        assert page.evaluate('document.activeElement.closest(".discovery-stock")?.dataset.id') == "KR:001450"
+        assert page.evaluate('document.activeElement.closest(".discovery-stock")?.dataset.id') == probe["id"]
 
         trigger.click()
         page.clock.fast_forward(30_001)
         page.keyboard.press("Escape")
         expect(page.locator("#discovery-detail")).to_have_count(0)
-        assert page.evaluate('document.activeElement.closest(".discovery-stock")?.dataset.id') == "KR:001450"
+        assert page.evaluate('document.activeElement.closest(".discovery-stock")?.dataset.id') == probe["id"]
 
         radar_ids = {identity_for_signal(row) for row in all_pass_signals(radar)}
         us_non_candidate = next(row for row in CATALOG["stocks"] if row["country"] == "US" and row["id"] not in radar_ids)
@@ -411,8 +425,9 @@ def test_independent_and_invalid_sources(browser, base_url):
             assert page.locator("#discovery-query").is_enabled()
             if labels[0] == "레이더: 연결 실패" and labels[1] == "카탈로그: 연결됨":
                 page.locator("#discovery-mode").select_option("search")
-                page.locator("#discovery-query").fill("현대해상")
-                expect(page.locator('.discovery-stock[data-id="KR:001450"]')).to_have_count(1)
+                probe = kr_search_probe()
+                page.locator("#discovery-query").fill(probe["name"])
+                expect(page.locator(f'.discovery-stock[data-id="{probe["id"]}"]')).to_have_count(1)
             assert not errors, errors
         finally:
             context.close()

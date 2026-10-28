@@ -34,6 +34,9 @@
 - 화면이 새 자료 칸을 읽게 바꿨다면 고정 자료도 다시 만들어 함께 커밋한다(고정 자료는 생성 파일 규칙의 예외):
   `python3 wamo_publish_insights.py && python3 tools/make_radar_fixture.py`
 - CI 는 같은 검사를 실제 자료로도 한 번 더 돌리되(`WAMO_RADAR_LIVE=1`) 결과를 막지 않는다.
+- `tests/browser_smoke.py` · `tests/discovery_browser.py` 는 자료가 통째로 든 옛 화면(`index.html`·`us.html`,
+  합쳐 36MB)을 띄우므로 고정 자료로 옮기지 않았다. 대신 자료 응답·시계는 검사가 통제하고, 특정 종목을 가정하는
+  곳은 그날 자료에서 조건에 맞는 종목을 고른다. 새 검사를 쓸 때도 종목을 못 박지 않는다.
 
 ## 생성 파일을 손으로 고쳐야 할 때(충돌 등)
 
@@ -42,6 +45,5 @@
 
 ## 정비 숙제 (2026-10-28 검수)
 
-- `tests/browser_smoke.py` · `tests/discovery_browser.py` 는 아직 그날 자료로 돈다.
 - 자료 커밋을 `data` 브랜치로 분리해 저장소 성장(2.5개월 157MB, `us.html` 27MB 하루 수십 번 재커밋)을 멈춤.
   Pages 배포 방식을 바꿔야 하고 다른 저장소가 읽는 주소에 영향이 있어 사용자와 함께 정한다.
