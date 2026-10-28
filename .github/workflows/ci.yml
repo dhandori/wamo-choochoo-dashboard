@@ -31,6 +31,11 @@ jobs:
       - run: python -m playwright install --with-deps chromium
       - run: python wamo_publish_insights.py
       - run: python tests/radar_browser.py
+      # 같은 검사를 그날 실제 자료로 한 번 더 돌린다. 시장 상황·수집 실패로 깨질 수 있어 결과를 막지 않는다.
+      - run: python tests/radar_browser.py
+        env:
+          WAMO_RADAR_LIVE: '1'
+        continue-on-error: true
       - run: python tests/browser_smoke.py
       - run: python tests/discovery_browser.py
       - uses: actions/upload-artifact@v4

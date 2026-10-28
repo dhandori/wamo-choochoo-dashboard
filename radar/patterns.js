@@ -1,10 +1,10 @@
 // 패턴 셋업 화면. wamo_insights.json 의 stocks[].patterns 와 patternMeta 를 읽는다.
 // 셋업 판정은 서버(wamo_patterns.py)가 하고, 여기서는 고르고 보여 주기만 한다.
-import { helpButton, addTerms } from './help.js?v=20261029-pt3';
-import { PATTERN_TERMS, glossary } from './terms.mjs?v=20261029-pt1';
+import { helpButton, addTerms } from './help.js';
+import { PATTERN_TERMS, glossary } from './terms.mjs';
 // 이 파일의 PHASES 는 셋업 진행 단계다. FTD 지수 단계는 이름을 구분해 가져온다.
-import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs?v=20261028-h60';
-import { CAP_FLOORS } from './model.mjs?v=20261028-h60';
+import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs';
+import { CAP_FLOORS } from './model.mjs';
 addTerms(PATTERN_TERMS);
 
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
