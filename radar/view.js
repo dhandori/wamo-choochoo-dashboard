@@ -291,7 +291,7 @@ function renderDetail(s, data) {
     .forEach(([label, value, cls, barNode]) => grid.append(stat(label, value, cls, barNode)));
   // ATR는 차트 자료(고가·저가)에서 오므로 자료가 늦으면 '—'로 두었다가 차트가 그려질 때 채운다.
   const atrStat = stat('ATR(14일)', atrText(data && stockSeries(data, s.symbol), s)); atrStat.classList.add('stat-atr'); grid.append(atrStat);
-  side.append(grid);
+  side.append(grid, stopSection(data && stockSeries(data, s.symbol), s));
   const extra = el('div', null, 'detail-extra');
   const flowBox = flowSection(s); if (flowBox) extra.append(flowBox);
   const signalBox = el('div', null, 'detail-signals'); signalBox.setAttribute('aria-label', '특징주 신호');
@@ -326,6 +326,28 @@ function atrText(series, s) {
   const [sym, , d] = CURRENCY[s.market || state.market] || CURRENCY.US;
   return `${sym}${fmt(a[0], d)} (${fmt(a[1])}%)`;
 }
+// 손절 기준 두 가지: ① −8% 한도(미너비니 최대 손절) ② 2×ATR(그 종목의 보통 흔들림 밖). 종가를 매수가로 가정한다.
+const STOP_CAP = 8, ATR_MULT = 2, RISK_PCT = 1;
+function stopSection(series, s) {
+  const box = el('section', null, 'stop-box');
+  box.append(el('h3', '손절 기준 (종가 = 매수가 가정)', 'detail-sub'));
+  const cells = el('div', null, 'detail-grid stop-grid');
+  const [sym, , d] = CURRENCY[s.market || state.market] || CURRENCY.US, money = v => `${sym}${fmt(v, d)}`;
+  const close = numeric(s.close) && s.close > 0 ? s.close : null;
+  const cell = (label, value, hint, cls = '') => { const c = stat(label, value, cls); c.append(el('em', hint, 'stat-hint')); return c; };
+  cells.append(cell(`기준 손절 −${STOP_CAP}%`, close ? money(close * (1 - STOP_CAP / 100)) : '—', '어떤 종목이든 이 아래로는 들고 가지 않는 한도예요.'));
+  const a = series?.atr;
+  if (close && a && numeric(a[0]) && numeric(a[1])) {
+    const atrPct = a[1] * ATR_MULT, over = atrPct > STOP_CAP, used = Math.min(atrPct, STOP_CAP);
+    cells.append(cell(`ATR 손절 (${ATR_MULT}×ATR)`, `${money(close - a[0] * ATR_MULT)} (−${fmt(atrPct)}%)`,
+      over ? `${STOP_CAP}%보다 넓어요 → ${STOP_CAP}% 한도에서 자르고, 변동성이 커서 비중을 줄이거나 더 좁은 자리에서만 사요.` : `${STOP_CAP}% 안에 들어와요 → 이 폭을 손절로 쓰면 보통의 흔들림에는 안 털려요.`, over ? 'bad' : 'good'));
+    cells.append(cell(`계좌 위험 ${RISK_PCT}% 기준 비중`, `${fmt(RISK_PCT * 100 / used, 0)}%`, `손절 폭 ${fmt(used)}%로 한 번에 계좌의 ${RISK_PCT}%만 잃도록 할 때 살 수 있는 최대 비중이에요.`));
+  } else {
+    cells.append(cell(`ATR 손절 (${ATR_MULT}×ATR)`, '—', 'ATR 자료가 오면 채워져요.'));
+  }
+  box.append(cells);
+  return box;
+}
 let chartDays = 60;
 function fillDetailChart(panel, s, ready) {
   const market = s.market || state.market;
@@ -333,6 +355,7 @@ function fillDetailChart(panel, s, ready) {
     const series = data && stockSeries(data, s.symbol);
     if (!series || !panel.isConnected) return;
     const atrNode = panel.closest('.detail-body')?.querySelector('.stat-atr strong'); if (atrNode) atrNode.textContent = atrText(series, s);
+    const stops = panel.closest('.detail-body')?.querySelector('.stop-box'); if (stops) stops.replaceWith(stopSection(series, s));
     const draw = () => {
       const head = el('div', null, 'chart-head');
       head.append(el('div', `일봉 · 최근 ${chartDays}거래일`, 'chart-caption'));
