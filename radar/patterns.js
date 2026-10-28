@@ -66,6 +66,8 @@ function evidenceText(key, value) {
 }
 
 let phase = 'all', pick = 'all', onlyStage2 = true, onlyTightStop = false, onlyLeadingIndustry = false, limit = 30;
+// 필터를 누르면 화면을 다시 그리므로, 설명 상자를 펼쳐 둔 상태는 따로 기억한다.
+let guideOpen = false;
 
 // 셋업북 ①-6: 같은 업종 대표 종목이 함께 강하면 성공 확률이 올라간다. 산업 동반 강세는
 // 이미 레이더가 판정해 두므로(industries[].confirmed) 그 이름만 모아 쓴다.
@@ -261,6 +263,46 @@ function evidence(setup) {
   return box;
 }
 
+const LINKS = [
+  ['naverUrl', '네이버', /^https:\/\/m\.stock\.naver\.com\/(domestic|worldstock)\/stock\/[A-Za-z0-9.]+\/total$/],
+  ['tradingviewUrl', '트레이딩뷰', /^https:\/\/www\.tradingview\.com\/chart\/\?symbol=[A-Z]+%3A[A-Z0-9.]+$/],
+];
+function links(stock) {
+  const box = n('div', null, 'pt-links');
+  for (const [key, label, shape] of LINKS) {
+    const url = stock[key];
+    if (typeof url !== 'string' || !shape.test(url)) continue;
+    const a = n('a', `${label} ↗`, 'pt-link');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.setAttribute('aria-label', `${short(stock.name)} ${label} 새 탭`);
+    box.append(a);
+  }
+  return box.childElementCount ? box : null;
+}
+
+/** 셋업 10개 설명. 셋업북의 한 줄 논리와 모양 설명을 중요도 순으로 펼쳐 본다. */
+function guide(meta) {
+  const keys = Object.keys(meta).sort((a, b) => (meta[b].importance || 0) - (meta[a].importance || 0));
+  if (!keys.length) return null;
+  const box = n('details', null, 'pt-guide');
+  box.open = guideOpen;
+  box.addEventListener('toggle', () => { guideOpen = box.open; });
+  box.append(n('summary', `패턴 ${keys.length}개 설명 보기`));
+  const list = n('div', null, 'pt-guide-list');
+  for (const key of keys) {
+    const info = meta[key];
+    const item = n('section', null, 'pt-guide-item');
+    const head = n('div', null, 'pt-guide-head');
+    head.append(n('h4', info.name || key), n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
+    item.append(head);
+    if (info.logic) item.append(n('p', info.logic, 'pt-logic'));
+    if (info.description) item.append(n('p', info.description, 'pt-guide-text'));
+    list.append(item);
+  }
+  box.append(list);
+  return box;
+}
+
 function card(row, market, meta, openStock, leading) {
   const { stock, found, setups } = row;
   const best = setups[0];
@@ -274,6 +316,8 @@ function card(row, market, meta, openStock, leading) {
   name.append(n('strong', short(stock.name)), n('small', `${stock.symbol} · ${stock.industry || '산업 미분류'}`));
   head.append(name, n('span', phaseLabel, `pt-phase phase-${phaseCls}`));
   box.append(head);
+  const outbound = links(stock);
+  if (outbound) box.append(outbound);
 
   const title = n('div', null, 'pt-setup');
   title.append(n('h4', info.name || best.key), n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
@@ -284,6 +328,7 @@ function card(row, market, meta, openStock, leading) {
     title.append(badge);
   }
   box.append(title);
+  if (info.logic) box.append(n('p', info.logic, 'pt-logic'));
 
   const body = n('div', null, 'pt-body');
   const chart = levelChart(stock, best);
@@ -314,8 +359,9 @@ function card(row, market, meta, openStock, leading) {
   }
 
   const why = n('details', null, 'pt-why');
-  why.append(n('summary', '판정 기준과 한계'));
+  why.append(n('summary', '패턴 설명 · 판정 기준'));
   const dl = n('dl');
+  if (info.description) dl.append(n('dt', '패턴 설명'), n('dd', info.description));
   dl.append(n('dt', '판정 기준'), n('dd', info.criterion || '—'));
   dl.append(n('dt', '한계'), n('dd', info.caveat || '—'));
   if (found.stage && !found.stage.pass) {
@@ -366,6 +412,8 @@ export function renderPatterns(root, market, block, meta, options = {}) {
   }
 
   root.append(filters(block, meta, redraw));
+  const help = guide(meta);
+  if (help) root.append(help);
 
   const rows = selectRows(block, query, leading);
   const info = n('div', null, 'pt-result');

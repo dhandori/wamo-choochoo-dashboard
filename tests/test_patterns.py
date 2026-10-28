@@ -434,6 +434,9 @@ class MetaTests(unittest.TestCase):
             self.assertEqual(entry['master'], wp.MASTERS[key])
             self.assertTrue(entry['criterion'])
             self.assertTrue(entry['caveat'])
+            # 화면의 '패턴 설명'은 셋업북의 한 줄 논리와 모양 설명을 그대로 쓴다.
+            self.assertTrue(entry['logic'], f'{key} 한 줄 논리 누락')
+            self.assertTrue(entry['description'], f'{key} 패턴 설명 누락')
 
     def test_vcp_text_matches_the_collection_stage(self):
         """VCP 문장은 detect_vcp 가 내보내는 것과 같아야 한다.

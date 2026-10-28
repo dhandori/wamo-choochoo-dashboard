@@ -1,7 +1,7 @@
 import copy
 import unittest
 from datetime import datetime, timedelta, timezone
-from wamo_insights import build_insights, naver_url
+from wamo_insights import build_insights, naver_url, tradingview_url
 
 NOW = datetime(2026, 10, 14, 1, tzinfo=timezone.utc)
 DAY = '2026-10-13'
@@ -12,6 +12,32 @@ def stock(symbol='AAA', close=90, count=252, industry='Chips'):
     return {'ticker':symbol, 'stock_code':symbol,'name':symbol,'industry':industry,'date':DAY,'history':rows,'dataSource':'verified'}
 def payload(*stocks):
     return {'meta':{'asOf':DAY,'source':'verified'},'stocks':list(stocks)}
+class TradingViewUrlTests(unittest.TestCase):
+    """거래소를 확인할 수 있을 때만 트레이딩뷰 주소를 만든다."""
+
+    def test_markets_map_to_exchange_prefixes(self):
+        base = 'https://www.tradingview.com/chart/?symbol='
+        self.assertEqual(tradingview_url('KR', '005930'), base + 'KRX%3A005930')
+        self.assertEqual(tradingview_url('KR', '0091C0'), base + 'KRX%3A0091C0')
+        self.assertEqual(tradingview_url('US', 'AAPL', 'NASDAQ'), base + 'NASDAQ%3AAAPL')
+        self.assertEqual(tradingview_url('US', 'IMO', 'NYSE AMERICAN'), base + 'AMEX%3AIMO')
+        self.assertEqual(tradingview_url('JP', '7203'), base + 'TSE%3A7203')
+
+    def test_class_shares_use_a_dot(self):
+        self.assertTrue(tradingview_url('US', 'BRK-B', 'NYSE').endswith('NYSE%3ABRK.B'))
+
+    def test_unknown_venue_or_market_gives_no_link(self):
+        self.assertIsNone(tradingview_url('US', 'AAPL', None))
+        self.assertIsNone(tradingview_url('US', 'AAPL', 'OTC'))
+        self.assertIsNone(tradingview_url('TW', '2330'))
+        self.assertIsNone(tradingview_url('KR', '<script>'))
+
+    def test_projected_stock_carries_the_link(self):
+        s = stock('005930')
+        result = build_insights({'KR': payload(s)}, NOW)['markets']['KR']['stocks'][0]
+        self.assertEqual(result['tradingviewUrl'], 'https://www.tradingview.com/chart/?symbol=KRX%3A005930')
+
+
 FUNNEL_KR = {'listed': 4148, 'companyUniverse': 2601, 'marketCapPass': 298, 'liquidityPass': 213,
              'marketCapThresholdKRW': 1_000_000_000_000, 'liquidityThresholdKRW': 10_000_000_000}
 

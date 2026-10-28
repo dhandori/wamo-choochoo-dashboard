@@ -95,6 +95,28 @@ def naver_url(market, symbol, exchange=None):
     return f'https://m.stock.naver.com/worldstock/stock/{code}/total' if code else None
 
 
+# 트레이딩뷰 거래소 접두어. 거래소를 확인할 수 있을 때만 링크를 만든다(대만은
+# 상장 시장(TWSE·TPEX)을 구분할 자료가 없어 만들지 않는다).
+TRADINGVIEW_VENUES = {'NASDAQ': 'NASDAQ', 'NYSE': 'NYSE', 'AMEX': 'AMEX',
+                      'NYSEAMERICAN': 'AMEX', 'NYSE AMERICAN': 'AMEX'}
+
+
+def tradingview_url(market, symbol, exchange=None):
+    """트레이딩뷰 차트 주소. 'KRX:005930'처럼 거래소:종목 형식을 쓴다."""
+    if market == 'KR':
+        code = f'KRX:{symbol}' if re.fullmatch(r'[A-Z0-9]{6}', symbol) else None
+    elif market == 'JP':
+        code = f'TSE:{symbol}' if re.fullmatch(r'[0-9][0-9A-Z]{3}', symbol) else None
+    elif market == 'US':
+        venue = TRADINGVIEW_VENUES.get(str(exchange or '').strip().upper())
+        # 트레이딩뷰는 클래스 주식을 BRK.B 처럼 점으로 적는다.
+        ticker = symbol.replace('-', '.')
+        code = f'{venue}:{ticker}' if venue and re.fullmatch(r'[A-Z][A-Z0-9.]{0,19}', ticker) else None
+    else:
+        code = None
+    return f'https://www.tradingview.com/chart/?symbol={quote(code)}' if code else None
+
+
 @lru_cache(maxsize=32)
 def recent_sessions(market, asof):
     sessions = calendar(market).sessions
@@ -238,7 +260,7 @@ def project(stock,market,asof):
             'rs':number(stock.get('rsPercentile')),'stage2':stock.get('stage2Core'),
             **trend_position(rows,market,asof),
             'source':stock.get('dataSource') or stock.get('priceProvider') or 'verified local history',
-            'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),
+            'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),'tradingviewUrl':tradingview_url(market,symbol,stock.get('exchange')),
             'detailUrl':None if market in ASIA else ('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
             'chartUrl':'https://finance.yahoo.com/quote/'+quote(str(ticker))+'/',
             'sparkline':[r['close'] for r in rows[-60:]],'catalysts':catalysts(stock.get('catalysts')),'moverReasons':reasons}
