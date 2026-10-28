@@ -412,6 +412,9 @@ table { font-size: 13px; }
   .metric strong { grid-row: auto; font-size: 20px; order: -1; }
   .metric span { font-size: 11px; line-height: 1.3; }
   .metric small { display: none; }
+  /* 휴대폰에서는 탭 아래에 같은 숫자(10% 내 298 · 27 · 224 …)가 보이므로 집계 카드가 중복이다.
+     118px을 아껴 첫 종목을 위로 올린다. AI 탭의 집계는 탭 숫자와 다른 내용이라 남긴다. */
+  body:not([data-view="ai"]) .metrics { display: none; }
   .industry-rail .rail-group small { display: none; }
   .industry-rail .rail-group { padding: 7px 10px; }
 }
