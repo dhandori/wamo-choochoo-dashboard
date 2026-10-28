@@ -329,6 +329,39 @@ with sync_playwright() as p:
     expect(page.locator('.stock-link:visible').first).to_be_visible()
     assert not errors,errors
     context.close();print('RADAR PREVIOUS TEMPLATE RETENTION PASS')
+    # 스크리닝 대상 기준: 213종목이 시장 전체가 아니라는 것을 화면에서 읽을 수 있어야 한다.
+    for market in ('KR','US'):
+        context=browser.new_context();page=context.new_page();errors=[]
+        page.on('pageerror',lambda error:errors.append(str(error)))
+        page.goto(f'{base}/radar.html?market={market}&tab=near',wait_until='networkidle')
+        page.locator('#coverage-summary').click()
+        rules=page.locator('#coverage-detail .universe-rule')
+        universe=DATA['markets'][market]['coverage']['universe']
+        expect(rules.first).to_be_visible()
+        first=rules.first.inner_text()
+        # 임계값은 스냅샷에서 읽어야 한다. 화면 코드에 숫자를 적으면 수집 기준이 바뀔 때 어긋난다.
+        if market=='KR':
+            assert '시총 1조원 이상' in first,first
+            assert '100억원 이상' in first,first
+        else:
+            assert '10억 달러 이상' in first,first
+            assert '1,000만 달러 이상' in first,first
+        # 단계 줄은 숫자가 실제로 줄어드는 단계만 담는다.
+        texts=rules.all_inner_texts()
+        if len(texts)>1:
+            shown=[int(_re.sub(r'[^0-9]','',part)) for part in texts[1].split('→')]
+            assert shown==sorted(shown,reverse=True) and len(set(shown))==len(shown),texts[1]
+            assert shown[-1]==universe['steps'][-1]['count'],(shown,universe['steps'])
+        assert not errors,errors
+        context.close();print('RADAR UNIVERSE RULES PASS',market)
+    # 일본·대만은 수집 단계가 퍼널을 남기지 않는다. 줄을 비우고 조용히 넘어가야 한다.
+    context=browser.new_context();page=context.new_page();errors=[]
+    page.on('pageerror',lambda error:errors.append(str(error)))
+    page.goto(f'{base}/radar.html?market=JP&tab=near',wait_until='networkidle')
+    page.locator('#coverage-summary').click()
+    assert page.locator('#coverage-detail .universe-rule').count()==0
+    assert not errors,errors
+    context.close();print('RADAR UNIVERSE RULES ABSENT PASS JP')
     # 패턴 셋업: 셋업북 12개 패턴 중 진행 중인 것만 카드로 보여 준다. 두 시장 모두 확인한다.
     for market in ('US','KR'):
         context=browser.new_context();page=context.new_page();errors=[]

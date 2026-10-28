@@ -705,7 +705,39 @@ function renderMeta(m) {
   $('coverage-summary').textContent = `스크리닝 대상 ${m.coverage.valid}종목 · 52주 고점 비교 ${m.coverage.eligible52w}종목${m.coverage.excluded ? ' · 제외 ' + m.coverage.excluded + '종목' : ''} · 데이터 범위와 기준`;
   const computed = new Date(snapshot.generatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
   $('coverage-detail').replaceChildren(el('p', `가격 출처: ${m.source} | 전체 ${m.coverage.total} · 사용 ${m.coverage.valid} · 제외 ${m.coverage.excluded}`), el('p', `가격 기준 거래일 ${m.asOf || '—'} · 계산 시각 ${computed} KST (실시간 가격이 아니에요)`), el('p', `최근 거래일 ${m.expectedSession} · 다음 갱신 ${new Date(m.nextScheduledFor).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST`), el('p', '고점까지: 최근 252거래일 장중 최고가와 종가의 차이. 당일 신고가: 직전 251거래일의 최고가를 넘긴 경우(같은 값은 제외). 거래량 배수: 당일 거래량 ÷ 직전 50거래일 평균. RS·Stage 2는 골라서 거는 조건입니다.'), el('p', '산업 동반 강세 기준: 3종목 이상인 산업에서 당일 상승 2종목 이상, 5일 상승 2종목 이상이면서 전체의 절반 이상, 5일 수익률 중앙값 플러스, 그리고 신고가권 2종목 이상 또는 거래량 1.5배 이상 2종목 이상. 분류되지 않은 종목은 제외.'));
+  universeLines(m.coverage.universe).forEach(line => $('coverage-detail').append(el('p', line, 'universe-rule')));
   m.warnings.forEach(w => $('coverage-detail').append(el('p', w)));
+}
+// 스크리닝 대상 기준. 임계값과 단계 수는 스냅샷(coverage.universe)에서 읽는다.
+// 수집 단계의 기준이 바뀌면 화면 숫자도 따라가야 하므로 여기에 숫자를 적지 않는다.
+const MONEY_UNIT = { KRW: '원', USD: ' 달러', JPY: ' 엔', TWD: ' 대만달러' };
+const MONEY_SCALE = [[1e12, '조'], [1e8, '억'], [1e4, '만']];
+function money(value, currency) {
+  if (!numeric(value) || value <= 0) return null;
+  const unit = MONEY_UNIT[currency] ?? '';
+  for (const [size, name] of MONEY_SCALE) {
+    if (value >= size) return `${fmt(value / size, 1).replace(/\.0$/, '')}${name}${unit}`;
+  }
+  return `${value.toLocaleString('ko-KR')}${unit}`;
+}
+function universeLines(universe) {
+  if (!universe) return [];
+  const rules = [];
+  const cap = money(universe.marketCap, universe.currency);
+  const value = money(universe.liquidity, universe.currency);
+  if (cap) rules.push(`시총 ${cap} 이상`);
+  if (value) rules.push(`${universe.liquidityDays || 50}일 평균 거래대금 ${value} 이상`);
+  const lines = [];
+  if (rules.length) lines.push(`스크리닝 대상 기준: ${rules.join(' · ')} · ETF·ETN·스팩·상장펀드 제외`);
+  // 숫자가 실제로 줄어드는 단계만 남긴다(미국은 시총 단계에서 걸러지지 않는다).
+  const steps = [];
+  for (const step of universe.steps || []) {
+    if (!numeric(step.count)) continue;
+    if (steps.length && step.count >= steps[steps.length - 1].count) continue;
+    steps.push(step);
+  }
+  if (steps.length > 1) lines.push(steps.map(x => `${x.label} ${x.count.toLocaleString()}`).join(' → '));
+  return lines;
 }
 function renderChanges(m) {
   const panel=$('session-changes'),filter=$('signal-filter');

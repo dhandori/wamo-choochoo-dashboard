@@ -64,3 +64,15 @@
 - `wamo_patterns.CRITERIA['vcp']`는 `detect_vcp`가 내보내는 문장과 같아야 한다. 수집 단계 기준이 바뀌면 `MetaTests.test_vcp_text_matches_the_collection_stage`가 깨진다.
 - `radar/patterns.css`를 고치면 `python tools/make_light_css.py`로 밝은 테마를 다시 만든다.
 - 화면 용어는 `radar/terms.mjs`의 `PATTERN_TERMS`에 있고 눌러서 볼 수 있다.
+
+## 스크리닝 대상 기준이 화면에 적힌다 (2026-10-28 추가)
+패턴 셋업이 한국에서 몇 종목만 잡는 이유는 두 가지가 겹친 것이고(시장이 약하다 + 유니버스가 좁다), 둘째가 화면에 없었다. 레거시 `index.html`에는 "분석대상은 시총 1조원 이상·50일 평균 거래대금 100억원 이상"이 적혀 있었으나 레이더로 옮겨오면서 따라오지 않았다. `데이터 범위와 기준`에 "전체 213 · 사용 213"만 보여 213종목이 시장 전체처럼 읽혔다.
+
+`wamo_insights.universe_rules()`가 수집 단계의 `meta.universeFunnel`을 `markets.X.coverage.universe`로 옮기고, `radar/view.js`의 `universeLines()`가 그린다. **임계값을 화면 코드에 적지 않는다** — 수집 기준이 바뀌면 화면 숫자가 따라가야 한다. 통화는 시장을 따른다(`marketCapThresholdKRW`·`...USD` 중 있는 쪽).
+
+```
+스크리닝 대상 기준: 시총 1조원 이상 · 50일 평균 거래대금 100억원 이상 · ETF·ETN·스팩·상장펀드 제외
+상장 4,148 → 기업·리츠 2,601 → 시총 통과 298 → 거래대금 통과 213
+```
+
+단계 줄은 **숫자가 실제로 줄어드는 단계만** 남긴다. 미국은 시총에서 걸러지지 않으므로(`marketCapPass == listed`) `상장 2,560 → 거래대금 통과 881`만 나온다. 일본·대만은 Lite 엔진이 퍼널을 남기지 않아 줄이 아예 나오지 않는다.

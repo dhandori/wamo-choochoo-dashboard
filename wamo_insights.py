@@ -244,6 +244,40 @@ def project(stock,market,asof):
             'sparkline':[r['close'] for r in rows[-60:]],'catalysts':catalysts(stock.get('catalysts')),'moverReasons':reasons}
 
 
+THRESHOLD_UNITS = ('KRW', 'USD', 'JPY', 'TWD')
+# 수집 단계가 적어 둔 유니버스 단계. 통과 수가 줄어드는 순서로만 보여 준다.
+UNIVERSE_STEPS = (('상장', 'listed'), ('기업·리츠', 'companyUniverse'),
+                  ('시총 통과', 'marketCapPass'), ('거래대금 통과', 'liquidityPass'))
+
+
+def universe_rules(meta):
+    """스크리닝 대상 기준. 임계값을 화면에 적기 위해 수집 단계 값을 그대로 옮긴다.
+
+    기준이 바뀌면 화면 숫자도 따라가야 하므로 임계값을 화면 코드에 적지 않는다.
+    """
+    funnel = meta.get('universeFunnel')
+    if not isinstance(funnel, dict):
+        return None
+    currency = market_cap = liquidity = None
+    for unit in THRESHOLD_UNITS:
+        cap = number(funnel.get(f'marketCapThreshold{unit}'))
+        value = number(funnel.get(f'liquidityThreshold{unit}'))
+        if cap or value:
+            currency, market_cap, liquidity = unit, cap, value
+            break
+    steps = []
+    for label, key in UNIVERSE_STEPS:
+        count = number(funnel.get(key))
+        if count is not None and count > 0:
+            steps.append({'label': label, 'count': int(count)})
+    if not (market_cap or liquidity or steps):
+        return None
+    return {'currency': currency,
+            'marketCap': market_cap if market_cap and market_cap > 0 else None,
+            'liquidity': liquidity if liquidity and liquidity > 0 else None,
+            'liquidityDays': 50, 'steps': steps}
+
+
 def pattern_summary(stocks):
     """셋업 집계. 단계별·셋업별 종목 수만 센다(한 종목이 여러 셋업에 들어갈 수 있다)."""
     stages=defaultdict(int);keys=defaultdict(int);breakouts=[]
@@ -310,7 +344,7 @@ def build_market(market,payload,now,previous_market=None,baseline_market=None):
     warnings.extend(w for w in (meta.get('warnings') or []) if isinstance(w,str))
     return {'asOf':asof if stocks else None,'expectedSession':expected,'status':('STALE' if asof!=expected else 'PARTIAL' if excluded else 'CURRENT') if stocks else 'UNAVAILABLE',
            'nextScheduledFor':scheduled,'source':meta.get('source') or 'verified local history',
-           'coverage':{'total':len(raw),'valid':len(stocks),'excluded':excluded,'eligible52w':sum(s['high52'] is not None for s in stocks)},
+           'coverage':{'total':len(raw),'valid':len(stocks),'excluded':excluded,'eligible52w':sum(s['high52'] is not None for s in stocks),'universe':universe_rules(meta)},
            'patternSummary':pattern_summary(stocks),
            'stocks':stocks,'industries':industries(stocks,market),'movers':[s for s in stocks if s['moverReasons']],'warnings':warnings,
            'comparison':comparison_snapshot(market,asof if stocks else None,previous_market,baseline_market)}
