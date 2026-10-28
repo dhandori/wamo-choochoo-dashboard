@@ -6,7 +6,7 @@
     "nextScheduledFor": "2026-10-29T06:50:00+00:00",
     "trigger": "수동실행",
     "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/40646297908",
-    "moversStatus": "RUNNING",
+    "moversStatus": "PASS",
     "warnings": [],
     "lastSuccessAt": "2026-10-28T06:57:38.630043+00:00",
     "asOf": "2026-10-28",
@@ -36,7 +36,7 @@
       "forwardMetricsConnected": false,
       "message": "한국투자 시세 20/20종목 새로 확인 · 이전값 0 · 실패 0 · 미조회 0 · 추정실적 응답 5종목(단위·항목 검증 대기)"
     },
-    "moversCompletedAt": "2026-10-27T07:22:15.679094+00:00",
+    "moversCompletedAt": "2026-10-28T07:02:18.436929+00:00",
     "refreshMode": "FULL",
     "auxiliaryCheckedAt": "2026-10-01T23:46:06.076117+00:00",
     "catalogStatus": "PASS",
