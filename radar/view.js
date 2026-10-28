@@ -349,7 +349,7 @@ function strengthSection(s) {
 }
 // 변동성·손절: ATR(14일)와 두 가지 손절 기준. 종가를 매수가로 가정한다.
 // ① −8% 한도(미너비니 최대 손절) ② 2×ATR(그 종목의 보통 흔들림 밖). ATR은 차트 자료(고가·저가)에서 와서 늦으면 나중에 채운다.
-const STOP_CAP = 8, ATR_MULT = 2, RISK_PCT = 1;
+const STOP_CAP = 8, ATR_MULT = 2, RISK_PCT = 2;
 function riskSection(series, s) {
   const [sym, , d] = CURRENCY[s.market || state.market] || CURRENCY.US, money = v => `${sym}${fmt(v, d)}`;
   const close = numeric(s.close) && s.close > 0 ? s.close : null, a = series?.atr, hasAtr = !!(a && numeric(a[0]) && numeric(a[1]));
