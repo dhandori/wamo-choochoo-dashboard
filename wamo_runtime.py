@@ -191,7 +191,9 @@ def patch_52week_ui(html):
 
 
 def write_json(path, value):
+    # wamo_trend.py 와 같은 한 줄 압축 형식. wamo_run.py 가 wamo_trend.json·wamo_ftd_history.json 을
+    # 다시 쓸 때 들여쓰기 형식이면 두 작업이 번갈아 파일 전체를 바꿔 커밋마다 수만 줄 차이가 났다(2026-10-28).
     path = Path(path)
     tmp = path.with_suffix(path.suffix + '.tmp')
-    tmp.write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
+    tmp.write_text(json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(',', ':')) + '\n', encoding='utf-8')
     tmp.replace(path)
