@@ -1,7 +1,7 @@
 import copy
 import unittest
 from datetime import datetime, timedelta, timezone
-from wamo_insights import build_insights, naver_url
+from wamo_insights import build_insights, naver_url, tradingview_url, broad_sector
 
 NOW = datetime(2026, 10, 14, 1, tzinfo=timezone.utc)
 DAY = '2026-10-13'
@@ -12,6 +12,53 @@ def stock(symbol='AAA', close=90, count=252, industry='Chips'):
     return {'ticker':symbol, 'stock_code':symbol,'name':symbol,'industry':industry,'date':DAY,'history':rows,'dataSource':'verified'}
 def payload(*stocks):
     return {'meta':{'asOf':DAY,'source':'verified'},'stocks':list(stocks)}
+class TradingViewUrlTests(unittest.TestCase):
+    """거래소를 확인할 수 있을 때만 트레이딩뷰 주소를 만든다."""
+
+    def test_markets_map_to_exchange_prefixes(self):
+        base = 'https://www.tradingview.com/chart/?symbol='
+        self.assertEqual(tradingview_url('KR', '005930'), base + 'KRX%3A005930')
+        self.assertEqual(tradingview_url('KR', '0091C0'), base + 'KRX%3A0091C0')
+        self.assertEqual(tradingview_url('US', 'AAPL', 'NASDAQ'), base + 'NASDAQ%3AAAPL')
+        self.assertEqual(tradingview_url('US', 'IMO', 'NYSE AMERICAN'), base + 'AMEX%3AIMO')
+        self.assertEqual(tradingview_url('JP', '7203'), base + 'TSE%3A7203')
+
+    def test_class_shares_use_a_dot(self):
+        self.assertTrue(tradingview_url('US', 'BRK-B', 'NYSE').endswith('NYSE%3ABRK.B'))
+
+    def test_unknown_venue_or_market_gives_no_link(self):
+        self.assertIsNone(tradingview_url('US', 'AAPL', None))
+        self.assertIsNone(tradingview_url('US', 'AAPL', 'OTC'))
+        self.assertIsNone(tradingview_url('TW', '2330'))
+        self.assertIsNone(tradingview_url('KR', '<script>'))
+
+    def test_projected_stock_carries_the_link(self):
+        s = stock('005930')
+        result = build_insights({'KR': payload(s)}, NOW)['markets']['KR']['stocks'][0]
+        self.assertEqual(result['tradingviewUrl'], 'https://www.tradingview.com/chart/?symbol=KRX%3A005930')
+
+
+class BroadSectorTests(unittest.TestCase):
+    """패턴 탭의 섹터 필터에 쓰는 큰 섹터."""
+
+    def test_us_uses_the_korean_part_of_krx_sector(self):
+        self.assertEqual(broad_sector({'krxSector': '기술 (Technology)'}, 'US', None, 'Semiconductors'), '기술')
+
+    def test_kr_prefers_the_wamo_group_then_the_industry(self):
+        self.assertEqual(broad_sector({}, 'KR', '반도체', '테스트 소켓·프로브'), '반도체')
+        self.assertEqual(broad_sector({}, 'KR', None, '보험'), '보험')
+
+    def test_unclassified_or_other_markets_give_none(self):
+        self.assertIsNone(broad_sector({'krxSector': '산업 미분류'}, 'US', None, 'x'))
+        self.assertIsNone(broad_sector({}, 'US', None, 'x'))
+        self.assertIsNone(broad_sector({}, 'KR', None, 'KRX 업종 미분류'))
+        self.assertIsNone(broad_sector({'krxSector': '기술 (Technology)'}, 'JP', None, 'x'))
+
+    def test_projected_stock_carries_the_sector(self):
+        s = stock('AAA'); s['krxSector'] = '헬스케어 (Health Care)'
+        self.assertEqual(build_insights({'US': payload(s)}, NOW)['markets']['US']['stocks'][0]['sector'], '헬스케어')
+
+
 FUNNEL_KR = {'listed': 4148, 'companyUniverse': 2601, 'marketCapPass': 298, 'liquidityPass': 213,
              'marketCapThresholdKRW': 1_000_000_000_000, 'liquidityThresholdKRW': 10_000_000_000}
 

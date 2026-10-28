@@ -1,9 +1,10 @@
 // 패턴 셋업 화면. wamo_insights.json 의 stocks[].patterns 와 patternMeta 를 읽는다.
 // 셋업 판정은 서버(wamo_patterns.py)가 하고, 여기서는 고르고 보여 주기만 한다.
-import { helpButton, addTerms } from './help.js?v=20261028-h60';
+import { helpButton, addTerms } from './help.js?v=20261029-pt3';
 import { PATTERN_TERMS, glossary } from './terms.mjs?v=20261029-pt1';
 // 이 파일의 PHASES 는 셋업 진행 단계다. FTD 지수 단계는 이름을 구분해 가져온다.
 import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs?v=20261028-h60';
+import { CAP_FLOORS } from './model.mjs?v=20261028-h60';
 addTerms(PATTERN_TERMS);
 
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
@@ -17,6 +18,8 @@ const short = name => String(name || '').replace(/\s+(Common Stock|Class [A-Z]\b
 const SVG = 'http://www.w3.org/2000/svg';
 const sv = (tag, attrs = {}) => { const e = document.createElementNS(SVG, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
 
+// 셋업 판정을 하는 시장. 일본·대만은 판정하지 않는다(한국·미국만 만들기로 함).
+const SUPPORTED = new Set(['KR', 'US']);
 const DIGITS = { KR: 0, US: 2, JP: 0, TW: 2 };
 const price = (v, market) => isNum(v) ? v.toLocaleString('ko-KR', { maximumFractionDigits: DIGITS[market] ?? 2, minimumFractionDigits: DIGITS[market] ?? 2 }) : '—';
 
@@ -66,6 +69,30 @@ function evidenceText(key, value) {
 }
 
 let phase = 'all', pick = 'all', onlyStage2 = true, onlyTightStop = false, onlyLeadingIndustry = false, limit = 30;
+// 필터를 누르면 화면을 다시 그리므로, 설명 상자를 펼쳐 둔 상태는 따로 기억한다.
+let guideOpen = false;
+
+// 정렬. 카드에 보이는 대표 셋업(조건을 통과한 첫 셋업)과 종목 값으로 줄 세운다.
+// 값이 없는 종목(예: 피벗이 없는 포켓 피벗)은 맨 뒤로 보내고, 같은 값은 기본 순서를 따른다.
+const SORTS = {
+  default: ['기본 · 단계순', '돌파 → 임박 → 형성중, 같은 단계에서는 피벗에 가까운 순'],
+  pivot: ['피벗 가까운 순', '현재가와 피벗의 거리가 작은 순', r => absOrNull(r.setups[0].distanceToPivotPct), 'asc'],
+  stop: ['손절 폭 작은 순', '피벗에서 손절선까지 거리가 작은 순 · 틀렸을 때 손실이 작은 자리부터', r => r.setups[0].stopDistancePct, 'asc'],
+  importance: ['셋업 중요도 순', '셋업북 별점(★)이 높은 셋업부터', (r, meta) => meta[r.setups[0].key]?.importance, 'desc'],
+  rs: ['RS 높은 순', '같은 시장 안에서 상대 강도가 높은 순', r => r.stock.rs, 'desc'],
+  volume: ['거래량 많은 순', '당일 거래량 ÷ 50일 평균이 큰 순', r => r.stock.volumeRatio, 'desc'],
+  change: ['당일 상승률 순', '당일 등락률이 높은 순', r => r.stock.changePct, 'desc'],
+  cap: ['시총 큰 순', '시가총액이 큰 순(시장 통화 그대로 비교)', r => r.stock.marketCap, 'desc'],
+};
+const absOrNull = v => isNum(v) ? Math.abs(v) : null;
+const SORT_STORE = 'wamo-pattern-sort';
+let sortKey = 'default';
+const SCOPE_STORE = 'wamo-pattern-scope';
+let scope = {};   // { KR: { cap: 1e12, sector: '반도체' }, US: { … } }
+try { const saved = JSON.parse(localStorage.getItem(SCOPE_STORE) || '{}'); if (saved && typeof saved === 'object') scope = saved; } catch {}
+const scopeOf = market => scope[market] || (scope[market] = { cap: 0, sector: 'all' });
+function saveScope() { try { localStorage.setItem(SCOPE_STORE, JSON.stringify(scope)); } catch {} }
+try { const saved = localStorage.getItem(SORT_STORE); if (SORTS[saved]) sortKey = saved; } catch {}
 
 // 셋업북 ①-6: 같은 업종 대표 종목이 함께 강하면 성공 확률이 올라간다. 산업 동반 강세는
 // 이미 레이더가 판정해 두므로(industries[].confirmed) 그 이름만 모아 쓴다.
@@ -83,7 +110,8 @@ export function patternsSummary(block) {
 }
 
 /** 지금 화면 조건을 통과한 종목. 종목마다 통과한 셋업 목록을 함께 돌려준다. */
-function selectRows(block, query, leading) {
+function selectRows(block, query, leading, meta = {}, market) {
+  const { cap, sector } = scopeOf(market);
   const text = String(query || '').trim().toLowerCase();
   const rows = [];
   for (const stock of block.stocks || []) {
@@ -91,6 +119,9 @@ function selectRows(block, query, leading) {
     if (!found || !found.setups?.length) continue;
     if (onlyStage2 && stock.stage2 !== true) continue;
     if (onlyLeadingIndustry && !inLeadingIndustry(stock, leading)) continue;
+    // 시총을 모르는 종목은 하한을 걸면 뺀다(넘는지 알 수 없다).
+    if (cap > 0 && !(isNum(stock.marketCap) && stock.marketCap >= cap)) continue;
+    if (sector !== 'all' && stock.sector !== sector) continue;
     if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry]
       .some(v => String(v || '').toLowerCase().includes(text))) continue;
     const setups = found.setups.filter(s =>
@@ -100,9 +131,16 @@ function selectRows(block, query, leading) {
     if (setups.length) rows.push({ stock, found, setups });
   }
   const rank = r => PHASE_ORDER.length - PHASE_ORDER.indexOf(r.setups[0].status);
-  rows.sort((a, b) => rank(b) - rank(a)
-    || Math.abs(a.setups[0].distanceToPivotPct ?? 99) - Math.abs(b.setups[0].distanceToPivotPct ?? 99));
-  return rows;
+  const base = (a, b) => rank(b) - rank(a)
+    || Math.abs(a.setups[0].distanceToPivotPct ?? 99) - Math.abs(b.setups[0].distanceToPivotPct ?? 99);
+  const [, , value, dir] = SORTS[sortKey] || SORTS.default;
+  if (!value) return rows.sort(base);
+  const read = r => { const v = value(r, meta); return isNum(v) ? v : null; };
+  return rows.sort((a, b) => {
+    const x = read(a), y = read(b);
+    if (x === null || y === null) return (x === null) - (y === null) || base(a, b);
+    return (dir === 'asc' ? x - y : y - x) || base(a, b);
+  });
 }
 
 function chip(label, active, onClick, title) {
@@ -113,7 +151,7 @@ function chip(label, active, onClick, title) {
   return b;
 }
 
-function filters(block, meta, redraw) {
+function filters(block, meta, redraw, market) {
   const box = n('div', null, 'pt-filters');
   const summary = block.patternSummary || {};
   const stages = n('div', null, 'pt-chiprow');
@@ -154,6 +192,51 @@ function filters(block, meta, redraw) {
     () => { onlyLeadingIndustry = !onlyLeadingIndustry; limit = 30; redraw(); },
     '셋업북 ①-6: 같은 업종 대표 종목 여러 개가 함께 신고가 근처에 있으면 성공 확률이 올라갑니다. 레이더가 산업 동반 강세로 판정한 업종의 종목만 봅니다.'));
   box.append(toggles);
+
+  const current = scopeOf(market);
+  const range = n('div', null, 'pt-chiprow pt-scope');
+  range.append(n('span', '범위', 'pt-chiplabel'));
+  const capSelect = n('select', null, 'pt-select');
+  capSelect.setAttribute('aria-label', '시총 하한');
+  const floors = CAP_FLOORS[market] || [[0, '전체']];
+  if (!floors.some(([v]) => v === current.cap)) current.cap = 0;
+  for (const [value, label] of floors) {
+    const option = n('option', value ? `시총 ${label}` : '시총 전체'); option.value = String(value);
+    option.selected = value === current.cap; capSelect.append(option);
+  }
+  capSelect.onchange = () => { current.cap = Number(capSelect.value) || 0; limit = 30; saveScope(); redraw(); };
+  // 섹터는 셋업이 있는 종목에서만 모은다. 종목 수가 많은 섹터부터.
+  const counts = new Map();
+  for (const stock of block.stocks || []) {
+    if (stock.patterns?.setups?.length && stock.sector) counts.set(stock.sector, (counts.get(stock.sector) || 0) + 1);
+  }
+  if (current.sector !== 'all' && !counts.has(current.sector)) current.sector = 'all';
+  const sectorSelect = n('select', null, 'pt-select');
+  sectorSelect.setAttribute('aria-label', '섹터');
+  const all = n('option', '섹터 전체'); all.value = 'all'; sectorSelect.append(all);
+  for (const [name, count] of [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'))) {
+    const option = n('option', `${name} ${count}`); option.value = name;
+    option.selected = name === current.sector; sectorSelect.append(option);
+  }
+  sectorSelect.onchange = () => { current.sector = sectorSelect.value; limit = 30; saveScope(); redraw(); };
+  range.append(capSelect, sectorSelect);
+  box.append(range);
+
+  const order = n('label', null, 'pt-chiprow pt-sort');
+  order.append(n('span', '정렬', 'pt-chiplabel'));
+  const select = n('select', null, 'pt-select');
+  select.setAttribute('aria-label', '정렬');
+  for (const [key, [label, hint]] of Object.entries(SORTS)) {
+    const option = n('option', label); option.value = key; option.title = hint;
+    option.selected = key === sortKey; select.append(option);
+  }
+  select.onchange = () => {
+    sortKey = SORTS[select.value] ? select.value : 'default'; limit = 30;
+    try { localStorage.setItem(SORT_STORE, sortKey); } catch {}
+    redraw();
+  };
+  order.append(select, n('small', SORTS[sortKey][1], 'pt-sort-hint'));
+  box.append(order);
   return box;
 }
 
@@ -261,22 +344,89 @@ function evidence(setup) {
   return box;
 }
 
+// 패턴 이름을 누르면 뜨는 풀이. 용어 팝업(help.js)에 셋업마다 한 번만 등록한다.
+// addTerms 는 같은 키를 다시 넣으면 경고를 남기므로, 화면을 다시 그릴 때마다 넣지 않는다.
+const registered = new Set();
+const setupTerm = key => `setup_${key}`;
+function registerSetups(meta) {
+  const fresh = {};
+  for (const [key, info] of Object.entries(meta)) {
+    if (registered.has(key)) continue;
+    const stars = info.importance ? ` · ${'★'.repeat(info.importance)}` : '';
+    fresh[setupTerm(key)] = [`${info.name || key} · ${info.master || ''}${stars}`, info.logic || '',
+      [['어떤 모양인가', info.description], ['판정 기준', info.criterion], ['한계', info.caveat]]];
+    registered.add(key);
+  }
+  if (Object.keys(fresh).length) addTerms(fresh);
+}
+/** 패턴 이름. 설명이 있으면 눌러서 풀이를 연다. */
+function setupName(key, meta) {
+  const name = meta[key]?.name || key;
+  return meta[key]?.description ? helpButton(name, setupTerm(key)) : document.createTextNode(name);
+}
+
+const LINKS = [
+  ['naverUrl', '네이버', /^https:\/\/m\.stock\.naver\.com\/(domestic|worldstock)\/stock\/[A-Za-z0-9.]+\/total$/],
+  ['tradingviewUrl', '트레이딩뷰', /^https:\/\/www\.tradingview\.com\/chart\/\?symbol=[A-Z]+%3A[A-Z0-9.]+$/],
+];
+function links(stock) {
+  const box = n('div', null, 'pt-links');
+  for (const [key, label, shape] of LINKS) {
+    const url = stock[key];
+    if (typeof url !== 'string' || !shape.test(url)) continue;
+    const a = n('a', `${label} ↗`, 'pt-link');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.setAttribute('aria-label', `${short(stock.name)} ${label} 새 탭`);
+    box.append(a);
+  }
+  return box.childElementCount ? box : null;
+}
+
+/** 셋업 10개 설명. 셋업북의 한 줄 논리와 모양 설명을 중요도 순으로 펼쳐 본다. */
+function guide(meta) {
+  const keys = Object.keys(meta).sort((a, b) => (meta[b].importance || 0) - (meta[a].importance || 0));
+  if (!keys.length) return null;
+  const box = n('details', null, 'pt-guide');
+  box.open = guideOpen;
+  box.addEventListener('toggle', () => { guideOpen = box.open; });
+  box.append(n('summary', `패턴 ${keys.length}개 설명 보기`));
+  const list = n('div', null, 'pt-guide-list');
+  for (const key of keys) {
+    const info = meta[key];
+    const item = n('section', null, 'pt-guide-item');
+    const head = n('div', null, 'pt-guide-head');
+    const heading = n('h4'); heading.append(setupName(key, meta));
+    head.append(heading, n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
+    item.append(head);
+    if (info.logic) item.append(n('p', info.logic, 'pt-logic'));
+    if (info.description) item.append(n('p', info.description, 'pt-guide-text'));
+    list.append(item);
+  }
+  box.append(list);
+  return box;
+}
+
 function card(row, market, meta, openStock, leading) {
   const { stock, found, setups } = row;
   const best = setups[0];
   const info = meta[best.key] || {};
   const [phaseLabel, phaseCls] = PHASES[best.status] || ['—', 'watch'];
   const box = n('article', null, `pt-card phase-${phaseCls}`);
+  box.dataset.id = stock.id;
 
   const head = n('div', null, 'pt-head');
   const name = n('button', null, 'pt-name'); name.type = 'button';
   name.onclick = () => openStock(stock.id);
-  name.append(n('strong', short(stock.name)), n('small', `${stock.symbol} · ${stock.industry || '산업 미분류'}`));
+  const where = [stock.sector, stock.industry].filter((v, i, a) => v && a.indexOf(v) === i);
+  name.append(n('strong', short(stock.name)), n('small', [stock.symbol, ...(where.length ? where : ['산업 미분류'])].join(' · ')));
   head.append(name, n('span', phaseLabel, `pt-phase phase-${phaseCls}`));
   box.append(head);
+  const outbound = links(stock);
+  if (outbound) box.append(outbound);
 
   const title = n('div', null, 'pt-setup');
-  title.append(n('h4', info.name || best.key), n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
+  const heading = n('h4'); heading.append(setupName(best.key, meta));
+  title.append(heading, n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
   if (best.label && best.label !== info.name) title.append(n('span', best.label, 'pt-label'));
   if (inLeadingIndustry(stock, leading)) {
     const badge = n('span', null, 'pt-lead');
@@ -284,6 +434,7 @@ function card(row, market, meta, openStock, leading) {
     title.append(badge);
   }
   box.append(title);
+  if (info.logic) box.append(n('p', info.logic, 'pt-logic'));
 
   const body = n('div', null, 'pt-body');
   const chart = levelChart(stock, best);
@@ -307,15 +458,17 @@ function card(row, market, meta, openStock, leading) {
     for (const setup of setups.slice(1)) {
       const [label, cls] = PHASES[setup.status] || ['—', 'watch'];
       const tag = n('span', null, `pt-tag phase-${cls}`);
-      tag.append(n('b', meta[setup.key]?.name || setup.key), n('i', label));
+      const tagName = n('b'); tagName.append(setupName(setup.key, meta));
+      tag.append(tagName, n('i', label));
       more.append(tag);
     }
     box.append(more);
   }
 
   const why = n('details', null, 'pt-why');
-  why.append(n('summary', '판정 기준과 한계'));
+  why.append(n('summary', '패턴 설명 · 판정 기준'));
   const dl = n('dl');
+  if (info.description) dl.append(n('dt', '패턴 설명'), n('dd', info.description));
   dl.append(n('dt', '판정 기준'), n('dd', info.criterion || '—'));
   dl.append(n('dt', '한계'), n('dd', info.caveat || '—'));
   if (found.stage && !found.stage.pass) {
@@ -330,15 +483,17 @@ export function renderPatterns(root, market, block, meta, options = {}) {
   const { openStock, query, trend, expectedSession, trendFailed, openTrend } = options;
   root.replaceChildren();
   meta = meta || {};
+  // 지원하지 않는 시장이라는 사실이 자료 대기보다 먼저다(일본 자료가 비어 있는 날에도 같은 안내).
+  if (!SUPPORTED.has(market) || (block?.stocks?.length && !block.patternSummary)) {
+    root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국과 미국만 지원합니다.`, 'empty'));
+    return;
+  }
   if (!block || !block.stocks?.length) {
     root.append(n('div', '가격 자료가 아직 없어 셋업을 판정할 수 없습니다.', 'empty'));
     return;
   }
   const summary = block.patternSummary;
-  if (!summary) {
-    root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국과 미국만 지원합니다.`, 'empty'));
-    return;
-  }
+  registerSetups(meta);
   const redraw = () => renderPatterns(root, market, block, meta, options);
   const leading = leadingIndustries(block);
 
@@ -365,9 +520,11 @@ export function renderPatterns(root, market, block, meta, options = {}) {
     root.append(n('p', '지금 이 시장에는 촘촘한 베이스가 거의 없습니다. 셋업북은 시장이 하락 추세일 때 좋은 패턴도 대부분 실패한다고 적었습니다. 건수가 적은 것 자체가 판정 결과입니다.', 'pt-weak'));
   }
 
-  root.append(filters(block, meta, redraw));
+  root.append(filters(block, meta, redraw, market));
+  const help = guide(meta);
+  if (help) root.append(help);
 
-  const rows = selectRows(block, query, leading);
+  const rows = selectRows(block, query, leading, meta, market);
   const info = n('div', null, 'pt-result');
   info.append(n('span', `${rows.length}종목 · 현재 조건 기준`));
   root.append(info);

@@ -95,6 +95,28 @@ def naver_url(market, symbol, exchange=None):
     return f'https://m.stock.naver.com/worldstock/stock/{code}/total' if code else None
 
 
+# 트레이딩뷰 거래소 접두어. 거래소를 확인할 수 있을 때만 링크를 만든다(대만은
+# 상장 시장(TWSE·TPEX)을 구분할 자료가 없어 만들지 않는다).
+TRADINGVIEW_VENUES = {'NASDAQ': 'NASDAQ', 'NYSE': 'NYSE', 'AMEX': 'AMEX',
+                      'NYSEAMERICAN': 'AMEX', 'NYSE AMERICAN': 'AMEX'}
+
+
+def tradingview_url(market, symbol, exchange=None):
+    """트레이딩뷰 차트 주소. 'KRX:005930'처럼 거래소:종목 형식을 쓴다."""
+    if market == 'KR':
+        code = f'KRX:{symbol}' if re.fullmatch(r'[A-Z0-9]{6}', symbol) else None
+    elif market == 'JP':
+        code = f'TSE:{symbol}' if re.fullmatch(r'[0-9][0-9A-Z]{3}', symbol) else None
+    elif market == 'US':
+        venue = TRADINGVIEW_VENUES.get(str(exchange or '').strip().upper())
+        # 트레이딩뷰는 클래스 주식을 BRK.B 처럼 점으로 적는다.
+        ticker = symbol.replace('-', '.')
+        code = f'{venue}:{ticker}' if venue and re.fullmatch(r'[A-Z][A-Z0-9.]{0,19}', ticker) else None
+    else:
+        code = None
+    return f'https://www.tradingview.com/chart/?symbol={quote(code)}' if code else None
+
+
 @lru_cache(maxsize=32)
 def recent_sessions(market, asof):
     sessions = calendar(market).sessions
@@ -182,6 +204,26 @@ def investor_flow(stock):
     return fields
 
 
+UNCLASSIFIED = {'산업 미분류', 'KRX 업종 미분류', 'Unclassified', ''}
+
+
+def broad_sector(stock, market, industry_group, industry):
+    """종목을 거르는 데 쓰는 큰 섹터. 산업 분류는 너무 잘게 나뉘어 필터로 쓰기 어렵다.
+
+    한국은 WAMO 분류표의 묶음(반도체·금융 …)을, 분류표에 없으면 산업명을 쓴다.
+    미국은 수집 단계의 krxSector('기술 (Technology)')에서 한국어 이름만 쓴다.
+    """
+    if market == 'KR':
+        name = industry_group or industry
+    elif market == 'US':
+        raw = stock.get('krxSector')
+        name = raw.split(' (')[0] if isinstance(raw, str) else None
+    else:
+        name = None
+    name = name.strip() if isinstance(name, str) else None
+    return None if not name or name in UNCLASSIFIED else name
+
+
 def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
@@ -229,7 +271,7 @@ def project(stock,market,asof):
             **({'investorFlow':flow} if flow else {}),
             **({'patterns':patterns} if patterns else {}),
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
-            'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
+            'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,'sector':broad_sector(stock,market,industry_group,name.strip()),
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),
@@ -238,7 +280,7 @@ def project(stock,market,asof):
             'rs':number(stock.get('rsPercentile')),'stage2':stock.get('stage2Core'),
             **trend_position(rows,market,asof),
             'source':stock.get('dataSource') or stock.get('priceProvider') or 'verified local history',
-            'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),
+            'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),'tradingviewUrl':tradingview_url(market,symbol,stock.get('exchange')),
             'detailUrl':None if market in ASIA else ('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
             'chartUrl':'https://finance.yahoo.com/quote/'+quote(str(ticker))+'/',
             'sparkline':[r['close'] for r in rows[-60:]],'catalysts':catalysts(stock.get('catalysts')),'moverReasons':reasons}

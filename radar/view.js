@@ -1,9 +1,9 @@
-import { renderFTD, ftdSummary } from './ftd.js?v=20261026-rn1';
-import { renderLeaders, leadersSummary } from './leaders.js?v=20261026-rn1';
-import { renderPatterns, patternsSummary } from './patterns.js?v=20261029-pt1';
+import { renderFTD, ftdSummary } from './ftd.js?v=20261029-pt3';
+import { renderLeaders, leadersSummary } from './leaders.js?v=20261029-pt3';
+import { renderPatterns, patternsSummary } from './patterns.js?v=20261029-pt3';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261028-h60';
-import { helpLabel, helpButton, closeHelp } from './help.js?v=20261028-h60';
-import { loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261026-sp1';
+import { helpLabel, helpButton, closeHelp } from './help.js?v=20261029-pt3';
+import { loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261029-pt3';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261026-rn1';
 import { renderSchedule } from './schedule.js?v=20261026-rn1';
 import { renderSpMovers } from './spmovers.js?v=20261026-sp1';
@@ -789,7 +789,9 @@ function render() {
     $('date-info').replaceChildren(el('span', '자료 준비 중', 'badge status-unavailable'));
     markStep();
     $('section-title').textContent = `${MARKET_NAMES[state.market]} 시장`; $('section-description').textContent = '';
-    $('content').replaceChildren(el('div', `${MARKET_NAMES[state.market]} 자료는 평일 오후 4시 40분 첫 자동 갱신 뒤부터 보여요. 그 전에는 다른 시장을 확인해 주세요.`, 'empty'));
+    // 패턴 셋업은 자료 유무와 관계없이 한국·미국만 판정한다. 자료 대기 안내보다 그 사실이 먼저다.
+    if (state.tab === 'patterns') renderPatternsTab(null);
+    else $('content').replaceChildren(el('div', `${MARKET_NAMES[state.market]} 자료는 평일 오후 4시 40분 첫 자동 갱신 뒤부터 보여요. 그 전에는 다른 시장을 확인해 주세요.`, 'empty'));
     paintSchedule(); return;
   }
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
@@ -869,12 +871,12 @@ function renderPatternsTab(m) {
   $('signal-filter')?.replaceChildren();
   $('result-summary').textContent = '';
   $('section-title').textContent = '패턴 셋업';
-  $('section-description').textContent = '추세추종 셋업북 12개 패턴 중 지금 만들어지는 중이거나 돌파한 종목 · 피벗과 손절선을 함께 표시';
+  $('section-description').textContent = '추세추종 셋업북 패턴 10개 중 지금 만들어지는 중이거나 돌파한 종목 · 패턴 이름을 누르면 설명이 떠요';
   renderPatterns($('content'), state.market, m, snapshot.patternMeta, {
     openStock: openStockById, query: state.query,
     // 셋업북 ①-1: 시장 방향이 먼저다. ① 시장 탭이 쓰는 것과 같은 판정을 넘긴다.
-    trend: trendBlock(state.market), expectedSession: m.expectedSession,
-    trendFailed: trendLoadFailed() || marketStatus(m) === 'STALE', openTrend });
+    trend: trendBlock(state.market), expectedSession: m?.expectedSession,
+    trendFailed: trendLoadFailed() || (!!m && marketStatus(m) === 'STALE'), openTrend });
 }
 function renderTrendTab() {
   $('controls').replaceChildren(); $('pagination').replaceChildren();

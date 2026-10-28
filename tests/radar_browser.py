@@ -397,15 +397,78 @@ with sync_playwright() as p:
             assert first.locator('.pt-setup h4').inner_text().strip(),'셋업 이름이 비었습니다'
             assert first.locator('.pt-phase').inner_text().strip() in ('돌파','임박','형성중')
             expect(first.locator('.pt-numbers dd').first).to_be_visible()
-            # 판정 기준과 한계가 있어야 한다(근거 없는 신호를 내보내지 않는다).
+            # 패턴 설명·판정 기준·한계가 있어야 한다(근거 없는 신호를 내보내지 않는다).
             first.locator('.pt-why summary').click()
+            assert first.locator('.pt-why dt').first.inner_text()=='패턴 설명'
             texts=first.locator('.pt-why dd').all_inner_texts()
-            assert len(texts)>=2 and all(t.strip() and t.strip()!='—' for t in texts[:2]),texts
+            assert len(texts)>=3 and all(t.strip() and t.strip()!='—' for t in texts[:3]),texts
             first.locator('.pt-why summary').click()
+            # 셋업북의 한 줄 논리는 접지 않고 보인다.
+            expect(first.locator('.pt-logic')).to_be_visible()
+            # 패턴 이름을 누르면 풀이 팝업이 뜬다: 한 줄 논리 + 모양·판정 기준·한계.
+            name_btn=first.locator('.pt-setup h4 .term-help')
+            name_btn.click()
+            tip=page.locator('#term-tooltip')
+            expect(tip).to_be_visible()
+            assert tip.locator('strong').inner_text().startswith(name_btn.inner_text()),tip.locator('strong').inner_text()
+            assert tip.locator('p.term-section b').all_inner_texts()==['어떤 모양인가','판정 기준','한계']
+            check_help_bounds(page)
+            name_btn.click()
+            expect(tip).to_be_hidden()
+            # 네이버·트레이딩뷰 링크는 스냅샷 주소 그대로, 새 탭으로 연다.
+            shown=[s for s in DATA['markets'][market]['stocks'] if s.get('patterns')]
+            card_links=first.locator('.pt-link')
+            assert card_links.count()>=1,'외부 링크가 없습니다'
+            for i in range(card_links.count()):
+                a=card_links.nth(i)
+                assert a.get_attribute('target')=='_blank' and 'noopener' in (a.get_attribute('rel') or '')
+                href=a.get_attribute('href')
+                assert any(href in (s.get('naverUrl'),s.get('tradingviewUrl')) for s in shown),href
+            assert any('tradingview.com' in (card_links.nth(i).get_attribute('href') or '') for i in range(card_links.count()))
             # 종목 이름을 누르면 상세가 열린다.
             first.locator('.pt-name').click()
             expect(page.locator('#drawer')).to_be_visible()
             page.locator('#close-drawer').click()
+        # 셋업 설명 상자: 셋업 수만큼 항목이 있고, 필터를 눌러도 펼친 상태가 유지된다.
+        page.locator('.pt-guide summary').click()
+        assert page.locator('.pt-guide-item').count()==len(DATA['patternMeta'])
+        page.locator('.pt-chip', has_text='손절 8% 이내만').click()
+        assert page.locator('.pt-guide').evaluate('(n)=>n.open')
+        page.locator('.pt-chip', has_text='손절 8% 이내만').click()
+        page.locator('.pt-guide summary').click()
+        # 정렬: 고른 기준대로 카드가 줄 서고, 값이 없는 종목은 맨 뒤로 간다. 고른 기준은 기억한다.
+        stocks_by_id={s['id']:s for s in DATA['markets'][market]['stocks']}
+        for key,field in (('rs','rs'),('cap','marketCap'),('volume','volumeRatio')):
+            page.select_option('select[aria-label="정렬"]',key)
+            ids=page.locator('.pt-card').evaluate_all('(cs)=>cs.map(c=>c.dataset.id)')
+            values=[stocks_by_id[i].get(field) for i in ids]
+            present=[v for v in values if isinstance(v,(int,float))]
+            assert present==sorted(present,reverse=True),(key,present[:5])
+            assert all(isinstance(v,(int,float)) for v in values[:len(present)]),(key,'값 없는 종목이 앞에 있습니다')
+        # 손절 폭은 카드에 적힌 값으로 본다(대표 셋업은 화면 조건을 통과한 첫 셋업이라 스냅샷 첫 셋업과 다를 수 있다).
+        page.select_option('select[aria-label="정렬"]','stop')
+        widths=page.locator('.pt-card').evaluate_all("(cs)=>cs.map(c=>{const dt=[...c.querySelectorAll('.pt-numbers dt')].find(d=>d.textContent.includes('손절 폭'));return dt?parseFloat(dt.nextElementSibling.textContent):null})")
+        widths=[w for w in widths if isinstance(w,(int,float))]
+        assert widths==sorted(widths),widths[:5]
+        assert page.locator('.pt-sort-hint').inner_text().startswith('피벗에서 손절선까지')
+        page.reload(wait_until='networkidle')
+        assert page.locator('select[aria-label="정렬"]').input_value()=='stop','정렬 기준을 기억하지 못했습니다'
+        page.select_option('select[aria-label="정렬"]','default')
+        # 범위: 시총 하한과 섹터. 거른 뒤의 카드는 모두 조건을 만족하고, 시장별로 기억한다.
+        def card_ids(): return page.locator('.pt-card').evaluate_all('(cs)=>cs.map(c=>c.dataset.id)')
+        cap_select=page.locator('select[aria-label="시총 하한"]')
+        floor=float(cap_select.locator('option').nth(2).get_attribute('value'))
+        cap_select.select_option(index=2)
+        assert all((stocks_by_id[i].get('marketCap') or 0)>=floor for i in card_ids())
+        sector_select=page.locator('select[aria-label="섹터"]')
+        if sector_select.locator('option').count()>1:
+            sector=sector_select.locator('option').nth(1).get_attribute('value')
+            sector_select.select_option(sector)
+            assert {stocks_by_id[i].get('sector') for i in card_ids()}<= {sector}
+            page.reload(wait_until='networkidle')
+            assert page.locator('select[aria-label="섹터"]').input_value()==sector,'섹터 선택을 기억하지 못했습니다'
+            page.locator('select[aria-label="섹터"]').select_option('all')
+        page.locator('select[aria-label="시총 하한"]').select_option('0')
         # 단계 칩으로 좁히면 결과 줄의 종목 수가 바뀐다.
         before=page.locator('.pt-result').inner_text()
         page.locator('.pt-chip.phase-watch').first.click()
