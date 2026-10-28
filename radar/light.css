@@ -126,6 +126,22 @@
 :root[data-theme="light"] .flow-box-row > b { color: #1b2736; }
 :root[data-theme="light"] .flow-box-cell { background: #ecf2fa; border: 1px solid #a4bad5; }
 :root[data-theme="light"] .flow-box-note { color: #2c3644; }
+:root[data-theme="light"] .tabs.steps .tab-group.active { background: #e8eef6; }
+:root[data-theme="light"] .tabs.steps .tab-group.active .tab-group-label { background: #d9ebe4; color: #033726; }
+:root[data-theme="light"] .step-hint { color: #2a3646; }
+:root[data-theme="light"] .step-arrow { color: #2c3644; }
+:root[data-theme="light"] .section-step { background: #e1e8f1; color: #2a3646; }
+@media (max-width: 760px) {
+:root[data-theme="light"] .tabs.steps .tab-group.active .step-head { background: #dfefeb; border-color: #83c1ad; }
+:root[data-theme="light"] .tabs.steps .tab-group.active .step-head .tab-group-label { color: #033726; }
+:root[data-theme="light"] .tabs.steps .tab-group.active .hint-short { color: #1c5441; }
+}
+:root[data-theme="light"] .detail-chips .chip { background: #eaf0f7; color: #1b2736; }
+:root[data-theme="light"] .detail-chips .chip.good { border-color: #83c1ad; background: #e3f6f2; color: #1c5441; }
+:root[data-theme="light"] .detail-chips .chip.hot { border-color: #d6c6a3; background: #f4f0e8; color: #62430e; }
+:root[data-theme="light"] .detail-chips .chip.weak { border-color: #919fb3; color: #2d3743; }
+:root[data-theme="light"] .detail-sub { color: #243244; }
+:root[data-theme="light"] .detail-body .stat { background: #e7eef7; }
 
 /* ===== style.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ai-sector-card small { color: #b7c6d7; }
@@ -146,6 +162,10 @@
 }
 :root:not([data-theme="light"]) .intro-fold p { color: #b7c5d6; }
 :root:not([data-theme="light"]) .flow-box-note { color: #bac5d4; }
+:root:not([data-theme="light"]) .step-hint { color: #b7c5d7; }
+:root:not([data-theme="light"]) .step-arrow { color: #b9c4d5; }
+:root:not([data-theme="light"]) .section-step { color: #b7c5d7; }
+:root:not([data-theme="light"]) .detail-chips .chip.weak { color: #bbc5d3; }
 
 /* ===== style.css (작은 글씨 키우기) ===== */
 :root .brand span { font-size: 12px; }
@@ -213,6 +233,9 @@
 :root .tr-gauge small { font-size: 11.5px; }
 :root .flow-box-cell small { font-size: 12px; }
 :root .flow-box-cell em { font-size: 12px; }
+@media (max-width: 760px) {
+:root .hint-short { font-size: 11.5px; }
+}
 
 /* ===== trend.css (밝은 테마) ===== */
 :root[data-theme="light"] .tr-weather-text { color: #151f2b; }
@@ -379,6 +402,12 @@
 :root[data-theme="light"] .tr-d.watch { box-shadow: inset 0 0 0 1.5px #275885; }
 :root[data-theme="light"] .tr-watch b { color: #14395c; }
 :root[data-theme="light"] .tr-watch-row { color: var(--ink-3, #2b3745); }
+:root[data-theme="light"] .pc-benchline { stroke: #3d5d80; }
+:root[data-theme="light"] .tr-dist-toggle:hover { border-color: #798ba2; }
+:root[data-theme="light"] .tr-dist-sub { color: #243141; }
+:root[data-theme="light"] .ix-spark polyline { stroke: #3e4e63; }
+:root[data-theme="light"] .spm-row { border-bottom: 1px solid rgba(97, 108, 126, 0.12); }
+:root[data-theme="light"] .spm-row:hover { background: rgba(97, 108, 126, 0.08); }
 
 /* ===== trend.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .tr-help { color: #bbc6d3; }
@@ -440,6 +469,13 @@
 :root .tr-fold { font-size: 12px; }
 }
 :root .tr-stage-step span { font-size: 12px; }
+:root .ix-move i { font-size: 11px; }
+:root .ix-date { font-size: 11.5px; }
+:root .spm-crowd { font-size: 12px; }
+:root .spm-rank { font-size: 12px; }
+:root .spm-name small { font-size: 11.5px; }
+:root .spm-sector { font-size: 12px; }
+:root .spm-note, :root .spm-empty { font-size: 12px; }
 
 /* ===== ftd.css (밝은 테마) ===== */
 :root[data-theme="light"] .ftd-intro p { color: #2a3746; }
@@ -768,6 +804,90 @@
 :root .sched-rule { font-size: 12px; }
 :root .sched-note { font-size: 12px; }
 
+/* ===== patterns.css (밝은 테마) ===== */
+:root[data-theme="light"] .pt-stat { border: 1px solid #a9bad1; background: #e7edf5; }
+:root[data-theme="light"] .pt-stat strong { color: #080d14; }
+:root[data-theme="light"] .pt-stat small { color: #2b3745; }
+:root[data-theme="light"] .pt-stat-label { color: #2b3745; }
+:root[data-theme="light"] .pt-stat.phase-breakout { border-top: 3px solid #267d64; }
+:root[data-theme="light"] .pt-stat.phase-ready { border-top: 3px solid #a37018; }
+:root[data-theme="light"] .pt-stat.phase-watch { border-top: 3px solid #3d5d80; }
+:root[data-theme="light"] .pt-weak { border: 1px dashed #aabbd0; color: #293747; }
+:root[data-theme="light"] .pt-chiplabel { color: #2c3745; }
+:root[data-theme="light"] .pt-chip { border: 1px solid #a8bbd1; background: #e6edf7; color: #273546; }
+:root[data-theme="light"] .pt-chip:hover { background: #dce6f2; border-color: #7692b1; }
+:root[data-theme="light"] .pt-chip.active { background: #d3dfee; border-color: #3d5d80; color: #030910; }
+:root[data-theme="light"] .pt-chip.active.phase-breakout { background: #e3f6f2; border-color: #a2d8c9; color: #175943; }
+:root[data-theme="light"] .pt-chip.active.phase-ready { background: #edebe5; border-color: #baa782; color: #604710; }
+:root[data-theme="light"] .pt-result { color: #2b3745; }
+:root[data-theme="light"] .pt-card { border: 1px solid #a9bad1; background: #eaf0f8; }
+:root[data-theme="light"] .pt-card.phase-breakout { border-color: #a2d8c9; box-shadow: inset 3px 0 0 #267d64; }
+:root[data-theme="light"] .pt-card.phase-ready { border-color: #baa782; box-shadow: inset 3px 0 0 #a37018; }
+:root[data-theme="light"] .pt-name { color: #080d14; }
+:root[data-theme="light"] .pt-name small { color: #2b3745; }
+:root[data-theme="light"] .pt-name:hover strong { color: #0e2955; }
+:root[data-theme="light"] .pt-phase { border: 1px solid #abbacf; background: #e1e9f4; color: #1c2938; }
+:root[data-theme="light"] .pt-phase.phase-breakout { background: #e3f6f2; border-color: #a2d8c9; color: #175943; }
+:root[data-theme="light"] .pt-phase.phase-ready { background: #edebe5; border-color: #baa782; color: #604710; }
+:root[data-theme="light"] .pt-setup { border-bottom: 1px solid #a6bad4; }
+:root[data-theme="light"] .pt-setup h4 { color: #050b11; }
+:root[data-theme="light"] .pt-setup small { color: #2b3745; }
+:root[data-theme="light"] .pt-label { color: #0e2955; }
+:root[data-theme="light"] .pt-chart { background: #edf2fa; border: 1px solid #a6bad4; }
+:root[data-theme="light"] .pt-line { stroke: #080d14; }
+:root[data-theme="light"] .pt-dot { fill: #080d14; }
+:root[data-theme="light"] .pt-pivot { stroke: #a37018; }
+:root[data-theme="light"] .pt-stop { stroke: #9c4f08; }
+:root[data-theme="light"] .pt-key { color: #2b3745; }
+:root[data-theme="light"] .pt-key .k-pivot { color: #62430e; }
+:root[data-theme="light"] .pt-key .k-stop { color: #6b3606; }
+:root[data-theme="light"] .pt-numbers dt { color: #2b3745; }
+:root[data-theme="light"] .pt-numbers dd { color: #070e16; }
+:root[data-theme="light"] .pt-numbers dd.up { color: #1a5645; }
+:root[data-theme="light"] .pt-numbers dd.bad { color: #6b3606; }
+:root[data-theme="light"] .pt-ev { border: 1px solid #a3bbd6; background: #e4ecf6; }
+:root[data-theme="light"] .pt-ev b { color: #2b3745; }
+:root[data-theme="light"] .pt-ev i { color: #09121c; }
+:root[data-theme="light"] .pt-ev.miss { border-color: #cca17a; background: #f2ece6; color: #6b3706; }
+:root[data-theme="light"] .pt-tag { border: 1px solid #abbacf; background: #e1e9f4; color: #1c2938; }
+:root[data-theme="light"] .pt-tag i { color: #2b3745; }
+:root[data-theme="light"] .pt-tag.phase-breakout { background: #e3f6f2; border-color: #a2d8c9; color: #175943; }
+:root[data-theme="light"] .pt-tag.phase-ready { background: #edebe5; border-color: #baa782; color: #604710; }
+:root[data-theme="light"] .pt-why { color: #2b3745; }
+:root[data-theme="light"] .pt-why summary { color: #0e2955; }
+:root[data-theme="light"] .pt-why dl { border: 1px solid #a6bad4; background: #edf2fa; }
+:root[data-theme="light"] .pt-why dt { color: #2c3745; }
+:root[data-theme="light"] .pt-why dd { color: #273546; }
+:root[data-theme="light"] .pt-loadmore { border: 1px solid #a8bbd1; background: #e6edf7; color: #1b2735; }
+
+/* ===== patterns.css (어두운 테마 글씨 보정) ===== */
+:root:not([data-theme="light"]) .pt-stat small { color: #b9c5d5; }
+:root:not([data-theme="light"]) .pt-stat-label { color: #b9c5d5; }
+:root:not([data-theme="light"]) .pt-weak { color: #b6c6d8; }
+:root:not([data-theme="light"]) .pt-chiplabel { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-result { color: #b9c5d5; }
+:root:not([data-theme="light"]) .pt-name small { color: #b9c5d5; }
+:root:not([data-theme="light"]) .pt-setup small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-key { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-key .k-stop { color: #ffb066; }
+:root:not([data-theme="light"]) .pt-numbers dt { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-numbers dd.up { color: #85e0c6; }
+:root:not([data-theme="light"]) .pt-numbers dd.bad { color: #ffb066; }
+:root:not([data-theme="light"]) .pt-ev b { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-tag i { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-why { color: #b9c5d5; }
+:root:not([data-theme="light"]) .pt-why dt { color: #b9c6d5; }
+
+/* ===== patterns.css (작은 글씨 키우기) ===== */
+:root .pt-stat small { font-size: 12px; }
+:root .pt-chiplabel { font-size: 12px; }
+:root .pt-name small { font-size: 12px; }
+:root .pt-setup small { font-size: 12px; }
+:root .pt-label { font-size: 12px; }
+:root .pt-key { font-size: 11.5px; }
+:root .pt-ev { font-size: 12px; }
+:root .pt-tag { font-size: 12px; }
+
 /* ===== 진한 색 바탕 위 글씨는 흰색 유지 ===== */
 :root[data-theme="light"] .ftd-flow li.now .ftd-flow-no,
 :root[data-theme="light"] .ftd-flow li em { color: #ffffff; }
@@ -784,22 +904,3 @@
 :root[data-theme="light"] svg [stroke="#9aacc3"] { stroke: #6b7c92; }
 :root[data-theme="light"] i[style*="#ecf3fc"], :root[data-theme="light"] i[style*="#eaf0f8"] { background: #1b2635 !important; }
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
-
-:root[data-theme="light"] .pc-benchline { stroke: #3a5a86; }
-/* 2026-10-28 3단계 탭·종목 상세 밝은 화면 색 */
-:root[data-theme="light"] .tabs.steps { background: #f4f7fb; }
-:root[data-theme="light"] .tabs.steps .tab-group.active { background: #e8eef6; border-color: #adbacd; }
-:root[data-theme="light"] .tabs.steps .tab-group.active .tab-group-label { background: #dfefeb; color: #033726; }
-:root[data-theme="light"] .step-hint, :root[data-theme="light"] .section-step { color: #4e6078; }
-:root[data-theme="light"] .step-arrow { color: #8a9bb3; }
-:root[data-theme="light"] .detail-head { background: #ffffff; border-color: #adbacd; }
-:root[data-theme="light"] .detail-chips .chip { background: #eef2f8; border-color: #adbacd; color: #2a3646; }
-:root[data-theme="light"] .detail-chips .chip.good { background: #dfefeb; border-color: #83c1ad; color: #033726; }
-:root[data-theme="light"] .detail-chips .chip.hot { background: #fbf0d8; border-color: #d9b56a; color: #5a3f08; }
-:root[data-theme="light"] .detail-body .stat { background: #f4f7fb; border-color: #adbacd; }
-:root[data-theme="light"] .detail-sub { color: #2a3646; }
-@media (max-width: 760px) {
-  :root[data-theme="light"] .tabs.steps .step-head { background: #ffffff; border-color: #adbacd; }
-  :root[data-theme="light"] .tabs.steps .tab-group.active .step-head { background: #dfefeb; border-color: #83c1ad; }
-  :root[data-theme="light"] .tabs.steps .tab-group.active .step-head .tab-group-label, :root[data-theme="light"] .tabs.steps .tab-group.active .hint-short { color: #033726; }
-}

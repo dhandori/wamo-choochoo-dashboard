@@ -1,0 +1,321 @@
+// 패턴 셋업 화면. wamo_insights.json 의 stocks[].patterns 와 patternMeta 를 읽는다.
+// 셋업 판정은 서버(wamo_patterns.py)가 하고, 여기서는 고르고 보여 주기만 한다.
+import { helpButton, addTerms } from './help.js?v=20261028-h60';
+import { PATTERN_TERMS, glossary } from './terms.mjs?v=20261029-pt1';
+addTerms(PATTERN_TERMS);
+
+const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
+const isNum = v => typeof v === 'number' && Number.isFinite(v);
+const num = (v, d = 1) => isNum(v) ? v.toLocaleString('ko-KR', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—';
+const pct = v => isNum(v) ? `${v > 0 ? '+' : ''}${num(v)}%` : '—';
+const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : '';
+const term = (key, label) => helpButton(label || PATTERN_TERMS[key][0], key);
+// 미국 종목명은 증권 전체 이름으로 들어와 꼬리가 길다. 회사 이름만 남긴다.
+const short = name => String(name || '').replace(/\s+(Common Stock|Class [A-Z]\b.*|Ordinary Shares.*|American Depositary Shares.*|Depositary Shares.*|Common Shares.*)$/i, '').trim();
+const SVG = 'http://www.w3.org/2000/svg';
+const sv = (tag, attrs = {}) => { const e = document.createElementNS(SVG, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+
+const DIGITS = { KR: 0, US: 2, JP: 0, TW: 2 };
+const price = (v, market) => isNum(v) ? v.toLocaleString('ko-KR', { maximumFractionDigits: DIGITS[market] ?? 2, minimumFractionDigits: DIGITS[market] ?? 2 }) : '—';
+
+const PHASES = {
+  BREAKOUT: ['돌파', 'breakout', 'phaseBreakout'],
+  READY: ['임박', 'ready', 'phaseReady'],
+  WATCH: ['형성중', 'watch', 'phaseWatch'],
+};
+const PHASE_ORDER = ['BREAKOUT', 'READY', 'WATCH'];
+
+// 근거 항목의 이름과 단위. 서버가 보내는 키만 적고, 모르는 키는 건너뛴다.
+const EV = {
+  priorAdvancePct: ['앞선 상승', 'pct'], priorTrendPct: ['급등 직전 추세', 'pct'],
+  cupDepthPct: ['컵 깊이', 'pct'], cupDays: ['컵 기간', 'days'], bottomDays: ['바닥 체류', 'days'],
+  recoveryPct: ['오른쪽 회복', 'raw'], handleDepthPct: ['핸들 깊이', 'pct'],
+  handleDays: ['핸들 기간', 'days'], handleVolumeRatio: ['핸들 거래량', 'x'],
+  widthPct: ['베이스 폭', 'pct'], downVolumeRatio: ['하락일 거래량', 'x'],
+  bottomGapPct: ['두 바닥 차이', 'pct'], prominencePct: ['봉우리 돌출', 'pct'],
+  undercut: ['언더컷', 'bool'], firstBottom: ['첫 바닥', 'date'], secondBottom: ['두 번째 바닥', 'date'],
+  poleGainPct: ['깃대 상승', 'pct'], poleDays: ['깃대 기간', 'days'],
+  flagDropPct: ['깃발 하락', 'pct'], flagDays: ['깃발 기간', 'days'], flagVolumeRatio: ['깃발 거래량', 'x'],
+  higherLows: ['상승 저점', 'count'],
+  gapDate: ['갭 발생', 'date'], jumpPct: ['갭 상승', 'pct'], daysSinceGap: ['갭 이후', 'days'],
+  priorReturn60dPct: ['직전 60일', 'pct'], closePosition: ['종가 위치', 'ratio'],
+  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['이동평균 거리', 'pct'],
+  reboundPct: ['최근 반등', 'pct'],
+  boxWidthPct: ['박스 폭', 'pct'], boxDays: ['박스 기간', 'days'],
+  boxTopDate: ['윗변', 'date'], boxBottomDate: ['아랫변', 'date'], boxVolumeRatio: ['박스 거래량', 'x'],
+  high52Ratio: ['52주 고가 대비', 'raw'],
+  touchesTop: ['윗변 접점', 'count'], touchesBottom: ['아랫변 접점', 'count'],
+  cupLevelPct: ['컵 안 높이', 'raw'], pauseDays: ['멈춘 기간', 'days'],
+  pauseWidthPct: ['멈춘 구간 폭', 'pct'], pauseVolumeRatio: ['멈춘 구간 거래량', 'x'],
+  contractions: ['수축 횟수', 'count'], volumeDryRatio: ['거래량 건조', 'x'], range10Pct: ['10일 폭', 'raw'],
+  volumeRatio: ['거래량', 'x'], breakoutVolumeRatio: ['당일 거래량', 'x'],
+};
+const EV_ORDER = Object.keys(EV);
+
+function evidenceText(key, value) {
+  const [, kind] = EV[key];
+  if (kind === 'bool') return value ? '있음' : null;
+  if (kind === 'date') return md(value);
+  if (!isNum(value)) return null;
+  if (kind === 'pct') return pct(value);
+  if (kind === 'raw') return `${num(value)}%`;
+  if (kind === 'days') return `${value}일`;
+  if (kind === 'count') return `${value}개`;
+  if (kind === 'x') return `${num(value, 2)}×`;
+  if (kind === 'ratio') return num(value, 2);
+  return num(value);
+}
+
+let phase = 'all', pick = 'all', onlyStage2 = true, onlyTightStop = false, limit = 30;
+
+export function patternsSummary(block) {
+  const s = block?.patternSummary;
+  if (!s || !s.withSetup) return '0';
+  const by = s.byStage || {};
+  return `${s.withSetup} · 돌파 ${by.BREAKOUT || 0}`;
+}
+
+/** 지금 화면 조건을 통과한 종목. 종목마다 통과한 셋업 목록을 함께 돌려준다. */
+function selectRows(block, query) {
+  const text = String(query || '').trim().toLowerCase();
+  const rows = [];
+  for (const stock of block.stocks || []) {
+    const found = stock.patterns;
+    if (!found || !found.setups?.length) continue;
+    if (onlyStage2 && stock.stage2 !== true) continue;
+    if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry]
+      .some(v => String(v || '').toLowerCase().includes(text))) continue;
+    const setups = found.setups.filter(s =>
+      (phase === 'all' || s.status === phase)
+      && (pick === 'all' || s.key === pick)
+      && (!onlyTightStop || !s.stopTooWide));
+    if (setups.length) rows.push({ stock, found, setups });
+  }
+  const rank = r => PHASE_ORDER.length - PHASE_ORDER.indexOf(r.setups[0].status);
+  rows.sort((a, b) => rank(b) - rank(a)
+    || Math.abs(a.setups[0].distanceToPivotPct ?? 99) - Math.abs(b.setups[0].distanceToPivotPct ?? 99));
+  return rows;
+}
+
+function chip(label, active, onClick, title) {
+  const b = n('button', null, `pt-chip${active ? ' active' : ''}`); b.type = 'button';
+  b.append(label); if (title) b.title = title;
+  b.setAttribute('aria-pressed', String(active));
+  b.onclick = onClick;
+  return b;
+}
+
+function filters(block, meta, redraw) {
+  const box = n('div', null, 'pt-filters');
+  const summary = block.patternSummary || {};
+  const stages = n('div', null, 'pt-chiprow');
+  stages.append(n('span', '단계', 'pt-chiplabel'));
+  stages.append(chip('전체', phase === 'all', () => { phase = 'all'; limit = 30; redraw(); }));
+  for (const key of PHASE_ORDER) {
+    const [label, , termKey] = PHASES[key];
+    const count = (summary.byStage || {})[key] || 0;
+    const b = chip(`${label} ${count}`, phase === key, () => { phase = key; limit = 30; redraw(); },
+      PATTERN_TERMS[termKey][1]);
+    b.classList.add(`phase-${PHASES[key][1]}`);
+    stages.append(b);
+  }
+  box.append(stages);
+
+  const picks = n('div', null, 'pt-chiprow');
+  picks.append(n('span', '셋업', 'pt-chiplabel'));
+  picks.append(chip('전체', pick === 'all', () => { pick = 'all'; limit = 30; redraw(); }));
+  const bySetup = summary.bySetup || {};
+  // 셋업북 중요도가 높은 것부터. 오늘 한 건도 없는 셋업은 칩을 만들지 않는다.
+  const keys = Object.keys(bySetup).sort((a, b) =>
+    (meta[b]?.importance || 0) - (meta[a]?.importance || 0) || bySetup[b] - bySetup[a]);
+  for (const key of keys) {
+    picks.append(chip(`${meta[key]?.name || key} ${bySetup[key]}`, pick === key,
+      () => { pick = key; limit = 30; redraw(); }, meta[key]?.criterion));
+  }
+  box.append(picks);
+
+  const toggles = n('div', null, 'pt-chiprow');
+  toggles.append(n('span', '조건', 'pt-chiplabel'));
+  toggles.append(chip('2단계 종목만', onlyStage2, () => { onlyStage2 = !onlyStage2; limit = 30; redraw(); },
+    '셋업북 ①-2: 주가가 150·200일선 위이고 200일선이 위로 기울어진 종목만 봅니다. 하락 추세 종목은 좋은 패턴도 대부분 실패합니다.'));
+  toggles.append(chip('손절 8% 이내만', onlyTightStop, () => { onlyTightStop = !onlyTightStop; limit = 30; redraw(); },
+    '셋업북 ②-4: 피벗에서 손절선까지 7~8%를 넘는 자리는 사지 않습니다.'));
+  box.append(toggles);
+  return box;
+}
+
+/** 60거래일 종가에 피벗선과 손절선을 겹쳐 그린 작은 그림. */
+function levelChart(stock, setup) {
+  const data = (stock.sparkline || []).filter(isNum);
+  if (data.length < 5) return null;
+  const W = 260, H = 70, pad = 4;
+  const values = [...data, setup.pivot, setup.stop].filter(isNum);
+  let lo = Math.min(...values), hi = Math.max(...values);
+  if (!(hi > lo)) { hi = lo + 1; }
+  const span = hi - lo;
+  lo -= span * 0.06; hi += span * 0.06;
+  const x = i => pad + (W - pad * 2) * (i / (data.length - 1));
+  const y = v => pad + (H - pad * 2) * (1 - (v - lo) / (hi - lo));
+  const svg = sv('svg', { class: 'pt-chart', viewBox: `0 0 ${W} ${H}`, role: 'img', preserveAspectRatio: 'none' });
+  svg.setAttribute('aria-label', `최근 ${data.length}거래일 종가와 피벗·손절선`);
+  for (const [value, cls] of [[setup.pivot, 'pt-pivot'], [setup.stop, 'pt-stop']]) {
+    if (!isNum(value) || value < lo || value > hi) continue;
+    svg.append(sv('line', { x1: pad, x2: W - pad, y1: y(value).toFixed(1), y2: y(value).toFixed(1), class: cls }));
+  }
+  svg.append(sv('polyline', { class: 'pt-line', points: data.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ') }));
+  const last = data.length - 1;
+  svg.append(sv('circle', { class: 'pt-dot', cx: x(last).toFixed(1), cy: y(data[last]).toFixed(1), r: 2.6 }));
+  return svg;
+}
+
+function numbers(stock, setup, market) {
+  const list = n('dl', null, 'pt-numbers');
+  const add = (label, value, cls) => { const dt = n('dt'); dt.append(label); list.append(dt, n('dd', value, cls)); };
+  add('현재가', price(stock.close, market));
+  if (isNum(setup.pivot)) {
+    add(term('pivot', '피벗'), price(setup.pivot, market));
+    const d = setup.distanceToPivotPct;
+    add('피벗까지', isNum(d) ? (d <= 0 ? `돌파 ${num(-d)}%` : `${num(d)}%`) : '—', isNum(d) && d <= 0 ? 'up' : null);
+  }
+  if (isNum(setup.stop)) {
+    add(term('stopLine', '손절선'), price(setup.stop, market));
+    add(term('stopWidth', '손절 폭'), isNum(setup.stopDistancePct) ? `${num(setup.stopDistancePct)}%` : '—',
+      setup.stopTooWide ? 'bad' : null);
+  }
+  return list;
+}
+
+function evidence(setup) {
+  const box = n('div', null, 'pt-evidence');
+  for (const key of EV_ORDER) {
+    if (!(key in (setup.evidence || {}))) continue;
+    const text = evidenceText(key, setup.evidence[key]);
+    if (text == null) continue;
+    const item = n('span', null, 'pt-ev');
+    item.append(n('b', EV[key][0]), n('i', text));
+    box.append(item);
+  }
+  const checks = setup.evidence?.checks;
+  if (checks && Object.values(checks).some(v => !v)) {
+    const miss = Object.entries(checks).filter(([, v]) => !v).map(([k]) => k);
+    box.append(n('span', `미충족: ${miss.join(' · ')}`, 'pt-ev miss'));
+  }
+  return box;
+}
+
+function card(row, market, meta, openStock) {
+  const { stock, found, setups } = row;
+  const best = setups[0];
+  const info = meta[best.key] || {};
+  const [phaseLabel, phaseCls] = PHASES[best.status] || ['—', 'watch'];
+  const box = n('article', null, `pt-card phase-${phaseCls}`);
+
+  const head = n('div', null, 'pt-head');
+  const name = n('button', null, 'pt-name'); name.type = 'button';
+  name.onclick = () => openStock(stock.id);
+  name.append(n('strong', short(stock.name)), n('small', `${stock.symbol} · ${stock.industry || '산업 미분류'}`));
+  head.append(name, n('span', phaseLabel, `pt-phase phase-${phaseCls}`));
+  box.append(head);
+
+  const title = n('div', null, 'pt-setup');
+  title.append(n('h4', info.name || best.key), n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
+  if (best.label && best.label !== info.name) title.append(n('span', best.label, 'pt-label'));
+  box.append(title);
+
+  const body = n('div', null, 'pt-body');
+  const chart = levelChart(stock, best);
+  if (chart) {
+    const wrap = n('div', null, 'pt-chartbox');
+    wrap.append(chart);
+    const key = n('div', null, 'pt-key');
+    if (isNum(best.pivot)) key.append(n('span', '피벗', 'k-pivot'));
+    if (isNum(best.stop)) key.append(n('span', '손절선', 'k-stop'));
+    key.append(n('span', `최근 ${(stock.sparkline || []).length}거래일`, 'k-note'));
+    wrap.append(key);
+    body.append(wrap);
+  }
+  body.append(numbers(stock, best, market));
+  box.append(body);
+  box.append(evidence(best));
+
+  if (setups.length > 1) {
+    const more = n('div', null, 'pt-more');
+    more.append(n('span', '같이 걸린 셋업', 'pt-chiplabel'));
+    for (const setup of setups.slice(1)) {
+      const [label, cls] = PHASES[setup.status] || ['—', 'watch'];
+      const tag = n('span', null, `pt-tag phase-${cls}`);
+      tag.append(n('b', meta[setup.key]?.name || setup.key), n('i', label));
+      more.append(tag);
+    }
+    box.append(more);
+  }
+
+  const why = n('details', null, 'pt-why');
+  why.append(n('summary', '판정 기준과 한계'));
+  const dl = n('dl');
+  dl.append(n('dt', '판정 기준'), n('dd', info.criterion || '—'));
+  dl.append(n('dt', '한계'), n('dd', info.caveat || '—'));
+  if (found.stage && !found.stage.pass) {
+    dl.append(n('dt', '2단계 미충족'), n('dd', `${found.stage.passed}/${found.stage.total} 통과 · 빠진 조건: ${(found.stage.failed || []).join(' · ')}`));
+  }
+  why.append(dl);
+  box.append(why);
+  return box;
+}
+
+export function renderPatterns(root, market, block, meta, { openStock, query } = {}) {
+  root.replaceChildren();
+  meta = meta || {};
+  if (!block || !block.stocks?.length) {
+    root.append(n('div', '가격 자료가 아직 없어 셋업을 판정할 수 없습니다.', 'empty'));
+    return;
+  }
+  const summary = block.patternSummary;
+  if (!summary) {
+    root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국과 미국만 지원합니다.`, 'empty'));
+    return;
+  }
+  const redraw = () => renderPatterns(root, market, block, meta, { openStock, query });
+
+  const top = n('section', null, 'pt-top');
+  const counts = summary.byStage || {};
+  for (const key of PHASE_ORDER) {
+    const [label, cls, termKey] = PHASES[key];
+    const cell = n('div', null, `pt-stat phase-${cls}`);
+    const head = n('span', null, 'pt-stat-label'); head.append(term(termKey, label)); cell.append(head);
+    cell.append(n('strong', String(counts[key] || 0)), n('small', '종목'));
+    top.append(cell);
+  }
+  const share = n('div', null, 'pt-stat');
+  share.append(n('span', '셋업 보유', 'pt-stat-label'), n('strong', String(summary.withSetup || 0)),
+    n('small', `스크리닝 ${block.stocks.length.toLocaleString()}종목 중`));
+  top.append(share);
+  root.append(top);
+
+  // 셋업북 ①-1: 시장이 약하면 좋은 패턴도 대부분 실패한다. 수가 적은 것 자체가 답이다.
+  if ((summary.withSetup || 0) * 20 < block.stocks.length) {
+    root.append(n('p', '지금 이 시장에는 촘촘한 베이스가 거의 없습니다. 셋업북은 시장이 하락 추세일 때 좋은 패턴도 대부분 실패한다고 적었습니다. 건수가 적은 것 자체가 판정 결과입니다.', 'pt-weak'));
+  }
+
+  root.append(filters(block, meta, redraw));
+
+  const rows = selectRows(block, query);
+  const info = n('div', null, 'pt-result');
+  info.append(n('span', `${rows.length}종목 · 현재 조건 기준`));
+  root.append(info);
+
+  if (!rows.length) {
+    root.append(n('div', '현재 조건에 맞는 종목이 없습니다. 단계나 셋업 조건을 넓혀 보세요.', 'empty'));
+  } else {
+    const list = n('div', null, 'pt-list');
+    for (const row of rows.slice(0, limit)) list.append(card(row, market, meta, openStock));
+    root.append(list);
+    if (rows.length > limit) {
+      const more = n('button', `${rows.length - limit}종목 더 보기`, 'pt-loadmore');
+      more.type = 'button';
+      more.onclick = () => { limit += 30; redraw(); };
+      root.append(more);
+    }
+  }
+  root.append(glossary(PATTERN_TERMS, Object.keys(PATTERN_TERMS)));
+}

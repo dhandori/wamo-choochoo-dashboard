@@ -1,5 +1,6 @@
 import { renderFTD, ftdSummary } from './ftd.js?v=20261026-rn1';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261026-rn1';
+import { renderPatterns, patternsSummary } from './patterns.js?v=20261029-pt1';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261028-h60';
 import { helpLabel, helpButton, closeHelp } from './help.js?v=20261028-h60';
 import { loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261026-sp1';
@@ -48,11 +49,11 @@ const MARKET_NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const LITE = new Set(['JP', 'TW']);
 const LITE_OFF = new Set();   // every tab now works for Japan/Taiwan too
 // 읽는 순서: ① 시장(지금 사도 되는 장인가) → ② 업종(어느 업종이 앞서가나) → ③ 종목. 탭은 이 세 묶음으로 보여 준다.
-const STEP_OF = { trend: 'market', ftd: 'market', leaders: 'sector', industries: 'sector', ai: 'sector', near: 'stock', high: 'stock', movers: 'stock' };
+const STEP_OF = { trend: 'market', ftd: 'market', leaders: 'sector', industries: 'sector', ai: 'sector', near: 'stock', high: 'stock', movers: 'stock', patterns: 'stock' };
 const STEP_LABEL = { market: '① 시장 판단', sector: '② 주도 업종', stock: '③ 종목 찾기' };
 const lastTabOfStep = { market: 'trend', sector: 'leaders', stock: 'near' };   // 단계 칸을 누르면 그 단계에서 마지막으로 보던 탭으로
 const CURRENCY = { KR: ['₩', '원', 0], US: ['$', '달러', 2], JP: ['¥', '엔', 0], TW: ['NT$', '대만달러', 2] };
-const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'trend' };
+const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','patterns','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'trend' };
 let snapshot = null, refreshFailed = false, refreshing = false;
 // Sort settings (cap floor, 1st/2nd key) are remembered per market in this browser.
 const SORT_STORE='wamo-sort-v1';
@@ -678,8 +679,8 @@ function renderMeta(m) {
   const highs60 = m.stocks.filter(s => s.intradayHigh60 === true || s.closeHigh60 === true);
   const groups = m.industries.filter(g => g.confirmed), moves = selectStocks(m, { tab: 'movers' });
   const ai=aiOverview(m,state.market).total;
-  const counts = { near: near.length, high: highs.length, industries: groups.length, movers: moves.length,ai:ai.count,trend:trendTabLabel(state.market),ftd:ftdSummary(trendBlock(state.market),m.expectedSession,trendLoadFailed()||marketStatus(m)==='STALE'),leaders:leadersSummary(trendBlock(state.market)) };
-  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 52주 신고가 (뒤의 숫자는 60일 신고가)', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'가격이 확인된 AI 관련 종목 · 중복 제외',trend:'시장 날씨 · RS선 · 팔 때 경고 · 천장 신호 · 실적발표 · 신호 성적표',ftd:'지수별 하락 국면 → 반등 → FTD → 유지·실패',leaders:'선도주 출현 · 업종 RS 순위 · 선도주 목록' };
+  const counts = { near: near.length, high: highs.length, industries: groups.length, movers: moves.length,ai:ai.count,trend:trendTabLabel(state.market),ftd:ftdSummary(trendBlock(state.market),m.expectedSession,trendLoadFailed()||marketStatus(m)==='STALE'),leaders:leadersSummary(trendBlock(state.market)),patterns:patternsSummary(m) };
+  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 52주 신고가 (뒤의 숫자는 60일 신고가)', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'가격이 확인된 AI 관련 종목 · 중복 제외',trend:'시장 날씨 · RS선 · 팔 때 경고 · 천장 신호 · 실적발표 · 신호 성적표',ftd:'지수별 하락 국면 → 반등 → FTD → 유지·실패',leaders:'선도주 출현 · 업종 RS 순위 · 선도주 목록',patterns:'추세추종 셋업북 12개 패턴 · 돌파·임박·형성중' };
   document.querySelectorAll('[data-tab]').forEach(b => {
     let n = b.querySelector('.tab-count');
     if (!n) { n = el('span', null, 'tab-count'); b.append(n); }
@@ -760,6 +761,7 @@ function render() {
   renderMeta(m); renderStrip($('index-strip'), state.market); renderWeather($('weather'), state.market, openTrend); paintSchedule();
   const search=$('search').closest('.search'); if(search) search.hidden=['trend','ftd','leaders'].includes(state.tab);
   if (['trend','ftd','leaders'].includes(state.tab)) { if ($('sp-movers')) $('sp-movers').hidden = true; renderTrendTab(); return; }
+  if (state.tab === 'patterns') { if ($('sp-movers')) $('sp-movers').hidden = true; renderPatternsTab(m); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
   renderSpMovers($('sp-movers'), { market: state.market, tab: state.tab, onPick: t => { const s = (m.stocks || []).find(x => x.ticker === t); if (s) detail(s); else window.open(`https://finance.yahoo.com/quote/${encodeURIComponent(t.replace('.', '-'))}`, '_blank', 'noopener'); } });
   const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에서 봐요'], high: ['당일 신고가', state.highPeriod === '60' ? '이 거래일에 최근 60거래일 고점을 넘긴 종목 · 52주보다 짧은 돌파라 바닥에서 막 올라오는 종목도 잡혀요' : '이 거래일에 52주 고점을 실제로 넘긴 종목 · 60일 신고가는 위 버튼으로 바꿔요'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 보여요'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿔요'] };
@@ -819,6 +821,18 @@ function openStockById(id) {
   if (s) detail(s);
   else { $('notice').hidden = false; $('notice').textContent = '이 종목은 오늘 레이더 목록에 없어 상세 화면을 열 수 없어요.'; }
 }
+// 패턴 셋업 탭. 표가 아니라 카드 목록이라 공통 컨트롤·산업 레일을 비우고 직접 그린다.
+function renderPatternsTab(m) {
+  $('controls').replaceChildren(); $('pagination').replaceChildren();
+  const rail = $('industry-rail'); rail.replaceChildren(); rail.hidden = true;
+  const ai = $('ai-overview'); if (ai) { ai.replaceChildren(); ai.hidden = true; }
+  const changes = $('session-changes'); if (changes) { changes.replaceChildren(); changes.hidden = true; }
+  $('signal-filter')?.replaceChildren();
+  $('result-summary').textContent = '';
+  $('section-title').textContent = '패턴 셋업';
+  $('section-description').textContent = '추세추종 셋업북 12개 패턴 중 지금 만들어지는 중이거나 돌파한 종목 · 피벗과 손절선을 함께 표시';
+  renderPatterns($('content'), state.market, m, snapshot.patternMeta, { openStock: openStockById, query: state.query });
+}
 function renderTrendTab() {
   $('controls').replaceChildren(); $('pagination').replaceChildren();
   const rail = $('industry-rail'); rail.replaceChildren(); rail.hidden = true;
@@ -845,7 +859,7 @@ function renderTrendTab() {
   renderTrend($('content'), state.market, { openStock: openStockById, onSubtab: syncUrl });
 }
 document.querySelectorAll('[data-market]').forEach(b => b.onclick = () => {
-  const tab=['ai','trend','ftd','leaders'].includes(state.tab)&&!LITE_OFF.has(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
+  const tab=['ai','trend','ftd','leaders','patterns'].includes(state.tab)&&!LITE_OFF.has(state.tab)?state.tab:'near',aiPeriod=state.aiPeriod,aiView=state.aiView;
   Object.assign(state, { ...defaults, market: b.dataset.market,tab,aiPeriod,aiView }); loadSort(state.market); $('search').value = '';
   syncUrl(); render();
 });

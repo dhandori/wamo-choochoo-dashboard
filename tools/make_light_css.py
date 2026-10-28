@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCES = ['style.css', 'trend.css', 'ftd.css', 'leaders.css', 'schedule.css']
+SOURCES = ['style.css', 'trend.css', 'ftd.css', 'leaders.css', 'schedule.css', 'patterns.css']
 PREFIX = ':root[data-theme="light"]'
 
 TOGGLE = '''

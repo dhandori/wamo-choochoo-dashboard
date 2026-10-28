@@ -23,7 +23,7 @@ def check_help_bounds(page):
     assert box['y']+box['height']<=page.viewport_size['height'],box
     assert page.get_by_role('tooltip').evaluate('(e)=>e.contains(document.elementFromPoint(e.getBoundingClientRect().x+e.clientWidth/2,e.getBoundingClientRect().y+e.clientHeight/2))')
 
-STEP_OF={'trend':'market','ftd':'market','leaders':'sector','industries':'sector','ai':'sector','near':'stock','high':'stock','movers':'stock'}
+STEP_OF={'trend':'market','ftd':'market','leaders':'sector','industries':'sector','ai':'sector','near':'stock','high':'stock','movers':'stock','patterns':'stock'}
 def go_tab(page,tab):
     # 2026-10-28 3단계 탭: 휴대폰은 고른 단계의 탭만 보이므로 다른 단계 탭은 단계 칸을 먼저 누른다.
     b=page.locator(f'[data-tab={tab}]')
@@ -328,6 +328,54 @@ with sync_playwright() as p:
     expect(page.locator('.stock-link:visible').first).to_be_visible()
     assert not errors,errors
     context.close();print('RADAR PREVIOUS TEMPLATE RETENTION PASS')
+    # 패턴 셋업: 셋업북 12개 패턴 중 진행 중인 것만 카드로 보여 준다. 두 시장 모두 확인한다.
+    for market in ('US','KR'):
+        context=browser.new_context();page=context.new_page();errors=[]
+        page.on('pageerror',lambda error:errors.append(str(error)))
+        page.goto(f'{base}/radar.html?market={market}&tab=patterns',wait_until='networkidle')
+        summary=DATA['markets'][market]['patternSummary']
+        expect(page.locator('#section-title')).to_have_text('패턴 셋업')
+        expect(page.locator('[data-tab=patterns]')).to_have_class(_re.compile(r'\bactive\b'))
+        # 단계 칸은 ③ 종목 찾기여야 한다.
+        expect(page.locator('#section-step')).to_have_text('③ 종목 찾기')
+        assert page.locator('.pt-stat').count()==4,page.locator('.pt-stat').count()
+        cards=page.locator('.pt-card').count()
+        if summary['withSetup']:
+            assert cards>0,f'{market}: 셋업 {summary["withSetup"]}종목인데 카드가 없습니다'
+            first=page.locator('.pt-card').first
+            # 카드에는 셋업 이름, 단계 배지, 숫자가 있어야 한다.
+            assert first.locator('.pt-setup h4').inner_text().strip(),'셋업 이름이 비었습니다'
+            assert first.locator('.pt-phase').inner_text().strip() in ('돌파','임박','형성중')
+            expect(first.locator('.pt-numbers dd').first).to_be_visible()
+            # 판정 기준과 한계가 있어야 한다(근거 없는 신호를 내보내지 않는다).
+            first.locator('.pt-why summary').click()
+            texts=first.locator('.pt-why dd').all_inner_texts()
+            assert len(texts)>=2 and all(t.strip() and t.strip()!='—' for t in texts[:2]),texts
+            first.locator('.pt-why summary').click()
+            # 종목 이름을 누르면 상세가 열린다.
+            first.locator('.pt-name').click()
+            expect(page.locator('#drawer')).to_be_visible()
+            page.locator('#close-drawer').click()
+        # 단계 칩으로 좁히면 결과 줄의 종목 수가 바뀐다.
+        before=page.locator('.pt-result').inner_text()
+        page.locator('.pt-chip.phase-watch').first.click()
+        assert page.locator('.pt-chip.phase-watch.active').count()==1
+        after=page.locator('.pt-result').inner_text()
+        assert before!=after or summary['withSetup']==0,(before,after)
+        # 2단계 조건을 끄면 대상이 늘거나 같아야 한다(줄어들 수는 없다).
+        page.locator('.pt-chip', has_text='전체').first.click()
+        wide_before=int(_re.search(r'(\d+)',page.locator('.pt-result').inner_text()).group(1))
+        page.locator('.pt-chip', has_text='2단계 종목만').click()
+        wide_after=int(_re.search(r'(\d+)',page.locator('.pt-result').inner_text()).group(1))
+        assert wide_after>=wide_before,(wide_before,wide_after)
+        assert not errors,errors
+        assert 'tab=patterns' in page.url
+        context.close();print('RADAR PATTERNS PASS',market,f'cards={cards}')
+    # 일본·대만은 셋업 판정을 제공하지 않는다. 빈 화면 대신 그 사실을 적어야 한다.
+    context=browser.new_context();page=context.new_page()
+    page.goto(f'{base}/radar.html?market=JP&tab=patterns',wait_until='networkidle')
+    expect(page.locator('#content .empty')).to_contain_text('한국과 미국')
+    context.close();print('RADAR PATTERNS LITE NOTICE PASS')
     for name,market in [('index.html','KR'),('us.html','US')]:
         page=browser.new_page()
         page.goto(base+'/'+name,wait_until='domcontentloaded');page.wait_for_url(f'**/radar.html?market={market}')
