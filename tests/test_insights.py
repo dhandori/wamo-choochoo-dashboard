@@ -12,6 +12,60 @@ def stock(symbol='AAA', close=90, count=252, industry='Chips'):
     return {'ticker':symbol, 'stock_code':symbol,'name':symbol,'industry':industry,'date':DAY,'history':rows,'dataSource':'verified'}
 def payload(*stocks):
     return {'meta':{'asOf':DAY,'source':'verified'},'stocks':list(stocks)}
+FUNNEL_KR = {'listed': 4148, 'companyUniverse': 2601, 'marketCapPass': 298, 'liquidityPass': 213,
+             'marketCapThresholdKRW': 1_000_000_000_000, 'liquidityThresholdKRW': 10_000_000_000}
+
+
+class UniverseRuleTests(unittest.TestCase):
+    """스크리닝 대상 기준을 화면이 읽을 수 있게 스냅샷에 싣는다.
+
+    임계값을 화면 코드에 적으면 수집 기준이 바뀔 때 숫자가 어긋난다.
+    """
+
+    def build(self, funnel, market='KR'):
+        data = payload(stock())
+        if funnel is not None:
+            data['meta']['universeFunnel'] = funnel
+        return build_insights({market: data}, NOW)['markets'][market]['coverage']['universe']
+
+    def test_thresholds_and_steps_are_carried(self):
+        universe = self.build(FUNNEL_KR)
+        self.assertEqual(universe['currency'], 'KRW')
+        self.assertEqual(universe['marketCap'], 1_000_000_000_000)
+        self.assertEqual(universe['liquidity'], 10_000_000_000)
+        self.assertEqual(universe['liquidityDays'], 50)
+        self.assertEqual([x['label'] for x in universe['steps']],
+                         ['상장', '기업·리츠', '시총 통과', '거래대금 통과'])
+        self.assertEqual([x['count'] for x in universe['steps']], [4148, 2601, 298, 213])
+
+    def test_dollar_thresholds_keep_their_currency(self):
+        universe = self.build({'listed': 2560, 'liquidityPass': 881,
+                               'marketCapThresholdUSD': 1_000_000_000,
+                               'liquidityThresholdUSD': 10_000_000}, market='US')
+        self.assertEqual(universe['currency'], 'USD')
+        self.assertEqual(universe['marketCap'], 1_000_000_000)
+
+    def test_missing_funnel_gives_nothing(self):
+        self.assertIsNone(self.build(None))
+        for bad in ({}, 'funnel', [1, 2], {'marketCapEnforced': True}):
+            self.assertIsNone(self.build(bad))
+
+    def test_bad_numbers_are_dropped_not_rendered(self):
+        universe = self.build({'listed': 'many', 'companyUniverse': 0, 'liquidityPass': 213,
+                               'marketCapThresholdKRW': float('nan'),
+                               'liquidityThresholdKRW': -5})
+        self.assertIsNone(universe['marketCap'])
+        self.assertIsNone(universe['liquidity'])
+        self.assertEqual([x['count'] for x in universe['steps']], [213])
+
+    def test_snapshot_stays_json_safe(self):
+        import json
+        snapshot = build_insights({'KR': {'meta': {'asOf': DAY, 'source': 'verified',
+                                                   'universeFunnel': FUNNEL_KR},
+                                          'stocks': [stock()]}}, NOW)
+        json.dumps(snapshot, ensure_ascii=False, allow_nan=False)
+
+
 class InsightsTests(unittest.TestCase):
     def build(self,*stocks,previous=None, now=NOW):
         return build_insights({'US':payload(*stocks)},now,previous)['markets']['US']

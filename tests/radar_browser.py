@@ -7,6 +7,7 @@ import threading
 from playwright.sync_api import sync_playwright, expect
 ROOT=Path(__file__).resolve().parents[1]
 DATA=json.loads((ROOT/'wamo_insights.json').read_text())
+TREND=json.loads((ROOT/'wamo_trend.json').read_text())
 OUT=ROOT/'test-results';OUT.mkdir(exist_ok=True)
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
@@ -23,7 +24,7 @@ def check_help_bounds(page):
     assert box['y']+box['height']<=page.viewport_size['height'],box
     assert page.get_by_role('tooltip').evaluate('(e)=>e.contains(document.elementFromPoint(e.getBoundingClientRect().x+e.clientWidth/2,e.getBoundingClientRect().y+e.clientHeight/2))')
 
-STEP_OF={'trend':'market','ftd':'market','leaders':'sector','industries':'sector','ai':'sector','near':'stock','high':'stock','high60':'stock','movers':'stock'}
+STEP_OF={'trend':'market','ftd':'market','leaders':'sector','industries':'sector','ai':'sector','near':'stock','high':'stock','high60':'stock','movers':'stock','patterns':'stock'}
 def go_tab(page,tab):
     # 2026-10-28 3단계 탭: 휴대폰은 고른 단계의 탭만 보이므로 다른 단계 탭은 단계 칸을 먼저 누른다.
     b=page.locator(f'[data-tab={tab}]')
@@ -234,8 +235,9 @@ with sync_playwright() as p:
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
             assert dimensions['scroll']<=dimensions['client'],dimensions
             assert not errors,errors
-            # Earlier steps opened the sort panel; measure the default (folded on phones) layout.
-            if width<760:page.evaluate("document.querySelectorAll('.sort-fold').forEach(n=>n.open=false)")
+            # Earlier steps opened the sort panel; measure the default layout, which is
+            # folded at every width since 2026-10-28 (it cost 147px on desktop).
+            page.evaluate("document.querySelectorAll('.sort-fold').forEach(n=>n.open=false)")
             page.evaluate('window.scrollTo(0,0)')
             page.screenshot(path=str(OUT/f'radar-{market}-{width}.png'),full_page=False)
             first_y=page.locator('.stock-link:visible').first.bounding_box()['y']
@@ -251,7 +253,7 @@ with sync_playwright() as p:
             legend_extra=page.locator('.card-legend').first.evaluate('(n)=>n.offsetParent?n.getBoundingClientRect().height+8:0') if page.locator('.card-legend').count() else 0
             weather_height+=tabs_extra+legend_extra
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
-            if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs + sort panel open on desktop; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가
+            if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가 · 정렬 패널은 기본 접힘
             else:assert first_y-notice_height-weather_height<1100,first_y  # phones: industry-flow strip sits above the list since 2026-10-19; 2026-10-23 grouped tabs and metric bars add ~70px
             if (ROOT/'wamo_trend.json').exists():
                 go_tab(page,'trend')
@@ -328,6 +330,107 @@ with sync_playwright() as p:
     expect(page.locator('.stock-link:visible').first).to_be_visible()
     assert not errors,errors
     context.close();print('RADAR PREVIOUS TEMPLATE RETENTION PASS')
+    # 스크리닝 대상 기준: 213종목이 시장 전체가 아니라는 것을 화면에서 읽을 수 있어야 한다.
+    for market in ('KR','US'):
+        context=browser.new_context();page=context.new_page();errors=[]
+        page.on('pageerror',lambda error:errors.append(str(error)))
+        page.goto(f'{base}/radar.html?market={market}&tab=near',wait_until='networkidle')
+        page.locator('#coverage-summary').click()
+        rules=page.locator('#coverage-detail .universe-rule')
+        universe=DATA['markets'][market]['coverage']['universe']
+        expect(rules.first).to_be_visible()
+        first=rules.first.inner_text()
+        # 임계값은 스냅샷에서 읽어야 한다. 화면 코드에 숫자를 적으면 수집 기준이 바뀔 때 어긋난다.
+        if market=='KR':
+            assert '시총 1조원 이상' in first,first
+            assert '100억원 이상' in first,first
+        else:
+            assert '10억 달러 이상' in first,first
+            assert '1,000만 달러 이상' in first,first
+        # 단계 줄은 숫자가 실제로 줄어드는 단계만 담는다.
+        texts=rules.all_inner_texts()
+        if len(texts)>1:
+            shown=[int(_re.sub(r'[^0-9]','',part)) for part in texts[1].split('→')]
+            assert shown==sorted(shown,reverse=True) and len(set(shown))==len(shown),texts[1]
+            assert shown[-1]==universe['steps'][-1]['count'],(shown,universe['steps'])
+        assert not errors,errors
+        context.close();print('RADAR UNIVERSE RULES PASS',market)
+    # 일본·대만은 수집 단계가 퍼널을 남기지 않는다. 줄을 비우고 조용히 넘어가야 한다.
+    context=browser.new_context();page=context.new_page();errors=[]
+    page.on('pageerror',lambda error:errors.append(str(error)))
+    page.goto(f'{base}/radar.html?market=JP&tab=near',wait_until='networkidle')
+    page.locator('#coverage-summary').click()
+    assert page.locator('#coverage-detail .universe-rule').count()==0
+    assert not errors,errors
+    context.close();print('RADAR UNIVERSE RULES ABSENT PASS JP')
+    # 패턴 셋업: 셋업북 12개 패턴 중 진행 중인 것만 카드로 보여 준다. 두 시장 모두 확인한다.
+    for market in ('US','KR'):
+        context=browser.new_context();page=context.new_page();errors=[]
+        page.on('pageerror',lambda error:errors.append(str(error)))
+        page.goto(f'{base}/radar.html?market={market}&tab=patterns',wait_until='networkidle')
+        summary=DATA['markets'][market]['patternSummary']
+        expect(page.locator('#section-title')).to_have_text('패턴 셋업')
+        expect(page.locator('[data-tab=patterns]')).to_have_class(_re.compile(r'\bactive\b'))
+        # 셋업북 ①-1: 시장 방향이 먼저다. 시장 판단 띠가 목록보다 위에 있고 날씨 등급을 따른다.
+        gate=page.locator('.pt-gate')
+        expect(gate).to_be_visible()
+        level=TREND['markets'][market]['weather']['level']
+        expect(gate).to_have_class(_re.compile(r'\blevel-'+level.lower()+r'\b'))
+        assert gate.inner_text().strip(),'시장 판단 띠가 비었습니다'
+        # 지수 이름은 ftd 블록의 label 을 그대로 쓴다('지수'로 떨어지면 키가 바뀐 것이다).
+        fresh=[i['label'] for i in TREND['markets'][market]['ftd']['indexes']
+               if i.get('status')=='OK' and i.get('asOf')==DATA['markets'][market]['expectedSession']]
+        for label in fresh: expect(gate).to_contain_text(label)
+        # 띠가 목록보다 먼저 나와야 한다.
+        assert gate.evaluate("(g)=>{const t=document.querySelector('.pt-top');return !t||g.compareDocumentPosition(t)&Node.DOCUMENT_POSITION_FOLLOWING}")
+        page.locator('.pt-gate-go').click()
+        expect(page.locator('#section-title')).to_have_text('추세 신호')
+        go_tab(page,'patterns')
+        # 단계 칸은 ③ 종목 찾기여야 한다.
+        expect(page.locator('#section-step')).to_have_text('③ 종목 찾기')
+        assert page.locator('.pt-stat').count()==4,page.locator('.pt-stat').count()
+        cards=page.locator('.pt-card').count()
+        if summary['withSetup']:
+            assert cards>0,f'{market}: 셋업 {summary["withSetup"]}종목인데 카드가 없습니다'
+            first=page.locator('.pt-card').first
+            # 카드에는 셋업 이름, 단계 배지, 숫자가 있어야 한다.
+            assert first.locator('.pt-setup h4').inner_text().strip(),'셋업 이름이 비었습니다'
+            assert first.locator('.pt-phase').inner_text().strip() in ('돌파','임박','형성중')
+            expect(first.locator('.pt-numbers dd').first).to_be_visible()
+            # 판정 기준과 한계가 있어야 한다(근거 없는 신호를 내보내지 않는다).
+            first.locator('.pt-why summary').click()
+            texts=first.locator('.pt-why dd').all_inner_texts()
+            assert len(texts)>=2 and all(t.strip() and t.strip()!='—' for t in texts[:2]),texts
+            first.locator('.pt-why summary').click()
+            # 종목 이름을 누르면 상세가 열린다.
+            first.locator('.pt-name').click()
+            expect(page.locator('#drawer')).to_be_visible()
+            page.locator('#close-drawer').click()
+        # 단계 칩으로 좁히면 결과 줄의 종목 수가 바뀐다.
+        before=page.locator('.pt-result').inner_text()
+        page.locator('.pt-chip.phase-watch').first.click()
+        assert page.locator('.pt-chip.phase-watch.active').count()==1
+        after=page.locator('.pt-result').inner_text()
+        assert before!=after or summary['withSetup']==0,(before,after)
+        # 셋업북 ①-6: 동반 강세 업종 필터. 걸러낸 뒤에는 모든 카드에 배지가 있어야 한다.
+        page.locator('.pt-chip', has_text='동반 강세 업종만').click()
+        shown=page.locator('.pt-card').count()
+        assert page.locator('.pt-lead').count()==shown,(page.locator('.pt-lead').count(),shown)
+        page.locator('.pt-chip', has_text='동반 강세 업종만').click()
+        # 2단계 조건을 끄면 대상이 늘거나 같아야 한다(줄어들 수는 없다).
+        page.locator('.pt-chip', has_text='전체').first.click()
+        wide_before=int(_re.search(r'(\d+)',page.locator('.pt-result').inner_text()).group(1))
+        page.locator('.pt-chip', has_text='2단계 종목만').click()
+        wide_after=int(_re.search(r'(\d+)',page.locator('.pt-result').inner_text()).group(1))
+        assert wide_after>=wide_before,(wide_before,wide_after)
+        assert not errors,errors
+        assert 'tab=patterns' in page.url
+        context.close();print('RADAR PATTERNS PASS',market,f'cards={cards}')
+    # 일본·대만은 셋업 판정을 제공하지 않는다. 빈 화면 대신 그 사실을 적어야 한다.
+    context=browser.new_context();page=context.new_page()
+    page.goto(f'{base}/radar.html?market=JP&tab=patterns',wait_until='networkidle')
+    expect(page.locator('#content .empty')).to_contain_text('한국과 미국')
+    context.close();print('RADAR PATTERNS LITE NOTICE PASS')
     for name,market in [('index.html','KR'),('us.html','US')]:
         page=browser.new_page()
         page.goto(base+'/'+name,wait_until='domcontentloaded');page.wait_for_url(f'**/radar.html?market={market}')

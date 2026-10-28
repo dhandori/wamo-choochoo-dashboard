@@ -12,6 +12,8 @@ from functools import lru_cache
 from pathlib import Path
 from statistics import median
 from urllib.parse import quote, urlparse
+from wamo_patterns import compact as compact_patterns, detect_patterns
+from wamo_patterns import meta as pattern_meta
 from wamo_runtime import calendar, expected_session, next_slot
 
 
@@ -222,8 +224,10 @@ def project(stock,market,asof):
     ticker=stock.get('ticker') or symbol
     market_cap=number(stock.get(CAP_KEY.get(market,'market_cap_usd')))
     flow=investor_flow(stock) if market=='KR' else None
+    patterns=compact_patterns(detect_patterns(rows,stock.get('vcp'),stock.get('stage2Checks'),stock.get('stage2Core')))
     return {'id':f'{market}:{symbol}','symbol':symbol,'ticker':ticker,'name':stock.get('name') or symbol,'market':market,
             **({'investorFlow':flow} if flow else {}),
+            **({'patterns':patterns} if patterns else {}),
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
             'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,
@@ -238,6 +242,54 @@ def project(stock,market,asof):
             'detailUrl':None if market in ASIA else ('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
             'chartUrl':'https://finance.yahoo.com/quote/'+quote(str(ticker))+'/',
             'sparkline':[r['close'] for r in rows[-60:]],'catalysts':catalysts(stock.get('catalysts')),'moverReasons':reasons}
+
+
+THRESHOLD_UNITS = ('KRW', 'USD', 'JPY', 'TWD')
+# 수집 단계가 적어 둔 유니버스 단계. 통과 수가 줄어드는 순서로만 보여 준다.
+UNIVERSE_STEPS = (('상장', 'listed'), ('기업·리츠', 'companyUniverse'),
+                  ('시총 통과', 'marketCapPass'), ('거래대금 통과', 'liquidityPass'))
+
+
+def universe_rules(meta):
+    """스크리닝 대상 기준. 임계값을 화면에 적기 위해 수집 단계 값을 그대로 옮긴다.
+
+    기준이 바뀌면 화면 숫자도 따라가야 하므로 임계값을 화면 코드에 적지 않는다.
+    """
+    funnel = meta.get('universeFunnel')
+    if not isinstance(funnel, dict):
+        return None
+    currency = market_cap = liquidity = None
+    for unit in THRESHOLD_UNITS:
+        cap = number(funnel.get(f'marketCapThreshold{unit}'))
+        value = number(funnel.get(f'liquidityThreshold{unit}'))
+        if cap or value:
+            currency, market_cap, liquidity = unit, cap, value
+            break
+    steps = []
+    for label, key in UNIVERSE_STEPS:
+        count = number(funnel.get(key))
+        if count is not None and count > 0:
+            steps.append({'label': label, 'count': int(count)})
+    if not (market_cap or liquidity or steps):
+        return None
+    return {'currency': currency,
+            'marketCap': market_cap if market_cap and market_cap > 0 else None,
+            'liquidity': liquidity if liquidity and liquidity > 0 else None,
+            'liquidityDays': 50, 'steps': steps}
+
+
+def pattern_summary(stocks):
+    """셋업 집계. 단계별·셋업별 종목 수만 센다(한 종목이 여러 셋업에 들어갈 수 있다)."""
+    stages=defaultdict(int);keys=defaultdict(int);breakouts=[]
+    for stock in stocks:
+        found=stock.get('patterns')
+        if not found:continue
+        stages[found['status']]+=1
+        for setup in found['setups']:
+            keys[setup['key']]+=1
+            if setup['status']=='BREAKOUT':breakouts.append(stock['id'])
+    return {'withSetup':sum(stages.values()),'byStage':dict(stages),'bySetup':dict(keys),
+            'breakoutStocks':sorted(set(breakouts))}
 
 
 def industries(stocks,market):
@@ -292,7 +344,8 @@ def build_market(market,payload,now,previous_market=None,baseline_market=None):
     warnings.extend(w for w in (meta.get('warnings') or []) if isinstance(w,str))
     return {'asOf':asof if stocks else None,'expectedSession':expected,'status':('STALE' if asof!=expected else 'PARTIAL' if excluded else 'CURRENT') if stocks else 'UNAVAILABLE',
            'nextScheduledFor':scheduled,'source':meta.get('source') or 'verified local history',
-           'coverage':{'total':len(raw),'valid':len(stocks),'excluded':excluded,'eligible52w':sum(s['high52'] is not None for s in stocks)},
+           'coverage':{'total':len(raw),'valid':len(stocks),'excluded':excluded,'eligible52w':sum(s['high52'] is not None for s in stocks),'universe':universe_rules(meta)},
+           'patternSummary':pattern_summary(stocks),
            'stocks':stocks,'industries':industries(stocks,market),'movers':[s for s in stocks if s['moverReasons']],'warnings':warnings,
            'comparison':comparison_snapshot(market,asof if stocks else None,previous_market,baseline_market)}
 
@@ -308,7 +361,7 @@ def refresh_market_status(block,market,now):
 def build_insights(payloads,now,previous=None,baseline=None,markets=('KR','US')):
     if isinstance(now,str):now=datetime.fromisoformat(now.replace('Z','+00:00'))
     if now.tzinfo is None:now=now.replace(tzinfo=timezone.utc)
-    result={'schemaVersion':1,'generatedAt':now.isoformat(),'markets':{}}
+    result={'schemaVersion':1,'generatedAt':now.isoformat(),'patternMeta':pattern_meta(),'markets':{}}
     for market in markets:
         result['markets'][market]=build_market(market,payloads.get(market) or {},now,
             ((previous or {}).get('markets') or {}).get(market),((baseline or {}).get('markets') or {}).get(market))
