@@ -23,7 +23,7 @@ def check_help_bounds(page):
     assert box['y']+box['height']<=page.viewport_size['height'],box
     assert page.get_by_role('tooltip').evaluate('(e)=>e.contains(document.elementFromPoint(e.getBoundingClientRect().x+e.clientWidth/2,e.getBoundingClientRect().y+e.clientHeight/2))')
 
-STEP_OF={'trend':'market','ftd':'market','leaders':'sector','industries':'sector','ai':'sector','near':'stock','high':'stock','movers':'stock'}
+STEP_OF={'trend':'market','ftd':'market','leaders':'sector','industries':'sector','ai':'sector','near':'stock','high':'stock','high60':'stock','movers':'stock'}
 def go_tab(page,tab):
     # 2026-10-28 3단계 탭: 휴대폰은 고른 단계의 탭만 보이므로 다른 단계 탭은 단계 칸을 먼저 누른다.
     b=page.locator(f'[data-tab={tab}]')
@@ -207,7 +207,7 @@ with sync_playwright() as p:
                 assert returns==sorted(returns,key=lambda value:float('-inf') if value is None else value,reverse=True)
                 sort_box(page).select_option(f'return{days}d')
                 page.locator('.stock-link:visible').first.click()
-                expect(page.locator('#detail .stat').filter(has_text=f'{days}일 수익률')).to_be_visible()
+                expect(page.locator(f'#detail .ret-tile[data-key="return{days}d"]')).to_be_visible()  # 2026-10-28: 수익률은 작은 칸 6개 묶음
                 page.locator('#close-drawer').click()
             page.screenshot(path=str(OUT/f'radar-{market}-{width}-ai-200d.png'),full_page=False)
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')

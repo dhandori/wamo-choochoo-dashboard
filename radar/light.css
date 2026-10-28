@@ -803,3 +803,7 @@
   :root[data-theme="light"] .tabs.steps .tab-group.active .step-head { background: #dfefeb; border-color: #83c1ad; }
   :root[data-theme="light"] .tabs.steps .tab-group.active .step-head .tab-group-label, :root[data-theme="light"] .tabs.steps .tab-group.active .hint-short { color: #033726; }
 }
+:root[data-theme="light"] .kv-sec { background: #f4f7fb; border-color: #adbacd; }
+:root[data-theme="light"] .detail-body .kv-sec .stat.kv { background: none; border-color: #d5deea; }
+:root[data-theme="light"] .detail-body .ret-grid .stat.ret-tile { background: #ffffff; border-color: #c9d4e2; }
+:root[data-theme="light"] .kv-title { color: #2a3646; }

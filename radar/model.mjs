@@ -93,7 +93,7 @@ function compareBy(key){
  const asc=SORT_KEYS[key]?.[1]==='asc';
  return (a,b)=>{const x=value(a),y=value(b);if(x==null||y==null)return x==null&&y==null?0:x==null?1:-1;return asc?x-y:y-x;};
 }
-export function selectStocks(m,{tab='near',distance=10,high='either',highPeriod='52',mode='all',query='',rs=false,stage=false,industry=null,sort='default',sort2='none',minCap=0,aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
+export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',sort2='none',minCap=0,aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
  let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
  if(tab==='ai') {
   rows=rows.filter(s=>{const member=aiMembership(s);return member&&(aiSector==='all'||member.sectors.includes(aiSector));});
@@ -104,8 +104,8 @@ export function selectStocks(m,{tab='near',distance=10,high='either',highPeriod=
   if(aiSignal==='volume')rows=rows.filter(s=>numeric(s.volumeRatio)&&s.volumeRatio>=1.5);
  }
  if(tab==='near') rows=rows.filter(s=>numeric(s.highDistancePct)&&s.highDistancePct<=distance);
- // 당일 신고가: 기간(52주 또는 60일) × 종류(장중·종가·둘 중 하나).
- if(tab==='high'){const p=highPeriod==='60'?'60':'52',i=`intradayHigh${p}`,c=`closeHigh${p}`;rows=rows.filter(s=>high==='intraday'?s[i]===true:high==='close'?s[c]===true:s[i]===true||s[c]===true);}
+ // 당일 신고가(52주)·60일 신고가: 장중·종가·둘 중 하나.
+ if(tab==='high'||tab==='high60'){const p=tab==='high60'?'60':'52',i=`intradayHigh${p}`,c=`closeHigh${p}`;rows=rows.filter(s=>high==='intraday'?s[i]===true:high==='close'?s[c]===true:s[i]===true||s[c]===true);}
  if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
  if(industry) rows=rows.filter(s=>industry.members.includes(s.id));
  if(newOnly)rows=rows.filter(s=>signalChanges(s,priorSignal(m,s),tab==='near'?distance:10).entered.length>0);
