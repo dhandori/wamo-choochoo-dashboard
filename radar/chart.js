@@ -26,7 +26,8 @@ export function stockSeries(data, symbol) {
   const dates = data.dates.slice(s.s, s.s + s.c.length);
   const bench = (data.bench || []).slice(s.s, s.s + s.c.length);
   const vols = new Array(s.c.length - s.v.length).fill(null).concat(s.v);
-  return { dates, closes: s.c, volumes: vols, volStart: s.c.length - s.v.length, bench, benchLabel: data.benchLabel || '지수' };
+  // a = [ATR(14일), 종가 대비 %] — 갱신기가 고가·저가로 계산해 둔 평균 변동폭(없으면 null).
+  return { dates, closes: s.c, volumes: vols, volStart: s.c.length - s.v.length, bench, benchLabel: data.benchLabel || '지수', atr: Array.isArray(s.a) ? s.a : null };
 }
 
 export function sma(values, n) {

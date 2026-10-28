@@ -1,6 +1,6 @@
 // Separate market-reversal workspace; individual-stock filters do not apply.
 import { ftdSummary, freshIndex, PHASES, PHASE_MEANING, ftdQuality } from './ftd-model.mjs?v=20261026-rn1';
-import { helpButton, addTerms } from './help.js?v=20261026-rn1';
+import { helpButton, addTerms } from './help.js?v=20261028-at1';
 import { FTD_TERMS, glossary } from './terms.mjs?v=20261026-rn1';
 addTerms(FTD_TERMS);
 const n = (tag, text, cls) => { const e=document.createElement(tag); if(text!=null)e.textContent=text; if(cls)e.className=cls; return e; };
