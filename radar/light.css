@@ -74,6 +74,8 @@
 :root[data-theme="light"] .term-tooltip { border: 1px solid #7b91aa; background: #dde5f0; }
 :root[data-theme="light"] .term-tooltip > strong { color: #021125; }
 :root[data-theme="light"] .term-tooltip > p { color: #222e3d; }
+:root[data-theme="light"] .term-tooltip > p.term-section { border-top: 1px solid #a8bbd1; }
+:root[data-theme="light"] .term-tooltip > p.term-section b { color: #26374a; }
 :root[data-theme="light"] .sort-panel { border: 1px solid #a8bad1; background: #e8eff8; }
 :root[data-theme="light"] .sort-step { color: #192634; }
 :root[data-theme="light"] .sort-summary { color: #2a3746; }
@@ -216,6 +218,7 @@
 :root .ai-heading-help { font-size: 12px; }
 :root .change-dates { font-size: 12px; }
 }
+:root .term-tooltip > p.term-section b { font-size: 12px; }
 :root .tab-group-label { font-size: 12px; }
 @media (max-width: 760px) {
 :root .tab-count { font-size: 12px; }

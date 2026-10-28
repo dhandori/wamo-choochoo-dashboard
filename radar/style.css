@@ -279,6 +279,8 @@ table { font-size: 13px; }
 .term-tooltip[hidden] { display: none; }
 .term-tooltip > strong { display: block; margin: 0 0 5px; color: #d8e9ff; font-size: 13px; }
 .term-tooltip > p { margin: 0; color: #c1cede; font-size: 12px; line-height: 1.8; }
+.term-tooltip > p.term-section { margin-top: 9px; padding-top: 8px; border-top: 1px solid #2f4259; }
+.term-tooltip > p.term-section b { display: block; margin-bottom: 2px; color: #9fb6d1; font-size: 11px; font-weight: 600; letter-spacing: .02em; }
 /* Step-by-step sort: cap floor → 1st key → tie-break key */
 .sort-panel { flex-basis: 100%; display: grid; gap: 10px; padding: 12px 14px; border: 1px solid #2b3c52; border-radius: 10px; background: #0d1929; }
 .sort-row { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 10px; }

@@ -405,6 +405,16 @@ with sync_playwright() as p:
             first.locator('.pt-why summary').click()
             # 셋업북의 한 줄 논리는 접지 않고 보인다.
             expect(first.locator('.pt-logic')).to_be_visible()
+            # 패턴 이름을 누르면 풀이 팝업이 뜬다: 한 줄 논리 + 모양·판정 기준·한계.
+            name_btn=first.locator('.pt-setup h4 .term-help')
+            name_btn.click()
+            tip=page.locator('#term-tooltip')
+            expect(tip).to_be_visible()
+            assert tip.locator('strong').inner_text().startswith(name_btn.inner_text()),tip.locator('strong').inner_text()
+            assert tip.locator('p.term-section b').all_inner_texts()==['어떤 모양인가','판정 기준','한계']
+            check_help_bounds(page)
+            name_btn.click()
+            expect(tip).to_be_hidden()
             # 네이버·트레이딩뷰 링크는 스냅샷 주소 그대로, 새 탭으로 연다.
             shown=[s for s in DATA['markets'][market]['stocks'] if s.get('patterns')]
             card_links=first.locator('.pt-link')

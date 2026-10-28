@@ -49,9 +49,15 @@ function showHelp(trigger) {
   clearTimeout(closeTimer); openedAt = performance.now();
   if (active !== trigger) closeHelp();
   active = trigger;
-  const [title, description] = TERMS[trigger.dataset.help];
+  // 세 번째 값은 선택이다: [[소제목, 본문], …]. 패턴 설명처럼 항목이 여러 개인 풀이에 쓴다.
+  const [title, description, sections] = TERMS[trigger.dataset.help];
   const heading = document.createElement('strong'), body = document.createElement('p');
   heading.textContent = title; body.textContent = description; tip.replaceChildren(heading, body);
+  for (const [label, text] of Array.isArray(sections) ? sections : []) {
+    if (!text) continue;
+    const part = document.createElement('p'), name = document.createElement('b');
+    part.className = 'term-section'; name.textContent = label; part.append(name, document.createTextNode(text)); tip.append(part);
+  }
   (trigger.closest('dialog') || document.body).append(tip);
   tip.hidden = false; trigger.setAttribute('aria-describedby', tip.id);
   const rect = trigger.getBoundingClientRect(), gap = 8, margin = 12;

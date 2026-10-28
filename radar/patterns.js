@@ -1,6 +1,6 @@
 // 패턴 셋업 화면. wamo_insights.json 의 stocks[].patterns 와 patternMeta 를 읽는다.
 // 셋업 판정은 서버(wamo_patterns.py)가 하고, 여기서는 고르고 보여 주기만 한다.
-import { helpButton, addTerms } from './help.js?v=20261028-h60';
+import { helpButton, addTerms } from './help.js?v=20261029-pt3';
 import { PATTERN_TERMS, glossary } from './terms.mjs?v=20261029-pt1';
 // 이 파일의 PHASES 는 셋업 진행 단계다. FTD 지수 단계는 이름을 구분해 가져온다.
 import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs?v=20261028-h60';
@@ -263,6 +263,27 @@ function evidence(setup) {
   return box;
 }
 
+// 패턴 이름을 누르면 뜨는 풀이. 용어 팝업(help.js)에 셋업마다 한 번만 등록한다.
+// addTerms 는 같은 키를 다시 넣으면 경고를 남기므로, 화면을 다시 그릴 때마다 넣지 않는다.
+const registered = new Set();
+const setupTerm = key => `setup_${key}`;
+function registerSetups(meta) {
+  const fresh = {};
+  for (const [key, info] of Object.entries(meta)) {
+    if (registered.has(key)) continue;
+    const stars = info.importance ? ` · ${'★'.repeat(info.importance)}` : '';
+    fresh[setupTerm(key)] = [`${info.name || key} · ${info.master || ''}${stars}`, info.logic || '',
+      [['어떤 모양인가', info.description], ['판정 기준', info.criterion], ['한계', info.caveat]]];
+    registered.add(key);
+  }
+  if (Object.keys(fresh).length) addTerms(fresh);
+}
+/** 패턴 이름. 설명이 있으면 눌러서 풀이를 연다. */
+function setupName(key, meta) {
+  const name = meta[key]?.name || key;
+  return meta[key]?.description ? helpButton(name, setupTerm(key)) : document.createTextNode(name);
+}
+
 const LINKS = [
   ['naverUrl', '네이버', /^https:\/\/m\.stock\.naver\.com\/(domestic|worldstock)\/stock\/[A-Za-z0-9.]+\/total$/],
   ['tradingviewUrl', '트레이딩뷰', /^https:\/\/www\.tradingview\.com\/chart\/\?symbol=[A-Z]+%3A[A-Z0-9.]+$/],
@@ -293,7 +314,8 @@ function guide(meta) {
     const info = meta[key];
     const item = n('section', null, 'pt-guide-item');
     const head = n('div', null, 'pt-guide-head');
-    head.append(n('h4', info.name || key), n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
+    const heading = n('h4'); heading.append(setupName(key, meta));
+    head.append(heading, n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
     item.append(head);
     if (info.logic) item.append(n('p', info.logic, 'pt-logic'));
     if (info.description) item.append(n('p', info.description, 'pt-guide-text'));
@@ -320,7 +342,8 @@ function card(row, market, meta, openStock, leading) {
   if (outbound) box.append(outbound);
 
   const title = n('div', null, 'pt-setup');
-  title.append(n('h4', info.name || best.key), n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
+  const heading = n('h4'); heading.append(setupName(best.key, meta));
+  title.append(heading, n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
   if (best.label && best.label !== info.name) title.append(n('span', best.label, 'pt-label'));
   if (inLeadingIndustry(stock, leading)) {
     const badge = n('span', null, 'pt-lead');
@@ -352,7 +375,8 @@ function card(row, market, meta, openStock, leading) {
     for (const setup of setups.slice(1)) {
       const [label, cls] = PHASES[setup.status] || ['—', 'watch'];
       const tag = n('span', null, `pt-tag phase-${cls}`);
-      tag.append(n('b', meta[setup.key]?.name || setup.key), n('i', label));
+      const tagName = n('b'); tagName.append(setupName(setup.key, meta));
+      tag.append(tagName, n('i', label));
       more.append(tag);
     }
     box.append(more);
@@ -385,6 +409,7 @@ export function renderPatterns(root, market, block, meta, options = {}) {
     root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국과 미국만 지원합니다.`, 'empty'));
     return;
   }
+  registerSetups(meta);
   const redraw = () => renderPatterns(root, market, block, meta, options);
   const leading = leadingIndustries(block);
 
