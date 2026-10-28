@@ -235,8 +235,9 @@ with sync_playwright() as p:
             dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
             assert dimensions['scroll']<=dimensions['client'],dimensions
             assert not errors,errors
-            # Earlier steps opened the sort panel; measure the default (folded on phones) layout.
-            if width<760:page.evaluate("document.querySelectorAll('.sort-fold').forEach(n=>n.open=false)")
+            # Earlier steps opened the sort panel; measure the default layout, which is
+            # folded at every width since 2026-10-28 (it cost 147px on desktop).
+            page.evaluate("document.querySelectorAll('.sort-fold').forEach(n=>n.open=false)")
             page.evaluate('window.scrollTo(0,0)')
             page.screenshot(path=str(OUT/f'radar-{market}-{width}.png'),full_page=False)
             first_y=page.locator('.stock-link:visible').first.bounding_box()['y']
@@ -252,7 +253,7 @@ with sync_playwright() as p:
             legend_extra=page.locator('.card-legend').first.evaluate('(n)=>n.offsetParent?n.getBoundingClientRect().height+8:0') if page.locator('.card-legend').count() else 0
             weather_height+=tabs_extra+legend_extra
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
-            if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs + sort panel open on desktop; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가
+            if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가 · 정렬 패널은 기본 접힘
             else:assert first_y-notice_height-weather_height<1100,first_y  # phones: industry-flow strip sits above the list since 2026-10-19; 2026-10-23 grouped tabs and metric bars add ~70px
             if (ROOT/'wamo_trend.json').exists():
                 go_tab(page,'trend')

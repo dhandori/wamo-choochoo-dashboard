@@ -513,8 +513,10 @@ function renderControls() {
     input.onchange = () => change('smallGroups', input.checked); small.append(input, document.createTextNode(' 1~2종목 산업도 보기')); controls.append(small);
   } else {
     const options = el('div', null, 'filter-group'); checkbox('rs', 'RS ≥80', options); checkbox('stage', 'Stage 2', options); controls.append(options);
-    // Folded on phones so the list starts near the top; the summary line keeps the applied order visible.
-    const fold = el('details', null, 'sort-fold'); let open = !window.matchMedia('(max-width:760px)').matches;
+    // 기본은 접어 둔다. 데스크톱에서 펼쳐 두면 정렬 패널만 147px을 먹어 목록이 1,000px
+    // 아래로 밀렸다. 접힌 요약 줄이 적용된 시총·정렬을 그대로 보여 주므로 잃는 정보는 없다.
+    // 한 번 펼치면 그 선택은 localStorage 에 남는다.
+    const fold = el('details', null, 'sort-fold'); let open = false;
     try { const saved = localStorage.getItem('wamo-sort-open'); if (saved) open = saved === '1'; } catch {}
     fold.open = open; fold.addEventListener('toggle', () => { try { localStorage.setItem('wamo-sort-open', fold.open ? '1' : '0'); } catch {} });
     const first = state.sort === 'default' ? defaultSortLabel() : SORT_KEYS[state.sort]?.[0], second = state.sort2 !== 'none' && state.sort2 !== state.sort ? SORT_KEYS[state.sort2]?.[0] : null;

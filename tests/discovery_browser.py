@@ -173,7 +173,8 @@ def test_entry_errors(browser, base_url):
         expect(page.locator("#discovery-load-error")).to_be_visible()
         page.get_by_role("link", name="🇰🇷 한국", exact=True).click()
         page.wait_for_url("**/radar.html?market=KR")
-        expect(page.locator("#section-title")).to_have_text("52주 신고가권")
+        # 레이더 기본 탭은 '추세 신호'(① 시장)다. 종목 목록 탭은 따로 눌러서 확인한다.
+        expect(page.locator("#section-title")).to_have_text("추세 신호")
         page.goto(base_url + "/index.html?stock=__missing__")
         expect(page.locator("#discovery-original-notice")).to_be_visible()
         assert page.locator("#wamo-discovery").count() == 0
