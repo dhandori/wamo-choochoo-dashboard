@@ -6,6 +6,7 @@ const TERMS = {
   high: ['52주 고점', '최근 252거래일 중 가장 높은 장중 가격입니다. 252개 거래일 이력이 있어야 비교하며, 이력이 부족하면 —로 표시합니다.'],
   near: ['52주 신고가권', '종가가 최근 252거래일 장중 고점에서 10% 이내인 종목입니다. 상단 집계는 10% 기준이며, 신고가권 탭에서는 5·10·15%로 좁히거나 넓힐 수 있습니다.'],
   breakout: ['당일 신고가', '표시된 거래일의 장중 최고가나 종가가 직전 251거래일의 최고값을 넘은 경우입니다. 같은 가격에 그친 경우는 빼고, 장중·종가 조건을 둘 다 채워도 한 종목으로 셉니다.'],
+  high60: ['60일 고점 · 60일 신고가', '최근 60거래일(약 3개월)의 장중 최고가입니다. 60일 신고가는 그날 고가(또는 종가)가 직전 59거래일의 최고가(또는 최고 종가)를 넘긴 날이에요. 52주 신고가보다 짧은 돌파라 조정 뒤 다시 올라오는 종목을 일찍 잡지만, 그만큼 가짜 돌파도 많아요.'],
   atr: ['ATR(14일) · 평균 변동폭', '최근 14거래일 동안 하루에 움직인 폭(고가−저가, 전날 종가와의 갭 포함)의 평균입니다. 옆의 %는 종가 대비 비율로, 이 종목이 보통 하루에 얼마나 움직이는지를 뜻합니다. 손절 폭이나 목표가를 잡을 때 기준으로 씁니다. 고가·저가 기록이 없는 날은 종가로 대신해 실제보다 작게 나올 수 있습니다.'],
   volume: ['거래량 배수 · 상대 거래량','표시 거래일의 거래량 ÷ 이전 50거래일 평균 거래량입니다. 평균에서 당일은 제외합니다. 1.5×는 평소보다 50% 많은 거래량이며, 필요한 이력이 없으면 —로 표시합니다.'],
   median: ['중앙값 · 분야 수익률', '계산된 종목 수익률을 낮은 순서로 놓았을 때 가운데 값입니다. 짝수 개이면 가운데 두 값의 평균을 씁니다. 시총 가중 수익률이 아니므로 일부 대형주의 영향이 과하게 커지지 않습니다. 이력이 부족한 종목은 해당 기간 집계에서 제외합니다.'],
@@ -26,7 +27,7 @@ const LABELS = {
   '당일 신고가':'breakout', 'AI 당일 신고가':'breakout', '거래량 배수':'volume', '상대 거래량':'volume',
   '중앙값':'median', '당일':'today', '시가총액':'cap', '시총':'cap', '당일 상승 비율':'breadth',
   '산업 동반 강세':'confirmed', '확인된 그룹만':'confirmed', '동반 강세 산업만':'confirmed', '60일 추이':'trend', 'AI 관찰 종목':'ai',
-  '추세 확산도':'trendBreadth','전일 변화':'changes', 'ATR(14일)':'atr',
+  '추세 확산도':'trendBreadth','전일 변화':'changes', 'ATR(14일)':'atr', '60일 고점까지':'high60', '60일 장중 고점':'high60', '60일 신고가':'high60',
 };
 // Other screens register their own glossary (FTD, leaders) without touching the list above.
 export function addTerms(extra) {
@@ -43,8 +44,9 @@ export function closeHelp() {
   active?.removeAttribute('aria-describedby');
   active = null; pinned = false; tip.hidden = true;
 }
+let openedAt = 0;
 function showHelp(trigger) {
-  clearTimeout(closeTimer);
+  clearTimeout(closeTimer); openedAt = performance.now();
   if (active !== trigger) closeHelp();
   active = trigger;
   const [title, description] = TERMS[trigger.dataset.help];
@@ -96,5 +98,6 @@ document.addEventListener('pointerdown', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && active) { e.preventDefault(); e.stopImmediatePropagation(); closeHelp(); }
 }, true);
-document.addEventListener('scroll', e => { if (!tip.contains(e.target)) closeHelp(); }, true);
+// 도움말을 여는 동작이 스스로 일으킨 스크롤(휴대폰 아래 시트가 버튼을 가릴 때 브라우저가 버튼을 끌어올림)로는 닫지 않는다.
+document.addEventListener('scroll', e => { if (!tip.contains(e.target) && performance.now() - openedAt > 400) closeHelp(); }, true);
 window.addEventListener('resize', closeHelp);

@@ -1,7 +1,7 @@
 // 천장 신호: 일중전환(장중 반전)과 클라이맥스 런. wamo_trend.json의 markets[시장].climax만 읽습니다.
 // 계산 규칙은 wamo_climax.py에 있고, 이 화면은 그 결과를 지수 차트·기록표·종목 목록으로 보여 줍니다.
 import { MA } from './chart.js?v=20261028-at1';
-import { addTerms, helpButton } from './help.js?v=20261028-at1';
+import { addTerms, helpButton } from './help.js?v=20261028-h60';
 import { glossary } from './terms.mjs?v=20261026-rn1';
 
 const NS = 'http://www.w3.org/2000/svg';

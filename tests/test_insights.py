@@ -49,6 +49,20 @@ class InsightsTests(unittest.TestCase):
         self.assertTrue(stocks[1]['closeHigh52'])
         self.assertEqual(stocks[0]['volumeRatio'],2)
         self.assertEqual(stocks[0]['return5d'],12.5)
+    def test_60_day_high_uses_the_last_60_sessions_only(self):
+        # 252일 전체 고가는 100이지만 최근 60거래일 고가는 85 → 종가 90은 60일 신고가, 52주 신고가는 아님.
+        s=stock(close=90)
+        for row in s['history'][-60:-1]:row.update(high=85.,close=80.)
+        s['history'][-1].update(high=90.,close=90.)
+        out=self.build(s)['stocks'][0]
+        self.assertFalse(out['intradayHigh52'])
+        self.assertTrue(out['intradayHigh60'])
+        self.assertTrue(out['closeHigh60'])
+        self.assertEqual(out['high60'],90)
+        self.assertEqual(out['high60DistancePct'],0)
+        short=self.build(stock(count=40))['stocks'][0]
+        self.assertIsNone(short['intradayHigh60'])
+        self.assertIsNone(short['high60'])
     def test_short_history_is_visible_but_ineligible(self):
         m=self.build(stock(count=40))
         self.assertEqual(m['coverage']['eligible52w'],0)

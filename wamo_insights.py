@@ -213,10 +213,12 @@ def project(stock,market,asof):
     if change is not None and change>=3: reasons.append('UP')
     if change is not None and change<=-3: reasons.append('DOWN')
     if volume is not None and volume>=1.5: reasons.append('VOLUME')
-    def breakout(key):
-        if len(rows)<252:return None
-        prior=max(r[key] for r in rows[-252:-1]); latest=rows[-1][key]
+    def breakout(key,n=252):
+        if len(rows)<n:return None
+        prior=max(r[key] for r in rows[-n:-1]); latest=rows[-1][key]
         return latest>prior+max(abs(prior)*1e-8,1e-8)
+    # 60일 신고가: 직전 59거래일의 최고가(장중) 또는 최고 종가를 넘긴 날. 52주 신고가보다 짧은 돌파.
+    high60=max(r['high'] for r in rows[-60:]) if len(rows)>=60 else None
     ticker=stock.get('ticker') or symbol
     market_cap=number(stock.get(CAP_KEY.get(market,'market_cap_usd')))
     flow=investor_flow(stock) if market=='KR' else None
@@ -226,7 +228,9 @@ def project(stock,market,asof):
             'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
-            'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),'volumeRatio':volume,
+            'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),
+            'high60':high60,'high60DistancePct':round(max(0,(1-close/high60)*100),6) if high60 else None,
+            'intradayHigh60':breakout('high',60),'closeHigh60':breakout('close',60),'volumeRatio':volume,
             'rs':number(stock.get('rsPercentile')),'stage2':stock.get('stage2Core'),
             **trend_position(rows,market,asof),
             'source':stock.get('dataSource') or stock.get('priceProvider') or 'verified local history',

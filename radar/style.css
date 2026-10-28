@@ -624,3 +624,6 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
 .detail-body .stop-grid { grid-template-columns: 1fr; }
 .stat-hint { display: block; margin-top: 4px; font-size: 11.5px; line-height: 1.5; color: var(--muted); font-style: normal; }
 .stat strong.bad { color: var(--bad); }
+/* 상세창 안에서 항목으로 스크롤할 때(키보드 이동·바로가기) 위에 고정된 제목줄 밑에 가리지 않게 */
+#detail { scroll-padding-top: 150px; }
+@media (max-width: 760px) { #detail { scroll-padding-top: 130px; } }

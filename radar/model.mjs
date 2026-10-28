@@ -48,7 +48,7 @@ function validMarket(m) {
   if(comparison!=null && (!comparison || typeof comparison!=='object' || (comparison.expectedSession!=null&&!day(comparison.expectedSession)) || !Array.isArray(comparison.stocks) ||
      (comparison.asOf==null?comparison.stocks.length!==0:!hasComparison(m)) || new Set(comparison.stocks.map(s=>s?.id)).size!==comparison.stocks.length ||
      !comparison.stocks.every(s=>s&&text(s.id)&&['highDistancePct','rs'].every(k=>optionalNumber(s[k]))&&(s.highDistancePct==null||s.highDistancePct>=0)&&(s.rs==null||s.rs>=0&&s.rs<=100)&&(s.stage2==null||typeof s.stage2==='boolean'))))return false;
-  const validStock=s=>s && text(s.id) && text(s.name) && text(s.symbol) && text(s.industry) && s.asOf===m.asOf && numeric(s.close)&&s.close>0 && ['changePct','return5d','return20d','return60d','return120d','return200d','high52','highDistancePct','volumeRatio','rs'].every(key=>optionalNumber(s[key])) && (s.highDistancePct==null||s.highDistancePct>=0) && (s.volumeRatio==null||s.volumeRatio>=0) && ['intradayHigh52','closeHigh52','stage2'].every(key=>s[key]==null||typeof s[key]==='boolean') && (s.sparkline==null||Array.isArray(s.sparkline)&&s.sparkline.every(n=>numeric(n)&&n>0)) && ['catalysts','news'].every(key=>s[key]==null||Array.isArray(s[key])&&s[key].every(a=>a&&text(a.title)&&text(a.url)&&(a.date==null||day(a.date)||(key==='news'&&timestamp(a.date))))) && (s.moverReasons==null||Array.isArray(s.moverReasons)&&s.moverReasons.every(text));
+  const validStock=s=>s && text(s.id) && text(s.name) && text(s.symbol) && text(s.industry) && s.asOf===m.asOf && numeric(s.close)&&s.close>0 && ['changePct','return5d','return20d','return60d','return120d','return200d','high52','highDistancePct','high60','high60DistancePct','volumeRatio','rs'].every(key=>optionalNumber(s[key])) && (s.highDistancePct==null||s.highDistancePct>=0) && (s.high60DistancePct==null||s.high60DistancePct>=0) && (s.volumeRatio==null||s.volumeRatio>=0) && ['intradayHigh52','closeHigh52','intradayHigh60','closeHigh60','stage2'].every(key=>s[key]==null||typeof s[key]==='boolean') && (s.sparkline==null||Array.isArray(s.sparkline)&&s.sparkline.every(n=>numeric(n)&&n>0)) && ['catalysts','news'].every(key=>s[key]==null||Array.isArray(s[key])&&s[key].every(a=>a&&text(a.title)&&text(a.url)&&(a.date==null||day(a.date)||(key==='news'&&timestamp(a.date))))) && (s.moverReasons==null||Array.isArray(s.moverReasons)&&s.moverReasons.every(text));
   const validCap=s=>s.marketCap==null||numeric(s.marketCap)&&s.marketCap>0;
   const validTrend=s=>['aboveMa50','aboveMa50Ago5'].every(key=>s[key]==null||typeof s[key]==='boolean');
   if(!m.stocks.every(s=>validStock(s)&&validCap(s)&&validTrend(s))||!m.movers.every(s=>validStock(s)&&validCap(s)&&validTrend(s)&&ids.has(s.id)))return false;
@@ -93,7 +93,7 @@ function compareBy(key){
  const asc=SORT_KEYS[key]?.[1]==='asc';
  return (a,b)=>{const x=value(a),y=value(b);if(x==null||y==null)return x==null&&y==null?0:x==null?1:-1;return asc?x-y:y-x;};
 }
-export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',sort2='none',minCap=0,aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
+export function selectStocks(m,{tab='near',distance=10,high='either',highPeriod='52',mode='all',query='',rs=false,stage=false,industry=null,sort='default',sort2='none',minCap=0,aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
  let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
  if(tab==='ai') {
   rows=rows.filter(s=>{const member=aiMembership(s);return member&&(aiSector==='all'||member.sectors.includes(aiSector));});
@@ -104,7 +104,8 @@ export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',
   if(aiSignal==='volume')rows=rows.filter(s=>numeric(s.volumeRatio)&&s.volumeRatio>=1.5);
  }
  if(tab==='near') rows=rows.filter(s=>numeric(s.highDistancePct)&&s.highDistancePct<=distance);
- if(tab==='high') rows=rows.filter(s=>high==='intraday'?s.intradayHigh52===true:high==='close'?s.closeHigh52===true:s.intradayHigh52===true||s.closeHigh52===true);
+ // 당일 신고가: 기간(52주 또는 60일) × 종류(장중·종가·둘 중 하나).
+ if(tab==='high'){const p=highPeriod==='60'?'60':'52',i=`intradayHigh${p}`,c=`closeHigh${p}`;rows=rows.filter(s=>high==='intraday'?s[i]===true:high==='close'?s[c]===true:s[i]===true||s[c]===true);}
  if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
  if(industry) rows=rows.filter(s=>industry.members.includes(s.id));
  if(newOnly)rows=rows.filter(s=>signalChanges(s,priorSignal(m,s),tab==='near'?distance:10).entered.length>0);
