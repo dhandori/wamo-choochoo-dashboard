@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-28T06:11:32.231800+00:00",
+  "checkedAt": "2026-10-28T07:03:23.855533+00:00",
   "editions": {
     "US": {
       "status": "PASS",
-      "generatedAt": "2026-10-28T06:11:32.231800+00:00",
+      "generatedAt": "2026-10-28T07:03:23.855533+00:00",
       "sessions": {
         "US-NASDAQ": "20261027",
         "US-NYSE": "20261027",
@@ -749,10 +749,10 @@
     },
     "ASIA": {
       "status": "PASS",
-      "generatedAt": "2026-10-28T06:11:32.231800+00:00",
+      "generatedAt": "2026-10-28T07:03:23.855533+00:00",
       "sessions": {
-        "KR-KOSPI": "20261027",
-        "KR-KOSDAQ": "20261027"
+        "KR-KOSPI": "20261028",
+        "KR-KOSDAQ": "20261028"
       },
       "source": "WAMO_52W",
       "scope": "WAMO KR 검증 종목군 · 최근 252거래일",
@@ -772,7 +772,7 @@
           "symbol": "053800",
           "name": "안랩",
           "currency": "KRW",
-          "as_of": "20261027",
+          "as_of": "20261028",
           "industry_path": [
             "IT서비스·소프트웨어"
           ],
@@ -781,7 +781,30 @@
           "classification_caveats": [
             "WAMO 기존 업종 분류"
           ],
-          "current_close": 92200.0,
+          "current_close": 110900.0,
+          "entry_status": "52주 신고가 · 매매판단은 별도",
+          "flags": {
+            "intraday_252": true,
+            "close_252": true
+          }
+        },
+        {
+          "key": "KR-KOSPI:003160",
+          "market": "KR-KOSPI",
+          "country": "KR",
+          "symbol": "003160",
+          "name": "디아이",
+          "currency": "KRW",
+          "as_of": "20261028",
+          "industry_path": [
+            "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외"
+          ],
+          "micro_verified": false,
+          "classification_status": "WAMO_SECTOR",
+          "classification_caveats": [
+            "WAMO 기존 업종 분류"
+          ],
+          "current_close": 43300.0,
           "entry_status": "52주 신고가 · 매매판단은 별도",
           "flags": {
             "intraday_252": false,
@@ -795,7 +818,18 @@
           "industry_path": [
             "IT서비스·소프트웨어"
           ],
-          "eligible_classified_issuers": 4,
+          "eligible_classified_issuers": 3,
+          "current_signal_issuers": 1,
+          "micro_verified": false,
+          "phase": "52주 신고가 관측",
+          "comparison_scope": "WAMO 검증 종목군"
+        },
+        {
+          "market": "KR",
+          "industry_path": [
+            "측정, 시험, 항해, 제어 및 기타 정밀기기 제조업; 광학기기 제외"
+          ],
+          "eligible_classified_issuers": 1,
           "current_signal_issuers": 1,
           "micro_verified": false,
           "phase": "52주 신고가 관측",
