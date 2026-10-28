@@ -23,7 +23,8 @@ with tempfile.TemporaryDirectory() as folder:
             payload = core.extract_old_payload(html)
             if not any(s.get('kisQuote') for s in payload['stocks']):
                 # Public real-response fixture, only for pre-deployment rendering.
-                stock = next(s for s in payload['stocks'] if s['ticker'] == 'NVDA')
+                # NVDA if it is in today's universe, otherwise the first stock (the panel only needs one quote).
+                stock = next((s for s in payload['stocks'] if s['ticker'] == 'NVDA'), payload['stocks'][0])
                 stock['kisQuote'] = {'status':'LIVE','price':230.36,'eps':7.91,'per':29.12,'pbr':24.29,
                                      'currency':'USD','industry':'반도체 및 반도체장비','checkedAt':'2026-09-07T23:17:58+09:00'}
                 payload['meta']['kisMeta'] = {'quoteCount':1,'targetCount':1}
