@@ -40,7 +40,7 @@
     "refreshMode": "FULL",
     "auxiliaryCheckedAt": "2026-10-01T23:46:06.076117+00:00",
     "catalogStatus": "PASS",
-    "radarStatus": "RUNNING",
+    "radarStatus": "PASS",
     "partialRerun": "누락 종목 재수집 · 7 → 0종목"
   },
   "US": {
