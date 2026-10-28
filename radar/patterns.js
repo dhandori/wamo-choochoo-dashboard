@@ -18,6 +18,8 @@ const short = name => String(name || '').replace(/\s+(Common Stock|Class [A-Z]\b
 const SVG = 'http://www.w3.org/2000/svg';
 const sv = (tag, attrs = {}) => { const e = document.createElementNS(SVG, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
 
+// 셋업 판정을 하는 시장. 일본·대만은 판정하지 않는다(한국·미국만 만들기로 함).
+const SUPPORTED = new Set(['KR', 'US']);
 const DIGITS = { KR: 0, US: 2, JP: 0, TW: 2 };
 const price = (v, market) => isNum(v) ? v.toLocaleString('ko-KR', { maximumFractionDigits: DIGITS[market] ?? 2, minimumFractionDigits: DIGITS[market] ?? 2 }) : '—';
 
@@ -481,15 +483,16 @@ export function renderPatterns(root, market, block, meta, options = {}) {
   const { openStock, query, trend, expectedSession, trendFailed, openTrend } = options;
   root.replaceChildren();
   meta = meta || {};
+  // 지원하지 않는 시장이라는 사실이 자료 대기보다 먼저다(일본 자료가 비어 있는 날에도 같은 안내).
+  if (!SUPPORTED.has(market) || (block?.stocks?.length && !block.patternSummary)) {
+    root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국과 미국만 지원합니다.`, 'empty'));
+    return;
+  }
   if (!block || !block.stocks?.length) {
     root.append(n('div', '가격 자료가 아직 없어 셋업을 판정할 수 없습니다.', 'empty'));
     return;
   }
   const summary = block.patternSummary;
-  if (!summary) {
-    root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국과 미국만 지원합니다.`, 'empty'));
-    return;
-  }
   registerSetups(meta);
   const redraw = () => renderPatterns(root, market, block, meta, options);
   const leading = leadingIndustries(block);
