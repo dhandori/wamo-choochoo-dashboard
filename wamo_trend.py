@@ -962,6 +962,20 @@ CHART_DAYS = 260      # closes kept per stock (moving averages need 200 + window
 CHART_VOLUME_DAYS = 120
 
 
+def atr14(rows, n=14):
+    """Wilder ATR: average true range over the last n sessions (gap to the prior close included).
+    Rows whose high/low were back-filled with the close (missing data) still count; they just shrink the range."""
+    if len(rows) < n + 1:
+        return None
+    trs = []
+    for prev, cur in zip(rows[-n - 1:-1], rows[-n:]):
+        trs.append(max(cur['high'] - cur['low'], abs(cur['high'] - prev['close']), abs(cur['low'] - prev['close'])))
+    atr = trs[0]
+    for tr in trs[1:]:
+        atr = (atr * (n - 1) + tr) / n
+    return atr if atr > 0 else None
+
+
 def chart_payload(universe, bench, asof, market):
     """Compact per-stock daily closes for the detail chart (loaded on demand)."""
     dates = [r['date'] for r in bench][-CHART_DAYS:]
@@ -982,6 +996,9 @@ def chart_payload(universe, bench, asof, market):
             closes.append(round(last['close'], digits) if digits else int(round(last['close'])))
             volumes.append(int(r['volume']) if r else 0)
         stocks[s['symbol']] = {'s': first, 'c': closes, 'v': volumes[-CHART_VOLUME_DAYS:]}
+        atr = atr14([r for r in s['rows'] if r['date'] <= dates[-1]])
+        if atr and last and last['close'] > 0:
+            stocks[s['symbol']]['a'] = [round(atr, 4 if digits else 0), round(atr / last['close'] * 100, 2)]
     bench_by_date = {r['date']: r['close'] for r in bench}
     return {'asOf': asof, 'dates': dates,
             'bench': [round(bench_by_date[d], 2) if d in bench_by_date else None for d in dates],

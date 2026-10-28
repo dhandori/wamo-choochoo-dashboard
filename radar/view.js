@@ -1,12 +1,12 @@
 import { renderFTD, ftdSummary } from './ftd.js?v=20261026-rn1';
 import { renderLeaders, leadersSummary } from './leaders.js?v=20261026-rn1';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs?v=20261026-rn1';
-import { helpLabel, helpButton, closeHelp } from './help.js?v=20261026-rn1';
+import { helpLabel, helpButton, closeHelp } from './help.js?v=20261028-at1';
 import { loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js?v=20261026-sp1';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js?v=20261026-rn1';
 import { renderSchedule } from './schedule.js?v=20261026-rn1';
 import { renderSpMovers } from './spmovers.js?v=20261026-sp1';
-import { loadChartData, stockSeries, priceChart, benchChart, rsChart, MA } from './chart.js?v=20261026-ix1';
+import { loadChartData, stockSeries, priceChart, benchChart, rsChart, MA } from './chart.js?v=20261028-at1';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
 let cardObserver = null;
@@ -289,6 +289,8 @@ function renderDetail(s, data) {
     ['52주 고점까지', numeric(s.highDistancePct) ? distance(s) : '기록 부족', '', highBar(s)], ['52주 장중 고점', fmt(s.high52, 2)],
     ['거래량 배수', volume(s), '', volBar(s)], ['Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', s.stage2 === true ? 'good' : '']]
     .forEach(([label, value, cls, barNode]) => grid.append(stat(label, value, cls, barNode)));
+  // ATR는 차트 자료(고가·저가)에서 오므로 자료가 늦으면 '—'로 두었다가 차트가 그려질 때 채운다.
+  const atrStat = stat('ATR(14일)', atrText(data && stockSeries(data, s.symbol), s)); atrStat.classList.add('stat-atr'); grid.append(atrStat);
   side.append(grid);
   const extra = el('div', null, 'detail-extra');
   const flowBox = flowSection(s); if (flowBox) extra.append(flowBox);
@@ -317,12 +319,20 @@ function renderDetail(s, data) {
   d.append(el('p', `가격 출처: ${s.source} · 산업 분류: ${s.industrySource}`, 'source-note'));
   $('drawer').showModal(); d.scrollTop = 0;
 }
+// 평균 변동폭: 값(통화)과 종가 대비 %. 예 "₩2,340 (2.5%)".
+function atrText(series, s) {
+  const a = series?.atr;
+  if (!a || !numeric(a[0]) || !numeric(a[1])) return '—';
+  const [sym, , d] = CURRENCY[s.market || state.market] || CURRENCY.US;
+  return `${sym}${fmt(a[0], d)} (${fmt(a[1])}%)`;
+}
 let chartDays = 60;
 function fillDetailChart(panel, s, ready) {
   const market = s.market || state.market;
   const apply = data => {
     const series = data && stockSeries(data, s.symbol);
     if (!series || !panel.isConnected) return;
+    const atrNode = panel.closest('.detail-body')?.querySelector('.stat-atr strong'); if (atrNode) atrNode.textContent = atrText(series, s);
     const draw = () => {
       const head = el('div', null, 'chart-head');
       head.append(el('div', `일봉 · 최근 ${chartDays}거래일`, 'chart-caption'));
