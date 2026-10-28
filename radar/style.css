@@ -629,3 +629,22 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
 /* 상세창 안에서 항목으로 스크롤할 때(키보드 이동·바로가기) 위에 고정된 제목줄 밑에 가리지 않게 */
 #detail { scroll-padding-top: 150px; }
 @media (max-width: 760px) { #detail { scroll-padding-top: 130px; } }
+/* ===== 2026-10-28 상세 수치 정리: 큰 카드 15개 → 네 묶음(수익률 칸 6개 · 이름|값 줄) ===== */
+.detail-side { display: grid; gap: 12px; }
+.kv-sec { padding: 12px 14px; background: #0e1b2b; border: 1px solid var(--line); border-radius: 10px; }
+.kv-title { margin: 0 0 8px; font-size: 12.5px; font-weight: 700; letter-spacing: .2px; color: #b9c9dd; }
+.detail-body .kv-sec .stat.kv { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 7px 0; background: none; border: 0; border-top: 1px solid #1d2c3f; border-radius: 0; }
+.detail-body .kv-sec .kv-title + .stat.kv { border-top: 0; padding-top: 2px; }
+.kv-name { font-size: 12.5px; color: var(--muted); }
+.kv-val { text-align: right; line-height: 1.25; }
+.kv-val strong { display: inline; margin: 0; font-size: 15.5px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+.kv-val strong.good { color: var(--green); } .kv-val strong.bad { color: var(--bad); }
+.kv-sub { display: block; margin-top: 2px; font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.stat.kv .kv-bar { grid-column: 1 / -1; max-width: none !important; margin-top: 4px; height: 3px; }
+.stat.kv .stat-hint { grid-column: 1 / -1; margin-top: 2px; }
+.ret-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.detail-body .ret-grid .stat.ret-tile { padding: 7px 9px; background: #0a1522; border: 1px solid #22344a; border-radius: 8px; }
+.ret-grid .stat.ret-tile span { font-size: 11.5px; }
+.ret-grid .stat.ret-tile strong { margin-top: 1px; font-size: 15px; }
+.ret-grid .stat.ret-tile .cell-bar { max-width: none; margin-top: 4px; height: 3px; }
+@media (max-width: 760px) { .kv-sec { padding: 10px 12px; } .kv-val strong { font-size: 15px; } }

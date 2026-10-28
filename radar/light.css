@@ -142,6 +142,10 @@
 :root[data-theme="light"] .detail-chips .chip.weak { border-color: #919fb3; color: #2d3743; }
 :root[data-theme="light"] .detail-sub { color: #243244; }
 :root[data-theme="light"] .detail-body .stat { background: #e7eef7; }
+:root[data-theme="light"] .kv-sec { background: #e7eef7; }
+:root[data-theme="light"] .kv-title { color: #243244; }
+:root[data-theme="light"] .detail-body .kv-sec .stat.kv { border-top: 1px solid #a4bad5; }
+:root[data-theme="light"] .detail-body .ret-grid .stat.ret-tile { background: #ecf2fa; border: 1px solid #a4bad5; }
 
 /* ===== style.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ai-sector-card small { color: #b7c6d7; }

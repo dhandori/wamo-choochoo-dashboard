@@ -39,7 +39,7 @@ function fillCardCharts(root) {
 }
 
 const $ = id => document.getElementById(id);
-const defaults = { smallGroups: false, tab: 'trend', distance: 10, high: 'either', highPeriod: '52', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false, sort2:'none', minCap:0 };
+const defaults = { smallGroups: false, tab: 'trend', distance: 10, high: 'either', mode: 'all', query: '', rs: false, stage: false, sort: 'default', confirmed: false, industry: null, page: 1, aiSector:'all', aiSignal:'all', aiPeriod:'5d',aiView:'cards',newOnly:false, sort2:'none', minCap:0 };
 const PERIODS={'1d':['당일','medianChangePct','changeCount'],'5d':['5일','medianReturn5d','return5dCount'],'20d':['20일','medianReturn20d','return20dCount'],'60d':['60일','medianReturn60d','return60dCount'],'120d':['120일','medianReturn120d','return120dCount'],'200d':['200일','medianReturn200d','return200dCount']};
 const CHANGE_LABELS={near:'신고가권 진입',rs:'RS 80 돌파',stage:'Stage 2 진입'};
 const EXIT_LABELS={near:'신고가권 이탈',rs:'RS 80 아래로',stage:'Stage 2 이탈'};
@@ -49,11 +49,11 @@ const MARKET_NAMES = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
 const LITE = new Set(['JP', 'TW']);
 const LITE_OFF = new Set();   // every tab now works for Japan/Taiwan too
 // 읽는 순서: ① 시장(지금 사도 되는 장인가) → ② 업종(어느 업종이 앞서가나) → ③ 종목. 탭은 이 세 묶음으로 보여 준다.
-const STEP_OF = { trend: 'market', ftd: 'market', leaders: 'sector', industries: 'sector', ai: 'sector', near: 'stock', high: 'stock', movers: 'stock', patterns: 'stock' };
+const STEP_OF = { trend: 'market', ftd: 'market', leaders: 'sector', industries: 'sector', ai: 'sector', near: 'stock', high: 'stock', high60: 'stock', movers: 'stock', patterns: 'stock' };
 const STEP_LABEL = { market: '① 시장 판단', sector: '② 주도 업종', stock: '③ 종목 찾기' };
 const lastTabOfStep = { market: 'trend', sector: 'leaders', stock: 'near' };   // 단계 칸을 누르면 그 단계에서 마지막으로 보던 탭으로
 const CURRENCY = { KR: ['₩', '원', 0], US: ['$', '달러', 2], JP: ['¥', '엔', 0], TW: ['NT$', '대만달러', 2] };
-const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','industries','movers','patterns','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'trend' };
+const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','high60','industries','movers','patterns','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'trend' };
 let snapshot = null, refreshFailed = false, refreshing = false;
 // Sort settings (cap floor, 1st/2nd key) are remembered per market in this browser.
 const SORT_STORE='wamo-sort-v1';
@@ -283,19 +283,9 @@ function renderDetail(s, data) {
   const body = el('div', null, 'detail-body');
   const chart = el('section', null, 'chart-panel');
   chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true));
-  const side = el('div', null, 'detail-side'); side.append(el('h3', '핵심 수치', 'detail-sub'));
-  const grid = el('div', null, 'detail-grid');
-  [['시가총액', marketCap(s, true)], ['RS', fmt(s.rs, 0), '', rsBar(s)],
-    ['당일 등락', pct(s.changePct), tone(s.changePct), moveBar(s.changePct, 8)], ['5일 수익률', pct(s.return5d), tone(s.return5d), moveBar(s.return5d, 15)],
-    ['20일 수익률', pct(s.return20d), tone(s.return20d), moveBar(s.return20d, 30)], ['60일 수익률', pct(s.return60d), tone(s.return60d), moveBar(s.return60d, 60)],
-    ['120일 수익률', pct(s.return120d), tone(s.return120d), moveBar(s.return120d, 80)], ['200일 수익률', pct(s.return200d), tone(s.return200d), moveBar(s.return200d, 100)],
-    ['52주 고점까지', numeric(s.highDistancePct) ? distance(s) : '기록 부족', '', highBar(s)], ['52주 장중 고점', fmt(s.high52, 2)],
-    ['60일 고점까지', numeric(s.high60DistancePct) ? `${fmt(s.high60DistancePct)}%` : '기록 부족', s.intradayHigh60 === true || s.closeHigh60 === true ? 'good' : ''], ['60일 장중 고점', fmt(s.high60, 2)],
-    ['거래량 배수', volume(s), '', volBar(s)], ['Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', s.stage2 === true ? 'good' : '']]
-    .forEach(([label, value, cls, barNode]) => grid.append(stat(label, value, cls, barNode)));
-  // ATR는 차트 자료(고가·저가)에서 오므로 자료가 늦으면 '—'로 두었다가 차트가 그려질 때 채운다.
-  const atrStat = stat('ATR(14일)', atrText(data && stockSeries(data, s.symbol), s)); atrStat.classList.add('stat-atr'); grid.append(atrStat);
-  side.append(grid, stopSection(data && stockSeries(data, s.symbol), s));
+  // 핵심 수치는 네 묶음으로: 수익률(작은 칸 6개) · 고점 위치 · 강도·거래 · 변동성·손절(차트 자료가 오면 채움).
+  const side = el('div', null, 'detail-side');
+  side.append(returnsSection(s), positionSection(s), strengthSection(s), riskSection(data && stockSeries(data, s.symbol), s));
   const extra = el('div', null, 'detail-extra');
   const flowBox = flowSection(s); if (flowBox) extra.append(flowBox);
   const signalBox = el('div', null, 'detail-signals'); signalBox.setAttribute('aria-label', '특징주 신호');
@@ -323,34 +313,56 @@ function renderDetail(s, data) {
   d.append(el('p', `가격 출처: ${s.source} · 산업 분류: ${s.industrySource}`, 'source-note'));
   $('drawer').showModal(); d.scrollTop = 0;
 }
-// 평균 변동폭: 값(통화)과 종가 대비 %. 예 "₩2,340 (2.5%)".
-function atrText(series, s) {
-  const a = series?.atr;
-  if (!a || !numeric(a[0]) || !numeric(a[1])) return '—';
-  const [sym, , d] = CURRENCY[s.market || state.market] || CURRENCY.US;
-  return `${sym}${fmt(a[0], d)} (${fmt(a[1])}%)`;
+// 상세창 수치 묶음. 한 줄 = 이름 | 값 | (보조 막대·설명). 줄마다 class 'stat'이라 용어 도움말이 그대로 붙는다.
+function kvSection(title, rows, cls = '') {
+  const sec = el('section', null, `kv-sec ${cls}`.trim()); sec.append(el('h3', title, 'kv-title'));
+  rows.filter(Boolean).forEach(r => sec.append(r)); return sec;
 }
-// 손절 기준 두 가지: ① −8% 한도(미너비니 최대 손절) ② 2×ATR(그 종목의 보통 흔들림 밖). 종가를 매수가로 가정한다.
-const STOP_CAP = 8, ATR_MULT = 2, RISK_PCT = 1;
-function stopSection(series, s) {
-  const box = el('section', null, 'stop-box');
-  box.append(el('h3', '손절 기준 (종가 = 매수가 가정)', 'detail-sub'));
-  const cells = el('div', null, 'detail-grid stop-grid');
+function kvRow(label, value, { cls = '', bar = null, sub = null, note = null } = {}) {
+  const row = el('div', null, 'stat kv'), name = el('span', null, 'kv-name'); name.append(helpLabel(label));
+  const val = el('div', null, 'kv-val'); val.append(el('strong', value, cls)); if (sub) val.append(el('small', sub, 'kv-sub'));
+  row.append(name, val); if (bar) { bar.classList.add('kv-bar'); row.append(bar); }
+  if (note) row.append(el('em', note, 'stat-hint'));
+  return row;
+}
+function returnsSection(s) {
+  const sec = el('section', null, 'kv-sec'); sec.append(el('h3', '수익률', 'kv-title'));
+  const grid = el('div', null, 'ret-grid');
+  [['당일', 'changePct', 8], ['5일', 'return5d', 15], ['20일', 'return20d', 30], ['60일', 'return60d', 60], ['120일', 'return120d', 80], ['200일', 'return200d', 100]].forEach(([label, key, scale]) => {
+    const tile = stat(label, pct(s[key]), tone(s[key]), moveBar(s[key], scale)); tile.classList.add('ret-tile'); tile.dataset.key = key; grid.append(tile);
+  });
+  sec.append(grid); return sec;
+}
+function positionSection(s) {
+  const new60 = s.intradayHigh60 === true || s.closeHigh60 === true, new52 = s.intradayHigh52 === true || s.closeHigh52 === true;
+  return kvSection('고점 위치', [
+    kvRow('52주 고점까지', numeric(s.highDistancePct) ? distance(s) : '기록 부족', { cls: new52 ? 'good' : '', bar: highBar(s), sub: numeric(s.high52) ? `고점 ${fmt(s.high52, 2)}${new52 ? ' · 오늘 신고가' : ''}` : null }),
+    kvRow('60일 고점까지', numeric(s.high60DistancePct) ? `${fmt(s.high60DistancePct)}%` : '—', { cls: new60 ? 'good' : '', sub: numeric(s.high60) ? `고점 ${fmt(s.high60, 2)}${new60 ? ' · 오늘 60일 신고가' : ''}` : null }),
+  ]);
+}
+function strengthSection(s) {
+  return kvSection('강도·거래', [
+    kvRow('RS', fmt(s.rs, 0), { cls: numeric(s.rs) && s.rs >= 80 ? 'good' : '', bar: rsBar(s) }),
+    kvRow('거래량 배수', volume(s), { bar: volBar(s) }),
+    kvRow('Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '' }),
+    kvRow('시가총액', marketCap(s, true)),
+  ]);
+}
+// 변동성·손절: ATR(14일)와 두 가지 손절 기준. 종가를 매수가로 가정한다.
+// ① −8% 한도(미너비니 최대 손절) ② 2×ATR(그 종목의 보통 흔들림 밖). ATR은 차트 자료(고가·저가)에서 와서 늦으면 나중에 채운다.
+const STOP_CAP = 8, ATR_MULT = 2, RISK_PCT = 2;
+function riskSection(series, s) {
   const [sym, , d] = CURRENCY[s.market || state.market] || CURRENCY.US, money = v => `${sym}${fmt(v, d)}`;
-  const close = numeric(s.close) && s.close > 0 ? s.close : null;
-  const cell = (label, value, hint, cls = '') => { const c = stat(label, value, cls); c.append(el('em', hint, 'stat-hint')); return c; };
-  cells.append(cell(`기준 손절 −${STOP_CAP}%`, close ? money(close * (1 - STOP_CAP / 100)) : '—', '어떤 종목이든 이 아래로는 들고 가지 않는 한도예요.'));
-  const a = series?.atr;
-  if (close && a && numeric(a[0]) && numeric(a[1])) {
+  const close = numeric(s.close) && s.close > 0 ? s.close : null, a = series?.atr, hasAtr = !!(a && numeric(a[0]) && numeric(a[1]));
+  const rows = [kvRow('ATR(14일)', hasAtr ? money(a[0]) : '—', { sub: hasAtr ? `하루 평균 ${fmt(a[1])}% 움직임` : '차트 자료가 오면 채워져요' }),
+    kvRow(`기준 손절 −${STOP_CAP}%`, close ? money(close * (1 - STOP_CAP / 100)) : '—', { sub: '어떤 종목이든 넘지 않는 한도' })];
+  if (close && hasAtr) {
     const atrPct = a[1] * ATR_MULT, over = atrPct > STOP_CAP, used = Math.min(atrPct, STOP_CAP);
-    cells.append(cell(`ATR 손절 (${ATR_MULT}×ATR)`, `${money(close - a[0] * ATR_MULT)} (−${fmt(atrPct)}%)`,
-      over ? `${STOP_CAP}%보다 넓어요 → ${STOP_CAP}% 한도에서 자르고, 변동성이 커서 비중을 줄이거나 더 좁은 자리에서만 사요.` : `${STOP_CAP}% 안에 들어와요 → 이 폭을 손절로 쓰면 보통의 흔들림에는 안 털려요.`, over ? 'bad' : 'good'));
-    cells.append(cell(`계좌 위험 ${RISK_PCT}% 기준 비중`, `${fmt(RISK_PCT * 100 / used, 0)}%`, `손절 폭 ${fmt(used)}%로 한 번에 계좌의 ${RISK_PCT}%만 잃도록 할 때 살 수 있는 최대 비중이에요.`));
-  } else {
-    cells.append(cell(`ATR 손절 (${ATR_MULT}×ATR)`, '—', 'ATR 자료가 오면 채워져요.'));
+    rows.push(kvRow(`ATR 손절 (${ATR_MULT}×ATR)`, money(close - a[0] * ATR_MULT), { cls: over ? 'bad' : 'good', sub: `−${fmt(atrPct)}%`,
+      note: over ? `${STOP_CAP}%보다 넓어요 → ${STOP_CAP}%에서 자르고, 변동성이 커서 비중을 줄이거나 더 좁은 자리에서만 사요.` : `${STOP_CAP}% 안이에요 → 이 폭이면 보통의 흔들림에는 안 털려요.` }));
+    rows.push(kvRow(`계좌 위험 ${RISK_PCT}% 기준 비중`, `${fmt(RISK_PCT * 100 / used, 0)}%`, { sub: `손절 폭 ${fmt(used)}% 기준 최대 비중` }));
   }
-  box.append(cells);
-  return box;
+  return kvSection('변동성·손절 (종가 = 매수가 가정)', rows, 'risk-sec');
 }
 let chartDays = 60;
 function fillDetailChart(panel, s, ready) {
@@ -358,8 +370,7 @@ function fillDetailChart(panel, s, ready) {
   const apply = data => {
     const series = data && stockSeries(data, s.symbol);
     if (!series || !panel.isConnected) return;
-    const atrNode = panel.closest('.detail-body')?.querySelector('.stat-atr strong'); if (atrNode) atrNode.textContent = atrText(series, s);
-    const stops = panel.closest('.detail-body')?.querySelector('.stop-box'); if (stops) stops.replaceWith(stopSection(series, s));
+    const risk = panel.closest('.detail-body')?.querySelector('.risk-sec'); if (risk) risk.replaceWith(riskSection(series, s));
     const draw = () => {
       const head = el('div', null, 'chart-head');
       head.append(el('div', `일봉 · 최근 ${chartDays}거래일`, 'chart-caption'));
@@ -388,7 +399,7 @@ function table(rows) {
   head.append(tr); table.append(head); const body = el('tbody');
   pageRows.forEach(s => {
     const row = el('tr'), name = el('td'); name.append(stockButton(s));
-    if (['high','movers','ai'].includes(state.tab)) name.append(el('span', signals(s).join(' · '), 'signal'));
+    if (['high','high60','movers','ai'].includes(state.tab)) name.append(el('span', signals(s).join(' · '), 'signal'));
     row.append(name, capNode(s, 'td'), el('td', price(s)), numCell(pct(s.changePct), tone(s.changePct), moveBar(s.changePct, 8)), numCell(pct(s.return5d), tone(s.return5d), moveBar(s.return5d, 15)));
     if(state.tab==='ai')row.append(numCell(pct(s.return20d),tone(s.return20d),moveBar(s.return20d,30)),numCell(pct(s[longKey]),tone(s[longKey]),moveBar(s[longKey],60)));
     row.append(numCell(distance(s), '', highBar(s)), numCell(volume(s), '', volBar(s)), numCell(fmt(s.rs, 0), '', rsBar(s)));
@@ -404,7 +415,7 @@ function table(rows) {
     const cap = el('div', null, 'card-cap'); cap.append(el('span', '시총'), capNode(s), el('span', capCurrency()));
     const chartBox = el('div', null, 'card-chart'); chartBox.dataset.symbol = s.symbol;
     card.append(top, cap, quote, chartBox, stats);
-    if (['high','movers','ai'].includes(state.tab)) card.append(el('div', signals(s).join(' · '), 'signal'));
+    if (['high','high60','movers','ai'].includes(state.tab)) card.append(el('div', signals(s).join(' · '), 'signal'));
     cards.append(card);
   });
   const container = el('div'); container.append(wrap, cardLegend(), cards);
@@ -473,7 +484,7 @@ function checkbox(key, text, parent) {
   const wrap = el('div', null, 'checkbox-help'); wrap.append(label, helpButton(text, key, true)); parent.append(wrap);
 }
 function resetFilters() {
-  for (const key of ['distance', 'high', 'highPeriod', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'smallGroups', 'page','aiSector','aiSignal','aiPeriod','newOnly']) state[key] = defaults[key];
+  for (const key of ['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'smallGroups', 'page','aiSector','aiSignal','aiPeriod','newOnly']) state[key] = defaults[key];
   saveSort(); $('search').value = ''; render();
 }
 function renderControls() {
@@ -483,13 +494,7 @@ function renderControls() {
   if (state.tab === 'near') {
     const label = el('span', null, 'filter-label'); label.append(helpLabel('고점 거리')); group.append(label); [5, 10, 15].forEach(v => group.append(button(`${v}% 이내`, state.distance === v, () => change('distance', v))));
   }
-  if (state.tab === 'high') {
-    // 기간(52주·60일)을 먼저 고르고, 그 기간에서 장중·종가 고점을 고른다.
-    const period = el('div', null, 'filter-group'); period.setAttribute('aria-label', '신고가 기간');
-    [['52', '52주 신고가'], ['60', '60일 신고가']].forEach(([v, text]) => { const b = button(text, state.highPeriod === v, () => change('highPeriod', v)); b.setAttribute('aria-pressed', String(state.highPeriod === v)); period.append(b); });
-    controls.append(period);
-    [['either', '모두'], ['intraday', '장중 고점'], ['close', '종가 고점']].forEach(([v, text]) => group.append(button(text, state.high === v, () => change('high', v))));
-  }
+  if (['high', 'high60'].includes(state.tab)) [['either', '모두'], ['intraday', '장중 고점'], ['close', '종가 고점']].forEach(([v, text]) => group.append(button(text, state.high === v, () => change('high', v))));
   if (state.tab === 'movers') [['all', '전체'], ['up', '상승 ≥3%'], ['down', '하락 ≤−3%'], ['volume', '거래량 ≥1.5×']].forEach(([v, text]) => group.append(button(text, state.mode === v, () => change('mode', v))));
   if(state.tab==='ai') {
     const sectors=el('select');sectors.setAttribute('aria-label','AI 분야');
@@ -516,7 +521,7 @@ function renderControls() {
     const sum = el('summary'); sum.append(el('b', '정렬·시총 '), el('span', [state.minCap > 0 ? `시총 ${capLabel()}` : '시총 전체', first, second].filter(Boolean).join(' → ')));
     fold.append(sum, sortPanel()); controls.append(fold);
   }
-  if (['distance', 'high', 'highPeriod', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'smallGroups','aiSector','aiSignal','aiPeriod','newOnly'].some(key => state[key] !== defaults[key])) {
+  if (['distance', 'high', 'mode', 'query', 'rs', 'stage', 'sort', 'sort2', 'minCap', 'confirmed', 'smallGroups','aiSector','aiSignal','aiPeriod','newOnly'].some(key => state[key] !== defaults[key])) {
     const reset = button('필터 초기화', false, resetFilters); reset.id = 'reset-filters'; controls.append(reset);
   }
 }
@@ -679,19 +684,19 @@ function renderMeta(m) {
   const highs60 = m.stocks.filter(s => s.intradayHigh60 === true || s.closeHigh60 === true);
   const groups = m.industries.filter(g => g.confirmed), moves = selectStocks(m, { tab: 'movers' });
   const ai=aiOverview(m,state.market).total;
-  const counts = { near: near.length, high: highs.length, industries: groups.length, movers: moves.length,ai:ai.count,trend:trendTabLabel(state.market),ftd:ftdSummary(trendBlock(state.market),m.expectedSession,trendLoadFailed()||marketStatus(m)==='STALE'),leaders:leadersSummary(trendBlock(state.market)),patterns:patternsSummary(m) };
-  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 52주 신고가 (뒤의 숫자는 60일 신고가)', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'가격이 확인된 AI 관련 종목 · 중복 제외',trend:'시장 날씨 · RS선 · 팔 때 경고 · 천장 신호 · 실적발표 · 신호 성적표',ftd:'지수별 하락 국면 → 반등 → FTD → 유지·실패',leaders:'선도주 출현 · 업종 RS 순위 · 선도주 목록',patterns:'추세추종 셋업북 12개 패턴 · 돌파·임박·형성중' };
+  const counts = { near: near.length, high: highs.length, high60: highs60.length, industries: groups.length, movers: moves.length,ai:ai.count,trend:trendTabLabel(state.market),ftd:ftdSummary(trendBlock(state.market),m.expectedSession,trendLoadFailed()||marketStatus(m)==='STALE'),leaders:leadersSummary(trendBlock(state.market)),patterns:patternsSummary(m) };
+  const countCriteria = { near: '전체 스크리닝 대상 중 고점 대비 10% 이내', high: '전체 스크리닝 대상 중 장중 또는 종가 52주 신고가', high60: '전체 스크리닝 대상 중 장중 또는 종가 60일 신고가', industries: '전체 스크리닝 대상 중 동반 강세 확인 그룹', movers: '전체 스크리닝 대상 중 변동 또는 거래량 특징주',ai:'가격이 확인된 AI 관련 종목 · 중복 제외',trend:'시장 날씨 · RS선 · 팔 때 경고 · 천장 신호 · 실적발표 · 신호 성적표',ftd:'지수별 하락 국면 → 반등 → FTD → 유지·실패',leaders:'선도주 출현 · 업종 RS 순위 · 선도주 목록',patterns:'추세추종 셋업북 패턴 10개 · 돌파·임박·형성중' };
   document.querySelectorAll('[data-tab]').forEach(b => {
     let n = b.querySelector('.tab-count');
     if (!n) { n = el('span', null, 'tab-count'); b.append(n); }
     const count = counts[b.dataset.tab].toLocaleString();
-    n.textContent = b.dataset.tab === 'industries' ? `강세 ${count}` : b.dataset.tab === 'near' ? `10% 내 ${count}` : b.dataset.tab === 'high' ? `${count} · 60일 ${highs60.length.toLocaleString()}` : count;
+    n.textContent = b.dataset.tab === 'industries' ? `강세 ${count}` : b.dataset.tab === 'near' ? `10% 내 ${count}` : count;
     b.title = `${countCriteria[b.dataset.tab]} · ${count}`;
     b.setAttribute('aria-label', `${b.firstChild.textContent} · ${b.title}`);
   });
   $('metrics').replaceChildren();
   const universeN = m.stocks.length, groupN = m.industries.length;
-  [['52주 신고가권', near.length, '고점 대비 10% 이내', universeN, '종목', 'bar-accent'], ['당일 신고가', highs.length, `52주 신고가 · 60일 신고가는 ${highs60.length.toLocaleString()}종목`, universeN, '종목', 'bar-accent'], ['산업 동반 강세', groups.length, '함께 오르는 산업', groupN, '산업', 'bar-accent'], ['특징주', moves.length, '상승 · 하락 · 거래량', universeN, '종목', 'bar-plain']].forEach(([label, value, sub, total, unit, barCls]) => {
+  [['52주 신고가권', near.length, '고점 대비 10% 이내', universeN, '종목', 'bar-accent'], ['당일 신고가', highs.length, '장중 또는 종가 경신', universeN, '종목', 'bar-accent'], ['산업 동반 강세', groups.length, '함께 오르는 산업', groupN, '산업', 'bar-accent'], ['특징주', moves.length, '상승 · 하락 · 거래량', universeN, '종목', 'bar-plain']].forEach(([label, value, sub, total, unit, barCls]) => {
     const box = el('div', null, 'metric'), caption=el('span'); caption.append(helpLabel(label));
     const share = total ? value / total : 0;
     const foot = el('div', null, 'metric-share'); foot.append(bar(share, barCls), el('em', total ? `${unit === '산업' ? '전체 산업' : '전체'} ${total.toLocaleString()} 중 ${fmt(share * 100, share < 0.1 ? 1 : 0)}%` : ''));
@@ -796,7 +801,7 @@ function render() {
   if (state.tab === 'patterns') { if ($('sp-movers')) $('sp-movers').hidden = true; renderPatternsTab(m); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
   renderSpMovers($('sp-movers'), { market: state.market, tab: state.tab, onPick: t => { const s = (m.stocks || []).find(x => x.ticker === t); if (s) detail(s); else window.open(`https://finance.yahoo.com/quote/${encodeURIComponent(t.replace('.', '-'))}`, '_blank', 'noopener'); } });
-  const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에서 봐요'], high: ['당일 신고가', state.highPeriod === '60' ? '이 거래일에 최근 60거래일 고점을 넘긴 종목 · 52주보다 짧은 돌파라 바닥에서 막 올라오는 종목도 잡혀요' : '이 거래일에 52주 고점을 실제로 넘긴 종목 · 60일 신고가는 위 버튼으로 바꿔요'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 보여요'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿔요'] };
+  const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에서 봐요'], high: ['당일 신고가', '이 거래일에 52주 고점을 실제로 넘긴 종목'], high60: ['60일 신고가', '이 거래일에 최근 60거래일(약 3개월) 고점을 넘긴 종목 · 52주보다 짧은 돌파라 조정 뒤 다시 올라오는 종목을 일찍 잡지만 가짜 돌파도 많아요'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 보여요'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿔요'] };
   $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();
   if (state.tab === 'industries' && !state.industry) {
