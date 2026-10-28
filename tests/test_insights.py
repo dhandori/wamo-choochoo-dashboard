@@ -1,7 +1,7 @@
 import copy
 import unittest
 from datetime import datetime, timedelta, timezone
-from wamo_insights import build_insights, naver_url, tradingview_url
+from wamo_insights import build_insights, naver_url, tradingview_url, broad_sector
 
 NOW = datetime(2026, 10, 14, 1, tzinfo=timezone.utc)
 DAY = '2026-10-13'
@@ -36,6 +36,27 @@ class TradingViewUrlTests(unittest.TestCase):
         s = stock('005930')
         result = build_insights({'KR': payload(s)}, NOW)['markets']['KR']['stocks'][0]
         self.assertEqual(result['tradingviewUrl'], 'https://www.tradingview.com/chart/?symbol=KRX%3A005930')
+
+
+class BroadSectorTests(unittest.TestCase):
+    """패턴 탭의 섹터 필터에 쓰는 큰 섹터."""
+
+    def test_us_uses_the_korean_part_of_krx_sector(self):
+        self.assertEqual(broad_sector({'krxSector': '기술 (Technology)'}, 'US', None, 'Semiconductors'), '기술')
+
+    def test_kr_prefers_the_wamo_group_then_the_industry(self):
+        self.assertEqual(broad_sector({}, 'KR', '반도체', '테스트 소켓·프로브'), '반도체')
+        self.assertEqual(broad_sector({}, 'KR', None, '보험'), '보험')
+
+    def test_unclassified_or_other_markets_give_none(self):
+        self.assertIsNone(broad_sector({'krxSector': '산업 미분류'}, 'US', None, 'x'))
+        self.assertIsNone(broad_sector({}, 'US', None, 'x'))
+        self.assertIsNone(broad_sector({}, 'KR', None, 'KRX 업종 미분류'))
+        self.assertIsNone(broad_sector({'krxSector': '기술 (Technology)'}, 'JP', None, 'x'))
+
+    def test_projected_stock_carries_the_sector(self):
+        s = stock('AAA'); s['krxSector'] = '헬스케어 (Health Care)'
+        self.assertEqual(build_insights({'US': payload(s)}, NOW)['markets']['US']['stocks'][0]['sector'], '헬스케어')
 
 
 FUNNEL_KR = {'listed': 4148, 'companyUniverse': 2601, 'marketCapPass': 298, 'liquidityPass': 213,

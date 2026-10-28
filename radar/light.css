@@ -891,7 +891,7 @@
 :root[data-theme="light"] .pt-guide-head small { color: #2b3745; }
 :root[data-theme="light"] .pt-guide-item .pt-logic { color: #604710; }
 :root[data-theme="light"] .pt-guide-text { color: #273546; }
-:root[data-theme="light"] .pt-sort-select { border: 1px solid #a8bbd1; background: #e6edf7; color: #08111b; }
+:root[data-theme="light"] .pt-select { border: 1px solid #a8bbd1; background: #e6edf7; color: #08111b; }
 :root[data-theme="light"] .pt-sort-hint { color: #2c3745; }
 
 /* ===== patterns.css (어두운 테마 글씨 보정) ===== */

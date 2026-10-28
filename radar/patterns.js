@@ -4,6 +4,7 @@ import { helpButton, addTerms } from './help.js?v=20261029-pt3';
 import { PATTERN_TERMS, glossary } from './terms.mjs?v=20261029-pt1';
 // 이 파일의 PHASES 는 셋업 진행 단계다. FTD 지수 단계는 이름을 구분해 가져온다.
 import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs?v=20261028-h60';
+import { CAP_FLOORS } from './model.mjs?v=20261028-h60';
 addTerms(PATTERN_TERMS);
 
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
@@ -84,6 +85,11 @@ const SORTS = {
 const absOrNull = v => isNum(v) ? Math.abs(v) : null;
 const SORT_STORE = 'wamo-pattern-sort';
 let sortKey = 'default';
+const SCOPE_STORE = 'wamo-pattern-scope';
+let scope = {};   // { KR: { cap: 1e12, sector: '반도체' }, US: { … } }
+try { const saved = JSON.parse(localStorage.getItem(SCOPE_STORE) || '{}'); if (saved && typeof saved === 'object') scope = saved; } catch {}
+const scopeOf = market => scope[market] || (scope[market] = { cap: 0, sector: 'all' });
+function saveScope() { try { localStorage.setItem(SCOPE_STORE, JSON.stringify(scope)); } catch {} }
 try { const saved = localStorage.getItem(SORT_STORE); if (SORTS[saved]) sortKey = saved; } catch {}
 
 // 셋업북 ①-6: 같은 업종 대표 종목이 함께 강하면 성공 확률이 올라간다. 산업 동반 강세는
@@ -102,7 +108,8 @@ export function patternsSummary(block) {
 }
 
 /** 지금 화면 조건을 통과한 종목. 종목마다 통과한 셋업 목록을 함께 돌려준다. */
-function selectRows(block, query, leading, meta = {}) {
+function selectRows(block, query, leading, meta = {}, market) {
+  const { cap, sector } = scopeOf(market);
   const text = String(query || '').trim().toLowerCase();
   const rows = [];
   for (const stock of block.stocks || []) {
@@ -110,6 +117,9 @@ function selectRows(block, query, leading, meta = {}) {
     if (!found || !found.setups?.length) continue;
     if (onlyStage2 && stock.stage2 !== true) continue;
     if (onlyLeadingIndustry && !inLeadingIndustry(stock, leading)) continue;
+    // 시총을 모르는 종목은 하한을 걸면 뺀다(넘는지 알 수 없다).
+    if (cap > 0 && !(isNum(stock.marketCap) && stock.marketCap >= cap)) continue;
+    if (sector !== 'all' && stock.sector !== sector) continue;
     if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry]
       .some(v => String(v || '').toLowerCase().includes(text))) continue;
     const setups = found.setups.filter(s =>
@@ -139,7 +149,7 @@ function chip(label, active, onClick, title) {
   return b;
 }
 
-function filters(block, meta, redraw) {
+function filters(block, meta, redraw, market) {
   const box = n('div', null, 'pt-filters');
   const summary = block.patternSummary || {};
   const stages = n('div', null, 'pt-chiprow');
@@ -181,9 +191,38 @@ function filters(block, meta, redraw) {
     '셋업북 ①-6: 같은 업종 대표 종목 여러 개가 함께 신고가 근처에 있으면 성공 확률이 올라갑니다. 레이더가 산업 동반 강세로 판정한 업종의 종목만 봅니다.'));
   box.append(toggles);
 
+  const current = scopeOf(market);
+  const range = n('div', null, 'pt-chiprow pt-scope');
+  range.append(n('span', '범위', 'pt-chiplabel'));
+  const capSelect = n('select', null, 'pt-select');
+  capSelect.setAttribute('aria-label', '시총 하한');
+  const floors = CAP_FLOORS[market] || [[0, '전체']];
+  if (!floors.some(([v]) => v === current.cap)) current.cap = 0;
+  for (const [value, label] of floors) {
+    const option = n('option', value ? `시총 ${label}` : '시총 전체'); option.value = String(value);
+    option.selected = value === current.cap; capSelect.append(option);
+  }
+  capSelect.onchange = () => { current.cap = Number(capSelect.value) || 0; limit = 30; saveScope(); redraw(); };
+  // 섹터는 셋업이 있는 종목에서만 모은다. 종목 수가 많은 섹터부터.
+  const counts = new Map();
+  for (const stock of block.stocks || []) {
+    if (stock.patterns?.setups?.length && stock.sector) counts.set(stock.sector, (counts.get(stock.sector) || 0) + 1);
+  }
+  if (current.sector !== 'all' && !counts.has(current.sector)) current.sector = 'all';
+  const sectorSelect = n('select', null, 'pt-select');
+  sectorSelect.setAttribute('aria-label', '섹터');
+  const all = n('option', '섹터 전체'); all.value = 'all'; sectorSelect.append(all);
+  for (const [name, count] of [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'))) {
+    const option = n('option', `${name} ${count}`); option.value = name;
+    option.selected = name === current.sector; sectorSelect.append(option);
+  }
+  sectorSelect.onchange = () => { current.sector = sectorSelect.value; limit = 30; saveScope(); redraw(); };
+  range.append(capSelect, sectorSelect);
+  box.append(range);
+
   const order = n('label', null, 'pt-chiprow pt-sort');
   order.append(n('span', '정렬', 'pt-chiplabel'));
-  const select = n('select', null, 'pt-sort-select');
+  const select = n('select', null, 'pt-select');
   select.setAttribute('aria-label', '정렬');
   for (const [key, [label, hint]] of Object.entries(SORTS)) {
     const option = n('option', label); option.value = key; option.title = hint;
@@ -376,7 +415,8 @@ function card(row, market, meta, openStock, leading) {
   const head = n('div', null, 'pt-head');
   const name = n('button', null, 'pt-name'); name.type = 'button';
   name.onclick = () => openStock(stock.id);
-  name.append(n('strong', short(stock.name)), n('small', `${stock.symbol} · ${stock.industry || '산업 미분류'}`));
+  const where = [stock.sector, stock.industry].filter((v, i, a) => v && a.indexOf(v) === i);
+  name.append(n('strong', short(stock.name)), n('small', [stock.symbol, ...(where.length ? where : ['산업 미분류'])].join(' · ')));
   head.append(name, n('span', phaseLabel, `pt-phase phase-${phaseCls}`));
   box.append(head);
   const outbound = links(stock);
@@ -477,11 +517,11 @@ export function renderPatterns(root, market, block, meta, options = {}) {
     root.append(n('p', '지금 이 시장에는 촘촘한 베이스가 거의 없습니다. 셋업북은 시장이 하락 추세일 때 좋은 패턴도 대부분 실패한다고 적었습니다. 건수가 적은 것 자체가 판정 결과입니다.', 'pt-weak'));
   }
 
-  root.append(filters(block, meta, redraw));
+  root.append(filters(block, meta, redraw, market));
   const help = guide(meta);
   if (help) root.append(help);
 
-  const rows = selectRows(block, query, leading, meta);
+  const rows = selectRows(block, query, leading, meta, market);
   const info = n('div', null, 'pt-result');
   info.append(n('span', `${rows.length}종목 · 현재 조건 기준`));
   root.append(info);

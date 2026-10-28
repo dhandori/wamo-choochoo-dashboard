@@ -124,5 +124,5 @@ body[data-view="patterns"] #industry-rail,body[data-view="patterns"] #metrics,bo
 
 /* 정렬 */
 .pt-sort{gap:8px}
-.pt-sort-select{min-height:34px;padding:5px 10px;border:1px solid #2f4259;border-radius:8px;background:#0f1c2d;color:#e3edf8;font:inherit;font-size:12px}
+.pt-select{min-height:34px;padding:5px 10px;border:1px solid #2f4259;border-radius:8px;background:#0f1c2d;color:#e3edf8;font:inherit;font-size:12px}
 .pt-sort-hint{font-size:11px;color:#7f97b2}

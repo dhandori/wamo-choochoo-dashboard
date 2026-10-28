@@ -439,21 +439,36 @@ with sync_playwright() as p:
         # 정렬: 고른 기준대로 카드가 줄 서고, 값이 없는 종목은 맨 뒤로 간다. 고른 기준은 기억한다.
         stocks_by_id={s['id']:s for s in DATA['markets'][market]['stocks']}
         for key,field in (('rs','rs'),('cap','marketCap'),('volume','volumeRatio')):
-            page.select_option('.pt-sort-select',key)
+            page.select_option('select[aria-label="정렬"]',key)
             ids=page.locator('.pt-card').evaluate_all('(cs)=>cs.map(c=>c.dataset.id)')
             values=[stocks_by_id[i].get(field) for i in ids]
             present=[v for v in values if isinstance(v,(int,float))]
             assert present==sorted(present,reverse=True),(key,present[:5])
             assert all(isinstance(v,(int,float)) for v in values[:len(present)]),(key,'값 없는 종목이 앞에 있습니다')
         # 손절 폭은 카드에 적힌 값으로 본다(대표 셋업은 화면 조건을 통과한 첫 셋업이라 스냅샷 첫 셋업과 다를 수 있다).
-        page.select_option('.pt-sort-select','stop')
+        page.select_option('select[aria-label="정렬"]','stop')
         widths=page.locator('.pt-card').evaluate_all("(cs)=>cs.map(c=>{const dt=[...c.querySelectorAll('.pt-numbers dt')].find(d=>d.textContent.includes('손절 폭'));return dt?parseFloat(dt.nextElementSibling.textContent):null})")
         widths=[w for w in widths if isinstance(w,(int,float))]
         assert widths==sorted(widths),widths[:5]
         assert page.locator('.pt-sort-hint').inner_text().startswith('피벗에서 손절선까지')
         page.reload(wait_until='networkidle')
-        assert page.locator('.pt-sort-select').input_value()=='stop','정렬 기준을 기억하지 못했습니다'
-        page.select_option('.pt-sort-select','default')
+        assert page.locator('select[aria-label="정렬"]').input_value()=='stop','정렬 기준을 기억하지 못했습니다'
+        page.select_option('select[aria-label="정렬"]','default')
+        # 범위: 시총 하한과 섹터. 거른 뒤의 카드는 모두 조건을 만족하고, 시장별로 기억한다.
+        def card_ids(): return page.locator('.pt-card').evaluate_all('(cs)=>cs.map(c=>c.dataset.id)')
+        cap_select=page.locator('select[aria-label="시총 하한"]')
+        floor=float(cap_select.locator('option').nth(2).get_attribute('value'))
+        cap_select.select_option(index=2)
+        assert all((stocks_by_id[i].get('marketCap') or 0)>=floor for i in card_ids())
+        sector_select=page.locator('select[aria-label="섹터"]')
+        if sector_select.locator('option').count()>1:
+            sector=sector_select.locator('option').nth(1).get_attribute('value')
+            sector_select.select_option(sector)
+            assert {stocks_by_id[i].get('sector') for i in card_ids()}<= {sector}
+            page.reload(wait_until='networkidle')
+            assert page.locator('select[aria-label="섹터"]').input_value()==sector,'섹터 선택을 기억하지 못했습니다'
+            page.locator('select[aria-label="섹터"]').select_option('all')
+        page.locator('select[aria-label="시총 하한"]').select_option('0')
         # 단계 칩으로 좁히면 결과 줄의 종목 수가 바뀐다.
         before=page.locator('.pt-result').inner_text()
         page.locator('.pt-chip.phase-watch').first.click()

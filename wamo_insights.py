@@ -204,6 +204,26 @@ def investor_flow(stock):
     return fields
 
 
+UNCLASSIFIED = {'산업 미분류', 'KRX 업종 미분류', 'Unclassified', ''}
+
+
+def broad_sector(stock, market, industry_group, industry):
+    """종목을 거르는 데 쓰는 큰 섹터. 산업 분류는 너무 잘게 나뉘어 필터로 쓰기 어렵다.
+
+    한국은 WAMO 분류표의 묶음(반도체·금융 …)을, 분류표에 없으면 산업명을 쓴다.
+    미국은 수집 단계의 krxSector('기술 (Technology)')에서 한국어 이름만 쓴다.
+    """
+    if market == 'KR':
+        name = industry_group or industry
+    elif market == 'US':
+        raw = stock.get('krxSector')
+        name = raw.split(' (')[0] if isinstance(raw, str) else None
+    else:
+        name = None
+    name = name.strip() if isinstance(name, str) else None
+    return None if not name or name in UNCLASSIFIED else name
+
+
 def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
@@ -251,7 +271,7 @@ def project(stock,market,asof):
             **({'investorFlow':flow} if flow else {}),
             **({'patterns':patterns} if patterns else {}),
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
-            'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,
+            'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,'sector':broad_sector(stock,market,industry_group,name.strip()),
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),
