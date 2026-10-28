@@ -99,7 +99,7 @@
       "items": []
     },
     "JP:3436": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "KR:181710": {
@@ -130,7 +130,7 @@
       ]
     },
     "JP:4062": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "US:BE": {
@@ -157,7 +157,7 @@
       ]
     },
     "KR:031980": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "[마감시황] 10/28 코스피 +6.63% 폭등, 6,012.44 마감 - 네이버 프리미엄콘텐츠",
@@ -339,7 +339,7 @@
       "items": []
     },
     "JP:6754": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:1911": {
@@ -394,8 +394,14 @@
       "items": []
     },
     "US:CRDO": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
+        {
+          "title": "Credo Is Walking Into Broadcom’s Backyard (NASDAQ:CRDO) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPNU1Yc1FqdzhEWS1zYW85QUlQWEpOWTlSaUNUWGhkM3BnR0pZWlhaN1VSMFhFeXBEYTBwTVE3M0llOFJVS2lMcGdCaDE5N0NPZU9rSkJqYUlQNS1BTnFGR3FlWnVDc21TX2J3WnpRR2YzRUxwZl8yWmczR0NPNHZVUjVUMkQ1OHN2?oc=5",
+          "date": "2026-10-28T12:50:45+00:00",
+          "publisher": "Seeking Alpha"
+        },
         {
           "title": "Credo Technology Group stock rises over 10% as institutional buying and AI data center demand drive momentum - Traders Union",
           "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNYkdBTm40enhLLWZKMUxGT003Z1FURFBBMEtNYWxoa0QyNmhVNHpjN2VSSEhreENDSk10d1NCcTZxNVV4ZjFIdlVtdkhaWTZZNnhtSVI0b0NCSXM3RVlCbjZxd3Atc0dmbnBrZ0lueWNTUndKQU1xNDlrVHlPSzZxeXpvSzNHY0NYa01ad2p3?oc=5",
@@ -407,12 +413,6 @@
           "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPQ1dEc2RpM1F5a05XUWFSRVhRWjJkOU1Vbk5UV2E4NUx4c083LV9xb21RSzU5YWxRd2x4MTFBcTVPaFA1UWVEYkgzdHVRM04xWHQ1cnBha2VhR2pXekREYmhiTjl0cG43bWNnSFRfTEVyc05MdDR2QWwwUE5LWldIZUY3bTY?oc=5",
           "date": "2026-10-27T18:06:53+00:00",
           "publisher": "Seeking Alpha"
-        },
-        {
-          "title": "Credo Technology Group Holding Ltd (CRDO) stock price, news, quote and history - Yahoo Finance - Yahoo Finance Singapore",
-          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9BdkJfanJWd0FiY0N2T29QRHlHNXdwbFl6MG5nX2RoTDRLR2c3WWFxTWpQSHk1ZGhqMGRVVzNmbGgzT3cwU3RNazJHQmw5bkJzYmNDNjlmLVdGWS1aZUlURkNR?oc=5",
-          "date": "2026-10-27T01:29:06+00:00",
-          "publisher": "Yahoo Finance Singapore"
         }
       ]
     },
@@ -808,7 +808,7 @@
       ]
     },
     "KR:108490": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "[특징주] 로보티즈, 메디슨 황 엔비디아 수석이사 방한 소식 '상승' - 전국매일신문",
@@ -1132,14 +1132,8 @@
       ]
     },
     "KR:053800": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
-        {
-          "title": "연이은 해킹에 보안주 급등…안랩·지니언스·엑스게이트 웃었다 - 디지털데일리",
-          "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5RU3VVenIxZmdIWURNVnZ6VzRhNFlIUU9MTnQtdjV2UlhGNlJzQUs1Vzl0NEhIRW9NUE1MR3EtY2Z6aWV1RGE4a0N3Z0xaQUp4UnFXaDh3NTFkcjVLN2ZZam41ZmE?oc=5",
-          "date": "2026-10-28T07:42:47+00:00",
-          "publisher": "디지털데일리"
-        },
         {
           "title": "안랩 주가, 10월 28일 110,900원 19.63% 상승 - 톱스타뉴스",
           "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE42THFOZWNjRFF5ME9TZmJ3SFFHMnFPVFhuWnk2VnJyWnBtRzFHRWVvX253N1J0QU92RkdaM2xkNEplNkRTTll2R1otXzR4dUZjTFJhWUY4X3hubVZhWHpPV0tZU0RNc1V0aHVpV3VHZXQ5dw?oc=5",
@@ -1147,10 +1141,16 @@
           "publisher": "톱스타뉴스"
         },
         {
-          "title": "안랩, 19.63% 올라 110,900원 마감…거래대금 1,294.2억원 - 잡포스트",
-          "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1TNnBnMmpkUUYzckhxdVlOaGRReUNuSk52akZuN1lVQ0NKMXB1ZGFLZE9tdXJMR25RWjFISWM5Rlotc0xzSV90UUxSLWszMi1tQ0tJa01sMUtaVDI5djdwR1o1cmFMa3RHX0g0Vi130gFyQVVfeXFMTkdOeXl4TXVTbTJINGtaQTZFMTNuOTMxTkR0eXZBYjNodTB5NkdtWmpTQlhJVDJySjdhajFRTFRwYS1NcERmbUtQdzQzQkJLZmNMVkVTOE1oVjZDekxkT1ZpZllpdXhLdlhRUFpkeFJSR2hR?oc=5",
-          "date": "2026-10-28T06:46:59+00:00",
-          "publisher": "잡포스트"
+          "title": "[장중수급포착] 안랩, 외국인/기관 동시 순매수… 주가 +18.55% - 뉴스핌",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBfSVJOemNLOTBkSlBwSGpfbnZJeDNPTnQtMnJVQzZiMFdEcmxOWGtDV2lTRTViLV9uY1BKMy1xMjIwWHg3QWRoMmQ0YmhBU1dOd2VybDhGelhEVTRI?oc=5",
+          "date": "2026-10-28T04:33:00+00:00",
+          "publisher": "뉴스핌"
+        },
+        {
+          "title": "안랩 주가, 급등세... 이유는? - 금강일보",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1NcldFbmRUcE53Tk04SS1rSkU4blhJTmdfNC0tNVZHQnlSenFldTVYVEdSX2VyM0lqMHVFZ3hUaGMtSngyZlNSOEFRazlCSWRrVzhpdUxRTmhGMGJYUnl5eTR3MGVLWHpHU3c?oc=5",
+          "date": "2026-10-28T04:23:27+00:00",
+          "publisher": "금강일보"
         }
       ]
     },
@@ -1247,7 +1247,7 @@
       ]
     },
     "KR:095340": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "[리포트 브리핑]ISC, '잠시 늦춘 걸음, 성장 방향은 그대로' 목표가 180,000원 - IBK투자증권 - 뉴스핌",
@@ -1316,7 +1316,7 @@
       ]
     },
     "KR:402340": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "[오늘의 주목주] 'SK하이닉스 호실적' SK스퀘어 주가 11%대 올라, 코스피 '외국인·기관 순매수'에 6천 선 탈환 - 비즈니스포스트",
@@ -1339,92 +1339,98 @@
       ]
     },
     "JP:6857": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:4568": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:6436": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:8377": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:5471": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:8060": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:9984": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:6920": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "JP:8697": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:2466": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:7750": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:2464": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:6274": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:2049": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:8021": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:6715": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:3605": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:6919": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:3376": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:4958": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "TW:6672": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "US:XYL": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
+        {
+          "title": "Xylem: Near Term Headwinds Are Real, But So Is The Overreaction - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQeHgyb0lGX2ZCUmlmSFRqX2VFNEw3ZXkySDZqakludEMydGhkd0dKWm1adndOVUFlSGdQNDF6OHhvWnMtQ0NGeGNocWxhVFZ5S1RnOU42blBaN3U2cFhSY0hRRm9pU284OVFTczBCenNPd3Y2OHRKeVdMeERSTG9kTWR6WUFvOWI3VWtsUENyLVV3TjU3YjhvNm1ybUxNTUZGNWt2bF9sV0c?oc=5",
+          "date": "2026-10-28T12:00:27+00:00",
+          "publisher": "Seeking Alpha"
+        },
         {
           "title": "Xylem Inc. (XYL) Stock Forecasts - Yahoo Finance",
           "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPdkFnX3I0ZnRLNlcxQnA5MEV0V1NsdWkzWTlDZG1zOUFGNjN2NHFfY09VN3VlUm82a2FTbU1YMjZWd1ZuV3RzRVkzZTZWaUFVd3BwdEFwZlQyQ0JiMnZOSmEtSUp3SFlfTXh5d2lkMzZHbHRaOVo5X1FSQVI5amNzeDdSaWwySEZLcm9sMg?oc=5",
@@ -1436,18 +1442,18 @@
           "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQbFUzYWZmdmU5dkRuTnJGQ3dZMFNPdkZjSGtSaEIwMWMxTXRrb3NGSm5vOXViRXFLN1d1Z2Fhc3BHQ3JMTWUwUXFIN3F1aDcycGZNellEQU82UGltVjdRYnZ4T1dlb3ppUjdXZENiV25ZTkxOT0lxZ24wN1kyTkVwZTZUU2V4MHJ1N3p0cEF5LTZzMkllT0ZvZGtZWnBKcDhxM0JkSXhxNlNsRjdZ?oc=5",
           "date": "2026-10-28T02:43:45+00:00",
           "publisher": "Pluang"
-        },
-        {
-          "title": "Xylem tumbles 14% to new 52-week low after earnings miss (XYL:NYSE) - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQOWVBOEdiajVsWW1wc1RNRjNmVDhZdU1Kb3JWMjBQQ2V1V3lhclJ3eTYxTllRcm1UZ2hhdkR2V3BtSzZoNlhYZDNBYTFRamhleF9zYnI5NEp1bEY1MnBfeTRDdEVFWEY5WnJMQXRHZmFsX2phNWktTm02RFVaRFZCMW83Szh2ck5ObDlsYmFmWV9Gb25RTVd1Sg?oc=5",
-          "date": "2026-10-27T20:41:26+00:00",
-          "publisher": "Seeking Alpha"
         }
       ]
     },
     "US:SOFI": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
+        {
+          "title": "SoFi Technologies (NASDAQ:SOFI) Stock Price Target Raised at Wells Fargo & Company - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPRGRsNG0zNWM2WGN6U3pZT185VUdNTXVJNEw0RUU2R2g4NDlvQ2F0ZlRKY1A1UXRLT0hBUVlsZ0I4SXEtNmQ5X0pIMER0VnE3ZHNwV2xkZ0drWTVLN3lTeDZDQ1NVYVZpZHlWM0JJNlhZa2hKV3V1VXZCdm91V01oQVFMc0djY1lOV2VzM3JXSlJQMTBTV0k2LV9NZURGSUlsR1poSUxSTjFxaGYweDNFdkxJT2gtNDAxMVFCeC1lS1lMUEdwbllERlRlZkloNUtMSk85bXViQQ?oc=5",
+          "date": "2026-10-28T13:41:18+00:00",
+          "publisher": "MarketBeat"
+        },
         {
           "title": "SoFi Technologies, Inc. (SOFI) Stock Price, News, Quote & History - Yahoo! Finance Canada",
           "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1OYVFNaW40WnVXdTU1NDJHa09fSGNXcllWV0JjbjUwUThjelRBeFVvY3I5QXpLODdDS1ZNckNUQUx4d0s2N3dUdFk5Wmp4a1hWMFE?oc=5",
@@ -1459,29 +1465,23 @@
           "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQazNQV0NfZXJucG5KdUJFbWVaWjY1NHNmdkJYb0NBZXF5QUxhLXNIVDhQcENKVjB4YVJod2tQZkhtc3RiMUk4UEVBNEplRUdReGZfd3diQldrejZfNGxFNURQS0F4cGhfdktPSG1xdGM4Uk5RTkpDWkpIQWJZeXNCT1d2MDl4dnEzNzh5RkZ2QWZiTDM3?oc=5",
           "date": "2026-10-27T21:08:21+00:00",
           "publisher": "Yahoo Finance"
-        },
-        {
-          "title": "SoFi Technologies (NASDAQ:SOFI) Stock Price Up 13.4% on Better-Than-Expected Earnings - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQcjloa1N0cjNrQ0JJWmo2aFlxTE1qNXpOY1B4OHJKYW5PU2lLblZlSTVKbktfbUJJaHBQbmpCdDhhcmt6aWNRcm9ENTlzVWVEOVBSbFNVQ19UdDVzeUFPbms4a2wwTjl6T3BBdVc1RWotb1h3NVM5ZzZiLVlkcXo4djBzQ1VPbG9mSE83djgzT2xLTDI3ZWJNUXdJYUR6b0VUTjRqbnptNmtOZFh6NVprc21rN09yU19GdHROVy0wVXY1SklCNXJxR3V0MVAtQmwwal9WSnFob0E?oc=5",
-          "date": "2026-10-27T21:05:11+00:00",
-          "publisher": "MarketBeat"
         }
       ]
     },
     "US:NBIS": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
-          "title": "Nebius Group N.V. (NBIS) stock price, news, quote and history - Yahoo Finance Australia",
-          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1XTG9vRWNVOEU3VGw2WUNRSHlnMkZMSTU1MlJ3SmVXc29QNFcyUlVWT19GQV84dkxjWjFIZFREUFBQUkgwOWJCcW9ZMW9aY0FSRUVYTHlJTy1IZk10WXdrRktB?oc=5",
-          "date": "2026-10-28T10:22:07+00:00",
-          "publisher": "Yahoo Finance Australia"
+          "title": "Nebius Group N.V. $NBIS Shares Newly Acquired by Parametrica Management Ltd - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxOS2QzZUVteWo1akJadExRNlN2RzhjOHBBLVZ4OHZEQ1hRV1pxUVRzTUY3OTZMdjZsMElkSHJrRFZwNnF2NjdGb3RpUWF3eWV3bE9KV1lmWUhCRVJmZ1NpaGI3dkR3RmltWFZmMFhrZTlzUEhLWXIwLTZ1VlBhNnFNbmxUaFNydExzdURRbWg5NmVONXU2cU9sT1JINlpQams3cEl6enp0bzU5Y3VMclNnNjNtbHo4VmROdEZwdWhDNHV3ZmZtRU93anhzd1NwUQ?oc=5",
+          "date": "2026-10-28T10:36:04+00:00",
+          "publisher": "MarketBeat"
         },
         {
-          "title": "Nebius Group (NASDAQ:NBIS) Stock Price Up 11.2% on Insider Buying Activity - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQM2VzaEhVa2tNRFl2d2s3dGlZai1RdHhaaUNQa1N6M3dTVFdKLXZVOVRhM2NmdVpBcTNQaHBfVl9ib3BMd25ieENJZG9sOTBGY2RWSk0wV1JkLVFHOGhpSEh4N2RYN3pEQ0k5SEtfcjZRdHF4aUdpWFd4TkNJVnRjVjZFMGEzYWZBZWdtYnhoa0FHOFpOcms1eHMzTWZFUWRfSUpMOVFZMTZtRlJiZ1A4T1kyWktyM2lQNWJGZWpVMHMxbng3cEtpUmlB?oc=5",
-          "date": "2026-10-27T21:11:14+00:00",
-          "publisher": "MarketBeat"
+          "title": "Nebius Group (NBIS) Shares Surge 11.44% Amid Renewed Interest in AI Cloud Sector - GuruFocus",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPQUNzdkxpUkpFUVF2MGNVeVNGejFkR3lxa0xaZUVyT1hQUDEwNHJmM3hrSmNoS2tQVDFJcl9RWXFXT3E0TTA0dy0yb3VfcVBpVEx5TFV5WXVWWklYSEdpVlVHWU9xOW5KQ0diN2JhMzdFdUh4dzFGVmVIRlRQdWRmdEZ0M2M4WlFEZWo3YkJsWGpwNVJfNzdReXU5cTVGeVNlOGtjbDQ2MlJ1TnRZR1dVWDFNZ3RmUQ?oc=5",
+          "date": "2026-10-27T23:13:12+00:00",
+          "publisher": "GuruFocus"
         },
         {
           "title": "Nebius Group rises 11% along with other neocloud stocks (NBIS:NASDAQ) - Seeking Alpha",
@@ -1492,7 +1492,7 @@
       ]
     },
     "US:CLS": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "Celestica Inc. (CLS:CA) 2026 Investor and Analyst Day Presentation - Slideshow (TSX:CLS:CA) 2026-10-28 - Seeking Alpha",
@@ -1515,7 +1515,7 @@
       ]
     },
     "US:BA": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "Boeing Company (The) (BA) Stock Forecasts - Yahoo! Finance Canada",
@@ -1538,7 +1538,7 @@
       ]
     },
     "US:ALAB": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "Astera Labs Shares Rise 6% After Key Trading Signal - Benzinga",
@@ -1561,34 +1561,34 @@
       ]
     },
     "US:CBRS": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
+        {
+          "title": "Cerebras Trades a 2027 Promise as TD Cowen Trims Its Price Target - ad-hoc-news.de",
+          "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxOalo1U3RmSkRKWDNoT05UbV96dWNoQVdHbUJTYzRSQmFhOUc1R2tjVFdpY19hdHNlVll4Yk1SVHRET2V4N2sxTzJVODZ1U1ZoVHFuSjI2YjJHVHc4SlZTaEd0YVhqVndReU1tT1RqVkMweTk3dmlOUEF4anhqc3QzTU43V2Jxak1OTHVXMVVCS3FfV04zSkNxMWtJM1NSejViamNsNU0wSXl5MmYwVVQ1RzBMT29CNGN1MVRsYTByNTk4NXlVSkxKS1hINU5lbFE4RUdn?oc=5",
+          "date": "2026-10-28T12:11:48+00:00",
+          "publisher": "ad-hoc-news.de"
+        },
+        {
+          "title": "Cerebras Lands Oracle Cloud Channel, but the Revenue Math Stays Blank - ad-hoc-news.de",
+          "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNU1RnLTE4LVQ1M2o5SjlNVWktSzZ6TGJta29udjZnNDAySS1sNU03UmdLS1UxQXpsMU1VVjJhR0ZOZ3JZZGU5eXV5MjlUc2gwdVAtZDRjMkxRbGxkTFBWWjJZTk5lMnZsbzRJR0w0dzE0VFItOHRUR3E3d0l4RjgtMi1yNVp1VFE5LUstdmZrRWg3WnhTLU9pVFlqYkVpNVQyWkhnR2I2U0NOTVQ0bnpKR3R2ek1KX0luMXJOMWNIbjNiZ2VUcWJ3UE1MTVljdUlBNnE5ejVDMA?oc=5",
+          "date": "2026-10-28T11:01:29+00:00",
+          "publisher": "ad-hoc-news.de"
+        },
         {
           "title": "Cerebras Got an Oracle Cloud Seat. Another 19.4 Million Shares Unlock Today. - Money Morning",
           "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPZnRLdlBGUVJNZmFRODF1b0RBbDBCSHI5M2NmSWxlWjVybXpOa1diNmlkNFNjZDdwSE9VV1NUU2tXYnpUM2hQaDNSdUpST3Q5bmwxUnFWcGk0NnlaV3B5bFlKTTg0LUtVbjFKQ016SnpmRk9nSlJVOEg3Z1FfOGJsMDRVWWRValFFdVE?oc=5",
           "date": "2026-10-28T08:10:40+00:00",
           "publisher": "Money Morning"
-        },
-        {
-          "title": "Top Cerebras Systems (CBRS) Competitors 2026 - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxORVZncHRzalVRa2p5bFJNM2wxNlFFQzBwU29jeVBjMF94cE9Kcmlxa29JbHdzNDRmTXNNSTF0aWFjbXdMczlBZS1iQTYtNEhoSUg1bkY5TXIzbmtyY2N3S3ZHaHkyaDAwX1VEWWx6dFdMTUh0MUgzalhscmo4M1QyZw?oc=5",
-          "date": "2026-10-27T23:19:49+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "Cerebras Systems (NASDAQ:CBRS) Shares Up 10.1% - Here's What Happened - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPSmtETkQ0bHVibzYtcUNJS09ELVQ0cTI4TERBZTk1cllsNGtYWENFbXJuck5DaHZoSGdEeEx0R0lCbFpvRTlmaG1rTU5lNFdGQ2FKTDVMYWlGVkFPVXd4YWZvSTV2TlJ5NURtN1lRak96WVlMX1gtOGdZb0x3RHhXTU1HOXBTbm44Nk1XamRLTFpxdk9JVmRhalk1a2ZxSl9ESUdrWC1tTVBjbW52M1pFRUNsX25CYUs0b2I2SVd6bw?oc=5",
-          "date": "2026-10-27T21:23:25+00:00",
-          "publisher": "MarketBeat"
         }
       ]
     },
     "US:LECO": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": []
     },
     "US:FLNC": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "Fluence Energy stock gains 6.97 percent versus Tradegate close - ad-hoc-news.de",
@@ -1611,53 +1611,53 @@
       ]
     },
     "US:DINO": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
-          "title": "HF Sinclair Appoints Steve Ledbetter as Chief Executive Officer and President - Stock Titan",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNMGF5b21KSjFxdnJ0T3h1d3NJZVZKR0dXdkVNNXVtSlFLVndaVXE1aFNvMVBrLWNRZ2ZQQTF2RVpoNlppM0RtMmZjNElFUnRDcXpzbXRUZ0FJSVFVWVdKMnJGb3I4YUtjVHVCY2tFNHFCLVk4aXpUSjZweFZSam1fVDN1b01mYzZHYVktUVNtZ0FHZ1dmQXBLZFhIXzE5bmRrZVpIdnMtWXp5T0JRR2FndmNRUFU5cVV5Tm9LeHdlcw?oc=5",
-          "date": "2026-10-28T10:30:00+00:00",
-          "publisher": "Stock Titan"
+          "title": "HF Sinclair Corporation Reports Earnings Results for the Third Quarter and Nine Months Ended September 30, 2026 - www.marketscreener.com",
+          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNMDdHYW9HSXVuRVhTVzdCT2VocU1KVVpkM2gya196cjUwZXJQZk83S3dlc1dNaGdtM2JZczNnUHpVeU1TdXRjSkxUeGx3SXBOYTRTcml4WTBsTmtCRFZ6ay1LNUM1UFVhZ3N2X19fZnJIMTZvRC12N1JRRUhSTHpFUlBuZGIwM1ZoZEY3bUJOU2lzckl2eHlwYkVLcjhqSGZRa3VDS1FLZUkwSVlWUG0zYWZRUmhuNTBXU2RLeVJpOWJDNDRPRXlLV0NkaVlKN1ZNUjJsMVYzX3V2N1BvYURfekJ5ZEVQZDBJ?oc=5",
+          "date": "2026-10-28T12:22:41+00:00",
+          "publisher": "www.marketscreener.com"
         },
         {
-          "title": "HF Sinclair Corporation $DINO Shares Sold by Sterling Capital Management LLC - MarketBeat",
-          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQaFhrendGVExwMnZjY3hVeTNBaXVjallwNGxfNk9UNTRMYUFuaHNJLWhQRFkyTXpDZWtKbUlGVU1zZWFZaXJRSm13dDZlZUhxRnVJUkxpUmNmdzMwQ3NQdTVpRFNSZE1DbW1MVDdHNzUtMVp4akVMS3dPTUNwREt1X19NS2hQd1JNZEdGbFM5RlFFbGNwNXF5TFMzUFBfV0FKckVRcG5sc0ZpR29yYVlvWW9BQ2stdks2a2xqRnpGZWZ0YUhobENRbnBZdlZJTUJBN3c?oc=5",
-          "date": "2026-10-28T08:57:25+00:00",
-          "publisher": "MarketBeat"
-        },
-        {
-          "title": "HF Sinclair started Overweight at Piper as quality refiner with strong return of capital commitment - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPdVRsNVdhX1V2TERuRFpRQ1pGMnFuSTkxNmd0a09BWmotQ2FBMFlISEhMZG1lZTFNejNTSWRpdHIxU2NCQ19WMF84UzRCUUVrcjBWMEZBQUxfZV82TGdMT0thMWtWV1dtNi0yYkowcHVxblRoMTZ4ZkRHRVBOT19hVFRRODJPdE5PaklZZkItckVXM3BRZmF2dllub0J0R2Y1cjNsRUtEVFFzNklqNFBQR3gxUmVmWXF6NlNDOWRFMUdLRS16dTg1NUQzNmE0RnNBNlpj?oc=5",
-          "date": "2026-10-27T19:44:04+00:00",
+          "title": "HF Sinclair names Ledbetter as new President and CEO, effective January 1 (DINO:NYSE) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPTDUweTRxdFpIUlROalFxTHg4ei03SVU4WFBhTHFjSHM4N0lGeEFmWm1ma2M3WElsUlRIb01JSVlmUlZnalBRNmJ5Njk4QUEzTVFSQkxXa2pfNVJFdWU4V3E1MlNGUnVFVlBubjF6c0E3dThnWEc5OXpLazJmUkZqTXVGTzg3N1pESFRUMUNFcTBrNE5jQzZ5WHVkcGJRV2tzVmtvbnduMy1NSGg5YlpZ?oc=5",
+          "date": "2026-10-28T11:53:24+00:00",
           "publisher": "Seeking Alpha"
+        },
+        {
+          "title": "Earnings Flash (DINO) HF Sinclair Corporation Posts Q3 Adjusted EPS $11.75 per Share, vs. FactSet Est of $7.83 - marketscreener.com",
+          "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxNOUV0SENoVGFycXExd1BzZkNoY2ZDY1hhZ1Fla3hiSENOV3ktUi1uVWZwSndoZTVGc2puYlhXQzR5QUVUVlNMUlI0UUhfOV9sNXVBZEFkOU9uWU8xekpSUjJJUEd1SnNGVWp4NnVjbnpnVFk2eEMtaDJHOWd0Z3F6NVRCMkxDMVUxcmNqM29WSWNwQXh5S3ZfRTNNcm44Z1dGcnBwYVQyZEVFcnNxWG9KWXZvMTF6WUg5Tjk0Wkx1aEdBelMzN2JPMmpESVNVU3Rjbm5YX3NGdkhySXRYRjZHSVJR?oc=5",
+          "date": "2026-10-28T10:59:44+00:00",
+          "publisher": "marketscreener.com"
         }
       ]
     },
     "US:VLO": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
-          "title": "Form 4 Valero Energy Corporation For: 28 October By Investing.com - Investing.com Canada",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPUlE2V3FzelFXWWhUdFZCaHZDWmpFWEwzbDNZdERYeWU4LXVzc1BBRmtqQkRGNXh1ZFpBTGhvQ1pNMzMyS255M09MUlRRTmNFNnRDV0QyODFLN1pESFZjcFRTbndlN3l1UXlrNEl3WGN2UUVxR2NVMl8zTDZXOWR2R21nT1JXTkstdlVsbzB6QnNHb2RGQnhVNFVSNUVETW1pRmRXVkFCb0ZzcVBX?oc=5",
-          "date": "2026-10-28T08:59:10+00:00",
-          "publisher": "Investing.com Canada"
+          "title": "Valero Energy Corporation (NYSE:VLO) Shares Set to Pay Quarterly Dividend of $1.20 - MarketBeat",
+          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQUXlCZk5LZ3JhdWlEMUJ2cWtYSjR6LXlHdmJTeGd1dGZrQTBRNWh0aVgwYjlKQW1Tb090eXNxV2E5SlJac3dKNk54ekgyN3JmanhfRWhfc3F0QmhXMUJTeDdBczlJbEU3R1c0N3FhMmRnR19zaFUzOGt1T0ZqeHMtOUIxV0g1cFR1U1RGMTBfRkFJUjBsT0lrQ0tXa3hMbU5jLURBM01CWkxQTjVjMFVRS29CR2dObDM0cGZ3M0Z5OFB3WUZyWWc3Q3dpc1B3RmhnckpmM1lzVVo?oc=5",
+          "date": "2026-10-28T13:35:35+00:00",
+          "publisher": "MarketBeat"
         },
         {
-          "title": "Valero Energy Corporation Declares Regular Cash Dividend on Common Stock - Quantisnow",
-          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxORzlQUWJRcFBBeWFiXy0zZThFUmNGRjdQUGFLT0tBNXZaZVlma01FekVwRm41bHRNUGRvMXg0Q0tWNHB2WERGbkZERHhTMl9ONGdCMkdyZzUwUngzdUlLWjhxdU5RZWg4V1BxRkRqdWhkYXBmaTVGTmtvNFJXQWFUXzFOdE9JSjc2T0dBaFhnVHRJWTJqbklCVm5EdGNQRnFscGdka2t0Rl9rOTJpS1RrVw?oc=5",
-          "date": "2026-10-27T22:43:41+00:00",
-          "publisher": "Quantisnow"
+          "title": "Valero declares a USD 1.20 dividend for Valero Energy stock - ad-hoc-news.de",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPMXZqbFVaMG10ZkNlWFdUTFpKZzFzMzVwbUdpTEJZQ0FKUUZWN1k2YjNkQzhTeXR1WEdpdkhKVDR3dWlsSDNIMzZUbXFQdGp5NlU1WDdGdmpoanEteEpCT1dDTkxWQWZTalNvVG5JeUhaZC00bThwVVRNcnNWcGROVm5IVEg5ekt5ZnZra096TUY3WGxJM0FFX1NnNVNycGJIX0ludzhpaW9NLWF1TFNDc19PU1NPT3Jpc2czbUFGYw?oc=5",
+          "date": "2026-10-28T11:18:38+00:00",
+          "publisher": "ad-hoc-news.de"
         },
         {
-          "title": "Valero Energy Corporation Declares Regular Cash Dividend on Common Stock, Payable on December 21, 2026 - www.marketscreener.com",
-          "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxPX0NwNWk2dmVoQmpKcnBDOFljUlNSRWlOV1FwY1dZR2FHVndYMHpfTmV3aU5XVmFMbXMtMHFJV0xROEhDRWVsRGJoT3psVDJVM3AyS1pMcjlNeUE3WVEwc2lWOGFVTWlwWVdMZlR3Sl9iMFJYdW1CeGU0LUd6T0xaYkEtX0xOcDR4eGt1Snd0YlVKOERfQm8yTVJKYjVnWVZnYU5uLUNNdV9OX1JRdVJnQV9HclZYSjg3aTE0b2o1S3ItV0t6T0FpOE5FYWVXUDJUMDdQSUd4TlFSTm5YeDdOQ2U4c2RKdw?oc=5",
-          "date": "2026-10-27T22:31:00+00:00",
-          "publisher": "www.marketscreener.com"
+          "title": "Form 4 Valero Energy Corporation For: 28 October By Investing.com - Investing.com UK",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPLW14VXVCd3ZlQXp4clhIZ29ZS1JxWTFGV2Zpa21XY2tKTm95X3ExZUVSX29sTzc1QTVnb01OZHVCZkNEOHZjRWhvN2RNVXFvck84NzR2UUVLRWNXbWM0Mm5Vekc5OUI3U21qUzRtZHhvUThyWmR3Y0xWbUloNF9JeEpvLTAxaGhsb2xPcEVTb2dSR2MwNHlRckFqZnBmNDBOZzZlMUgwTkpXbFZi?oc=5",
+          "date": "2026-10-28T08:46:00+00:00",
+          "publisher": "Investing.com UK"
         }
       ]
     },
     "KR:252990": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "[코스닥 기관] 순매수 1위는 심텍…매도 상위에는 에스티팜 - 핀포인트뉴스",
@@ -1680,7 +1680,7 @@
       ]
     },
     "KR:000500": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "가온전선 주가, 10월 28일 애프터마켓 253,000원 9.76% 상승 - 톱스타뉴스",
@@ -1690,20 +1690,20 @@
         },
         {
           "title": "가온전선 주가 22,000원 상승 후 마감 - 아시아뉴스통신",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9icmdiRGJxaHJxN2xscU0xeXBEbjBDSGhQa0E4VU05WXphTXY1UTRIZzdjelE5amhVUUNNUHZfdjFwdkhkZTI5LTFLOGRIYUprUUl2eVFVZW5sU3pz?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBrTVZPRGdxR2RiRG9qNG5tUV94TjBZTU8wMFktcWtybWppdjVtNXMtdkowdUJ6c1FDYWMyTl9iSDFDenJXNklDa2ZUczNpaXlGRWRiNFlXS2FlaE5MeUFkR0tOUkZuX003R0RnVElhRDF0djhB?oc=5",
           "date": "2026-10-28T06:45:30+00:00",
           "publisher": "아시아뉴스통신"
         },
         {
-          "title": "가온전선 주가, 10월 27일 애프터마켓 230,500원 1.54% 상승 - 톱스타뉴스",
-          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1RajhEMnBYMXdxYUNiVTVCWmg0YTlRbkdPeEY2R05raDRDUlZ5eVo4d0pRNVlLU0xNMl9qVjF5ZlFpZ0FZcHdFc0xVVnJrME9MN3BwakgtU0JVcFBZY0VnSU5tN1NaSFVxeFRxTlduMXhPUQ?oc=5",
-          "date": "2026-10-27T07:14:29+00:00",
-          "publisher": "톱스타뉴스"
+          "title": "LS, 비상장사 할인 확대에 목표가 39만원으로 하향-메리츠 - 이데일리",
+          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOeUprWURhSkZTajhYRVAxb3JLeFZCSFkzZlN4VUplcnAtcHdWd2pmQU9QeGU1NElUS0g0cnNFclRmdDFvOWdIeHAwbld6N3NDcUhzQy1ZcFhoT0QxMzM0TkpDSkNPdmJJVXRER282Y0txWEszWDJpTkl6bDRlemhjWg?oc=5",
+          "date": "2026-10-27T23:23:15+00:00",
+          "publisher": "이데일리"
         }
       ]
     },
     "KR:003160": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "디아이 주가, 10월 28일 애프터마켓 43,600원 15.34% 상승 - 톱스타뉴스",
@@ -1726,7 +1726,7 @@
       ]
     },
     "KR:277810": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "레인보우로보틱스 주가, 10월 28일 404,500원 15.08% 상승 - 톱스타뉴스",
@@ -1736,7 +1736,7 @@
         },
         {
           "title": "레인보우로보틱스 주가 53,000원 상승 후 마감 - 아시아뉴스통신",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9KMmZyWHIwdmZIazM3WW5hTUwzS3lPUDd4bkhoLXAxTmRJQTUyVnlPeThMNmh5ajMzOWNDQ3ZCTEtxMnA2RW9WVmZUR2JQVExuOTFzdjNfTVoyXzUx?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBVa0FiekY4YmxpZnQwSEtUV0Nfc1NwS3MzTVRKbWUwek1YQzh5NFNIOS1tZTlQZFpGdlV5d1B0ci1oeU1rUjlWZTMtY1FMRHlCZXdfUEZoVVd6N3hqWXU1b3QzZ01pZjI1MlJFNTItU25oQUJS?oc=5",
           "date": "2026-10-28T06:48:13+00:00",
           "publisher": "아시아뉴스통신"
         },
@@ -1749,7 +1749,7 @@
       ]
     },
     "KR:030530": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "[마감분석] 원익홀딩스 17.89% 급등하며 2만8000원 마감 : 기업주식정보 - 재경일보",
@@ -1772,7 +1772,7 @@
       ]
     },
     "KR:058610": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "나무가 주가 폭등랠리…VR·AR 기기 성장 기대 확산 - 핀포인트뉴스",
@@ -1795,7 +1795,7 @@
       ]
     },
     "KR:183300": {
-      "checkedAt": "2026-10-28T10:34:34.305442+00:00",
+      "checkedAt": "2026-10-28T14:02:22.877722+00:00",
       "items": [
         {
           "title": "코미코, 중국 계열사 KoMiCo Technology(Huizhou)에 238억4280만원 채무보증 결정 - 디지털투데이",
@@ -1818,5 +1818,5 @@
       ]
     }
   },
-  "checkedAt": "2026-10-28T11:45:05.939092+00:00"
+  "checkedAt": "2026-10-28T14:02:22.877722+00:00"
 }
