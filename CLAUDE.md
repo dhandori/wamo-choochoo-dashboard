@@ -22,8 +22,18 @@
 
 - 작업 브랜치에 main 을 **merge** 한다(rebase 하지 않는다). 생성 파일을 안 건드렸다면 충돌이 없다.
 - CI 는 PR 에서만 돈다. 충돌(`mergeable_state: dirty`) 상태면 CI 가 아예 돌지 않는다.
-- 모듈 캐시 버전 `?v=` 는 같은 파일을 부르는 모든 곳이 같은 값이어야 한다. `help.js` 는 다섯 파일이
-  부른다 — 하나라도 다르면 두 벌 올라와 팝업이 갈라진다. 올릴 때는 전부 함께 올린다.
+- 모듈 캐시 버전 `?v=` 는 손으로 쓰지 않는다. `radar/` 모듈끼리는 `'./help.js'` 처럼 버전 없이 부르고,
+  `wamo_publish_insights.version_assets` 가 `radar.html` 을 만들 때 파일 내용 해시로 CSS·스크립트 주소에
+  `?v=` 를 붙이고 import map 을 넣는다. 파일이 바뀔 때만 그 파일의 값이 바뀐다
+  (`tests/test_insights_publish.py` 가 손으로 쓴 `?v=` 를 막는다).
+
+## 브라우저 검사의 자료
+
+- `tests/radar_browser.py` 는 `tests/fixtures/radar/` 의 고정 자료로 돈다. 브라우저 시계도 그 자료가 만들어진
+  시각에 고정한다. 그래서 그날 시장 상황·수집 실패로 결과가 바뀌지 않는다.
+- 화면이 새 자료 칸을 읽게 바꿨다면 고정 자료도 다시 만들어 함께 커밋한다(고정 자료는 생성 파일 규칙의 예외):
+  `python3 wamo_publish_insights.py && python3 tools/make_radar_fixture.py`
+- CI 는 같은 검사를 실제 자료로도 한 번 더 돌리되(`WAMO_RADAR_LIVE=1`) 결과를 막지 않는다.
 
 ## 생성 파일을 손으로 고쳐야 할 때(충돌 등)
 
@@ -32,6 +42,6 @@
 
 ## 정비 숙제 (2026-10-28 검수)
 
-- 브라우저 검사(`tests/radar_browser.py`)가 그날 자료를 읽어 시장 상황·수집 실패에 따라 결과가 바뀐다 → 고정 스냅샷으로 전환.
-- `?v=` 버전 문자열(23곳)을 `wamo_publish_insights.py` 가 커밋 해시로 일괄 치환하도록.
+- `tests/browser_smoke.py` · `tests/discovery_browser.py` 는 아직 그날 자료로 돈다.
 - 자료 커밋을 `data` 브랜치로 분리해 저장소 성장(2.5개월 157MB, `us.html` 27MB 하루 수십 번 재커밋)을 멈춤.
+  Pages 배포 방식을 바꿔야 하고 다른 저장소가 읽는 주소에 영향이 있어 사용자와 함께 정한다.

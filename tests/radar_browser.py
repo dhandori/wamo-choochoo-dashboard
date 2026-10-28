@@ -5,13 +5,38 @@ from pathlib import Path
 import json
 import threading
 from playwright.sync_api import sync_playwright, expect
+import os
+import sys
+import tempfile
+from datetime import datetime
 ROOT=Path(__file__).resolve().parents[1]
-DATA=json.loads((ROOT/'wamo_insights.json').read_text())
-TREND=json.loads((ROOT/'wamo_trend.json').read_text())
+sys.path.insert(0,str(ROOT))
+# 기본은 tests/fixtures/radar 의 고정 자료로 돈다. 그날 시장 상황·수집 실패에 따라 결과가 바뀌지 않게 하려는 것.
+# WAMO_RADAR_LIVE=1 이면 저장소의 실제 자료로 돈다(CI 의 비차단 점검).
+LIVE=os.environ.get('WAMO_RADAR_LIVE')=='1'
+FIXTURE=ROOT/'tests'/'fixtures'/'radar'
+if LIVE:
+    SITE=ROOT;CLOCK=None
+else:
+    from wamo_publish_insights import render_page
+    SITE=Path(tempfile.mkdtemp(prefix='wamo-radar-site-'))
+    data_files={p.name for p in FIXTURE.glob('*.json')}
+    # 코드는 저장소 것을, 자료는 고정 자료만 쓴다. 실제 wamo_*.json 이 섞이지 않게 아예 빼 둔다.
+    for entry in ROOT.iterdir():
+        live_data=entry.name.startswith('wamo_') and entry.suffix=='.json'
+        if not live_data and entry.name not in {'.git','radar.html'}:(SITE/entry.name).symlink_to(entry)
+    for name in data_files:(SITE/name).symlink_to(FIXTURE/name)
+    snapshot=json.loads((FIXTURE/'wamo_insights.json').read_text())
+    (SITE/'radar.html').write_text(render_page((ROOT/'radar.template.html').read_text(encoding='utf-8'),snapshot,ROOT)[1],encoding='utf-8')
+    # 화면의 '최신/지연' 판정이 고정 자료가 만들어진 시각 기준이 되도록 브라우저 시계를 그 시각에 둔다.
+    CLOCK=datetime.fromisoformat(snapshot['generatedAt'])
+DATA=json.loads((SITE/'wamo_insights.json').read_text())
+TREND=json.loads((SITE/'wamo_trend.json').read_text())
 OUT=ROOT/'test-results';OUT.mkdir(exist_ok=True)
+print('RADAR DATA',('LIVE' if LIVE else 'FIXTURE'),DATA['generatedAt'])
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
-server=ThreadingHTTPServer(('127.0.0.1',0),partial(Quiet,directory=str(ROOT)))
+server=ThreadingHTTPServer(('127.0.0.1',0),partial(Quiet,directory=str(SITE)))
 threading.Thread(target=server.serve_forever,daemon=True).start()
 base=f'http://127.0.0.1:{server.server_port}'
 import re as _re
@@ -39,6 +64,14 @@ def sort_box(page):
 
 with sync_playwright() as p:
     browser=p.chromium.launch()
+    if CLOCK:
+        # 모든 페이지의 Date.now() 를 고정 자료 시각으로 둔다(타이머는 그대로 돈다).
+        _new_context,_new_page=browser.new_context,browser.new_page
+        def new_context(**kw):
+            c=_new_context(**kw);c.clock.set_fixed_time(CLOCK);return c
+        def new_page(**kw):
+            pg=_new_page(**kw);pg.clock.set_fixed_time(CLOCK);return pg
+        browser.new_context,browser.new_page=new_context,new_page
     for width in (1440,390,360):
         for market in ('KR','US'):
             context=browser.new_context(viewport={'width':width,'height':1000},has_touch=width<760)
@@ -255,7 +288,7 @@ with sync_playwright() as p:
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
             if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가 · 정렬 패널은 기본 접힘
             else:assert first_y-notice_height-weather_height<1100,first_y  # phones: industry-flow strip sits above the list since 2026-10-19; 2026-10-23 grouped tabs and metric bars add ~70px
-            if (ROOT/'wamo_trend.json').exists():
+            if (SITE/'wamo_trend.json').exists():
                 go_tab(page,'trend')
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
                 expect(page.locator('.tr-weather-detail')).to_be_visible()

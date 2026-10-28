@@ -1,8 +1,10 @@
 """Build the lightweight radar and its embedded, same-release fallback."""
 from datetime import datetime, timezone
 from pathlib import Path
+import hashlib
 import json
 import os
+import re
 import tempfile
 from wamo_insights import build_insights
 from wamo_update import extract_old_payload
@@ -42,15 +44,42 @@ def collect_snapshot(root, now=None):
     return result
 
 
+def asset_version(path):
+    """Content hash used as the cache-busting ?v= value (changes only when the file changes)."""
+    return hashlib.sha256(path.read_bytes()).hexdigest()[:10]
+
+
+def version_assets(html, root):
+    """Stamp ./radar/ stylesheets and scripts with content hashes and map every radar module.
+
+    Modules import each other without ?v= ('./help.js'); the import map sends each one to its
+    hashed URL, so every importer gets the same copy and nobody edits version strings by hand.
+    """
+    root=Path(root)
+    def stamp(match):
+        path=root/match.group(2)
+        return f'{match.group(1)}"./{match.group(2)}?v={asset_version(path)}"' if path.is_file() else match.group(0)
+    html=re.sub(r'((?:href|src)=)"\./(radar/[\w./-]+\.(?:css|js|mjs))"',stamp,html)
+    modules={f'./radar/{p.name}':f'./radar/{p.name}?v={asset_version(p)}'
+             for p in sorted((root/'radar').glob('*')) if p.suffix in ('.js','.mjs') and p.is_file()}
+    importmap=f'<script type="importmap">{json.dumps({"imports":modules},separators=(",",":"))}</script>' if modules else ''
+    return html.replace('<!--WAMO_IMPORTMAP-->',importmap)
+
+
+def render_page(template, snapshot, root):
+    """(snapshot JSON, radar.html text). The browser checks reuse this with a fixed snapshot."""
+    if template.count('<!--WAMO_INSIGHTS-->')!=1:
+        raise ValueError('radar template snapshot marker missing/duplicated')
+    data=json.dumps(snapshot,ensure_ascii=False,allow_nan=False,separators=(',',':'))
+    safe=data.replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
+    return data,version_assets(template,root).replace('<!--WAMO_INSIGHTS-->',f'<script type="application/json" id="wamo-snapshot">{safe}</script>')
+
+
 def publish_snapshot(root=None, now=None):
     root=Path(root or Path(__file__).resolve().parent)
     template=(root/'radar.template.html').read_text(encoding='utf-8')
-    if template.count('<!--WAMO_INSIGHTS-->')!=1:
-        raise ValueError('radar template snapshot marker missing/duplicated')
     snapshot=collect_snapshot(root,now)
-    data=json.dumps(snapshot,ensure_ascii=False,allow_nan=False,separators=(',',':'))
-    safe=data.replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
-    rendered=template.replace('<!--WAMO_INSIGHTS-->',f'<script type="application/json" id="wamo-snapshot">{safe}</script>')
+    data,rendered=render_page(template,snapshot,root)
     pending=[]
     try:
         for name,content in [('wamo_insights.json',data),('radar.html',rendered)]:

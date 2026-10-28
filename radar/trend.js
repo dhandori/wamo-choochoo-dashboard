@@ -1,5 +1,5 @@
-import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js?v=20261028-at1';
-import { climaxSection, climaxCount } from './climax.js?v=20261029-pt3';
+import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js';
+import { climaxSection, climaxCount } from './climax.js';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
