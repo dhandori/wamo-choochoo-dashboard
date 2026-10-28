@@ -20,19 +20,19 @@ import statistics
 # 셋업북 중요도(★). 같은 단계의 셋업이 여러 개 걸릴 때 대표를 고르는 데만 쓴다.
 IMPORTANCE = {
     'stage': 5, 'vcp': 5, 'cup': 5,
-    'flat': 4, 'qbo': 4, 'ep': 4,
+    'flat': 4,
     'dbl': 3, 'htf': 3, 'pp': 3, 'darvas': 3, 'cheat': 3,
     'asc': 2,
 }
 NAMES = {
     'stage': '2단계 상승 추세', 'vcp': '변동성 수축(VCP)', 'cup': '컵앤핸들',
-    'flat': '플랫 베이스', 'qbo': '모멘텀 돌파', 'ep': '에피소딕 피벗',
+    'flat': '플랫 베이스',
     'dbl': '더블바텀', 'htf': '하이 타이트 플래그', 'pp': '포켓 피벗',
     'darvas': '다바스 박스', 'cheat': '3C 치트 진입', 'asc': '상승 삼각형',
 }
 MASTERS = {
     'stage': '와인스타인·미너비니', 'vcp': '미너비니', 'cup': '오닐',
-    'flat': '오닐', 'qbo': '쿨라매기', 'ep': '본데·쿨라매기',
+    'flat': '오닐',
     'dbl': '오닐·불코우스키', 'htf': '오닐·미너비니', 'pp': '모랄레스·카처',
     'darvas': '다바스', 'cheat': '미너비니', 'asc': '불코우스키',
 }
@@ -480,122 +480,6 @@ def detect_htf(bars):
     return _none('htf')
 
 
-# ── 모멘텀 돌파(쿨라매기) ───────────────────────────────────────────────────
-QBO_CRITERION = ('20~60거래일 +30%↑ 깃대 · 깃발 10~40거래일에 저점 2개 이상 상승 · '
-                 '종가가 10일선·20일선 위 · 10일선 상승 · 깃발 거래량 감소')
-QBO_CAVEAT = ('진입은 장 초반 시가 범위 돌파이고 손절은 돌파 당일 저가다. 시가가 수집되지 않아 '
-              '일봉으로는 방아쇠를 확인할 수 없다. 돌파 직전 상태까지만 판정하며, 손절은 깃발 '
-              '저점으로 대신 표시한다. 셋업북 기준 실전 승률 25~30%다.')
-
-
-def detect_qbo(bars):
-    """모멘텀 돌파. 저점이 높아지는 깃발과 이동평균 지지만 본다."""
-    if bars.n < 70 or not (bars.ma10 and bars.ma20):
-        return _none('qbo')
-    if not (bars.close > bars.ma10 and bars.close > bars.ma20):
-        return _none('qbo')
-    ma10_prev = _mean(bars.closes[-15:-5])
-    if not (ma10_prev and bars.ma10 > ma10_prev):
-        return _none('qbo')
-    for flag_len in range(40, 9, -1):
-        flag_start = bars.n - flag_len
-        if flag_start < 25:
-            continue
-        pole_top = max(bars.highs[max(0, flag_start - 3):flag_start + 1])
-        best = None
-        for pole_len in range(20, 61):
-            pole_start = flag_start - pole_len
-            if pole_start < 0:
-                continue
-            pole_low = min(bars.lows[pole_start:flag_start])
-            if pole_low <= 0:
-                continue
-            gain = (pole_top / pole_low - 1) * 100
-            if 30 <= gain <= 150 and (best is None or gain > best[0]):
-                best = (gain, pole_start)
-        if not best:
-            continue
-        gain, pole_start = best
-        troughs = [i for kind, i in swings(bars.highs, bars.lows, 2, flag_start) if kind == 'T']
-        if len(troughs) < 2:
-            continue
-        rising = all(bars.lows[troughs[k]] > bars.lows[troughs[k - 1]] for k in range(1, len(troughs)))
-        flag_high, flag_low = bars.base(flag_start)
-        if not flag_high:
-            continue
-        ratio, dry = bars.dry(min(10, flag_len))
-        if not (rising and dry):
-            continue
-        pivot = flag_high
-        confirmed = _confirm(bars, pivot)
-        status, distance = _stage(bars, pivot, confirmed)
-        label = {'BREAKOUT': '깃발 상단 돌파', 'READY': '깃발 상단 근접', 'WATCH': '저점 상승 깃발'}[status]
-        return _result(
-            'qbo', status, label, pivot, flag_low, distance, flag_len,
-            {'poleGainPct': _r(gain, 1), 'poleDays': flag_start - pole_start,
-             'flagDays': flag_len, 'higherLows': len(troughs),
-             'flagVolumeRatio': _r(ratio), 'aboveMa10': True, 'aboveMa20': True,
-             'breakoutVolumeRatio': _r(bars.volume_ratio())},
-            QBO_CRITERION, QBO_CAVEAT)
-    return _none('qbo')
-
-
-# ── 에피소딕 피벗 ───────────────────────────────────────────────────────────
-EP_CRITERION = ('직전 60거래일 수익률 30% 이내(관심 밖) · 당일 저가 > 전일 고가(갭) · '
-                '전일 종가 대비 10%↑ · 거래량 50일 평균의 3배↑ · 종가가 당일 범위 상단 60%↑')
-EP_CAVEAT = ('시가가 수집되지 않아 갭은 "당일 저가 > 전일 고가"로 본다. 실제 갭 폭은 더 클 수 '
-             '있다. 뉴스의 질(매출·가이던스 같은 구조적 변화인지 일회성 이익인지)은 판정하지 '
-             '않으므로 반드시 사람이 확인해야 한다. 진입은 장 초반 시가 범위 돌파다.')
-
-
-def detect_ep(bars):
-    """에피소딕 피벗. 갭 당일과, 갭 뒤 쉬는 구간(두 번째 진입 기회)을 함께 본다."""
-    if bars.n < 70:
-        return _none('ep')
-    for back in range(0, 21):
-        i = bars.n - 1 - back
-        if i < 61:
-            break
-        prior = bars.closes[i - 1]
-        if prior <= 0:
-            continue
-        gap = bars.lows[i] > bars.highs[i - 1]
-        jump = (bars.closes[i] / prior - 1) * 100
-        base = bars.closes[i - 61]
-        quiet = (bars.closes[i - 1] / base - 1) * 100 if base > 0 else None
-        volume = bars.volumes[i] / bars.avg_vol50 if bars.avg_vol50 else None
-        if not (gap and jump >= 10 and volume is not None and volume >= 3
-                and quiet is not None and quiet <= 30 and bars.close_position(i) >= 0.6):
-            continue
-        gap_low = bars.lows[i]
-        if back == 0:
-            return _result(
-                'ep', 'BREAKOUT', '갭 상승 당일', None, gap_low, None, None,
-                {'gapDate': bars.dates[i], 'jumpPct': _r(jump, 1), 'volumeRatio': _r(volume),
-                 'priorReturn60dPct': _r(quiet, 1), 'closePosition': _r(bars.close_position(i)),
-                 'gapLow': _r(gap_low)},
-                EP_CRITERION, EP_CAVEAT)
-        # 셋업북 ③: 첫 갭 뒤 쉬다가 다시 오르는 구간의 돌파가 두 번째 진입 기회다.
-        pivot, _ = bars.base(i)
-        held = bars.close > gap_low
-        confirmed = _confirm(bars, pivot)
-        status, distance = _stage(bars, pivot, confirmed)
-        if not held:
-            return _none('ep')
-        # 두 번째 진입의 손절은 쉬는 구간의 저점이다. 갭 당일 저가를 그대로 쓰면 손절 폭이
-        # 날이 갈수록 넓어져, 사지 말아야 할 자리로 잘못 보인다.
-        rest = bars.lows[i + 1:bars.n - 1]
-        stop = min(rest) if rest else gap_low
-        label = {'BREAKOUT': '갭 후 재돌파', 'READY': '갭 고점 근접', 'WATCH': '갭 후 휴식'}[status]
-        return _result(
-            'ep', status, label, pivot, stop, distance, back,
-            {'gapDate': bars.dates[i], 'jumpPct': _r(jump, 1), 'volumeRatio': _r(volume),
-             'priorReturn60dPct': _r(quiet, 1), 'daysSinceGap': back, 'gapLow': _r(gap_low),
-             'breakoutVolumeRatio': _r(bars.volume_ratio())},
-            EP_CRITERION, EP_CAVEAT)
-    return _none('ep')
-
-
 # ── 포켓 피벗 ───────────────────────────────────────────────────────────────
 PP_CRITERION = ('50일선 위·50일선 상승 · 10일선 또는 50일선 2% 이내로 눌림 · 당일 상승 · '
                 '당일 거래량 > 직전 10거래일 하락일 최대 거래량')
@@ -785,8 +669,8 @@ def detect_cheat(bars):
     return _none('cheat')
 
 
-DETECTORS = (detect_cup, detect_flat, detect_dbl, detect_htf, detect_qbo,
-             detect_ep, detect_pp, detect_darvas, detect_asc, detect_cheat)
+DETECTORS = (detect_cup, detect_flat, detect_dbl, detect_htf, detect_pp,
+             detect_darvas, detect_asc, detect_cheat)
 
 
 # ── VCP·추세 템플릿 (수집 단계가 계산해 둔 값을 그대로 쓴다) ────────────────
@@ -867,14 +751,12 @@ VCP_CRITERION = ('2개 이상 조정깊이 연속 축소(각 ≤이전의 88%, �
 
 CRITERIA = {
     'stage': STAGE_CRITERION, 'vcp': VCP_CRITERION, 'cup': CUP_CRITERION,
-    'flat': FLAT_CRITERION, 'dbl': DBL_CRITERION, 'htf': HTF_CRITERION,
-    'qbo': QBO_CRITERION, 'ep': EP_CRITERION, 'pp': PP_CRITERION,
+    'flat': FLAT_CRITERION, 'dbl': DBL_CRITERION, 'htf': HTF_CRITERION, 'pp': PP_CRITERION,
     'darvas': DARVAS_CRITERION, 'asc': ASC_CRITERION, 'cheat': CHEAT_CRITERION,
 }
 CAVEATS = {
     'stage': STAGE_CAVEAT, 'vcp': VCP_CAVEAT, 'cup': CUP_CAVEAT,
-    'flat': FLAT_CAVEAT, 'dbl': DBL_CAVEAT, 'htf': HTF_CAVEAT,
-    'qbo': QBO_CAVEAT, 'ep': EP_CAVEAT, 'pp': PP_CAVEAT,
+    'flat': FLAT_CAVEAT, 'dbl': DBL_CAVEAT, 'htf': HTF_CAVEAT, 'pp': PP_CAVEAT,
     'darvas': DARVAS_CAVEAT, 'asc': ASC_CAVEAT, 'cheat': CHEAT_CAVEAT,
 }
 # 종목마다 반복하면 스냅샷이 커진다. 화면은 meta() 를 한 번 읽어 쓴다.

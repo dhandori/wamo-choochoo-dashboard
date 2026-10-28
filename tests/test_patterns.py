@@ -193,79 +193,6 @@ class HighTightFlagTests(unittest.TestCase):
         self.assertEqual(status_of(detect(self.series(drop=0.45)), 'htf'), 'NONE')
 
 
-class MomentumBreakoutTests(unittest.TestCase):
-    def series(self, gain=1.5, breakout=True):
-        quiet = flat_run(100, 60, 1000)
-        pole = ramp(100, 100 * gain, 40, 3000)
-        top = 100 * gain
-        # 저점이 높아지는 깃발: 눌림 세 번의 저점이 차례로 올라간다.
-        flag = (ramp(top, top * 0.93, 5, 900) + ramp(top * 0.93, top * 0.99, 5, 800)
-                + ramp(top * 0.99, top * 0.95, 5, 700) + ramp(top * 0.95, top * 0.995, 5, 700)
-                + ramp(top * 0.995, top * 0.97, 5, 600) + ramp(top * 0.97, top * 0.998, 5, 600))
-        bars = quiet + pole + flag
-        if breakout:
-            bars.append((top * 1.02, 6000))
-        return bars
-
-    def test_textbook_momentum_flag_breaks_out(self):
-        setup = setup_of(detect(self.series()), 'qbo')
-        self.assertIsNotNone(setup, '교과서 모멘텀 돌파 깃발이 탐지되지 않았습니다')
-        self.assertEqual(setup['status'], 'BREAKOUT')
-        self.assertGreaterEqual(setup['evidence']['higherLows'], 2)
-
-    def test_caveat_states_intraday_entry(self):
-        setup = setup_of(detect(self.series()), 'qbo')
-        self.assertIn('시가', setup['caveat'])
-
-    def test_weak_pole_is_rejected(self):
-        self.assertEqual(status_of(detect(self.series(gain=1.1)), 'qbo'), 'NONE')
-
-
-class EpisodicPivotTests(unittest.TestCase):
-    def series(self, jump=0.14, volume=5000, gap=True, days_after=0):
-        quiet = flat_run(100, 200, 1000, wobble=0.004)
-        prior_high = 100 * 1.004
-        gap_low = prior_high * (1.01 if gap else 0.98)
-        gap_close = 100 * (1 + jump)
-        bars = quiet + [(gap_close, volume, gap_close * 1.01, gap_low)]
-        bars += flat_run(gap_close * 0.99, days_after, 1500, wobble=0.004)
-        return bars
-
-    def test_gap_day_is_a_breakout(self):
-        setup = setup_of(detect(self.series()), 'ep')
-        self.assertIsNotNone(setup, '교과서 에피소딕 피벗이 탐지되지 않았습니다')
-        self.assertEqual(setup['status'], 'BREAKOUT')
-        self.assertGreaterEqual(setup['evidence']['jumpPct'], 10)
-        self.assertEqual(setup['stop'], setup['evidence']['gapLow'])
-
-    def test_rest_after_gap_is_a_second_chance(self):
-        """셋업북 ③: 첫 갭 뒤 쉬는 구간의 돌파가 두 번째 진입 기회다."""
-        setup = setup_of(detect(self.series(days_after=6)), 'ep')
-        self.assertIsNotNone(setup)
-        self.assertIn(setup['status'], ('WATCH', 'READY'))
-        self.assertEqual(setup['evidence']['daysSinceGap'], 6)
-
-    def test_second_entry_stop_is_the_resting_low(self):
-        """두 번째 진입의 손절은 쉬는 구간 저점이다. 갭 당일 저가를 쓰면 폭이 계속 넓어진다."""
-        setup = setup_of(detect(self.series(days_after=6)), 'ep')
-        self.assertGreater(setup['stop'], setup['evidence']['gapLow'],
-                           '쉬는 구간 저점이 갭 당일 저가보다 높아야 합니다')
-        self.assertLess(setup['stopDistancePct'], 8)
-
-    def test_small_jump_is_rejected(self):
-        self.assertEqual(status_of(detect(self.series(jump=0.04)), 'ep'), 'NONE')
-
-    def test_without_volume_surge_is_rejected(self):
-        self.assertEqual(status_of(detect(self.series(volume=1200)), 'ep'), 'NONE')
-
-    def test_without_gap_is_rejected(self):
-        self.assertEqual(status_of(detect(self.series(gap=False)), 'ep'), 'NONE')
-
-    def test_caveat_states_open_price_is_missing(self):
-        setup = setup_of(detect(self.series()), 'ep')
-        self.assertIn('시가', setup['caveat'])
-
-
 class PocketPivotTests(unittest.TestCase):
     def series(self, volume=5000, pullback=True):
         rise = ramp(60, 118, 150, 1500)
@@ -447,8 +374,8 @@ class ContractTests(unittest.TestCase):
 
     def test_every_setup_carries_a_criterion_and_caveat(self):
         for maker in (CupTests, FlatBaseTests, DoubleBottomTests, HighTightFlagTests,
-                      MomentumBreakoutTests, EpisodicPivotTests, PocketPivotTests,
-                      DarvasBoxTests, AscendingTriangleTests, CheatEntryTests):
+                      PocketPivotTests, DarvasBoxTests, AscendingTriangleTests,
+                      CheatEntryTests):
             result = detect(maker().series())
             live = (result or {}).get('setups') or []
             self.assertTrue(live, f'{maker.__name__} 합성 데이터에서 셋업이 비었습니다')
