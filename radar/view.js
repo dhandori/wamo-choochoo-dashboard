@@ -831,7 +831,11 @@ function renderPatternsTab(m) {
   $('result-summary').textContent = '';
   $('section-title').textContent = '패턴 셋업';
   $('section-description').textContent = '추세추종 셋업북 12개 패턴 중 지금 만들어지는 중이거나 돌파한 종목 · 피벗과 손절선을 함께 표시';
-  renderPatterns($('content'), state.market, m, snapshot.patternMeta, { openStock: openStockById, query: state.query });
+  renderPatterns($('content'), state.market, m, snapshot.patternMeta, {
+    openStock: openStockById, query: state.query,
+    // 셋업북 ①-1: 시장 방향이 먼저다. ① 시장 탭이 쓰는 것과 같은 판정을 넘긴다.
+    trend: trendBlock(state.market), expectedSession: m.expectedSession,
+    trendFailed: trendLoadFailed() || marketStatus(m) === 'STALE', openTrend });
 }
 function renderTrendTab() {
   $('controls').replaceChildren(); $('pagination').replaceChildren();

@@ -7,6 +7,7 @@ import threading
 from playwright.sync_api import sync_playwright, expect
 ROOT=Path(__file__).resolve().parents[1]
 DATA=json.loads((ROOT/'wamo_insights.json').read_text())
+TREND=json.loads((ROOT/'wamo_trend.json').read_text())
 OUT=ROOT/'test-results';OUT.mkdir(exist_ok=True)
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
@@ -336,6 +337,21 @@ with sync_playwright() as p:
         summary=DATA['markets'][market]['patternSummary']
         expect(page.locator('#section-title')).to_have_text('패턴 셋업')
         expect(page.locator('[data-tab=patterns]')).to_have_class(_re.compile(r'\bactive\b'))
+        # 셋업북 ①-1: 시장 방향이 먼저다. 시장 판단 띠가 목록보다 위에 있고 날씨 등급을 따른다.
+        gate=page.locator('.pt-gate')
+        expect(gate).to_be_visible()
+        level=TREND['markets'][market]['weather']['level']
+        expect(gate).to_have_class(_re.compile(r'\blevel-'+level.lower()+r'\b'))
+        assert gate.inner_text().strip(),'시장 판단 띠가 비었습니다'
+        # 지수 이름은 ftd 블록의 label 을 그대로 쓴다('지수'로 떨어지면 키가 바뀐 것이다).
+        fresh=[i['label'] for i in TREND['markets'][market]['ftd']['indexes']
+               if i.get('status')=='OK' and i.get('asOf')==DATA['markets'][market]['expectedSession']]
+        for label in fresh: expect(gate).to_contain_text(label)
+        # 띠가 목록보다 먼저 나와야 한다.
+        assert gate.evaluate("(g)=>{const t=document.querySelector('.pt-top');return !t||g.compareDocumentPosition(t)&Node.DOCUMENT_POSITION_FOLLOWING}")
+        page.locator('.pt-gate-go').click()
+        expect(page.locator('#section-title')).to_have_text('추세 신호')
+        go_tab(page,'patterns')
         # 단계 칸은 ③ 종목 찾기여야 한다.
         expect(page.locator('#section-step')).to_have_text('③ 종목 찾기')
         assert page.locator('.pt-stat').count()==4,page.locator('.pt-stat').count()
@@ -362,6 +378,11 @@ with sync_playwright() as p:
         assert page.locator('.pt-chip.phase-watch.active').count()==1
         after=page.locator('.pt-result').inner_text()
         assert before!=after or summary['withSetup']==0,(before,after)
+        # 셋업북 ①-6: 동반 강세 업종 필터. 걸러낸 뒤에는 모든 카드에 배지가 있어야 한다.
+        page.locator('.pt-chip', has_text='동반 강세 업종만').click()
+        shown=page.locator('.pt-card').count()
+        assert page.locator('.pt-lead').count()==shown,(page.locator('.pt-lead').count(),shown)
+        page.locator('.pt-chip', has_text='동반 강세 업종만').click()
         # 2단계 조건을 끄면 대상이 늘거나 같아야 한다(줄어들 수는 없다).
         page.locator('.pt-chip', has_text='전체').first.click()
         wide_before=int(_re.search(r'(\d+)',page.locator('.pt-result').inner_text()).group(1))

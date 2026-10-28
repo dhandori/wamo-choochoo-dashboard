@@ -859,6 +859,21 @@
 :root[data-theme="light"] .pt-why dt { color: #2c3745; }
 :root[data-theme="light"] .pt-why dd { color: #273546; }
 :root[data-theme="light"] .pt-loadmore { border: 1px solid #a8bbd1; background: #e6edf7; color: #1b2735; }
+:root[data-theme="light"] .pt-gate { border: 1px solid #a9bad1; border-left: 4px solid #3d5d80; background: #e4ecf6; }
+:root[data-theme="light"] .pt-gate.level-green { border-left-color: #267d64; background: #ebf8f6; }
+:root[data-theme="light"] .pt-gate.level-yellow { border-left-color: #a37018; background: #f4f1eb; }
+:root[data-theme="light"] .pt-gate.level-red { border-left-color: #9c4f08; background: #f5eeea; }
+:root[data-theme="light"] .pt-gate-title { color: #2b3745; }
+:root[data-theme="light"] .pt-gate-level { color: #080d14; }
+:root[data-theme="light"] .pt-gate.level-green .pt-gate-level { color: #175943; }
+:root[data-theme="light"] .pt-gate.level-yellow .pt-gate-level { color: #604710; }
+:root[data-theme="light"] .pt-gate.level-red .pt-gate-level { color: #6b3706; }
+:root[data-theme="light"] .pt-gate-go { border: 1px solid #a8bbd1; background: #e6edf7; color: #0e2955; }
+:root[data-theme="light"] .pt-gate-advice { color: #273546; }
+:root[data-theme="light"] .pt-gate-fact { border: 1px solid #a3bbd6; background: #edf2fa; }
+:root[data-theme="light"] .pt-gate-fact b { color: #2b3745; }
+:root[data-theme="light"] .pt-gate-fact i { color: #09121c; }
+:root[data-theme="light"] .pt-lead { border: 1px solid #a2d8c9; background: #e3f6f2; color: #175943; }
 
 /* ===== patterns.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .pt-stat small { color: #b9c5d5; }
@@ -877,6 +892,8 @@
 :root:not([data-theme="light"]) .pt-tag i { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-why { color: #b9c5d5; }
 :root:not([data-theme="light"]) .pt-why dt { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-gate-title { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-gate-fact b { color: #b9c6d5; }
 
 /* ===== patterns.css (작은 글씨 키우기) ===== */
 :root .pt-stat small { font-size: 12px; }
@@ -887,6 +904,9 @@
 :root .pt-key { font-size: 11.5px; }
 :root .pt-ev { font-size: 12px; }
 :root .pt-tag { font-size: 12px; }
+:root .pt-gate-title { font-size: 12px; }
+:root .pt-gate-fact { font-size: 12px; }
+:root .pt-lead { font-size: 12px; }
 
 /* ===== 진한 색 바탕 위 글씨는 흰색 유지 ===== */
 :root[data-theme="light"] .ftd-flow li.now .ftd-flow-no,

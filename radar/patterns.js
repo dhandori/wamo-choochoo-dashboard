@@ -2,6 +2,8 @@
 // 셋업 판정은 서버(wamo_patterns.py)가 하고, 여기서는 고르고 보여 주기만 한다.
 import { helpButton, addTerms } from './help.js?v=20261028-h60';
 import { PATTERN_TERMS, glossary } from './terms.mjs?v=20261029-pt1';
+// 이 파일의 PHASES 는 셋업 진행 단계다. FTD 지수 단계는 이름을 구분해 가져온다.
+import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs?v=20261028-h60';
 addTerms(PATTERN_TERMS);
 
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
@@ -66,7 +68,15 @@ function evidenceText(key, value) {
   return num(value);
 }
 
-let phase = 'all', pick = 'all', onlyStage2 = true, onlyTightStop = false, limit = 30;
+let phase = 'all', pick = 'all', onlyStage2 = true, onlyTightStop = false, onlyLeadingIndustry = false, limit = 30;
+
+// 셋업북 ①-6: 같은 업종 대표 종목이 함께 강하면 성공 확률이 올라간다. 산업 동반 강세는
+// 이미 레이더가 판정해 두므로(industries[].confirmed) 그 이름만 모아 쓴다.
+function leadingIndustries(block) {
+  return new Set((block.industries || []).filter(g => g.confirmed).map(g => g.name));
+}
+const inLeadingIndustry = (stock, leading) =>
+  [stock.industry, ...(stock.alsoIndustries || [])].some(name => leading.has(name));
 
 export function patternsSummary(block) {
   const s = block?.patternSummary;
@@ -76,13 +86,14 @@ export function patternsSummary(block) {
 }
 
 /** 지금 화면 조건을 통과한 종목. 종목마다 통과한 셋업 목록을 함께 돌려준다. */
-function selectRows(block, query) {
+function selectRows(block, query, leading) {
   const text = String(query || '').trim().toLowerCase();
   const rows = [];
   for (const stock of block.stocks || []) {
     const found = stock.patterns;
     if (!found || !found.setups?.length) continue;
     if (onlyStage2 && stock.stage2 !== true) continue;
+    if (onlyLeadingIndustry && !inLeadingIndustry(stock, leading)) continue;
     if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry]
       .some(v => String(v || '').toLowerCase().includes(text))) continue;
     const setups = found.setups.filter(s =>
@@ -140,7 +151,57 @@ function filters(block, meta, redraw) {
     '셋업북 ①-2: 주가가 150·200일선 위이고 200일선이 위로 기울어진 종목만 봅니다. 하락 추세 종목은 좋은 패턴도 대부분 실패합니다.'));
   toggles.append(chip('손절 8% 이내만', onlyTightStop, () => { onlyTightStop = !onlyTightStop; limit = 30; redraw(); },
     '셋업북 ②-4: 피벗에서 손절선까지 7~8%를 넘는 자리는 사지 않습니다.'));
+  const leading = leadingIndustries(block);
+  const leadCount = (block.stocks || []).filter(s => s.patterns?.setups?.length && inLeadingIndustry(s, leading)).length;
+  toggles.append(chip(`동반 강세 업종만 ${leadCount}`, onlyLeadingIndustry,
+    () => { onlyLeadingIndustry = !onlyLeadingIndustry; limit = 30; redraw(); },
+    '셋업북 ①-6: 같은 업종 대표 종목 여러 개가 함께 신고가 근처에 있으면 성공 확률이 올라갑니다. 레이더가 산업 동반 강세로 판정한 업종의 종목만 봅니다.'));
   box.append(toggles);
+  return box;
+}
+
+/** 시장 판단 띠. 셋업북 ①-1은 시장 방향을 셋업보다 먼저 보라고 적었다. */
+const GATE = {
+  GREEN: ['공격 가능', 'green',
+    '돌파를 따라갈 수 있는 구간입니다. 그래도 셋업북 ②-3대로 피벗 위 5% 안에서만 삽니다.'],
+  YELLOW: ['조심', 'yellow',
+    '돌파가 나와도 실패가 늘어나는 구간입니다. 비중을 줄이고 손절선을 더 엄격하게 지킵니다.'],
+  RED: ['현금 비중 확대', 'red',
+    '셋업북 ①-1: 지수가 하락 추세이면 좋은 패턴도 대부분 실패합니다. 지금은 새로 사는 자리가 아니라 관찰 목록을 만드는 구간입니다.'],
+  UNKNOWN: ['판단 보류', 'unknown',
+    '시장 판단 자료가 아직 들어오지 않았습니다. 셋업만 보고 판단하지 않습니다.'],
+};
+
+function marketGate(block, trend, expected, failed, openTrend) {
+  const level = (!failed && trend?.weather?.level) || 'UNKNOWN';
+  const [label, cls, advice] = GATE[level] || GATE.UNKNOWN;
+  const box = n('section', null, `pt-gate level-${cls}`);
+  const head = n('div', null, 'pt-gate-head');
+  const title = n('span', null, 'pt-gate-title');
+  title.append(term('marketGate', '시장 판단'));
+  head.append(title, n('strong', label, 'pt-gate-level'));
+  if (openTrend) {
+    const go = n('button', '시장 판단 자세히', 'pt-gate-go'); go.type = 'button';
+    go.onclick = openTrend; head.append(go);
+  }
+  box.append(head, n('p', advice, 'pt-gate-advice'));
+
+  const facts = n('div', null, 'pt-gate-facts');
+  // 셋업북 ①-1은 FTD 뒤에 비중을 늘리라고 적었다. 지수별 단계를 그대로 보여 준다.
+  for (const index of (trend?.ftd?.indexes || [])) {
+    if (!freshIndex(index, expected)) continue;
+    const item = n('span', null, 'pt-gate-fact');
+    item.append(n('b', index.label || '지수'), n('i', FTD_PHASES[index.phase] || index.phase));
+    facts.append(item);
+  }
+  const graded = (block.stocks || []).filter(s => typeof s.aboveMa50 === 'boolean');
+  if (graded.length) {
+    const above = graded.filter(s => s.aboveMa50).length;
+    const item = n('span', null, 'pt-gate-fact');
+    item.append(n('b', '50일선 위'), n('i', `${Math.round(above / graded.length * 100)}% (${above}/${graded.length})`));
+    facts.append(item);
+  }
+  if (facts.childElementCount) box.append(facts);
   return box;
 }
 
@@ -203,7 +264,7 @@ function evidence(setup) {
   return box;
 }
 
-function card(row, market, meta, openStock) {
+function card(row, market, meta, openStock, leading) {
   const { stock, found, setups } = row;
   const best = setups[0];
   const info = meta[best.key] || {};
@@ -220,6 +281,11 @@ function card(row, market, meta, openStock) {
   const title = n('div', null, 'pt-setup');
   title.append(n('h4', info.name || best.key), n('small', `${info.master || ''}${info.importance ? ` · ${'★'.repeat(info.importance)}` : ''}`));
   if (best.label && best.label !== info.name) title.append(n('span', best.label, 'pt-label'));
+  if (inLeadingIndustry(stock, leading)) {
+    const badge = n('span', null, 'pt-lead');
+    badge.append(term('industryStrength', '업종 동반 강세'));
+    title.append(badge);
+  }
   box.append(title);
 
   const body = n('div', null, 'pt-body');
@@ -263,7 +329,8 @@ function card(row, market, meta, openStock) {
   return box;
 }
 
-export function renderPatterns(root, market, block, meta, { openStock, query } = {}) {
+export function renderPatterns(root, market, block, meta, options = {}) {
+  const { openStock, query, trend, expectedSession, trendFailed, openTrend } = options;
   root.replaceChildren();
   meta = meta || {};
   if (!block || !block.stocks?.length) {
@@ -275,7 +342,11 @@ export function renderPatterns(root, market, block, meta, { openStock, query } =
     root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국과 미국만 지원합니다.`, 'empty'));
     return;
   }
-  const redraw = () => renderPatterns(root, market, block, meta, { openStock, query });
+  const redraw = () => renderPatterns(root, market, block, meta, options);
+  const leading = leadingIndustries(block);
+
+  // 셋업북 ①-1: 시장 방향이 먼저다. 셋업 목록보다 위에 둔다.
+  root.append(marketGate(block, trend, expectedSession, trendFailed, openTrend));
 
   const top = n('section', null, 'pt-top');
   const counts = summary.byStage || {};
@@ -299,16 +370,16 @@ export function renderPatterns(root, market, block, meta, { openStock, query } =
 
   root.append(filters(block, meta, redraw));
 
-  const rows = selectRows(block, query);
+  const rows = selectRows(block, query, leading);
   const info = n('div', null, 'pt-result');
   info.append(n('span', `${rows.length}종목 · 현재 조건 기준`));
   root.append(info);
 
   if (!rows.length) {
-    root.append(n('div', '현재 조건에 맞는 종목이 없습니다. 단계나 셋업 조건을 넓혀 보세요.', 'empty'));
+    root.append(n('div', '현재 조건에 맞는 종목이 없습니다. 위의 단계·셋업·조건 칩을 넓혀 보세요.', 'empty'));
   } else {
     const list = n('div', null, 'pt-list');
-    for (const row of rows.slice(0, limit)) list.append(card(row, market, meta, openStock));
+    for (const row of rows.slice(0, limit)) list.append(card(row, market, meta, openStock, leading));
     root.append(list);
     if (rows.length > limit) {
       const more = n('button', `${rows.length - limit}종목 더 보기`, 'pt-loadmore');
