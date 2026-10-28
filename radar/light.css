@@ -891,6 +891,8 @@
 :root[data-theme="light"] .pt-guide-head small { color: #2b3745; }
 :root[data-theme="light"] .pt-guide-item .pt-logic { color: #604710; }
 :root[data-theme="light"] .pt-guide-text { color: #273546; }
+:root[data-theme="light"] .pt-sort-select { border: 1px solid #a8bbd1; background: #e6edf7; color: #08111b; }
+:root[data-theme="light"] .pt-sort-hint { color: #2c3745; }
 
 /* ===== patterns.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .pt-stat small { color: #b9c5d5; }
@@ -912,6 +914,7 @@
 :root:not([data-theme="light"]) .pt-gate-title { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-gate-fact b { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-guide-head small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-sort-hint { color: #b9c6d5; }
 
 /* ===== patterns.css (작은 글씨 키우기) ===== */
 :root .pt-stat small { font-size: 12px; }
@@ -926,6 +929,7 @@
 :root .pt-gate-fact { font-size: 12px; }
 :root .pt-lead { font-size: 12px; }
 :root .pt-guide-head small { font-size: 12px; }
+:root .pt-sort-hint { font-size: 12px; }
 
 /* ===== 진한 색 바탕 위 글씨는 흰색 유지 ===== */
 :root[data-theme="light"] .ftd-flow li.now .ftd-flow-no,

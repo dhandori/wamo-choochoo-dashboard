@@ -69,6 +69,23 @@ let phase = 'all', pick = 'all', onlyStage2 = true, onlyTightStop = false, onlyL
 // 필터를 누르면 화면을 다시 그리므로, 설명 상자를 펼쳐 둔 상태는 따로 기억한다.
 let guideOpen = false;
 
+// 정렬. 카드에 보이는 대표 셋업(조건을 통과한 첫 셋업)과 종목 값으로 줄 세운다.
+// 값이 없는 종목(예: 피벗이 없는 포켓 피벗)은 맨 뒤로 보내고, 같은 값은 기본 순서를 따른다.
+const SORTS = {
+  default: ['기본 · 단계순', '돌파 → 임박 → 형성중, 같은 단계에서는 피벗에 가까운 순'],
+  pivot: ['피벗 가까운 순', '현재가와 피벗의 거리가 작은 순', r => absOrNull(r.setups[0].distanceToPivotPct), 'asc'],
+  stop: ['손절 폭 작은 순', '피벗에서 손절선까지 거리가 작은 순 · 틀렸을 때 손실이 작은 자리부터', r => r.setups[0].stopDistancePct, 'asc'],
+  importance: ['셋업 중요도 순', '셋업북 별점(★)이 높은 셋업부터', (r, meta) => meta[r.setups[0].key]?.importance, 'desc'],
+  rs: ['RS 높은 순', '같은 시장 안에서 상대 강도가 높은 순', r => r.stock.rs, 'desc'],
+  volume: ['거래량 많은 순', '당일 거래량 ÷ 50일 평균이 큰 순', r => r.stock.volumeRatio, 'desc'],
+  change: ['당일 상승률 순', '당일 등락률이 높은 순', r => r.stock.changePct, 'desc'],
+  cap: ['시총 큰 순', '시가총액이 큰 순(시장 통화 그대로 비교)', r => r.stock.marketCap, 'desc'],
+};
+const absOrNull = v => isNum(v) ? Math.abs(v) : null;
+const SORT_STORE = 'wamo-pattern-sort';
+let sortKey = 'default';
+try { const saved = localStorage.getItem(SORT_STORE); if (SORTS[saved]) sortKey = saved; } catch {}
+
 // 셋업북 ①-6: 같은 업종 대표 종목이 함께 강하면 성공 확률이 올라간다. 산업 동반 강세는
 // 이미 레이더가 판정해 두므로(industries[].confirmed) 그 이름만 모아 쓴다.
 function leadingIndustries(block) {
@@ -85,7 +102,7 @@ export function patternsSummary(block) {
 }
 
 /** 지금 화면 조건을 통과한 종목. 종목마다 통과한 셋업 목록을 함께 돌려준다. */
-function selectRows(block, query, leading) {
+function selectRows(block, query, leading, meta = {}) {
   const text = String(query || '').trim().toLowerCase();
   const rows = [];
   for (const stock of block.stocks || []) {
@@ -102,9 +119,16 @@ function selectRows(block, query, leading) {
     if (setups.length) rows.push({ stock, found, setups });
   }
   const rank = r => PHASE_ORDER.length - PHASE_ORDER.indexOf(r.setups[0].status);
-  rows.sort((a, b) => rank(b) - rank(a)
-    || Math.abs(a.setups[0].distanceToPivotPct ?? 99) - Math.abs(b.setups[0].distanceToPivotPct ?? 99));
-  return rows;
+  const base = (a, b) => rank(b) - rank(a)
+    || Math.abs(a.setups[0].distanceToPivotPct ?? 99) - Math.abs(b.setups[0].distanceToPivotPct ?? 99);
+  const [, , value, dir] = SORTS[sortKey] || SORTS.default;
+  if (!value) return rows.sort(base);
+  const read = r => { const v = value(r, meta); return isNum(v) ? v : null; };
+  return rows.sort((a, b) => {
+    const x = read(a), y = read(b);
+    if (x === null || y === null) return (x === null) - (y === null) || base(a, b);
+    return (dir === 'asc' ? x - y : y - x) || base(a, b);
+  });
 }
 
 function chip(label, active, onClick, title) {
@@ -156,6 +180,22 @@ function filters(block, meta, redraw) {
     () => { onlyLeadingIndustry = !onlyLeadingIndustry; limit = 30; redraw(); },
     '셋업북 ①-6: 같은 업종 대표 종목 여러 개가 함께 신고가 근처에 있으면 성공 확률이 올라갑니다. 레이더가 산업 동반 강세로 판정한 업종의 종목만 봅니다.'));
   box.append(toggles);
+
+  const order = n('label', null, 'pt-chiprow pt-sort');
+  order.append(n('span', '정렬', 'pt-chiplabel'));
+  const select = n('select', null, 'pt-sort-select');
+  select.setAttribute('aria-label', '정렬');
+  for (const [key, [label, hint]] of Object.entries(SORTS)) {
+    const option = n('option', label); option.value = key; option.title = hint;
+    option.selected = key === sortKey; select.append(option);
+  }
+  select.onchange = () => {
+    sortKey = SORTS[select.value] ? select.value : 'default'; limit = 30;
+    try { localStorage.setItem(SORT_STORE, sortKey); } catch {}
+    redraw();
+  };
+  order.append(select, n('small', SORTS[sortKey][1], 'pt-sort-hint'));
+  box.append(order);
   return box;
 }
 
@@ -331,6 +371,7 @@ function card(row, market, meta, openStock, leading) {
   const info = meta[best.key] || {};
   const [phaseLabel, phaseCls] = PHASES[best.status] || ['—', 'watch'];
   const box = n('article', null, `pt-card phase-${phaseCls}`);
+  box.dataset.id = stock.id;
 
   const head = n('div', null, 'pt-head');
   const name = n('button', null, 'pt-name'); name.type = 'button';
@@ -440,7 +481,7 @@ export function renderPatterns(root, market, block, meta, options = {}) {
   const help = guide(meta);
   if (help) root.append(help);
 
-  const rows = selectRows(block, query, leading);
+  const rows = selectRows(block, query, leading, meta);
   const info = n('div', null, 'pt-result');
   info.append(n('span', `${rows.length}종목 · 현재 조건 기준`));
   root.append(info);

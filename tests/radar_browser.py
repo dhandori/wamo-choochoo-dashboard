@@ -436,6 +436,24 @@ with sync_playwright() as p:
         assert page.locator('.pt-guide').evaluate('(n)=>n.open')
         page.locator('.pt-chip', has_text='손절 8% 이내만').click()
         page.locator('.pt-guide summary').click()
+        # 정렬: 고른 기준대로 카드가 줄 서고, 값이 없는 종목은 맨 뒤로 간다. 고른 기준은 기억한다.
+        stocks_by_id={s['id']:s for s in DATA['markets'][market]['stocks']}
+        for key,field in (('rs','rs'),('cap','marketCap'),('volume','volumeRatio')):
+            page.select_option('.pt-sort-select',key)
+            ids=page.locator('.pt-card').evaluate_all('(cs)=>cs.map(c=>c.dataset.id)')
+            values=[stocks_by_id[i].get(field) for i in ids]
+            present=[v for v in values if isinstance(v,(int,float))]
+            assert present==sorted(present,reverse=True),(key,present[:5])
+            assert all(isinstance(v,(int,float)) for v in values[:len(present)]),(key,'값 없는 종목이 앞에 있습니다')
+        # 손절 폭은 카드에 적힌 값으로 본다(대표 셋업은 화면 조건을 통과한 첫 셋업이라 스냅샷 첫 셋업과 다를 수 있다).
+        page.select_option('.pt-sort-select','stop')
+        widths=page.locator('.pt-card').evaluate_all("(cs)=>cs.map(c=>{const dt=[...c.querySelectorAll('.pt-numbers dt')].find(d=>d.textContent.includes('손절 폭'));return dt?parseFloat(dt.nextElementSibling.textContent):null})")
+        widths=[w for w in widths if isinstance(w,(int,float))]
+        assert widths==sorted(widths),widths[:5]
+        assert page.locator('.pt-sort-hint').inner_text().startswith('피벗에서 손절선까지')
+        page.reload(wait_until='networkidle')
+        assert page.locator('.pt-sort-select').input_value()=='stop','정렬 기준을 기억하지 못했습니다'
+        page.select_option('.pt-sort-select','default')
         # 단계 칩으로 좁히면 결과 줄의 종목 수가 바뀐다.
         before=page.locator('.pt-result').inner_text()
         page.locator('.pt-chip.phase-watch').first.click()
