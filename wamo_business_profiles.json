@@ -5185,5 +5185,37 @@
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-10-27",
     "failed": false
+  },
+  "425420": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "티에프이는 DRAM·NAND 등 메모리 반도체 생산·판매가 핵심입니다.",
+      "products": "DRAM·NAND와 HBM 등 메모리 반도체",
+      "customers": "데이터센터·서버, PC, 스마트폰 등 전자기기·클라우드 기업이 주요 수요처입니다.",
+      "revenue": "출하량 × 평균판매가격(ASP)이 매출을 좌우하고, HBM 등 고부가 제품 비중과 공정 원가가 이익률을 결정합니다.",
+      "drivers": "메모리 가격, HBM 믹스, 고객 재고, 웨이퍼 투입량, 수율과 공정 전환이 핵심입니다.",
+      "segments": [
+        "메모리 반도체",
+        "반도체 장비",
+        "건설·플랜트",
+        "소프트웨어·플랫폼",
+        "유통·커머스",
+        "통신",
+        "전력·에너지"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260323",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323000809",
+    "detailSector": "반도체 검사·테스트",
+    "sectorTags": [
+      "반도체 검사·테스트",
+      "반도체 장비",
+      "반도체 소재·부품",
+      "타이어"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-10-29",
+    "failed": false
   }
 }
