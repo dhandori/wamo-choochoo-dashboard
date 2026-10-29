@@ -15,6 +15,7 @@ import re
 import statistics
 import threading
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -48,6 +49,12 @@ ENERGY_HISTORY_DAYS = 140
 SEC_UA = (os.getenv("SEC_USER_AGENT") or "WAMO-Market-Radar/1.0 dhandori@users.noreply.github.com").strip()
 _SEC_LOCK = threading.Lock()
 _SEC_LAST_REQUEST = 0.0
+# SEC 공정이용 기준은 초당 10회 미만. 여유 있게 초당 4회로 묶고(세 작업자가 한 자물쇠를 같이 씀),
+# 403/429나 'Request Rate Threshold' 응답이 한 번이라도 오면 그 회차는 SEC를 바로 멈추고 12시간 쉰다.
+SEC_MIN_INTERVAL = 0.25
+SEC_COOLDOWN_HOURS = 12
+SEC_MAP_CACHE_DAYS = 7          # 티커-CIK 목록(약 0.8MB)은 7일에 한 번만 다시 받는다
+_SEC_BLOCKED = None             # 이번 회차에 차단 응답을 받으면 그 사유
 
 
 def _get_json(url, headers=None, timeout=35, retries=3):
@@ -465,6 +472,12 @@ def sec_company_map(cache=None):
     cache = cache if isinstance(cache, dict) else _load_cache()
     cached_meta = cache.get("__company_map__") if isinstance(cache, dict) else None
     cached_rows = (cached_meta or {}).get("rows") if isinstance(cached_meta, dict) else None
+    try:
+        age = (date.today() - date.fromisoformat(str((cached_meta or {}).get("fetchedAt"))[:10])).days
+    except Exception:
+        age = None
+    if isinstance(cached_rows, dict) and len(cached_rows) >= 5000 and age is not None and age < SEC_MAP_CACHE_DAYS:
+        return cached_rows          # 최근 7일 안에 받은 목록이면 다시 받지 않는다
     sources = (
         "https://www.sec.gov/files/company_tickers_exchange.json",
         "https://www.sec.gov/files/company_tickers.json",
@@ -491,6 +504,8 @@ def sec_company_map(cache=None):
                 _save_cache(cache)
                 return out
             errors.append(f"{url}: {len(out)}개")
+        except SecBlocked:
+            raise
         except Exception as exc:
             errors.append(f"{url}: {core.compact_provider_error(str(exc))}")
     if isinstance(cached_rows, dict) and len(cached_rows) >= 5000:
@@ -498,17 +513,61 @@ def sec_company_map(cache=None):
     raise RuntimeError("SEC 티커 목록 2개 경로와 캐시가 모두 실패했습니다: " + " / ".join(errors))
 
 
+class SecBlocked(RuntimeError):
+    pass
+
+
 def _sec_get(url):
-    global _SEC_LAST_REQUEST
-    # SEC asks automated clients to stay below 10 requests/second. A single lock
-    # keeps the three workers at a conservative global pace.
+    global _SEC_LAST_REQUEST, _SEC_BLOCKED
+    # 한 자물쇠로 세 작업자의 요청을 줄 세워 초당 4회를 넘지 않게 한다.
     with _SEC_LOCK:
-        wait = 0.13 - (time.monotonic() - _SEC_LAST_REQUEST)
-        if wait > 0:
-            time.sleep(wait)
-        result = _get_json(url, headers={"User-Agent": SEC_UA, "Referer": "https://www.sec.gov/"}, retries=3)
-        _SEC_LAST_REQUEST = time.monotonic()
-        return result
+        if _SEC_BLOCKED:
+            raise SecBlocked(f"SEC 일시 중단: {_SEC_BLOCKED}")
+        last = None
+        for attempt in range(2):
+            wait = SEC_MIN_INTERVAL - (time.monotonic() - _SEC_LAST_REQUEST)
+            if wait > 0:
+                time.sleep(wait)
+            req = urllib.request.Request(url, headers={"User-Agent": SEC_UA, "Referer": "https://www.sec.gov/",
+                                                       "Accept": "application/json,text/plain,*/*", "Accept-Encoding": "identity"})
+            try:
+                with urllib.request.urlopen(req, timeout=35) as response:
+                    body = response.read()
+                _SEC_LAST_REQUEST = time.monotonic()
+                return json.loads(body.decode("utf-8"))
+            except urllib.error.HTTPError as exc:
+                _SEC_LAST_REQUEST = time.monotonic()
+                text = ""
+                try:
+                    text = exc.read(2000).decode("utf-8", "ignore")
+                except Exception:
+                    pass
+                if exc.code in (403, 429) or "Rate Threshold" in text:
+                    # 차단 응답에 다시 두드리면 차단이 길어진다. 재시도 없이 이번 회차 SEC를 멈춘다.
+                    _SEC_BLOCKED = f"HTTP {exc.code}" + (" Request Rate Threshold" if "Rate Threshold" in text else "")
+                    raise SecBlocked(f"SEC 차단 응답 {_SEC_BLOCKED}: {url}")
+                if exc.code == 404:
+                    raise RuntimeError(f"SEC 자료 없음(404): {url}")
+                last = exc
+            except Exception as exc:  # 네트워크 일시 오류만 한 번 더
+                _SEC_LAST_REQUEST = time.monotonic()
+                last = exc
+            time.sleep(2.0)
+        raise RuntimeError(f"JSON 수집 실패: {url} · {last}")
+
+
+def _sec_guard_until(cache):
+    try:
+        until = (cache.get("__sec_guard__") or {}).get("until")
+        return datetime.fromisoformat(until) if until else None
+    except Exception:
+        return None
+
+
+def _sec_set_guard(cache, reason):
+    until = datetime.now(timezone.utc) + timedelta(hours=SEC_COOLDOWN_HOURS)
+    cache["__sec_guard__"] = {"until": until.isoformat(timespec="minutes"), "reason": reason,
+                              "at": datetime.now(timezone.utc).isoformat(timespec="minutes")}
 
 
 def _fact_units(facts, concepts):
@@ -962,12 +1021,21 @@ def enrich_sec(raw):
     cache = _load_cache()
     errors = []
     fast = os.getenv("WAMO_PRICE_ONLY") == "1"
-    try:
-        mapping = {} if fast else sec_company_map(cache)
-        connected = not fast
-    except Exception as exc:
+    guard = _sec_guard_until(cache)
+    if not fast and guard and guard > datetime.now(timezone.utc):
+        # 최근 차단 응답을 받았으면 쉬는 시간이 끝날 때까지 SEC에 요청하지 않는다(보관 자료·Nasdaq 대체 사용)
         mapping, connected = {}, False
-        errors.append({"scope": "company_tickers.json", "error": str(exc)})
+        errors.append({"scope": "SEC", "error": f"차단 뒤 쉬는 중({guard.isoformat(timespec='minutes')}까지)"})
+        print("  SEC 쉬는 중:", guard.isoformat(timespec="minutes"), "까지")
+    else:
+        try:
+            mapping = {} if fast else sec_company_map(cache)
+            connected = not fast
+        except Exception as exc:
+            mapping, connected = {}, False
+            if isinstance(exc, SecBlocked):
+                _sec_set_guard(cache, str(exc))
+            errors.append({"scope": "company_tickers.json", "error": str(exc)})
 
     priority = sorted(raw, key=lambda x: (
         1 if x.get("conditionCount", 0) >= 4 else 0,
@@ -1047,6 +1115,9 @@ def enrich_sec(raw):
                 errors.append({"ticker": symbol, "error": core.compact_provider_error(str(exc))})
             if i % 10 == 0 or i == len(futures):
                 print("  SEC", i, "/", len(futures))
+    if _SEC_BLOCKED:
+        _sec_set_guard(cache, _SEC_BLOCKED)
+        print("  SEC 차단 응답을 받아 멈춤 ·", SEC_COOLDOWN_HOURS, "시간 쉬고 다시 시도:", _SEC_BLOCKED)
 
     if nasdaq_selected:
         with ThreadPoolExecutor(max_workers=NASDAQ_PROFILE_WORKERS) as pool:
