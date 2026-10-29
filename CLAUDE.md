@@ -51,3 +51,12 @@
   자동 작업 5개 수정, 다른 저장소(산업강도판·텔레그램 봇)가 읽는 주소 영향이 따른다.
   크기 확인: GitHub 저장소 정보의 `size`(KB 단위, 2026-10-28 기준 160,362).
   이 저장소에서 작업할 때 `size` 가 500,000 을 넘었으면 사용자에게 먼저 알린다.
+  (2026-10-29 사전 조사. 처음 생각보다 큰 작업이라 사용자가 보류했다.)
+  - 자라는 주범은 `radar.html`(최근 200커밋 중 71회)과 `wamo_insights.json`(61회)이다. 둘은 같은 자료이고 각각 압축 약 1MB.
+    `wamo_insights.json` 은 커밋을 뺄 수 없다: 화면의 '데이터 확인'이 fetch 하고(`radar/model.mjs`), `wamo_asia.py`·
+    `wamo_news.py`·`wamo_publish_insights.py` 가 직전 값을 읽는다.
+  - 자료를 main 에서 빼면 기록이 쌓이는 곳만 옮겨질 뿐이다. 크기를 막으려면 자료 브랜치를 매번 한 커밋으로 덮어써야 한다.
+  - 건드려야 하는 곳: 자료를 커밋하는 작업(`main.yml` `radar-sync.yml` `asia.yml` `macro.yml` `resume-once.yml`,
+    `wamo_run.py` 의 `publish`), 실제 자료 파일을 읽는 테스트 12개, Pages 배포 브랜치 전환(사용자가 설정에서).
+  - 다른 저장소가 이 저장소에서 읽는 것은 `wamo_macro.json` 하나뿐이다(`industry-strength/docs/macro.js` 가
+    `/wamo-choochoo-dashboard/wamo_macro.json` 을 읽는다). 배포 주소가 같으면 영향 없다.
