@@ -59,7 +59,7 @@ jobs:
           OPENDART_API_KEY: ${{ secrets.OPENDART_API_KEY }}
           KRX_ID: ${{ secrets.KRX_ID }}
           KRX_PW: ${{ secrets.KRX_PW }}
-          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+          SEC_USER_AGENT: ${{ secrets.SEC_CONTACT && format('WAMO-Market-Radar {0}', secrets.SEC_CONTACT) || secrets.SEC_USER_AGENT }}
           KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
           REQUESTED_MARKET: KR

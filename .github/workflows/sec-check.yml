@@ -16,5 +16,5 @@ jobs:
       - run: python -m pip install -r requirements.txt
       - name: SEC 티커 목록·재무자료 직접 받아 보기
         env:
-          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+          SEC_USER_AGENT: ${{ secrets.SEC_CONTACT && format('WAMO-Market-Radar {0}', secrets.SEC_CONTACT) || secrets.SEC_USER_AGENT }}
         run: python -u wamo_sec_check.py
