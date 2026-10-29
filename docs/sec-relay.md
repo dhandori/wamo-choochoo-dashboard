@@ -1,4 +1,17 @@
-# SEC 중계 (사용자 컴퓨터 → 대시보드)
+# SEC 수집
+
+**2026-10-29부터 GitHub에서 직접 받는다.** 연락처 비밀값 `SEC_CONTACT`(사용자 메일)를 넣은 뒤 같은 점검(`sec-check.yml`)이
+세 방식 모두 HTTP 200으로 통과했다. 워크플로는 `SEC_CONTACT`가 있으면 그것을, 없으면 예전 `SEC_USER_AGENT`를 쓴다.
+
+제한을 피하는 장치(`wamo_update_us_sec.py`):
+- 요청 간격 0.25초(초당 4회, SEC 기준 10회의 절반 아래). 세 작업자가 한 자물쇠로 줄을 선다.
+- 403·429·'Request Rate Threshold' 응답이 한 번이라도 오면 재시도 없이 그 회차 SEC를 멈추고,
+  `wamo_us_sec_cache.json`의 `__sec_guard__`에 12시간 쉬는 시각을 적는다. 그동안은 보관 자료와 Nasdaq 대체 자료를 쓴다.
+- 티커-CIK 목록(약 0.8MB)은 7일에 한 번만 다시 받는다. 회사 자료는 7일 보관 후 다시 받는다(회차당 최대 80종목).
+
+아래 일요일 중계는 **예비**로 남긴다. GitHub 수집이 다시 막히면 그때 쓴다.
+
+## 예비: SEC 중계 (사용자 컴퓨터 → 대시보드)
 
 SEC는 GitHub Actions 공용 서버 주소를 "Request Rate Threshold Exceeded"로 막는다
 (연락처 `SEC_USER_AGENT`를 넣어도 같음, 2026-10-19 확인). 같은 시각 사용자 컴퓨터에서는
