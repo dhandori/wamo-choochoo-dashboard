@@ -115,6 +115,13 @@ export function renderWeather(container, market, onOpen) {
   const head = el('div', null, 'tr-weather-head');
   head.append(el('span', null, 'tr-dot'), el('span', '시장 날씨', 'tr-weather-kicker'), el('strong', w.label || '판단 보류'));
   const gauge = scoreGauge(w); if (gauge) head.append(gauge);
+  // 지수별 판정(두 시장이 따로 움직일 때 어느 쪽이 나쁜지 바로 보이게). 위 큰 판정은 두 시장 중 나쁜 쪽 기준.
+  const byIdx = (w.byIndex || []).filter(x => x && x.indexLabel);
+  if (byIdx.length > 1) {
+    const pills = el('span', null, 'tr-idx-pills');
+    byIdx.forEach(x => { const p = el('span', null, `tr-idx-pill level-${(x.level || 'UNKNOWN').toLowerCase()}`); p.append(el('b', x.indexLabel), el('span', `${x.label} ${x.score > 0 ? '+' : ''}${x.score}`)); p.title = `${x.indexLabel}만 따로 매긴 날씨 · ${x.universe}종목`; pills.append(p); });
+    head.append(pills);
+  }
   const text = el('div', w.advice || '', 'tr-weather-text');
   // A late index bar never turns into a fake-index verdict; the last real one stays and says so.
   if (b.kept) text.append(el('span', ` ⏳ 지수 자료 지연 · ${md(b.asOf)} 종가 기준 판정을 유지 중이에요. 다음 정기 확인 때 다시 계산해요.`, 'tr-weather-kept'));
@@ -218,10 +225,36 @@ export function renderTrendMetrics(container, market) {
 }
 
 // ------------------------------------------------------------ detail view
+// 지수별 날씨 표: 줄 = 판단 항목, 칸 = 지수(KOSPI | KOSDAQ, S&P 500 | 나스닥). 각 칸에 좋음·보통·나쁨과 그 지수만의 설명.
+// 맨 위 줄은 지수별 종합 판정, 맨 아래 줄은 두 시장 중 나쁜 쪽으로 매긴 위쪽 큰 판정과의 관계를 적는다.
+function indexFactorTable(w, byIdx) {
+  const TAG = s => s > 0 ? '좋음' : s < 0 ? '나쁨' : '보통', TONE = s => s > 0 ? 'good' : s < 0 ? 'bad' : '';
+  const table = el('div', null, 'tr-idx-table'); table.style.setProperty('--cols', byIdx.length);
+  const head = el('div', null, 'tr-idx-row tr-idx-head');
+  head.append(el('span', '항목', 'tr-idx-key'));
+  byIdx.forEach(x => { const c = el('div', null, `tr-idx-cell level-${(x.level || 'UNKNOWN').toLowerCase()}`); c.append(el('b', x.indexLabel, 'tr-idx-name'), el('strong', x.label), el('small', `${x.score > 0 ? '+' : ''}${x.score}점 · ${x.universe}종목`)); head.append(c); });
+  table.append(head);
+  const keys = [];
+  byIdx.forEach(x => (x.factors || []).forEach(f => { if (!keys.some(k => k.key === f.key)) keys.push({ key: f.key, label: f.label }); }));
+  keys.forEach(({ key, label }) => {
+    const row = el('div', null, 'tr-idx-row');
+    row.append(el('strong', label, 'tr-idx-key'));
+    byIdx.forEach(x => {
+      const f = (x.factors || []).find(v => v.key === key), c = el('div', null, `tr-idx-cell tr-factor ${f ? TONE(f.score) : ''}`);
+      c.dataset.index = x.indexLabel;   // 휴대폰에서는 칸 앞에 지수 이름을 붙인다(CSS)
+      if (f) c.append(el('span', TAG(f.score), 'tr-factor-tag'), el('span', f.text)); else c.append(el('span', '—'));
+      row.append(c);
+    });
+    table.append(row);
+  });
+  table.append(el('p', `위쪽 큰 판정(${w.label || '—'} ${w.score > 0 ? '+' : ''}${w.score ?? '—'}점)은 지수 추세·기울기·분산일·거래대금은 두 지수 중 나쁜 쪽, 시장 체력·신고가는 전체 종목으로 매긴 점수예요. 종목을 볼 때는 그 종목이 속한 시장 칸을 보세요.`, 'tr-idx-note'));
+  return table;
+}
 function weatherDetail(b, market) {
   const w = b.weather || {}, wrap = el('section', null, 'tr-weather-detail');
-  const factors = el('div', null, 'tr-factor-list');
-  (w.factors || []).forEach(f => {
+  const byIdx = (w.byIndex || []).filter(x => x && x.indexLabel && (x.factors || []).length);
+  const factors = byIdx.length > 1 ? indexFactorTable(w, byIdx) : el('div', null, 'tr-factor-list');
+  if (byIdx.length <= 1) (w.factors || []).forEach(f => {
     const row = el('div', null, `tr-factor ${f.score > 0 ? 'good' : f.score < 0 ? 'bad' : ''}`);
     row.append(el('span', f.score > 0 ? '좋음' : f.score < 0 ? '나쁨' : '보통', 'tr-factor-tag'), el('strong', f.label), el('span', f.text));
     factors.append(row);

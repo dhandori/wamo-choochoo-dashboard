@@ -600,7 +600,7 @@ def _index_state(i):
     return 0, '50일선 아래 · 200일선 위'
 
 
-def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None):
+def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전체 종목'):
     factors = []
 
     def add(key, label, score, text):
@@ -654,7 +654,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None):
     if br.get('status') == 'OK':
         p = br['above50Pct']
         add('breadth', '시장 체력', 1 if p >= 60 else -1 if p < 40 else 0,
-            f'전체 종목 중 {p:.0f}%가 50일선 위에 있어요.')
+            f'{scope} 중 {p:.0f}%가 50일선 위에 있어요.')
     if hl.get('status') == 'OK':
         h, l, n = hl['newHighs'], hl['newLows'], max(1, hl.get('denominator') or 1)
         # A handful of new highs in a large universe is not broad leadership.
@@ -686,6 +686,46 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None):
     return {'level': level, 'label': label, 'advice': advice, 'score': total, 'factors': factors}
 
 
+# ------------------------------------------------------- per-market split
+# 한국은 KOSPI·KOSDAQ 종목을 각자 소속 지수와 비교한다(RS선·차트). 미국은 S&P 500이 NYSE·나스닥 상장사를
+# 모두 담고 있어 모든 종목을 S&P 500과 비교하고(오닐·IBD 방식), 지수별 날씨만 나스닥을 따로 본다.
+BOARD_FILTERS = {'KR': (('KOSPI', lambda s: s.get('board') == 'KOSPI'), ('KOSDAQ', lambda s: s.get('board') == 'KOSDAQ')),
+                 'US': (('S&P 500', lambda s: True), ('나스닥', lambda s: s.get('board') == 'NASDAQ'))}
+
+
+def assign_board_bench(universe, market, bench2, label2, asof):
+    """KOSDAQ 종목에 KOSDAQ 지수를 비교 지수로 붙인다. 지수 자료가 기준일까지 200일 이상 있어야 쓴다."""
+    for s in universe:
+        s.pop('benchByDate', None); s.pop('benchRows', None); s.pop('benchLabel', None)
+    if market != 'KR' or not bench2 or bench2[-1]['date'] != asof or len(bench2) < 200:
+        return 0
+    by_date = {r['date']: r['close'] for r in bench2}
+    n = 0
+    for s in universe:
+        if s.get('board') == 'KOSDAQ':
+            s['benchRows'], s['benchByDate'], s['benchLabel'] = bench2, by_date, label2
+            n += 1
+    return n
+
+
+def weather_by_index(market, universe, idx, dist, secondary, liq, synthetic):
+    """지수마다 따로 매긴 시장 날씨. 지수 추세·기울기·분산일·거래대금은 그 지수로, 시장 체력·신고가는 그 시장 종목으로."""
+    filters = BOARD_FILTERS.get(market)
+    if synthetic or not filters or not secondary or secondary.get('aboveMa50') is None:
+        return []
+    groups = {g.get('symbol'): g for g in (liq or {}).get('groups') or [] if isinstance(g, dict)}
+    out = []
+    for (ix, d), (name, keep) in zip(((idx, dist), (secondary, secondary.get('distribution') or {})), filters):
+        sub = [s for s in universe if keep(s)]
+        sym = ix.get('symbol') or INDEX[market][0]
+        g = groups.get(sym)
+        one = {'status': 'OK', 'groups': [g], 'score': g['score'], 'summary': ''} if g and 'score' in g else None
+        label = ix.get('label') or name
+        w = weather(ix, d or {}, breadth(sub), highs_lows(sub), False, None, one, scope=f'{label} 종목' if market == 'KR' else ('나스닥 상장 종목' if name == '나스닥' else '전체 종목'))
+        out.append({**w, 'symbol': sym, 'indexLabel': label, 'universe': len(sub)})
+    return out
+
+
 # ------------------------------------------------------- stock signals
 def analyze_stocks(universe, bench):
     bench_by_date = {r['date']: r['close'] for r in bench}
@@ -714,8 +754,8 @@ def analyze_stocks(universe, bench):
         s['stage'] = stage
         s['highDistancePct'] = dist
 
-        # RS line leadership
-        pts = rs_line(rows, bench_by_date)
+        # RS line leadership (KOSDAQ 종목은 KOSDAQ 지수 기준)
+        pts = rs_line(rows, s.get('benchByDate') or bench_by_date)
         if len(pts) >= 200:
             values = [v for _, v in pts]
             k = len(values) - 1
@@ -824,7 +864,7 @@ def update_signal_log(log, market, universe, bench, asof, backfill_sessions=40):
         n = len(s['rows'])
         start = n - backfill_sessions if (first_run or fresh) else n - 1
         for i in range(max(start, 230), n):
-            for sig in signals_at(s, i, bench_by_date):
+            for sig in signals_at(s, i, s.get('benchByDate') or bench_by_date):
                 if i < n - 1 and not first_run and sig not in fresh:
                     continue
                 d = s['rows'][i]['date']
@@ -833,16 +873,23 @@ def update_signal_log(log, market, universe, bench, asof, backfill_sessions=40):
                 keys.add((d, s['id'], sig))
                 events.append({'date': d, 'id': s['id'], 'symbol': s['symbol'], 'name': s['name'],
                                'signal': sig, 'close': rnd(s['closes'][i], 4),
-                               'bench': rnd(bench_by_date.get(d), 4), 'backfill': (first_run or sig in fresh) and i < n - 1,
+                               'bench': rnd((s.get('benchByDate') or bench_by_date).get(d), 4), 'benchLabel': s.get('benchLabel'), 'backfill': (first_run or sig in fresh) and i < n - 1,
                                'ret': {}, 'excess': {}})
     # Fill forward returns from current verified histories.
     by_id = {s['id']: s for s in universe}
-    bench_dates = [r['date'] for r in bench]
-    bench_pos = {d: k for k, d in enumerate(bench_dates)}
+    positions = {}
+    def bench_of(s):   # 종목의 비교 지수와 날짜 위치(같은 지수는 한 번만 계산)
+        rows_ = s.get('benchRows') or bench
+        if id(rows_) not in positions:
+            positions[id(rows_)] = (rows_, {r['date']: k for k, r in enumerate(rows_)})
+        return positions[id(rows_)]
     for e in events:
         s = by_id.get(e['id'])
         if not s:
             continue
+        b_rows, bench_pos = bench_of(s)
+        # 예전에 다른 지수로 기록된 사건(KOSDAQ 종목인데 KOSPI로 적힌 것)은 초과수익을 섞지 않는다. 수익률은 계속 채운다.
+        same_bench = e.get('benchLabel') == s.get('benchLabel')
         pos = {r['date']: k for k, r in enumerate(s['rows'])}
         k0 = pos.get(e['date'])
         if k0 is None:
@@ -853,8 +900,8 @@ def update_signal_log(log, market, universe, bench, asof, backfill_sessions=40):
             ret = s['closes'][k0 + h] / s['closes'][k0] - 1
             e['ret'][str(h)] = rnd(ret * 100)
             b0 = bench_pos.get(e['date'])
-            if b0 is not None and b0 + h < len(bench) and e.get('bench'):
-                bret = bench[b0 + h]['close'] / bench[b0]['close'] - 1
+            if same_bench and b0 is not None and b0 + h < len(b_rows) and e.get('bench'):
+                bret = b_rows[b0 + h]['close'] / b_rows[b0]['close'] - 1
                 e['excess'][str(h)] = rnd((ret - bret) * 100)
     cutoff = (date.fromisoformat(asof) - timedelta(days=400)).isoformat()
     book['events'] = [e for e in events if e['date'] >= cutoff]
@@ -976,7 +1023,7 @@ def atr14(rows, n=14):
     return atr if atr > 0 else None
 
 
-def chart_payload(universe, bench, asof, market):
+def chart_payload(universe, bench, asof, market, bench2=None):
     """Compact per-stock daily closes for the detail chart (loaded on demand)."""
     dates = [r['date'] for r in bench][-CHART_DAYS:]
     if len(dates) < 60 or dates[-1] != asof:
@@ -996,13 +1043,19 @@ def chart_payload(universe, bench, asof, market):
             closes.append(round(last['close'], digits) if digits else int(round(last['close'])))
             volumes.append(int(r['volume']) if r else 0)
         stocks[s['symbol']] = {'s': first, 'c': closes, 'v': volumes[-CHART_VOLUME_DAYS:]}
+        if s.get('benchRows') is not None and bench2:
+            stocks[s['symbol']]['b'] = 2   # 이 종목은 보조 지수(bench2)와 비교한다
         atr = atr14([r for r in s['rows'] if r['date'] <= dates[-1]])
         if atr and last and last['close'] > 0:
             stocks[s['symbol']]['a'] = [round(atr, 4 if digits else 0), round(atr / last['close'] * 100, 2)]
     bench_by_date = {r['date']: r['close'] for r in bench}
-    return {'asOf': asof, 'dates': dates,
-            'bench': [round(bench_by_date[d], 2) if d in bench_by_date else None for d in dates],
-            'stocks': stocks}
+    out = {'asOf': asof, 'dates': dates,
+           'bench': [round(bench_by_date[d], 2) if d in bench_by_date else None for d in dates],
+           'stocks': stocks}
+    if bench2 and any(v.get('b') == 2 for v in stocks.values()):
+        b2 = {r['date']: r['close'] for r in bench2}
+        out['bench2'] = [round(b2[d], 2) if d in b2 else None for d in dates]
+    return out
 
 
 # --------------------------------------------------------------- build
@@ -1164,6 +1217,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'})
     br = breadth(universe)
     hl = highs_lows(universe)
+    assign_board_bench(universe, market, bench2, label2, asof)
     leaders, warnings = analyze_stocks(universe, bench)
     book = update_signal_log(log, market, universe, bench, asof)
     earnings = {'status': 'UNAVAILABLE', 'upcoming': [], 'note': EARNINGS_NOTE.get(market, '')}
@@ -1293,8 +1347,10 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     except Exception as exc:  # noqa: BLE001 - optional module never blocks the rest
         print(f'{market} 천장 신호 계산 실패: {type(exc).__name__}: {exc}', flush=True)
         climax = {'status': 'UNAVAILABLE', 'note': '천장 신호 계산에 실패했습니다. 다음 갱신 때 다시 계산합니다.'}
-    charts = chart_payload(universe, bench, asof, market)
+    charts = chart_payload(universe, bench, asof, market, bench2)
     charts['benchLabel'] = idx['label']
+    if 'bench2' in charts:
+        charts['bench2Label'] = label2
     known = {} if synthetic else {symbol: (label, bench)}
     if secondary and bench2:
         known[sym2] = (label2, bench2)
@@ -1307,7 +1363,8 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'index2': secondary,
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},
-        'weather': {**weather(idx, dist, br, hl, synthetic, secondary, liq), 'distribution': dist, 'breadth': br, 'highsLows': hl},
+        'weather': {**weather(idx, dist, br, hl, synthetic, secondary, liq), 'distribution': dist, 'breadth': br, 'highsLows': hl,
+                    'byIndex': weather_by_index(market, universe, {**idx, 'symbol': symbol}, dist, secondary, liq, synthetic)},
         'liquidity': liq,
         'volumeSchedule': volume_schedule(history_meta.get('_confirmChecks', {}).get(market)),
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],

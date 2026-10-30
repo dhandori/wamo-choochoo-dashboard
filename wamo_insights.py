@@ -224,6 +224,19 @@ def broad_sector(stock, market, industry_group, industry):
     return None if not name or name in UNCLASSIFIED else name
 
 
+# 소속 시장(상장 거래소) 표시용. 한국은 KOSPI/KOSDAQ, 미국은 NASDAQ/NYSE/NYSE American.
+def board_of(stock,market):
+    if market=='KR':
+        b=str(stock.get('krx_market') or '').upper()
+        if b in ('KOSPI','KOSDAQ'):return b
+        t=str(stock.get('ticker') or '')
+        return 'KOSPI' if t.endswith('.KS') else 'KOSDAQ' if t.endswith('.KQ') else None
+    if market=='US':
+        e=str(stock.get('exchange') or '').upper()
+        return {'NASDAQ':'NASDAQ','NYSE':'NYSE','NYSE AMERICAN':'NYSE American','AMEX':'NYSE American','NYSEARCA':'NYSE Arca'}.get(e) or (e or None)
+    return None
+
+
 def project(stock,market,asof):
     if not isinstance(stock,dict): return None
     symbol=str(stock.get('stock_code') or stock.get('ticker') or '').strip()
@@ -280,7 +293,7 @@ def project(stock,market,asof):
             'rs':number(stock.get('rsPercentile')),'stage2':stock.get('stage2Core'),
             **trend_position(rows,market,asof),
             'source':stock.get('dataSource') or stock.get('priceProvider') or 'verified local history',
-            'exchange':stock.get('exchange'), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),'tradingviewUrl':tradingview_url(market,symbol,stock.get('exchange')),
+            'exchange':stock.get('exchange'),'board':board_of(stock,market), 'naverUrl':naver_url(market,symbol,stock.get('exchange')),'tradingviewUrl':tradingview_url(market,symbol,stock.get('exchange')),
             'detailUrl':None if market in ASIA else ('index.html' if market=='KR' else 'us.html')+'?stock='+quote(str(ticker))+'&legacy=1',
             'chartUrl':'https://finance.yahoo.com/quote/'+quote(str(ticker))+'/',
             'sparkline':[r['close'] for r in rows[-60:]],'catalysts':catalysts(stock.get('catalysts')),'moverReasons':reasons}

@@ -115,6 +115,12 @@ with sync_playwright() as p:
                 expect(page.locator('#detail')).to_contain_text('가격 출처')
                 expect(page.locator('#detail .stat').filter(has_text='시가총액')).to_contain_text('원' if market=='KR' else '달러')
                 expect(page.locator('.detail-chart')).to_be_visible()
+                # 2026-10-30 시장 구분: 소속 시장 배지, 그리고 KOSDAQ 종목은 KOSDAQ 지수와 비교한다.
+                first=sorted(near,key=lambda s:s['highDistancePct'])[0]
+                if first.get('board'):
+                    expect(page.locator('#detail .detail-title-row .board-badge')).to_have_text(first['board'])
+                    if first['board']=='KOSDAQ':expect(page.locator('#detail .pc-bench .pc-caption')).to_contain_text('KOSDAQ · 같은 기간')
+                    if first['board']=='KOSPI':expect(page.locator('#detail .pc-bench .pc-caption')).to_contain_text('KOSPI · 같은 기간')
                 drawer_link=page.locator('#detail .naver-primary')
                 if drawer_link.count():
                     assert drawer_link.get_attribute('href')==sorted(near,key=lambda s:s['highDistancePct'])[0]['naverUrl']
@@ -292,6 +298,11 @@ with sync_playwright() as p:
                 go_tab(page,'trend')
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
                 expect(page.locator('.tr-weather-detail')).to_be_visible()
+                # 2026-10-30 시장 구분: 지수별 날씨 표(KOSPI|KOSDAQ, S&P 500|나스닥)와 위쪽 띠의 지수별 판정.
+                by_index=TREND['markets'][market]['weather'].get('byIndex') or []
+                if len(by_index)>1:
+                    expect(page.locator('.tr-idx-head .tr-idx-name')).to_have_text([x['indexLabel'] for x in by_index])
+                    expect(page.locator('.tr-idx-pill')).to_have_count(len(by_index))
                 for key in ('sell','score','earnings','rs','weather'):
                     page.locator(f'.tr-subtabs button[data-sub={key}]').click()
                     assert f'sub={key}' in page.url,page.url
