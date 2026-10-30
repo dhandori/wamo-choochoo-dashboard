@@ -9,6 +9,7 @@ from pathlib import Path
 
 WF = Path(__file__).resolve().parents[1] / '.github' / 'workflows'
 WRITERS = ['main.yml', 'asia.yml', 'macro.yml', 'radar-sync.yml', 'resume-once.yml']
+READERS = ['ci.yml']  # 자료를 읽어 검사만 하는 워크플로
 
 
 class DataWorkflowTest(unittest.TestCase):
@@ -17,6 +18,10 @@ class DataWorkflowTest(unittest.TestCase):
 
     def test_자료_작업은_자료_브랜치를_받는다(self):
         for name in WRITERS:
+            self.assertIn('wamo_data_branch.py setup', self.text(name), name)
+
+    def test_검사_워크플로도_최신_자료를_받는다(self):
+        for name in READERS:
             self.assertIn('wamo_data_branch.py setup', self.text(name), name)
 
     def test_자료_작업은_main_에_직접_올리지_않는다(self):

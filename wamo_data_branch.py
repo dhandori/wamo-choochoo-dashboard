@@ -62,7 +62,10 @@ def setup(dest=None, root=ROOT):
                               capture_output=True, text=True)
         if done.returncode == 0:
             break
-        last = done.stderr.strip().replace(os.environ.get('GITHUB_TOKEN', '\0'), '***')
+        last = done.stderr.strip()
+        for secret in (os.environ.get('GITHUB_TOKEN'), os.environ.get('GH_TOKEN')):
+            if secret:
+                last = last.replace(secret, '***')
         print(f'자료 브랜치 받기 실패({attempt}/3): {last}', flush=True)
         time.sleep(attempt * 5)
     else:
@@ -105,8 +108,13 @@ def publish(names, message=DEFAULT_MESSAGE, root=ROOT, retries=4):
         print(f'data 브랜치 올리기 거절({attempt + 1}/{retries}): {pushed.stderr.strip()[-200:]}', flush=True)
         git(repo, 'fetch', '-q', '--depth=1', 'origin', BRANCH)
         # 내가 바꾸려는 파일을 그 사이에 다른 작업이 바꿨으면 덮어쓰지 않고 멈춘다
-        if git(repo, 'diff', '--quiet', base, 'FETCH_HEAD', '--', *names, check=False).returncode:
-            raise RuntimeError('동시 수정 충돌: 원격 데이터를 덮어쓰지 않고 저장 중단')
+        # (내 push 가 서버에선 성공했는데 응답만 끊긴 경우처럼, 남은 내용이 내 파일과 같으면 충돌이 아니다)
+        for name in names:
+            theirs = git(repo, 'rev-parse', '-q', '--verify', f'FETCH_HEAD:{name}', check=False).stdout.strip()
+            before = git(repo, 'rev-parse', '-q', '--verify', f'{base}:{name}', check=False).stdout.strip()
+            mine = git(repo, 'hash-object', name).stdout.strip()
+            if theirs != before and theirs != mine:
+                raise RuntimeError('동시 수정 충돌: 원격 데이터를 덮어쓰지 않고 저장 중단')
         # 남이 올린 최신 위에 내 파일만 다시 얹는다(내 작업 폴더 파일은 그대로 두고 인덱스만 맞춘다)
         git(repo, 'reset', '-q', '--mixed', 'FETCH_HEAD')
         git(repo, 'add', '--', *names)

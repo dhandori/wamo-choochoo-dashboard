@@ -201,6 +201,9 @@ def publish(names):
         import wamo_data_branch
         wamo_data_branch.publish(names)
         return
+    if os.environ.get('WAMO_ALLOW_MAIN_PUSH') != '1':
+        # 자료는 data 브랜치에만 올린다. main 에 올리면 저장소가 다시 커지고 data 와 자료가 갈라진다.
+        raise RuntimeError('자료는 main 이 아니라 data 브랜치에 올립니다: 먼저 python3 wamo_data_branch.py setup 을 실행하세요')
     names = sorted(set(name for name in names if (ROOT / name).exists()))
     subprocess.run(['git', 'add', '--', *names], cwd=ROOT, check=True)
     if subprocess.run(['git', 'diff', '--cached', '--quiet'], cwd=ROOT).returncode == 0:

@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      # 자료는 main 이 아니라 data 브랜치에 있다. 검사도 최신 자료로 돈다(main 의 자료 사본은 점점 묵는다).
+      - name: 자료 브랜치 받기
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 wamo_data_branch.py setup
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'

@@ -64,7 +64,6 @@ jobs:
           ref: main
           fetch-depth: 1
       - name: 자료 브랜치 받기 (자료는 main이 아니라 data 브랜치에 있다)
-        if: github.event_name != 'push'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python3 wamo_data_branch.py setup

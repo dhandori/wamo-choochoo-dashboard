@@ -34,7 +34,7 @@ class DataBranchTest(unittest.TestCase):
         run('push', '-q', str(self.remote), 'data', cwd=seed)
         self.root = t / 'work'
         self.root.mkdir()
-        patch = mock.patch.dict(os.environ, {'WAMO_DATA_REMOTE': str(self.remote)})
+        patch = mock.patch.dict(os.environ, {'WAMO_DATA_REMOTE': 'file://' + str(self.remote)})
         patch.start()
         self.addCleanup(patch.stop)
         os.environ.pop('GITHUB_ENV', None)
@@ -54,7 +54,7 @@ class DataBranchTest(unittest.TestCase):
             db.setup(self.dest, self.root)
 
     def test_주소가_틀리면_재시도_끝에_실패한다(self):
-        with mock.patch.dict(os.environ, {'WAMO_DATA_REMOTE': str(self.remote) + 'x'}), \
+        with mock.patch.dict(os.environ, {'WAMO_DATA_REMOTE': 'file://' + str(self.remote) + 'x'}), \
                 mock.patch.object(db.time, 'sleep'), self.assertRaises(RuntimeError):
             db.setup(self.dest, self.root)
 
@@ -101,6 +101,22 @@ class DataBranchTest(unittest.TestCase):
             db.publish(['wamo_1.json'], 'm', self.root)
         self.assertIn('동시 수정 충돌', str(cm.exception))
         self.assertEqual(self.remote_file('wamo_1.json'), '{"other": true}')
+
+    def test_내_push_가_이미_반영된_뒤_재시도해도_충돌로_보지_않는다(self):
+        db.setup(self.dest, self.root)
+        self.other_writer('wamo_1.json', '{"v": 100}')  # 내가 올리려던 내용과 같은 내용이 이미 원격에 있다
+        (self.root / 'wamo_1.json').write_text('{"v": 100}', encoding='utf-8')
+        with mock.patch.object(db.time, 'sleep'):
+            db.publish(['wamo_1.json'], 'm', self.root)
+        self.assertEqual(self.remote_file('wamo_1.json'), '{"v": 100}')
+
+    def test_옛_main_직접_올리기는_막혀_있다(self):
+        import wamo_run
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop('WAMO_DATA_REPO', None)
+            os.environ.pop('WAMO_ALLOW_MAIN_PUSH', None)
+            with self.assertRaises(RuntimeError):
+                wamo_run.publish(['wamo_macro.json'])
 
     def test_두_번_연달아_올려도_된다(self):
         db.setup(self.dest, self.root)
