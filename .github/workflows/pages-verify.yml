@@ -1,0 +1,46 @@
+name: Pages 사이트 점검 (손으로 실행)
+# 사이트를 바꾸지 않는다. main으로 꾸러미를 만들어 지금 사이트와 파일별로 견주고, Pages 설정 방식을 읽어 보여 준다.
+# Pages 설정을 바꾼 직후나 사이트가 이상해 보일 때 손으로 돌려서 확인하는 용도다.
+#
+# 읽는 법
+#  - 'Pages 설정 방식'의 build_type이 legacy이면 예전 방식(main 브랜치에서 바로), workflow이면 새 방식(Actions)이다.
+#  - 비교 결과에서 '사이트에 없음'이나 '설명 안 됨'이 0이면 사이트가 main과 같다.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: read
+
+jobs:
+  verify:
+    name: 점검
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 40
+          persist-credentials: false
+      - name: Pages 설정 방식 읽기
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api "repos/${{ github.repository }}/pages" --jq '{build_type, html_url, source}' 2>&1 | head -20
+      - name: 배포 꾸러미 만들기
+        run: >-
+          python3 -I tools/pages_package.py build . _site --manifest manifest.json
+          --min-files 100 --require index.html:10000 --require us.html:10000 --require radar.html:10000
+      - name: 지금 사이트와 비교
+        run: |
+          git fetch --depth=40 origin main
+          python3 -I tools/pages_package.py compare . manifest.json https://dhandori.github.io/wamo-choochoo-dashboard --ref origin/main --report report.json
+      - name: 비교 결과 보관
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-verify-report
+          path: report.json
+          if-no-files-found: ignore
+          retention-days: 3
