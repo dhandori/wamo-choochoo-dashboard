@@ -24,10 +24,12 @@ export function stockSeries(data, symbol) {
   const s = data?.stocks?.[symbol];
   if (!s || !Array.isArray(s.c) || s.c.length < 30) return null;
   const dates = data.dates.slice(s.s, s.s + s.c.length);
-  const bench = (data.bench || []).slice(s.s, s.s + s.c.length);
+  // b === 2: 이 종목은 보조 지수(한국은 KOSDAQ)와 비교한다. 보조 지수가 없는 옛 자료는 주 지수로.
+  const second = s.b === 2 && Array.isArray(data.bench2);
+  const bench = ((second ? data.bench2 : data.bench) || []).slice(s.s, s.s + s.c.length);
   const vols = new Array(s.c.length - s.v.length).fill(null).concat(s.v);
   // a = [ATR(14일), 종가 대비 %] — 갱신기가 고가·저가로 계산해 둔 평균 변동폭(없으면 null).
-  return { dates, closes: s.c, volumes: vols, volStart: s.c.length - s.v.length, bench, benchLabel: data.benchLabel || '지수', atr: Array.isArray(s.a) ? s.a : null };
+  return { dates, closes: s.c, volumes: vols, volStart: s.c.length - s.v.length, bench, benchLabel: (second ? data.bench2Label : data.benchLabel) || '지수', atr: Array.isArray(s.a) ? s.a : null };
 }
 
 export function sma(values, n) {

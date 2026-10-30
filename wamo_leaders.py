@@ -124,7 +124,8 @@ def analyze(universe, bench, market, ftd_indexes=None):
         breakout_dates = [rows[j]['date'] for j in range(max(0, i - POLICY['breakoutLookback'] + 1), i + 1)
                           if _breakout(rows, closes, j)]
         # RS line = close / index, as in the trend module.
-        pts = [r['close'] / bench_by_date[r['date']] for r in rows if bench_by_date.get(r['date'])]
+        b_ = s.get('benchByDate') or bench_by_date   # KOSDAQ 종목은 KOSDAQ 지수 기준
+        pts = [r['close'] / b_[r['date']] for r in rows if b_.get(r['date'])]
         rs_high_recent = None
         if len(pts) >= 200:
             rs_high_recent = next((b for b in range(5) if rs_high_at(pts, len(pts) - 1 - b)), None)

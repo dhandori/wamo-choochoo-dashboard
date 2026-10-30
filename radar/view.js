@@ -1,4 +1,5 @@
 import { renderFTD, ftdSummary } from './ftd.js';
+import { PHASES, PHASE_MEANING } from './ftd-model.mjs';
 import { renderLeaders, leadersSummary } from './leaders.js';
 import { renderPatterns, patternsSummary } from './patterns.js';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs';
@@ -195,10 +196,29 @@ function changeBadges(s) {
   changes(s).entered.forEach(key=>{const badge=el('span',CHANGE_LABELS[key],'change-badge');badge.title=`직전 거래일 대비 ${CHANGE_LABELS[key]}${key==='near'?` · 고점 ${state.tab==='near'?state.distance:10}% 이내`:''}`;wrap.append(badge);});
   return wrap;
 }
+// 소속 시장 배지(KOSPI·KOSDAQ / NASDAQ·NYSE). 자료에 없으면(일본·대만·옛 자료) 붙이지 않는다.
+function boardBadge(s) {
+  if (!s.board) return null;
+  const b = el('span', s.board, `board-badge board-${s.board.toLowerCase().replace(/[^a-z]/g, '')}`); b.title = `${s.board} 상장`; return b;
+}
+// 종목이 속한 시장의 지수 FTD 단계: KOSDAQ 종목은 KOSDAQ, 나스닥 종목은 나스닥, 그 밖은 주 지수.
+const BOARD_INDEX = { KOSPI: '^KS11', KOSDAQ: '^KQ11', NASDAQ: '^IXIC' };
+function boardMarketLine(s) {
+  const indexes = trendBlock(s.market || state.market)?.ftd?.indexes || [];
+  if (!indexes.length) return null;
+  const ix = indexes.find(x => x.symbol === BOARD_INDEX[s.board]) || indexes[0];
+  if (!ix || ix.status !== 'OK') return null;
+  const day = ix.rally?.day ? ` · 반등 ${ix.rally.day}일째` : '';
+  const line = el('p', null, `detail-board phase-${String(ix.phase || '').toLowerCase()}`);
+  line.append(el('b', `${ix.label} 시장`), el('span', ` ${PHASES[ix.phase] || ix.phase}${day}`));
+  line.title = PHASE_MEANING[ix.phase] || '';
+  return line;
+}
 function stockButton(s) {
   const b = button('', false, () => detail(s)); b.className = 'stock-link'; b.title = s.name;
   const member=state.tab==='ai'?aiMembership(s):null;
-  b.append(el('strong', shortName(s)), el('small', `${s.symbol} · ${member?member.role:s.industry}`));
+  const name = el('strong', shortName(s)); const mb = boardBadge(s); if (mb) name.append(mb);
+  b.append(name, el('small', `${s.symbol} · ${member?member.role:s.industry}`));
   if(member)b.append(el('span',AI_SECTORS.filter(g=>member.sectors.includes(g.id)).map(g=>g.name).join(' · '),'ai-tags'));
   b.append(changeBadges(s));
   return b;
@@ -268,7 +288,10 @@ function renderDetail(s, data) {
   // 제목줄: 종목명·분류·닫기. 스크롤해도 창 위에 남는다.
   const head = el('header', null, 'detail-head'), titles = el('div', null, 'detail-titles');
   const heading = el('h2', s.name); heading.id = 'stock-detail-title';
-  titles.append(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), heading, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
+  // 시장 배지는 제목 옆에 두되 제목(창 이름) 글자에는 섞지 않는다.
+  const titleRow = el('div', null, 'detail-title-row'), mb = boardBadge(s); titleRow.append(heading); if (mb) titleRow.append(mb);
+  titles.append(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), titleRow, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
+  const ml = boardMarketLine(s); if (ml) titles.append(ml);
   const membership=aiMembership(s);
   if(membership)titles.append(el('p',`AI 연관 분류: ${AI_SECTORS.filter(g=>membership.sectors.includes(g.id)).map(g=>g.name).join(' · ')} / ${membership.role}`,'ai-detail'));
   head.append(titles, closeButton);
@@ -336,8 +359,8 @@ function returnsSection(s) {
 function positionSection(s) {
   const new60 = s.intradayHigh60 === true || s.closeHigh60 === true, new52 = s.intradayHigh52 === true || s.closeHigh52 === true;
   return kvSection('고점 위치', [
-    kvRow('52주 고점까지', numeric(s.highDistancePct) ? distance(s) : '기록 부족', { cls: new52 ? 'good' : '', bar: highBar(s), sub: numeric(s.high52) ? `고점 ${fmt(s.high52, 2)}${new52 ? ' · 오늘 신고가' : ''}` : null }),
-    kvRow('60일 고점까지', numeric(s.high60DistancePct) ? `${fmt(s.high60DistancePct)}%` : '—', { cls: new60 ? 'good' : '', sub: numeric(s.high60) ? `고점 ${fmt(s.high60, 2)}${new60 ? ' · 오늘 60일 신고가' : ''}` : null }),
+    kvRow('52주 고점까지', numeric(s.highDistancePct) ? distance(s) : '기록 부족', { cls: new52 ? 'good' : '', bar: highBar(s), sub: numeric(s.high52) ? `고점 ${fmt(s.high52, 2)}${s.closeHigh52 === true ? ' · 오늘 종가 신고가' : s.intradayHigh52 === true ? ' · 오늘 장중 신고가' : ''}` : null }),
+    kvRow('60일 고점까지', numeric(s.high60DistancePct) ? `${fmt(s.high60DistancePct)}%` : '—', { cls: new60 ? 'good' : '', sub: numeric(s.high60) ? `고점 ${fmt(s.high60, 2)}${s.closeHigh60 === true ? ' · 오늘 60일 종가 신고가' : s.intradayHigh60 === true ? ' · 오늘 60일 장중 신고가' : ''}` : null }),
   ]);
 }
 function strengthSection(s) {
