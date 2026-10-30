@@ -45,8 +45,25 @@ def sha256_file(path):
     return h.hexdigest()
 
 
+def tracked(root):
+    return [n for n in git(root, 'ls-files', '-z').decode('utf-8').split('\0') if n]
+
+
 def cmd_build(a):
-    names = [n for n in git(a.src, 'ls-files', '-z').decode('utf-8').split('\0') if n]
+    """SRC(코드)와 선택적으로 OVERLAY(자료 브랜치)의 추적 파일을 합쳐 DEST에 담는다.
+
+    같은 경로가 둘 다 있으면 --on-duplicate 로 정한다: src(코드 쪽이 이김, 전환 중), overlay(자료 쪽이 이김), fail(실패).
+    """
+    origin = {n: a.src for n in tracked(a.src)}
+    duplicates = []
+    if a.overlay:
+        for n in tracked(a.overlay):
+            if n in origin:
+                duplicates.append(n)
+                if a.on_duplicate == 'src':
+                    continue
+            origin[n] = a.overlay
+    names = list(origin)
     files = sorted(n for n in names if not is_hidden(n))
     skipped = sorted(n for n in names if is_hidden(n))
     dest = os.path.abspath(a.dest)
@@ -54,22 +71,28 @@ def cmd_build(a):
         shutil.rmtree(dest)
     manifest, frontmatter = {}, []
     for p in files:
-        s, d = os.path.join(a.src, p), os.path.join(dest, p)
+        s, d = os.path.join(origin[p], p), os.path.join(dest, p)
         os.makedirs(os.path.dirname(d), exist_ok=True)
         shutil.copyfile(s, d)
         with open(s, 'rb') as f:
             if f.read(4) in (b'---\n', b'---\r'):
                 frontmatter.append(p)
         manifest[p] = {'size': os.path.getsize(s), 'sha256': sha256_file(s)}
+    if duplicates:
+        shown = ', '.join(duplicates[:8]) + (' ...' if len(duplicates) > 8 else '')
+        print(f'같은 경로가 코드와 자료 양쪽에 {len(duplicates)}개 있음({a.on_duplicate} 쪽 사용): {shown}')
     head = git(a.src, 'rev-parse', 'HEAD').decode().strip()
+    overlay_head = git(a.overlay, 'rev-parse', 'HEAD').decode().strip() if a.overlay else None
     with open(a.manifest, 'w', encoding='utf-8') as f:
-        json.dump({'source_commit': head, 'files': manifest}, f, ensure_ascii=False)
+        json.dump({'source_commit': head, 'overlay_commit': overlay_head, 'files': manifest}, f, ensure_ascii=False)
     total = sum(m['size'] for m in manifest.values())
     print(f'꾸러미: {len(files)}개 파일, {total / 1e6:.1f}MB (원본 커밋 {head[:7]})')
     print(f'숨김 처리 {len(skipped)}개: ' + ', '.join(skipped[:12]) + (' ...' if len(skipped) > 12 else ''))
     if frontmatter:
         print('주의: Jekyll이 가공할 수 있는 파일(맨 위가 ---):', ', '.join(frontmatter))
     problems = []
+    if duplicates and a.on_duplicate == 'fail':
+        problems.append(f'같은 경로가 코드와 자료 양쪽에 {len(duplicates)}개 있습니다')
     if len(files) < a.min_files:
         problems.append(f'파일이 {len(files)}개뿐입니다 (최소 {a.min_files}개)')
     for spec in a.require:
@@ -180,6 +203,9 @@ def main():
     b.add_argument('--min-files', type=int, default=0, help='이보다 파일이 적으면 실패')
     b.add_argument('--require', action='append', default=[], metavar='경로:최소바이트',
                    help='이 파일이 없거나 그보다 작으면 실패 (여러 번 쓸 수 있다)')
+    b.add_argument('--overlay', metavar='DIR', help='자료 브랜치를 받아 둔 폴더. 그 추적 파일을 합쳐 담는다')
+    b.add_argument('--on-duplicate', choices=('src', 'overlay', 'fail'), default='fail',
+                   help='같은 경로가 양쪽에 있을 때: src=코드 쪽, overlay=자료 쪽, fail=실패 (기본)')
     c = sub.add_parser('compare')
     c.add_argument('src')
     c.add_argument('manifest')
