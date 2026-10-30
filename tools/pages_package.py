@@ -69,6 +69,18 @@ def cmd_build(a):
     print(f'숨김 처리 {len(skipped)}개: ' + ', '.join(skipped[:12]) + (' ...' if len(skipped) > 12 else ''))
     if frontmatter:
         print('주의: Jekyll이 가공할 수 있는 파일(맨 위가 ---):', ', '.join(frontmatter))
+    problems = []
+    if len(files) < a.min_files:
+        problems.append(f'파일이 {len(files)}개뿐입니다 (최소 {a.min_files}개)')
+    for spec in a.require:
+        name, _, need = spec.partition(':')
+        got = manifest.get(name, {}).get('size', 0)
+        if got < int(need or 1):
+            problems.append(f'{name}: {got}바이트 (최소 {need or 1}바이트)')
+    if problems:
+        print('꾸러미에 문제가 있어 내보내지 않습니다: ' + ' / '.join(problems))
+        return 1
+    return 0
 
 
 def fetch(base, path):
@@ -113,7 +125,7 @@ def cmd_compare(a):
     files = built['files']
     with concurrent.futures.ThreadPoolExecutor(WORKERS) as pool:
         live = dict(zip(files, pool.map(lambda p: fetch(a.url, p), files)))
-    rows = {'same': [], 'timing': [], 'unexplained': [], 'missing': [], 'error': []}
+    rows = {'same': [], 'timing': [], 'unexplained': [], 'missing': [], 'error': [], 'site_only': []}
     for p, want in files.items():
         got = live[p]
         if got['status'] == 404:
@@ -128,12 +140,19 @@ def cmd_compare(a):
                 rows['timing'].append({'path': p, 'live_is_commit': hit[0], 'committed_at': hit[1]})
             else:
                 rows['unexplained'].append({'path': p, 'live_size': got['size'], 'built_size': want['size']})
+    # Jekyll은 .md를 .html로도 바꿔 내보낸다. 새 방식은 그 변환본을 만들지 않으므로 몇 개가 사라지는지 센다.
+    md_paths = [p for p in files if p.endswith('.md')]
+    with concurrent.futures.ThreadPoolExecutor(WORKERS) as pool:
+        for p, got in zip(md_paths, pool.map(lambda p: fetch(a.url, p[:-3] + '.html'), md_paths)):
+            if got['status'] == 200:
+                rows['site_only'].append({'path': p[:-3] + '.html', 'from': p})
     names = {'same': '같음', 'timing': '시차로 설명됨', 'unexplained': '설명 안 됨',
-             'missing': '사이트에 없음', 'error': '확인 실패'}
+             'missing': '사이트에 없음', 'error': '확인 실패',
+             'site_only': '지금 사이트에만 있음(Jekyll 변환본, 새 방식에서는 사라짐)'}
     lines = [f'## 사이트 비교 (원본 커밋 {built["source_commit"][:7]}, 파일 {len(files)}개)', '',
              '| 결과 | 개수 |', '|---|---|']
     lines += [f'| {names[k]} | {len(rows[k])} |' for k in rows]
-    for k in ('timing', 'unexplained', 'missing', 'error'):
+    for k in ('timing', 'unexplained', 'missing', 'error', 'site_only'):
         if rows[k]:
             lines += ['', f'### {names[k]}']
             lines += ['- ' + ', '.join(f'{k2}={v}' for k2, v in r.items()) for r in rows[k]]
@@ -158,6 +177,9 @@ def main():
     b.add_argument('src')
     b.add_argument('dest')
     b.add_argument('--manifest', required=True)
+    b.add_argument('--min-files', type=int, default=0, help='이보다 파일이 적으면 실패')
+    b.add_argument('--require', action='append', default=[], metavar='경로:최소바이트',
+                   help='이 파일이 없거나 그보다 작으면 실패 (여러 번 쓸 수 있다)')
     c = sub.add_parser('compare')
     c.add_argument('src')
     c.add_argument('manifest')
@@ -166,8 +188,7 @@ def main():
     c.add_argument('--report')
     a = ap.parse_args()
     if a.cmd == 'build':
-        cmd_build(a)
-        return 0
+        return cmd_build(a)
     return cmd_compare(a)
 
 

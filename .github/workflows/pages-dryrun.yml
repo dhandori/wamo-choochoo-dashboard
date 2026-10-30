@@ -30,9 +30,9 @@ jobs:
           path: main-src
           fetch-depth: 40
       - name: 배포 꾸러미 만들기
-        run: python3 -I branch/tools/pages_package.py build main-src _site --manifest manifest.json
+        run: python3 -I branch/tools/pages_package.py build main-src _site --manifest manifest.json --min-files 100 --require index.html:10000 --require us.html:10000 --require radar.html:10000
       - name: 꾸러미 포장 검사 (공식 도구로 포장만 하고 배포는 하지 않음)
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
           retention-days: 1

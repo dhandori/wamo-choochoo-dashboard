@@ -68,7 +68,8 @@ class BuildTest(unittest.TestCase):
 
     def build(self):
         dest, manifest = self.root / 'site', self.root / 'm.json'
-        quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(dest), manifest=str(manifest)))
+        quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(dest), manifest=str(manifest),
+                                               min_files=0, require=[]))
         return dest, json.loads(manifest.read_text(encoding='utf-8'))
 
     def test_사이트에_올라갈_파일만_담는다(self):
@@ -82,6 +83,22 @@ class BuildTest(unittest.TestCase):
         for rel, meta in built['files'].items():
             self.assertEqual(meta['size'], (dest / rel).stat().st_size)
             self.assertEqual(meta['sha256'], pp.sha256_file(dest / rel))
+
+    def build_with(self, **kw):
+        ns = argparse.Namespace(src=str(self.src), dest=str(self.root / 'site2'),
+                                manifest=str(self.root / 'm2.json'), min_files=0, require=[])
+        for k, v in kw.items():
+            setattr(ns, k, v)
+        return quiet(pp.cmd_build, ns)
+
+    def test_파일이_너무_적으면_실패한다(self):
+        self.assertEqual(self.build_with(min_files=3), 0)
+        self.assertEqual(self.build_with(min_files=4), 1)
+
+    def test_필수_파일이_없거나_작으면_실패한다(self):
+        self.assertEqual(self.build_with(require=['index.html:5']), 0)
+        self.assertEqual(self.build_with(require=['index.html:999999']), 1)
+        self.assertEqual(self.build_with(require=['us.html:1']), 1)
 
     def test_이전_꾸러미_찌꺼기는_지운다(self):
         dest = self.root / 'site'
@@ -99,9 +116,10 @@ class CompareTest(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.src = self.root / 'src'
-        make_repo(self.src, {'index.html': '<h1>hi</h1>', 'data/a.json': '{"a": 1}'})
+        make_repo(self.src, {'index.html': '<h1>hi</h1>', 'data/a.json': '{"a": 1}', 'docs/a.md': '# a'})
         self.site, self.manifest = self.root / 'site', self.root / 'm.json'
-        quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(self.site), manifest=str(self.manifest)))
+        quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(self.site), manifest=str(self.manifest),
+                                               min_files=0, require=[]))
         handler = functools.partial(Quiet, directory=str(self.site))
         self.server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
@@ -119,7 +137,8 @@ class CompareTest(unittest.TestCase):
     def test_같으면_통과한다(self):
         code, rows = self.compare()
         self.assertEqual(code, 0)
-        self.assertEqual(len(rows['same']), 2)
+        self.assertEqual(len(rows['same']), 3)
+        self.assertEqual(rows['site_only'], [])
 
     def test_사이트에_없는_파일은_잡아낸다(self):
         (self.site / 'data' / 'a.json').unlink()
@@ -133,6 +152,12 @@ class CompareTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertEqual([r['path'] for r in rows['unexplained']], ['index.html'])
 
+    def test_사이트에만_있는_변환본은_세지만_실패로_치지_않는다(self):
+        (self.site / 'docs' / 'a.html').write_text('<p>Jekyll이 만든 것</p>', encoding='utf-8')
+        code, rows = self.compare()
+        self.assertEqual(code, 0)
+        self.assertEqual(rows['site_only'], [{'path': 'docs/a.html', 'from': 'docs/a.md'}])
+
     def test_사이트가_직전_버전이면_시차로_설명한다(self):
         # 사이트에는 옛 내용이 있고, 저장소는 그 뒤 새 내용으로 한 번 더 커밋된 상황
         old = (self.site / 'index.html').read_text(encoding='utf-8')
@@ -141,7 +166,7 @@ class CompareTest(unittest.TestCase):
         run('add', '-A')
         run('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'update')
         quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(self.root / 'new'),
-                                               manifest=str(self.manifest)))
+                                               manifest=str(self.manifest), min_files=0, require=[]))
         self.assertEqual(old, '<h1>hi</h1>')
         code, rows = self.compare()
         self.assertEqual(code, 0)
