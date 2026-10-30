@@ -466,10 +466,13 @@ with sync_playwright() as p:
             assert first.locator('.pt-setup h4').inner_text().strip(),'셋업 이름이 비었습니다'
             assert first.locator('.pt-phase').inner_text().strip() in ('돌파','임박','형성중')
             expect(first.locator('.pt-numbers dd').first).to_be_visible()
-            # 2026-10-30: 카드 차트는 일봉(고가·저가 막대, 시가가 있으면 캔들)이다.
+            # 2026-10-30: 카드 차트는 시가까지 있으면 일봉 캔들, 아니면 종가 선이고, 패턴 모양(지점·상자)을 겹쳐 그린다.
             # 차트는 카드가 화면 가까이 오면 그린다.
             first.locator('.pt-chart-slot').scroll_into_view_if_needed()
             expect(first.locator('.pt-chart-slot svg[data-kind]')).to_be_visible()
+            first_setup=next(s for s in DATA['markets'][market]['stocks'] if s['id']==first.get_attribute('data-id'))['patterns']['setups']
+            if first_setup[0].get('shape'):
+                assert first.locator('.pc-shape').count()==1,'패턴 모양이 차트에 없습니다'
             # 위 칸 숫자는 목록과 같은 조건으로 센다: 누르면 그 수만큼 카드가 나온다.
             for k in range(3):
                 stat=page.locator('.pt-stat-num').nth(k)

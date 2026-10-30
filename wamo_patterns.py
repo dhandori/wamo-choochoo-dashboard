@@ -186,8 +186,36 @@ def _stage(bars, pivot, confirmed, near_low=-1.5, near_high=5.0):
     return 'WATCH', distance
 
 
+def _pt(bars, i, price, label=''):
+    """차트에 찍을 패턴 지점: [날짜, 가격, 이름]."""
+    return [bars.dates[i], _r(price, 4), label]
+
+
+def _box(bars, start, end, top, bottom, label):
+    """차트에 그릴 패턴 상자: 베이스·박스·깃발처럼 가로로 머문 구간. end 는 어제(오늘은 판정할 봉)."""
+    return {'from': bars.dates[start], 'to': bars.dates[end], 'top': _r(top, 4), 'bottom': _r(bottom, 4), 'label': label}
+
+
+def _shape(points=None, connect=False, boxes=None, lines=None):
+    """화면이 차트 위에 패턴 모양을 그리는 자료.
+
+    points: 고점·바닥 같은 주요 지점, connect=True 면 순서대로 이어 모양(U·W 등)을 그린다.
+    boxes: 가로로 머문 구간, lines: 두 점을 잇는 추세선([[날짜, 가격], [날짜, 가격]]).
+    """
+    out = {}
+    if points:
+        out['points'] = points
+        if connect:
+            out['connect'] = True
+    if boxes:
+        out['boxes'] = boxes
+    if lines:
+        out['lines'] = lines
+    return out or None
+
+
 def _result(key, status, label, pivot=None, stop=None, distance=None, base_days=None,
-            evidence=None, criterion='', caveat='', entry=None):
+            evidence=None, criterion='', caveat='', entry=None, shape=None):
     # 손절 폭은 사는 가격에서 잰다. 피벗 돌파형은 피벗, 피벗이 없는 포켓 피벗은 그날 종가(entry)다.
     buy = pivot or entry
     stop_pct = None
@@ -203,6 +231,7 @@ def _result(key, status, label, pivot=None, stop=None, distance=None, base_days=
         'entry': _r(buy), 'baseDays': base_days,
         'evidence': {k: v for k, v in (evidence or {}).items() if v is not None},
         'criterion': criterion, 'caveat': caveat,
+        **({'shape': shape} if shape else {}),
     }
 
 
@@ -298,7 +327,12 @@ def detect_cup(bars):
              'handleDepthPct': _r(handle_depth, 1), 'handleDays': handle_len,
              'handleVolumeRatio': _r(ratio), 'priorAdvancePct': _r(advance, 1),
              'breakoutVolumeRatio': _r(bars.volume_ratio()), 'checks': checks},
-            CUP_CRITERION, CUP_CAVEAT)
+            CUP_CRITERION, CUP_CAVEAT,
+            shape=_shape([_pt(bars, shape['left'], shape['peak'], '왼쪽 고점'),
+                          _pt(bars, shape['bottom'], shape['trough'], '컵 바닥'),
+                          _pt(bars, right, bars.highs[right], '오른쪽 고점'),
+                          _pt(bars, min(range(hs, he), key=lambda i: bars.lows[i]), handle_low, '핸들 저점')],
+                         connect=True))
     return _none('cup')
 
 
@@ -364,7 +398,8 @@ def detect_flat(bars):
         {'widthPct': _r(width, 1), 'priorAdvancePct': _r(advance, 1),
          'downVolumeRatio': _r(_mean(down) / _mean(up)) if up and down and _mean(up) else None,
          'breakoutVolumeRatio': _r(bars.volume_ratio())},
-        FLAT_CRITERION, FLAT_CAVEAT)
+        FLAT_CRITERION, FLAT_CAVEAT,
+        shape=_shape(boxes=[_box(bars, start, bars.n - 2, window_high, window_low, f'플랫 베이스 {length}일 · 폭 {width:.1f}%')]))
 
 
 # ── 더블바텀 ────────────────────────────────────────────────────────────────
@@ -424,7 +459,9 @@ def detect_dbl(bars):
              'priorAdvancePct': _r(advance, 1), 'firstBottom': bars.dates[t1],
              'secondBottom': bars.dates[t2], 'breakoutVolumeRatio': _r(bars.volume_ratio()),
              'checks': checks},
-            DBL_CRITERION, DBL_CAVEAT)
+            DBL_CRITERION, DBL_CAVEAT,
+            shape=_shape([_pt(bars, left_index, left_high, '왼쪽 고점'), _pt(bars, t1, low1, '바닥1'),
+                          _pt(bars, mid, peak, '가운데 봉우리'), _pt(bars, t2, low2, '바닥2')], connect=True))
     return _none('dbl')
 
 
@@ -478,7 +515,11 @@ def detect_htf(bars):
              'flagDropPct': _r(drop, 1), 'flagDays': flag_len,
              'flagVolumeRatio': _r(ratio), 'priorTrendPct': _r(prior, 1),
              'breakoutVolumeRatio': _r(bars.volume_ratio())},
-            HTF_CRITERION, HTF_CAVEAT)
+            HTF_CRITERION, HTF_CAVEAT,
+            shape=_shape([_pt(bars, min(range(pole_start, flag_start), key=lambda i: bars.lows[i]), pole_low, '깃대 시작'),
+                          _pt(bars, max(range(max(0, flag_start - 3), flag_start + 1), key=lambda i: bars.highs[i]),
+                              pole_top, f'깃대 +{gain:.0f}%')],
+                         connect=True, boxes=[_box(bars, flag_start, bars.n - 2, flag_high, flag_low, '깃발')]))
     return _none('htf')
 
 
@@ -498,10 +539,12 @@ def detect_pp(bars):
         return _none('pp')
     if bars.closes[-1] <= bars.closes[-2]:
         return _none('pp')
-    down = [bars.volumes[i] for i in range(bars.n - 11, bars.n - 1) if bars.closes[i] < bars.closes[i - 1]]
+    down_days = [i for i in range(bars.n - 11, bars.n - 1) if bars.closes[i] < bars.closes[i - 1]]
+    down = [bars.volumes[i] for i in down_days]
     if not down:
         return _none('pp')
     strongest_down = max(down)
+    strongest_day = max(down_days, key=lambda i: bars.volumes[i])
     if bars.volumes[-1] <= strongest_down:
         return _none('pp')
     near_ma = min(abs(bars.lows[i] / ma - 1) * 100
@@ -520,7 +563,9 @@ def detect_pp(bars):
          'closeToMa50Pct': _r((bars.close / bars.ma50 - 1) * 100, 1),
          'volumeRatio': _r(bars.volume_ratio()),
          'reboundPct': _r(rebound, 1), 'ma10': _r(bars.ma10), 'ma50': _r(bars.ma50)},
-        PP_CRITERION, PP_CAVEAT, entry=bars.close)
+        PP_CRITERION, PP_CAVEAT, entry=bars.close,
+        shape=_shape([_pt(bars, strongest_day, bars.closes[strongest_day], '최대 하락일'),
+                      _pt(bars, bars.n - 1, bars.close, '포켓 피벗')]))
 
 
 # ── 다바스 박스 ─────────────────────────────────────────────────────────────
@@ -568,7 +613,9 @@ def detect_darvas(bars):
          'boxBottomDate': bars.dates[bottom_index], 'boxVolumeRatio': _r(ratio),
          'high52Ratio': _r(bars.close / bars.high52 * 100, 1),
          'breakoutVolumeRatio': _r(bars.volume_ratio())},
-        DARVAS_CRITERION, DARVAS_CAVEAT)
+        DARVAS_CRITERION, DARVAS_CAVEAT,
+        shape=_shape([_pt(bars, top_index, top), _pt(bars, bottom_index, bottom)],
+                     boxes=[_box(bars, top_index, bars.n - 2, top, bottom, f'박스 {held}일')]))
 
 
 # ── 상승 삼각형 ─────────────────────────────────────────────────────────────
@@ -607,7 +654,11 @@ def detect_asc(bars):
             {'touchesTop': len(peaks), 'touchesBottom': len(troughs),
              'resistance': _r(resistance), 'baseVolumeRatio': _r(ratio),
              'breakoutVolumeRatio': _r(bars.volume_ratio())},
-            ASC_CRITERION, ASC_CAVEAT)
+            ASC_CRITERION, ASC_CAVEAT,
+            shape=_shape([_pt(bars, i, bars.highs[i]) for i in peaks] + [_pt(bars, i, bars.lows[i]) for i in troughs],
+                         lines=[[[bars.dates[peaks[0]], _r(resistance, 4)], [bars.dates[-1], _r(resistance, 4)]],
+                                [[bars.dates[troughs[0]], _r(bars.lows[troughs[0]], 4)],
+                                 [bars.dates[troughs[-1]], _r(bars.lows[troughs[-1]], 4)]]]))
     return _none('asc')
 
 
@@ -670,7 +721,9 @@ def detect_cheat(bars):
                  'pauseVolumeRatio': _r(ratio), 'cupBottomDate': bars.dates[bottom],
                  'priorAdvancePct': _r(advance, 1),
                  'breakoutVolumeRatio': _r(bars.volume_ratio())},
-                CHEAT_CRITERION, CHEAT_CAVEAT)
+                CHEAT_CRITERION, CHEAT_CAVEAT,
+                shape=_shape([_pt(bars, left, peak, '컵 왼쪽 고점'), _pt(bars, bottom, trough, '컵 바닥')], connect=True,
+                             boxes=[_box(bars, start, bars.n - 2, high, low, '치트 구간')]))
     return _none('cheat')
 
 
@@ -702,7 +755,21 @@ def vcp_setup(vcp, bars):
          'shrinking': vcp.get('shrinking'), 'volumeDryRatio': vcp.get('volumeDryRatio'),
          'range10Pct': vcp.get('range10Pct'),
          'breakoutVolumeRatio': vcp.get('breakoutVolumeRatio')},
-        VCP_CRITERION, VCP_CAVEAT)
+        VCP_CRITERION, VCP_CAVEAT, shape=_vcp_shape(contractions))
+
+
+def _vcp_shape(contractions):
+    """수축 고점→저점을 지그재그로 잇는다. 저점에 그 수축의 깊이를 적는다."""
+    points = []
+    for c in contractions:
+        if not isinstance(c, dict):
+            continue
+        peak, trough, depth = _f(c.get('peak')), _f(c.get('trough')), _f(c.get('depthPct'))
+        if c.get('peakDate') and peak:
+            points.append([str(c['peakDate']), _r(peak, 4), ''])
+        if c.get('troughDate') and trough:
+            points.append([str(c['troughDate']), _r(trough, 4), f'-{depth:.0f}%' if depth else ''])
+    return _shape(points, connect=True) if len(points) >= 3 else None
 
 
 def stage_gate(checks, core):

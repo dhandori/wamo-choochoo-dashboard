@@ -286,6 +286,11 @@
 :root[data-theme="light"] .pc-level-text.pivot { fill: #7f6119; }
 :root[data-theme="light"] .pc-level-text.stop { fill: #9c4f08; }
 :root[data-theme="light"] .pc-shade { fill: rgba(127, 97, 25, 0.07); }
+:root[data-theme="light"] .pc-mark-path { stroke: #6f279f; }
+:root[data-theme="light"] .pc-mark-line { stroke: #6f279f; }
+:root[data-theme="light"] .pc-mark-box { fill: rgba(111, 39, 159, 0.1); stroke: #6f279f; }
+:root[data-theme="light"] .pc-mark-dot { fill: #6f279f; stroke: #eff2f8; }
+:root[data-theme="light"] .pc-mark-text { fill: #260c37; stroke: #eff2f8; }
 :root[data-theme="light"] .pc-last { fill: #080d14; stroke: #ecf1f7; }
 :root[data-theme="light"] .pc-last-tag { fill: #080d14; }
 :root[data-theme="light"] .pc-last-text { fill: #eff2f8; }
@@ -924,6 +929,7 @@
 :root[data-theme="light"] .pt-key { color: #2b3745; }
 :root[data-theme="light"] .pt-key .k-pivot { color: #62430e; }
 :root[data-theme="light"] .pt-key .k-stop { color: #6b3606; }
+:root[data-theme="light"] .pt-key .k-shape { color: #3f165a; }
 :root[data-theme="light"] .pt-key .k-base { color: #53441d; }
 :root[data-theme="light"] .pt-key .k-base::before { background: rgba(127, 97, 25, 0.25); }
 :root[data-theme="light"] .pt-numbers dt { color: #2b3745; }

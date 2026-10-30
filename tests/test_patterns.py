@@ -343,6 +343,39 @@ class VcpPassthroughTests(unittest.TestCase):
             self.assertEqual(status_of(result, 'vcp'), 'NONE')
 
 
+class ShapeTests(unittest.TestCase):
+    """화면이 차트 위에 패턴 모양을 그리도록 주요 지점·상자를 함께 싣는다. 날짜는 실제 봉의 날짜여야 한다."""
+
+    def check(self, bars, key, points=0, boxes=0):
+        data = rows(bars)
+        days = {r['date'] for r in data}
+        setup = setup_of(wp.detect_patterns(data), key)
+        self.assertIsNotNone(setup, key)
+        shape = setup['shape']
+        self.assertGreaterEqual(len(shape.get('points', [])), points, key)
+        self.assertGreaterEqual(len(shape.get('boxes', [])), boxes, key)
+        for d, price, _ in shape.get('points', []):
+            self.assertIn(d, days)
+            self.assertGreater(price, 0)
+        for b in shape.get('boxes', []):
+            self.assertIn(b['from'], days)
+            self.assertGreaterEqual(b['top'], b['bottom'])
+        return shape
+
+    def test_cup_draws_its_u_and_handle(self):
+        shape = self.check(CupTests().series(), 'cup', points=4)
+        self.assertTrue(shape['connect'])
+        self.assertEqual([p[2] for p in shape['points']], ['왼쪽 고점', '컵 바닥', '오른쪽 고점', '핸들 저점'])
+
+    def test_double_bottom_draws_a_w(self):
+        shape = self.check(DoubleBottomTests().series(), 'dbl', points=4)
+        self.assertEqual([p[2] for p in shape['points']][1:], ['바닥1', '가운데 봉우리', '바닥2'])
+
+    def test_flat_base_and_box_draw_a_range(self):
+        self.check(FlatBaseTests().series(), 'flat', boxes=1)
+        self.check(DarvasBoxTests().series(), 'darvas', boxes=1)
+
+
 class SettleTests(unittest.TestCase):
     """판정이 끝난 셋업을 오늘 종가로 맞추는 규칙(settle). 모든 셋업에 같은 규칙을 쓴다."""
 

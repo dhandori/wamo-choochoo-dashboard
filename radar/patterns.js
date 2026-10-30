@@ -332,8 +332,15 @@ function levelChart(stock, setup) {
 // 셋업 카드 일봉에 겹치는 이동평균. 포켓 피벗은 10·50일선이 판정 기준이라 둘 다, 나머지는 50일선만.
 const MA10 = { n: 10, color: '#c98500', label: '10일선' };
 const MA50 = { n: 50, color: '#3987e5', label: '50일선' };
-/** 카드에 그릴 거래일 수. 베이스 전체와 그 앞 조금이 들어오게, 60~120거래일. */
-const chartDaysFor = setup => Math.max(60, Math.min(120, (setup.baseDays || 0) + 20));
+/** 카드에 그릴 거래일 수. 패턴의 첫 지점(없으면 베이스 시작)과 그 앞 조금이 들어오게, 최소 60거래일. */
+function chartDaysFor(setup, series) {
+  const n = series.closes.length;
+  const dates = [...(setup.shape?.points || []).map(p => p[0]), ...(setup.shape?.boxes || []).map(b => b.from),
+    ...(setup.shape?.lines || []).flat().map(p => p[0])];
+  const first = dates.map(d => series.dates.indexOf(d)).filter(i => i >= 0);
+  const span = first.length ? n - Math.min(...first) + 10 : (setup.baseDays || 0) + 20;
+  return Math.max(60, Math.min(n, span));
+}
 
 /** 셋업 카드의 일봉 차트 칸. 차트 자료(wamo_chart_*.json)를 받으면 캔들로 바꿔 그린다. */
 function setupChart(stock, setup, market) {
@@ -353,20 +360,23 @@ function setupChart(stock, setup, market) {
   wrap.fill = data => {
     const series = data && stockSeries(data, stock.symbol);
     if (!series || !wrap.isConnected) { if (!fallback) note.textContent = '차트 자료 없음'; return; }
-    const days = chartDaysFor(setup);
+    const days = chartDaysFor(setup, series);
+    // 패턴 모양이 있으면 그것이 베이스 위치를 보여 주므로 오른쪽 음영은 겹쳐 그리지 않는다.
+    const hasShape = !!setup.shape;
     const levels = [];
     if (isNum(setup.pivot)) levels.push({ value: setup.pivot, label: '피벗', cls: 'pivot' });
     if (isNum(setup.stop) && setup.key !== 'pp') levels.push({ value: setup.stop, label: '손절', cls: 'stop' });
     const chart = priceChart(series, { market, days, compact: true, mas: setup.key === 'pp' ? [MA10, MA50] : [MA50],
-      levels, shade: setup.baseDays && setup.baseDays < days ? setup.baseDays : 0, height: 150 });
+      levels, shape: setup.shape, shade: !hasShape && setup.baseDays && setup.baseDays < days ? setup.baseDays : 0, height: 170 });
     holder.replaceChildren(chart);
     const kind = chart.querySelector('svg')?.dataset.kind;
-    note.textContent = `${kind ? '일봉' : '종가'} 최근 ${Math.min(days, series.closes.length)}거래일`;
-    key.querySelectorAll('.k-ma, .k-base').forEach(e => e.remove());
+    note.textContent = `${kind === 'candle' ? '일봉' : '종가'} 최근 ${Math.min(days, series.closes.length)}거래일`;
+    key.querySelectorAll('.k-ma, .k-base, .k-shape').forEach(e => e.remove());
+    if (setup.shape) note.before(n('span', '패턴 모양', 'k-shape'));
     for (const m of setup.key === 'pp' ? [MA10, MA50] : [MA50]) {
       const item = n('span', setup.key === 'pp' && m.n === 50 ? '50일선 = 손절선' : m.label, 'k-ma'); item.style.setProperty('--c', m.color); note.before(item);
     }
-    if (setup.baseDays && setup.baseDays < days) note.before(n('span', `베이스 ${setup.baseDays}거래일`, 'k-base'));
+    if (!hasShape && setup.baseDays && setup.baseDays < days) note.before(n('span', `베이스 ${setup.baseDays}거래일`, 'k-base'));
   };
   return wrap;
 }

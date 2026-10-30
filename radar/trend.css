@@ -151,6 +151,12 @@ body[data-view="trend"] #controls, body[data-view="trend"] .list-meta, body[data
 .pc-level-text { font-size: 11px; font-weight: 700; paint-order: stroke; stroke: #0c121d; stroke-width: 3px; }
 .pc-level-text.pivot { fill: #e3b341; } .pc-level-text.stop { fill: #ff9a3c; }
 .pc-shade { fill: rgba(227, 179, 65, .07); }
+/* 패턴 모양: 지점(고점·바닥) · 잇는 선 · 상자(베이스·박스·깃발) · 추세선 */
+.pc-mark-path { fill: none; stroke: #c792ea; stroke-width: 1.6; stroke-dasharray: 4 3; stroke-linejoin: round; }
+.pc-mark-line { stroke: #c792ea; stroke-width: 1.4; }
+.pc-mark-box { fill: rgba(199, 146, 234, .10); stroke: #c792ea; stroke-width: 1; stroke-dasharray: 3 3; }
+.pc-mark-dot { fill: #c792ea; stroke: #0c121d; stroke-width: 1.5; }
+.pc-mark-text { fill: #e2c6f5; font-weight: 700; paint-order: stroke; stroke: #0c121d; stroke-width: 3px; }
 .pc-last { fill: #eaf0f8; stroke: #0e1723; stroke-width: 2; }
 .pc-last-tag { fill: #eaf0f8; }
 .pc-last-text { fill: #0c121d; font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
