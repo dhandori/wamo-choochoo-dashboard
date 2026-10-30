@@ -5,6 +5,7 @@ import { PATTERN_TERMS, glossary } from './terms.mjs';
 // 이 파일의 PHASES 는 셋업 진행 단계다. FTD 지수 단계는 이름을 구분해 가져온다.
 import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs';
 import { CAP_FLOORS } from './model.mjs';
+import { loadChartData, stockSeries, priceChart } from './chart.js';
 addTerms(PATTERN_TERMS);
 
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
@@ -41,16 +42,18 @@ const EV = {
   undercut: ['언더컷', 'bool'], firstBottom: ['첫 바닥', 'date'], secondBottom: ['두 번째 바닥', 'date'],
   poleGainPct: ['깃대 상승', 'pct'], poleDays: ['깃대 기간', 'days'],
   flagDropPct: ['깃발 하락', 'pct'], flagDays: ['깃발 기간', 'days'], flagVolumeRatio: ['깃발 거래량', 'x'],
-  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['이동평균 거리', 'pct'],
+  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['눌림 저가–이평 거리', 'raw'],
+  closeToMa10Pct: ['종가–10일선', 'pct'], closeToMa50Pct: ['종가–50일선', 'pct'],
   reboundPct: ['최근 반등', 'pct'],
   boxWidthPct: ['박스 폭', 'pct'], boxDays: ['박스 기간', 'days'],
   boxTopDate: ['윗변', 'date'], boxBottomDate: ['아랫변', 'date'], boxVolumeRatio: ['박스 거래량', 'x'],
+  cupBottomDate: ['컵 바닥', 'date'], baseVolumeRatio: ['베이스 거래량', 'x'],
   high52Ratio: ['52주 고가 대비', 'raw'],
   touchesTop: ['윗변 접점', 'count'], touchesBottom: ['아랫변 접점', 'count'],
   cupLevelPct: ['컵 안 높이', 'raw'], pauseDays: ['멈춘 기간', 'days'],
   pauseWidthPct: ['멈춘 구간 폭', 'pct'], pauseVolumeRatio: ['멈춘 구간 거래량', 'x'],
   contractions: ['수축 횟수', 'count'], volumeDryRatio: ['거래량 건조', 'x'], range10Pct: ['10일 폭', 'raw'],
-  volumeRatio: ['거래량', 'x'], breakoutVolumeRatio: ['당일 거래량', 'x'],
+  volumeRatio: ['당일 거래량', 'x'], breakoutVolumeRatio: ['당일 거래량', 'x'],
 };
 const EV_ORDER = Object.keys(EV);
 
@@ -77,7 +80,7 @@ let guideOpen = false;
 const SORTS = {
   default: ['기본 · 단계순', '돌파 → 임박 → 형성중, 같은 단계에서는 피벗에 가까운 순'],
   pivot: ['피벗 가까운 순', '현재가와 피벗의 거리가 작은 순', r => absOrNull(r.setups[0].distanceToPivotPct), 'asc'],
-  stop: ['손절 폭 작은 순', '피벗에서 손절선까지 거리가 작은 순 · 틀렸을 때 손실이 작은 자리부터', r => r.setups[0].stopDistancePct, 'asc'],
+  stop: ['손절 폭 작은 순', '사는 가격에서 손절선까지 거리가 작은 순(피벗, 포켓 피벗은 종가) · 틀렸을 때 손실이 작은 자리부터', r => r.setups[0].stopDistancePct, 'asc'],
   importance: ['셋업 중요도 순', '셋업북 별점(★)이 높은 셋업부터', (r, meta) => meta[r.setups[0].key]?.importance, 'desc'],
   rs: ['RS 높은 순', '같은 시장 안에서 상대 강도가 높은 순', r => r.stock.rs, 'desc'],
   volume: ['거래량 많은 순', '당일 거래량 ÷ 50일 평균이 큰 순', r => r.stock.volumeRatio, 'desc'],
@@ -102,6 +105,8 @@ function leadingIndustries(block) {
 const inLeadingIndustry = (stock, leading) =>
   [stock.industry, ...(stock.alsoIndustries || [])].some(name => leading.has(name));
 
+const stage2Count = block => (block.stocks || []).filter(s => s.patterns?.setups?.length && s.stage2 === true).length;
+
 export function patternsSummary(block) {
   const s = block?.patternSummary;
   if (!s || !s.withSetup) return '0';
@@ -110,8 +115,9 @@ export function patternsSummary(block) {
 }
 
 /** 지금 화면 조건을 통과한 종목. 종목마다 통과한 셋업 목록을 함께 돌려준다. */
-function selectRows(block, query, leading, meta = {}, market) {
+function selectRows(block, query, leading, meta = {}, market, only = {}) {
   const { cap, sector } = scopeOf(market);
+  const wantPhase = only.phase ?? phase, wantPick = only.pick ?? pick;
   const text = String(query || '').trim().toLowerCase();
   const rows = [];
   for (const stock of block.stocks || []) {
@@ -125,8 +131,8 @@ function selectRows(block, query, leading, meta = {}, market) {
     if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry]
       .some(v => String(v || '').toLowerCase().includes(text))) continue;
     const setups = found.setups.filter(s =>
-      (phase === 'all' || s.status === phase)
-      && (pick === 'all' || s.key === pick)
+      (wantPhase === 'all' || s.status === wantPhase)
+      && (wantPick === 'all' || s.key === wantPick)
       && (!onlyTightStop || !s.stopTooWide));
     if (setups.length) rows.push({ stock, found, setups });
   }
@@ -151,9 +157,23 @@ function chip(label, active, onClick, title) {
   return b;
 }
 
-function filters(block, meta, redraw, market) {
+/** 칩·요약 칸의 숫자. 목록과 같은 조건(2단계·손절·업종·범위·검색)으로 센다.
+ *  단계 칩은 지금 고른 셋업 안에서, 셋업 칩은 지금 고른 단계 안에서 센다. 누르면 그 수만큼 나온다. */
+function counts(block, query, leading, meta, market) {
+  const byStage = {}, bySetup = {};
+  for (const key of PHASE_ORDER) byStage[key] = selectRows(block, query, leading, meta, market, { phase: key }).length;
+  for (const row of selectRows(block, query, leading, meta, market, { pick: 'all' })) {
+    for (const key of new Set(row.setups.map(s => s.key))) bySetup[key] = (bySetup[key] || 0) + 1;
+  }
+  const all = selectRows(block, query, leading, meta, market, { phase: 'all', pick: 'all' }).length;
+  return { byStage, bySetup, all };
+}
+
+function filters(block, meta, redraw, market, counted) {
   const box = n('div', null, 'pt-filters');
-  const summary = block.patternSummary || {};
+  const summary = { byStage: counted.byStage, bySetup: { ...(block.patternSummary?.bySetup || {}) } };
+  // 오늘 셋업이 있는 셋업은 조건에 걸려 0이 되어도 칩을 남긴다(0으로 보여 준다).
+  for (const key of Object.keys(summary.bySetup)) summary.bySetup[key] = counted.bySetup[key] || 0;
   const stages = n('div', null, 'pt-chiprow');
   stages.append(n('span', '단계', 'pt-chiplabel'));
   stages.append(chip('전체', phase === 'all', () => { phase = 'all'; limit = 30; redraw(); }));
@@ -182,7 +202,7 @@ function filters(block, meta, redraw, market) {
 
   const toggles = n('div', null, 'pt-chiprow');
   toggles.append(n('span', '조건', 'pt-chiplabel'));
-  toggles.append(chip('2단계 종목만', onlyStage2, () => { onlyStage2 = !onlyStage2; limit = 30; redraw(); },
+  toggles.append(chip(`2단계 종목만${onlyStage2 ? '' : ` ${stage2Count(block)}`}`, onlyStage2, () => { onlyStage2 = !onlyStage2; limit = 30; redraw(); },
     '셋업북 ①-2: 주가가 150·200일선 위이고 200일선이 위로 기울어진 종목만 봅니다. 하락 추세 종목은 좋은 패턴도 대부분 실패합니다.'));
   toggles.append(chip('손절 8% 이내만', onlyTightStop, () => { onlyTightStop = !onlyTightStop; limit = 30; redraw(); },
     '셋업북 ②-4: 피벗에서 손절선까지 7~8%를 넘는 자리는 사지 않습니다.'));
@@ -285,7 +305,7 @@ function marketGate(block, trend, expected, failed, openTrend) {
   return box;
 }
 
-/** 60거래일 종가에 피벗선과 손절선을 겹쳐 그린 작은 그림. */
+/** 일봉 자료가 아직 없을 때만 쓰는 대체 그림: 60거래일 종가 선에 피벗선과 손절선. */
 function levelChart(stock, setup) {
   const data = (stock.sparkline || []).filter(isNum);
   if (data.length < 5) return null;
@@ -309,19 +329,77 @@ function levelChart(stock, setup) {
   return svg;
 }
 
+// 셋업 카드 일봉에 겹치는 이동평균. 포켓 피벗은 10·50일선이 판정 기준이라 둘 다, 나머지는 50일선만.
+const MA10 = { n: 10, color: '#c98500', label: '10일선' };
+const MA50 = { n: 50, color: '#3987e5', label: '50일선' };
+/** 카드에 그릴 거래일 수. 패턴의 첫 지점(없으면 베이스 시작)과 그 앞 조금이 들어오게, 최소 60거래일. */
+function chartDaysFor(setup, series) {
+  const n = series.closes.length;
+  const dates = [...(setup.shape?.points || []).map(p => p[0]), ...(setup.shape?.boxes || []).map(b => b.from),
+    ...(setup.shape?.lines || []).flat().map(p => p[0])];
+  const first = dates.map(d => series.dates.indexOf(d)).filter(i => i >= 0);
+  const span = first.length ? n - Math.min(...first) + 10 : (setup.baseDays || 0) + 20;
+  return Math.max(60, Math.min(n, span));
+}
+
+/** 셋업 카드의 일봉 차트 칸. 차트 자료(wamo_chart_*.json)를 받으면 캔들로 바꿔 그린다. */
+function setupChart(stock, setup, market) {
+  const wrap = n('div', null, 'pt-chartbox');
+  const holder = n('div', null, 'pt-chart-slot');
+  const fallback = levelChart(stock, setup);
+  if (fallback) holder.append(fallback);
+  wrap.append(holder);
+  const key = n('div', null, 'pt-key');
+  if (isNum(setup.pivot)) key.append(n('span', '피벗', 'k-pivot'));
+  // 포켓 피벗의 손절선은 50일선이라 따로 긋지 않고 50일선을 그대로 쓴다.
+  if (isNum(setup.stop) && setup.key !== 'pp') key.append(n('span', '손절선', 'k-stop'));
+  const note = n('span', fallback ? `종가 · 최근 ${(stock.sparkline || []).length}거래일` : '차트 불러오는 중', 'k-note');
+  key.append(note);
+  wrap.append(key);
+  wrap.dataset.symbol = stock.symbol;
+  wrap.fill = data => {
+    const series = data && stockSeries(data, stock.symbol);
+    if (!series || !wrap.isConnected) { if (!fallback) note.textContent = '차트 자료 없음'; return; }
+    const days = chartDaysFor(setup, series);
+    // 패턴 모양이 있으면 그것이 베이스 위치를 보여 주므로 오른쪽 음영은 겹쳐 그리지 않는다.
+    const hasShape = !!setup.shape;
+    const levels = [];
+    if (isNum(setup.pivot)) levels.push({ value: setup.pivot, label: '피벗', cls: 'pivot' });
+    if (isNum(setup.stop) && setup.key !== 'pp') levels.push({ value: setup.stop, label: '손절', cls: 'stop' });
+    const chart = priceChart(series, { market, days, compact: true, mas: setup.key === 'pp' ? [MA10, MA50] : [MA50],
+      levels, shape: setup.shape, shade: !hasShape && setup.baseDays && setup.baseDays < days ? setup.baseDays : 0, height: 170 });
+    holder.replaceChildren(chart);
+    const kind = chart.querySelector('svg')?.dataset.kind;
+    note.textContent = `${kind === 'candle' ? '일봉' : '종가'} 최근 ${Math.min(days, series.closes.length)}거래일`;
+    key.querySelectorAll('.k-ma, .k-base, .k-shape').forEach(e => e.remove());
+    if (setup.shape) note.before(n('span', '패턴 모양', 'k-shape'));
+    for (const m of setup.key === 'pp' ? [MA10, MA50] : [MA50]) {
+      const item = n('span', setup.key === 'pp' && m.n === 50 ? '50일선 = 손절선' : m.label, 'k-ma'); item.style.setProperty('--c', m.color); note.before(item);
+    }
+    if (!hasShape && setup.baseDays && setup.baseDays < days) note.before(n('span', `베이스 ${setup.baseDays}거래일`, 'k-base'));
+  };
+  return wrap;
+}
+
 function numbers(stock, setup, market) {
   const list = n('dl', null, 'pt-numbers');
   const add = (label, value, cls) => { const dt = n('dt'); dt.append(label); list.append(dt, n('dd', value, cls)); };
   add('현재가', price(stock.close, market));
   if (isNum(setup.pivot)) {
     add(term('pivot', '피벗'), price(setup.pivot, market));
+    // distanceToPivotPct = (피벗 ÷ 현재가 − 1)%. 0 이하면 현재가가 피벗 위다.
     const d = setup.distanceToPivotPct;
-    add('피벗까지', isNum(d) ? (d <= 0 ? `돌파 ${num(-d)}%` : `${num(d)}%`) : '—', isNum(d) && d <= 0 ? 'up' : null);
+    add('피벗까지', isNum(d) ? (d <= 0 ? `피벗 위 ${num(-d)}%` : `${num(d)}% 남음`) : '—',
+      setup.extended ? 'bad' : isNum(d) && d <= 0 ? 'up' : null);
   }
   if (isNum(setup.stop)) {
-    add(term('stopLine', '손절선'), price(setup.stop, market));
-    add(term('stopWidth', '손절 폭'), isNum(setup.stopDistancePct) ? `${num(setup.stopDistancePct)}%` : '—',
-      setup.stopTooWide ? 'bad' : null);
+    add(term('stopLine', setup.key === 'pp' ? '손절선(50일선)' : '손절선'), price(setup.stop, market));
+    // 셋업북 ②-4 의 손절 폭은 사는 가격(피벗, 포켓 피벗은 그날 종가)에서 잰다.
+    add(term('stopWidth', isNum(setup.pivot) ? '피벗→손절' : '종가→손절'),
+      isNum(setup.stopDistancePct) ? `${num(setup.stopDistancePct)}%` : '—', setup.stopTooWide ? 'bad' : null);
+    if (isNum(setup.pivot) && isNum(stock.close) && stock.close > 0) {
+      add('현재가→손절', `${num((1 - setup.stop / stock.close) * 100)}%`);
+    }
   }
   return list;
 }
@@ -436,18 +514,14 @@ function card(row, market, meta, openStock, leading) {
   box.append(title);
   if (info.logic) box.append(n('p', info.logic, 'pt-logic'));
 
+  const flags = [];
+  if (best.unconfirmed) flags.push(['피벗 위로 올라왔지만 돌파일 거래량(50일 평균의 1.5배)이 없었습니다. 거래량을 확인하고 삽니다.', 'warn']);
+  if (best.extended) flags.push(['셋업북 ②-3: 피벗 위 5%를 넘었습니다. 추격 매수하지 않고 다음 눌림을 기다립니다.', 'bad']);
+  if (best.stopTooWide) flags.push([`셋업북 ②-4: ${isNum(best.pivot) ? '피벗' : '종가'}에서 손절선까지 ${num(best.stopDistancePct)}%로 8%를 넘습니다. 이 자리는 건너뜁니다.`, 'bad']);
+  for (const [text, cls] of flags) box.append(n('p', text, `pt-flag ${cls}`));
+
   const body = n('div', null, 'pt-body');
-  const chart = levelChart(stock, best);
-  if (chart) {
-    const wrap = n('div', null, 'pt-chartbox');
-    wrap.append(chart);
-    const key = n('div', null, 'pt-key');
-    if (isNum(best.pivot)) key.append(n('span', '피벗', 'k-pivot'));
-    if (isNum(best.stop)) key.append(n('span', '손절선', 'k-stop'));
-    key.append(n('span', `최근 ${(stock.sparkline || []).length}거래일`, 'k-note'));
-    wrap.append(key);
-    body.append(wrap);
-  }
+  body.append(setupChart(stock, best, market));
   body.append(numbers(stock, best, market));
   box.append(body);
   box.append(evidence(best));
@@ -500,18 +574,23 @@ export function renderPatterns(root, market, block, meta, options = {}) {
   // 셋업북 ①-1: 시장 방향이 먼저다. 셋업 목록보다 위에 둔다.
   root.append(marketGate(block, trend, expectedSession, trendFailed, openTrend));
 
+  // 위 칸·칩·목록이 모두 같은 조건으로 센 숫자를 쓴다(누르면 그 수만큼 나온다).
+  const counted = counts(block, query, leading, meta, market);
   const top = n('section', null, 'pt-top');
-  const counts = summary.byStage || {};
   for (const key of PHASE_ORDER) {
     const [label, cls, termKey] = PHASES[key];
     const cell = n('div', null, `pt-stat phase-${cls}`);
     const head = n('span', null, 'pt-stat-label'); head.append(term(termKey, label)); cell.append(head);
-    cell.append(n('strong', String(counts[key] || 0)), n('small', '종목'));
+    const go = n('button', String(counted.byStage[key] || 0), 'pt-stat-num'); go.type = 'button';
+    go.setAttribute('aria-label', `${label} ${counted.byStage[key] || 0}종목만 보기`);
+    go.onclick = () => { phase = phase === key ? 'all' : key; limit = 30; redraw(); };
+    cell.append(go, n('small', '종목 · 현재 조건'));
     top.append(cell);
   }
   const share = n('div', null, 'pt-stat');
-  share.append(n('span', '셋업 보유', 'pt-stat-label'), n('strong', String(summary.withSetup || 0)),
-    n('small', `스크리닝 ${block.stocks.length.toLocaleString()}종목 중`));
+  share.append(n('span', '조건 통과 / 셋업 보유', 'pt-stat-label'),
+    n('strong', `${counted.all} / ${summary.withSetup || 0}`),
+    n('small', `스크리닝 ${block.stocks.length.toLocaleString()}종목 중 셋업 ${summary.withSetup || 0}종목`));
   top.append(share);
   root.append(top);
 
@@ -520,13 +599,14 @@ export function renderPatterns(root, market, block, meta, options = {}) {
     root.append(n('p', '지금 이 시장에는 촘촘한 베이스가 거의 없습니다. 셋업북은 시장이 하락 추세일 때 좋은 패턴도 대부분 실패한다고 적었습니다. 건수가 적은 것 자체가 판정 결과입니다.', 'pt-weak'));
   }
 
-  root.append(filters(block, meta, redraw, market));
+  root.append(filters(block, meta, redraw, market, counted));
   const help = guide(meta);
   if (help) root.append(help);
 
   const rows = selectRows(block, query, leading, meta, market);
   const info = n('div', null, 'pt-result');
-  info.append(n('span', `${rows.length}종목 · 현재 조건 기준`));
+  const hidden = (summary.withSetup || 0) - counted.all;
+  info.append(n('span', `${rows.length}종목 · 현재 조건 기준${hidden > 0 ? ` · 조건에 걸러진 셋업 종목 ${hidden}개` : ''}`));
   root.append(info);
 
   if (!rows.length) {
@@ -535,6 +615,16 @@ export function renderPatterns(root, market, block, meta, options = {}) {
     const list = n('div', null, 'pt-list');
     for (const row of rows.slice(0, limit)) list.append(card(row, market, meta, openStock, leading));
     root.append(list);
+    // 일봉 차트는 차트 자료를 한 번 받아 보이는 카드부터 채운다.
+    const slots = [...list.querySelectorAll('.pt-chartbox')];
+    loadChartData(market).then(data => {
+      if (!data) { slots.forEach(s => s.fill(null)); return; }
+      const io = new IntersectionObserver(entries => entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target); e.target.fill(data);
+      }), { rootMargin: '600px 0px' });
+      slots.forEach(s => io.observe(s));
+    });
     if (rows.length > limit) {
       const more = n('button', `${rows.length - limit}종목 더 보기`, 'pt-loadmore');
       more.type = 'button';

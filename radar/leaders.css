@@ -96,3 +96,7 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
   .c-score{justify-items:start;grid-template-columns:auto auto;align-items:center;gap:8px}
   .ld-qdots{justify-content:flex-start}
 }
+/* 시장 필터 · 시장별 내역 */
+.ld-board-filters{align-items:center;margin-top:-4px}
+.ld-filter-label{font-size:12px;color:#8aa0b9;margin-right:2px}
+.ld-board-split{display:block;font-size:12px;color:#b7c7da}

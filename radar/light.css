@@ -279,6 +279,18 @@
 :root[data-theme="light"] .pc-vol.up { fill: #e6c4ca; }
 :root[data-theme="light"] .pc-vol.down { fill: #c4d4eb; }
 :root[data-theme="light"] .pc-vol-avg { stroke: #4c5d73; }
+:root[data-theme="light"] .pc-level.pivot { stroke: #7f6119; }
+:root[data-theme="light"] .pc-level.stop { stroke: #9c4f08; }
+:root[data-theme="light"] .pc-level.ma { stroke: #17467e; }
+:root[data-theme="light"] .pc-level-text { stroke: #eff2f8; }
+:root[data-theme="light"] .pc-level-text.pivot { fill: #7f6119; }
+:root[data-theme="light"] .pc-level-text.stop { fill: #9c4f08; }
+:root[data-theme="light"] .pc-shade { fill: rgba(127, 97, 25, 0.07); }
+:root[data-theme="light"] .pc-mark-path { stroke: #6f279f; }
+:root[data-theme="light"] .pc-mark-line { stroke: #6f279f; }
+:root[data-theme="light"] .pc-mark-box { fill: rgba(111, 39, 159, 0.1); stroke: #6f279f; }
+:root[data-theme="light"] .pc-mark-dot { fill: #6f279f; stroke: #eff2f8; }
+:root[data-theme="light"] .pc-mark-text { fill: #260c37; stroke: #eff2f8; }
 :root[data-theme="light"] .pc-last { fill: #080d14; stroke: #ecf1f7; }
 :root[data-theme="light"] .pc-last-tag { fill: #080d14; }
 :root[data-theme="light"] .pc-last-text { fill: #eff2f8; }
@@ -461,6 +473,7 @@
 :root .tr-cal-day header span { font-size: 12px; }
 :root .tr-score-table .muted { font-size: 12px; }
 :root .tr-recent summary { font-size: 12px; }
+:root .pc-level-text { font-size: 12px; }
 :root .pc-legend.small { font-size: 12px; }
 :root .chart-toggle button { font-size: 12px; }
 :root .run-now-button { font-size: 12px; }
@@ -764,6 +777,8 @@
 @media(max-width:760px) {
 :root[data-theme="light"] .ld-table .ld-td[data-label]:not(.c-name)::before { color: #2c3745; }
 }
+:root[data-theme="light"] .ld-filter-label { color: #2b3745; }
+:root[data-theme="light"] .ld-board-split { color: #273546; }
 
 /* ===== leaders.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ld-intro p { color: #b7c5d6; }
@@ -807,6 +822,7 @@
 @media(max-width:760px) {
 :root:not([data-theme="light"]) .ld-table .ld-td[data-label]:not(.c-name)::before { color: #b9c6d5; }
 }
+:root:not([data-theme="light"]) .ld-filter-label { color: #b9c6d5; }
 
 /* ===== leaders.css (작은 글씨 키우기) ===== */
 :root .ld-meter small { font-size: 12px; }
@@ -877,6 +893,7 @@
 /* ===== patterns.css (밝은 테마) ===== */
 :root[data-theme="light"] .pt-stat { border: 1px solid #a9bad1; background: #e7edf5; }
 :root[data-theme="light"] .pt-stat strong { color: #080d14; }
+:root[data-theme="light"] .pt-stat-num { color: #080d14; }
 :root[data-theme="light"] .pt-stat small { color: #2b3745; }
 :root[data-theme="light"] .pt-stat-label { color: #2b3745; }
 :root[data-theme="light"] .pt-stat.phase-breakout { border-top: 3px solid #267d64; }
@@ -903,6 +920,7 @@
 :root[data-theme="light"] .pt-setup h4 { color: #050b11; }
 :root[data-theme="light"] .pt-setup small { color: #2b3745; }
 :root[data-theme="light"] .pt-label { color: #0e2955; }
+:root[data-theme="light"] .pt-chart-slot .pc-svg { background: #edf2fa; border: 1px solid #a6bad4; }
 :root[data-theme="light"] .pt-chart { background: #edf2fa; border: 1px solid #a6bad4; }
 :root[data-theme="light"] .pt-line { stroke: #080d14; }
 :root[data-theme="light"] .pt-dot { fill: #080d14; }
@@ -911,6 +929,9 @@
 :root[data-theme="light"] .pt-key { color: #2b3745; }
 :root[data-theme="light"] .pt-key .k-pivot { color: #62430e; }
 :root[data-theme="light"] .pt-key .k-stop { color: #6b3606; }
+:root[data-theme="light"] .pt-key .k-shape { color: #3f165a; }
+:root[data-theme="light"] .pt-key .k-base { color: #53441d; }
+:root[data-theme="light"] .pt-key .k-base::before { background: rgba(127, 97, 25, 0.25); }
 :root[data-theme="light"] .pt-numbers dt { color: #2b3745; }
 :root[data-theme="light"] .pt-numbers dd { color: #070e16; }
 :root[data-theme="light"] .pt-numbers dd.up { color: #1a5645; }
@@ -956,6 +977,8 @@
 :root[data-theme="light"] .pt-guide-text { color: #273546; }
 :root[data-theme="light"] .pt-select { border: 1px solid #a8bbd1; background: #e6edf7; color: #08111b; }
 :root[data-theme="light"] .pt-sort-hint { color: #2c3745; }
+:root[data-theme="light"] .pt-flag { border: 1px solid #dcc59d; background: #f5f0e8; color: #62430e; }
+:root[data-theme="light"] .pt-flag.bad { border-color: #e3b294; background: #f6ece7; color: #6b3606; }
 
 /* ===== patterns.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .pt-stat small { color: #b9c5d5; }
@@ -967,6 +990,7 @@
 :root:not([data-theme="light"]) .pt-setup small { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-key { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-key .k-stop { color: #ffb066; }
+:root:not([data-theme="light"]) .pt-key .k-base { color: #dcc489; }
 :root:not([data-theme="light"]) .pt-numbers dt { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-numbers dd.up { color: #85e0c6; }
 :root:not([data-theme="light"]) .pt-numbers dd.bad { color: #ffb066; }
@@ -978,6 +1002,7 @@
 :root:not([data-theme="light"]) .pt-gate-fact b { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-guide-head small { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-sort-hint { color: #b9c6d5; }
+:root:not([data-theme="light"]) .pt-flag.bad { color: #ffb066; }
 
 /* ===== patterns.css (작은 글씨 키우기) ===== */
 :root .pt-stat small { font-size: 12px; }

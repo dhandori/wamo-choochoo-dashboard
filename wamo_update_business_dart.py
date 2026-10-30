@@ -228,6 +228,7 @@ def fetch_yahoo_history(ticker: str, years=None, expected_date=None):
                 adj = (r0.get("indicators", {}).get("adjclose") or [{}])[0].get("adjclose") or []
 
                 closes = quote.get("close") or []
+                opens = quote.get("open") or []
                 highs = quote.get("high") or []
                 lows = quote.get("low") or []
                 vols = quote.get("volume") or []
@@ -251,13 +252,17 @@ def fetch_yahoo_history(ticker: str, years=None, expected_date=None):
                     if not math.isfinite(ratio) or ratio <= 0:
                         ratio = 1.0
 
-                    rows.append({
+                    row = {
                         "date": datetime.fromtimestamp(t, tz=timezone.utc).date().isoformat(),
                         "close": adj_close,
                         "high": raw_high * ratio,
                         "low": raw_low * ratio,
                         "volume": volume,
-                    })
+                    }
+                    # 시가는 캔들 차트에만 쓴다. 없거나 범위를 벗어나면 validate_history 가 뺀다.
+                    if i < len(opens) and opens[i] is not None:
+                        row["open"] = float(opens[i]) * ratio
+                    rows.append(row)
 
                 # Duplicate date 제거 후 정렬.
                 dedup = {r["date"]: r for r in rows}
@@ -314,7 +319,7 @@ def fetch_naver_history(code: str, count=10000):
         except Exception:
             continue
         if c > 0:
-            rows.append({"date": dt, "close": c, "high": h, "low": l, "volume": v})
+            rows.append({"date": dt, "open": o, "close": c, "high": h, "low": l, "volume": v})
     rows.sort(key=lambda r: r["date"])
     if len(rows) < 60:
         raise RuntimeError(f"가격 이력 부족: {len(rows)}일")

@@ -89,8 +89,13 @@ def clean_rows(raw):
         d, c, h, l = str(r.get('date', '')), num(r.get('close')), num(r.get('high')), num(r.get('low'))
         if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d) or not c or c <= 0:
             continue
-        rows.append({'date': d, 'close': c, 'high': h if h and h > 0 else c,
-                     'low': l if l and l > 0 else c, 'volume': num(r.get('volume')) or 0.0})
+        row = {'date': d, 'close': c, 'high': h if h and h > 0 else c,
+               'low': l if l and l > 0 else c, 'volume': num(r.get('volume')) or 0.0}
+        o = num(r.get('open'))
+        # 시가는 캔들 차트에만 쓴다. 그날 고가·저가 안에 있을 때만 남긴다.
+        if o and row['low'] <= o <= row['high']:
+            row['open'] = o
+        rows.append(row)
     rows.sort(key=lambda r: r['date'])
     out = []
     for r in rows:
@@ -1024,7 +1029,11 @@ def atr14(rows, n=14):
 
 
 def chart_payload(universe, bench, asof, market, bench2=None):
-    """Compact per-stock daily closes for the detail chart (loaded on demand)."""
+    """Compact per-stock daily bars for the detail chart (loaded on demand).
+
+    c = closes (CHART_DAYS); v, h, l, o = volume/high/low/open for the last CHART_VOLUME_DAYS
+    sessions (daily candles; o only once opens are collected, null on days without a bar).
+    """
     dates = [r['date'] for r in bench][-CHART_DAYS:]
     if len(dates) < 60 or dates[-1] != asof:
         dates = sorted({r['date'] for s in universe for r in s['rows']})[-CHART_DAYS:]
@@ -1035,14 +1044,23 @@ def chart_payload(universe, bench, asof, market, bench2=None):
         first = next((k for k, d in enumerate(dates) if d in by_date), None)
         if first is None:
             continue
-        closes, volumes, last = [], [], None
+        closes, volumes, opens, highs, lows, last = [], [], [], [], [], None
+        price = (lambda v: round(v, digits)) if digits else (lambda v: int(round(v)))
         for d in dates[first:]:
             r = by_date.get(d)
             if r:
                 last = r
-            closes.append(round(last['close'], digits) if digits else int(round(last['close'])))
+            closes.append(price(last['close']))
             volumes.append(int(r['volume']) if r else 0)
-        stocks[s['symbol']] = {'s': first, 'c': closes, 'v': volumes[-CHART_VOLUME_DAYS:]}
+            # 일봉 캔들. 거래가 없던 날(r 없음)은 봉을 그리지 않는다(null).
+            opens.append(price(r['open']) if r and r.get('open') else None)
+            highs.append(price(r['high']) if r else None)
+            lows.append(price(r['low']) if r else None)
+        stocks[s['symbol']] = {'s': first, 'c': closes, 'v': volumes[-CHART_VOLUME_DAYS:],
+                               'h': highs[-CHART_VOLUME_DAYS:], 'l': lows[-CHART_VOLUME_DAYS:]}
+        # 시가는 수집을 시작한 날부터 있다. 하나도 없으면 싣지 않는다(화면은 고가·저가 막대로 그린다).
+        if any(v is not None for v in opens[-CHART_VOLUME_DAYS:]):
+            stocks[s['symbol']]['o'] = opens[-CHART_VOLUME_DAYS:]
         if s.get('benchRows') is not None and bench2:
             stocks[s['symbol']]['b'] = 2   # 이 종목은 보조 지수(bench2)와 비교한다
         atr = atr14([r for r in s['rows'] if r['date'] <= dates[-1]])

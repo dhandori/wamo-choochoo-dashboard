@@ -43,9 +43,7 @@ def history(raw):
         if not d or d in seen or any(v is None for v in values.values()): return None
         if min(values[k] for k in ('close','high','low'))<=0 or values['volume']<0: return None
         if not values['low']<=values['close']<=values['high']: return None
-        if 'open' in row:
-            opening=number(row['open'])
-            if opening is None or not values['low']<=opening<=values['high']: return None
+        # 시가는 캔들 차트에만 쓰는 선택 항목이다. 틀린 시가 하나로 종목을 버리지 않는다.
         rows.append({'date':d,**values}); seen.add(d)
     return sorted(rows,key=lambda r:r['date'])
 
