@@ -34,17 +34,32 @@ function chip(text, cls, key) {
   return c;
 }
 
+// 종목의 소속 시장 배지·당일 등락은 레이더 스냅샷에서 가져온다(view.js 가 stockInfo 로 넘겨 줌).
+let stockInfo = () => null;
+function boardMark(id) {
+  const b = stockInfo(id)?.board;
+  return b ? n('span', b, `board-badge board-${b.toLowerCase().replace(/[^a-z]/g, '')}`) : null;
+}
 function stockButton(item, openStock, extra) {
   const b = n('button', null, 'ld-stock'); b.type = 'button';
   b.onclick = () => openStock(item.id);
-  b.append(n('strong', short(item.name)), n('small', `${item.symbol}${extra ? ` · ${extra}` : ''}`));
+  const name = n('strong', short(item.name)); const mk = boardMark(item.id); if (mk) name.append(mk);
+  b.append(name, n('small', `${item.symbol}${extra ? ` · ${extra}` : ''}`));
   return b;
 }
+// 표 안에서 쓰는 작은 종목 링크(대표 종목·후보). 눌러서 상세를 연다.
+function stockLink(item, openStock, title) {
+  const b = n('button', short(item.name), 'ld-name-link'); b.type = 'button';
+  b.title = title || `${short(item.name)} · ${item.symbol}`;
+  b.onclick = () => openStock(item.id);
+  return b;
+}
+const slug = s => String(s || '').replace(/[^0-9A-Za-z가-힣]+/g, '-');
 
 function emergenceCard(L, market, openStock, openFTD, no) {
   const e = L.emergence || {};
   const [label, tone, meaning] = EMERGENCE[e.status] || EMERGENCE.NO_FTD;
-  const card = n('section', null, `ld-card ld-emergence tone-${tone}`);
+  const card = n('section', null, `ld-card ld-emergence tone-${tone}`); card.id = 'ld-sec-emergence';
   const head = n('div', null, 'ld-card-head');
   const h = n('h3'); h.append(`${no} `, term('emergence', '선도주 출현 신호'));
   head.append(h, n('span', label, `ld-status tone-${tone}`)); card.append(head);
@@ -71,8 +86,8 @@ function emergenceCard(L, market, openStock, openFTD, no) {
 }
 
 function stageLegend() {
-  const wrap = n('div', null, 'ld-legend');
-  wrap.append(n('b', '단계 뜻'));
+  const wrap = n('details', null, 'ld-legend');
+  wrap.append(n('summary', '단계(신규 진입·강화·유지·약화·상위권 이탈) 뜻 보기'));
   const ul = n('ul');
   for (const [key, [icon, label, meaning]] of Object.entries(STAGES)) {
     const li = n('li', null, `stage-${key.toLowerCase()}`);
@@ -93,60 +108,63 @@ function stageChip(stage) {
 
 function rankDelta(v) {
   if (!isNum(v)) return n('span', '—', 'ld-delta flat');
-  if (v === 0) return n('span', '변동 없음', 'ld-delta flat');
+  if (v === 0) return n('span', '–', 'ld-delta flat');
   return n('span', `${v > 0 ? '▲' : '▼'}${Math.abs(v)}`, `ld-delta ${v > 0 ? 'up' : 'down'}`);
 }
 
-function condDots(c) {
-  const wrap = n('div', null, 'ld-conds');
-  [['rsTop', 'RS 상위 20%'], ['newHighs', '신고가 3+'], ['above50', '50일선 위 60%+'], ['persist', '10일 중 5일+']].forEach(([k, label]) => {
-    wrap.append(n('span', `${c?.[k] ? '✓' : '·'} ${label}`, c?.[k] ? 'ok' : ''));
-  });
-  return wrap;
+// 표 한 칸: 값 + (조건을 채웠으면 초록). 휴대폰에서는 칸 앞에 이름을 붙인다(data-label).
+function cell(label, node, ok = null, cls = '') {
+  const c = n('div', null, `ld-td ${cls}${ok === true ? ' ok' : ok === false ? ' no' : ''}`.trim());
+  c.dataset.label = label;
+  if (typeof node === 'string') c.append(n('b', node)); else c.append(node);
+  return c;
+}
+function headRow(cols) {
+  const r = n('div', null, 'ld-tr ld-thead');
+  cols.forEach(([key, label, cls]) => { const c = n('div', null, `ld-td ${cls || ''}`.trim()); c.append(key ? term(key, label) : label); r.append(c); });
+  return r;
 }
 
 function industryCard(L, openStock, no, flow = new Map()) {
   const ind = L.industries || {};
-  const card = n('section', null, 'ld-card');
+  const card = n('section', null, 'ld-card'); card.id = 'ld-sec-industries';
   const head = n('div', null, 'ld-card-head');
   const h = n('h3'); h.append(`${no} `, term('industryRs', '업종 RS'), ' 순위 · ', term('leadingIndustry', '선도업종'));
   head.append(h, n('span', `선도업종 ${ind.leadingCount ?? 0}개 / ${ind.count ?? 0}개 업종`, 'ld-status tone-none'));
   card.append(head);
-  card.append(n('p', '업종 종목들을 같은 무게로 묶어 RS 점수를 매기고, 4가지 조건을 모두 채우면 선도업종(✔)으로 표시해요. 이름 옆 단계 표시를 누르면 뜻이 나와요.', 'ld-meaning'));
+  card.append(n('p', '업종 종목들을 같은 무게로 묶어 RS 점수를 매겨요. 초록 숫자는 선도업종 조건(RS 상위 20% · 신고가 3종목+ · 50일선 위 60%+ · 10일 중 5일+ 상위권)을 채운 칸이고, 4칸이 모두 초록이면 선도업종(✔)이에요.', 'ld-meaning'));
   card.append(stageLegend());
   if (ind.status !== 'OK' || !ind.items?.length) { card.append(n('div', ind.note || '업종 순위를 계산할 자료가 부족합니다.', 'ld-empty')); return card; }
-  const list = n('ol', null, 'ld-industries');
+  const table = n('div', null, 'ld-table ld-ind-table');
+  table.append(headRow([[null, '#', 'c-rank'], [null, '업종 · 대표 종목', 'c-name'], ['ldStage', '단계', 'c-stage'], ['industryRs', 'RS'], ['rankChange', '1주'], ['rankChange', '1개월'], ['newHighs', '신고가'], ['above50', '50일선 위'], ['persist', '상위권']]));
   ind.items.slice(0, 10).forEach(x => {
-    const li = n('li', null, `ld-industry${x.leading ? ' leading' : ''}`);
-    const top = n('div', null, 'ld-ind-top');
-    const name = n('div', null, 'ld-ind-name');
-    name.append(n('span', `${x.rank}`, 'ld-rank'), n('strong', x.name));
-    if (x.leading) name.append(chip('✔ 선도업종', 'lead', 'leadingIndustry'));
-    if (x.rsLineHigh) name.append(chip('★ RS선 신고가', 'star', 'industryRsLine'));
-    if (x.leadsIndex) name.append(chip('지수보다 먼저 고점권', 'bo', 'leadsIndex'));
-    if (x.heldUp) name.append(chip(`버팀 ${num(x.heldUpRatio, 2)}`, 'held', 'heldUpIndustry'));
-    { const mc = moneyChip(x.name, flow); if (mc) name.append(mc); }
-    top.append(name, stageChip(x.stage));
-    li.append(top);
-    const stats = n('div', null, 'ld-ind-stats');
-    const stat = (labelNode, valueNode) => { const s = n('div'); const l = n('span'); l.append(labelNode); s.append(l, valueNode); return s; };
-    stats.append(
-      stat(term('industryRs', 'RS'), n('b', num(x.rs))),
-      stat(term('rankChange', '1주'), rankDelta(x.rankChange5)),
-      stat(term('rankChange', '1개월'), rankDelta(x.rankChange20)),
-      stat(term('newHighs', '신고가'), n('b', `${x.newHighs}종목`)),
-      stat(term('above50', '50일선 위'), n('b', isNum(x.above50Pct) ? `${num(x.above50Pct)}%` : '—')),
-      stat(term('persist', '상위권'), n('b', `${x.persist}/10일`)),
-    );
-    li.append(stats, condDots(x.conditions));
+    const c = x.conditions || {};
+    const row = n('div', null, `ld-tr${x.leading ? ' leading' : ''}`); row.id = `ld-ind-${slug(x.name)}`;
+    const name = n('div', null, 'ld-td c-name');
+    const title = n('div', null, 'ld-ind-name'); title.append(n('strong', x.name));
+    if (x.leading) title.append(chip('✔ 선도업종', 'lead', 'leadingIndustry'));
+    if (x.rsLineHigh) title.append(chip('★ RS선 신고가', 'star', 'industryRsLine'));
+    if (x.leadsIndex) title.append(chip('지수보다 먼저 고점권', 'bo', 'leadsIndex'));
+    if (x.heldUp) title.append(chip(`버팀 ${num(x.heldUpRatio, 2)}`, 'held', 'heldUpIndustry'));
+    { const mc = moneyChip(x.name, flow); if (mc) title.append(mc); }
+    name.append(title);
     if (x.representatives?.length) {
-      const reps = n('div', null, 'ld-reps'); reps.append(n('span', `대표 종목 · 구성 ${x.members}종목`));
-      x.representatives.forEach(r => reps.append(stockButton(r, openStock, `RS ${num(r.rs)}${r.leader ? ' · 선도주' : ''}`)));
-      li.append(reps);
+      const reps = n('div', null, 'ld-reps-inline'); reps.append(n('span', `${x.members}종목 ·`));
+      x.representatives.forEach(r => reps.append(stockLink(r, openStock, `${short(r.name)} · ${r.symbol} · RS ${num(r.rs)}${r.leader ? ' · 선도주' : ''}`), n('small', `${num(r.rs)}${r.leader ? '★' : ''}`)));
+      name.append(reps);
     }
-    list.append(li);
+    const rank = n('div', null, 'ld-td c-rank'); rank.append(n('span', `${x.rank}`, 'ld-rank'));
+    const stage = n('div', null, 'ld-td c-stage'); stage.dataset.label = '단계'; stage.append(stageChip(x.stage));
+    row.append(rank, name, stage,
+      cell('RS', num(x.rs), !!c.rsTop),
+      cell('1주', rankDelta(x.rankChange5)),
+      cell('1개월', rankDelta(x.rankChange20)),
+      cell('신고가', `${x.newHighs}`, !!c.newHighs),
+      cell('50일선 위', isNum(x.above50Pct) ? `${num(x.above50Pct)}%` : '—', !!c.above50),
+      cell('상위권', `${x.persist}/10일`, !!c.persist));
+    table.append(row);
   });
-  card.append(list);
+  card.append(table);
   if (ind.dropped?.length) {
     const out = n('p', null, 'ld-dropped'); out.append(stageChip('OUT'), ` ${ind.dropped.map(x => x.name).join(' · ')}`);
     card.append(out);
@@ -156,7 +174,7 @@ function industryCard(L, openStock, no, flow = new Map()) {
 
 function leaderCard(L, openStock, rerender, no) {
   const ld = L.leaders || {};
-  const card = n('section', null, 'ld-card');
+  const card = n('section', null, 'ld-card'); card.id = 'ld-sec-leaders';
   const head = n('div', null, 'ld-card-head');
   const h = n('h3'); h.append(`${no} `, term('leader', '선도주'), ' 목록');
   head.append(h, n('span', `${ld.count ?? 0}종목 · 핵심 ${ld.coreCount ?? 0}`, 'ld-status tone-none'));
@@ -171,22 +189,21 @@ function leaderCard(L, openStock, rerender, no) {
   card.append(filters);
   const items = (ld.items || []).filter(x => stockFilter === 'all' || (stockFilter === 'core' ? x.core : stockFilter === 'rsLead' ? x.rsLead : x.breakoutDates?.length));
   if (!items.length) { card.append(n('div', '조건에 맞는 선도주가 없어요. 시장이 약할 때는 선도주가 거의 없는 것이 정상이에요.', 'ld-empty')); return card; }
-  const list = n('div', null, 'ld-stocks');
+  const table = n('div', null, 'ld-table ld-stock-table');
+  table.append(headRow([[null, '종목 · 업종', 'c-name'], ['rsOneil', 'RS'], ['ldDistance', '고점까지'], [null, '당일'], [null, '표시', 'c-flags']]));
   items.slice(0, showAll ? 60 : 20).forEach(x => {
-    const row = n('div', null, 'ld-row');
-    row.append(stockButton(x, openStock, x.industry));
-    const nums = n('div', null, 'ld-nums');
-    const rs = n('span'); rs.append(term('rsOneil', 'RS'), n('b', ` ${num(x.rs)}`));
-    const dist = n('span'); dist.append(term('ldDistance', '고점까지'), n('b', ` ${isNum(x.highDistancePct) ? `-${num(x.highDistancePct, 1)}%` : '—'}`));
-    nums.append(rs, dist); row.append(nums);
-    const flags = n('div', null, 'ld-flags');
+    const row = n('div', null, `ld-tr${x.core ? ' core' : ''}`);
+    const name = n('div', null, 'ld-td c-name'); name.append(stockButton(x, openStock, x.industry));
+    const chg = isNum(x.changePct) ? n('b', `${x.changePct > 0 ? '+' : ''}${num(x.changePct, 1)}%`, x.changePct > 0 ? 'up' : x.changePct < 0 ? 'down' : '') : n('b', '—');
+    const flags = n('div', null, 'ld-td c-flags');
     if (x.core) flags.append(chip('핵심', 'core', 'core'));
     if (x.rsLead) flags.append(chip('★ RS선 선행', 'star', 'rsLead'));
     if (x.breakoutDates?.length) flags.append(chip(`돌파 ${md(x.breakoutDates[x.breakoutDates.length - 1])}`, 'bo', 'ldBreakout'));
     if (isNum(x.heldUpRatio)) flags.append(chip(`버팀 ${num(x.heldUpRatio, 2)}${x.heldUp ? ' ✓' : ''}`, x.heldUp ? 'held' : 'soft', 'heldUp'));
-    row.append(flags); list.append(row);
+    row.append(name, cell('RS', num(x.rs), x.rs >= (L.policy?.rsCore ?? 90)), cell('고점까지', isNum(x.highDistancePct) ? `-${num(x.highDistancePct, 1)}%` : '—', isNum(x.highDistancePct) ? x.highDistancePct <= 5 : null), cell('당일', chg), flags);
+    table.append(row);
   });
-  card.append(list);
+  card.append(table);
   if (items.length > 20 && !showAll) { const more = n('button', `더 보기 (${Math.min(60, items.length) - 20}종목)`, 'ld-more'); more.type = 'button'; more.onclick = () => { showAll = true; rerender(); }; card.append(more); }
   return card;
 }
@@ -198,8 +215,10 @@ const PHASE_BANNER = {
   UPTREND: ['상승장 · 선도업종이 버티는지 보는 때', 'none', '지수가 크게 빠진 상태가 아니에요. 선도업종이 계속 강한지, 다음으로 올라오는 업종(워치리스트)이 무엇인지 봐요.'],
   UNKNOWN: ['시장 상태 판정 보류', 'none', 'FTD 판정 자료가 없어 시장 상태를 정하지 않았어요. 아래 숫자는 그대로 볼 수 있어요.'],
 };
+const PHASE_WORD = { OUTSIDE: '하락장 아님', CORRECTION: '하락장', RALLY: '반등 시도', LATE: '반등 시도(늦은 구간)', CONFIRMED: 'FTD 나옴', PRESSURE: 'FTD 흔들림' };
 
-function phaseBanner(L, openFTD) {
+// 맨 위 요약: 지금 할 일 + 핵심 숫자 4칸(누르면 그 카드로). 카드 순서가 단계마다 바뀌어도 숫자는 늘 같은 자리.
+function phaseBanner(L, openFTD, jump) {
   const ph = L.phase || { mode: 'UNKNOWN', indexes: [] };
   const [label, tone, meaning] = PHASE_BANNER[ph.mode] || PHASE_BANNER.UNKNOWN;
   const box = n('section', null, `ld-phase tone-${tone}`);
@@ -208,68 +227,117 @@ function phaseBanner(L, openFTD) {
   head.append(h);
   if (openFTD) { const go = n('button', 'FTD 탭 →', 'ld-link'); go.type = 'button'; go.onclick = openFTD; head.append(go); }
   box.append(head, n('p', meaning, 'ld-meaning'));
-  if (ph.indexes?.length) box.append(n('small', ph.indexes.map(x => `${x.label} ${({ OUTSIDE: '하락장 아님', CORRECTION: '하락장', RALLY: '반등 시도', LATE: '반등 시도(늦은 구간)', CONFIRMED: 'FTD 나옴', PRESSURE: 'FTD 흔들림' })[x.phase] || x.phase}`).join(' · '), 'ld-phase-idx'));
+  if (ph.indexes?.length) box.append(n('small', ph.indexes.map(x => `${x.label} ${PHASE_WORD[x.phase] || x.phase}`).join(' · '), 'ld-phase-idx'));
+  const ind = L.industries || {}, ld = L.leaders || {}, e = L.emergence || {};
+  const [eLabel, eTone] = EMERGENCE[e.status] || EMERGENCE.NO_FTD;
+  const stats = n('div', null, 'ld-kpis');
+  [['leaders', '선도주', `${ld.count ?? 0}`, `핵심 ${ld.coreCount ?? 0} · ★ ${ld.rsLeadCount ?? 0}`, ''],
+    ['industries', '선도업종', `${ind.leadingCount ?? 0}`, `/ ${ind.count ?? 0}개 업종`, ''],
+    ['watch', '워치리스트', `${ind.watchCount ?? 0}`, '준비도 4점+ 업종', ''],
+    ['emergence', '출현 신호', e.status === 'NO_FTD' ? `${e.count ?? 0}` : `${e.count ?? 0}/${e.need ?? '—'}`, eLabel, `tone-${eTone}`]].forEach(([key, title, value, sub, cls]) => {
+    const b = n('button', null, `ld-kpi ${cls}`.trim()); b.type = 'button'; b.onclick = () => jump(key);
+    b.append(n('span', title), n('strong', value), n('small', sub));
+    stats.append(b);
+  });
+  box.append(stats);
   return box;
 }
 
+// 카드 바로가기: 화면 위(탭 줄 아래)에 붙어 따라온다.
+const SEC_NAME = { emergence: '출현 신호', leaders: '선도주', map: '업종 지도', industries: '업종 순위', watch: '워치리스트' };
+function sectionNav(order, jump) {
+  const nav = n('nav', null, 'ld-nav'); nav.setAttribute('aria-label', '선도주 화면 바로가기');
+  order.forEach((key, i) => { const b = n('button', `${NO[i]} ${SEC_NAME[key]}`); b.type = 'button'; b.dataset.sec = key; b.onclick = () => jump(key); nav.append(b); });
+  return nav;
+}
+
 // Scatter: industry RS (x) × share of members near the 52-week high (y).
-function mapCard(L, no) {
+// 비율이 0%인 업종(약한 장에서는 대부분)은 축 아래 '0% 띠'에 따로 깔아 서로 겹치거나 숫자를 가리지 않게 한다.
+// 점을 누르면 아래 정보 줄에 그 업종이 나오고, 순위 표·워치리스트에 있으면 그 줄로 이동한다.
+function mapCard(L, no, focusIndustry) {
   const ind = L.industries || {};
   const pts = (ind.map || []).filter(p => isNum(p.rs) && isNum(p.nearHighPct));
-  const card = n('section', null, 'ld-card');
+  const card = n('section', null, 'ld-card'); card.id = 'ld-sec-map';
   const head = n('div', null, 'ld-card-head');
   const h = n('h3'); h.append(`${no} `, term('industryMap', '업종 지도'), ' · RS × 신고가 근접');
   head.append(h, n('span', `${pts.length}개 업종`, 'ld-status tone-none')); card.append(head);
-  card.append(n('p', '상대강도(RS)와 52주 신고가를 함께 봅니다. 오른쪽 위로 갈수록 시장보다 강하고 고점 근처 종목도 많은 업종이에요. 초록은 선도업종, 노랑은 FTD 대기 워치리스트예요.', 'ld-meaning'));
+  card.append(n('p', '상대강도(RS)와 52주 신고가를 함께 봅니다. 오른쪽 위로 갈수록 시장보다 강하고 고점 근처 종목도 많은 업종이에요. 초록은 선도업종, 노랑은 FTD 대기 워치리스트예요. 점을 누르면 업종 정보가 나와요.', 'ld-meaning'));
   if (pts.length < 3) { card.append(n('div', '지도를 그릴 업종 자료가 부족합니다.', 'ld-empty')); return card; }
-  const W = 360, H = 270, ml = 54, mr = 10, mt = 12, mb = 36, pw = W - ml - mr, ph = H - mt - mb;
-  const X = v => ml + (v / 100) * pw, Y = v => mt + (1 - v / 100) * ph;
+  // 휴대폰은 좁은 판으로 다시 그려 글자가 작아지지 않게 한다.
+  const narrow = typeof window !== 'undefined' && window.innerWidth < 700;
+  const W = narrow ? 380 : 640, H = narrow ? 300 : 330, ml = narrow ? 50 : 64, mr = 12, mt = 14, band = 34, mb = 40, pw = W - ml - mr, ph = H - mt - band - mb;
+  const X = v => ml + (v / 100) * pw, Y = v => mt + (1 - v / 100) * ph, bandY = mt + ph + band / 2;
   const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, class: 'ld-map', role: 'img', 'aria-label': '업종 RS와 신고가 근접 비율 지도' });
   const pol = L.policy || {};
   const xLine = pol.industryTopPct ?? 80, yLine = pol.watchNearHighPctMin ?? 30;
   svg.append(sv('rect', { x: X(xLine), y: mt, width: X(100) - X(xLine), height: Y(yLine) - mt, class: 'ld-map-zone' }));
   for (let v = 0; v <= 100; v += 20) {
-    svg.append(sv('line', { x1: X(v), x2: X(v), y1: mt, y2: mt + ph, class: 'ld-map-grid' }), sv('line', { x1: ml, x2: ml + pw, y1: Y(v), y2: Y(v), class: 'ld-map-grid' }));
-    svg.append(sv('text', { x: X(v), y: mt + ph + 13, class: 'ld-map-tick', 'text-anchor': 'middle' }, `${v}`), sv('text', { x: ml - 5, y: Y(v) + 3, class: 'ld-map-tick', 'text-anchor': 'end' }, `${v}%`));
+    svg.append(sv('line', { x1: X(v), x2: X(v), y1: mt, y2: mt + ph + band, class: 'ld-map-grid' }));
+    if (v > 0) svg.append(sv('line', { x1: ml, x2: ml + pw, y1: Y(v), y2: Y(v), class: 'ld-map-grid' }), sv('text', { x: ml - 8, y: Y(v) + 4, class: 'ld-map-tick', 'text-anchor': 'end' }, `${v}%`));
+    svg.append(sv('text', { x: X(v), y: mt + ph + band + 16, class: 'ld-map-tick', 'text-anchor': 'middle' }, `${v}`));
   }
-  svg.append(sv('line', { x1: X(xLine), x2: X(xLine), y1: mt, y2: mt + ph, class: 'ld-map-rule' }), sv('line', { x1: ml, x2: ml + pw, y1: Y(yLine), y2: Y(yLine), class: 'ld-map-rule' }));
-  svg.append(sv('line', { x1: ml, x2: ml, y1: mt, y2: mt + ph, class: 'ld-map-axis' }), sv('line', { x1: ml, x2: ml + pw, y1: mt + ph, y2: mt + ph, class: 'ld-map-axis' }));
-  svg.append(sv('text', { x: ml + pw / 2, y: H - 4, class: 'ld-map-label', 'text-anchor': 'middle' }, '업종 RS (오른쪽 = 시장보다 강함) →'));
-  svg.append(sv('text', { x: 10, y: mt + ph / 2, class: 'ld-map-label', 'text-anchor': 'middle', transform: `rotate(-90 10 ${mt + ph / 2})` }, '52주 고점 15% 이내 종목 비율 →'));
+  svg.append(sv('rect', { x: ml, y: mt + ph + 2, width: pw, height: band - 4, class: 'ld-map-band' }), sv('text', { x: ml - 8, y: bandY + 4, class: 'ld-map-tick', 'text-anchor': 'end' }, '0%'));
+  svg.append(sv('line', { x1: X(xLine), x2: X(xLine), y1: mt, y2: mt + ph + band, class: 'ld-map-rule' }), sv('line', { x1: ml, x2: ml + pw, y1: Y(yLine), y2: Y(yLine), class: 'ld-map-rule' }));
+  svg.append(sv('line', { x1: ml, x2: ml, y1: mt, y2: mt + ph + band, class: 'ld-map-axis' }), sv('line', { x1: ml, x2: ml + pw, y1: mt + ph + band, y2: mt + ph + band, class: 'ld-map-axis' }));
+  svg.append(sv('text', { x: ml + pw / 2, y: H - 6, class: 'ld-map-label', 'text-anchor': 'middle' }, '업종 RS (오른쪽 = 시장보다 강함) →'));
+  svg.append(sv('text', { x: 14, y: mt + ph / 2, class: 'ld-map-label', 'text-anchor': 'middle', transform: `rotate(-90 14 ${mt + ph / 2})` }, '고점 15% 이내 종목 비율 →'));
   const maxM = Math.max(...pts.map(p => p.members));
   const watchMin = pol.watchScoreMin ?? 4;
   const kind = p => p.leading ? 'lead' : p.watchScore >= watchMin ? 'watch' : 'other';
   const order = { other: 0, watch: 1, lead: 2 };
-  pts.slice().sort((a, b) => order[kind(a)] - order[kind(b)]).forEach(p => {
-    const c = sv('circle', { cx: X(p.rs), cy: Y(p.nearHighPct), r: (3 + 6 * Math.sqrt(p.members / maxM)).toFixed(1), class: `ld-dot ${kind(p)}` });
-    c.append(sv('title', {}, `${short(p.name)} · RS ${num(p.rs)} · 고점 15% 이내 ${num(p.nearHighPct)}% · ${p.members}종목 · 준비도 ${p.watchScore}/6`));
-    svg.append(c);
+  const info = n('div', null, 'ld-map-info'); info.append(n('span', '점을 누르면 업종 정보가 여기 나와요.', 'ld-map-hint'));
+  const pos = new Map();
+  // 0% 띠: 왼쪽부터 놓되 바로 앞 점과 겹치면 위·아래로 번갈아 비킨다.
+  let lastX = -99, flip = 0;
+  pts.filter(p => p.nearHighPct === 0).sort((a, b) => a.rs - b.rs).forEach(p => {
+    const x = X(p.rs); if (x - lastX < 9) flip = (flip + 1) % 3; else flip = 0; lastX = x;
+    pos.set(p, [x, bandY + [0, -8, 8][flip]]);
   });
-  // Label the coloured dots, strongest first, skipping labels that would overlap.
+  pts.filter(p => p.nearHighPct > 0).forEach(p => pos.set(p, [X(p.rs), Y(p.nearHighPct)]));
+  const show = p => {
+    info.replaceChildren();
+    const k = kind(p);
+    info.append(n('strong', short(p.name), `ld-map-pick ${k}`), n('span', `RS ${num(p.rs)} · 고점 15% 이내 ${num(p.nearHighPct)}% · ${p.members}종목 · 준비도 ${p.watchScore}/6${p.leading ? ' · 선도업종' : ''}`));
+    const target = document.getElementById(`ld-ind-${slug(p.name)}`) || document.getElementById(`ld-watch-${slug(p.name)}`);
+    if (target) { const go = n('button', '표에서 보기 ↓', 'ld-link'); go.type = 'button'; go.onclick = () => focusIndustry(target); info.append(go); }
+    svg.querySelectorAll('.ld-dot.picked').forEach(d => d.classList.remove('picked'));
+    dots.get(p)?.classList.add('picked');
+  };
+  const dots = new Map();
+  pts.slice().sort((a, b) => order[kind(a)] - order[kind(b)]).forEach(p => {
+    const [cx, cy] = pos.get(p);
+    const c = sv('circle', { cx, cy, r: (3.5 + 6 * Math.sqrt(p.members / maxM)).toFixed(1), class: `ld-dot ${kind(p)}`, tabindex: 0, role: 'button', 'aria-label': `${short(p.name)} 업종 정보` });
+    c.append(sv('title', {}, `${short(p.name)} · RS ${num(p.rs)} · 고점 15% 이내 ${num(p.nearHighPct)}% · ${p.members}종목 · 준비도 ${p.watchScore}/6`));
+    c.addEventListener('click', () => show(p)); c.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); show(p); } });
+    dots.set(p, c); svg.append(c);
+  });
+  // 이름표: 색 점(선도·워치리스트)을 먼저, 모자라면 RS 높은 업종으로 채워 최대 8개. 겹치는 이름표는 건너뛴다.
+  const labelled = [...pts.filter(p => kind(p) !== 'other').sort((a, b) => b.rs - a.rs), ...pts.filter(p => kind(p) === 'other').sort((a, b) => b.rs - a.rs)].slice(0, 8);
   const placed = [];
-  pts.filter(p => kind(p) !== 'other').sort((a, b) => b.rs - a.rs).slice(0, 10).forEach(p => {
-    const x = X(p.rs), y0 = Y(p.nearHighPct), y = y0 - 8 < mt + 8 ? y0 + 15 : y0 - 8, txt = clip(p.name, 12);
+  labelled.forEach(p => {
+    const [x, y0] = pos.get(p), inBand = p.nearHighPct === 0;
+    const y = inBand ? mt + ph - 6 : (y0 - 10 < mt + 8 ? y0 + 16 : y0 - 10), txt = clip(p.name, 12);
     // Korean/Chinese characters are about one font-size wide; Latin letters about half.
-    const w = [...txt].reduce((sum, ch) => sum + (/[\u1100-\u9fff\uac00-\ud7af\uff00-\uffef]/.test(ch) ? 11.8 : 6.8), 0);
-    const left = Math.max(ml + 2, Math.min(W - 3 - w, x - w / 2));
-    if (placed.some(q => Math.abs(q.y - y) < 10 && left < q.r && left + w > q.l)) return;
+    const w = [...txt].reduce((sum, ch) => sum + (/[ᄀ-鿿가-힯＀-￯]/.test(ch) ? 11.8 : 6.8), 0);
+    const left = Math.max(ml + 2, Math.min(W - mr - w, x - w / 2));
+    if (placed.some(q => Math.abs(q.y - y) < 12 && left < q.r + 4 && left + w > q.l - 4)) return;
     placed.push({ l: left, r: left + w, y });
     svg.append(sv('text', { x: left, y, class: `ld-map-name ${kind(p)}` }, txt));
   });
-  card.append(svg);
+  card.append(svg, info);
   const legend = n('div', null, 'ld-map-legend');
-  legend.append(n('span', '● 선도업종', 'lead'), n('span', `● 워치리스트(준비도 ${watchMin}점 이상)`, 'watch'), n('span', '● 그 밖의 업종', 'other'), n('span', `초록 칸 = RS ${xLine} 이상이면서 비율 ${yLine}% 이상 (강하고 고점에 가까움)`, 'zone'));
+  legend.append(n('span', '● 선도업종', 'lead'), n('span', `● 워치리스트(준비도 ${watchMin}점 이상)`, 'watch'), n('span', '● 그 밖의 업종', 'other'), n('span', `초록 칸 = RS ${xLine} 이상이면서 비율 ${yLine}% 이상 (강하고 고점에 가까움) · 아래 띠 = 고점 15% 이내 종목이 하나도 없는 업종`, 'zone'));
   card.append(legend);
   return card;
 }
 
-function checkRow(watch, checks) {
-  const wrap = n('ul', null, 'ld-checks');
+function checkDots(watch, checks) {
+  const wrap = n('div', null, 'ld-qdots');
   (checks || []).forEach((c, i) => {
-    const li = n('li', null, watch?.[c.key] ? 'ok' : '');
-    li.append(n('i', watch?.[c.key] ? '✓' : '·'), n('span', `${NO[i]} ${c.label}`));
-    li.title = c.meaning;
-    wrap.append(li);
+    const ok = !!watch?.[c.key];
+    const d = n('span', NO[i], ok ? 'ok' : ''); d.title = `${NO[i]} ${c.label} · ${ok ? '예' : '아니오'} — ${c.meaning}`;
+    d.setAttribute('aria-label', `${c.label} ${ok ? '예' : '아니오'}`);
+    wrap.append(d);
   });
   return wrap;
 }
@@ -277,11 +345,11 @@ function checkRow(watch, checks) {
 function watchCard(L, openStock, rerender, no, flow = new Map()) {
   const ind = L.industries || {};
   const checks = L.watchChecks || [];
-  const card = n('section', null, 'ld-card ld-watch');
+  const card = n('section', null, 'ld-card ld-watch'); card.id = 'ld-sec-watch';
   const head = n('div', null, 'ld-card-head');
   const h = n('h3'); h.append(`${no} `, term('watchlist', 'FTD 대기 워치리스트'));
   head.append(h, n('span', `${ind.watchCount ?? 0}개 업종`, 'ld-status tone-mid')); card.append(head);
-  card.append(n('p', '워치리스트는 매수 목록이 아니라 기회를 준비하는 목록이에요. 지수보다 먼저 강해지는 업종을 아래 6가지 질문으로 점검해, 4개 이상 "예"인 업종을 올려 둡니다. 시장이 FTD를 만들면 이 업종의 후보 종목부터 봐요.', 'ld-meaning'));
+  card.append(n('p', '매수 목록이 아니라 기회를 준비하는 목록이에요. 지수보다 먼저 강해지는 업종을 6가지 질문(①~⑥, 초록 = 예)으로 점검해 4개 이상 "예"인 업종을 올려 둡니다. 시장이 FTD를 만들면 이 업종의 후보 종목부터 봐요.', 'ld-meaning'));
   const q = n('ol', null, 'ld-questions');
   checks.forEach((c, i) => { const li = n('li'); li.append(n('b', `${NO[i]} ${c.label}`), n('span', c.meaning)); q.append(li); });
   const qd = n('details', null, 'ld-qbox'); qd.append(n('summary', '6가지 질문과 숫자 기준 보기'), q); card.append(qd);
@@ -297,39 +365,32 @@ function watchCard(L, openStock, rerender, no, flow = new Map()) {
 
   const items = ind.watchlist || [];
   if (!items.length) card.append(n('div', '준비도 4점 이상인 업종이 아직 없어요. 시장이 약할 때는 정상이에요. 아래 체크리스트 표에서 3점짜리 업종을 확인해 보세요.', 'ld-empty'));
-  const list = n('ol', null, 'ld-industries');
-  items.forEach(x => {
-    const li = n('li', null, 'ld-industry watch');
-    const top = n('div', null, 'ld-ind-top');
-    const name = n('div', null, 'ld-ind-name');
-    name.append(n('strong', short(x.name)));
-    if (x.leadsIndex) name.append(chip('지수보다 먼저 고점권', 'bo', 'leadsIndex'));
-    if (x.heldUp) name.append(chip(`버팀 ${num(x.heldUpRatio, 2)}`, 'held', 'heldUpIndustry'));
-    { const mc = moneyChip(x.name, flow); if (mc) name.append(mc); }
-    if (x.rsLineHigh) name.append(chip('★ RS선 신고가', 'star', 'industryRsLine'));
-    const score = n('div', null, 'ld-score');
-    score.append(helpButton(`준비도 ${x.watchScore}/6`, 'watchScore'));
-    const bar = n('div', null, 'ld-score-bar'); for (let i = 0; i < 6; i++) bar.append(n('i', null, i < x.watchScore ? 'on' : '')); score.append(bar);
-    top.append(name, score); li.append(top);
-    const stats = n('div', null, 'ld-ind-stats');
-    const stat = (labelNode, valueNode) => { const s = n('div'); const l = n('span'); l.append(labelNode); s.append(l, valueNode); return s; };
-    stats.append(
-      stat(term('industryRs', 'RS'), n('b', num(x.rs))),
-      stat(term('rankChange', '1개월'), rankDelta(x.rankChange20)),
-      stat(term('newHighs', '신고가'), n('b', `${x.newHighs}종목`)),
-      stat(term('above50', '50일선 위'), n('b', isNum(x.above50Pct) ? `${num(x.above50Pct)}%` : '—')),
-      stat(term('growthBack', '실적 뒷받침'), n('b', isNum(x.growthPct) ? `${num(x.growthPct)}%` : '—')),
-      stat(term('candidate', '후보'), n('b', `${x.candidateCount}종목`)),
-    );
-    li.append(stats, checkRow(x.watch, checks));
-    if (x.candidates?.length) {
-      const reps = n('div', null, 'ld-reps'); reps.append(n('span', `${LEADER_TERMS.candidate[0]} · 구성 ${x.members}종목`));
-      x.candidates.forEach(r => reps.append(stockButton(r, openStock, `RS ${num(r.rs)} · 고점 -${num(r.dist, 1)}%${r.growth ? ` · ${r.growth}` : ''}${r.leader ? ' · 선도주' : ''}`)));
-      li.append(reps);
-    }
-    list.append(li);
-  });
-  if (items.length) card.append(list);
+  else {
+    const table = n('div', null, 'ld-table ld-watch-table');
+    table.append(headRow([[null, '업종 · 매수 후보', 'c-name'], ['watchScore', '준비도', 'c-score'], ['industryRs', 'RS'], ['rankChange', '1개월'], ['newHighs', '신고가'], ['above50', '50일선 위'], ['growthBack', '실적'], [null, '①~⑥', 'c-q']]));
+    items.forEach(x => {
+      const row = n('div', null, 'ld-tr watch'); row.id = `ld-watch-${slug(x.name)}`;
+      const name = n('div', null, 'ld-td c-name');
+      const title = n('div', null, 'ld-ind-name'); title.append(n('strong', short(x.name)));
+      if (x.leadsIndex) title.append(chip('지수보다 먼저 고점권', 'bo', 'leadsIndex'));
+      if (x.heldUp) title.append(chip(`버팀 ${num(x.heldUpRatio, 2)}`, 'held', 'heldUpIndustry'));
+      { const mc = moneyChip(x.name, flow); if (mc) title.append(mc); }
+      if (x.rsLineHigh) title.append(chip('★ RS선 신고가', 'star', 'industryRsLine'));
+      name.append(title);
+      if (x.candidates?.length) {
+        const reps = n('div', null, 'ld-reps-inline'); reps.append(n('span', `${LEADER_TERMS.candidate[0]} ${x.candidateCount}/${x.members} ·`));
+        x.candidates.forEach(r => reps.append(stockLink(r, openStock, `${short(r.name)} · ${r.symbol} · RS ${num(r.rs)} · 고점 -${num(r.dist, 1)}%${r.growth ? ` · ${r.growth}` : ''}${r.leader ? ' · 선도주' : ''}`), n('small', `${num(r.rs)} · -${num(r.dist, 1)}%${r.leader ? '★' : ''}`)));
+        name.append(reps);
+      }
+      const score = n('div', null, 'ld-td c-score'); score.dataset.label = '준비도';
+      const bar = n('div', null, 'ld-score-bar'); for (let i = 0; i < 6; i++) bar.append(n('i', null, i < x.watchScore ? 'on' : ''));
+      score.append(n('b', `${x.watchScore}/6`), bar);
+      const qc = n('div', null, 'ld-td c-q'); qc.dataset.label = '①~⑥'; qc.append(checkDots(x.watch, checks));
+      row.append(name, score, cell('RS', num(x.rs)), cell('1개월', rankDelta(x.rankChange20)), cell('신고가', `${x.newHighs}`), cell('50일선 위', isNum(x.above50Pct) ? `${num(x.above50Pct)}%` : '—'), cell('실적', isNum(x.growthPct) ? `${num(x.growthPct)}%` : '—'), qc);
+      table.append(row);
+    });
+    card.append(table);
+  }
 
   // Full checklist matrix (top 15 by readiness).
   const rows = ind.checklist || [];
@@ -369,10 +430,11 @@ function moneyChip(name, flow) {
   if (f && f.shareChangePp <= -0.3) return chip(`돈 빠짐 ${num(f.shareChangePp, 1)}%p`, 'money-out', 'moneyFlow');
   return null;
 }
-export function renderLeaders(container, market, block, { openStock, openFTD, stale } = {}) {
+export function renderLeaders(container, market, block, { openStock, openFTD, stale, info } = {}) {
   container.replaceChildren();
+  if (info) stockInfo = info;
   const flow = moneyFlow(block);
-  const rerender = () => renderLeaders(container, market, block, { openStock, openFTD, stale });
+  const rerender = () => { const y = window.scrollY; renderLeaders(container, market, block, { openStock, openFTD, stale, info }); window.scrollTo(0, y); };
   // 판정('지금 할 일')을 맨 위에, 소개와 용어는 그 아래 접기로(내용은 그대로).
   const intro = n('details', null, 'intro-fold');
   const sum = n('summary'); sum.append('선도주·선도업종을 왜 보는지 · 보는 방법'); intro.append(sum);
@@ -382,16 +444,18 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   const L = block?.leadership;
   if (!L || L.status !== 'OK') { container.append(intro, gloss, n('div', L?.note || '선도주·선도업종 자료를 준비 중입니다. 다음 자동 갱신 때 채워집니다.', 'ld-empty')); return; }
   if (stale) container.append(n('div', '최근 마감 거래일 자료가 아니라서 과거 기준으로 보여 주고 있어요.', 'ftd-data-warning'));
-  container.append(phaseBanner(L, openFTD));
-  container.append(intro, gloss);
+  // 카드로 이동: 고정된 탭 줄·바로가기 줄 높이만큼 띄워서 제목이 가려지지 않게.
+  const offset = () => (document.querySelector('.tabs')?.getBoundingClientRect().height || 0) + (container.querySelector('.ld-nav')?.getBoundingClientRect().height || 0) + 10;
+  const jump = key => { const el = container.querySelector(`#ld-sec-${key}`); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset(), behavior: 'smooth' }); };
+  const focusIndustry = el => { window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset() - 40, behavior: 'smooth' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); };
   // Before an FTD the job is preparing the watchlist; after one, checking that leaders break out.
   const mode = L.phase?.mode;
-  const builders = mode === 'WAIT'
-    ? [no => watchCard(L, openStock, rerender, no, flow), no => mapCard(L, no), no => industryCard(L, openStock, no, flow), no => emergenceCard(L, market, openStock, null, no), no => leaderCard(L, openStock, rerender, no)]
-    : mode === 'FTD'
-      ? [no => emergenceCard(L, market, openStock, null, no), no => leaderCard(L, openStock, rerender, no), no => mapCard(L, no), no => industryCard(L, openStock, no, flow), no => watchCard(L, openStock, rerender, no, flow)]
-      : [no => mapCard(L, no), no => industryCard(L, openStock, no, flow), no => watchCard(L, openStock, rerender, no, flow), no => leaderCard(L, openStock, rerender, no), no => emergenceCard(L, market, openStock, null, no)];
-  builders.forEach((b, i) => container.append(b(NO[i])));
+  const order = mode === 'WAIT' ? ['watch', 'map', 'industries', 'emergence', 'leaders']
+    : mode === 'FTD' ? ['emergence', 'leaders', 'map', 'industries', 'watch']
+      : ['map', 'industries', 'watch', 'leaders', 'emergence'];
+  const make = { watch: no => watchCard(L, openStock, rerender, no, flow), map: no => mapCard(L, no, focusIndustry), industries: no => industryCard(L, openStock, no, flow), emergence: no => emergenceCard(L, market, openStock, null, no), leaders: no => leaderCard(L, openStock, rerender, no) };
+  container.append(phaseBanner(L, openFTD, jump), sectionNav(order, jump), intro, gloss);
+  order.forEach((key, i) => container.append(make[key](NO[i])));
   const rules = n('details', null, 'ftd-rules'); rules.append(n('summary', '판정 기준·데이터 범위'));
   const pol = L.policy || {};
   rules.append(

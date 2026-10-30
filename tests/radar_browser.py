@@ -295,6 +295,20 @@ with sync_playwright() as p:
             if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가 · 정렬 패널은 기본 접힘
             else:assert first_y-notice_height-weather_height<1100,first_y  # phones: industry-flow strip sits above the list since 2026-10-19; 2026-10-23 grouped tabs and metric bars add ~70px
             if (SITE/'wamo_trend.json').exists():
+                # 2026-10-30 선도주 탭: 요약 숫자 4칸 · 바로가기 5개 · 업종 지도 점을 누르면 정보 줄 · 표 배치.
+                lead=TREND['markets'][market].get('leadership') or {}
+                if lead.get('status')=='OK':
+                    go_tab(page,'leaders')
+                    expect(page.locator('.ld-kpi')).to_have_count(4)
+                    expect(page.locator('.ld-nav button')).to_have_count(5)
+                    if (lead.get('industries') or {}).get('items'):
+                        expect(page.locator('.ld-ind-table .ld-tr:not(.ld-thead)')).to_have_count(min(10,len(lead['industries']['items'])))
+                    if page.locator('.ld-dot').count():
+                        page.locator('.ld-nav button[data-sec=map]').click()
+                        page.locator('.ld-dot').last.click()
+                        expect(page.locator('.ld-map-info')).to_contain_text('RS ')
+                    dims=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
+                    assert dims['scroll']<=dims['client'],dims
                 go_tab(page,'trend')
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
                 expect(page.locator('.tr-weather-detail')).to_be_visible()
