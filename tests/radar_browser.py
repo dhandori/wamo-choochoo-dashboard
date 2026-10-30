@@ -500,6 +500,13 @@ with sync_playwright() as p:
             check_help_bounds(page)
             name_btn.click()
             expect(tip).to_be_hidden()
+            # 2026-10-30: '셋업북 ②-4' 같은 규칙 표시를 누르면 그 규칙 풀이가 뜬다(조건 칩 옆 · 경고 문장 안).
+            rule=page.locator('.pt-rule').first
+            rule.click()
+            expect(tip).to_be_visible()
+            assert tip.locator('strong').inner_text().startswith(rule.inner_text()),tip.locator('strong').inner_text()
+            rule.click()
+            expect(tip).to_be_hidden()
             # 네이버·트레이딩뷰 링크는 스냅샷 주소 그대로, 새 탭으로 연다.
             shown=[s for s in DATA['markets'][market]['stocks'] if s.get('patterns')]
             card_links=first.locator('.pt-link')
