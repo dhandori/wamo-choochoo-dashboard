@@ -1,12 +1,13 @@
 // 패턴 셋업 화면. wamo_insights.json 의 stocks[].patterns 와 patternMeta 를 읽는다.
 // 셋업 판정은 서버(wamo_patterns.py)가 하고, 여기서는 고르고 보여 주기만 한다.
 import { helpButton, addTerms } from './help.js';
-import { PATTERN_TERMS, glossary } from './terms.mjs';
+import { PATTERN_TERMS, SETUPBOOK_TERMS, setupbookKey, glossary } from './terms.mjs';
 // 이 파일의 PHASES 는 셋업 진행 단계다. FTD 지수 단계는 이름을 구분해 가져온다.
 import { PHASES as FTD_PHASES, freshIndex } from './ftd-model.mjs';
 import { CAP_FLOORS } from './model.mjs';
 import { loadChartData, stockSeries, priceChart } from './chart.js';
 addTerms(PATTERN_TERMS);
+addTerms(SETUPBOOK_TERMS);
 
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
@@ -14,6 +15,23 @@ const num = (v, d = 1) => isNum(v) ? v.toLocaleString('ko-KR', { maximumFraction
 const pct = v => isNum(v) ? `${v > 0 ? '+' : ''}${num(v)}%` : '—';
 const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : '';
 const term = (key, label) => helpButton(label || PATTERN_TERMS[key][0], key);
+/** 문장 속 '셋업북 ②-4' 를 누르면 그 규칙 풀이가 뜨는 버튼으로 바꾼다. 나머지 글자는 그대로. */
+function ruled(text) {
+  const frag = document.createDocumentFragment();
+  let last = 0;
+  for (const m of String(text).matchAll(/셋업북 ([①②]-\d)/g)) {
+    const key = setupbookKey(m[1]);
+    if (!key) continue;
+    frag.append(text.slice(last, m.index), helpButton(m[0], key));
+    last = m.index + m[0].length;
+  }
+  frag.append(text.slice(last));
+  return frag;
+}
+/** 문단 하나(태그·클래스)를 만들고 셋업북 표시를 버튼으로 바꿔 넣는다. */
+const ruledNode = (tag, text, cls) => { const e = n(tag, null, cls); e.append(ruled(text)); return e; };
+/** 조건 칩 옆의 작은 규칙 버튼(칩 안에는 버튼을 넣을 수 없다). */
+const ruleChip = ref => { const b = helpButton(`셋업북 ${ref}`, setupbookKey(ref)); b.classList.add('pt-rule'); return b; };
 // 미국 종목명은 증권 전체 이름으로 들어와 꼬리가 길다. 회사 이름만 남긴다.
 const short = name => String(name || '').replace(/\s+(Common Stock|Class [A-Z]\b.*|Ordinary Shares.*|American Depositary Shares.*|Depositary Shares.*|Common Shares.*)$/i, '').trim();
 const SVG = 'http://www.w3.org/2000/svg';
@@ -203,14 +221,14 @@ function filters(block, meta, redraw, market, counted) {
   const toggles = n('div', null, 'pt-chiprow');
   toggles.append(n('span', '조건', 'pt-chiplabel'));
   toggles.append(chip(`2단계 종목만${onlyStage2 ? '' : ` ${stage2Count(block)}`}`, onlyStage2, () => { onlyStage2 = !onlyStage2; limit = 30; redraw(); },
-    '셋업북 ①-2: 주가가 150·200일선 위이고 200일선이 위로 기울어진 종목만 봅니다. 하락 추세 종목은 좋은 패턴도 대부분 실패합니다.'));
+    '셋업북 ①-2: 주가가 150·200일선 위이고 200일선이 위로 기울어진 종목만 봅니다. 하락 추세 종목은 좋은 패턴도 대부분 실패합니다.'), ruleChip('①-2'));
   toggles.append(chip('손절 8% 이내만', onlyTightStop, () => { onlyTightStop = !onlyTightStop; limit = 30; redraw(); },
-    '셋업북 ②-4: 피벗에서 손절선까지 7~8%를 넘는 자리는 사지 않습니다.'));
+    '셋업북 ②-4: 사는 가격(피벗, 포켓 피벗은 종가)에서 손절선까지 7~8%를 넘는 자리는 사지 않습니다.'), ruleChip('②-4'));
   const leading = leadingIndustries(block);
   const leadCount = (block.stocks || []).filter(s => s.patterns?.setups?.length && inLeadingIndustry(s, leading)).length;
   toggles.append(chip(`동반 강세 업종만 ${leadCount}`, onlyLeadingIndustry,
     () => { onlyLeadingIndustry = !onlyLeadingIndustry; limit = 30; redraw(); },
-    '셋업북 ①-6: 같은 업종 대표 종목 여러 개가 함께 신고가 근처에 있으면 성공 확률이 올라갑니다. 레이더가 산업 동반 강세로 판정한 업종의 종목만 봅니다.'));
+    '셋업북 ①-6: 같은 업종 대표 종목 여러 개가 함께 신고가 근처에 있으면 성공 확률이 올라갑니다. 레이더가 산업 동반 강세로 판정한 업종의 종목만 봅니다.'), ruleChip('①-6'));
   box.append(toggles);
 
   const current = scopeOf(market);
@@ -284,7 +302,7 @@ function marketGate(block, trend, expected, failed, openTrend) {
     const go = n('button', '시장 판단 자세히', 'pt-gate-go'); go.type = 'button';
     go.onclick = openTrend; head.append(go);
   }
-  box.append(head, n('p', advice, 'pt-gate-advice'));
+  box.append(head, ruledNode('p', advice, 'pt-gate-advice'));
 
   const facts = n('div', null, 'pt-gate-facts');
   // 셋업북 ①-1은 FTD 뒤에 비중을 늘리라고 적었다. 지수별 단계를 그대로 보여 준다.
@@ -515,10 +533,10 @@ function card(row, market, meta, openStock, leading) {
   if (info.logic) box.append(n('p', info.logic, 'pt-logic'));
 
   const flags = [];
-  if (best.unconfirmed) flags.push(['피벗 위로 올라왔지만 돌파일 거래량(50일 평균의 1.5배)이 없었습니다. 거래량을 확인하고 삽니다.', 'warn']);
+  if (best.unconfirmed) flags.push(['셋업북 ②-1: 피벗 위로 올라왔지만 돌파일 거래량(50일 평균의 1.5배)이 없었습니다. 거래량을 확인하고 삽니다.', 'warn']);
   if (best.extended) flags.push(['셋업북 ②-3: 피벗 위 5%를 넘었습니다. 추격 매수하지 않고 다음 눌림을 기다립니다.', 'bad']);
   if (best.stopTooWide) flags.push([`셋업북 ②-4: ${isNum(best.pivot) ? '피벗' : '종가'}에서 손절선까지 ${num(best.stopDistancePct)}%로 8%를 넘습니다. 이 자리는 건너뜁니다.`, 'bad']);
-  for (const [text, cls] of flags) box.append(n('p', text, `pt-flag ${cls}`));
+  for (const [text, cls] of flags) box.append(ruledNode('p', text, `pt-flag ${cls}`));
 
   const body = n('div', null, 'pt-body');
   body.append(setupChart(stock, best, market));
@@ -596,7 +614,7 @@ export function renderPatterns(root, market, block, meta, options = {}) {
 
   // 셋업북 ①-1: 시장이 약하면 좋은 패턴도 대부분 실패한다. 수가 적은 것 자체가 답이다.
   if ((summary.withSetup || 0) * 20 < block.stocks.length) {
-    root.append(n('p', '지금 이 시장에는 촘촘한 베이스가 거의 없습니다. 셋업북은 시장이 하락 추세일 때 좋은 패턴도 대부분 실패한다고 적었습니다. 건수가 적은 것 자체가 판정 결과입니다.', 'pt-weak'));
+    root.append(ruledNode('p', '지금 이 시장에는 촘촘한 베이스가 거의 없습니다. 셋업북 ①-1: 시장이 하락 추세일 때는 좋은 패턴도 대부분 실패합니다. 건수가 적은 것 자체가 판정 결과입니다.', 'pt-weak'));
   }
 
   root.append(filters(block, meta, redraw, market, counted));
@@ -632,5 +650,5 @@ export function renderPatterns(root, market, block, meta, options = {}) {
       root.append(more);
     }
   }
-  root.append(glossary(PATTERN_TERMS, Object.keys(PATTERN_TERMS)));
+  root.append(glossary({ ...PATTERN_TERMS, ...SETUPBOOK_TERMS }, [...Object.keys(PATTERN_TERMS), ...Object.keys(SETUPBOOK_TERMS)]));
 }

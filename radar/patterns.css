@@ -139,3 +139,6 @@ body[data-view="patterns"] #industry-rail,body[data-view="patterns"] #metrics,bo
 /* 카드 경고: 거래량 미확인 돌파 · 추격 금지 · 손절 폭 초과 */
 .pt-flag{margin:0 0 8px;padding:6px 9px;border-radius:7px;font-size:12px;line-height:1.5;border:1px solid #5a4520;background:#2a2112;color:#f2c474}
 .pt-flag.bad{border-color:#6b3a1c;background:#2c1a10;color:#ff9a3c}
+/* 셋업북 규칙 버튼: 경고 문장 안과 조건 칩 옆. 누르면 규칙 풀이가 뜬다. */
+.pt-flag .term-help,.pt-gate-advice .term-help,.pt-weak .term-help{color:inherit;font-weight:700}
+.pt-rule{font-size:11px;color:#9aacc3;margin:0 4px 0 -2px}

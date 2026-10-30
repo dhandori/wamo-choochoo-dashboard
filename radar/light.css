@@ -979,6 +979,7 @@
 :root[data-theme="light"] .pt-sort-hint { color: #2c3745; }
 :root[data-theme="light"] .pt-flag { border: 1px solid #dcc59d; background: #f5f0e8; color: #62430e; }
 :root[data-theme="light"] .pt-flag.bad { border-color: #e3b294; background: #f6ece7; color: #6b3606; }
+:root[data-theme="light"] .pt-rule { color: #2b3745; }
 
 /* ===== patterns.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .pt-stat small { color: #b9c5d5; }
@@ -1003,6 +1004,7 @@
 :root:not([data-theme="light"]) .pt-guide-head small { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-sort-hint { color: #b9c6d5; }
 :root:not([data-theme="light"]) .pt-flag.bad { color: #ffb066; }
+:root:not([data-theme="light"]) .pt-rule { color: #b9c5d5; }
 
 /* ===== patterns.css (작은 글씨 키우기) ===== */
 :root .pt-stat small { font-size: 12px; }
@@ -1018,6 +1020,7 @@
 :root .pt-lead { font-size: 12px; }
 :root .pt-guide-head small { font-size: 12px; }
 :root .pt-sort-hint { font-size: 12px; }
+:root .pt-rule { font-size: 12px; }
 
 /* ===== 진한 색 바탕 위 글씨는 흰색 유지 ===== */
 :root[data-theme="light"] .ftd-flow li.now .ftd-flow-no,
