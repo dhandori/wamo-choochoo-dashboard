@@ -148,6 +148,10 @@
 :root[data-theme="light"] .kv-title { color: #243244; }
 :root[data-theme="light"] .detail-body .kv-sec .stat.kv { border-top: 1px solid #a4bad5; }
 :root[data-theme="light"] .detail-body .ret-grid .stat.ret-tile { background: #ecf2fa; border: 1px solid #a4bad5; }
+:root[data-theme="light"] .board-badge { border: 1px solid #abbbce; color: #2a3746; }
+:root[data-theme="light"] .board-kosdaq, :root[data-theme="light"] .board-nasdaq { color: #27145c; border-color: #958bba; }
+:root[data-theme="light"] .board-kospi, :root[data-theme="light"] .board-nyse { color: #123b5f; border-color: #a1bcd8; }
+:root[data-theme="light"] .detail-board.phase-rally span, :root[data-theme="light"] .detail-board.phase-late span { color: #62430e; }
 
 /* ===== style.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ai-sector-card small { color: #b7c6d7; }
@@ -172,6 +176,7 @@
 :root:not([data-theme="light"]) .step-arrow { color: #b9c4d5; }
 :root:not([data-theme="light"]) .section-step { color: #b7c5d7; }
 :root:not([data-theme="light"]) .detail-chips .chip.weak { color: #bbc5d3; }
+:root:not([data-theme="light"]) .board-badge { color: #b7c6d7; }
 
 /* ===== style.css (작은 글씨 키우기) ===== */
 :root .brand span { font-size: 12px; }
@@ -243,6 +248,7 @@
 @media (max-width: 760px) {
 :root .hint-short { font-size: 11.5px; }
 }
+:root .board-badge { font-size: 11.5px; }
 
 /* ===== trend.css (밝은 테마) ===== */
 :root[data-theme="light"] .tr-weather-text { color: #151f2b; }
@@ -415,6 +421,7 @@
 :root[data-theme="light"] .ix-spark polyline { stroke: #3e4e63; }
 :root[data-theme="light"] .spm-row { border-bottom: 1px solid rgba(97, 108, 126, 0.12); }
 :root[data-theme="light"] .spm-row:hover { background: rgba(97, 108, 126, 0.08); }
+:root[data-theme="light"] .tr-idx-head { background: #e7eef7; }
 
 /* ===== trend.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .tr-help { color: #bbc6d3; }
@@ -690,6 +697,7 @@
 :root[data-theme="light"] .ld-dot.lead { fill: #257860; }
 :root[data-theme="light"] .ld-map-name { stroke: #eaf0f8; }
 :root[data-theme="light"] .ld-map-name.lead { fill: #279771; }
+:root[data-theme="light"] .ld-map-name.other { fill: #354557; }
 :root[data-theme="light"] .ld-map-name.watch { fill: #ab7f1d; }
 :root[data-theme="light"] .ld-map-legend { color: #2b3745; }
 :root[data-theme="light"] .ld-map-legend .lead { color: #1b5645; }
@@ -719,6 +727,43 @@
 :root[data-theme="light"] .ld-matrix em { color: #1b5645; }
 :root[data-theme="light"] .ld-chip.money { background: #e4f2ed; color: #175940; border-color: #a5d5c1; }
 :root[data-theme="light"] .ld-chip.money-out { background: #ede3e8; color: #441014; border-color: #d2a8b3; }
+:root[data-theme="light"] .ld-kpi { border: 1px solid #a8bbd2; background: #eaf0f8; color: #1c2938; }
+:root[data-theme="light"] .ld-kpi:hover { border-color: #7692b1; background: #e0e8f5; }
+:root[data-theme="light"] .ld-kpi span { color: #2b3745; }
+:root[data-theme="light"] .ld-kpi strong { color: #050b11; }
+:root[data-theme="light"] .ld-kpi small { color: #2b3745; }
+:root[data-theme="light"] .ld-kpi.tone-good strong { color: #195743; }
+:root[data-theme="light"] .ld-kpi.tone-mid strong { color: #5a4516; }
+:root[data-theme="light"] .ld-kpi.tone-bad strong { color: #6b3706; }
+:root[data-theme="light"] .ld-nav button { border: 1px solid #a8bbd1; background: #e6edf7; color: #273546; }
+:root[data-theme="light"] .ld-nav button:hover { border-color: #3d5d80; color: #030910; }
+:root[data-theme="light"] .ld-legend>summary { color: #1b2938; }
+:root[data-theme="light"] .ld-table { border: 1px solid #a3bbd6; }
+:root[data-theme="light"] .ld-tr { border-top: 1px solid #a4bad6; background: #e4ecf6; }
+:root[data-theme="light"] .ld-thead { background: #eaf0f8; }
+:root[data-theme="light"] .ld-thead .ld-td { color: #2b3745; }
+:root[data-theme="light"] .ld-td b { color: #070e16; }
+:root[data-theme="light"] .ld-td.ok b { color: #195743; }
+:root[data-theme="light"] .ld-td.no b { color: #2b3745; }
+:root[data-theme="light"] .ld-tr.leading { box-shadow: inset 3px 0 0 #257860; background: #e8f7f7; }
+:root[data-theme="light"] .ld-tr.core { box-shadow: inset 3px 0 0 #3d5d80; }
+:root[data-theme="light"] .ld-reps-inline { color: #2c3745; }
+:root[data-theme="light"] .ld-reps-inline small { color: #2b3745; }
+:root[data-theme="light"] .ld-name-link { color: #132843; text-decoration-color: #8aa3c0; }
+:root[data-theme="light"] .ld-name-link:hover { color: #030910; }
+:root[data-theme="light"] .c-score b { color: #604710 !important; }
+:root[data-theme="light"] .ld-qdots span { border: 1px solid #a8bbd1; color: #2e3742; }
+:root[data-theme="light"] .ld-qdots span.ok { background: #e3f6f2; border-color: #a2d8c9; color: #175943; }
+:root[data-theme="light"] .ld-map-band { fill: #e4ecf6; stroke: #dde5f0; }
+:root[data-theme="light"] .ld-dot:hover, :root[data-theme="light"] .ld-dot:focus { stroke: #030910; }
+:root[data-theme="light"] .ld-dot.picked { stroke: #000000; }
+:root[data-theme="light"] .ld-map-info { background: #e4ecf6; color: #1c2938; }
+:root[data-theme="light"] .ld-map-hint { color: #2c3745; }
+:root[data-theme="light"] .ld-map-pick.lead { color: #175943; }
+:root[data-theme="light"] .ld-map-pick.watch { color: #604710; }
+@media(max-width:760px) {
+:root[data-theme="light"] .ld-table .ld-td[data-label]:not(.c-name)::before { color: #2c3745; }
+}
 
 /* ===== leaders.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ld-intro p { color: #b7c5d6; }
@@ -749,6 +794,19 @@
 :root:not([data-theme="light"]) .ld-matrix td { color: #bbc6d2; }
 :root:not([data-theme="light"]) .ld-matrix tr.lead td.sc { color: #86dfc5; }
 :root:not([data-theme="light"]) .ld-matrix em { color: #86dfc5; }
+:root:not([data-theme="light"]) .ld-kpi span { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-kpi small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-kpi.tone-good strong { color: #83e2c2; }
+:root:not([data-theme="light"]) .ld-thead .ld-td { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-td.ok b { color: #83e2c2; }
+:root:not([data-theme="light"]) .ld-td.no b { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-reps-inline { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-reps-inline small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-qdots span { color: #bbc6d2; }
+:root:not([data-theme="light"]) .ld-map-hint { color: #b9c6d5; }
+@media(max-width:760px) {
+:root:not([data-theme="light"]) .ld-table .ld-td[data-label]:not(.c-name)::before { color: #b9c6d5; }
+}
 
 /* ===== leaders.css (작은 글씨 키우기) ===== */
 :root .ld-meter small { font-size: 12px; }
@@ -764,6 +822,11 @@
 :root .ld-checks li { font-size: 12px; }
 @media(max-width:760px) {
 :root .ld-matrix { font-size: 12px; }
+}
+:root .ld-reps-inline small { font-size: 12px; }
+:root .ld-qdots span { font-size: 12px; }
+@media(max-width:760px) {
+:root .ld-table .ld-td[data-label]:not(.c-name)::before { font-size: 12px; }
 }
 
 /* ===== schedule.css (밝은 테마) ===== */
@@ -947,6 +1010,3 @@
 :root[data-theme="light"] svg [stroke="#9aacc3"] { stroke: #6b7c92; }
 :root[data-theme="light"] i[style*="#ecf3fc"], :root[data-theme="light"] i[style*="#eaf0f8"] { background: #1b2635 !important; }
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
-:root[data-theme="light"] .tr-idx-head { background: #eef2f8; }
-:root[data-theme="light"] .board-kosdaq, :root[data-theme="light"] .board-nasdaq { color: #5b3fb0; border-color: #b9a8e8; }
-:root[data-theme="light"] .board-kospi, :root[data-theme="light"] .board-nyse { color: #1f5d96; border-color: #9ec1e3; }

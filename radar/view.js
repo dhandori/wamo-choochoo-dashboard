@@ -919,7 +919,8 @@ function renderTrendTab() {
     $('section-title').textContent = '선도주·선도업종';
     $('section-description').textContent = '선도주가 나오는지, 어떤 업종이 시장보다 강한지, 누가 앞장서는지';
     const m=snapshot.markets[state.market],b=trendBlock(state.market);
-    renderLeaders($('content'),state.market,b,{openStock:openStockById,openFTD:()=>switchTab('ftd'),stale:!!b&&!!m.expectedSession&&b.asOf!==m.expectedSession});
+    const byId=new Map((m.stocks||[]).map(s=>[s.id,s]));
+    renderLeaders($('content'),state.market,b,{openStock:openStockById,openFTD:()=>switchTab('ftd'),stale:!!b&&!!m.expectedSession&&b.asOf!==m.expectedSession,info:id=>byId.get(id)});
     return;
   }
   $('section-title').textContent = '추세 신호';
