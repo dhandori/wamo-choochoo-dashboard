@@ -10,6 +10,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  pages: read
 concurrency:
   group: pages-dryrun
   cancel-in-progress: true
@@ -39,6 +40,13 @@ jobs:
         run: |
           git -C main-src fetch --depth=40 origin main
           python3 -I branch/tools/pages_package.py compare main-src manifest.json https://dhandori.github.io/wamo-choochoo-dashboard --ref origin/main --report report.json
+      - name: Pages 설정 방식 읽기 (클릭 후 자동으로 켜지게 할 수 있는지 시험)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "--- 설정 읽기 시도"
+          gh api "repos/${{ github.repository }}/pages" --jq '{build_type, html_url, source}' 2>&1 | head -20 || true
       - name: 비교 결과 보관
         if: always()
         uses: actions/upload-artifact@v4
