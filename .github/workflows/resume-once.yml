@@ -27,6 +27,10 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+      - name: 자료 브랜치 받기 (자료는 main이 아니라 data 브랜치에 있다)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 wamo_data_branch.py setup
       - name: Python 준비
         uses: actions/setup-python@v6
         with:
@@ -139,10 +143,7 @@ jobs:
         run: |
           set -euo pipefail
           python wamo_catalog.py
-          git add -- wamo_catalog.json
-          git diff --cached --quiet && exit 0
-          git commit -m 'Refresh public WAMO search catalog'
-          git push origin HEAD:main
+          python3 wamo_data_branch.py publish -m 'Refresh public WAMO search catalog' wamo_catalog.json
       - name: 실패 결과 보관
         if: failure()
         uses: actions/upload-artifact@v4

@@ -25,6 +25,10 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 1
+      - name: 자료 브랜치 받기 (자료는 main이 아니라 data 브랜치에 있다)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 wamo_data_branch.py setup
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -39,15 +43,5 @@ jobs:
           # 알림은 아침 실행(07:05)과 수동 실행에서만 보낸다. 저녁 실행(18:30)과 코드 수정 실행은 화면만 갱신
           SEND: ${{ (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '5 22 * * 0-5')) && '--telegram' || '' }}
         run: python wamo_macro.py $SEND
-      - name: 결과 올리기 (다른 작업이 먼저 올렸으면 받아서 다시 시도)
-        run: |
-          git config user.name "wamo-bot"
-          git config user.email "wamo-bot@users.noreply.github.com"
-          git add wamo_macro.json wamo_macro_history.json
-          git diff --cached --quiet && { echo "바뀐 내용 없음"; exit 0; }
-          git commit -m "매크로 지수 갱신 $(TZ=Asia/Seoul date +%F)"
-          for i in 1 2 3 4 5; do
-            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
-            sleep $((i * 10))
-          done
-          exit 1
+      - name: 결과 올리기 (data 브랜치. 다른 작업이 먼저 올렸으면 받아서 다시 시도)
+        run: python3 wamo_data_branch.py publish -m "매크로 지수 갱신 $(TZ=Asia/Seoul date +%F)" wamo_macro.json wamo_macro_history.json
