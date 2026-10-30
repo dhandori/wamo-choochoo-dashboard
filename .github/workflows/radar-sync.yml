@@ -27,6 +27,11 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 1
+      - name: 자료 브랜치 받기 (자료는 main이 아니라 data 브랜치에 있다)
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 wamo_data_branch.py setup
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -77,6 +82,11 @@ jobs:
         run: |
           set -euo pipefail
           test -f wamo_radar.json || exit 0
+          if [ "${GITHUB_REF}" = refs/heads/main ]; then
+            python3 wamo_data_branch.py publish -m 'Refresh validated global discovery results' \
+              wamo_radar.json wamo_catalog.json wamo_insights.json radar.html index.html us.html wamo_news.json
+            exit 0
+          fi
           git config user.name wamo-dashboard-bot
           git config user.email actions@users.noreply.github.com
           git add -- wamo_radar.json wamo_catalog.json wamo_insights.json radar.html index.html us.html

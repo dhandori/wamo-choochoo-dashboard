@@ -197,6 +197,10 @@ def refresh_insights():
 
 
 def publish(names):
+    if os.environ.get('WAMO_DATA_REPO'):
+        import wamo_data_branch
+        wamo_data_branch.publish(names)
+        return
     names = sorted(set(name for name in names if (ROOT / name).exists()))
     subprocess.run(['git', 'add', '--', *names], cwd=ROOT, check=True)
     if subprocess.run(['git', 'diff', '--cached', '--quiet'], cwd=ROOT).returncode == 0:
