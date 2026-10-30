@@ -44,6 +44,58 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
         pass
 
 
+class OverlayTest(unittest.TestCase):
+    """코드(main)와 자료(data) 두 저장소를 합쳐 꾸러미를 만든다."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.code, self.data = self.root / 'code', self.root / 'data'
+        make_repo(self.code, {'radar/view.js': 'x=1', 'old.json': 'code'})
+        make_repo(self.data, {'index.html': '<h1>자료</h1>', 'wamo_a.json': '{"a": 1}', '.hidden': 'h'})
+
+    def build(self, **kw):
+        ns = argparse.Namespace(src=str(self.code), dest=str(self.root / 'site'),
+                                manifest=str(self.root / 'm.json'), min_files=0, require=[],
+                                overlay=str(self.data), on_duplicate='fail')
+        for k, v in kw.items():
+            setattr(ns, k, v)
+        rc = quiet(pp.cmd_build, ns)
+        built = json.loads((self.root / 'm.json').read_text(encoding='utf-8'))
+        return rc, built
+
+    def test_코드와_자료를_합쳐_담는다(self):
+        rc, built = self.build()
+        self.assertEqual(rc, 0)
+        self.assertEqual(set(built['files']), {'radar/view.js', 'old.json', 'index.html', 'wamo_a.json'})
+        self.assertTrue(built['overlay_commit'])
+        self.assertEqual((self.root / 'site' / 'index.html').read_text(encoding='utf-8'), '<h1>자료</h1>')
+
+    def test_자료_쪽_숨김_파일도_올리지_않는다(self):
+        _, built = self.build()
+        self.assertNotIn('.hidden', built['files'])
+
+    def test_양쪽에_같은_경로가_있으면_기본은_실패한다(self):
+        make_repo(self.root / 'dup', {'index.html': '옛', 'x.js': '1'})
+        rc, _ = self.build(src=str(self.root / 'dup'))
+        self.assertEqual(rc, 1)
+
+    def test_겹칠_때_고른_쪽이_이긴다(self):
+        make_repo(self.root / 'dup', {'index.html': '옛 코드쪽', 'x.js': '1'})
+        rc, _ = self.build(src=str(self.root / 'dup'), on_duplicate='src')
+        self.assertEqual(rc, 0)
+        self.assertEqual((self.root / 'site' / 'index.html').read_text(encoding='utf-8'), '옛 코드쪽')
+        rc, _ = self.build(src=str(self.root / 'dup'), on_duplicate='overlay')
+        self.assertEqual(rc, 0)
+        self.assertEqual((self.root / 'site' / 'index.html').read_text(encoding='utf-8'), '<h1>자료</h1>')
+
+    def test_자료를_못_받아_비면_필수_검사에서_멈춘다(self):
+        make_repo(self.root / 'empty', {'keep.txt': 'k'})
+        rc, _ = self.build(overlay=str(self.root / 'empty'), require=['index.html:5'])
+        self.assertEqual(rc, 1)
+
+
 class HiddenPathTest(unittest.TestCase):
     def test_jekyll_처럼_점과_밑줄로_시작하는_경로를_숨긴다(self):
         for p in ('.github/workflows/a.yml', '.gitignore', 'docs/_draft.md', '_site/x.html',
@@ -69,7 +121,8 @@ class BuildTest(unittest.TestCase):
     def build(self):
         dest, manifest = self.root / 'site', self.root / 'm.json'
         quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(dest), manifest=str(manifest),
-                                               min_files=0, require=[]))
+                                               min_files=0, require=[], overlay=None,
+                                               on_duplicate='fail'))
         return dest, json.loads(manifest.read_text(encoding='utf-8'))
 
     def test_사이트에_올라갈_파일만_담는다(self):
@@ -86,7 +139,8 @@ class BuildTest(unittest.TestCase):
 
     def build_with(self, **kw):
         ns = argparse.Namespace(src=str(self.src), dest=str(self.root / 'site2'),
-                                manifest=str(self.root / 'm2.json'), min_files=0, require=[])
+                                manifest=str(self.root / 'm2.json'), min_files=0, require=[],
+                                overlay=None, on_duplicate='fail')
         for k, v in kw.items():
             setattr(ns, k, v)
         return quiet(pp.cmd_build, ns)
@@ -119,7 +173,8 @@ class CompareTest(unittest.TestCase):
         make_repo(self.src, {'index.html': '<h1>hi</h1>', 'data/a.json': '{"a": 1}', 'docs/a.md': '# a'})
         self.site, self.manifest = self.root / 'site', self.root / 'm.json'
         quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(self.site), manifest=str(self.manifest),
-                                               min_files=0, require=[]))
+                                               min_files=0, require=[], overlay=None,
+                                               on_duplicate='fail'))
         handler = functools.partial(Quiet, directory=str(self.site))
         self.server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
@@ -166,7 +221,8 @@ class CompareTest(unittest.TestCase):
         run('add', '-A')
         run('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'update')
         quiet(pp.cmd_build, argparse.Namespace(src=str(self.src), dest=str(self.root / 'new'),
-                                               manifest=str(self.manifest), min_files=0, require=[]))
+                                               manifest=str(self.manifest), min_files=0, require=[], overlay=None,
+                                               on_duplicate='fail'))
         self.assertEqual(old, '<h1>hi</h1>')
         code, rows = self.compare()
         self.assertEqual(code, 0)

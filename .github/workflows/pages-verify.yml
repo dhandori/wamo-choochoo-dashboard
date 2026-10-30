@@ -5,8 +5,15 @@ name: Pages 사이트 점검 (손으로 실행)
 # 읽는 법
 #  - 'Pages 설정 방식'의 build_type이 legacy이면 예전 방식(main 브랜치에서 바로), workflow이면 새 방식(Actions)이다.
 #  - 비교 결과에서 '사이트에 없음'이나 '설명 안 됨'이 0이면 사이트가 main과 같다.
+#  - '자료 브랜치(data)도 합쳐서' 를 켜면 main 코드에 data 브랜치의 자료를 더해 꾸러미를 만든다(자료 분리 시험용).
+#    양쪽에 같은 경로가 있으면 main 쪽을 쓴다.
 on:
   workflow_dispatch:
+    inputs:
+      with_data:
+        description: '자료 브랜치(data)도 합쳐서 꾸러미를 만든다'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -28,9 +35,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh api "repos/${{ github.repository }}/pages" --jq '{build_type, html_url, source}' 2>&1 | head -20
+      - name: 자료 브랜치 받기
+        if: ${{ inputs.with_data }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: git clone --depth=1 --branch data "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" ../wamo-data
       - name: 배포 꾸러미 만들기
+        env:
+          OVERLAY: ${{ inputs.with_data && '../wamo-data' || '' }}
         run: >-
           python3 -I tools/pages_package.py build . _site --manifest manifest.json
+          ${OVERLAY:+--overlay "$OVERLAY" --on-duplicate src}
           --min-files 100 --require index.html:10000 --require us.html:10000 --require radar.html:10000
       - name: 지금 사이트와 비교
         run: |
