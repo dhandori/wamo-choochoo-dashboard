@@ -1,22 +1,22 @@
 {
  "JP": {
-  "attemptedAt": "2026-10-30T14:31:27.564312+00:00",
+  "attemptedAt": "2026-10-30T15:00:49.521721+00:00",
   "expectedSession": "2026-10-30",
-  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/41072209249",
-  "status": "WARNING",
+  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/41076654433",
+  "status": "FAILED",
   "lastSuccessAt": "2026-10-30T14:31:27.564312+00:00",
   "asOf": "2026-10-30",
   "count": 490,
   "universe": 491,
   "failed": 1,
-  "error": null
+  "error": "가격 확보 0/491 — 90% 미만이라 이번 결과를 쓰지 않음 · 예: ['1332.T: query1.finance.yahoo.com: 기대 거래일 2026-10-30, 응답 가격일 2026-10-29 / query2.finance.yahoo.com: 기대 거래일 2026-10-30, 응답 가격일 2026-10-29', '1333.T: query1.finance.yahoo.com: 기대 거래일 2026-10-30, 응답 가격일 2026-10-29 / query2.finance.yahoo.com: 기대 거래일 2026-10-30, "
  },
  "TW": {
-  "attemptedAt": "2026-10-30T14:31:27.564312+00:00",
+  "attemptedAt": "2026-10-30T15:00:49.521721+00:00",
   "expectedSession": "2026-10-30",
-  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/41072209249",
-  "status": "WARNING",
-  "lastSuccessAt": "2026-10-30T14:31:27.564312+00:00",
+  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/41076654433",
+  "status": "PASS",
+  "lastSuccessAt": "2026-10-30T15:00:49.521721+00:00",
   "asOf": "2026-10-30",
   "count": 317,
   "universe": 318,
