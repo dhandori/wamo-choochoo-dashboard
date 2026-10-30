@@ -89,7 +89,9 @@ class CupTests(unittest.TestCase):
         self.assertGreaterEqual(setup['evidence']['handleDays'], 5)
 
     def test_pivot_is_handle_high_and_stop_is_handle_low(self):
-        setup = setup_of(detect(self.series(breakout=False)), 'cup')
+        bars = self.series(breakout=False)
+        bars.append((bars[-1][0], 400))   # 핸들 저점 위에서 쉬는 날(손절선 아래로 내려가지 않음)
+        setup = setup_of(detect(bars), 'cup')
         self.assertIsNotNone(setup)
         self.assertIn(setup['status'], ('WATCH', 'READY'))
         self.assertGreater(setup['pivot'], setup['stop'])
@@ -212,6 +214,15 @@ class PocketPivotTests(unittest.TestCase):
     def test_price_far_from_moving_average_is_rejected(self):
         self.assertEqual(status_of(detect(self.series(pullback=False)), 'pp'), 'NONE')
 
+    def test_stop_width_is_measured_from_the_close(self):
+        """포켓 피벗은 피벗이 없다. 사는 가격은 그날 종가이고 손절 폭도 거기서 잰다."""
+        setup = setup_of(detect(self.series()), 'pp')
+        self.assertIsNone(setup['pivot'])
+        self.assertEqual(setup['entry'], 116.5)
+        expected = round((1 - setup['stop'] / 116.5) * 100, 1)
+        self.assertEqual(setup['stopDistancePct'], expected)
+        self.assertGreater(setup['evidence']['closeToMa50Pct'], 0)
+
 
 class DarvasBoxTests(unittest.TestCase):
     def series(self, width=0.08, box_volume=500, breakout=True):
@@ -311,7 +322,7 @@ class VcpPassthroughTests(unittest.TestCase):
                                   'peak': 120.0, 'trough': 112.0, 'depthPct': 6.7}]}
 
     def test_collected_vcp_is_carried_through(self):
-        result = detect(flat_run(100, 120, 1000), vcp=self.payload())
+        result = detect(flat_run(118, 120, 1000), vcp=self.payload())
         setup = setup_of(result, 'vcp')
         self.assertIsNotNone(setup)
         self.assertEqual(setup['status'], 'READY')
@@ -330,6 +341,39 @@ class VcpPassthroughTests(unittest.TestCase):
         for bad in (None, 'READY', {}, {'status': 'READY'}):
             result = detect(flat_run(100, 120, 1000), vcp=bad)
             self.assertEqual(status_of(result, 'vcp'), 'NONE')
+
+
+class SettleTests(unittest.TestCase):
+    """판정이 끝난 셋업을 오늘 종가로 맞추는 규칙(settle). 모든 셋업에 같은 규칙을 쓴다."""
+
+    def bars(self, close, high=None, volume=1000):
+        rows_ = rows(flat_run(100, 90) + [(close, volume, high or close * 1.004)])
+        return wp.Bars(rows_)
+
+    def setup(self, status='WATCH', pivot=110.0, stop=95.0, close=100.0):
+        return wp._result('flat', status, '플랫 베이스 형성', pivot, stop,
+                          (pivot / close - 1) * 100 if pivot else None)
+
+    def test_close_below_the_stop_drops_the_setup(self):
+        self.assertIsNone(wp.settle(self.setup(close=94), self.bars(94)))
+
+    def test_unconfirmed_move_above_the_pivot_is_ready_not_watch(self):
+        settled = wp.settle(self.setup(pivot=100, close=103), self.bars(103))
+        self.assertEqual(settled['status'], 'READY')
+        self.assertTrue(settled['unconfirmed'])
+        self.assertEqual(settled['label'], wp.READY_ABOVE_LABEL)
+
+    def test_unconfirmed_move_far_above_the_pivot_is_gone(self):
+        self.assertIsNone(wp.settle(self.setup(pivot=100, close=108), self.bars(108)))
+
+    def test_extended_breakout_is_flagged_not_dropped(self):
+        settled = wp.settle(self.setup('BREAKOUT', pivot=100, close=108), self.bars(108))
+        self.assertEqual(settled['status'], 'BREAKOUT')
+        self.assertTrue(settled['extended'])
+
+    def test_normal_setup_is_untouched(self):
+        setup = self.setup(pivot=104, close=100)
+        self.assertEqual(wp.settle(setup, self.bars(100)), setup)
 
 
 class StageGateTests(unittest.TestCase):

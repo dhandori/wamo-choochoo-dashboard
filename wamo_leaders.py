@@ -93,6 +93,28 @@ def _ftd_anchor(ftd_indexes):
             'qualityScore': first['ftd'].get('qualityScore')}
 
 
+BOARD_NAMES = {'KOSPI': 'KOSPI', 'KOSDAQ': 'KOSDAQ', 'NASDAQ': 'NASDAQ', 'NYSE': 'NYSE',
+               'NYSE AMERICAN': 'NYSE American', 'AMEX': 'NYSE American', 'NYSEARCA': 'NYSE Arca'}
+
+
+def board_of(stock):
+    """상장 시장 이름(화면의 시장 필터·업종 구성에 씀). 모르면 None."""
+    return BOARD_NAMES.get(str(stock.get('board') or '').upper()) or None
+
+
+def board_counts(items):
+    """종목 목록 → {'KOSPI': 3, 'KOSDAQ': 1}. 시장을 모르는 종목은 세지 않는다.
+
+    universe 종목(board 가 원래 이름)과 analyze 결과 종목(board 가 이미 화면 이름) 모두 받는다.
+    """
+    out = {}
+    for x in items:
+        b = board_of(x) or (x.get('board') if x.get('board') in BOARD_NAMES.values() else None)
+        if b:
+            out[b] = out.get(b, 0) + 1
+    return out
+
+
 def analyze(universe, bench, market, ftd_indexes=None):
     bench_by_date = {r['date']: r['close'] for r in bench}
     bench_closes = [r['close'] for r in bench]
@@ -149,7 +171,7 @@ def analyze(universe, bench, market, ftd_indexes=None):
         s['_candidate'] = (rs is not None and rs >= POLICY['candidateRsMin'] and dist is not None
                            and dist <= POLICY['highDistanceMax'] and s['_above50'] is True)
         stocks.append({
-            'id': s['id'], 'symbol': s['symbol'], 'name': s['name'], 'industry': s['industry'],
+            'id': s['id'], 'symbol': s['symbol'], 'name': s['name'], 'industry': s['industry'], 'board': board_of(s),
             'close': rnd(closes[i], 4), 'changePct': rnd((closes[i] / closes[i - 1] - 1) * 100) if n > 1 else None,
             'rs': rs, 'highDistancePct': rnd(dist), 'stage': stage, 'marketCap': s.get('marketCap'),
             'liquidityValue': rnd(liq_value, 0) if liq_value is not None else None, 'liquidityKnown': liquid is not None,
@@ -178,12 +200,14 @@ def analyze(universe, bench, market, ftd_indexes=None):
         count = len(hits)
         status = 'CONFIRMED' if count >= need else 'WATCHING' if age < win else 'WEAK'
         emergence = {'status': status, 'ftd': anchor, 'count': count, 'need': need, 'age': min(age, win), 'window': win,
-                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs']}
+                     'byBoard': board_counts(hits),
+                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs'], 'board': x['board']}
                                for x in sorted(hits, key=lambda x: -(x['rs'] or 0))[:20]]}
     else:
         recent = [x for x in stocks if (x['rs'] or 0) >= POLICY['rsMin'] and x['breakoutDates']]
         emergence = {'status': 'NO_FTD', 'ftd': None, 'count': len(recent), 'need': need, 'age': None, 'window': win,
-                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs']}
+                     'byBoard': board_counts(recent),
+                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs'], 'board': x['board']}
                                for x in sorted(recent, key=lambda x: -(x['rs'] or 0))[:20]]}
 
     industries = _industries(universe, bench, raw, index_dd)
@@ -195,6 +219,7 @@ def analyze(universe, bench, market, ftd_indexes=None):
         'leaders': {'count': len(leaders), 'coreCount': sum(x['core'] for x in leaders),
                     'rsLeadCount': sum(x['rsLead'] for x in leaders),
                     'breakoutCount': sum(bool(x['breakoutDates']) for x in leaders),
+                    'byBoard': board_counts(leaders),
                     'items': leaders[:60]},
         'emergence': emergence,
         'phase': _phase(ftd_indexes),
@@ -313,13 +338,13 @@ def _industries(universe, bench, raw, index_dd=None):
         bench_dist = (1 - bench_tail[-1] / max(bench_tail)) * 100 if bench_tail else None
         leads_index = (ind_dist is not None and bench_dist is not None and ind_dist <= POLICY['leadsIndexMax']
                        and bench_dist >= POLICY['leadsIndexBenchMin'])
-        cand_items = [{'id': m['id'], 'name': m['name'], 'symbol': m['symbol'], 'rs': m.get('_rsNow'),
+        cand_items = [{'id': m['id'], 'name': m['name'], 'symbol': m['symbol'], 'rs': m.get('_rsNow'), 'board': board_of(m),
                        'dist': rnd(m.get('_dist'), 1), 'leader': bool(m.get('_leader')),
                        'growth': (m.get('growth') or {}).get('text') if (m.get('growth') or {}).get('ok') else None}
                       for m in sorted(cands, key=lambda m: -(m.get('_rsNow') or 0))[:5]]
         reps = sorted(members, key=lambda m: (not m.get('_leader'), -(m.get('_rsNow') or 0)))[:3]
         items.append({
-            'name': name, 'members': len(members), 'rs': pct, 'rank': r0,
+            'name': name, 'members': len(members), 'boards': board_counts(members), 'rs': pct, 'rank': r0,
             'rankChange5': (r5 - r0) if r5 and r0 else None, 'rankChange20': (r20 - r0) if r20 and r0 else None,
             'rs5': pct5, 'rs20': pct20, 'persist': persist, 'stage': stage,
             'leading': all(conds.values()), 'conditions': conds,

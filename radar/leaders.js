@@ -9,7 +9,7 @@ const term = (key, label) => helpButton(label || LEADER_TERMS[key][0], key);
 const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : '';
 // US names arrive as full security titles; keep the company part.
 const short = name => String(name || '').replace(/\s+(Common Stock|Class [A-Z]\b.*|Ordinary Shares.*|American Depositary Shares.*|Depositary Shares.*|Common Shares.*|Inc\. Common.*)$/i, '').replace(/\s+(Common Stock)$/i, '').trim();
-let stockFilter = 'all', showAll = false, showMatrix = false;
+let stockFilter = 'all', boardFilter = 'all', showAll = false, showMatrix = false;
 const NO = ['①', '②', '③', '④', '⑤', '⑥'];
 const SVG = 'http://www.w3.org/2000/svg';
 const sv = (tag, attrs = {}, text) => { const e = document.createElementNS(SVG, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (text != null) e.textContent = text; return e; };
@@ -54,6 +54,22 @@ function stockLink(item, openStock, title) {
   b.onclick = () => openStock(item.id);
   return b;
 }
+// 시장 필터와 업종 구성 표시. 미국의 NYSE American·Arca 는 NYSE 칸에 함께 센다.
+const BOARDS = { KR: ['KOSPI', 'KOSDAQ'], US: ['NASDAQ', 'NYSE'] };
+const boardOf = item => item.board || stockInfo(item.id)?.board || null;
+const inBoard = (b, want) => !!b && (b === want || (want === 'NYSE' && b.startsWith('NYSE')));
+/** {'KOSDAQ': 3, 'KOSPI': 1} → 'KOSDAQ 3 · KOSPI 1' (많은 쪽부터). total 을 주면 'KOSDAQ 3/4'. */
+function boardText(counts, total) {
+  const list = Object.entries(counts || {}).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  if (!list.length) return '';
+  if (total && list.length === 1) return `${list[0][0]} ${list[0][1]}/${total}`;
+  return list.map(([k, v]) => `${k} ${v}`).join(' · ');
+}
+function countBoards(items) {
+  const out = {};
+  for (const x of items || []) { const b = boardOf(x); if (b) out[b] = (out[b] || 0) + 1; }
+  return out;
+}
 const slug = s => String(s || '').replace(/[^0-9A-Za-z가-힣]+/g, '-');
 
 function emergenceCard(L, market, openStock, openFTD, no) {
@@ -69,6 +85,9 @@ function emergenceCard(L, market, openStock, openFTD, no) {
   count.append(n('strong', `${e.count ?? 0}`), n('span', e.status === 'NO_FTD' ? '최근 10거래일 신고가 돌파 (RS 80 이상)' : `/ 기준 ${e.need}종목 · FTD 뒤 신고가 돌파`));
   const bar = n('div', null, 'ld-bar'); const fill = n('span'); fill.style.width = `${Math.min(100, ((e.count || 0) / (e.need || 1)) * 100)}%`; bar.append(fill);
   meter.append(count, bar);
+  // 시장별 내역. 판정(기준 수)은 시장 전체로 하고, 어느 지수 쪽에서 나왔는지만 나눠 보여 준다.
+  const split = boardText(e.byBoard || countBoards(e.items));
+  if (split && (e.count || 0) > 0) meter.append(n('small', `시장별 ${split}${e.byBoard ? '' : ' (상위 20종목 기준)'} · 판정은 시장 전체 수로 해요`, 'ld-board-split'));
   if (e.ftd) {
     const days = n('div', null, 'ld-days');
     for (let i = 1; i <= (e.window || 10); i++) days.append(n('i', null, i <= (e.age || 0) ? 'on' : ''));
@@ -149,7 +168,9 @@ function industryCard(L, openStock, no, flow = new Map()) {
     { const mc = moneyChip(x.name, flow); if (mc) title.append(mc); }
     name.append(title);
     if (x.representatives?.length) {
-      const reps = n('div', null, 'ld-reps-inline'); reps.append(n('span', `${x.members}종목 ·`));
+      const reps = n('div', null, 'ld-reps-inline');
+      const mix = boardText(x.boards, x.members);
+      reps.append(n('span', `${x.members}종목${mix ? ` (${mix})` : ''} ·`));
       x.representatives.forEach(r => reps.append(stockLink(r, openStock, `${short(r.name)} · ${r.symbol} · RS ${num(r.rs)}${r.leader ? ' · 선도주' : ''}`), n('small', `${num(r.rs)}${r.leader ? '★' : ''}`)));
       name.append(reps);
     }
@@ -172,7 +193,7 @@ function industryCard(L, openStock, no, flow = new Map()) {
   return card;
 }
 
-function leaderCard(L, openStock, rerender, no) {
+function leaderCard(L, openStock, rerender, no, market) {
   const ld = L.leaders || {};
   const card = n('section', null, 'ld-card'); card.id = 'ld-sec-leaders';
   const head = n('div', null, 'ld-card-head');
@@ -187,7 +208,26 @@ function leaderCard(L, openStock, rerender, no) {
     filters.append(b);
   });
   card.append(filters);
-  const items = (ld.items || []).filter(x => stockFilter === 'all' || (stockFilter === 'core' ? x.core : stockFilter === 'rsLead' ? x.rsLead : x.breakoutDates?.length));
+  const boards = BOARDS[market];
+  if (boards) {
+    // 시장 필터: 같은 선도주 목록을 상장 시장별로 나눠 본다(종류 필터와 함께 걸린다).
+    const all = ld.items || [];
+    if (boardFilter !== 'all' && !boards.includes(boardFilter)) boardFilter = 'all';
+    const row = n('div', null, 'ld-filters ld-board-filters');
+    row.append(n('span', '시장', 'ld-filter-label'));
+    // 수는 서버가 센 전체(byBoard, 목록은 60종목까지만 싣는다)를 먼저 쓴다.
+    const boardCount = b => ld.byBoard ? Object.entries(ld.byBoard).filter(([k]) => inBoard(k, b)).reduce((t, [, v]) => t + v, 0)
+      : all.filter(x => inBoard(boardOf(x), b)).length;
+    [['all', `전체 ${ld.count ?? all.length}`], ...boards.map(b => [b, `${b} ${boardCount(b)}`])].forEach(([k, label]) => {
+      const b = n('button', label, boardFilter === k ? 'active' : ''); b.type = 'button';
+      b.setAttribute('aria-pressed', String(boardFilter === k));
+      b.onclick = () => { boardFilter = k; showAll = false; rerender(); };
+      row.append(b);
+    });
+    card.append(row);
+  }
+  const items = (ld.items || []).filter(x => (stockFilter === 'all' || (stockFilter === 'core' ? x.core : stockFilter === 'rsLead' ? x.rsLead : x.breakoutDates?.length))
+    && (boardFilter === 'all' || inBoard(boardOf(x), boardFilter)));
   if (!items.length) { card.append(n('div', '조건에 맞는 선도주가 없어요. 시장이 약할 때는 선도주가 거의 없는 것이 정상이에요.', 'ld-empty')); return card; }
   const table = n('div', null, 'ld-table ld-stock-table');
   table.append(headRow([[null, '종목 · 업종', 'c-name'], ['rsOneil', 'RS'], ['ldDistance', '고점까지'], [null, '당일'], [null, '표시', 'c-flags']]));
@@ -378,7 +418,9 @@ function watchCard(L, openStock, rerender, no, flow = new Map()) {
       if (x.rsLineHigh) title.append(chip('★ RS선 신고가', 'star', 'industryRsLine'));
       name.append(title);
       if (x.candidates?.length) {
-        const reps = n('div', null, 'ld-reps-inline'); reps.append(n('span', `${LEADER_TERMS.candidate[0]} ${x.candidateCount}/${x.members} ·`));
+        const reps = n('div', null, 'ld-reps-inline');
+        const mix = boardText(x.boards, x.members);
+        reps.append(n('span', `${LEADER_TERMS.candidate[0]} ${x.candidateCount}/${x.members}${mix ? ` (${mix})` : ''} ·`));
         x.candidates.forEach(r => reps.append(stockLink(r, openStock, `${short(r.name)} · ${r.symbol} · RS ${num(r.rs)} · 고점 -${num(r.dist, 1)}%${r.growth ? ` · ${r.growth}` : ''}${r.leader ? ' · 선도주' : ''}`), n('small', `${num(r.rs)} · -${num(r.dist, 1)}%${r.leader ? '★' : ''}`)));
         name.append(reps);
       }
@@ -453,7 +495,7 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   const order = mode === 'WAIT' ? ['watch', 'map', 'industries', 'emergence', 'leaders']
     : mode === 'FTD' ? ['emergence', 'leaders', 'map', 'industries', 'watch']
       : ['map', 'industries', 'watch', 'leaders', 'emergence'];
-  const make = { watch: no => watchCard(L, openStock, rerender, no, flow), map: no => mapCard(L, no, focusIndustry), industries: no => industryCard(L, openStock, no, flow), emergence: no => emergenceCard(L, market, openStock, null, no), leaders: no => leaderCard(L, openStock, rerender, no) };
+  const make = { watch: no => watchCard(L, openStock, rerender, no, flow), map: no => mapCard(L, no, focusIndustry), industries: no => industryCard(L, openStock, no, flow), emergence: no => emergenceCard(L, market, openStock, null, no), leaders: no => leaderCard(L, openStock, rerender, no, market) };
   container.append(phaseBanner(L, openFTD, jump), sectionNav(order, jump), intro, gloss);
   order.forEach((key, i) => container.append(make[key](NO[i])));
   const rules = n('details', null, 'ftd-rules'); rules.append(n('summary', '판정 기준·데이터 범위'));

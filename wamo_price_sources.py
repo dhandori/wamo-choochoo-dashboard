@@ -47,6 +47,17 @@ MAX_REPAIR_SHARE = 0.10
 MIN_REPAIR_BUDGET = 5
 
 
+def _open_of(row, bar):
+    """시가는 선택 항목이다(캔들 차트용). 그날 고가·저가 안에 있을 때만 남기고, 아니면 버린다.
+
+    시가가 틀렸다고 종목 전체를 버리지 않는다. 판정은 종가·고가·저가·거래량으로만 한다.
+    """
+    value = _number(row.get('open'))
+    if math.isfinite(value) and bar['low'] * 0.999999 <= value <= bar['high'] * 1.000001:
+        return min(max(value, bar['low']), bar['high'])
+    return None
+
+
 def validate_history(rows, expected, repairs=None, repair=False):
     """Reject corrupt/stale data, and exclude a newer unfinished session.
 
@@ -63,7 +74,12 @@ def validate_history(rows, expected, repairs=None, repair=False):
         seen.add(day)
         if day > expected:
             continue
-        parsed.append(dict(date=day, **{key: _number(row.get(key)) for key in ('close', 'high', 'low', 'volume')}))
+        bar = dict(date=day, **{key: _number(row.get(key)) for key in ('close', 'high', 'low', 'volume')})
+        if 'open' in row and _valid_bar({k: bar[k] for k in ('close', 'high', 'low', 'volume')}):
+            opening = _open_of(row, bar)
+            if opening is not None:
+                bar['open'] = opening
+        parsed.append(bar)
     parsed.sort(key=lambda r: r['date'])
     if not parsed or parsed[-1]['date'] != expected:
         raise ValueError(f"기대 거래일 {expected}, 응답 가격일 {parsed[-1]['date'] if parsed else '없음'}")
@@ -139,7 +155,8 @@ def parse_nasdaq(payload, symbol, expected):
     if not source or int(data.get('totalRecords', -1)) != len(source):
         raise ValueError('Nasdaq history incomplete')
     rows = [dict(date=datetime.strptime(r['date'], '%m/%d/%Y').date().isoformat(),
-                 **{key: number(r[key]) for key in ('close', 'high', 'low', 'volume')})
+                 **{key: number(r[key]) for key in ('close', 'high', 'low', 'volume')},
+                 **({'open': number(r['open'])} if r.get('open') not in (None, '', 'N/A') else {}))
             for r in source]
     return validate_history(rows, expected)
 
@@ -176,7 +193,8 @@ def fetch_naver_us(meta, expected):
             payload = get_json(f'https://api.stock.naver.com/chart/foreign/item/{code}/day?{query}')
             rows = [dict(date=datetime.strptime(r['localDate'], '%Y%m%d').date().isoformat(),
                          close=float(r['closePrice']), high=float(r['highPrice']),
-                         low=float(r['lowPrice']), volume=float(r['accumulatedTradingVolume']))
+                         low=float(r['lowPrice']), volume=float(r['accumulatedTradingVolume']),
+                         **({'open': r['openPrice']} if r.get('openPrice') is not None else {}))
                     for r in payload]
             return PriceHistory(validate_history(rows, expected), 'NAVER Finance',
                                 'api.stock.naver.com', False)

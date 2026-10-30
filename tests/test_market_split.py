@@ -82,5 +82,58 @@ class BoardLabelTests(unittest.TestCase):
         self.assertIsNone(board_of({'ticker': '7203.T'}, 'JP'))
 
 
+class BoardSplitInLeadersTests(unittest.TestCase):
+    """선도주·출현 수·업종 구성을 상장 시장별로 나눠 싣는다(판정은 그대로 시장 전체)."""
+
+    def test_leaders_emergence_and_industries_carry_board_counts(self):
+        import wamo_leaders as L
+        from tests.test_leaders import universe, BENCH
+        u = universe()
+        for k, s in enumerate(u):
+            s['board'] = 'NASDAQ' if k % 2 else 'NYSE AMERICAN'
+        out = L.analyze(u, BENCH, 'US')
+        leaders = out['leaders']
+        self.assertEqual(sum(leaders['byBoard'].values()), leaders['count'])
+        self.assertTrue(all(x['board'] in ('NASDAQ', 'NYSE American') for x in leaders['items']))
+        self.assertEqual(sum(out['emergence']['byBoard'].values()), out['emergence']['count'])
+        strong = next(x for x in out['industries']['items'] if x['name'] == 'Strong')
+        self.assertEqual(strong['boards'], {'NYSE American': 2, 'NASDAQ': 2})
+
+    def test_unknown_board_is_not_counted(self):
+        import wamo_leaders as L
+        self.assertEqual(L.board_counts([{'board': ''}, {'board': 'KOSDAQ'}, {}]), {'KOSDAQ': 1})
+
+
+class DailyBarTests(unittest.TestCase):
+    """일봉 캔들 자료: 시가는 선택 항목이고, 틀린 시가는 그 값만 버린다."""
+
+    def test_chart_payload_ships_high_low_and_open(self):
+        u = [stock('A', 'KOSPI', .2)]
+        for r in u[0]['rows'][-5:]:
+            r['open'] = r['low']
+        out = trend.chart_payload(u, rows(step=.3), '2026-10-29', 'KR')['stocks']['A']
+        self.assertEqual(len(out['h']), len(out['v']))
+        self.assertEqual(out['h'][-1], int(round(u[0]['rows'][-1]['high'])))
+        self.assertEqual(out['o'][-1], int(round(u[0]['rows'][-1]['low'])))
+        self.assertIsNone(out['o'][-6])
+        # 시가가 하나도 없으면 o 를 싣지 않는다(화면은 고가·저가 막대로 그린다).
+        plain = trend.chart_payload([stock('B', 'KOSPI', .2)], rows(step=.3), '2026-10-29', 'KR')['stocks']['B']
+        self.assertNotIn('o', plain)
+
+    def test_open_outside_the_day_range_is_dropped_not_the_stock(self):
+        import wamo_price_sources as ps
+        from wamo_insights import history
+        bars = rows(n=80)
+        bars[-1]['open'] = bars[-1]['high'] * 2      # 틀린 시가
+        bars[-2]['open'] = bars[-2]['low']
+        checked = ps.validate_history(bars, bars[-1]['date'])
+        self.assertNotIn('open', checked[-1])
+        self.assertEqual(checked[-2]['open'], bars[-2]['low'])
+        self.assertIsNotNone(history(bars), '틀린 시가 하나로 종목 전체를 버리면 안 됩니다')
+        cleaned = trend.clean_rows(bars)
+        self.assertNotIn('open', cleaned[-1])
+        self.assertIn('open', cleaned[-2])
+
+
 if __name__ == '__main__':
     unittest.main()

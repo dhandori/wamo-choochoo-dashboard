@@ -303,6 +303,17 @@ with sync_playwright() as p:
                     expect(page.locator('.ld-nav button')).to_have_count(5)
                     if (lead.get('industries') or {}).get('items'):
                         expect(page.locator('.ld-ind-table .ld-tr:not(.ld-thead)')).to_have_count(min(10,len(lead['industries']['items'])))
+                    # 2026-10-30 시장 구분: 선도주 목록 시장 필터(KOSPI·KOSDAQ / NASDAQ·NYSE). 고르면 그 시장 배지만 남는다.
+                    by_board=(lead.get('leaders') or {}).get('byBoard') or {}
+                    pick=next((b for b in ('KOSDAQ','KOSPI','NASDAQ','NYSE') if by_board.get(b)),None)
+                    if pick:
+                        page.locator('.ld-board-filters button',has_text=pick).click()
+                        badges=page.locator('#ld-sec-leaders .ld-stock-table .board-badge').all_inner_texts()
+                        assert badges and all(b.startswith(pick) for b in badges),(pick,badges[:5])
+                        page.locator('.ld-board-filters button',has_text='전체').click()
+                    for item in ((lead.get('industries') or {}).get('items') or [])[:1]:
+                        if item.get('boards'):
+                            expect(page.locator('.ld-ind-table .ld-reps-inline').first).to_contain_text(next(iter(item['boards'])))
                     if page.locator('.ld-dot').count():
                         page.locator('.ld-nav button[data-sec=map]').click()
                         page.locator('.ld-dot').last.click()
@@ -455,6 +466,19 @@ with sync_playwright() as p:
             assert first.locator('.pt-setup h4').inner_text().strip(),'셋업 이름이 비었습니다'
             assert first.locator('.pt-phase').inner_text().strip() in ('돌파','임박','형성중')
             expect(first.locator('.pt-numbers dd').first).to_be_visible()
+            # 2026-10-30: 카드 차트는 일봉(고가·저가 막대, 시가가 있으면 캔들)이다.
+            # 차트는 카드가 화면 가까이 오면 그린다.
+            first.locator('.pt-chart-slot').scroll_into_view_if_needed()
+            expect(first.locator('.pt-chart-slot svg[data-kind]')).to_be_visible()
+            # 위 칸 숫자는 목록과 같은 조건으로 센다: 누르면 그 수만큼 카드가 나온다.
+            for k in range(3):
+                stat=page.locator('.pt-stat-num').nth(k)
+                want=int(stat.inner_text())
+                stat.click()
+                got=int(_re.search(r'(\d+)',page.locator('.pt-result').inner_text()).group(1))
+                assert got==want,(k,want,got)
+                page.locator('.pt-stat-num').nth(k).click()
+            first=page.locator('.pt-card').first
             # 패턴 설명·판정 기준·한계가 있어야 한다(근거 없는 신호를 내보내지 않는다).
             first.locator('.pt-why summary').click()
             assert first.locator('.pt-why dt').first.inner_text()=='패턴 설명'
@@ -505,10 +529,10 @@ with sync_playwright() as p:
             assert all(isinstance(v,(int,float)) for v in values[:len(present)]),(key,'값 없는 종목이 앞에 있습니다')
         # 손절 폭은 카드에 적힌 값으로 본다(대표 셋업은 화면 조건을 통과한 첫 셋업이라 스냅샷 첫 셋업과 다를 수 있다).
         page.select_option('select[aria-label="정렬"]','stop')
-        widths=page.locator('.pt-card').evaluate_all("(cs)=>cs.map(c=>{const dt=[...c.querySelectorAll('.pt-numbers dt')].find(d=>d.textContent.includes('손절 폭'));return dt?parseFloat(dt.nextElementSibling.textContent):null})")
+        widths=page.locator('.pt-card').evaluate_all("(cs)=>cs.map(c=>{const dt=[...c.querySelectorAll('.pt-numbers dt')].find(d=>/^(피벗|종가)→손절/.test(d.textContent));return dt?parseFloat(dt.nextElementSibling.textContent):null})")
         widths=[w for w in widths if isinstance(w,(int,float))]
         assert widths==sorted(widths),widths[:5]
-        assert page.locator('.pt-sort-hint').inner_text().startswith('피벗에서 손절선까지')
+        assert page.locator('.pt-sort-hint').inner_text().startswith('사는 가격에서 손절선까지')
         page.reload(wait_until='networkidle')
         assert page.locator('select[aria-label="정렬"]').input_value()=='stop','정렬 기준을 기억하지 못했습니다'
         page.select_option('select[aria-label="정렬"]','default')

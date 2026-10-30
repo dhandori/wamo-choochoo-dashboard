@@ -142,6 +142,15 @@ body[data-view="trend"] #controls, body[data-view="trend"] .list-meta, body[data
 .pc-svg-compact .pc-price { stroke-width: 1.3; }
 .pc-vol.up { fill: #6b2e39; } .pc-vol.down { fill: #24406b; }
 .pc-vol-avg { fill: none; stroke: #8a9db5; stroke-width: 1; stroke-dasharray: 3 3; }
+/* 일봉 캔들: 상승(종가≥시가) 빨강, 하락 파랑. 시가가 없는 날은 고가·저가 막대에 종가 눈금. */
+.pc-candle .pc-wick { stroke-width: 1; }
+.pc-candle.rise .pc-wick { stroke: var(--up); } .pc-candle.rise .pc-body { fill: var(--up); }
+.pc-candle.fall .pc-wick { stroke: var(--down); } .pc-candle.fall .pc-body { fill: var(--down); }
+.pc-level { stroke-width: 1.2; stroke-dasharray: 5 4; }
+.pc-level.pivot { stroke: #e3b341; } .pc-level.stop { stroke: #ff9a3c; } .pc-level.ma { stroke: #3987e5; }
+.pc-level-text { font-size: 11px; font-weight: 700; paint-order: stroke; stroke: #0c121d; stroke-width: 3px; }
+.pc-level-text.pivot { fill: #e3b341; } .pc-level-text.stop { fill: #ff9a3c; }
+.pc-shade { fill: rgba(227, 179, 65, .07); }
 .pc-last { fill: #eaf0f8; stroke: #0e1723; stroke-width: 2; }
 .pc-last-tag { fill: #eaf0f8; }
 .pc-last-text { fill: #0c121d; font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; }

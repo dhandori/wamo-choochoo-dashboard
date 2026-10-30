@@ -28,8 +28,11 @@ export function stockSeries(data, symbol) {
   const second = s.b === 2 && Array.isArray(data.bench2);
   const bench = ((second ? data.bench2 : data.bench) || []).slice(s.s, s.s + s.c.length);
   const vols = new Array(s.c.length - s.v.length).fill(null).concat(s.v);
+  // h·l·o = 최근 120거래일의 고가·저가·시가(일봉 캔들). 옛 자료에는 없고, 시가는 수집을 시작한 날부터 있다.
+  const pad = arr => Array.isArray(arr) && arr.length <= s.c.length ? new Array(s.c.length - arr.length).fill(null).concat(arr) : null;
+  const highs = pad(s.h), lows = pad(s.l), opens = highs && lows ? pad(s.o) : null;
   // a = [ATR(14일), 종가 대비 %] — 갱신기가 고가·저가로 계산해 둔 평균 변동폭(없으면 null).
-  return { dates, closes: s.c, volumes: vols, volStart: s.c.length - s.v.length, bench, benchLabel: (second ? data.bench2Label : data.benchLabel) || '지수', atr: Array.isArray(s.a) ? s.a : null };
+  return { dates, closes: s.c, volumes: vols, volStart: s.c.length - s.v.length, highs: highs && lows ? highs : null, lows: highs && lows ? lows : null, opens, bench, benchLabel: (second ? data.bench2Label : data.benchLabel) || '지수', atr: Array.isArray(s.a) ? s.a : null };
 }
 
 export function sma(values, n) {
@@ -76,21 +79,40 @@ const md = d => `${+d.slice(5, 7)}/${+d.slice(8, 10)}`;
 
 function el(tag, txt, cls) { const n = document.createElement(tag); if (txt != null) n.textContent = txt; if (cls) n.className = cls; return n; }
 
+/** 하루치 봉. 고가·저가가 있으면 일봉, 시가까지 있으면 캔들(몸통), 없으면 고가·저가 막대에 종가 눈금. */
+export function barAt(series, i) {
+  const h = series.highs?.[i], l = series.lows?.[i], c = series.closes[i];
+  if (h == null || l == null || c == null) return null;
+  const o = series.opens?.[i];
+  const prev = i > 0 ? series.closes[i - 1] : null;
+  // 몸통이 있으면 시가 대비, 없으면 전일 종가 대비로 색을 정한다(한국식: 상승 빨강, 하락 파랑).
+  const rise = o != null ? c >= o : prev == null || c >= prev;
+  return { o: o ?? null, h, l, c, rise };
+}
+
 /**
- * Full chart: price + moving averages (top), volume with 50-day average (bottom),
+ * Full chart: daily candles + moving averages (top), volume with 50-day average (bottom),
  * date axis, price axis on the right, legend with MA direction, hover readout.
+ * levels: 가로선 [{ value, label, cls }] (예: 피벗·손절선). shade: 오른쪽에서 몇 거래일을 옅게 칠할지(베이스 구간).
+ * 고가·저가가 없는 옛 자료는 종가 선으로 그린다.
  */
-export function priceChart(series, { market = 'KR', days = 60, compact = false, mas = MA, showVolume = !compact } = {}) {
+export function priceChart(series, { market = 'KR', days = 60, compact = false, mas = MA, showVolume = !compact, levels = [], shade = 0, width, height } = {}) {
   const n = series.closes.length, start = Math.max(0, n - days);
   const maSeries = mas.map(m => ({ ...m, values: sma(series.closes, m.n) }));
   const idx = []; for (let i = start; i < n; i++) idx.push(i);
+  // 창 안의 봉이 대부분 있으면 일봉으로 그린다(거래가 없던 날만 비운다).
+  const bars = idx.map(i => barAt(series, i));
+  const candles = bars.filter(Boolean).length >= idx.length * 0.8;
+  const bodies = candles && bars.some(b => b && b.o != null);
+  const lines = (levels || []).filter(l => l && Number.isFinite(l.value));
   // Narrow screens get a smaller drawing area so axis text stays readable.
   const narrow = !compact && typeof window !== 'undefined' && window.innerWidth < 700;
-  const W = compact ? 300 : narrow ? 360 : 680, H = compact ? 118 : narrow ? 260 : 330;
+  const W = width || (compact ? 300 : narrow ? 360 : 680), H = height || (compact ? 118 : narrow ? 260 : 330);
   const pad = { l: compact ? 4 : 8, r: compact ? 54 : narrow ? 56 : 60, t: compact ? 8 : 12, b: compact ? 18 : 24 };
   const volH = showVolume ? Math.round(H * 0.2) : 0, gap = showVolume ? 8 : 0;
   const plotW = W - pad.l - pad.r, priceH = H - pad.t - pad.b - volH - gap;
-  const values = idx.flatMap(i => [series.closes[i], ...maSeries.map(m => m.values[i])]).filter(v => v != null);
+  const values = idx.flatMap((i, k) => [series.closes[i], ...(candles && bars[k] ? [bars[k].h, bars[k].l] : []), ...maSeries.map(m => m.values[i])])
+    .concat(lines.map(l => l.value)).filter(v => v != null);
   let lo = Math.min(...values), hi = Math.max(...values);
   const margin = (hi - lo) * 0.06 || hi * 0.02; lo -= margin; hi += margin;
   const x = k => pad.l + (idx.length === 1 ? plotW / 2 : k / (idx.length - 1) * plotW);
@@ -98,7 +120,13 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
 
   const wrap = el('div', null, `pc ${compact ? 'pc-compact' : ''}`);
   const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: compact ? 'pc-svg pc-svg-compact' : 'pc-svg detail-chart', role: 'img',
-    'aria-label': `최근 ${idx.length}거래일 종가와 이동평균선` });
+    'aria-label': `최근 ${idx.length}거래일 ${candles ? '일봉' : '종가'}과 이동평균선${lines.length ? `, ${lines.map(l => l.label).join('·')}` : ''}` });
+  if (candles) svg.dataset.kind = bodies ? 'candle' : 'bar';
+  // 베이스 구간(오른쪽 shade 거래일)을 옅게 칠해 패턴이 어디서 만들어졌는지 보여 준다.
+  if (shade > 0 && shade < idx.length) {
+    const x0 = x(idx.length - 1 - shade) - (plotW / idx.length) / 2;
+    node('rect', { x: Math.max(pad.l, x0), y: pad.t, width: pad.l + plotW - Math.max(pad.l, x0), height: priceH, class: 'pc-shade' }, svg);
+  }
   // Grid + price axis (right)
   const ticks = niceTicks(lo, hi, compact ? 3 : 5);
   const lastY = y(series.closes[n - 1]);
@@ -137,9 +165,30 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
     const pts = idx.map((i, k) => m.values[i] != null ? `${x(k)},${y(m.values[i])}` : null).filter(Boolean);
     if (pts.length > 1) node('polyline', { points: pts.join(' '), stroke: m.color, class: `pc-ma ma${m.n}` }, svg);
   });
-  node('polyline', { points: idx.map((i, k) => `${x(k)},${y(series.closes[i])}`).join(' '), class: 'pc-price' }, svg);
+  // 피벗·손절선 같은 가로선. 오른쪽 축 자리에 이름을 적는다.
+  lines.forEach(l => {
+    node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(l.value), y2: y(l.value), class: `pc-level ${l.cls || ''}` }, svg);
+    if (!compact) text(svg, pad.l + 4, y(l.value) - 4, `${l.label} ${fmtPrice(l.value, market)}`, { class: `pc-level-text ${l.cls || ''}` });
+  });
+  if (candles) {
+    const cw = plotW / idx.length, bw = Math.max(1, Math.min(9, cw * 0.66));
+    bars.forEach((b, k) => {
+      if (!b) return;
+      const g = node('g', { class: `pc-candle ${b.rise ? 'rise' : 'fall'}` }, svg);
+      node('line', { x1: x(k), x2: x(k), y1: y(b.h), y2: y(b.l), class: 'pc-wick' }, g);
+      if (b.o != null) {
+        const top = y(Math.max(b.o, b.c)), bottom = y(Math.min(b.o, b.c));
+        node('rect', { x: x(k) - bw / 2, y: top, width: bw, height: Math.max(1, bottom - top), class: 'pc-body' }, g);
+      } else {
+        // 시가가 없는 날: 오른쪽 눈금이 종가(HLC 막대).
+        node('line', { x1: x(k), x2: x(k) + Math.max(1.5, bw / 2), y1: y(b.c), y2: y(b.c), class: 'pc-wick' }, g);
+      }
+    });
+  } else {
+    node('polyline', { points: idx.map((i, k) => `${x(k)},${y(series.closes[i])}`).join(' '), class: 'pc-price' }, svg);
+  }
   const lastK = idx.length - 1, last = series.closes[idx[lastK]];
-  node('circle', { cx: x(lastK), cy: y(last), r: compact ? 2.5 : 3.5, class: 'pc-last' }, svg);
+  if (!candles) node('circle', { cx: x(lastK), cy: y(last), r: compact ? 2.5 : 3.5, class: 'pc-last' }, svg);
   const tag = node('g', {}, svg);
   node('rect', { x: W - pad.r + 2, y: y(last) - 8, width: pad.r - 3, height: 16, rx: 3, class: 'pc-last-tag' }, tag);
   text(tag, W - pad.r + 6, y(last) + 4, fmtAxis(last, market), { class: 'pc-last-text' });
@@ -154,7 +203,7 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
     if (dir) s.append(el('em', `${ARROW[dir.dir]} ${dir.pct > 0 ? '+' : ''}${dir.pct.toFixed(1)}%`, `dir-${dir.dir}`));
     legend.append(s);
   };
-  item('#eaf0f8', '종가', fmtPrice(last, market), null, 'price');
+  item('#eaf0f8', candles ? '일봉 종가' : '종가', fmtPrice(last, market), null, 'price');
   maSeries.forEach(m => {
     const v = m.values[n - 1];
     const [back, band] = SLOPE[m.n] || [10, 0.5];
@@ -177,6 +226,12 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
       tip.replaceChildren(el('b', series.dates[i]));
       const chg = i > 0 ? (series.closes[i] / series.closes[i - 1] - 1) * 100 : null;
       const row = (label, value, color) => { const r = el('div'); const sw = el('i'); sw.style.background = color; r.append(sw, el('span', label), el('strong', value)); tip.append(r); };
+      const b = candles ? bars[k] : null;
+      if (b) {
+        if (b.o != null) row('시가', fmtPrice(b.o, market), '#8a9db5');
+        row('고가', fmtPrice(b.h, market), '#8a9db5');
+        row('저가', fmtPrice(b.l, market), '#8a9db5');
+      }
       row('종가', `${fmtPrice(series.closes[i], market)}${chg == null ? '' : ` (${chg > 0 ? '+' : ''}${chg.toFixed(1)}%)`}`, '#eaf0f8');
       maSeries.forEach(m => row(m.label, fmtPrice(m.values[i], market), m.color));
       if (series.volumes[i] != null) row('거래량', fmtVol(series.volumes[i]), '#5b6f88');

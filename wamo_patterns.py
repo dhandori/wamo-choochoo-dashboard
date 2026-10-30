@@ -187,10 +187,12 @@ def _stage(bars, pivot, confirmed, near_low=-1.5, near_high=5.0):
 
 
 def _result(key, status, label, pivot=None, stop=None, distance=None, base_days=None,
-            evidence=None, criterion='', caveat=''):
+            evidence=None, criterion='', caveat='', entry=None):
+    # 손절 폭은 사는 가격에서 잰다. 피벗 돌파형은 피벗, 피벗이 없는 포켓 피벗은 그날 종가(entry)다.
+    buy = pivot or entry
     stop_pct = None
-    if pivot and stop and pivot > 0:
-        stop_pct = (1 - stop / pivot) * 100
+    if buy and stop and buy > 0:
+        stop_pct = (1 - stop / buy) * 100
     return {
         'key': key, 'name': NAMES[key], 'master': MASTERS[key], 'importance': IMPORTANCE[key],
         'status': status, 'label': label,
@@ -198,7 +200,7 @@ def _result(key, status, label, pivot=None, stop=None, distance=None, base_days=
         'distanceToPivotPct': _r(distance, 1), 'stopDistancePct': _r(stop_pct, 1),
         # 셋업북 ②-4. 손절 폭이 넘치면 그 자리는 건너뛴다는 표시만 남기고 판정은 바꾸지 않는다.
         'stopTooWide': bool(stop_pct is not None and stop_pct > MAX_STOP_PCT),
-        'baseDays': base_days,
+        'entry': _r(buy), 'baseDays': base_days,
         'evidence': {k: v for k, v in (evidence or {}).items() if v is not None},
         'criterion': criterion, 'caveat': caveat,
     }
@@ -513,9 +515,12 @@ def detect_pp(bars):
     return _result(
         'pp', 'BREAKOUT', '포켓 피벗 출현', None, bars.ma50, None, None,
         {'volumeVsMaxDownDay': _r(bars.volumes[-1] / strongest_down) if strongest_down else None,
-         'distanceToMaPct': _r(near_ma, 1), 'volumeRatio': _r(bars.volume_ratio()),
+         'distanceToMaPct': _r(near_ma, 1),
+         'closeToMa10Pct': _r((bars.close / bars.ma10 - 1) * 100, 1),
+         'closeToMa50Pct': _r((bars.close / bars.ma50 - 1) * 100, 1),
+         'volumeRatio': _r(bars.volume_ratio()),
          'reboundPct': _r(rebound, 1), 'ma10': _r(bars.ma10), 'ma50': _r(bars.ma50)},
-        PP_CRITERION, PP_CAVEAT)
+        PP_CRITERION, PP_CAVEAT, entry=bars.close)
 
 
 # ── 다바스 박스 ─────────────────────────────────────────────────────────────
@@ -600,7 +605,7 @@ def detect_asc(bars):
         return _result(
             'asc', status, label, pivot, bars.lows[troughs[-1]], distance, length,
             {'touchesTop': len(peaks), 'touchesBottom': len(troughs),
-             'resistance': _r(resistance), 'volumeRatio': _r(ratio),
+             'resistance': _r(resistance), 'baseVolumeRatio': _r(ratio),
              'breakoutVolumeRatio': _r(bars.volume_ratio())},
             ASC_CRITERION, ASC_CAVEAT)
     return _none('asc')
@@ -709,6 +714,38 @@ def stage_gate(checks, core):
             'failed': [k for k, v in checks.items() if not v]}
 
 
+EXTENDED_PCT = 5.0       # 셋업북 ②-3: 피벗 위 5%를 넘으면 쫓아 사지 않는다
+NEAR_ABOVE_PCT = 1.5     # _stage 의 near_low 와 같은 폭(피벗 바로 위)
+
+READY_ABOVE_LABEL = '피벗 위 · 거래량 확인 필요'
+
+
+def settle(setup, bars):
+    """판정이 끝난 셋업을 오늘 종가로 한 번 더 맞춘다. 모든 셋업(수집 단계 VCP 포함)에 같은 규칙.
+
+    - 종가가 손절선 아래면 그 셋업은 이미 실패했다. 목록에서 뺀다(None).
+    - 거래량 확인 없이 피벗 위로 올라온 종목은 '형성중'이 아니다. 피벗 위 5% 안이면
+      임박(거래량 확인 필요)으로, 그보다 높으면 셋업이 이미 지나갔으므로 뺀다.
+    - 돌파가 확인됐어도 종가가 피벗 위 5%를 넘으면 추격 금지 표시를 단다.
+    """
+    if setup.get('status') not in LIVE:
+        return setup
+    stop = setup.get('stop')
+    if stop and bars.close < stop:
+        return None
+    distance = setup.get('distanceToPivotPct')
+    if setup.get('pivot') and distance is not None:
+        above = -distance
+        if setup['status'] == 'BREAKOUT':
+            if above > EXTENDED_PCT:
+                setup = {**setup, 'extended': True}
+        elif above > EXTENDED_PCT:
+            return None
+        elif above > NEAR_ABOVE_PCT:
+            setup = {**setup, 'status': 'READY', 'label': READY_ABOVE_LABEL, 'unconfirmed': True}
+    return setup
+
+
 def detect_patterns(rows, vcp=None, stage_checks=None, stage_core=None):
     """한 종목의 셋업 판정. 진행 중인 셋업만 담아 돌려준다(없으면 None)."""
     if not isinstance(rows, list) or len(rows) < MIN_ROWS:
@@ -720,7 +757,7 @@ def detect_patterns(rows, vcp=None, stage_checks=None, stage_core=None):
             setups.append(detector(bars))
         except (ValueError, ZeroDivisionError, IndexError, KeyError, TypeError):
             setups.append(_none(detector.__name__.replace('detect_', '')))
-    live = [s for s in setups if s.get('status') in LIVE]
+    live = [s for s in (settle(x, bars) for x in setups) if s and s.get('status') in LIVE]
     gate = stage_gate(stage_checks, stage_core)
     if not live:
         return {'asOf': bars.dates[-1], 'setups': [], 'stage': gate} if gate else None
