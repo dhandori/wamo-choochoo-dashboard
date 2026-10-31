@@ -1,0 +1,28 @@
+name: 자료 브랜치 기록 정리
+# data 브랜치는 자동 갱신 자료만 담는다. 과거 기록이 하루 약 60MB씩 쌓이므로(2026-10-31 측정) 매일 줄인다.
+# 오늘(KST) 기록은 전부, 어제부터 7일 전까지는 하루 마지막 1개씩 남기고 그보다 오래된 기록은 하나로 합친다.
+# 최신 자료 내용은 바뀌지 않는다(wamo_data_branch.prune 이 올리기 전에 확인).
+on:
+  schedule:
+    # 01:55 KST: 미국 마감 갱신(06:00 KST 전후)·한국 마감 갱신과 겹치지 않는 시각
+    - cron: '55 16 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  # 자료를 올리는 작업들과 같은 줄에 선다(동시에 data 브랜치를 바꾸지 않게).
+  group: wamo-data-update
+  cancel-in-progress: false
+  queue: max
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - name: data 브랜치 기록 정리
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 wamo_data_branch.py prune
