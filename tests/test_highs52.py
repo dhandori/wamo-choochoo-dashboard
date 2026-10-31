@@ -124,6 +124,43 @@ class TimingTests(unittest.TestCase):
         self.assertLess(h.target_day('KR', friday_1550, fetch), DAY)
 
 
+class TaxonomyTests(unittest.TestCase):
+    """업종은 공통 분류 하나(wamo_taxonomy)로 붙인다. 큰 업종은 노션 선택지 21개, 세부 산업은 WAMO 분류표가 먼저.
+    한 종목이 여러 바구니에 들어가면(ESS 겹침 소속 등) 모두 남긴다. '배터리 셀'은 늘 그 이름으로 나온다."""
+
+    BASKETS = {'markets': {'KR': {'items': [
+        {'group': '2차전지', 'name': '배터리 셀', 'members': [{'code': '373220'}, {'code': '006400'}]},
+        {'group': '2차전지', 'name': 'ESS 밸류체인(전기차→ESS 전환)', 'members': [{'code': '373220'}, {'code': '020150'}]},
+        {'group': '전자·IT하드웨어', 'name': '동박·기판 소재', 'members': [{'code': '020150'}]}]},
+        'US': {'items': [{'group': '전력·에너지', 'name': '발전설비·전력망 장비', 'members': [{'code': 'ZZZ'}]}]}}}
+
+    def classifier(self, cache=None):
+        import wamo_taxonomy as t
+        return t.Classifier(t.load_baskets(fetch=lambda url, **k: self.BASKETS), cache=cache or {}, lookup=None)
+
+    def test_battery_cell_and_ess_overlap(self):
+        c = self.classifier().classify('KR', '373220')
+        self.assertEqual((c['group'], c['industry']), ('2차전지', '배터리 셀'))
+        self.assertEqual(c['baskets'], ['배터리 셀', 'ESS 밸류체인(전기차→ESS 전환)'])
+
+    def test_yahoo_industry_sets_the_big_group_and_basket_sets_the_detail(self):
+        c = self.classifier({'US:NVDA': {'industry': 'Semiconductors'}}).classify('US', 'NVDA')
+        self.assertEqual((c['group'], c['industry'], c['baskets']), ('반도체', '반도체', []))
+        z = self.classifier().classify('US', 'ZZZ')   # 야후 업종이 없으면 WAMO 대분류를 21개로 옮겨 쓴다
+        self.assertEqual((z['group'], z['industry']), ('전력·에너지 설비', '발전설비·전력망 장비'))
+        self.assertEqual(self.classifier().classify('US', 'NOPE')['group'], '기타')
+
+    def test_rows_get_groups_and_counts(self):
+        rows = [{'code': '373220'}, {'code': '006400'}, {'code': '999999'}]
+        self.assertEqual(h.classify_rows('KR', rows, self.classifier()), {'2차전지': 2, h.UNCLASSIFIED: 1})
+        self.assertEqual(rows[0]['detail'], '배터리 셀')
+
+    def test_every_big_group_is_a_notion_option(self):
+        import wamo_taxonomy as t
+        groups = {g for _, g in t.Y.values()} | {g for _, g in t.THEME.values()} | set(t.WAMO_GROUP.values())
+        self.assertLessEqual(groups, set(t.BIG))
+
+
 class RunTests(unittest.TestCase):
     def test_result_keeps_the_other_market_and_compares_with_notion(self):
         good = chart(bars(last_high=110.0))
@@ -134,7 +171,9 @@ class RunTests(unittest.TestCase):
             orig = h.universe_us
             h.universe_us = lambda fetch=None: universe
             try:
-                r = h.run('US', DAY, out, fetch=lambda url, **k: good)
+                import wamo_taxonomy as t
+                quiet = t.Classifier({}, cache={}, lookup=None)   # 시험은 네트워크로 업종을 묻지 않는다
+                r = h.run('US', DAY, out, fetch=lambda url, **k: good, classifier=quiet)
             finally:
                 h.universe_us = orig
             doc = json.loads(out.read_text(encoding='utf-8'))

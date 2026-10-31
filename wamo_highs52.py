@@ -266,6 +266,20 @@ def scan(market, day, universe, fetch=get_json, workers=WORKERS):
             'failedCodes': failed[:50], 'highs': highs, 'highCount': len(highs), 'lowCount': lows}
 
 
+# ------------------------------------------------------------------ taxonomy
+UNCLASSIFIED = '기타'
+
+
+def classify_rows(market, rows, classifier):
+    """신고가 행에 공통 업종 분류(wamo_taxonomy)를 붙이고 큰 업종별 개수를 돌려준다(업종 확산도의 바탕)."""
+    groups = {}
+    for row in rows:
+        c = classifier.classify(market, row.get('code'))
+        row.update({'group': c['group'], 'detail': c['industry'], 'baskets': c['baskets']})
+        groups[c['group']] = groups.get(c['group'], 0) + 1
+    return dict(sorted(groups.items(), key=lambda kv: (kv[0] == UNCLASSIFIED, -kv[1], kv[0])))
+
+
 def notion_shadow(market, day, ours, fetch=None):
     """노션 기록(history.json)과 같은 날 비교. 읽을 열쇠가 없거나 실패하면 None(비교는 선택)."""
     token = os.environ.get('RADAR_READ_TOKEN')
@@ -291,7 +305,7 @@ def notion_shadow(market, day, ours, fetch=None):
             'notionLows': entry.get('lows'), 'notionSource': entry.get('source')}
 
 
-def run(market, day=None, out=OUT, fetch=get_json, now=None):
+def run(market, day=None, out=OUT, fetch=get_json, now=None, classifier=None):
     day = day or target_day(market, now, fetch)
     universe = universe_kr(fetch) if market == 'KR' else universe_us(fetch)
     result = scan(market, day, universe, fetch)
@@ -301,6 +315,14 @@ def run(market, day=None, out=OUT, fetch=get_json, now=None):
     result['basis'] = ('KOSPI·KOSDAQ 보통주 시총 1,000억 원 이상' if market == 'KR'
                        else 'NYSE·NASDAQ·AMEX 보통주 시총 20억 달러 이상') + ' · 장중 고가가 1년 최고가에 닿음'
     result['shadow'] = notion_shadow(market, result['asOf'], result)
+    try:
+        import wamo_taxonomy
+        classifier = classifier or wamo_taxonomy.Classifier(wamo_taxonomy.load_baskets(None if fetch is get_json else fetch))
+        result['byGroup'] = classify_rows(market, result['highs'], classifier)
+        result['taxonomy'] = {'source': '공통 업종 분류(wamo_taxonomy: 큰 업종 21개 + WAMO 산업 분류표 세부 산업)',
+                              'inBaskets': sum(1 for r in result['highs'] if r.get('baskets'))}
+    except Exception as exc:  # noqa: BLE001 - 분류표를 못 받아도 신고가 결과는 낸다
+        result['taxonomy'] = {'error': type(exc).__name__}
     try:
         doc = json.loads(Path(out).read_text(encoding='utf-8'))
     except (OSError, ValueError):
