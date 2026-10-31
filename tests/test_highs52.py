@@ -96,6 +96,34 @@ class UniverseTests(unittest.TestCase):
         self.assertEqual(next(x for x in got if x['code'] == 'BRK.B')['yahoo'], 'BRK-B')
 
 
+class TimingTests(unittest.TestCase):
+    """마감 뒤 최대한 빨리 돌되, 종가가 자리 잡기 전에는 그날을 쓰지 않는다."""
+
+    def kst(self, hh, mm):
+        return datetime(2026, 11, 2, hh, mm, tzinfo=h.KST)   # 월요일
+
+    def test_korea_waits_from_close_until_ready(self):
+        slept = []
+        self.assertEqual(h.wait_until_ready('KR', self.kst(15, 45), sleep=slept.append), 7 * 60)
+        self.assertEqual(slept, [7 * 60])
+
+    def test_no_wait_before_close_or_after_ready(self):
+        for t in (self.kst(15, 10), self.kst(15, 52), self.kst(18, 0)):
+            self.assertEqual(h.wait_until_ready('KR', t, sleep=lambda s: self.fail('slept')), 0)
+
+    def test_us_waits_in_new_york_time(self):
+        ny = datetime(2026, 11, 2, 21, 4, tzinfo=timezone.utc)   # 겨울 뉴욕 16:04
+        self.assertEqual(h.wait_until_ready('US', ny, sleep=lambda s: None), 4 * 60)
+
+    def test_before_ready_the_previous_session_is_the_target(self):
+        rows = bars()   # DAY(금 10/30)로 끝나는 지수 일봉
+        fetch = lambda url, **k: chart(rows)
+        friday_1550 = datetime(2026, 10, 30, 15, 50, tzinfo=h.KST)
+        friday_1553 = datetime(2026, 10, 30, 15, 53, tzinfo=h.KST)
+        self.assertEqual(h.target_day('KR', friday_1553, fetch), DAY)
+        self.assertLess(h.target_day('KR', friday_1550, fetch), DAY)
+
+
 class RunTests(unittest.TestCase):
     def test_result_keeps_the_other_market_and_compares_with_notion(self):
         good = chart(bars(last_high=110.0))
@@ -116,6 +144,17 @@ class RunTests(unittest.TestCase):
             self.assertTrue(h.already_done('US', DAY, out))
         sh = h.notion_shadow('US', '2026-10-30', r, fetch=lambda: {'미국': {'2026-10-30': {'rows': [{'코드': 'AAA'}, {'코드': 'BBB'}]}}})
         self.assertEqual((sh['notion'], sh['ours'], sh['both'], sh['onlyNotion']), (2, 1, 1, ['BBB']))
+
+    def test_notion_comparison_is_filled_in_later(self):
+        """노션 기록은 우리보다 늦게 끝난다. 나중 실행이 비교 칸만 채운다."""
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / 'h.json'
+            out.write_text(json.dumps({'markets': {'KR': {'asOf': '2026-10-30', 'highs': [{'code': '033780'}],
+                                                          'shadow': {'notion': None}}}}), encoding='utf-8')
+            notion = lambda: {'한국': {'2026-10-30': {'rows': [{'코드': '033780'}]}}}
+            self.assertTrue(h.refresh_shadow('KR', DAY, out, fetch=notion))
+            self.assertEqual(json.loads(out.read_text())['markets']['KR']['shadow']['both'], 1)
+            self.assertFalse(h.refresh_shadow('KR', DAY, out, fetch=notion))   # 이미 채웠으면 그대로
 
     def test_too_many_failures_stop_the_run(self):
         def fail(url, **k):
