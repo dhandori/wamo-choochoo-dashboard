@@ -383,6 +383,14 @@ function riskSection(series, s) {
     const atrPct = a[1] * ATR_MULT, over = atrPct > STOP_CAP, used = Math.min(atrPct, STOP_CAP);
     rows.push(kvRow(`ATR 손절 (${ATR_MULT}×ATR)`, money(close - a[0] * ATR_MULT), { cls: over ? 'bad' : 'good', sub: `−${fmt(atrPct)}%`,
       note: over ? `${STOP_CAP}%보다 넓어요 → ${STOP_CAP}%에서 자르고, 변동성이 커서 비중을 줄이거나 더 좁은 자리에서만 사요.` : `${STOP_CAP}% 안이에요 → 이 폭이면 보통의 흔들림에는 안 털려요.` }));
+    // 실제로 쓸 손절: 2×ATR과 8% 중 좁은 쪽(흐름판 종목 상세와 같은 기준).
+    rows.push(kvRow('적용 손절선', money(over ? close * (1 - STOP_CAP / 100) : close - a[0] * ATR_MULT), { cls: 'good', sub: `−${fmt(used)}%`,
+      note: over ? `${ATR_MULT}×ATR이 ${STOP_CAP}%보다 넓어서 ${STOP_CAP}% 한도로 잘랐어요.` : `${ATR_MULT}×ATR이 ${STOP_CAP}% 안이라 ATR 손절가를 그대로 써요.` }));
+    // 8% 한도가 하루 평균 변동폭의 몇 배인지: 1.5배 미만이면 평소 흔들림에도 털리기 쉽다(변동성 경고).
+    const capAtr = STOP_CAP / a[1], tight = capAtr < 1.5;
+    rows.push(kvRow(`${STOP_CAP}% = 몇 ATR`, `${fmt(capAtr, 1)} ATR`, { cls: tight ? 'bad' : capAtr >= 2 ? 'good' : '',
+      note: tight ? `⚠️ 변동성 경고: ${STOP_CAP}%가 하루 평균 흔들림의 ${fmt(capAtr, 1)}배뿐이라 평소 움직임에도 털리기 쉬워요. 매수를 미루거나 비중을 줄여요.`
+        : capAtr >= 2 ? `${STOP_CAP}% 한도가 평소 흔들림보다 넉넉해요.` : `${STOP_CAP}% 한도가 빠듯한 편이에요.` }));
     rows.push(kvRow(`계좌 위험 ${RISK_PCT}% 기준 비중`, `${fmt(RISK_PCT * 100 / used, 0)}%`, { sub: `손절 폭 ${fmt(used)}% 기준 최대 비중` }));
   }
   return kvSection('변동성·손절 (종가 = 매수가 가정)', rows, 'risk-sec');
