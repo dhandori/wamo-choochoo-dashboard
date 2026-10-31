@@ -50,7 +50,7 @@
 `main` 에는 코드만 올린다. 배포(`pages-deploy.yml`)는 `main` 코드에 `data` 자료를 더해(`--overlay`) 사이트를 만든다.
 같은 경로가 둘 다 있으면 `data` 쪽이 이긴다. 자료를 못 받으면 배포가 멈추고 이전 사이트가 그대로 남는다.
 
-- 자료를 쓰는 작업 5개(`main.yml` `asia.yml` `macro.yml` `radar-sync.yml` `resume-once.yml`)는 첫 단계에서
+- 자료를 쓰는 작업 6개(`main.yml` `asia.yml` `macro.yml` `radar-sync.yml` `resume-once.yml` `highs52.yml`)는 첫 단계에서
   `python3 wamo_data_branch.py setup` 으로 자료를 받고, 결과를 `data` 에 올린다(`wamo_data_branch.publish`).
   `main` 에 직접 올리는 길은 막혀 있다(`WAMO_ALLOW_MAIN_PUSH=1` 이 있어야만 열린다. 쓰지 않는다).
 - 로컬에서 자료가 필요한 작업(화면 확인, 고정 자료 재생성)은 먼저 `GITHUB_REPOSITORY=dhandori/wamo-choochoo-dashboard
@@ -68,3 +68,12 @@
 1. `git checkout origin/data -- $(git ls-tree -r --name-only origin/data)` 로 최신 자료를 `main` 에 복사한다.
 2. 자료 분리 커밋들(`wamo_data_branch.py` 연결, 워크플로 5개, `wamo_run.py`)을 되돌린다.
 3. `pages-deploy.yml` 의 `--on-duplicate overlay` 를 `src` 로 되돌린다(또는 `--overlay` 자체를 뺀다).
+
+## 52주 신고가 공통 계산 (2026-10-31 사용자 결정)
+
+52주 신고가는 노션 기록과 같은 기준 하나로 `wamo_highs52.py` 가 한 번만 계산한다(`highs52.yml`, 한국 16:40·미국 06:40 KST,
+결과는 data 브랜치 `wamo_highs52.json`). 기준: 한국 KOSPI·KOSDAQ 보통주 시총 1,000억 원 이상, 미국 NYSE·NASDAQ·AMEX 보통주
+시총 20억 달러 이상, 장중 고가 ≥ 1년 최고가 × 0.9999. 종목 목록은 네이버 시가총액 순(ETF·우선주·스팩·거래정지 제외)과
+나스닥 스크리너, 가격은 야후 일봉(거래량 0인 날 제외).
+지금은 노션 기록과 나란히 돌리는 단계다(`shadow` 칸에 같은 날 노션과의 겹침·차이). 10/28~10/30 비교: 한국 13/13·8/8·3/4,
+미국 63/66·79/80·107/107. 화면·노션·보고서가 이 파일을 읽게 바꾸는 것은 며칠 더 비교한 뒤에 한다.

@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 WF = Path(__file__).resolve().parents[1] / '.github' / 'workflows'
-WRITERS = ['main.yml', 'asia.yml', 'macro.yml', 'radar-sync.yml', 'resume-once.yml']
+WRITERS = ['main.yml', 'asia.yml', 'macro.yml', 'radar-sync.yml', 'resume-once.yml', 'highs52.yml']
 READERS = ['ci.yml']  # 자료를 읽어 검사만 하는 워크플로
 
 
