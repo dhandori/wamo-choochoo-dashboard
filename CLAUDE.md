@@ -56,6 +56,10 @@
 - 로컬에서 자료가 필요한 작업(화면 확인, 고정 자료 재생성)은 먼저 `GITHUB_REPOSITORY=dhandori/wamo-choochoo-dashboard
   GITHUB_TOKEN=... python3 wamo_data_branch.py setup` 으로 최신 자료를 받는다. `main` 에 남은 자료 사본은 점점 묵는다.
 - `index.html` `us.html` 의 뼈대(HTML)를 고쳐야 하면 `data` 브랜치에서 고친다. `main` 의 사본은 배포에 쓰이지 않는다.
+- `data` 브랜치 기록은 매일 01:55 KST 에 줄인다(`data-prune.yml` → `wamo_data_branch.py prune`, 2026-10-31 사용자 결정).
+  오늘(KST) 기록은 전부, 어제부터 7일 전까지는 하루 마지막 1개씩 남기고 그보다 오래된 기록은 하나로 합친다.
+  최신 자료 내용은 바뀌지 않으며, 정리 중에 올라온 갱신은 `publish` 의 재시도가 새 기록 위에 다시 얹는다.
+  되돌릴 때는 남은 하루치 기록에서 파일을 꺼낸다: `git show origin/data~N:파일`.
 - 기존 `main` 의 과거 기록(약 160MB)은 그대로다. 줄이려면 저장소 기록을 새로 써야 해서 하지 않았다.
 
 ### 되돌리기 (자료 분리를 취소해야 할 때)

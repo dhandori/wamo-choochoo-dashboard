@@ -41,6 +41,13 @@ class DataWorkflowTest(unittest.TestCase):
             first_use = steps.index('setup-python')  # 파이썬을 준비한 뒤의 모든 실행 단계보다 앞
             self.assertLess(steps.index('wamo_data_branch.py setup'), first_use, name)
 
+    def test_기록_정리는_자료_작업과_같은_줄에_선다(self):
+        # 정리 중에 다른 작업이 data 브랜치를 바꾸지 않게, 자료를 올리는 작업들과 같은 concurrency 그룹을 쓴다.
+        text = self.text('data-prune.yml')
+        self.assertIn('wamo_data_branch.py prune', text)
+        self.assertRegex(text, r'group: wamo-data-update')
+        self.assertIn('cancel-in-progress: false', text)
+
     def test_배포는_자료_쪽을_우선한다(self):
         text = self.text('pages-deploy.yml')
         self.assertIn('--on-duplicate overlay', text)
