@@ -201,14 +201,34 @@ def judge(bars, day):
 
 
 # ------------------------------------------------------------------ session
-def target_day(market, now=None, fetch=get_json):
-    """그 시장의 가장 최근 '끝난' 거래일. 지수 일봉에서 마감 시각이 지난 날 중 마지막."""
+# 그날 일봉을 '끝난 날'로 보는 시각(그 시장 현지 시각). 한국은 15:30 마감인데 야후 한국 시세가 약 20분 늦게
+# 들어와 15:52 부터, 미국은 16:00 마감 뒤 종가가 자리 잡는 16:08 부터 쓴다(2026-10-31 사용자: 마감 뒤 최대한 빨리).
+READY_AT = {'KR': (15, 52), 'US': (16, 8)}
+
+
+def local_now(market, now=None):
     from zoneinfo import ZoneInfo
     now = now or datetime.now(timezone.utc)
-    if market == 'KR':
-        local, close_at = now.astimezone(KST), (15, 40)
-    else:
-        local, close_at = now.astimezone(ZoneInfo('America/New_York')), (16, 10)
+    return now.astimezone(KST if market == 'KR' else ZoneInfo('America/New_York'))
+
+
+def wait_until_ready(market, now=None, sleep=time.sleep, max_wait=25 * 60):
+    """마감 직후(마감 ~ READY_AT 사이)에 시작했으면 READY_AT 까지 기다린다. 그 밖에는 바로 돌아간다."""
+    local = local_now(market, now)
+    close = (15, 30) if market == 'KR' else (16, 0)
+    ready = local.replace(hour=READY_AT[market][0], minute=READY_AT[market][1], second=0, microsecond=0)
+    if local.weekday() < 5 and (local.hour, local.minute) >= close and local < ready:
+        wait = (ready - local).total_seconds()
+        if wait <= max_wait:
+            print(f'{market} 종가 자리 잡기를 기다림: {int(wait)}초', flush=True)
+            sleep(wait)
+            return wait
+    return 0
+
+
+def target_day(market, now=None, fetch=get_json):
+    """그 시장의 가장 최근 '끝난' 거래일. 지수 일봉에서 READY_AT 이 지난 날 중 마지막."""
+    local, close_at = local_now(market, now), READY_AT[market]
     finished = local.date() if (local.hour, local.minute) >= close_at else local.date() - timedelta(days=1)
     bars = yahoo_bars(INDEX[market], finished, fetch)
     days = [d for d in bars if d <= finished]
@@ -302,6 +322,23 @@ def already_done(market, day, out=OUT):
         return False
 
 
+def refresh_shadow(market, day, out=OUT, fetch=None):
+    """이미 계산한 날의 노션 비교 칸이 비어 있으면 채운다. 채웠으면 True."""
+    try:
+        doc = json.loads(Path(out).read_text(encoding='utf-8'))
+        cur = doc['markets'][market]
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+    if (cur.get('shadow') or {}).get('notion') is not None:
+        return False
+    shadow = notion_shadow(market, day.isoformat(), cur, fetch)
+    if not shadow or shadow.get('notion') is None:
+        return False
+    cur['shadow'] = shadow
+    Path(out).write_text(json.dumps(doc, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
+    return True
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--market', choices=['KR', 'US', 'auto'], default='auto')
@@ -312,9 +349,15 @@ def main(argv=None):
     hour = datetime.now(KST).hour
     markets = [a.market] if a.market != 'auto' else (['KR'] if 15 <= hour < 24 else ['US'])
     for market in markets:
+        if not a.day:
+            wait_until_ready(market)
         day = date.fromisoformat(a.day) if a.day else target_day(market)
         if not a.force and already_done(market, day, a.out):
-            print(f'{market} {day}: 이미 계산함 · 건너뜀', flush=True)
+            # 노션 기록(한국 16:05·미국 08:05 KST)이 우리보다 늦게 끝나므로, 비교 칸만 나중에 채운다.
+            if refresh_shadow(market, day, a.out):
+                print(f'{market} {day}: 이미 계산함 · 노션 비교만 채움', flush=True)
+            else:
+                print(f'{market} {day}: 이미 계산함 · 건너뜀', flush=True)
             continue
         r = run(market, day, a.out)
         sh = r.get('shadow') or {}
