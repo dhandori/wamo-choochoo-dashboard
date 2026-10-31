@@ -115,6 +115,11 @@ with sync_playwright() as p:
                 expect(page.locator('#detail')).to_contain_text('가격 출처')
                 expect(page.locator('#detail .stat').filter(has_text='시가총액')).to_contain_text('원' if market=='KR' else '달러')
                 expect(page.locator('.detail-chart')).to_be_visible()
+                # 2026-10-31 ATR 손절 보강: 차트 자료의 ATR이 있으면 적용 손절선과 '8% = 몇 ATR'이 함께 나온다.
+                if page.locator('#detail .risk-sec .kv').filter(has_text='ATR 손절').count():
+                    expect(page.locator('#detail .risk-sec')).to_contain_text('적용 손절선')
+                    expect(page.locator('#detail .risk-sec')).to_contain_text('ATR', use_inner_text=True)
+                    expect(page.locator('#detail .risk-sec .kv').filter(has_text='= 몇 ATR')).to_have_count(1)
                 # 2026-10-30 시장 구분: 소속 시장 배지, 그리고 KOSDAQ 종목은 KOSDAQ 지수와 비교한다.
                 first=sorted(near,key=lambda s:s['highDistancePct'])[0]
                 if first.get('board'):
