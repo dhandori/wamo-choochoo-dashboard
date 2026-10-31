@@ -1,0 +1,58 @@
+name: 52주 신고가 공통 계산
+# 2026-10-31 사용자 결정: 52주 신고가를 노션 기록과 같은 기준(한국 시총 1,000억 원·미국 20억 달러 이상,
+# 장중 고가가 1년 최고가에 닿음) 하나로 한 번만 계산한다. 결과는 data 브랜치의 wamo_highs52.json.
+# 처음에는 노션 기록과 나란히 돌려 비교만 한다(shadow 칸). 화면·노션이 이 결과를 읽게 바꾸는 것은 비교 뒤에 한다.
+on:
+  schedule:
+    # 한국: 16:40 KST(마감·종가 확정 뒤), 17:20 KST 재시도
+    - cron: '40 7 * * 1-5'
+    - cron: '20 8 * * 1-5'
+    # 미국: 06:40 KST(겨울 마감 06:00 · 여름 05:00 KST 뒤), 07:20 KST 재시도
+    - cron: '40 21 * * 1-5'
+    - cron: '20 22 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      market:
+        description: 계산할 시장 (auto = 지금 한국시간으로 판단)
+        type: choice
+        default: auto
+        options: [auto, KR, US]
+      day:
+        description: 기준일 YYYY-MM-DD (비우면 가장 최근에 끝난 거래일)
+        type: string
+        default: ''
+permissions:
+  contents: write
+concurrency:
+  group: wamo-data-update
+  cancel-in-progress: false
+  queue: max
+jobs:
+  highs52:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - name: 자료 브랜치 받기 (자료는 main이 아니라 data 브랜치에 있다)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 wamo_data_branch.py setup
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m unittest tests.test_highs52 -v
+      - name: 52주 신고가 계산
+        env:
+          PYTHONUNBUFFERED: '1'
+          RADAR_READ_TOKEN: ${{ secrets.RADAR_READ_TOKEN }}
+          MARKET: ${{ inputs.market || 'auto' }}
+          DAY: ${{ inputs.day || '' }}
+        run: |
+          if [ -n "$DAY" ]; then python wamo_highs52.py --market "$MARKET" --day "$DAY" --force
+          else python wamo_highs52.py --market "$MARKET"; fi
+      - name: data 브랜치에 올리기
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 wamo_data_branch.py publish -m '52주 신고가 공통 계산' wamo_highs52.json
