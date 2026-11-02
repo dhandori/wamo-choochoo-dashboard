@@ -187,6 +187,47 @@ def kind_sector_map():
         print("KIND sector mapping skipped:", e)
         return {}
 
+def _fill_closed_session_close(meta, ts, closes, expected_date):
+    """Yahoo가 마감된 거래일 일봉의 종가만 비워 두는 경우를 메운다.
+
+    2026-11-02 일본: 마감 9시간 뒤에도 그날 일봉의 시가·고가·저가·거래량은 있는데 종가만
+    null 이라 491종목 전부 '응답 가격일 10/30'으로 실패했다. 같은 응답의 meta.regularMarketPrice
+    는 그날 마감 시세였다. 기대 거래일이 정해진 호출에서, 마지막 일봉이 그 거래일이고, meta
+    시각이 그날 정규장 마감 이후일 때만 채운다(장중 값으로 채우지 않는다).
+    """
+    if not expected_date or not ts or not closes or len(closes) < len(ts):
+        return closes
+    i = len(ts) - 1
+    if closes[i] is not None:
+        return closes
+    try:
+        price = float(meta.get("regularMarketPrice"))
+        market_time = int(meta.get("regularMarketTime"))
+        offset = int(meta.get("gmtoffset") or 0)
+    except (TypeError, ValueError):
+        return closes
+    if not math.isfinite(price) or price <= 0:
+        return closes
+    bar_day = datetime.fromtimestamp(ts[i], tz=timezone.utc).date().isoformat()
+    market_day = datetime.fromtimestamp(market_time + offset, tz=timezone.utc).date().isoformat()
+    if bar_day != expected_date or market_day != expected_date:
+        return closes
+    regular = (meta.get("currentTradingPeriod") or {}).get("regular") or {}
+    try:
+        end = int(regular.get("end"))
+    except (TypeError, ValueError):
+        end = None
+    # 정규장 정보가 같은 날이면 마감 이후 시세인지 확인한다. 다른 날(다음 거래일)이면
+    # 그날 장은 이미 끝난 것이다.
+    if end is not None:
+        end_day = datetime.fromtimestamp(end + offset, tz=timezone.utc).date().isoformat()
+        if end_day == expected_date and market_time < end:
+            return closes
+    filled = list(closes)
+    filled[i] = price
+    return filled
+
+
 def fetch_yahoo_history(ticker: str, years=None, expected_date=None):
     """GitHub Actions에서 사용할 1순위 가격 경로.
     query1/query2를 순차 시도하고, 수정주가 비율로 OHLC를 보정합니다.
@@ -232,6 +273,7 @@ def fetch_yahoo_history(ticker: str, years=None, expected_date=None):
                 highs = quote.get("high") or []
                 lows = quote.get("low") or []
                 vols = quote.get("volume") or []
+                closes = _fill_closed_session_close(r0.get("meta") or {}, ts, closes, expected_date)
 
                 rows = []
                 for i, t in enumerate(ts):
