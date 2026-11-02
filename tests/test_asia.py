@@ -187,6 +187,27 @@ class EngineRun(unittest.TestCase):
             self.assertTrue(any(t.endswith('.T') for t in calls))      # Japan retried
             self.assertFalse(any(t.endswith('.TW') for t in calls))    # Taiwan was complete, skipped
 
+    def pending(self, root):
+        ctx = patched()
+        for c in ctx:
+            c.start()
+        try:
+            return asia.pending(('JP', 'TW'), root, NOW)
+        finally:
+            for c in ctx:
+                c.stop()
+
+    def test_pending_lists_markets_the_engine_would_not_skip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.assertEqual(self.pending(root), ['JP', 'TW'])     # nothing collected yet
+            self.run_engine(root)
+            self.assertEqual(self.pending(root), [])               # both current → main.yml does not wake asia
+            trend = json.loads((root / 'wamo_trend.json').read_text())
+            trend['markets']['JP']['ftd']['indexes'][0]['status'] = 'UNAVAILABLE'
+            (root / 'wamo_trend.json').write_text(json.dumps(trend))
+            self.assertEqual(self.pending(root), ['JP'])           # same rule as the rerun above
+
     def test_too_many_price_failures_keep_previous_block(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -348,14 +348,38 @@ def build_trend(market, payload, asof, root, now, index_fetcher=None):
 
 
 # ------------------------------------------------------------------ main
+def is_current(market, expected, stored, root=ROOT):
+    """그 시장의 기대 거래일이 종목·지수(FTD)까지 모두 반영됐으면 True (run 이 건너뛰는 조건)."""
+    prev = (stored.get('markets') or {}).get(market)
+    # Yahoo often posts the Asian index's volume/low a few hours after the close. Keep the
+    # scheduled retries running until that day's index bar is complete (FTD can judge it).
+    trend_block = (read_json(root / 'wamo_trend.json', {}).get('markets') or {}).get(market) or {}
+    ftd0 = ((trend_block.get('ftd') or {}).get('indexes') or [{}])[0]
+    index_done = trend_block.get('asOf') == expected and ftd0.get('status') == 'OK'
+    return bool(prev and prev.get('asOf') == expected and prev.get('status') == 'CURRENT' and index_done)
+
+
+def stored_markets(root=ROOT):
+    return read_json(root / MARKETS_FILE, None) or {'schemaVersion': 1, 'markets': {
+        m: b for m, b in (read_json(root / 'wamo_insights.json', {}).get('markets') or {}).items() if m in MARKETS}}
+
+
+def pending(markets=('JP', 'TW'), root=ROOT, now=None):
+    """아직 다 반영되지 않은 시장 목록. WAMO 자동갱신이 끝날 때 일본·대만 작업을 깨울지 정하는 데 쓴다
+    (GitHub 예약이 몇 시간씩 늦거나 빠지는 날 대비, 2026-11-02)."""
+    from wamo_runtime import expected_session
+    now = now or datetime.now(timezone.utc)
+    stored = stored_markets(root)
+    return [m for m in markets if not is_current(m, expected_session(m, now), stored, root)]
+
+
 def run(markets=('JP', 'TW'), root=ROOT, now=None, force=False, fetch=None, index_fetcher=None, builders=None):
     import wamo_insights as insights
     from wamo_runtime import expected_session
     now = now or datetime.now(timezone.utc)
     # The radar file already holds the last published JP/TW blocks; MARKETS_FILE is only a
     # hand-off to wamo_publish_insights within this run (not committed, saves repo space).
-    stored = read_json(root / MARKETS_FILE, None) or {'schemaVersion': 1, 'markets': {
-        m: b for m, b in (read_json(root / 'wamo_insights.json', {}).get('markets') or {}).items() if m in MARKETS}}
+    stored = stored_markets(root)
     status = read_json(root / STATUS_FILE, {})
     changed, failed = [], []
     for market in markets:
@@ -364,12 +388,7 @@ def run(markets=('JP', 'TW'), root=ROOT, now=None, force=False, fetch=None, inde
         entry = dict(status.get(market) or {}, attemptedAt=now.isoformat(), expectedSession=expected,
                      runUrl=(f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
                              if os.getenv('GITHUB_RUN_ID') else None))
-        # Yahoo often posts the Asian index's volume/low a few hours after the close. Keep the
-        # scheduled retries running until that day's index bar is complete (FTD can judge it).
-        trend_block = (read_json(root / 'wamo_trend.json', {}).get('markets') or {}).get(market) or {}
-        ftd0 = ((trend_block.get('ftd') or {}).get('indexes') or [{}])[0]
-        index_done = trend_block.get('asOf') == expected and ftd0.get('status') == 'OK'
-        if not force and prev and prev.get('asOf') == expected and prev.get('status') == 'CURRENT' and index_done:
+        if not force and is_current(market, expected, stored, root):
             print(f'{market} {expected} 이미 반영됨 · 건너뜀', flush=True)
             continue
         try:
@@ -423,7 +442,11 @@ if __name__ == '__main__':
     parser.add_argument('--markets', default='JP,TW')
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--publish', action='store_true', help='레이더 화면을 다시 만들고 GitHub에 올림')
+    parser.add_argument('--pending', action='store_true', help='아직 반영되지 않은 시장만 JSON 으로 출력하고 끝냄')
     args = parser.parse_args()
+    if args.pending:
+        print(json.dumps(pending(tuple(m.strip().upper() for m in args.markets.split(',') if m.strip()))))
+        raise SystemExit(0)
     names, status, failed = run(tuple(m.strip().upper() for m in args.markets.split(',') if m.strip()), force=args.force)
     if names and args.publish:
         from wamo_publish_insights import publish_snapshot

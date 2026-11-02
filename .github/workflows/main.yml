@@ -44,6 +44,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # 마지막 단계에서 밀린 일본·대만 갱신(asia.yml)을 깨운다
 
 concurrency:
   group: wamo-${{ github.event_name == 'push' && 'code-check' || 'data-update' }}
@@ -143,6 +144,26 @@ jobs:
           args=(--finalize-interrupted)
           if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
           python wamo_run.py "${args[@]}"
+      # GitHub 예약이 몇 시간씩 늦거나 빠지는 날(2026-11-02 일본·대만 예약이 하루 종일 안 돎) 대비.
+      # 이 작업은 하루 수십 번 돌므로, 끝날 때 일본·대만이 아직 반영 안 됐으면 asia.yml 을 한 번 깨운다.
+      # asia.yml 예약과 같은 시간대(평일 07:40~23:59 UTC)에만, 최근 25분 안에 돈 적이 없을 때만 깨운다.
+      - name: 밀린 일본·대만 갱신 깨우기
+        if: always() && github.event_name != 'push'
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          dow=$(date -u +%u); hm=$(date -u +%H%M)
+          if (( dow > 5 )) || (( 10#$hm < 740 )); then echo "일본·대만 갱신 시간대 아님"; exit 0; fi
+          pending=$(python wamo_asia.py --pending) || { echo "반영 여부 확인 실패 · 건너뜀"; exit 0; }
+          if [[ "$pending" == "[]" ]]; then echo "일본·대만 최신"; exit 0; fi
+          last=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/asia.yml/runs?per_page=1" --jq '.workflow_runs[0].created_at // ""')
+          if [[ -n "$last" ]] && (( $(date -u +%s) - $(date -u -d "$last" +%s) < 1500 )); then
+            echo "일본·대만 미반영 $pending · 최근 실행($last)이 25분 안이라 건너뜀"; exit 0
+          fi
+          echo "일본·대만 미반영 $pending · asia.yml 실행"
+          gh workflow run asia.yml --ref main
       - name: 실패 결과 보관
         if: failure()
         uses: actions/upload-artifact@v4
