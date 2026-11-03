@@ -36,6 +36,65 @@ def calendar(market):
     return xc.get_calendar(CALENDARS[market])
 
 
+# 거래소 달력의 영어 휴일 이름 → 화면에 쓸 한국어. 없는 이름은 '휴장일'로 적는다(임시 휴장은 이름이 없다).
+HOLIDAY_KO = {
+    "New Year's Day": '신정', "New Year's Holiday (Jan 2)": '연초 휴장', "New Year's Holiday (Jan 3)": '연초 휴장',
+    "New Year's Holiday (Dec 31)": '연말 휴장', 'End of Year Holiday': '연말 휴장', 'Christmas': '성탄절',
+    "Seollal (New Year's Day by the lunar)": '설날', "Seollal (New Year's Day by the lunar) (+1 day)": '설날 연휴',
+    "Seollal (New Year's Day by the lunar) (-1 day)": '설날 연휴', 'Independence Movement Day': '삼일절',
+    'Labor Day': '근로자의 날', "Children's Day": '어린이날', "Buddha's Birthday": '부처님오신날', 'Memorial Day': '현충일',
+    'National Liberation Day': '광복절', 'Chuseok (Korean Thanksgiving Day)': '추석',
+    'Chuseok (Korean Thanksgiving Day) (+1 day)': '추석 연휴', 'Chuseok (Korean Thanksgiving Day) (-1 day)': '추석 연휴',
+    'Korean National Foundation Day': '개천절', 'Hangul Proclamation Day': '한글날',
+    'Dr. Martin Luther King Jr. Day': '마틴 루서 킹 데이', "President's Day": '대통령의 날', 'Good Friday': '성금요일',
+    'Juneteenth National Independence Day': '노예해방기념일', 'July 4th': '독립기념일', 'Thanksgiving': '추수감사절',
+    'Coming of Age Day': '성년의 날', 'National Foundation Day': '건국기념일', "Emperor Naruhito's Birthday": '천황탄생일',
+    'Showa Day': '쇼와의 날', 'Constitution Memorial Day': '헌법기념일', 'Greenery Day': '녹색의 날', 'Marine Day': '바다의 날',
+    'Mountain Day': '산의 날', 'Respect for the Aged Day': '경로의 날', 'Health and Sports Day': '스포츠의 날',
+    'Culture Day': '문화의 날', 'Labor Thanksgiving Day': '근로감사의 날',
+    'Peace Memorial Day': '평화기념일', "Women and Children's Day": '부녀·아동절', 'Labour Day': '노동절',
+    "Teachers' Day": '스승의 날', 'National Day of the Republic of China': '국경일(쌍십절)',
+    'Taiwan Restoration Day': '대만 광복절', 'Constitution Day': '행헌기념일',
+}
+
+
+def holiday_ko(name):
+    base = re.sub(r'\s*\(\d{4} onwards\)$', '', name or '')
+    return HOLIDAY_KO.get(name) or HOLIDAY_KO.get(base) or '휴장일'
+
+
+def market_closures(market, now=None, ahead=21):
+    """시장 현지 날짜 기준 어제~ahead일 뒤의 휴장일과 각 휴장일 다음 개장일.
+
+    화면(radar)은 보는 순간의 현지 날짜를 이 목록에서 찾아 '오늘 휴장(문화의 날) · 다음 개장 11/4'을 적는다.
+    자료를 만든 뒤 며칠 지나 열어도 맞도록 앞날까지 담는다. 주말도 휴장으로 담는다(이름 '주말').
+    """
+    import pandas as pd
+    now = now or datetime.now(UTC)
+    cal = calendar(market)
+    today = now.astimezone(MARKET_TZ[market]).date()
+    start, end = today - timedelta(days=1), today + timedelta(days=ahead)
+    if pd.Timestamp(end) > cal.last_session or pd.Timestamp(start) < cal.first_session:
+        raise RuntimeError('거래일 달력 범위를 확인해야 합니다')
+    sessions = {d.date() for d in cal.sessions_in_range(pd.Timestamp(start), pd.Timestamp(end + timedelta(days=14)))}
+    names = {}
+    if cal.regular_holidays is not None:
+        found = cal.regular_holidays.holidays(pd.Timestamp(start), pd.Timestamp(end), return_name=True)
+        names = {d.date(): holiday_ko(n) for d, n in found.items()}
+    closed = []
+    day = start
+    while day <= end:
+        if day not in sessions:
+            nxt = day + timedelta(days=1)
+            while nxt not in sessions and nxt <= end + timedelta(days=14):
+                nxt += timedelta(days=1)
+            closed.append({'date': day.isoformat(),
+                           'name': '주말' if day.weekday() >= 5 and day not in names else names.get(day, '휴장일'),
+                           'nextOpen': nxt.isoformat() if nxt in sessions else None})
+        day += timedelta(days=1)
+    return {'timeZone': MARKET_TZ[market].key if hasattr(MARKET_TZ[market], 'key') else 'Asia/Seoul', 'closed': closed}
+
+
 def expected_session(market, now=None):
     now = now or datetime.now(UTC)
     # A session becomes publishable only after its official close plus buffer.
