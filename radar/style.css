@@ -34,6 +34,7 @@ p { color: var(--muted); line-height: 1.65; margin: 6px 0; }
 .badge { display: inline-block; padding: 3px 8px; border-radius: 5px; border: 1px solid #365447; color: var(--green); font-size: 12px; }
 .status-partial { color: #d6c694; border-color: #615335; }
 .status-stale, .status-unavailable { color: #f1bc91; border-color: #775336; }
+.status-holiday { color: var(--blue); border-color: #324d67; }   /* 휴장: 파랑 = 중립 강조 */
 .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .metric { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 3px 12px; padding: 11px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
 .metric span { font-size: 13px; color: #bccbdd; }

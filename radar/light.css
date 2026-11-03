@@ -36,6 +36,7 @@
 :root[data-theme="light"] .badge { border: 1px solid #aecbbf; }
 :root[data-theme="light"] .status-partial { color: #4f4422; border-color: #d0c4a9; }
 :root[data-theme="light"] .status-stale, :root[data-theme="light"] .status-unavailable { color: #5f3411; border-color: #d6baa4; }
+:root[data-theme="light"] .status-holiday { color: #1f4a73; border-color: #a9c1d8; }
 :root[data-theme="light"] .metric span { color: #243141; }
 :root[data-theme="light"] .checkbox-control { color: #273545; }
 :root[data-theme="light"] td { border-top: 1px solid #a7bad3; }
