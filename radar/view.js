@@ -705,13 +705,32 @@ function renderAI(m) {
   [['NVIDIA 데이터센터','https://www.nvidia.com/en-us/data-center/'],['Vertiv 전원·냉각','https://www.vertiv.com/en-emea/solutions/ai-hub/'],['Lumentum 광통신','https://www.lumentum.com/en/products/data-center'],['Microsoft AI 보안','https://www.microsoft.com/en-us/security/business/solutions/security-for-ai']].forEach(([label,url],i)=>{if(i)refs.append(document.createTextNode(' · '));refs.append(safeLink(label,url));});
   disclosure.append(refs);panel.append(disclosure);
 }
+// 휴장일: 자료(m.closures, wamo_runtime.market_closures)에서 '보는 순간의 그 시장 현지 날짜'를 찾는다.
+// 자료가 만들어진 날이 아니라 지금 날짜로 찾으므로, 페이지를 며칠 뒤에 열어도 맞다. 칸이 없으면(옛 자료) 표시하지 않는다.
+const WEEKDAY_KO = ['일', '월', '화', '수', '목', '금', '토'];
+function closureToday(m, now = new Date()) {
+  const c = m && m.closures;
+  if (!c || !Array.isArray(c.closed)) return null;
+  let today;
+  try { today = new Intl.DateTimeFormat('en-CA', { timeZone: c.timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now); }
+  catch { return null; }
+  return c.closed.find(x => x && x.date === today) || null;
+}
+function shortDay(iso) {
+  const [y, mo, d] = String(iso || '').split('-').map(Number);
+  if (!y) return '—';
+  return `${mo}/${d}(${WEEKDAY_KO[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()]})`;
+}
+function closureLabel(x) { return x.name === '주말' ? '주말 휴장' : `오늘 휴장 · ${x.name}`; }
 function renderMeta(m) {
-  const status = marketStatus(m), messages = [];
+  const status = marketStatus(m), messages = [], closed = closureToday(m);
+  if (closed && closed.name !== '주말') messages.push(`${MARKET_NAMES[state.market] || ''} 시장은 오늘(${shortDay(closed.date)}) ${closed.name}${closed.name === '휴장일' ? '' : '로'} 휴장입니다.${closed.nextOpen ? ` 다음 개장은 ${shortDay(closed.nextOpen)}이고,` : ''} 그때까지 ${m.asOf || '—'} 종가 자료를 보여 드려요.`);
   if (status === 'STALE') messages.push(`${m.asOf || '—'} 거래일 가격을 그대로 보여 주고 있습니다. 최근 거래일(${m.expectedSession}) 자료가 들어오기를 기다리는 중입니다.`);
   if (status === 'PARTIAL' && !m.coverage.excluded) messages.push('새 가격 중 일부를 확인하지 못해 이전에 확인된 데이터를 그대로 보여 줍니다. 자세한 이유는 ‘데이터 범위와 기준’에서 볼 수 있어요.');
   if (refreshFailed) messages.push('가격 파일을 다시 불러오지 못해 마지막으로 확인된 데이터를 보여 줍니다.');
   $('notice').hidden = messages.length === 0; $('notice').textContent = messages.join(' ');
   $('date-info').replaceChildren(el('span', `${m.asOf || '—'} 거래일 종가`, 'session-date'), el('span', ({ CURRENT: '최신 거래일', PARTIAL: '일부 제외', STALE: '지난 거래일 자료', UNAVAILABLE: '데이터 없음' })[status], `badge status-${status.toLowerCase()}`));
+  if (closed) $('date-info').append(el('span', `${closureLabel(closed)}${closed.nextOpen ? ` · 다음 개장 ${shortDay(closed.nextOpen)}` : ''}`, 'badge status-holiday'));
   const refreshButton = button(refreshing ? '확인 중…' : '데이터 확인', false, () => refresh()); refreshButton.className = 'refresh-button'; refreshButton.disabled = refreshing; $('date-info').append(refreshButton); $('date-info').append(runnerButton(state.market));
   const near = m.stocks.filter(s => numeric(s.highDistancePct) && s.highDistancePct <= 10), highs = m.stocks.filter(s => s.intradayHigh52 === true || s.closeHigh52 === true);
   const highs60 = m.stocks.filter(s => s.intradayHigh60 === true || s.closeHigh60 === true);
