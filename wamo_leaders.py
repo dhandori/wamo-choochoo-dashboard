@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from statistics import median
 
+from wamo_industry_names import group_of, name_of
 from wamo_trend import (close_high_at, oneil_raw, percentile_map, rnd, rs_high_at, sma, stage_at)
 
 POLICY = {
@@ -188,6 +189,7 @@ def analyze(universe, bench, market, ftd_indexes=None):
             'breakoutDates': breakout_dates, 'heldUpRatio': held,
             'heldUp': held is not None and held < 1,
             'growth': s.get('growth'), **links[s['id']],
+            'industryLabel': name_of(market, s['industry']), 'group': group_of(market, s['industry']),
         })
     leaders = [x for x in stocks if x['leader']]
     leaders.sort(key=lambda x: (not x['core'], not x['rsLead'], not x['breakoutDates'], -(x['rs'] or 0)))
@@ -218,7 +220,10 @@ def analyze(universe, bench, market, ftd_indexes=None):
                      'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs'], 'board': x['board'], **links[x['id']]}
                                for x in sorted(recent, key=lambda x: -(x['rs'] or 0))[:20]]}
 
-    industries = _industries(universe, bench, raw, index_dd, links)
+    industries = _industries(universe, bench, raw, index_dd, links, market=market)
+    # 큰 업종(21개)으로 묶은 같은 계산(2026-11-05 사용자: 미국 세부 업종이 너무 잘게 나뉨).
+    groups = _industries(universe, bench, raw, index_dd, links, market=market,
+                         key=lambda s: group_of(market, s['industry']), big=True)
     return {
         'policy': POLICY,
         'asOf': dates[-1] if dates else None,
@@ -233,6 +238,7 @@ def analyze(universe, bench, market, ftd_indexes=None):
         'phase': _phase(ftd_indexes),
         'watchChecks': [{'key': k, 'label': a, 'meaning': b} for k, a, b in WATCH_CHECKS],
         'industries': industries,
+        'industryGroups': groups,
         'stageText': {k: {'icon': v[0], 'label': v[1], 'meaning': v[2]} for k, v in STAGE_TEXT.items()},
     }
 
@@ -266,13 +272,22 @@ def _phase(ftd_indexes):
                                       for x in ftd_indexes or [] if x.get('status') == 'OK']}
 
 
-def _industries(universe, bench, raw, index_dd=None, links=None):
+DETAIL_TOP = 15        # 상세(구성 종목·RS선)를 싣는 업종 수
+RS_LINE_DAYS = 120
+MEMBER_MAX = 40
+
+
+def _industries(universe, bench, raw, index_dd=None, links=None, market='US', key=None, big=False):
     links = links or {}
+    key = key or (lambda s: s['industry'])
     lookback = POLICY['industryLookback']
     groups = {}
     for s in universe:
-        if s['industry'] and s['industry'] != '미분류':
-            groups.setdefault(s['industry'], []).append(s)
+        if s['industry'] and s['industry'] not in ('미분류', '산업 미분류'):
+            k = key(s)
+            if big and k == '기타':
+                continue
+            groups.setdefault(k, []).append(s)
     groups = {k: v for k, v in groups.items() if len(v) >= POLICY['industryMinMembers']}
     if len(groups) < 3:
         return {'status': 'UNAVAILABLE', 'items': [], 'note': '비교할 수 있는 업종이 3개보다 적습니다.'}
@@ -353,8 +368,16 @@ def _industries(universe, bench, raw, index_dd=None, links=None):
                        **links.get(m['id'], {})}
                       for m in sorted(cands, key=lambda m: -(m.get('_rsNow') or 0))[:5]]
         reps = sorted(members, key=lambda m: (not m.get('_leader'), -(m.get('_rsNow') or 0)))[:3]
+        sub = {}
+        if big:   # 큰 업종 안의 세부 업종 구성
+            for m in members:
+                lab = name_of(market, m['industry'])
+                sub[lab] = sub.get(lab, 0) + 1
         items.append({
-            'name': name, 'members': len(members), 'boards': board_counts(members), 'rs': pct, 'rank': r0,
+            'name': name, 'label': name if big else name_of(market, name), 'group': name if big else group_of(market, name),
+            'subIndustries': sorted(sub.items(), key=lambda kv: -kv[1])[:6] if big else None,
+            'rsHistory': [pct_k[k].get(name) for k in range(lookback, -1, -1)],
+            '_members': members, '_levels': levels, 'members': len(members), 'boards': board_counts(members), 'rs': pct, 'rank': r0,
             'rankChange5': (r5 - r0) if r5 and r0 else None, 'rankChange20': (r20 - r0) if r20 and r0 else None,
             'rs5': pct5, 'rs20': pct20, 'persist': persist, 'stage': stage,
             'leading': all(conds.values()), 'conditions': conds,
@@ -370,16 +393,37 @@ def _industries(universe, bench, raw, index_dd=None, links=None):
                                  'leader': bool(m.get('_leader')), **links.get(m['id'], {})} for m in reps],
         })
     items.sort(key=lambda x: (-x['rs'], x['name']))
+    # 표에 보일 업종(상위 15개 + 워치리스트 후보)만 상세를 싣는다: 구성 종목(RS 순 최대 40, 링크는 화면이 레이더 자료에서 찾는다)과
+    # 업종 지수 ÷ 시장 지수(RS선) 최근 120거래일. 목록끼리 겹치지 않게 이름으로 찾는 details 에 한 번만 둔다.
+    details = {}
+    show = {x['name'] for x in items[:DETAIL_TOP]} | {x['name'] for x in items if x['watchScore'] >= POLICY['watchScoreMin']}
+    for x in items:
+        members, levels = x.pop('_members'), x.pop('_levels')
+        if x['name'] not in show:
+            continue
+        ranked = sorted(members, key=lambda m: -(m.get('_rsNow') or 0))
+        det = {'members': [{
+            'id': m['id'], 'name': m['name'], 'symbol': m['symbol'], 'rs': m.get('_rsNow'), 'board': board_of(m),
+            'dist': rnd(m.get('_dist'), 1), 'above50': m.get('_above50'), 'leader': bool(m.get('_leader')),
+            'changePct': rnd((m['closes'][-1] / m['closes'][-2] - 1) * 100) if len(m['closes']) > 1 and m['closes'][-2] else None,
+            **({'industry': name_of(market, m['industry'])} if big else {}),
+        } for m in ranked[:MEMBER_MAX]], 'memberCount': len(members)}
+        tail = list(zip(bench_dates[1:], levels))[-RS_LINE_DAYS:]
+        if tail:
+            base = tail[0][1] / bench_close[tail[0][0]]
+            det['rsLine'] = {'from': tail[0][0], 'to': tail[-1][0],
+                             'values': [rnd(v / bench_close[d] / base * 100, 1) for d, v in tail]}
+        details[x['name']] = det
     dropped = [x for x in items if x['stage'] == 'OUT']
     # Relative strength is the entry ticket: a weak-RS industry is not 'getting ready'.
     watchlist = [x for x in items if not x['leading'] and x['watch'].get('rsRising') and x['watchScore'] >= POLICY['watchScoreMin']]
     watchlist.sort(key=lambda x: (-x['watchScore'], -x['rs'], x['name']))
-    point_map = [{'name': x['name'], 'rs': x['rs'], 'nearHighPct': x['nearHighPct'], 'members': x['members'],
+    point_map = [{'name': x['name'], 'label': x['label'], 'rs': x['rs'], 'nearHighPct': x['nearHighPct'], 'members': x['members'],
                   'leading': x['leading'], 'watchScore': x['watchScore'], 'rankChange20': x['rankChange20']} for x in items]
     return {'status': 'OK', 'count': len(items), 'leadingCount': sum(x['leading'] for x in items),
-            'items': items[:15], 'dropped': dropped[:8],
+            'items': items[:15], 'details': details, 'dropped': dropped[:8],
             'watchlist': watchlist[:10], 'watchCount': len(watchlist), 'map': point_map,
-            'checklist': [{'name': x['name'], 'rs': x['rs'], 'watch': x['watch'], 'watchScore': x['watchScore'],
+            'checklist': [{'name': x['name'], 'label': x['label'], 'rs': x['rs'], 'watch': x['watch'], 'watchScore': x['watchScore'],
                            'leading': x['leading']}
                           for x in sorted(items, key=lambda x: (-x['watchScore'], -x['rs'], x['name']))[:15]],
             'leadsIndex': [x['name'] for x in items if x['leadsIndex']][:10],
