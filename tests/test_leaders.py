@@ -142,5 +142,23 @@ class LeaderTests(unittest.TestCase):
         self.assertTrue(growth_of({'sepaFundamental': {'epsPass': True}}, 'US')['ok'])
 
 
+
+class LeaderLinkTests(unittest.TestCase):
+    def test_leaders_and_industry_names_carry_links(self):
+        u = universe()
+        for s in u:
+            s['board'] = 'NASDAQ'
+        out = L.analyze(u, BENCH, 'US')
+        lead = out['leaders']['items'][0]
+        self.assertEqual(lead['tradingviewUrl'], f"https://www.tradingview.com/chart/?symbol=NASDAQ%3A{lead['symbol']}")
+        self.assertTrue(lead['naverUrl'].startswith('https://m.stock.naver.com/worldstock/stock/'))
+        rep = out['industries']['items'][0]['representatives'][0]
+        self.assertIn('naverUrl', rep)
+
+    def test_unknown_exchange_gives_no_link(self):
+        out = L.analyze(universe(), BENCH, 'US')
+        self.assertIsNone(out['leaders']['items'][0]['tradingviewUrl'])
+
+
 if __name__ == '__main__':
     unittest.main()

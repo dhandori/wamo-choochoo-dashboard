@@ -115,7 +115,15 @@ def board_counts(items):
     return out
 
 
+def stock_links(market, stock):
+    """네이버증권·트레이딩뷰 주소(2026-11-05 사용자: 선도주 화면에서 바로 열기). 확인된 형식만, 아니면 None."""
+    from wamo_insights import naver_url, tradingview_url   # 늦게 불러 순환 import 를 피한다
+    ex = stock.get('board')
+    return {'naverUrl': naver_url(market, stock['symbol'], ex), 'tradingviewUrl': tradingview_url(market, stock['symbol'], ex)}
+
+
 def analyze(universe, bench, market, ftd_indexes=None):
+    links = {s['id']: stock_links(market, s) for s in universe}
     bench_by_date = {r['date']: r['close'] for r in bench}
     bench_closes = [r['close'] for r in bench]
     window = POLICY['heldUpWindow']
@@ -179,7 +187,7 @@ def analyze(universe, bench, market, ftd_indexes=None):
             'rsLineHigh': rs_high_recent is not None, 'rsHighDaysAgo': rs_high_recent, 'rsLead': rs_lead,
             'breakoutDates': breakout_dates, 'heldUpRatio': held,
             'heldUp': held is not None and held < 1,
-            'growth': s.get('growth'),
+            'growth': s.get('growth'), **links[s['id']],
         })
     leaders = [x for x in stocks if x['leader']]
     leaders.sort(key=lambda x: (not x['core'], not x['rsLead'], not x['breakoutDates'], -(x['rs'] or 0)))
@@ -201,16 +209,16 @@ def analyze(universe, bench, market, ftd_indexes=None):
         status = 'CONFIRMED' if count >= need else 'WATCHING' if age < win else 'WEAK'
         emergence = {'status': status, 'ftd': anchor, 'count': count, 'need': need, 'age': min(age, win), 'window': win,
                      'byBoard': board_counts(hits),
-                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs'], 'board': x['board']}
+                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs'], 'board': x['board'], **links[x['id']]}
                                for x in sorted(hits, key=lambda x: -(x['rs'] or 0))[:20]]}
     else:
         recent = [x for x in stocks if (x['rs'] or 0) >= POLICY['rsMin'] and x['breakoutDates']]
         emergence = {'status': 'NO_FTD', 'ftd': None, 'count': len(recent), 'need': need, 'age': None, 'window': win,
                      'byBoard': board_counts(recent),
-                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs'], 'board': x['board']}
+                     'items': [{'id': x['id'], 'name': x['name'], 'symbol': x['symbol'], 'industry': x['industry'], 'rs': x['rs'], 'board': x['board'], **links[x['id']]}
                                for x in sorted(recent, key=lambda x: -(x['rs'] or 0))[:20]]}
 
-    industries = _industries(universe, bench, raw, index_dd)
+    industries = _industries(universe, bench, raw, index_dd, links)
     return {
         'policy': POLICY,
         'asOf': dates[-1] if dates else None,
@@ -258,7 +266,8 @@ def _phase(ftd_indexes):
                                       for x in ftd_indexes or [] if x.get('status') == 'OK']}
 
 
-def _industries(universe, bench, raw, index_dd=None):
+def _industries(universe, bench, raw, index_dd=None, links=None):
+    links = links or {}
     lookback = POLICY['industryLookback']
     groups = {}
     for s in universe:
@@ -340,7 +349,8 @@ def _industries(universe, bench, raw, index_dd=None):
                        and bench_dist >= POLICY['leadsIndexBenchMin'])
         cand_items = [{'id': m['id'], 'name': m['name'], 'symbol': m['symbol'], 'rs': m.get('_rsNow'), 'board': board_of(m),
                        'dist': rnd(m.get('_dist'), 1), 'leader': bool(m.get('_leader')),
-                       'growth': (m.get('growth') or {}).get('text') if (m.get('growth') or {}).get('ok') else None}
+                       'growth': (m.get('growth') or {}).get('text') if (m.get('growth') or {}).get('ok') else None,
+                       **links.get(m['id'], {})}
                       for m in sorted(cands, key=lambda m: -(m.get('_rsNow') or 0))[:5]]
         reps = sorted(members, key=lambda m: (not m.get('_leader'), -(m.get('_rsNow') or 0)))[:3]
         items.append({
@@ -357,7 +367,7 @@ def _industries(universe, bench, raw, index_dd=None):
             'heldUpRatio': held, 'heldUp': held is not None and held < POLICY['heldUpGood'],
             'leadsIndex': leads_index, 'distFromHigh': rnd(ind_dist, 1),
             'representatives': [{'id': m['id'], 'name': m['name'], 'symbol': m['symbol'], 'rs': m.get('_rsNow'),
-                                 'leader': bool(m.get('_leader'))} for m in reps],
+                                 'leader': bool(m.get('_leader')), **links.get(m['id'], {})} for m in reps],
         })
     items.sort(key=lambda x: (-x['rs'], x['name']))
     dropped = [x for x in items if x['stage'] == 'OUT']

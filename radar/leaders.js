@@ -40,6 +40,29 @@ function boardMark(id) {
   const b = stockInfo(id)?.board;
   return b ? n('span', b, `board-badge board-${b.toLowerCase().replace(/[^a-z]/g, '')}`) : null;
 }
+// 네이버증권·트레이딩뷰 바로가기(2026-11-05 사용자). 서버가 확인한 주소 형식만 연다.
+const LINKS = [
+  ['naverUrl', '네이버', /^https:\/\/m\.stock\.naver\.com\/(domestic|worldstock)\/stock\/[A-Za-z0-9.]+\/total$/],
+  ['tradingviewUrl', 'TV', /^https:\/\/www\.tradingview\.com\/chart\/\?symbol=[A-Z]+%3A[A-Z0-9.]+$/],
+];
+function stockLinks(item) {
+  const box = n('span', null, 'ld-links');
+  for (const [key, label, shape] of LINKS) {
+    const url = item?.[key];
+    if (typeof url !== 'string' || !shape.test(url)) continue;
+    const a = n('a', `${label} ↗`, 'ld-ext'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.setAttribute('aria-label', `${short(item.name)} ${label === 'TV' ? '트레이딩뷰' : '네이버증권'} 새 탭`);
+    box.append(a);
+  }
+  return box.childElementCount ? box : null;
+}
+/** 종목 버튼 + 바로가기 링크(버튼 안에 링크를 넣을 수 없어 옆에 붙인다). */
+function stockWithLinks(item, openStock, extra) {
+  const wrap = n('div', null, 'ld-stock-wrap');
+  wrap.append(stockButton(item, openStock, extra));
+  const l = stockLinks(item); if (l) wrap.append(l);
+  return wrap;
+}
 function stockButton(item, openStock, extra) {
   const b = n('button', null, 'ld-stock'); b.type = 'button';
   b.onclick = () => openStock(item.id);
@@ -97,7 +120,7 @@ function emergenceCard(L, market, openStock, openFTD, no) {
   card.append(meter);
   if (e.items?.length) {
     const list = n('div', null, 'ld-names');
-    e.items.slice(0, 12).forEach(x => list.append(stockButton(x, openStock, `RS ${num(x.rs)}`)));
+    e.items.slice(0, 12).forEach(x => list.append(stockWithLinks(x, openStock, `RS ${num(x.rs)}`)));
     card.append(list);
   }
   if (openFTD) { const go = n('button', '시장 전환·FTD 탭에서 FTD 보기 →', 'ld-link'); go.type = 'button'; go.onclick = openFTD; card.append(go); }
@@ -233,7 +256,7 @@ function leaderCard(L, openStock, rerender, no, market) {
   table.append(headRow([[null, '종목 · 업종', 'c-name'], ['rsOneil', 'RS'], ['ldDistance', '고점까지'], [null, '당일'], [null, '표시', 'c-flags']]));
   items.slice(0, showAll ? 60 : 20).forEach(x => {
     const row = n('div', null, `ld-tr${x.core ? ' core' : ''}`);
-    const name = n('div', null, 'ld-td c-name'); name.append(stockButton(x, openStock, x.industry));
+    const name = n('div', null, 'ld-td c-name'); name.append(stockWithLinks(x, openStock, x.industry));
     const chg = isNum(x.changePct) ? n('b', `${x.changePct > 0 ? '+' : ''}${num(x.changePct, 1)}%`, x.changePct > 0 ? 'up' : x.changePct < 0 ? 'down' : '') : n('b', '—');
     const flags = n('div', null, 'ld-td c-flags');
     if (x.core) flags.append(chip('핵심', 'core', 'core'));
@@ -459,17 +482,22 @@ function watchCard(L, openStock, rerender, no, flow = new Map()) {
   return card;
 }
 
-// Industries whose turnover share rose/fell over the last 5 days (from the liquidity block).
+// 업종 거래대금 비중 변화(시장 거래량 자료). 'all'이 없던 옛 자료는 몰림·빠짐 상위 목록만 쓴다.
 function moneyFlow(block) {
   const m = new Map();
   const ind = (block?.liquidity || {}).industries || {};
-  [...(ind.inflow || []), ...(ind.outflow || [])].forEach(x => m.set(x.name, x));
+  [...(ind.all || [...(ind.inflow || []), ...(ind.outflow || [])])].forEach(x => m.set(x.name, x));
   return m;
 }
+// '돈 몰림·빠짐'은 5일·20일 비중과 20일 가격이 같은 쪽일 때만(서버 판정 flow). 한 주 움직임은 숫자만 흐리게 보여 준다(2026-11-05 사용자).
+const sgn = v => `${v > 0 ? '+' : ''}${num(v, 1)}`;
 function moneyChip(name, flow) {
   const f = flow.get(name);
-  if (f && f.shareChangePp >= 0.3) return chip(`💰 돈 몰림 +${num(f.shareChangePp, 1)}%p`, 'money', 'moneyFlow');
-  if (f && f.shareChangePp <= -0.3) return chip(`돈 빠짐 ${num(f.shareChangePp, 1)}%p`, 'money-out', 'moneyFlow');
+  if (!f || !isNum(f.shareChangePp)) return null;
+  const tail = isNum(f.share20ChangePp) ? ` · 20일 ${sgn(f.share20ChangePp)}%p` : '';
+  if (f.flow === 'IN') return chip(`💰 돈 몰림 ${sgn(f.shareChangePp)}%p${tail}`, 'money', 'moneyFlow');
+  if (f.flow === 'OUT') return chip(`돈 빠짐 ${sgn(f.shareChangePp)}%p${tail}`, 'money-out', 'moneyFlow');
+  if (Math.abs(f.shareChangePp) >= 0.3) return chip(`거래 비중 5일 ${sgn(f.shareChangePp)}%p`, 'soft', 'tradeShare');
   return null;
 }
 export function renderLeaders(container, market, block, { openStock, openFTD, stale, info } = {}) {

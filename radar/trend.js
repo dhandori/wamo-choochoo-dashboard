@@ -545,15 +545,16 @@ function liquidityCard(b, market) {
       if (!items.length) c.append(el('small', '해당 없음'));
       items.slice(0, 5).forEach(it => {
         const row = el('div', null, 'lq-flow-row');
-        row.append(el('span', it.name, 'lq-flow-name'), el('span', `${it.shareChangePp > 0 ? '+' : ''}${fmt(it.shareChangePp, 1)}%p`, 'lq-flow-delta'), el('span', `비중 ${fmt(it.sharePct, 1)}%`, 'lq-flow-share'), el('span', `5일 ${pct(it.return5d)}`, tone(it.return5d)));
-        row.title = it.name;
+        const mark = it.flow === 'IN' ? ' 💰' : it.flow === 'OUT' ? ' ⬇' : '';
+        row.append(el('span', `${it.name}${mark}`, 'lq-flow-name'), el('span', `${it.shareChangePp > 0 ? '+' : ''}${fmt(it.shareChangePp, 1)}%p`, 'lq-flow-delta'), el('span', `비중 ${fmt(it.sharePct, 1)}%`, 'lq-flow-share'), el('span', `5일 ${pct(it.return5d)}`, tone(it.return5d)));
+        row.title = `${it.name}${it.flow === 'IN' ? ' · 돈 몰림(5일·20일 비중과 20일 가격이 모두 위)' : it.flow === 'OUT' ? ' · 돈 빠짐(5일·20일 비중과 20일 가격이 모두 아래)' : ''}${it.share20ChangePp != null ? ` · 20일 비중 ${it.share20ChangePp > 0 ? '+' : ''}${fmt(it.share20ChangePp, 1)}%p · 20일 ${pct(it.return20d)}` : ''}`;
         c.append(row);
       });
       return c;
     };
-    flow.append(col('돈이 몰리는 업종', ind.inflow || [], 'in'), col('돈이 빠지는 업종', ind.outflow || [], 'out'));
-    card.append(el('h4', '돈이 몰리는 업종 · 최근 5일 거래대금 비중 변화 (화면 속 종목)', 'lq-sub'), flow);
-    card.append(help('비중이 늘면서 값도 오르는 업종이 선도업종 후보예요. 비중은 느는데 값이 내리면 큰손이 그 업종에서 팔고 나가는 중일 수 있어요.'));
+    flow.append(col('거래 비중이 늘어난 업종', ind.inflow || [], 'in'), col('거래 비중이 줄어든 업종', ind.outflow || [], 'out'));
+    card.append(el('h4', '업종 거래대금 비중 · 최근 5일 변화 (화면 속 종목)', 'lq-sub'), flow);
+    card.append(help('한 주 움직임이라 이것만으로 돈이 들어오고 나갔다고 보지는 않아요. 20일 비중과 20일 가격까지 같은 쪽으로 움직인 업종에만 💰(돈 몰림)·⬇(돈 빠짐)을 붙였어요. 비중이 늘면서 값도 오르는 업종이 선도업종 후보예요.'));
   }
   card.append(help(q.note || ''));
   if (market === 'US') { const sn = scheduleNote(b.volumeSchedule); if (sn) card.append(sn); }

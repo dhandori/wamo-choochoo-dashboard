@@ -104,6 +104,24 @@ class Ratios(unittest.TestCase):
         self.assertLess(ind['반도체']['shareChangePp'], 0)
         self.assertAlmostEqual(ind['조선']['shareChangePp'] + ind['반도체']['shareChangePp'], 0, 1)
 
+    def test_flow_label_needs_both_windows_and_price(self):
+        # 한 주 주춤(5일만 감소)은 '돈 빠짐'이 아니다. 5일·20일 비중과 20일 가격이 모두 같은 쪽일 때만 부른다.
+        self.assertIsNone(L._flow(-0.5, 0.4, 3.0))
+        self.assertIsNone(L._flow(-0.5, -0.4, 2.0))
+        self.assertEqual(L._flow(-0.5, -0.4, -2.0), 'OUT')
+        self.assertEqual(L._flow(0.5, 0.2, 1.0), 'IN')
+        self.assertIsNone(L._flow(0.2, 0.2, 1.0))
+        self.assertIsNone(L._flow(0.5, None, 1.0))
+
+    def test_all_industries_carry_20_day_fields(self):
+        r = L.analyze(universe())
+        alls = r['industries']['all']
+        self.assertTrue(alls)
+        for x in alls:
+            self.assertIn('share20ChangePp', x)
+            self.assertIn('return20d', x)
+            self.assertIn(x['flow'], (None, 'IN', 'OUT'))
+
     def test_too_short_history_is_unavailable(self):
         self.assertEqual(L.analyze(universe(n=30))['status'], 'UNAVAILABLE')
 
