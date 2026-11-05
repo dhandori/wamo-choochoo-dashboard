@@ -807,6 +807,8 @@
 :root[data-theme="light"] .ld-nav button.now { border-color: #9d7927; color: #503d0f; background: #f3f0e8; }
 :root[data-theme="light"] .ld-card.ld-now { border-color: #baa782; box-shadow: 0 0 0 1px #baa782; }
 :root[data-theme="light"] .ld-now-badge { background: #edebe5; border: 1px solid #baa782; color: #5a4516; }
+:root[data-theme="light"] .ld-stage.stage-dip { color: #2b3745; }
+:root[data-theme="light"] .ld-dip { color: #2b3745; }
 
 /* ===== leaders.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ld-intro p { color: #b7c5d6; }
@@ -859,6 +861,8 @@
 :root:not([data-theme="light"]) .ld-cond.ok b, :root:not([data-theme="light"]) .ld-cond.ok span { color: #83e2c2; }
 :root:not([data-theme="light"]) .ld-sub { color: #b8c6d6; }
 :root:not([data-theme="light"]) .ld-rsline-foot { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-stage.stage-dip { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-dip { color: #b8c6d6; }
 
 /* ===== leaders.css (작은 글씨 키우기) ===== */
 :root .ld-meter small { font-size: 12px; }
@@ -884,6 +888,7 @@
 :root .ld-top-rs small { font-size: 12px; }
 :root .ld-caret { font-size: 12px; }
 :root .ld-rsline-foot { font-size: 12px; }
+:root .ld-dip { font-size: 12px; }
 
 /* ===== schedule.css (밝은 테마) ===== */
 :root[data-theme="light"] .schedule-wrap[open] { border: 1px solid #a8bad1; background: #e8eff8; }

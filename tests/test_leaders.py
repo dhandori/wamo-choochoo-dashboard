@@ -186,5 +186,28 @@ class IndustryViewTests(unittest.TestCase):
         self.assertEqual(dict(fin['subIndustries']), {'대형 은행': 4, '생명보험': 4})
 
 
+class StageTests(unittest.TestCase):
+    B = staticmethod(lambda a50, nh=0: {'above50Pct': a50, 'newHighs': nh, 'nearHighPct': None})
+
+    def test_one_week_dip_is_not_down_or_out(self):
+        B = self.B
+        # 5일 사이 순위 12점 하락, 그러나 20일 전보다는 높다 → 유지 + 1주 주춤
+        self.assertEqual(L._stage(85, 97, 70, B(70), B(72), B(60), 80), ('HOLD', True))
+        # 20일 전보다도 낮다 → 약화
+        self.assertEqual(L._stage(85, 97, 90, B(70), B(72), B(60), 80), ('DOWN', False))
+        # 상위권 밖으로 밀렸지만 20일 전보다는 높고 50일선 비율도 늘었다 → 이탈 아님, 1주 주춤
+        self.assertEqual(L._stage(75, 85, 60, B(65), B(70), B(50), 80), (None, True))
+        self.assertEqual(L._stage(75, 85, 90, B(65), B(70), B(50), 80), ('OUT', False))
+        # 50일선 위 비율이 20일 전보다 줄었으면 RS 가 높아도 확인된 약화
+        self.assertEqual(L._stage(85, 97, 70, B(50), B(72), B(60), 80), ('DOWN', False))
+        self.assertEqual(L._stage(85, 70, 60, B(70), B(60), B(50), 80), ('NEW', False))
+
+    def test_japan_taiwan_big_groups(self):
+        import wamo_industry_names as N
+        self.assertEqual(N.group_of('JP', '수송기기(자동차·부품)'), '자동차')
+        self.assertEqual(N.group_of('TW', '반도체'), '반도체')
+        self.assertEqual(N.group_of('TW', '광전자'), 'IT 하드웨어')
+
+
 if __name__ == '__main__':
     unittest.main()

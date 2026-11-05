@@ -150,3 +150,5 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
 }
 @media(max-width:420px){.ld-tops{grid-template-columns:1fr}}
 .ld-mem-table .ld-stock,.ld-mem-table .ld-stock:hover{border:0;background:transparent;padding:0}
+.ld-stage.stage-dip{background:transparent;border-style:dashed;color:#93a8c0;font-weight:600}
+.ld-dip{margin-left:6px;font-size:11px;font-weight:600;color:#93a8c0}
