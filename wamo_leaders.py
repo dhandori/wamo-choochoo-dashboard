@@ -46,8 +46,8 @@ STAGE_TEXT = {
     'NEW': ('🆕', '신규 진입', 'RS 순위가 5거래일 전에는 상위 20% 밖이었다가 이번에 안으로 들어왔어요.'),
     'UP': ('⬆', '강화', '5거래일 전보다 RS 순위와 50일선 위 종목 비율이 모두 올라갔어요.'),
     'HOLD': ('➡', '유지', '상위 20% 안에서 큰 변화 없이 자리를 지키고 있어요.'),
-    'DOWN': ('⬇', '약화', '순위는 아직 높지만 5거래일 전보다 순위가 10점 이상 떨어졌거나, 50일선 위 비율이 10%p 이상 줄었거나, 신고가 종목 수가 줄었어요.'),
-    'OUT': ('↘', '상위권 이탈', '5거래일 전에는 상위 20% 안이었지만 지금은 밖으로 밀려났어요.'),
+    'DOWN': ('⬇', '약화', '순위는 아직 높지만 5거래일 전보다 순위가 10점 이상 떨어졌거나 50일선 위 비율이 10%p 이상 줄었거나 신고가 종목이 절반으로 줄었고, 20거래일 전보다도 RS나 50일선 위 비율이 낮아요. 한 주만 주춤한 업종은 약화로 부르지 않아요.'),
+    'OUT': ('↘', '상위권 이탈', '5거래일 전에는 상위 20% 안이었는데 지금은 밖이고, 20거래일 전보다도 RS나 50일선 위 비율이 낮아요. 한 주만 밀린 업종은 이탈로 부르지 않아요.'),
 }
 
 
@@ -277,6 +277,33 @@ RS_LINE_DAYS = 120
 MEMBER_MAX = 40
 
 
+def _stage(pct, pct5, pct20, now, ago, ago20, top):
+    """업종 단계(NEW·UP·HOLD·DOWN·OUT 또는 None)와 '1주 주춤' 여부.
+
+    약화·상위권 이탈은 한 주 움직임만으로 붙이지 않는다(2026-11-05 사용자: 5일 주춤을 판정으로 부르지 않기).
+    5일 사이 약해졌어도 20거래일 전보다 RS 가 낮거나 50일선 위 비율이 줄었을 때만 판정하고, 아니면 dip 으로만 표시한다."""
+    lower20 = ((pct20 is not None and pct < pct20)
+               or (now['above50Pct'] is not None and ago20['above50Pct'] is not None
+                   and now['above50Pct'] < ago20['above50Pct']))
+    if pct >= top:
+        weak5 = ((pct5 is not None and pct5 - pct >= 10)
+                 or (now['above50Pct'] is not None and ago['above50Pct'] is not None
+                     and now['above50Pct'] - ago['above50Pct'] <= -10)
+                 # A drop of one new high (1 -> 0) is noise; only a real fade counts.
+                 or (ago['newHighs'] >= 2 and now['newHighs'] <= ago['newHighs'] / 2))
+        if pct5 is not None and pct5 < top:
+            return 'NEW', False
+        if weak5 and lower20:
+            return 'DOWN', False
+        if (pct5 is not None and pct > pct5 and now['above50Pct'] is not None
+                and ago['above50Pct'] is not None and now['above50Pct'] > ago['above50Pct']):
+            return 'UP', False
+        return 'HOLD', weak5
+    if pct5 is not None and pct5 >= top:
+        return ('OUT', False) if lower20 else (None, True)
+    return None, False
+
+
 def _industries(universe, bench, raw, index_dd=None, links=None, market='US', key=None, big=False):
     links = links or {}
     key = key or (lambda s: s['industry'])
@@ -323,23 +350,7 @@ def _industries(universe, bench, raw, index_dd=None, links=None, market='US', ke
             'above50': breadth_now['above50Pct'] is not None and breadth_now['above50Pct'] >= POLICY['industryAbove50Min'],
             'persist': persist >= POLICY['industryPersistMin'],
         }
-        stage = None
-        if pct >= top:
-            if pct5 is not None and pct5 < top:
-                stage = 'NEW'
-            elif ((pct5 is not None and pct5 - pct >= 10)
-                  or (breadth_now['above50Pct'] is not None and breadth_ago['above50Pct'] is not None
-                      and breadth_now['above50Pct'] - breadth_ago['above50Pct'] <= -10)
-                  # A drop of one new high (1 -> 0) is noise; only a real fade counts.
-                  or (breadth_ago['newHighs'] >= 2 and breadth_now['newHighs'] <= breadth_ago['newHighs'] / 2)):
-                stage = 'DOWN'
-            elif (pct5 is not None and pct > pct5 and breadth_now['above50Pct'] is not None
-                  and breadth_ago['above50Pct'] is not None and breadth_now['above50Pct'] > breadth_ago['above50Pct']):
-                stage = 'UP'
-            else:
-                stage = 'HOLD'
-        elif pct5 is not None and pct5 >= top:
-            stage = 'OUT'
+        stage, dip = _stage(pct, pct5, pct20, breadth_now, breadth_ago, _breadth(members, lookback), top)
         # Blog checklist: is this industry ready for the next FTD?
         near_count = sum(1 for m in members if m.get('_nearHigh'))
         known = [m['growth']['ok'] for m in members if isinstance(m.get('growth'), dict) and m['growth'].get('ok') is not None]
@@ -379,7 +390,7 @@ def _industries(universe, bench, raw, index_dd=None, links=None, market='US', ke
             'rsHistory': [pct_k[k].get(name) for k in range(lookback, -1, -1)],
             '_members': members, '_levels': levels, 'members': len(members), 'boards': board_counts(members), 'rs': pct, 'rank': r0,
             'rankChange5': (r5 - r0) if r5 and r0 else None, 'rankChange20': (r20 - r0) if r20 and r0 else None,
-            'rs5': pct5, 'rs20': pct20, 'persist': persist, 'stage': stage,
+            'rs5': pct5, 'rs20': pct20, 'persist': persist, 'stage': stage, 'dip': dip,
             'leading': all(conds.values()), 'conditions': conds,
             'newHighs': breadth_now['newHighs'], 'newHighsAgo': breadth_ago['newHighs'],
             'above50Pct': breadth_now['above50Pct'], 'above50PctAgo': breadth_ago['above50Pct'],

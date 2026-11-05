@@ -1,6 +1,6 @@
 // Leading stocks and leading industries. Reads wamo_trend.json → markets[X].leadership.
 import { helpButton, addTerms } from './help.js';
-import { LEADER_TERMS, STAGES, WATCH_SHORT, glossary } from './terms.mjs';
+import { LEADER_TERMS, STAGES, WATCH_SHORT, DIP_TERM, glossary } from './terms.mjs';
 addTerms(LEADER_TERMS);
 const n = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
@@ -171,22 +171,25 @@ function emergenceCard(L, market, openStock, openFTD, no) {
 
 function stageLegend() {
   const wrap = n('details', null, 'ld-legend');
-  wrap.append(n('summary', '단계(신규 진입·강화·유지·약화·상위권 이탈) 뜻 보기'));
+  wrap.append(n('summary', '단계(신규 진입·강화·유지·약화·상위권 이탈·1주 주춤) 뜻 보기'));
   const ul = n('ul');
   for (const [key, [icon, label, meaning]] of Object.entries(STAGES)) {
     const li = n('li', null, `stage-${key.toLowerCase()}`);
     li.append(n('span', `${icon} ${label}`, 'ld-stage-name'), n('span', meaning, 'ld-stage-meaning'));
     ul.append(li);
   }
+  { const li = n('li', null, 'stage-dip'); li.append(n('span', DIP_TERM[0], 'ld-stage-name'), n('span', DIP_TERM[1], 'ld-stage-meaning')); ul.append(li); }
   wrap.append(ul);
   return wrap;
 }
 
-function stageChip(stage) {
+function stageChip(stage, dip = false) {
+  if (!stage && dip) { const c = n('span', null, 'ld-stage stage-dip'); c.append(helpButton('1주 주춤', 'stageDIP')); return c; }
   if (!stage || !STAGES[stage]) return n('span', '—', 'ld-stage none');
   const [icon, label] = STAGES[stage];
   const c = n('span', null, `ld-stage stage-${stage.toLowerCase()}`);
   c.append(helpButton(`${icon} ${label}`, `stage${stage}`));
+  if (dip) { const d = n('span', null, 'ld-dip'); d.append(helpButton('1주 주춤', 'stageDIP')); c.append(d); }
   return c;
 }
 
@@ -227,7 +230,7 @@ function topCard(L, market, openStock, rerender, no, flow, openRow) {
     const go = e => { if (e.target.closest('button,a')) return; openRow(x.name); };
     c.onclick = go; c.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRow(x.name); } };
     const top = n('div', null, 'ld-top-head');
-    top.append(n('span', `${x.rank}`, 'ld-rank'), n('strong', labelOf(x)), stageChip(x.stage));
+    top.append(n('span', `${x.rank}`, 'ld-rank'), n('strong', labelOf(x)), stageChip(x.stage, x.dip));
     const mid = n('div', null, 'ld-top-rs');
     mid.append(n('b', num(x.rs)), n('small', 'RS'), spark(x.rsHistory, { w: 90, h: 28, lo: 0, hi: 100, base: L.policy?.industryTopPct ?? 80 }));
     const stats = n('div', null, 'ld-top-stats');
@@ -341,7 +344,7 @@ function industryCard(L, market, openStock, rerender, no, flow) {
       : (market === 'US' && x.label && x.label !== x.name ? x.name : '');
     name.append(n('small', [`${x.members}종목${mix ? ` (${mix})` : ''}`, subLine].filter(Boolean).join(' · '), 'ld-ind-sub'));
     const rank = n('div', null, 'ld-td c-rank'); rank.append(n('span', `${x.rank}`, 'ld-rank'), n('i', open ? '▾' : '▸', 'ld-caret'));
-    const stage = n('div', null, 'ld-td c-stage'); stage.dataset.label = '단계'; stage.append(stageChip(x.stage));
+    const stage = n('div', null, 'ld-td c-stage'); stage.dataset.label = '단계'; stage.append(stageChip(x.stage, x.dip));
     const sp = n('div', null, 'ld-td c-spark'); sp.dataset.label = '20일 흐름'; sp.append(spark(x.rsHistory, { w: 70, h: 22, lo: 0, hi: 100, base: L.policy?.industryTopPct ?? 80 }));
     row.append(rank, name, stage,
       cell('RS', num(x.rs), !!c.rsTop), sp,
@@ -688,7 +691,7 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   const sum = n('summary'); sum.append('선도주·선도업종을 왜 보는지 · 보는 방법'); intro.append(sum);
   const p = n('p'); p.append('상승장은 ', term('leader', '선도주'), '와 ', term('leadingIndustry', '선도업종'), '이 끌고 갑니다. 선도업종은 지수보다 먼저 움직이는 경우가 많아서, FTD 전에 미리 찾아 두는 것이 중요해요. 상대강도(RS)와 52주 신고가를 함께 보고, 준비된 업종을 워치리스트로 관리합니다. 밑줄 친 말을 누르면 뜻이 나와요.');
   intro.append(p);
-  const gloss = glossary(LEADER_TERMS, ['leader', 'core', 'rsOneil', 'ldDistance', 'rsLead', 'ldBreakout', 'heldUp', 'emergence', 'industryRs', 'rankChange', 'industryRsLine', 'newHighs', 'above50', 'persist', 'leadingIndustry', 'ldStage', 'stageNEW', 'stageUP', 'stageHOLD', 'stageDOWN', 'stageOUT', 'phaseMode', 'industryMap', 'watchlist', 'watchScore', 'candidate', 'growthBack', 'heldUpIndustry', 'leadsIndex']);
+  const gloss = glossary(LEADER_TERMS, ['leader', 'core', 'rsOneil', 'ldDistance', 'rsLead', 'ldBreakout', 'heldUp', 'emergence', 'industryRs', 'rankChange', 'industryRsLine', 'newHighs', 'above50', 'persist', 'leadingIndustry', 'ldStage', 'stageNEW', 'stageUP', 'stageHOLD', 'stageDOWN', 'stageOUT', 'stageDIP', 'phaseMode', 'industryMap', 'watchlist', 'watchScore', 'candidate', 'growthBack', 'heldUpIndustry', 'leadsIndex']);
   const L = block?.leadership;
   if (!L || L.status !== 'OK') { container.append(intro, gloss, n('div', L?.note || '선도주·선도업종 자료를 준비 중입니다. 다음 자동 갱신 때 채워집니다.', 'ld-empty')); return; }
   if (stale) container.append(n('div', '최근 마감 거래일 자료가 아니라서 과거 기준으로 보여 주고 있어요.', 'ftd-data-warning'));
