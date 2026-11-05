@@ -82,6 +82,36 @@ def _quadrant(price_dir, flow_dir):
     }.get(key, ('FLAT', '뚜렷한 방향 없음', '지수와 거래량 모두 5일 동안 큰 변화가 없어요.', 0))
 
 
+def _shares(days):
+    """기간 전체 거래대금에서 업종이 차지한 비중(%)."""
+    tot = sum(d['value'] for d in days) or 1
+    out = {}
+    for d in days:
+        for ind, v in d['industry'].items():
+            out[ind] = out.get(ind, 0.0) + v / tot * 100
+    return out
+
+
+def _median(xs):
+    xs = sorted(xs)
+    m = len(xs)
+    return (xs[(m - 1) // 2] + xs[m // 2]) / 2 if m else None
+
+
+# '돈 몰림·돈 빠짐'은 한 주 움직임으로 부르지 않는다: 5일·20일 비중이 같은 방향으로 움직이고 20일 가격도 같은 쪽일 때만.
+FLOW_MIN_PP = 0.3
+
+
+def _flow(ch5, ch20, r20):
+    if ch5 is None or ch20 is None or r20 is None:
+        return None
+    if ch5 >= FLOW_MIN_PP and ch20 > 0 and r20 > 0:
+        return 'IN'
+    if ch5 <= -FLOW_MIN_PP and ch20 < 0 and r20 < 0:
+        return 'OUT'
+    return None
+
+
 def analyze(universe, bench=None, asof=None):
     days = daily_turnover(universe)
     if len(days) < AVG_LONG + 5:
@@ -148,22 +178,29 @@ def analyze(universe, bench=None, asof=None):
     for d in prior:
         for ind, v in d['industry'].items():
             share_p[ind] = share_p.get(ind, 0.0) + v / tot_p * 100
-    # 업종별 가격(5일 수익률 중앙값)
-    ind_ret = {}
+    # 같은 비교를 20일(최근 20일 vs 그 전 40일)로도 한다. 한 주 주춤한 것과 한 달 내내 빠진 것을 가르려고(2026-11-05 사용자).
+    share20_r, share20_p = _shares(days[-20:]), _shares(days[-60:-20])
+    # 업종별 가격(5일·20일 수익률 중앙값)
+    ind_ret, ind_ret20 = {}, {}
     for s in universe:
         rows = s['rows']
+        key = s.get('industry') or '산업 미분류'
         if len(rows) >= 6 and rows[-6].get('close'):
-            ind_ret.setdefault(s.get('industry') or '산업 미분류', []).append((rows[-1]['close'] / rows[-6]['close'] - 1) * 100)
+            ind_ret.setdefault(key, []).append((rows[-1]['close'] / rows[-6]['close'] - 1) * 100)
+        if len(rows) >= 21 and rows[-21].get('close'):
+            ind_ret20.setdefault(key, []).append((rows[-1]['close'] / rows[-21]['close'] - 1) * 100)
     industries = []
     for ind in set(share_r) | set(share_p):
         share = share_r.get(ind, 0.0)
         if ind == '산업 미분류':
             continue
-        rets = sorted(ind_ret.get(ind, []))
-        m = len(rets)
-        med = (rets[(m - 1) // 2] + rets[m // 2]) / 2 if m else None
-        industries.append({'name': ind, 'sharePct': _r(share, 2), 'shareChangePp': _r(share - share_p.get(ind, 0.0), 2),
-                           'return5d': _r(med), 'members': m})
+        rets = ind_ret.get(ind, [])
+        ch5 = share - share_p.get(ind, 0.0)
+        ch20 = share20_r.get(ind, 0.0) - share20_p.get(ind, 0.0) if share20_p else None
+        r20 = _median(ind_ret20.get(ind, []))
+        industries.append({'name': ind, 'sharePct': _r(share, 2), 'shareChangePp': _r(ch5, 2),
+                           'share20ChangePp': _r(ch20, 2), 'return5d': _r(_median(rets)), 'return20d': _r(r20),
+                           'flow': _flow(ch5, ch20, r20), 'members': len(rets)})
     inflow = sorted([x for x in industries if (x['shareChangePp'] or 0) > 0], key=lambda x: -(x['shareChangePp'] or 0))[:TOP_INDUSTRIES]
     outflow = sorted([x for x in industries if (x['shareChangePp'] or 0) < 0], key=lambda x: (x['shareChangePp'] or 0))[:TOP_INDUSTRIES]
     # 날씨 점수용 종합 (-1/0/1): 4분면 점수 + 유동성 점수를 합쳐 -1~1로 자른다
@@ -180,7 +217,8 @@ def analyze(universe, bench=None, asof=None):
                    'note': '오른 종목들의 거래대금 ÷ 내린 종목들의 거래대금. 1보다 크면 돈이 들어온 날, 작으면 나간 날이에요.'},
         'sellingClimax': climax,
         'industries': {'inflow': inflow, 'outflow': outflow,
-                       'note': '최근 5거래일 거래대금 비중이 그 전 20거래일보다 얼마나 늘었는지(%p). 비중이 늘면서 값도 오르는 업종이 돈이 몰리는 선도업종 후보예요.'},
+                       'all': sorted(industries, key=lambda x: -(x['sharePct'] or 0)),
+                       'note': '최근 5거래일 거래대금 비중이 그 전 20거래일보다 얼마나 늘었는지(%p). 20일(최근 20일 vs 그 전 40일) 비중과 20일 가격까지 같은 방향일 때만 "돈 몰림·돈 빠짐"이라고 불러요.'},
         'series': [{'date': d['date'], 'value': d['value'], 'avg20': avg20[i], 'avg50': avg50[i],
                     'upDown': _r(ud_series[i - (n - WINDOW)], 2) if i >= n - WINDOW else None,
                     'up': closes[i] is not None and closes[i - 1] is not None and closes[i] >= closes[i - 1] if closes[i] is not None else (d['medianChg'] or 0) >= 0}

@@ -1038,3 +1038,6 @@
 :root[data-theme="light"] svg [stroke="#9aacc3"] { stroke: #6b7c92; }
 :root[data-theme="light"] i[style*="#ecf3fc"], :root[data-theme="light"] i[style*="#eaf0f8"] { background: #1b2635 !important; }
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
+:root[data-theme="light"] .ld-ext { border: 1px solid #a8bbd1; background: #e6edf7; color: #0e2955; }
+:root[data-theme="light"] .ld-ext:hover { background: #dce6f2; border-color: #7692b1; }
+:root[data-theme="light"] .ld-names .ld-stock-wrap { border-color: #a7bad2; background: #e4ecf6; }
