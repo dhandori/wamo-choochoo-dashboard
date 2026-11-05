@@ -305,9 +305,25 @@ with sync_playwright() as p:
                 if lead.get('status')=='OK':
                     go_tab(page,'leaders')
                     expect(page.locator('.ld-kpi')).to_have_count(4)
-                    expect(page.locator('.ld-nav button')).to_have_count(5)
-                    if (lead.get('industries') or {}).get('items'):
-                        expect(page.locator('.ld-ind-table .ld-tr:not(.ld-thead)')).to_have_count(min(10,len(lead['industries']['items'])))
+                    expect(page.locator('.ld-nav button')).to_have_count(6)
+                    # 2026-11-05 정리: 업종 보기(미국은 큰 업종이 기본) · TOP 5 카드 · 줄을 누르면 상세(구성 종목·업종 흐름).
+                    view=lead.get('industryGroups') if market=='US' and (lead.get('industryGroups') or {}).get('status')=='OK' else lead.get('industries')
+                    view=view or {}
+                    if view.get('items'):
+                        expect(page.locator('.ld-top')).to_have_count(min(5,len(view['items'])))
+                        expect(page.locator('.ld-ind-table .ld-tr.ld-click')).to_have_count(min(10,len(view['items'])))
+                        first=view['items'][0]
+                        if first.get('boards'):
+                            expect(page.locator('.ld-ind-table .ld-ind-sub').first).to_contain_text(next(iter(first['boards'])))
+                        page.locator('.ld-ind-table .ld-tr.ld-click').first.click()
+                        expect(page.locator('.ld-ind-table .ld-detail')).to_have_count(1)
+                        det=(view.get('details') or {}).get(first['name']) or {}
+                        if det.get('members'):
+                            expect(page.locator('.ld-ind-table .ld-detail .ld-mem-table .ld-tr:not(.ld-thead)')).to_have_count(min(12,len(det['members'])))
+                        page.locator('.ld-ind-table .ld-tr.ld-click').first.click()
+                        expect(page.locator('.ld-ind-table .ld-detail')).to_have_count(0)
+                    if (lead.get('leaders') or {}).get('items'):
+                        assert page.locator('#ld-sec-leaders .ld-ext').count()>0
                     # 2026-10-30 시장 구분: 선도주 목록 시장 필터(KOSPI·KOSDAQ / NASDAQ·NYSE). 고르면 그 시장 배지만 남는다.
                     by_board=(lead.get('leaders') or {}).get('byBoard') or {}
                     pick=next((b for b in ('KOSDAQ','KOSPI','NASDAQ','NYSE') if by_board.get(b)),None)
@@ -316,9 +332,6 @@ with sync_playwright() as p:
                         badges=page.locator('#ld-sec-leaders .ld-stock-table .board-badge').all_inner_texts()
                         assert badges and all(b.startswith(pick) for b in badges),(pick,badges[:5])
                         page.locator('.ld-board-filters button',has_text='전체').click()
-                    for item in ((lead.get('industries') or {}).get('items') or [])[:1]:
-                        if item.get('boards'):
-                            expect(page.locator('.ld-ind-table .ld-reps-inline').first).to_contain_text(next(iter(item['boards'])))
                     if page.locator('.ld-dot').count():
                         page.locator('.ld-nav button[data-sec=map]').click()
                         page.locator('.ld-dot').last.click()

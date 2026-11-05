@@ -160,5 +160,31 @@ class LeaderLinkTests(unittest.TestCase):
         self.assertIsNone(out['leaders']['items'][0]['tradingviewUrl'])
 
 
+class IndustryViewTests(unittest.TestCase):
+    def test_big_groups_details_and_korean_names(self):
+        import wamo_industry_names as N
+        self.assertEqual(N.name_of('US', 'Semiconductors'), '반도체')
+        self.assertEqual(N.group_of('US', 'Biotechnology: Pharmaceutical Preparations'), '바이오·헬스케어')
+        self.assertEqual(N.group_of('KR', '메모리'), '반도체')
+        self.assertEqual(N.group_of('US', 'Some New Semiconductor Thing'), '반도체')   # 표에 없으면 낱말로
+        self.assertEqual(N.group_of('US', 'Unheard Of'), '기타')
+        u = universe()
+        for s in u:
+            s['industry'] = {'Strong': 'Semiconductors', 'Weak': 'Major Banks', 'Flat': 'Life Insurance'}[s['industry']]
+        u += [stock(f'R{k}', 'Railroads', flat(90 + k)) for k in range(3)]   # 큰 업종이 3개는 있어야 순위를 낸다
+        out = L.analyze(u, BENCH, 'US')
+        ind, big = out['industries'], out['industryGroups']
+        self.assertEqual(ind['items'][0]['label'], '반도체')
+        self.assertEqual(len(ind['items'][0]['rsHistory']), L.POLICY['industryLookback'] + 1)
+        det = ind['details'][ind['items'][0]['name']]
+        self.assertEqual(det['memberCount'], 4)
+        self.assertEqual(len(det['rsLine']['values']), L.RS_LINE_DAYS)
+        names = {x['name'] for x in big['items']}
+        self.assertEqual(names, {'반도체', '금융', '운송'})   # 은행·생명보험 8종목이 '금융' 하나로
+        fin = next(x for x in big['items'] if x['name'] == '금융')
+        self.assertEqual(fin['members'], 8)
+        self.assertEqual(dict(fin['subIndustries']), {'대형 은행': 4, '생명보험': 4})
+
+
 if __name__ == '__main__':
     unittest.main()

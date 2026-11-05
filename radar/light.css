@@ -779,6 +779,34 @@
 }
 :root[data-theme="light"] .ld-filter-label { color: #2b3745; }
 :root[data-theme="light"] .ld-board-split { color: #273546; }
+:root[data-theme="light"] .ld-ext { color: #05295e; border: 1px solid #a7bad2; }
+:root[data-theme="light"] .ld-ext:hover { background: #dce6f2; border-color: #7692b1; }
+:root[data-theme="light"] .ld-names .ld-stock-wrap { border: 1px solid #a7bad2; background: #e4ecf6; }
+:root[data-theme="light"] .ld-spark-base { stroke: #899cb3; }
+:root[data-theme="light"] .ld-top { border: 1px solid #a7bad2; background: #e4ecf6; }
+:root[data-theme="light"] .ld-top:hover, :root[data-theme="light"] .ld-top:focus-visible { border-color: #7692b1; background: #e0e8f5; }
+:root[data-theme="light"] .ld-top.leading { border-color: #a2d8c9; box-shadow: inset 0 3px 0 #257860; }
+:root[data-theme="light"] .ld-top-head strong { color: #050b11; }
+:root[data-theme="light"] .ld-top-rs b { color: #050b11; }
+:root[data-theme="light"] .ld-top-rs small { color: #2b3745; }
+:root[data-theme="light"] .ld-top-stats { color: #2b3745; }
+:root[data-theme="light"] .ld-top-reps { border-top: 1px solid #a4bad6; }
+:root[data-theme="light"] .ld-click:hover { background: #e0e8f5; }
+:root[data-theme="light"] .ld-click:focus-visible { outline: 2px solid #7692b1; }
+:root[data-theme="light"] .ld-tr.open { background: #e0e8f5; }
+:root[data-theme="light"] .ld-caret { color: #2c3745; }
+:root[data-theme="light"] .ld-ind-sub { color: #2c3745; }
+:root[data-theme="light"] .ld-detail { border-top: 1px solid #a4bad6; background: #ecf2f9; }
+:root[data-theme="light"] .ld-cond { border: 1px solid #a3bbd6; color: #2b3745; }
+:root[data-theme="light"] .ld-cond b { color: #1c2938; }
+:root[data-theme="light"] .ld-cond.ok { border-color: #a2d8c9; background: #e8f7f7; }
+:root[data-theme="light"] .ld-cond.ok b, :root[data-theme="light"] .ld-cond.ok span { color: #195743; }
+:root[data-theme="light"] .ld-sub { color: #2b3745; }
+:root[data-theme="light"] .ld-rsline-foot { color: #2c3745; }
+:root[data-theme="light"] .ld-group-row { color: #5a4516; background: #eaf0f8; border-top: 1px solid #a8bbd2; }
+:root[data-theme="light"] .ld-nav button.now { border-color: #9d7927; color: #503d0f; background: #f3f0e8; }
+:root[data-theme="light"] .ld-card.ld-now { border-color: #baa782; box-shadow: 0 0 0 1px #baa782; }
+:root[data-theme="light"] .ld-now-badge { background: #edebe5; border: 1px solid #baa782; color: #5a4516; }
 
 /* ===== leaders.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ld-intro p { color: #b7c5d6; }
@@ -823,6 +851,14 @@
 :root:not([data-theme="light"]) .ld-table .ld-td[data-label]:not(.c-name)::before { color: #b9c6d5; }
 }
 :root:not([data-theme="light"]) .ld-filter-label { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-top-rs small { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-top-stats { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-caret { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-ind-sub { color: #b9c6d5; }
+:root:not([data-theme="light"]) .ld-cond { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-cond.ok b, :root:not([data-theme="light"]) .ld-cond.ok span { color: #83e2c2; }
+:root:not([data-theme="light"]) .ld-sub { color: #b8c6d6; }
+:root:not([data-theme="light"]) .ld-rsline-foot { color: #b9c6d5; }
 
 /* ===== leaders.css (작은 글씨 키우기) ===== */
 :root .ld-meter small { font-size: 12px; }
@@ -844,6 +880,10 @@
 @media(max-width:760px) {
 :root .ld-table .ld-td[data-label]:not(.c-name)::before { font-size: 12px; }
 }
+:root .ld-ext { font-size: 12px; }
+:root .ld-top-rs small { font-size: 12px; }
+:root .ld-caret { font-size: 12px; }
+:root .ld-rsline-foot { font-size: 12px; }
 
 /* ===== schedule.css (밝은 테마) ===== */
 :root[data-theme="light"] .schedule-wrap[open] { border: 1px solid #a8bad1; background: #e8eff8; }
@@ -1038,6 +1078,3 @@
 :root[data-theme="light"] svg [stroke="#9aacc3"] { stroke: #6b7c92; }
 :root[data-theme="light"] i[style*="#ecf3fc"], :root[data-theme="light"] i[style*="#eaf0f8"] { background: #1b2635 !important; }
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
-:root[data-theme="light"] .ld-ext { border: 1px solid #a8bbd1; background: #e6edf7; color: #0e2955; }
-:root[data-theme="light"] .ld-ext:hover { background: #dce6f2; border-color: #7692b1; }
-:root[data-theme="light"] .ld-names .ld-stock-wrap { border-color: #a7bad2; background: #e4ecf6; }
