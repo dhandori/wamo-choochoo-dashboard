@@ -1,10 +1,10 @@
 {
  "JP": {
-  "attemptedAt": "2026-11-06T15:23:17.712216+00:00",
+  "attemptedAt": "2026-11-06T15:53:41.786760+00:00",
   "expectedSession": "2026-11-06",
-  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/42242470845",
+  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/42247175009",
   "status": "WARNING",
-  "lastSuccessAt": "2026-11-06T15:23:17.712216+00:00",
+  "lastSuccessAt": "2026-11-06T15:53:41.786760+00:00",
   "asOf": "2026-11-06",
   "count": 490,
   "universe": 491,
@@ -12,11 +12,11 @@
   "error": null
  },
  "TW": {
-  "attemptedAt": "2026-11-06T15:23:17.712216+00:00",
+  "attemptedAt": "2026-11-06T15:53:41.786760+00:00",
   "expectedSession": "2026-11-06",
-  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/42242470845",
-  "status": "WARNING",
-  "lastSuccessAt": "2026-11-06T15:23:17.712216+00:00",
+  "runUrl": "https://github.com/dhandori/wamo-choochoo-dashboard/actions/runs/42247175009",
+  "status": "PASS",
+  "lastSuccessAt": "2026-11-06T15:53:41.786760+00:00",
   "asOf": "2026-11-06",
   "count": 308,
   "universe": 309,
