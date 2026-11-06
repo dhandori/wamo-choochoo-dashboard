@@ -116,7 +116,8 @@ def us_excluded(symbol, name):
     symbol, upper = str(symbol or '').upper().strip(), f" {str(name or '').upper().strip()} "
     if not symbol or len(symbol) > 8 or any(c in symbol for c in '^=+/') or symbol in US_EXCLUDE:
         return True
-    words = (' ETF', ' ETN', 'EXCHANGE TRADED', 'INDEX FUND', 'WARRANT', 'RIGHTS', ' ACQUISITION', 'SPAC', 'UNITS',
+    # 낱말 단위로 본다: 'SPAC' 이 'Extra SPACE Storage' 를 빼던 일(2026-11-06 노션 비교에서 EXR 누락)이 있었다.
+    words = (' ETF', ' ETN', 'EXCHANGE TRADED', 'INDEX FUND', 'WARRANT', 'RIGHTS', ' ACQUISITION', ' SPAC ', 'UNITS',
              ' UNIT ', 'PREFERRED', 'DEPOSITARY SHARE', 'DEPOSITARY RECEIPT', ' ADR ', ' ADS ', 'TEST STOCK', ' NOTES ')
     if any(w in upper for w in words):
         return True
@@ -129,23 +130,30 @@ def universe_us(fetch=get_json):
     rows = ((payload or {}).get('data') or {}).get('rows') or []
     if len(rows) < 1000:
         raise RuntimeError(f'나스닥 종목 목록이 비정상적으로 적습니다: {len(rows)}')
-    keep = {}
+    items, caps = [], {}
     for r in rows:
         # 나스닥 목록은 주식 종류를 'BRK/B' 처럼 적는다. 제외하지 말고 'BRK.B' 로 읽는다.
         symbol, name = str(r.get('symbol') or '').strip().upper().replace('/', '.'), str(r.get('name') or '').strip()
         try:
-            cap = float(str(r.get('marketCap') or '0').replace(',', ''))
+            cap = float(str(r.get('marketCap') or '0').replace(',', '') or 0)
         except ValueError:
+            cap = 0.0
+        if us_excluded(symbol, name):
             continue
-        if cap < US_MIN_CAP or us_excluded(symbol, name):
-            continue
-        item = {'code': symbol, 'yahoo': symbol.replace('.', '-'), 'name': name, 'cap': cap,
-                'sector': str(r.get('sector') or '').strip(), 'industry': str(r.get('industry') or '').strip()}
         key = company_key(name) or symbol
-        old = keep.get(key)
-        if old is None or (len(symbol), symbol) < (len(old['code']), old['code']):
-            keep[key] = item
-    return list(keep.values())
+        caps[key] = max(caps.get(key, 0.0), cap)
+        items.append({'code': symbol, 'yahoo': symbol.replace('.', '-'), 'name': name, 'cap': cap, 'key': key,
+                      'sector': str(r.get('sector') or '').strip(), 'industry': str(r.get('industry') or '').strip()})
+    # 노션 기록(트레이딩뷰)은 같은 회사의 주식 종류(LLYVA·LLYVK, FWONA·FWONK, BF.A)를 각각 센다(2026-11-06 비교).
+    # 그래서 종류마다 따로 두고, 시총이 비어 있는 종류(BF.A 등)는 같은 회사 다른 종류의 시총으로 기준을 본다.
+    out = []
+    for it in items:
+        key = it.pop('key')
+        cap = it['cap'] or caps.get(key, 0.0)
+        if cap >= US_MIN_CAP:
+            it['cap'] = cap
+            out.append(it)
+    return out
 
 
 # ------------------------------------------------------------------ prices
@@ -312,6 +320,7 @@ def run(market, day=None, out=OUT, fetch=get_json, now=None, classifier=None):
     if result['failed'] > len(universe) * 0.05:
         raise RuntimeError(f"{market} 가격 조회 실패가 너무 많습니다: {result['failed']}/{len(universe)}")
     result['generatedAt'] = datetime.now(timezone.utc).isoformat()
+    result['final'] = settled(market, day)
     result['basis'] = ('KOSPI·KOSDAQ 보통주 시총 1,000억 원 이상' if market == 'KR'
                        else 'NYSE·NASDAQ·AMEX 보통주 시총 20억 달러 이상') + ' · 장중 고가가 1년 최고가에 닿음'
     result['shadow'] = notion_shadow(market, result['asOf'], result)
@@ -334,6 +343,27 @@ def run(market, day=None, out=OUT, fetch=get_json, now=None, classifier=None):
     tmp.write_text(json.dumps(doc, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
     tmp.replace(out)
     return result
+
+
+SETTLE_MIN = 90   # 마감 뒤 이만큼 지나면 야후 일봉(고가)이 굳는다. 그 전에 계산했으면 한 번 다시 계산한다.
+
+
+def settled(market, day, now=None):
+    """그날 마감 뒤 SETTLE_MIN 분이 지났는가."""
+    local = local_now(market, now)
+    close = local.replace(year=day.year, month=day.month, day=day.day, hour=15 if market == 'KR' else 16,
+                          minute=30 if market == 'KR' else 0, second=0, microsecond=0)
+    return local >= close + timedelta(minutes=SETTLE_MIN)
+
+
+def needs_recheck(market, day, out=OUT, now=None):
+    """이미 계산한 날인데 마감 직후 계산이라 아직 다시 확인하지 않았고, 지금은 굳은 뒤인가.
+    (2026-11-05 미국: 16:15 계산에서 HCI·ELF 고가가 덜 반영돼 노션보다 빠졌다.)"""
+    try:
+        cur = json.loads(Path(out).read_text(encoding='utf-8'))['markets'][market]
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+    return cur.get('asOf') == day.isoformat() and cur.get('final') is False and settled(market, day, now)
 
 
 def already_done(market, day, out=OUT):
@@ -374,7 +404,7 @@ def main(argv=None):
         if not a.day:
             wait_until_ready(market)
         day = date.fromisoformat(a.day) if a.day else target_day(market)
-        if not a.force and already_done(market, day, a.out):
+        if not a.force and already_done(market, day, a.out) and not needs_recheck(market, day, a.out):
             # 노션 기록(한국 16:05·미국 08:05 KST)이 우리보다 늦게 끝나므로, 비교 칸만 나중에 채운다.
             if refresh_shadow(market, day, a.out):
                 print(f'{market} {day}: 이미 계산함 · 노션 비교만 채움', flush=True)

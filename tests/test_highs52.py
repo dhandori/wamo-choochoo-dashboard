@@ -84,16 +84,37 @@ class UniverseTests(unittest.TestCase):
         self.assertEqual([x['code'] for x in got], ['005930', '000660'])
         self.assertEqual(got[0]['yahoo'], '005930.KS')
 
-    def test_us_dedupes_share_classes_and_reads_slash_tickers(self):
+    def test_us_keeps_each_share_class_like_notion_and_reads_slash_tickers(self):
+        # 2026-11-06: 노션(트레이딩뷰)은 LLYVA·LLYVK, FWONA·FWONK, BF.A 를 각각 센다. 시총이 빈 종류는 같은 회사 시총으로 본다.
         rows = [{'symbol': s, 'name': n, 'marketCap': c} for s, n, c in (
             ('GOOGL', 'Alphabet Inc. Class A Common Stock', '3e12'), ('GOOG', 'Alphabet Inc. Class C Capital Stock', '3e12'),
             ('BRK/B', 'Berkshire Hathaway Inc. Class B', '1e12'), ('BRK/A', 'Berkshire Hathaway Inc. Class A', '1e12'),
+            ('BF/A', 'Brown Forman Corporation Class A', ''), ('BF/B', 'Brown Forman Corporation Class B', '1.4e10'),
+            ('EXR', 'Extra Space Storage Inc Common Stock', '3e10'), ('SPAX', 'Some SPAC Corp', '3e9'),
             ('SPY', 'SPDR S&P 500 ETF Trust', '6e11'), ('ABC.WS', 'ABC Corp Warrant', '3e9'), ('TINY', 'Tiny Co', '1e9'))]
         rows += [{'symbol': f'X{i}', 'name': f'Filler {i}', 'marketCap': '1'} for i in range(1000)]
         got = h.universe_us(fetch=lambda url, **k: {'data': {'rows': rows}})
         codes = sorted(x['code'] for x in got)
-        self.assertEqual(codes, ['BRK.B', 'GOOG'])
+        self.assertEqual(codes, ['BF.A', 'BF.B', 'BRK.B', 'EXR', 'GOOG', 'GOOGL'])
         self.assertEqual(next(x for x in got if x['code'] == 'BRK.B')['yahoo'], 'BRK-B')
+        self.assertEqual(next(x for x in got if x['code'] == 'BF.A')['cap'], 1.4e10)
+        self.assertTrue(all('key' not in x for x in got))
+
+    def test_early_result_is_rechecked_once_after_close_settles(self):
+        import tempfile, json as J
+        from datetime import date, datetime, timezone
+        day = date(2026, 11, 5)
+        with tempfile.TemporaryDirectory() as tmp:
+            out = f'{tmp}/h.json'
+            open(out, 'w').write(J.dumps({'markets': {'US': {'asOf': '2026-11-05', 'final': False}}}))
+            early = datetime(2026, 11, 5, 21, 30, tzinfo=timezone.utc)     # 뉴욕 16:30
+            late = datetime(2026, 11, 5, 23, 30, tzinfo=timezone.utc)      # 뉴욕 18:30
+            self.assertFalse(h.needs_recheck('US', day, out, early))
+            self.assertTrue(h.needs_recheck('US', day, out, late))
+            open(out, 'w').write(J.dumps({'markets': {'US': {'asOf': '2026-11-05', 'final': True}}}))
+            self.assertFalse(h.needs_recheck('US', day, out, late))
+            open(out, 'w').write(J.dumps({'markets': {'US': {'asOf': '2026-11-05'}}}))   # 옛 결과(칸 없음)는 다시 안 함
+            self.assertFalse(h.needs_recheck('US', day, out, late))
 
 
 class TimingTests(unittest.TestCase):
