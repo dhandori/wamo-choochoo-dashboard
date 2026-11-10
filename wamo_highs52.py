@@ -319,6 +319,10 @@ def run(market, day=None, out=OUT, fetch=get_json, now=None, classifier=None):
     result = scan(market, day, universe, fetch)
     if result['failed'] > len(universe) * 0.05:
         raise RuntimeError(f"{market} 가격 조회 실패가 너무 많습니다: {result['failed']}/{len(universe)}")
+    # 그날 일봉이 없는 종목이 많으면 야후가 잠깐 마지막 봉을 빼고 준 것이다(2026-11-10 02:35 UTC 다시 확인 때
+    # 1,857/1,879 종목이 11/9 봉 없음 → 신고가 70 → 1 로 덮어씀). 결과를 쓰지 않고 지난 결과를 둔다.
+    if result['noBar'] > len(universe) * 0.10:
+        raise RuntimeError(f"{market} {day} 일봉이 없는 종목이 너무 많습니다: {result['noBar']}/{len(universe)}")
     result['generatedAt'] = datetime.now(timezone.utc).isoformat()
     result['final'] = settled(market, day)
     result['basis'] = ('KOSPI·KOSDAQ 보통주 시총 1,000억 원 이상' if market == 'KR'
@@ -411,7 +415,15 @@ def main(argv=None):
             else:
                 print(f'{market} {day}: 이미 계산함 · 건너뜀', flush=True)
             continue
-        r = run(market, day, a.out)
+        recheck = not a.force and already_done(market, day, a.out)
+        try:
+            r = run(market, day, a.out)
+        except RuntimeError as exc:
+            if not recheck:
+                raise
+            # 다시 확인이 실패하면 처음 계산을 그대로 둔다(덮어쓰지 않음).
+            print(f'{market} {day}: 다시 확인 실패 · 처음 계산 유지 ({exc})', flush=True)
+            continue
         sh = r.get('shadow') or {}
         print(f"{market} {r['asOf']}: 신고가 {r['highCount']} · 신저가 {r['lowCount']} · 대상 {r['universe']} · "
               f"조회 실패 {r['failed']} · 노션 {sh.get('notion')} (겹침 {sh.get('both')})", flush=True)
