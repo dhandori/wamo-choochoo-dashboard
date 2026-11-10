@@ -117,6 +117,24 @@ class UniverseTests(unittest.TestCase):
             self.assertFalse(h.needs_recheck('US', day, out, late))
 
 
+class GuardTests(unittest.TestCase):
+    def test_missing_day_bars_do_not_overwrite(self):
+        import tempfile, json as J
+        from datetime import date
+        day = date(2026, 11, 9)
+        uni = [{'code': f'S{i}', 'yahoo': f'S{i}', 'name': f'S{i}', 'cap': 3e9} for i in range(20)]
+        orig_u, orig_s = h.universe_us, h.scan
+        try:
+            h.universe_us = lambda fetch=None: uni
+            h.scan = lambda m, d, u, fetch=None: {'asOf': d.isoformat(), 'universe': len(u), 'failed': 0, 'noBar': 19,
+                                                  'highs': [], 'highCount': 0, 'lowCount': 0}
+            with tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaises(RuntimeError):
+                    h.run('US', day, f'{tmp}/h.json', fetch=lambda *a, **k: {})
+        finally:
+            h.universe_us, h.scan = orig_u, orig_s
+
+
 class TimingTests(unittest.TestCase):
     """마감 뒤 최대한 빨리 돌되, 종가가 자리 잡기 전에는 그날을 쓰지 않는다."""
 
