@@ -40,6 +40,24 @@ def chart(rows):
         'volume': [r[4] for r in rows]}]}}]}}
 
 
+class UniverseCacheTests(unittest.TestCase):
+    def test_blocked_list_falls_back_to_saved_copy(self):
+        import tempfile, urllib.error
+        rows = [{'symbol': f'S{i}', 'name': f'Co {i} Common Stock', 'marketCap': '3000000000', 'lastsale': '$10'}
+                for i in range(1200)]
+        with tempfile.TemporaryDirectory() as d:
+            cache = Path(d) / 'u.json'
+            first = h.universe_us(fetch=lambda url, **k: {'data': {'rows': rows}}, cache=cache)
+            self.assertTrue(cache.exists())
+
+            def blocked(url, **k):
+                raise urllib.error.HTTPError(url, 403, 'Forbidden', None, None)
+            self.assertEqual(h.universe_us(fetch=blocked, cache=cache), first)
+            cache.unlink()
+            with self.assertRaises(urllib.error.HTTPError):
+                h.universe_us(fetch=blocked, cache=cache)
+
+
 class DayCapTests(unittest.TestCase):
     def test_cap_is_rescaled_to_the_day_close(self):
         # 목록 가격 10 → 그날 종가 11: 시총 19억 → 20.9억, 기준(20억)을 넘는다(11/6 ARHS 같은 경계 종목)

@@ -129,7 +129,37 @@ def us_excluded(symbol, name):
     return bool(re.search(r'(?:[-./]W|WS|[-./]U)$', symbol))
 
 
-def universe_us(fetch=get_json):
+US_CACHE = ROOT / 'wamo_highs52_universe_US.json'
+US_CACHE_DAYS = 7
+
+
+def universe_us(fetch=get_json, cache=None):
+    """나스닥 목록을 받는다. 받으면 data 브랜치에 사본을 두고, 막히면(2026-11-10 깃허브 서버에서 403) 그 사본을 쓴다.
+    사본의 시총은 그날 종가로 다시 계산되므로(day_cap) 며칠 지난 목록이어도 기준 판정은 맞다."""
+    if cache is None and fetch is not get_json:
+        return _universe_us_live(fetch)   # 시험용 가짜 자료는 사본을 쓰지도 읽지도 않는다
+    cache = Path(cache or US_CACHE)
+    try:
+        out = _universe_us_live(fetch)
+    except (urllib.error.HTTPError, RuntimeError, OSError, ValueError) as exc:
+        try:
+            saved = json.loads(cache.read_text(encoding='utf-8'))
+            age = datetime.now(timezone.utc) - datetime.fromisoformat(saved['savedAt'])
+        except (OSError, ValueError, KeyError, TypeError):
+            raise exc
+        if age > timedelta(days=US_CACHE_DAYS):
+            raise
+        print(f'나스닥 목록을 받지 못해({type(exc).__name__}) {saved["savedAt"][:16]} 사본 {len(saved["items"])}종목을 씁니다', flush=True)
+        return saved['items']
+    try:
+        cache.write_text(json.dumps({'savedAt': datetime.now(timezone.utc).isoformat(), 'items': out},
+                                    ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
+    except OSError:
+        pass
+    return out
+
+
+def _universe_us_live(fetch=get_json):
     payload = fetch('https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=10000&offset=0&download=true',
                     headers={'Referer': 'https://www.nasdaq.com/market-activity/stocks/screener'})
     rows = ((payload or {}).get('data') or {}).get('rows') or []
