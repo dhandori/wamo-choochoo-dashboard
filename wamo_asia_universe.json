@@ -1,6 +1,6 @@
 {
  "JP": {
-  "builtAt": "2026-11-03",
+  "builtAt": "2026-11-10",
   "items": [
    {
     "code": "1332",
@@ -50,7 +50,7 @@
     "industry": "광업",
     "shares": 1259136067.0,
     "exchange": "TSE",
-    "size": "TOPIX Mid400"
+    "size": "TOPIX Large70"
    },
    {
     "code": "1719",
@@ -523,6 +523,16 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "2702",
+    "ticker": "2702.T",
+    "name": "일본 맥도날드 홀딩스",
+    "nameLocal": "日本マクドナルドホールディングス",
+    "industry": "소매",
+    "shares": 132960000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "2768",
     "ticker": "2768.T",
     "name": "소지쯔주식회사",
@@ -600,7 +610,7 @@
     "industry": "전기기기",
     "shares": 1646307702.0,
     "exchange": "TSE",
-    "size": "TOPIX Mid400"
+    "size": "TOPIX Large70"
    },
    {
     "code": "2871",
@@ -743,6 +753,16 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "3110",
+    "ticker": "3110.T",
+    "name": "닛토방적",
+    "nameLocal": "日東紡績",
+    "industry": "유리·요업",
+    "shares": 188615060.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "3116",
     "ticker": "3116.T",
     "name": "토요타 방직",
@@ -840,7 +860,7 @@
     "industry": "소매",
     "shares": 2320258349.0,
     "exchange": "TSE",
-    "size": "TOPIX Core30"
+    "size": "TOPIX Large70"
    },
    {
     "code": "3391",
@@ -1050,7 +1070,7 @@
     "industry": "화학",
     "shares": 191822299.0,
     "exchange": "TSE",
-    "size": "TOPIX Mid400"
+    "size": "TOPIX Large70"
    },
    {
     "code": "4005",
@@ -1120,7 +1140,7 @@
     "industry": "전기기기",
     "shares": 567387652.0,
     "exchange": "TSE",
-    "size": "TOPIX Mid400"
+    "size": "TOPIX Large70"
    },
    {
     "code": "4063",
@@ -1500,7 +1520,7 @@
     "industry": "의약품",
     "shares": 1862893329.0,
     "exchange": "TSE",
-    "size": "TOPIX Core30"
+    "size": "TOPIX Large70"
    },
    {
     "code": "4578",
@@ -1511,16 +1531,6 @@
     "shares": 542988917.0,
     "exchange": "TSE",
     "size": "TOPIX Large70"
-   },
-   {
-    "code": "4587",
-    "ticker": "4587.T",
-    "name": "펩티드림",
-    "nameLocal": "ペプチドリーム",
-    "industry": "의약품",
-    "shares": 130010400.0,
-    "exchange": "TSE",
-    "size": "TOPIX Mid400"
    },
    {
     "code": "4612",
@@ -1640,7 +1650,7 @@
     "industry": "정보·통신",
     "shares": 6888742311.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
+    "size": "TOPIX Mid400"
    },
    {
     "code": "4704",
@@ -1810,7 +1820,7 @@
     "industry": "비철금속",
     "shares": 949183210.0,
     "exchange": "TSE",
-    "size": "TOPIX Mid400"
+    "size": "TOPIX Large70"
    },
    {
     "code": "5019",
@@ -2130,7 +2140,17 @@
     "industry": "비철금속",
     "shares": 1775180526.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
+    "size": "TOPIX Core30"
+   },
+   {
+    "code": "5805",
+    "ticker": "5805.T",
+    "name": "SWCC",
+    "nameLocal": "ＳＷＣＣ",
+    "industry": "비철금속",
+    "shares": 154134305.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
    },
    {
     "code": "5830",
@@ -2383,6 +2403,16 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "6324",
+    "ticker": "6324.T",
+    "name": "하모닉 드라이브 시스템스",
+    "nameLocal": "ハーモニック・ドライブ・システムズ",
+    "industry": "기계",
+    "shares": 96315400.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "6326",
     "ticker": "6326.T",
     "name": "구보다",
@@ -2410,7 +2440,7 @@
     "industry": "기계",
     "shares": 293113973.0,
     "exchange": "TSE",
-    "size": "TOPIX Core30"
+    "size": "TOPIX Large70"
    },
    {
     "code": "6368",
@@ -2443,12 +2473,42 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "6407",
+    "ticker": "6407.T",
+    "name": "CKD",
+    "nameLocal": "ＣＫＤ",
+    "industry": "기계",
+    "shares": 67909449.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "6417",
     "ticker": "6417.T",
     "name": "산쿄",
     "nameLocal": "ＳＡＮＫＹＯ",
     "industry": "기계",
     "shares": 230000000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "641A",
+    "ticker": "641A.T",
+    "name": "NOK 그룹",
+    "nameLocal": "ＮＯＫ　Ｇｒｏｕｐ",
+    "industry": "수송기기(자동차·부품)",
+    "shares": 188604065.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "642A",
+    "ticker": "642A.T",
+    "name": "큐덴 홀딩스",
+    "nameLocal": "キューデンホールディングス",
+    "industry": "전기·가스",
+    "shares": 473874220.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
    },
@@ -2537,7 +2597,7 @@
     "ticker": "6473.T",
     "name": "제이텍트",
     "nameLocal": "ジェイテクト",
-    "industry": "기계",
+    "industry": "수송기기(자동차·부품)",
     "shares": 318608107.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
@@ -2603,6 +2663,16 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "6508",
+    "ticker": "6508.T",
+    "name": "메이덴샤",
+    "nameLocal": "明電舎",
+    "industry": "전기기기",
+    "shares": 45527540.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "6525",
     "ticker": "6525.T",
     "name": "코쿠사이 엘렉트릭",
@@ -2659,16 +2729,6 @@
     "nameLocal": "マブチモーター",
     "industry": "전기기기",
     "shares": 260649848.0,
-    "exchange": "TSE",
-    "size": "TOPIX Mid400"
-   },
-   {
-    "code": "6632",
-    "ticker": "6632.T",
-    "name": "JVC켄우드",
-    "nameLocal": "ＪＶＣケンウッド",
-    "industry": "전기기기",
-    "shares": 161564801.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
    },
@@ -2760,17 +2820,7 @@
     "industry": "전기기기",
     "shares": 2454737697.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
-   },
-   {
-    "code": "6753",
-    "ticker": "6753.T",
-    "name": "샤프",
-    "nameLocal": "シャープ",
-    "industry": "전기기기",
-    "shares": 650414638.0,
-    "exchange": "TSE",
-    "size": "TOPIX Mid400"
+    "size": "TOPIX Core30"
    },
    {
     "code": "6754",
@@ -2893,6 +2943,26 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "6871",
+    "ticker": "6871.T",
+    "name": "니혼 마이크로닉스",
+    "nameLocal": "日本マイクロニクス",
+    "industry": "전기기기",
+    "shares": 40025316.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "6890",
+    "ticker": "6890.T",
+    "name": "페로텍",
+    "nameLocal": "フェローテック",
+    "industry": "전기기기",
+    "shares": 54070536.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "6902",
     "ticker": "6902.T",
     "name": "덴소",
@@ -3010,7 +3080,7 @@
     "industry": "전기기기",
     "shares": 1963001843.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
+    "size": "TOPIX Core30"
    },
    {
     "code": "6988",
@@ -3060,7 +3130,7 @@
     "industry": "기계",
     "shares": 1082759678.0,
     "exchange": "TSE",
-    "size": "TOPIX Mid400"
+    "size": "TOPIX Large70"
    },
    {
     "code": "7164",
@@ -3079,6 +3149,16 @@
     "nameLocal": "めぶきフィナンシャルグループ",
     "industry": "은행",
     "shares": 947055218.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7173",
+    "ticker": "7173.T",
+    "name": "도코티와이파이낸셜그룹",
+    "nameLocal": "東京きらぼしフィナンシャルグループ",
+    "industry": "은행",
+    "shares": 289189176.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
    },
@@ -3200,7 +3280,7 @@
     "industry": "수송기기(자동차·부품)",
     "shares": 4533000000.0,
     "exchange": "TSE",
-    "size": "TOPIX Core30"
+    "size": "TOPIX Large70"
    },
    {
     "code": "7269",
@@ -3220,7 +3300,7 @@
     "industry": "수송기기(자동차·부품)",
     "shares": 717335273.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
+    "size": "TOPIX Mid400"
    },
    {
     "code": "7272",
@@ -3263,12 +3343,12 @@
     "size": "TOPIX Large70"
    },
    {
-    "code": "7313",
-    "ticker": "7313.T",
-    "name": "티에스테크",
-    "nameLocal": "テイ・エス　テック",
-    "industry": "수송기기(자동차·부품)",
-    "shares": 124000000.0,
+    "code": "7327",
+    "ticker": "7327.T",
+    "name": "다이시 호쿠에쓰 파이낸셜그룹",
+    "nameLocal": "第四北越フィナンシャルグループ",
+    "industry": "은행",
+    "shares": 275657868.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
    },
@@ -3283,6 +3363,16 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "7380",
+    "ticker": "7380.T",
+    "name": "주로쿠 파이낸셜 그룹",
+    "nameLocal": "十六フィナンシャルグループ",
+    "industry": "은행",
+    "shares": 189620670.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "7453",
     "ticker": "7453.T",
     "name": "양품계획",
@@ -3293,32 +3383,12 @@
     "size": "TOPIX Mid400"
    },
    {
-    "code": "7458",
-    "ticker": "7458.T",
-    "name": "다이이치코쇼",
-    "nameLocal": "第一興商",
-    "industry": "도매(종합상사)",
-    "shares": 103968400.0,
-    "exchange": "TSE",
-    "size": "TOPIX Mid400"
-   },
-   {
     "code": "7459",
     "ticker": "7459.T",
     "name": "메디팔 홀딩스",
     "nameLocal": "メディパルホールディングス",
     "industry": "도매(종합상사)",
     "shares": 215975042.0,
-    "exchange": "TSE",
-    "size": "TOPIX Mid400"
-   },
-   {
-    "code": "7476",
-    "ticker": "7476.T",
-    "name": "애즈원",
-    "nameLocal": "アズワン",
-    "industry": "도매(종합상사)",
-    "shares": 72412540.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
    },
@@ -3449,6 +3519,16 @@
     "nameLocal": "リコー",
     "industry": "전기기기",
     "shares": 569733178.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "7762",
+    "ticker": "7762.T",
+    "name": "시티즌 시계",
+    "nameLocal": "シチズン時計",
+    "industry": "정밀기기",
+    "shares": 246000000.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
    },
@@ -3633,6 +3713,16 @@
     "size": "TOPIX Core30"
    },
    {
+    "code": "8050",
+    "ticker": "8050.T",
+    "name": "세이코 그룹",
+    "nameLocal": "セイコーグループ",
+    "industry": "정밀기기",
+    "shares": 82808522.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "8053",
     "ticker": "8053.T",
     "name": "스미토모상사",
@@ -3640,7 +3730,7 @@
     "industry": "도매(종합상사)",
     "shares": 4780604217.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
+    "size": "TOPIX Core30"
    },
    {
     "code": "8056",
@@ -3710,7 +3800,7 @@
     "industry": "화학",
     "shares": 1862502957.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
+    "size": "TOPIX Mid400"
    },
    {
     "code": "8129",
@@ -3923,12 +4013,42 @@
     "size": "TOPIX Mid400"
    },
    {
+    "code": "8366",
+    "ticker": "8366.T",
+    "name": "시가 은행",
+    "nameLocal": "滋賀銀行",
+    "industry": "은행",
+    "shares": 240450405.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8368",
+    "ticker": "8368.T",
+    "name": "햐쿠고 은행",
+    "nameLocal": "百五銀行",
+    "industry": "은행",
+    "shares": 254119000.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
     "code": "8377",
     "ticker": "8377.T",
     "name": "호쿠호쿠 파이낸셜 그룹",
     "nameLocal": "ほくほくフィナンシャルグループ",
     "industry": "은행",
     "shares": 1197056140.0,
+    "exchange": "TSE",
+    "size": "TOPIX Mid400"
+   },
+   {
+    "code": "8381",
+    "ticker": "8381.T",
+    "name": "산인 고도 은행",
+    "nameLocal": "山陰合同銀行",
+    "industry": "은행",
+    "shares": 156977472.0,
     "exchange": "TSE",
     "size": "TOPIX Mid400"
    },
@@ -4033,16 +4153,6 @@
     "size": "TOPIX Mid400"
    },
    {
-    "code": "8595",
-    "ticker": "8595.T",
-    "name": "자프코",
-    "nameLocal": "ジャフコ　グループ",
-    "industry": "증권",
-    "shares": 54250000.0,
-    "exchange": "TSE",
-    "size": "TOPIX Mid400"
-   },
-   {
     "code": "8601",
     "ticker": "8601.T",
     "name": "다이와증권그룹",
@@ -4100,7 +4210,7 @@
     "industry": "보험",
     "shares": 6770358214.0,
     "exchange": "TSE",
-    "size": "TOPIX Core30"
+    "size": "TOPIX Mid400"
    },
    {
     "code": "8750",
@@ -4270,7 +4380,7 @@
     "industry": "육운",
     "shares": 455561300.0,
     "exchange": "TSE",
-    "size": "TOPIX Large70"
+    "size": "TOPIX Mid400"
    },
    {
     "code": "9022",
@@ -4743,16 +4853,6 @@
     "size": "TOPIX Mid400"
    },
    {
-    "code": "9627",
-    "ticker": "9627.T",
-    "name": "아인 홀딩스",
-    "nameLocal": "アインホールディングス",
-    "industry": "소매",
-    "shares": 35428212.0,
-    "exchange": "TSE",
-    "size": "TOPIX Mid400"
-   },
-   {
     "code": "9684",
     "ticker": "9684.T",
     "name": "스퀘어 에닉스 홀딩스",
@@ -4915,12 +5015,12 @@
   ],
   "info": {
    "source": "JPX 상장종목 목록 + 네이버 해외주식(한글명·상장주식수)",
-   "count": 491,
-   "withShares": 491
+   "count": 501,
+   "withShares": 501
   }
  },
  "TW": {
-  "builtAt": "2026-11-03",
+  "builtAt": "2026-11-10",
   "items": [
    {
     "code": "2330",
@@ -4968,21 +5068,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "1303",
-    "ticker": "1303.TW",
-    "name": "NPC (南亞)",
-    "nameLocal": "南亞",
-    "industry": "플라스틱",
-    "shares": 7930821589.0,
-    "exchange": "TWSE"
-   },
-   {
     "code": "2881",
     "ticker": "2881.TW",
     "name": "Fubon Financial (富邦金)",
     "nameLocal": "富邦金",
     "industry": "금융·보험",
     "shares": 14007364952.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1303",
+    "ticker": "1303.TW",
+    "name": "NPC (南亞)",
+    "nameLocal": "南亞",
+    "industry": "플라스틱",
+    "shares": 7930821589.0,
     "exchange": "TWSE"
    },
    {
@@ -4995,21 +5095,21 @@
     "exchange": "TWSE"
    },
    {
+    "code": "2891",
+    "ticker": "2891.TW",
+    "name": "CTBC HOLDING (中信金)",
+    "nameLocal": "中信金",
+    "industry": "금융·보험",
+    "shares": 19675932806.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "2383",
     "ticker": "2383.TW",
     "name": "EMC (台光電)",
     "nameLocal": "台光電",
     "industry": "전자부품",
     "shares": 358321114.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3037",
-    "ticker": "3037.TW",
-    "name": "UNIMICRON (欣興)",
-    "nameLocal": "欣興",
-    "industry": "전자부품",
-    "shares": 1641291596.0,
     "exchange": "TWSE"
    },
    {
@@ -5022,30 +5122,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2891",
-    "ticker": "2891.TW",
-    "name": "CTBC HOLDING (中信金)",
-    "nameLocal": "中信金",
-    "industry": "금융·보험",
-    "shares": 19675932806.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2303",
-    "ticker": "2303.TW",
-    "name": "UMC (聯電)",
-    "nameLocal": "聯電",
-    "industry": "반도체",
-    "shares": 12570093899.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2382",
-    "ticker": "2382.TW",
-    "name": "QCI (廣達)",
-    "nameLocal": "廣達",
-    "industry": "컴퓨터·주변기기",
-    "shares": 4107627432.0,
+    "code": "3037",
+    "ticker": "3037.TW",
+    "name": "UNIMICRON (欣興)",
+    "nameLocal": "欣興",
+    "industry": "전자부품",
+    "shares": 1641291596.0,
     "exchange": "TWSE"
    },
    {
@@ -5058,12 +5140,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "3017",
-    "ticker": "3017.TW",
-    "name": "AVC (奇鋐)",
-    "nameLocal": "奇鋐",
+    "code": "2382",
+    "ticker": "2382.TW",
+    "name": "QCI (廣達)",
+    "nameLocal": "廣達",
     "industry": "컴퓨터·주변기기",
-    "shares": 392670107.0,
+    "shares": 4107627432.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2303",
+    "ticker": "2303.TW",
+    "name": "UMC (聯電)",
+    "nameLocal": "聯電",
+    "industry": "반도체",
+    "shares": 12570093899.0,
     "exchange": "TWSE"
    },
    {
@@ -5076,21 +5167,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2327",
-    "ticker": "2327.TW",
-    "name": "YAGEO (國巨*)",
-    "nameLocal": "國巨*",
-    "industry": "전자부품",
-    "shares": 2063128462.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6669",
-    "ticker": "6669.TW",
-    "name": "Wiwynn (緯穎)",
-    "nameLocal": "緯穎",
+    "code": "3017",
+    "ticker": "3017.TW",
+    "name": "AVC (奇鋐)",
+    "nameLocal": "奇鋐",
     "industry": "컴퓨터·주변기기",
-    "shares": 560199772.0,
+    "shares": 392670107.0,
     "exchange": "TWSE"
    },
    {
@@ -5103,12 +5185,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6505",
-    "ticker": "6505.TW",
-    "name": "FPCC (台塑化)",
-    "nameLocal": "台塑化",
-    "industry": "석유·가스·전력",
-    "shares": 9525959652.0,
+    "code": "6669",
+    "ticker": "6669.TW",
+    "name": "Wiwynn (緯穎)",
+    "nameLocal": "緯穎",
+    "industry": "컴퓨터·주변기기",
+    "shares": 560199772.0,
     "exchange": "TWSE"
    },
    {
@@ -5118,6 +5200,33 @@
     "nameLocal": "創意",
     "industry": "반도체",
     "shares": 134011911.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2327",
+    "ticker": "2327.TW",
+    "name": "YAGEO (國巨*)",
+    "nameLocal": "國巨*",
+    "industry": "전자부품",
+    "shares": 2063128462.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6505",
+    "ticker": "6505.TW",
+    "name": "FPCC (台塑化)",
+    "nameLocal": "台塑化",
+    "industry": "석유·가스·전력",
+    "shares": 9525959652.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2884",
+    "ticker": "2884.TW",
+    "name": "E.S.F.H (玉山金)",
+    "nameLocal": "玉山金",
+    "industry": "금융·보험",
+    "shares": 17723510471.0,
     "exchange": "TWSE"
    },
    {
@@ -5139,6 +5248,15 @@
     "exchange": "TWSE"
    },
    {
+    "code": "2886",
+    "ticker": "2886.TW",
+    "name": "MEGA FHC (兆豐金)",
+    "nameLocal": "兆豐金",
+    "industry": "금융·보험",
+    "shares": 14833378282.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "2059",
     "ticker": "2059.TW",
     "name": "king slide (川湖)",
@@ -5157,48 +5275,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2884",
-    "ticker": "2884.TW",
-    "name": "E.S.F.H (玉山金)",
-    "nameLocal": "玉山金",
+    "code": "2880",
+    "ticker": "2880.TW",
+    "name": "HNFHC (華南金)",
+    "nameLocal": "華南金",
     "industry": "금융·보험",
-    "shares": 17723510471.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2886",
-    "ticker": "2886.TW",
-    "name": "MEGA FHC (兆豐金)",
-    "nameLocal": "兆豐金",
-    "industry": "금융·보험",
-    "shares": 14833378282.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "8046",
-    "ticker": "8046.TW",
-    "name": "N.P.C (南電)",
-    "nameLocal": "南電",
-    "industry": "전자부품",
-    "shares": 646165487.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2360",
-    "ticker": "2360.TW",
-    "name": "CHROMA (致茂)",
-    "nameLocal": "致茂",
-    "industry": "기타 전자",
-    "shares": 425245742.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2344",
-    "ticker": "2344.TW",
-    "name": "WEC (華邦電)",
-    "nameLocal": "華邦電",
-    "industry": "반도체",
-    "shares": 4500000193.0,
+    "shares": 14056134739.0,
     "exchange": "TWSE"
    },
    {
@@ -5208,15 +5290,6 @@
     "nameLocal": "大立光",
     "industry": "광전자",
     "shares": 130798197.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2880",
-    "ticker": "2880.TW",
-    "name": "HNFHC (華南金)",
-    "nameLocal": "華南金",
-    "industry": "금융·보험",
-    "shares": 14056134739.0,
     "exchange": "TWSE"
    },
    {
@@ -5238,12 +5311,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2883",
-    "ticker": "2883.TW",
-    "name": "KGI Financial (凱基金)",
-    "nameLocal": "凱基金",
-    "industry": "금융·보험",
-    "shares": 16974612475.0,
+    "code": "8046",
+    "ticker": "8046.TW",
+    "name": "N.P.C (南電)",
+    "nameLocal": "南電",
+    "industry": "전자부품",
+    "shares": 646165487.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2344",
+    "ticker": "2344.TW",
+    "name": "WEC (華邦電)",
+    "nameLocal": "華邦電",
+    "industry": "반도체",
+    "shares": 4500000193.0,
     "exchange": "TWSE"
    },
    {
@@ -5256,6 +5338,24 @@
     "exchange": "TWSE"
    },
    {
+    "code": "2883",
+    "ticker": "2883.TW",
+    "name": "KGI Financial (凱基金)",
+    "nameLocal": "凱基金",
+    "industry": "금융·보험",
+    "shares": 16974612475.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6446",
+    "ticker": "6446.TW",
+    "name": "PEC (藥華藥)",
+    "nameLocal": "藥華藥",
+    "industry": "바이오·의료",
+    "shares": 422434636.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "3231",
     "ticker": "3231.TW",
     "name": "Wistron (緯創)",
@@ -5265,13 +5365,13 @@
     "exchange": "TWSE"
    },
    {
-    "code": "5274",
-    "ticker": "5274.TWO",
-    "name": "信驊",
-    "nameLocal": "信驊",
-    "industry": "반도체",
-    "shares": 41582953.0,
-    "exchange": "TPEx"
+    "code": "2360",
+    "ticker": "2360.TW",
+    "name": "CHROMA (致茂)",
+    "nameLocal": "致茂",
+    "industry": "기타 전자",
+    "shares": 425245742.0,
+    "exchange": "TWSE"
    },
    {
     "code": "2603",
@@ -5292,39 +5392,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2368",
-    "ticker": "2368.TW",
-    "name": "GCE (金像電)",
-    "nameLocal": "金像電",
-    "industry": "전자부품",
-    "shares": 530594972.0,
-    "exchange": "TWSE"
-   },
-   {
     "code": "2301",
     "ticker": "2301.TW",
     "name": "LTC (光寶科)",
     "nameLocal": "光寶科",
     "industry": "컴퓨터·주변기기",
     "shares": 2276107763.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4958",
-    "ticker": "4958.TW",
-    "name": "ZDT (臻鼎-KY)",
-    "nameLocal": "臻鼎-KY",
-    "industry": "전자부품",
-    "shares": 1133397175.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6446",
-    "ticker": "6446.TW",
-    "name": "PEC (藥華藥)",
-    "nameLocal": "藥華藥",
-    "industry": "바이오·의료",
-    "shares": 422434636.0,
     "exchange": "TWSE"
    },
    {
@@ -5337,12 +5410,30 @@
     "exchange": "TWSE"
    },
    {
-    "code": "3189",
-    "ticker": "3189.TW",
-    "name": "KINSUS (景碩)",
-    "nameLocal": "景碩",
+    "code": "5274",
+    "ticker": "5274.TWO",
+    "name": "信驊",
+    "nameLocal": "信驊",
     "industry": "반도체",
-    "shares": 526910360.0,
+    "shares": 41582953.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2368",
+    "ticker": "2368.TW",
+    "name": "GCE (金像電)",
+    "nameLocal": "金像電",
+    "industry": "전자부품",
+    "shares": 530594972.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4958",
+    "ticker": "4958.TW",
+    "name": "ZDT (臻鼎-KY)",
+    "nameLocal": "臻鼎-KY",
+    "industry": "전자부품",
+    "shares": 1135510067.0,
     "exchange": "TWSE"
    },
    {
@@ -5382,13 +5473,13 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6223",
-    "ticker": "6223.TWO",
-    "name": "旺矽",
-    "nameLocal": "旺矽",
+    "code": "2379",
+    "ticker": "2379.TW",
+    "name": "RT (瑞昱)",
+    "nameLocal": "瑞昱",
     "industry": "반도체",
-    "shares": 97981309.0,
-    "exchange": "TPEx"
+    "shares": 515512641.0,
+    "exchange": "TWSE"
    },
    {
     "code": "4904",
@@ -5397,15 +5488,6 @@
     "nameLocal": "遠傳",
     "industry": "통신·네트워크",
     "shares": 3607705357.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2379",
-    "ticker": "2379.TW",
-    "name": "RT (瑞昱)",
-    "nameLocal": "瑞昱",
-    "industry": "반도체",
-    "shares": 515512641.0,
     "exchange": "TWSE"
    },
    {
@@ -5418,6 +5500,24 @@
     "exchange": "TPEx"
    },
    {
+    "code": "3189",
+    "ticker": "3189.TW",
+    "name": "KINSUS (景碩)",
+    "nameLocal": "景碩",
+    "industry": "반도체",
+    "shares": 526910360.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6223",
+    "ticker": "6223.TWO",
+    "name": "旺矽",
+    "nameLocal": "旺矽",
+    "industry": "반도체",
+    "shares": 97981309.0,
+    "exchange": "TPEx"
+   },
+   {
     "code": "2801",
     "ticker": "2801.TW",
     "name": "CHANG HWA BANK (彰銀)",
@@ -5427,21 +5527,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6488",
-    "ticker": "6488.TWO",
-    "name": "環球晶",
-    "nameLocal": "環球晶",
-    "industry": "반도체",
-    "shares": 528113725.0,
-    "exchange": "TPEx"
-   },
-   {
     "code": "3481",
     "ticker": "3481.TW",
     "name": "INX (群創)",
     "nameLocal": "群創",
     "industry": "광전자",
     "shares": 7989197337.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2615",
+    "ticker": "2615.TW",
+    "name": "WANHAI (萬海)",
+    "nameLocal": "萬海",
+    "industry": "해운",
+    "shares": 2806146293.0,
     "exchange": "TWSE"
    },
    {
@@ -5454,21 +5554,30 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2449",
-    "ticker": "2449.TW",
-    "name": "KYEC (京元電子)",
-    "nameLocal": "京元電子",
+    "code": "6488",
+    "ticker": "6488.TWO",
+    "name": "環球晶",
+    "nameLocal": "環球晶",
     "industry": "반도체",
-    "shares": 1283882318.0,
+    "shares": 528113725.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2207",
+    "ticker": "2207.TW",
+    "name": "HOTAI MOTOR (和泰車)",
+    "nameLocal": "和泰車",
+    "industry": "자동차",
+    "shares": 557102768.0,
     "exchange": "TWSE"
    },
    {
-    "code": "2615",
-    "ticker": "2615.TW",
-    "name": "WANHAI (萬海)",
-    "nameLocal": "萬海",
-    "industry": "해운",
-    "shares": 2806146293.0,
+    "code": "2002",
+    "ticker": "2002.TW",
+    "name": "CSC (中鋼)",
+    "nameLocal": "中鋼",
+    "industry": "철강",
+    "shares": 15734860997.0,
     "exchange": "TWSE"
    },
    {
@@ -5499,21 +5608,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2002",
-    "ticker": "2002.TW",
-    "name": "CSC (中鋼)",
-    "nameLocal": "中鋼",
-    "industry": "철강",
-    "shares": 15734860997.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2207",
-    "ticker": "2207.TW",
-    "name": "HOTAI MOTOR (和泰車)",
-    "nameLocal": "和泰車",
-    "industry": "자동차",
-    "shares": 557102768.0,
+    "code": "2449",
+    "ticker": "2449.TW",
+    "name": "KYEC (京元電子)",
+    "nameLocal": "京元電子",
+    "industry": "반도체",
+    "shares": 1283882318.0,
     "exchange": "TWSE"
    },
    {
@@ -5522,25 +5622,7 @@
     "name": "Alchip (世芯-KY)",
     "nameLocal": "世芯-KY",
     "industry": "반도체",
-    "shares": 86305114.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3044",
-    "ticker": "3044.TW",
-    "name": "Tripod (健鼎)",
-    "nameLocal": "健鼎",
-    "industry": "전자부품",
-    "shares": 525605898.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3036",
-    "ticker": "3036.TW",
-    "name": "WT (文曄)",
-    "nameLocal": "文曄",
-    "industry": "전자 유통",
-    "shares": 1345562701.0,
+    "shares": 86383514.0,
     "exchange": "TWSE"
    },
    {
@@ -5562,15 +5644,6 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2313",
-    "ticker": "2313.TW",
-    "name": "COMPEQ (華通)",
-    "nameLocal": "華通",
-    "industry": "전자부품",
-    "shares": 1233820589.0,
-    "exchange": "TWSE"
-   },
-   {
     "code": "5347",
     "ticker": "5347.TWO",
     "name": "世界",
@@ -5580,21 +5653,12 @@
     "exchange": "TPEx"
    },
    {
-    "code": "6213",
-    "ticker": "6213.TW",
-    "name": "ITEQ (聯茂)",
-    "nameLocal": "聯茂",
-    "industry": "전자부품",
-    "shares": 363597218.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2912",
-    "ticker": "2912.TW",
-    "name": "PCSC (統一超)",
-    "nameLocal": "統一超",
-    "industry": "무역·백화점",
-    "shares": 1039622255.0,
+    "code": "3036",
+    "ticker": "3036.TW",
+    "name": "WT (文曄)",
+    "nameLocal": "文曄",
+    "industry": "전자 유통",
+    "shares": 1345562701.0,
     "exchange": "TWSE"
    },
    {
@@ -5607,6 +5671,33 @@
     "exchange": "TWSE"
    },
    {
+    "code": "3044",
+    "ticker": "3044.TW",
+    "name": "Tripod (健鼎)",
+    "nameLocal": "健鼎",
+    "industry": "전자부품",
+    "shares": 525605898.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2912",
+    "ticker": "2912.TW",
+    "name": "PCSC (統一超)",
+    "nameLocal": "統一超",
+    "industry": "무역·백화점",
+    "shares": 1039622255.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2313",
+    "ticker": "2313.TW",
+    "name": "COMPEQ (華通)",
+    "nameLocal": "華通",
+    "industry": "전자부품",
+    "shares": 1233820589.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "2409",
     "ticker": "2409.TW",
     "name": "AUO (友達)",
@@ -5614,51 +5705,6 @@
     "industry": "광전자",
     "shares": 7547098972.0,
     "exchange": "TWSE"
-   },
-   {
-    "code": "2376",
-    "ticker": "2376.TW",
-    "name": "GIGABYTE (技嘉)",
-    "nameLocal": "技嘉",
-    "industry": "컴퓨터·주변기기",
-    "shares": 669888886.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3105",
-    "ticker": "3105.TWO",
-    "name": "穩懋",
-    "nameLocal": "穩懋",
-    "industry": "반도체",
-    "shares": 423940384.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2609",
-    "ticker": "2609.TW",
-    "name": "YMTC (陽明)",
-    "nameLocal": "陽明",
-    "industry": "해운",
-    "shares": 3492104270.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3081",
-    "ticker": "3081.TWO",
-    "name": "聯亞",
-    "nameLocal": "聯亞",
-    "industry": "통신·네트워크",
-    "shares": 101869004.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "3293",
-    "ticker": "3293.TWO",
-    "name": "鈊象",
-    "nameLocal": "鈊象",
-    "industry": "문화·콘텐츠",
-    "shares": 281801560.0,
-    "exchange": "TPEx"
    },
    {
     "code": "1590",
@@ -5670,12 +5716,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2356",
-    "ticker": "2356.TW",
-    "name": "INVENTEC (英業達)",
-    "nameLocal": "英業達",
+    "code": "3293",
+    "ticker": "3293.TWO",
+    "name": "鈊象",
+    "nameLocal": "鈊象",
+    "industry": "문화·콘텐츠",
+    "shares": 281801560.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2376",
+    "ticker": "2376.TW",
+    "name": "GIGABYTE (技嘉)",
+    "nameLocal": "技嘉",
     "industry": "컴퓨터·주변기기",
-    "shares": 3587475066.0,
+    "shares": 669888886.0,
     "exchange": "TWSE"
    },
    {
@@ -5688,6 +5743,42 @@
     "exchange": "TWSE"
    },
    {
+    "code": "2609",
+    "ticker": "2609.TW",
+    "name": "YMTC (陽明)",
+    "nameLocal": "陽明",
+    "industry": "해운",
+    "shares": 3492104270.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2356",
+    "ticker": "2356.TW",
+    "name": "INVENTEC (英業達)",
+    "nameLocal": "英業達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 3587475066.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3081",
+    "ticker": "3081.TWO",
+    "name": "聯亞",
+    "nameLocal": "聯亞",
+    "industry": "통신·네트워크",
+    "shares": 101869004.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6213",
+    "ticker": "6213.TW",
+    "name": "ITEQ (聯茂)",
+    "nameLocal": "聯茂",
+    "industry": "전자부품",
+    "shares": 363597218.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "3533",
     "ticker": "3533.TW",
     "name": "LOTES (嘉澤)",
@@ -5697,48 +5788,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2404",
-    "ticker": "2404.TW",
-    "name": "UIS (漢唐)",
-    "nameLocal": "漢唐",
-    "industry": "기타 전자",
-    "shares": 190586698.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6415",
-    "ticker": "6415.TW",
-    "name": "Silergy (矽力*-KY)",
-    "nameLocal": "矽力*-KY",
+    "code": "3105",
+    "ticker": "3105.TWO",
+    "name": "穩懋",
+    "nameLocal": "穩懋",
     "industry": "반도체",
-    "shares": 390362929.0,
-    "exchange": "TWSE"
+    "shares": 423940384.0,
+    "exchange": "TPEx"
    },
    {
-    "code": "6239",
-    "ticker": "6239.TW",
-    "name": "PTI (力成)",
-    "nameLocal": "力成",
-    "industry": "반도체",
-    "shares": 759146634.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "1519",
-    "ticker": "1519.TW",
-    "name": "FE (華城)",
-    "nameLocal": "華城",
-    "industry": "전기기계",
-    "shares": 347468929.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2337",
-    "ticker": "2337.TW",
-    "name": "Macronix (旺宏)",
-    "nameLocal": "旺宏",
-    "industry": "반도체",
-    "shares": 1981856638.0,
+    "code": "1802",
+    "ticker": "1802.TW",
+    "name": "TGI (台玻)",
+    "nameLocal": "台玻",
+    "industry": "유리·도자기",
+    "shares": 2908060800.0,
     "exchange": "TWSE"
    },
    {
@@ -5751,24 +5815,6 @@
     "exchange": "TWSE"
    },
    {
-    "code": "1802",
-    "ticker": "1802.TW",
-    "name": "TGI (台玻)",
-    "nameLocal": "台玻",
-    "industry": "유리·도자기",
-    "shares": 2908060800.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3702",
-    "ticker": "3702.TW",
-    "name": "WPG (大聯大)",
-    "nameLocal": "大聯大",
-    "industry": "전자 유통",
-    "shares": 1751374307.0,
-    "exchange": "TWSE"
-   },
-   {
     "code": "5871",
     "ticker": "5871.TW",
     "name": "Chailease (中租-KY)",
@@ -5778,21 +5824,39 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2492",
-    "ticker": "2492.TW",
-    "name": "WTC (華新科)",
-    "nameLocal": "華新科",
-    "industry": "전자부품",
-    "shares": 485204774.0,
+    "code": "2404",
+    "ticker": "2404.TW",
+    "name": "UIS (漢唐)",
+    "nameLocal": "漢唐",
+    "industry": "기타 전자",
+    "shares": 190586698.0,
     "exchange": "TWSE"
    },
    {
-    "code": "1605",
-    "ticker": "1605.TW",
-    "name": "WALSIN (華新)",
-    "nameLocal": "華新",
-    "industry": "전선·케이블",
-    "shares": 4431332948.0,
+    "code": "1519",
+    "ticker": "1519.TW",
+    "name": "FE (華城)",
+    "nameLocal": "華城",
+    "industry": "전기기계",
+    "shares": 347468929.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6239",
+    "ticker": "6239.TW",
+    "name": "PTI (力成)",
+    "nameLocal": "力成",
+    "industry": "반도체",
+    "shares": 759146634.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6415",
+    "ticker": "6415.TW",
+    "name": "Silergy (矽力*-KY)",
+    "nameLocal": "矽力*-KY",
+    "industry": "반도체",
+    "shares": 390362929.0,
     "exchange": "TWSE"
    },
    {
@@ -5805,21 +5869,30 @@
     "exchange": "TPEx"
    },
    {
+    "code": "2337",
+    "ticker": "2337.TW",
+    "name": "Macronix (旺宏)",
+    "nameLocal": "旺宏",
+    "industry": "반도체",
+    "shares": 1981856638.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3702",
+    "ticker": "3702.TW",
+    "name": "WPG (大聯大)",
+    "nameLocal": "大聯大",
+    "industry": "전자 유통",
+    "shares": 1751374307.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "1504",
     "ticker": "1504.TW",
     "name": "TECO (東元)",
     "nameLocal": "東元",
     "industry": "전기기계",
     "shares": 2376440684.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6515",
-    "ticker": "6515.TW",
-    "name": "WinWay (穎崴)",
-    "nameLocal": "穎崴",
-    "industry": "반도체",
-    "shares": 36444782.0,
     "exchange": "TWSE"
    },
    {
@@ -5832,30 +5905,12 @@
     "exchange": "TPEx"
    },
    {
-    "code": "6805",
-    "ticker": "6805.TW",
-    "name": "Fositek (富世達)",
-    "nameLocal": "富世達",
-    "industry": "전자부품",
-    "shares": 68553896.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2347",
-    "ticker": "2347.TW",
-    "name": "Synnex (聯強)",
-    "nameLocal": "聯強",
-    "industry": "전자 유통",
-    "shares": 1667946968.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2324",
-    "ticker": "2324.TW",
-    "name": "Compal (仁寶)",
-    "nameLocal": "仁寶",
-    "industry": "컴퓨터·주변기기",
-    "shares": 4407146625.0,
+    "code": "1605",
+    "ticker": "1605.TW",
+    "name": "WALSIN (華新)",
+    "nameLocal": "華新",
+    "industry": "전선·케이블",
+    "shares": 4431332948.0,
     "exchange": "TWSE"
    },
    {
@@ -5868,12 +5923,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6139",
-    "ticker": "6139.TW",
-    "name": "L & K (亞翔)",
-    "nameLocal": "亞翔",
-    "industry": "기타 전자",
-    "shares": 235575724.0,
+    "code": "2324",
+    "ticker": "2324.TW",
+    "name": "Compal (仁寶)",
+    "nameLocal": "仁寶",
+    "industry": "컴퓨터·주변기기",
+    "shares": 4407146625.0,
     "exchange": "TWSE"
    },
    {
@@ -5886,21 +5941,39 @@
     "exchange": "TWSE"
    },
    {
-    "code": "8996",
-    "ticker": "8996.TW",
-    "name": "KAORI (高力)",
-    "nameLocal": "高力",
-    "industry": "전기기계",
-    "shares": 93501537.0,
+    "code": "6139",
+    "ticker": "6139.TW",
+    "name": "L & K (亞翔)",
+    "nameLocal": "亞翔",
+    "industry": "기타 전자",
+    "shares": 235575724.0,
     "exchange": "TWSE"
    },
    {
-    "code": "3532",
-    "ticker": "3532.TW",
-    "name": "FST (台勝科)",
-    "nameLocal": "台勝科",
-    "industry": "반도체",
-    "shares": 387848300.0,
+    "code": "2492",
+    "ticker": "2492.TW",
+    "name": "WTC (華新科)",
+    "nameLocal": "華新科",
+    "industry": "전자부품",
+    "shares": 485204774.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2347",
+    "ticker": "2347.TW",
+    "name": "Synnex (聯強)",
+    "nameLocal": "聯強",
+    "industry": "전자 유통",
+    "shares": 1667946968.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2610",
+    "ticker": "2610.TW",
+    "name": "CAL (華航)",
+    "nameLocal": "華航",
+    "industry": "해운",
+    "shares": 6144988558.0,
     "exchange": "TWSE"
    },
    {
@@ -5913,30 +5986,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2377",
-    "ticker": "2377.TW",
-    "name": "MSI (微星)",
-    "nameLocal": "微星",
-    "industry": "컴퓨터·주변기기",
-    "shares": 844856199.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6789",
-    "ticker": "6789.TW",
-    "name": "VisEra (采鈺)",
-    "nameLocal": "采鈺",
+    "code": "6515",
+    "ticker": "6515.TW",
+    "name": "WinWay (穎崴)",
+    "nameLocal": "穎崴",
     "industry": "반도체",
-    "shares": 318413119.0,
+    "shares": 36444782.0,
     "exchange": "TWSE"
    },
    {
-    "code": "7750",
-    "ticker": "7750.TW",
-    "name": "Syntec (新代)",
-    "nameLocal": "新代",
-    "industry": "전기기계",
-    "shares": 71843000.0,
+    "code": "6805",
+    "ticker": "6805.TW",
+    "name": "Fositek (富世達)",
+    "nameLocal": "富世達",
+    "industry": "전자부품",
+    "shares": 68553896.0,
     "exchange": "TWSE"
    },
    {
@@ -5949,21 +6013,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "1560",
-    "ticker": "1560.TW",
-    "name": "KINIK (中砂)",
-    "nameLocal": "中砂",
-    "industry": "전기기계",
-    "shares": 150289456.0,
+    "code": "2377",
+    "ticker": "2377.TW",
+    "name": "MSI (微星)",
+    "nameLocal": "微星",
+    "industry": "컴퓨터·주변기기",
+    "shares": 844856199.0,
     "exchange": "TWSE"
    },
    {
-    "code": "6526",
-    "ticker": "6526.TW",
-    "name": "Airoha (達發)",
-    "nameLocal": "達發",
-    "industry": "반도체",
-    "shares": 167505554.0,
+    "code": "8996",
+    "ticker": "8996.TW",
+    "name": "KAORI (高力)",
+    "nameLocal": "高力",
+    "industry": "전기기계",
+    "shares": 93501537.0,
     "exchange": "TWSE"
    },
    {
@@ -5976,40 +6040,13 @@
     "exchange": "TPEx"
    },
    {
-    "code": "2610",
-    "ticker": "2610.TW",
-    "name": "CAL (華航)",
-    "nameLocal": "華航",
-    "industry": "해운",
-    "shares": 6144988558.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6531",
-    "ticker": "6531.TW",
-    "name": "AP Memory (愛普*)",
-    "nameLocal": "愛普*",
+    "code": "6789",
+    "ticker": "6789.TW",
+    "name": "VisEra (采鈺)",
+    "nameLocal": "采鈺",
     "industry": "반도체",
-    "shares": 163149082.0,
+    "shares": 318413119.0,
     "exchange": "TWSE"
-   },
-   {
-    "code": "2451",
-    "ticker": "2451.TW",
-    "name": "Transcend (創見)",
-    "nameLocal": "創見",
-    "industry": "반도체",
-    "shares": 431345675.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3324",
-    "ticker": "3324.TWO",
-    "name": "雙鴻",
-    "nameLocal": "雙鴻",
-    "industry": "기타 전자",
-    "shares": 93076837.0,
-    "exchange": "TPEx"
    },
    {
     "code": "2812",
@@ -6021,21 +6058,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6196",
-    "ticker": "6196.TW",
-    "name": "MIC (帆宣)",
-    "nameLocal": "帆宣",
-    "industry": "기타 전자",
-    "shares": 220329529.0,
+    "code": "6526",
+    "ticker": "6526.TW",
+    "name": "Airoha (達發)",
+    "nameLocal": "達發",
+    "industry": "반도체",
+    "shares": 167505554.0,
     "exchange": "TWSE"
    },
    {
-    "code": "3406",
-    "ticker": "3406.TW",
-    "name": "GSEO (玉晶光)",
-    "nameLocal": "玉晶光",
-    "industry": "광전자",
-    "shares": 112743063.0,
+    "code": "1560",
+    "ticker": "1560.TW",
+    "name": "KINIK (中砂)",
+    "nameLocal": "中砂",
+    "industry": "전기기계",
+    "shares": 150289456.0,
     "exchange": "TWSE"
    },
    {
@@ -6048,12 +6085,30 @@
     "exchange": "TPEx"
    },
    {
-    "code": "2049",
-    "ticker": "2049.TW",
-    "name": "HIWIN (上銀)",
-    "nameLocal": "上銀",
-    "industry": "전기기계",
-    "shares": 353792240.0,
+    "code": "6919",
+    "ticker": "6919.TW",
+    "name": "Caliway (康霈*)",
+    "nameLocal": "康霈*",
+    "industry": "바이오·의료",
+    "shares": 1557200860.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3532",
+    "ticker": "3532.TW",
+    "name": "FST (台勝科)",
+    "nameLocal": "台勝科",
+    "industry": "반도체",
+    "shares": 387848300.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6531",
+    "ticker": "6531.TW",
+    "name": "AP Memory (愛普*)",
+    "nameLocal": "愛普*",
+    "industry": "반도체",
+    "shares": 163149082.0,
     "exchange": "TWSE"
    },
    {
@@ -6066,12 +6121,39 @@
     "exchange": "TPEx"
    },
    {
+    "code": "7750",
+    "ticker": "7750.TW",
+    "name": "Syntec (新代)",
+    "nameLocal": "新代",
+    "industry": "전기기계",
+    "shares": 71843000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3324",
+    "ticker": "3324.TWO",
+    "name": "雙鴻",
+    "nameLocal": "雙鴻",
+    "industry": "기타 전자",
+    "shares": 93076837.0,
+    "exchange": "TPEx"
+   },
+   {
     "code": "3706",
     "ticker": "3706.TW",
     "name": "MHC (神達)",
     "nameLocal": "神達",
     "industry": "컴퓨터·주변기기",
     "shares": 1459933715.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2451",
+    "ticker": "2451.TW",
+    "name": "Transcend (創見)",
+    "nameLocal": "創見",
+    "industry": "반도체",
+    "shares": 431345675.0,
     "exchange": "TWSE"
    },
    {
@@ -6084,39 +6166,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "5434",
-    "ticker": "5434.TW",
-    "name": "TOPCO (崇越)",
-    "nameLocal": "崇越",
-    "industry": "전자 유통",
-    "shares": 194007983.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6187",
-    "ticker": "6187.TWO",
-    "name": "萬潤",
-    "nameLocal": "萬潤",
-    "industry": "반도체",
-    "shares": 98262739.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "6285",
-    "ticker": "6285.TW",
-    "name": "WNC (啟碁)",
-    "nameLocal": "啟碁",
-    "industry": "통신·네트워크",
-    "shares": 483441359.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3026",
-    "ticker": "3026.TW",
-    "name": "HOLY STONE (禾伸堂)",
-    "nameLocal": "禾伸堂",
-    "industry": "전자부품",
-    "shares": 165890318.0,
+    "code": "2049",
+    "ticker": "2049.TW",
+    "name": "HIWIN (上銀)",
+    "nameLocal": "上銀",
+    "industry": "전기기계",
+    "shares": 353792240.0,
     "exchange": "TWSE"
    },
    {
@@ -6129,6 +6184,15 @@
     "exchange": "TWSE"
    },
    {
+    "code": "3406",
+    "ticker": "3406.TW",
+    "name": "GSEO (玉晶光)",
+    "nameLocal": "玉晶光",
+    "industry": "광전자",
+    "shares": 118277503.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "5483",
     "ticker": "5483.TWO",
     "name": "中美晶",
@@ -6138,30 +6202,12 @@
     "exchange": "TPEx"
    },
    {
-    "code": "5269",
-    "ticker": "5269.TW",
-    "name": "Asmedia (祥碩)",
-    "nameLocal": "祥碩",
-    "industry": "반도체",
-    "shares": 74156359.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6442",
-    "ticker": "6442.TW",
-    "name": "EZconn (光聖)",
-    "nameLocal": "光聖",
-    "industry": "통신·네트워크",
-    "shares": 81817552.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6257",
-    "ticker": "6257.TW",
-    "name": "SIGURD (矽格)",
-    "nameLocal": "矽格",
-    "industry": "반도체",
-    "shares": 483912325.0,
+    "code": "1476",
+    "ticker": "1476.TW",
+    "name": "ECLAT (儒鴻)",
+    "nameLocal": "儒鴻",
+    "industry": "섬유",
+    "shares": 274367111.0,
     "exchange": "TWSE"
    },
    {
@@ -6174,12 +6220,57 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6919",
-    "ticker": "6919.TW",
-    "name": "Caliway (康霈*)",
-    "nameLocal": "康霈*",
-    "industry": "바이오·의료",
-    "shares": 1557200860.0,
+    "code": "2353",
+    "ticker": "2353.TW",
+    "name": "ACER (宏碁)",
+    "nameLocal": "宏碁",
+    "industry": "컴퓨터·주변기기",
+    "shares": 3047853828.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6187",
+    "ticker": "6187.TWO",
+    "name": "萬潤",
+    "nameLocal": "萬潤",
+    "industry": "반도체",
+    "shares": 98262739.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "5269",
+    "ticker": "5269.TW",
+    "name": "Asmedia (祥碩)",
+    "nameLocal": "祥碩",
+    "industry": "반도체",
+    "shares": 74156359.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5434",
+    "ticker": "5434.TW",
+    "name": "TOPCO (崇越)",
+    "nameLocal": "崇越",
+    "industry": "전자 유통",
+    "shares": 194007983.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6196",
+    "ticker": "6196.TW",
+    "name": "MIC (帆宣)",
+    "nameLocal": "帆宣",
+    "industry": "기타 전자",
+    "shares": 220329529.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2838",
+    "ticker": "2838.TW",
+    "name": "UBOT (聯邦銀)",
+    "nameLocal": "聯邦銀",
+    "industry": "금융·보험",
+    "shares": 4607828961.0,
     "exchange": "TWSE"
    },
    {
@@ -6201,13 +6292,13 @@
     "exchange": "TWSE"
    },
    {
-    "code": "7856",
-    "ticker": "7856.TWO",
-    "name": "漢測",
-    "nameLocal": "漢測",
-    "industry": "반도체",
-    "shares": 33000000.0,
-    "exchange": "TPEx"
+    "code": "6442",
+    "ticker": "6442.TW",
+    "name": "EZconn (光聖)",
+    "nameLocal": "光聖",
+    "industry": "통신·네트워크",
+    "shares": 81817552.0,
+    "exchange": "TWSE"
    },
    {
     "code": "3264",
@@ -6219,30 +6310,12 @@
     "exchange": "TPEx"
    },
    {
-    "code": "8358",
-    "ticker": "8358.TWO",
-    "name": "金居",
-    "nameLocal": "金居",
-    "industry": "전자부품",
-    "shares": 252588000.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2838",
-    "ticker": "2838.TW",
-    "name": "UBOT (聯邦銀)",
-    "nameLocal": "聯邦銀",
-    "industry": "금융·보험",
-    "shares": 4607828961.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2353",
-    "ticker": "2353.TW",
-    "name": "ACER (宏碁)",
-    "nameLocal": "宏碁",
-    "industry": "컴퓨터·주변기기",
-    "shares": 3047853828.0,
+    "code": "6285",
+    "ticker": "6285.TW",
+    "name": "WNC (啟碁)",
+    "nameLocal": "啟碁",
+    "industry": "통신·네트워크",
+    "shares": 483441359.0,
     "exchange": "TWSE"
    },
    {
@@ -6255,30 +6328,12 @@
     "exchange": "TPEx"
    },
    {
-    "code": "8210",
-    "ticker": "8210.TW",
-    "name": "CHENBRO (勤誠)",
-    "nameLocal": "勤誠",
-    "industry": "컴퓨터·주변기기",
-    "shares": 125619146.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "1476",
-    "ticker": "1476.TW",
-    "name": "ECLAT (儒鴻)",
-    "nameLocal": "儒鴻",
-    "industry": "섬유",
-    "shares": 274367111.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3491",
-    "ticker": "3491.TWO",
-    "name": "昇達科",
-    "nameLocal": "昇達科",
-    "industry": "통신·네트워크",
-    "shares": 68875125.0,
+    "code": "8358",
+    "ticker": "8358.TWO",
+    "name": "金居",
+    "nameLocal": "金居",
+    "industry": "전자부품",
+    "shares": 252588000.0,
     "exchange": "TPEx"
    },
    {
@@ -6291,12 +6346,39 @@
     "exchange": "TPEx"
    },
    {
-    "code": "6691",
-    "ticker": "6691.TW",
-    "name": "YANKEY (洋基工程)",
-    "nameLocal": "洋基工程",
-    "industry": "기타 전자",
-    "shares": 133546930.0,
+    "code": "3026",
+    "ticker": "3026.TW",
+    "name": "HOLY STONE (禾伸堂)",
+    "nameLocal": "禾伸堂",
+    "industry": "전자부품",
+    "shares": 165890318.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3491",
+    "ticker": "3491.TWO",
+    "name": "昇達科",
+    "nameLocal": "昇達科",
+    "industry": "통신·네트워크",
+    "shares": 68875125.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2542",
+    "ticker": "2542.TW",
+    "name": "Highwealth (興富發)",
+    "nameLocal": "興富發",
+    "industry": "건설·건자재",
+    "shares": 2153083539.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6257",
+    "ticker": "6257.TW",
+    "name": "SIGURD (矽格)",
+    "nameLocal": "矽格",
+    "industry": "반도체",
+    "shares": 483912325.0,
     "exchange": "TWSE"
    },
    {
@@ -6309,31 +6391,31 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2354",
-    "ticker": "2354.TW",
-    "name": "FTC (鴻準)",
-    "nameLocal": "鴻準",
-    "industry": "기타 전자",
-    "shares": 1414485192.0,
-    "exchange": "TWSE"
+    "code": "5904",
+    "ticker": "5904.TWO",
+    "name": "寶雅*",
+    "nameLocal": "寶雅*",
+    "industry": "생활용품",
+    "shares": 1064438260.0,
+    "exchange": "TPEx"
    },
    {
-    "code": "2455",
-    "ticker": "2455.TW",
-    "name": "VPEC (全新)",
-    "nameLocal": "全新",
-    "industry": "통신·네트워크",
-    "shares": 186983443.0,
-    "exchange": "TWSE"
+    "code": "7856",
+    "ticker": "7856.TWO",
+    "name": "漢測",
+    "nameLocal": "漢測",
+    "industry": "반도체",
+    "shares": 33000000.0,
+    "exchange": "TPEx"
    },
    {
-    "code": "2542",
-    "ticker": "2542.TW",
-    "name": "Highwealth (興富發)",
-    "nameLocal": "興富發",
-    "industry": "건설·건자재",
-    "shares": 2153083539.0,
-    "exchange": "TWSE"
+    "code": "1815",
+    "ticker": "1815.TWO",
+    "name": "富喬",
+    "nameLocal": "富喬",
+    "industry": "전자부품",
+    "shares": 614703462.0,
+    "exchange": "TPEx"
    },
    {
     "code": "9105",
@@ -6345,12 +6427,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "3167",
-    "ticker": "3167.TW",
-    "name": "TA LIANG (大量)",
-    "nameLocal": "大量",
-    "industry": "전기기계",
-    "shares": 89513491.0,
+    "code": "2354",
+    "ticker": "2354.TW",
+    "name": "FTC (鴻準)",
+    "nameLocal": "鴻準",
+    "industry": "기타 전자",
+    "shares": 1414485192.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9904",
+    "ticker": "9904.TW",
+    "name": "PCC (寶成)",
+    "nameLocal": "寶成",
+    "industry": "스포츠·레저",
+    "shares": 2946787213.0,
     "exchange": "TWSE"
    },
    {
@@ -6363,13 +6454,13 @@
     "exchange": "TWSE"
    },
    {
-    "code": "1815",
-    "ticker": "1815.TWO",
-    "name": "富喬",
-    "nameLocal": "富喬",
-    "industry": "전자부품",
-    "shares": 614703462.0,
-    "exchange": "TPEx"
+    "code": "6691",
+    "ticker": "6691.TW",
+    "name": "YANKEY (洋基工程)",
+    "nameLocal": "洋基工程",
+    "industry": "기타 전자",
+    "shares": 133546930.0,
+    "exchange": "TWSE"
    },
    {
     "code": "1717",
@@ -6381,12 +6472,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "3006",
-    "ticker": "3006.TW",
-    "name": "ESMT (晶豪科)",
-    "nameLocal": "晶豪科",
-    "industry": "반도체",
-    "shares": 298127841.0,
+    "code": "2637",
+    "ticker": "2637.TW",
+    "name": "WISDOM (慧洋-KY)",
+    "nameLocal": "慧洋-KY",
+    "industry": "해운",
+    "shares": 746409199.0,
     "exchange": "TWSE"
    },
    {
@@ -6417,21 +6508,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "5904",
-    "ticker": "5904.TWO",
-    "name": "寶雅*",
-    "nameLocal": "寶雅*",
-    "industry": "생활용품",
-    "shares": 1064438260.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "9904",
-    "ticker": "9904.TW",
-    "name": "PCC (寶成)",
-    "nameLocal": "寶成",
-    "industry": "스포츠·레저",
-    "shares": 2946787213.0,
+    "code": "8210",
+    "ticker": "8210.TW",
+    "name": "CHENBRO (勤誠)",
+    "nameLocal": "勤誠",
+    "industry": "컴퓨터·주변기기",
+    "shares": 125619146.0,
     "exchange": "TWSE"
    },
    {
@@ -6444,30 +6526,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6781",
-    "ticker": "6781.TW",
-    "name": "AES-KY",
-    "nameLocal": "AES-KY",
-    "industry": "전자부품",
-    "shares": 85418780.0,
+    "code": "1229",
+    "ticker": "1229.TW",
+    "name": "LHIHC (聯華)",
+    "nameLocal": "聯華",
+    "industry": "식품",
+    "shares": 1831879881.0,
     "exchange": "TWSE"
    },
    {
-    "code": "2637",
-    "ticker": "2637.TW",
-    "name": "WISDOM (慧洋-KY)",
-    "nameLocal": "慧洋-KY",
-    "industry": "해운",
-    "shares": 746409199.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2385",
-    "ticker": "2385.TW",
-    "name": "CHICONY (群光)",
-    "nameLocal": "群光",
-    "industry": "전자부품",
-    "shares": 765721188.0,
+    "code": "3006",
+    "ticker": "3006.TW",
+    "name": "ESMT (晶豪科)",
+    "nameLocal": "晶豪科",
+    "industry": "반도체",
+    "shares": 298127841.0,
     "exchange": "TWSE"
    },
    {
@@ -6480,30 +6553,30 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6944",
-    "ticker": "6944.TW",
-    "name": "Mega Union (兆聯實業)",
-    "nameLocal": "兆聯實業",
-    "industry": "친환경·에너지",
-    "shares": 99694286.0,
+    "code": "2385",
+    "ticker": "2385.TW",
+    "name": "CHICONY (群光)",
+    "nameLocal": "群光",
+    "industry": "전자부품",
+    "shares": 765721188.0,
     "exchange": "TWSE"
    },
    {
-    "code": "6278",
-    "ticker": "6278.TW",
-    "name": "TSMT (台表科)",
-    "nameLocal": "台表科",
-    "industry": "광전자",
-    "shares": 292398353.0,
+    "code": "9910",
+    "ticker": "9910.TW",
+    "name": "FT (豐泰)",
+    "nameLocal": "豐泰",
+    "industry": "스포츠·레저",
+    "shares": 987482831.0,
     "exchange": "TWSE"
    },
    {
-    "code": "1229",
-    "ticker": "1229.TW",
-    "name": "LHIHC (聯華)",
-    "nameLocal": "聯華",
-    "industry": "식품",
-    "shares": 1831879881.0,
+    "code": "3167",
+    "ticker": "3167.TW",
+    "name": "TA LIANG (大量)",
+    "nameLocal": "大量",
+    "industry": "전기기계",
+    "shares": 89513491.0,
     "exchange": "TWSE"
    },
    {
@@ -6516,33 +6589,6 @@
     "exchange": "TPEx"
    },
    {
-    "code": "9910",
-    "ticker": "9910.TW",
-    "name": "FT (豐泰)",
-    "nameLocal": "豐泰",
-    "industry": "스포츠·레저",
-    "shares": 987482831.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2467",
-    "ticker": "2467.TW",
-    "name": "C SUN (志聖)",
-    "nameLocal": "志聖",
-    "industry": "전자부품",
-    "shares": 161513684.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2006",
-    "ticker": "2006.TW",
-    "name": "Tung Ho Steel (東和鋼鐵)",
-    "nameLocal": "東和鋼鐵",
-    "industry": "철강",
-    "shares": 730213818.0,
-    "exchange": "TWSE"
-   },
-   {
     "code": "7799",
     "ticker": "7799.TW",
     "name": "HNMC (禾榮科)",
@@ -6552,30 +6598,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2466",
-    "ticker": "2466.TW",
-    "name": "COSMO (冠西電)",
-    "nameLocal": "冠西電",
-    "industry": "광전자",
-    "shares": 173458697.0,
+    "code": "2455",
+    "ticker": "2455.TW",
+    "name": "VPEC (全新)",
+    "nameLocal": "全新",
+    "industry": "통신·네트워크",
+    "shares": 186983443.0,
     "exchange": "TWSE"
    },
    {
-    "code": "8454",
-    "ticker": "8454.TW",
-    "name": "momo (富邦媒)",
-    "nameLocal": "富邦媒",
-    "industry": "디지털·클라우드",
-    "shares": 264975275.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "8150",
-    "ticker": "8150.TW",
-    "name": "ChipMOS (南茂)",
-    "nameLocal": "南茂",
-    "industry": "반도체",
-    "shares": 704523126.0,
+    "code": "6781",
+    "ticker": "6781.TW",
+    "name": "AES-KY",
+    "nameLocal": "AES-KY",
+    "industry": "전자부품",
+    "shares": 85418780.0,
     "exchange": "TWSE"
    },
    {
@@ -6588,120 +6625,21 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2441",
-    "ticker": "2441.TW",
-    "name": "GTK (超豐)",
-    "nameLocal": "超豐",
-    "industry": "반도체",
-    "shares": 568845921.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2371",
-    "ticker": "2371.TW",
-    "name": "TATUNG COMPANY (大同)",
-    "nameLocal": "大同",
-    "industry": "전기기계",
-    "shares": 2150834851.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2606",
-    "ticker": "2606.TW",
-    "name": "U-MING (裕民)",
-    "nameLocal": "裕民",
-    "industry": "해운",
-    "shares": 845055712.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "8039",
-    "ticker": "8039.TW",
-    "name": "TAIFLEX (台虹)",
-    "nameLocal": "台虹",
-    "industry": "전자부품",
-    "shares": 263803994.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2915",
-    "ticker": "2915.TW",
-    "name": "RUENTEX IND.LTD (潤泰全)",
-    "nameLocal": "潤泰全",
-    "industry": "무역·백화점",
-    "shares": 1104318772.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "8021",
-    "ticker": "8021.TW",
-    "name": "Topoint (尖點)",
-    "nameLocal": "尖點",
-    "industry": "기타 전자",
-    "shares": 147088074.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2645",
-    "ticker": "2645.TW",
-    "name": "EGAT (長榮航太)",
-    "nameLocal": "長榮航太",
-    "industry": "해운",
-    "shares": 374570962.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2889",
-    "ticker": "2889.TW",
-    "name": "IBF (國票金)",
-    "nameLocal": "國票金",
-    "industry": "금융·보험",
-    "shares": 3665902186.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3450",
-    "ticker": "3450.TW",
-    "name": "ELASER (聯鈞)",
-    "nameLocal": "聯鈞",
-    "industry": "반도체",
-    "shares": 145681382.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3030",
-    "ticker": "3030.TW",
-    "name": "TRI (德律)",
-    "nameLocal": "德律",
-    "industry": "기타 전자",
-    "shares": 236216000.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6548",
-    "ticker": "6548.TWO",
-    "name": "長科*",
-    "nameLocal": "長科*",
-    "industry": "반도체",
-    "shares": 950464700.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2646",
-    "ticker": "2646.TW",
-    "name": "STARLUX AIR (星宇航空)",
-    "nameLocal": "星宇航空",
-    "industry": "해운",
-    "shares": 3008735000.0,
-    "exchange": "TWSE"
-   },
-   {
     "code": "3023",
     "ticker": "3023.TW",
     "name": "SINBON (信邦)",
     "nameLocal": "信邦",
     "industry": "전자부품",
     "shares": 240069014.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2006",
+    "ticker": "2006.TW",
+    "name": "Tung Ho Steel (東和鋼鐵)",
+    "nameLocal": "東和鋼鐵",
+    "industry": "철강",
+    "shares": 730213818.0,
     "exchange": "TWSE"
    },
    {
@@ -6714,12 +6652,165 @@
     "exchange": "TPEx"
    },
    {
-    "code": "3042",
-    "ticker": "3042.TW",
-    "name": "TXC (晶技)",
-    "nameLocal": "晶技",
+    "code": "2441",
+    "ticker": "2441.TW",
+    "name": "GTK (超豐)",
+    "nameLocal": "超豐",
+    "industry": "반도체",
+    "shares": 568845921.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6944",
+    "ticker": "6944.TW",
+    "name": "Mega Union (兆聯實業)",
+    "nameLocal": "兆聯實業",
+    "industry": "친환경·에너지",
+    "shares": 99694286.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6548",
+    "ticker": "6548.TWO",
+    "name": "長科*",
+    "nameLocal": "長科*",
+    "industry": "반도체",
+    "shares": 950464700.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2371",
+    "ticker": "2371.TW",
+    "name": "TATUNG COMPANY (大同)",
+    "nameLocal": "大同",
+    "industry": "전기기계",
+    "shares": 2150834851.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2889",
+    "ticker": "2889.TW",
+    "name": "IBF (國票金)",
+    "nameLocal": "國票金",
+    "industry": "금융·보험",
+    "shares": 3665902186.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2646",
+    "ticker": "2646.TW",
+    "name": "STARLUX AIR (星宇航空)",
+    "nameLocal": "星宇航空",
+    "industry": "해운",
+    "shares": 3008735000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2915",
+    "ticker": "2915.TW",
+    "name": "RUENTEX IND.LTD (潤泰全)",
+    "nameLocal": "潤泰全",
+    "industry": "무역·백화점",
+    "shares": 1104318772.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2606",
+    "ticker": "2606.TW",
+    "name": "U-MING (裕民)",
+    "nameLocal": "裕民",
+    "industry": "해운",
+    "shares": 845055712.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2645",
+    "ticker": "2645.TW",
+    "name": "EGAT (長榮航太)",
+    "nameLocal": "長榮航太",
+    "industry": "해운",
+    "shares": 374570962.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6278",
+    "ticker": "6278.TW",
+    "name": "TSMT (台表科)",
+    "nameLocal": "台表科",
+    "industry": "광전자",
+    "shares": 292398353.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8454",
+    "ticker": "8454.TW",
+    "name": "momo (富邦媒)",
+    "nameLocal": "富邦媒",
+    "industry": "디지털·클라우드",
+    "shares": 264975275.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2466",
+    "ticker": "2466.TW",
+    "name": "COSMO (冠西電)",
+    "nameLocal": "冠西電",
+    "industry": "광전자",
+    "shares": 173458697.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8039",
+    "ticker": "8039.TW",
+    "name": "TAIFLEX (台虹)",
+    "nameLocal": "台虹",
     "industry": "전자부품",
-    "shares": 342992971.0,
+    "shares": 263803994.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8150",
+    "ticker": "8150.TW",
+    "name": "ChipMOS (南茂)",
+    "nameLocal": "南茂",
+    "industry": "반도체",
+    "shares": 704523126.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "1477",
+    "ticker": "1477.TW",
+    "name": "Makalot (聚陽)",
+    "nameLocal": "聚陽",
+    "industry": "섬유",
+    "shares": 246693713.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6949",
+    "ticker": "6949.TW",
+    "name": "PELL BMT (沛爾生醫*-創)",
+    "nameLocal": "沛爾生醫*-創",
+    "industry": "바이오·의료",
+    "shares": 1311601000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6472",
+    "ticker": "6472.TW",
+    "name": "Bora (保瑞)",
+    "nameLocal": "保瑞",
+    "industry": "바이오·의료",
+    "shares": 128019122.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3030",
+    "ticker": "3030.TW",
+    "name": "TRI (德律)",
+    "nameLocal": "德律",
+    "industry": "기타 전자",
+    "shares": 236216000.0,
     "exchange": "TWSE"
    },
    {
@@ -6741,75 +6832,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6214",
-    "ticker": "6214.TW",
-    "name": "SYSTEX (精誠)",
-    "nameLocal": "精誠",
-    "industry": "정보서비스",
-    "shares": 272243066.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4979",
-    "ticker": "4979.TWO",
-    "name": "華星光",
-    "nameLocal": "華星光",
-    "industry": "통신·네트워크",
-    "shares": 142802027.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "3035",
-    "ticker": "3035.TW",
-    "name": "Faraday (智原)",
-    "nameLocal": "智原",
-    "industry": "반도체",
-    "shares": 260550313.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4919",
-    "ticker": "4919.TW",
-    "name": "NTC (新唐)",
-    "nameLocal": "新唐",
-    "industry": "반도체",
-    "shares": 452397767.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6949",
-    "ticker": "6949.TW",
-    "name": "PELL BMT (沛爾生醫*-創)",
-    "nameLocal": "沛爾生醫*-創",
-    "industry": "바이오·의료",
-    "shares": 1311601000.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6182",
-    "ticker": "6182.TWO",
-    "name": "合晶",
-    "nameLocal": "合晶",
-    "industry": "반도체",
-    "shares": 625305662.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2258",
-    "ticker": "2258.TW",
-    "name": "Foxtron (鴻華先進-創)",
-    "nameLocal": "鴻華先進-創",
-    "industry": "자동차",
-    "shares": 1751267300.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2481",
-    "ticker": "2481.TW",
-    "name": "PANJIT (強茂)",
-    "nameLocal": "強茂",
-    "industry": "반도체",
-    "shares": 382114927.0,
+    "code": "9917",
+    "ticker": "9917.TW",
+    "name": "TAIWAN SECOM (中保科)",
+    "nameLocal": "中保科",
+    "industry": "기타",
+    "shares": 473756948.0,
     "exchange": "TWSE"
    },
    {
@@ -6822,6 +6850,42 @@
     "exchange": "TWSE"
    },
    {
+    "code": "8021",
+    "ticker": "8021.TW",
+    "name": "Topoint (尖點)",
+    "nameLocal": "尖點",
+    "industry": "기타 전자",
+    "shares": 147088074.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2467",
+    "ticker": "2467.TW",
+    "name": "C SUN (志聖)",
+    "nameLocal": "志聖",
+    "industry": "전자부품",
+    "shares": 161513684.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4979",
+    "ticker": "4979.TWO",
+    "name": "華星光",
+    "nameLocal": "華星光",
+    "industry": "통신·네트워크",
+    "shares": 142802027.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2258",
+    "ticker": "2258.TW",
+    "name": "Foxtron (鴻華先進-創)",
+    "nameLocal": "鴻華先進-創",
+    "industry": "자동차",
+    "shares": 1751267300.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "2597",
     "ticker": "2597.TW",
     "name": "REC (潤弘)",
@@ -6831,31 +6895,13 @@
     "exchange": "TWSE"
    },
    {
-    "code": "3131",
-    "ticker": "3131.TWO",
-    "name": "弘塑",
-    "nameLocal": "弘塑",
+    "code": "3450",
+    "ticker": "3450.TW",
+    "name": "ELASER (聯鈞)",
+    "nameLocal": "聯鈞",
     "industry": "반도체",
-    "shares": 29831623.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "9917",
-    "ticker": "9917.TW",
-    "name": "TAIWAN SECOM (中保科)",
-    "nameLocal": "中保科",
-    "industry": "기타",
-    "shares": 473756948.0,
+    "shares": 145681382.0,
     "exchange": "TWSE"
-   },
-   {
-    "code": "7734",
-    "ticker": "7734.TWO",
-    "name": "印能科技",
-    "nameLocal": "印能科技",
-    "industry": "반도체",
-    "shares": 28000000.0,
-    "exchange": "TPEx"
    },
    {
     "code": "2923",
@@ -6867,21 +6913,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "1477",
-    "ticker": "1477.TW",
-    "name": "Makalot (聚陽)",
-    "nameLocal": "聚陽",
-    "industry": "섬유",
-    "shares": 246693713.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2352",
-    "ticker": "2352.TW",
-    "name": "Qisda (佳世達)",
-    "nameLocal": "佳世達",
-    "industry": "컴퓨터·주변기기",
-    "shares": 1580506505.0,
+    "code": "6214",
+    "ticker": "6214.TW",
+    "name": "SYSTEX (精誠)",
+    "nameLocal": "精誠",
+    "industry": "정보서비스",
+    "shares": 272243066.0,
     "exchange": "TWSE"
    },
    {
@@ -6894,58 +6931,22 @@
     "exchange": "TWSE"
    },
    {
-    "code": "1907",
-    "ticker": "1907.TW",
-    "name": "YFY (永豐餘)",
-    "nameLocal": "永豐餘",
-    "industry": "제지",
-    "shares": 1660371495.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "7828",
-    "ticker": "7828.TWO",
-    "name": "創新服務",
-    "nameLocal": "創新服務",
+    "code": "6182",
+    "ticker": "6182.TWO",
+    "name": "合晶",
+    "nameLocal": "合晶",
     "industry": "반도체",
-    "shares": 40531911.0,
+    "shares": 625305662.0,
     "exchange": "TPEx"
    },
    {
-    "code": "1773",
-    "ticker": "1773.TW",
-    "name": "SHINY  CHEMICAL (勝一)",
-    "nameLocal": "勝一",
-    "industry": "화학",
-    "shares": 300000000.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "5522",
-    "ticker": "5522.TW",
-    "name": "Farglory (遠雄)",
-    "nameLocal": "遠雄",
-    "industry": "건설·건자재",
-    "shares": 781596241.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3363",
-    "ticker": "3363.TWO",
-    "name": "上詮",
-    "nameLocal": "上詮",
-    "industry": "통신·네트워크",
-    "shares": 113640567.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "3583",
-    "ticker": "3583.TW",
-    "name": "Scientech (辛耘)",
-    "nameLocal": "辛耘",
+    "code": "3131",
+    "ticker": "3131.TWO",
+    "name": "弘塑",
+    "nameLocal": "弘塑",
     "industry": "반도체",
-    "shares": 83858644.0,
-    "exchange": "TWSE"
+    "shares": 29831623.0,
+    "exchange": "TPEx"
    },
    {
     "code": "1785",
@@ -6957,22 +6958,40 @@
     "exchange": "TPEx"
    },
    {
-    "code": "6472",
-    "ticker": "6472.TW",
-    "name": "Bora (保瑞)",
-    "nameLocal": "保瑞",
-    "industry": "바이오·의료",
-    "shares": 128019122.0,
+    "code": "1907",
+    "ticker": "1907.TW",
+    "name": "YFY (永豐餘)",
+    "nameLocal": "永豐餘",
+    "industry": "제지",
+    "shares": 1660371495.0,
     "exchange": "TWSE"
    },
    {
-    "code": "6870",
-    "ticker": "6870.TWO",
-    "name": "騰雲",
-    "nameLocal": "騰雲",
-    "industry": "디지털·클라우드",
-    "shares": 113270200.0,
+    "code": "7734",
+    "ticker": "7734.TWO",
+    "name": "印能科技",
+    "nameLocal": "印能科技",
+    "industry": "반도체",
+    "shares": 28000000.0,
     "exchange": "TPEx"
+   },
+   {
+    "code": "7828",
+    "ticker": "7828.TWO",
+    "name": "創新服務",
+    "nameLocal": "創新服務",
+    "industry": "반도체",
+    "shares": 40531911.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "3042",
+    "ticker": "3042.TW",
+    "name": "TXC (晶技)",
+    "nameLocal": "晶技",
+    "industry": "전자부품",
+    "shares": 342992971.0,
+    "exchange": "TWSE"
    },
    {
     "code": "1319",
@@ -6984,30 +7003,30 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2486",
-    "ticker": "2486.TW",
-    "name": "I-CHIUN (一詮)",
-    "nameLocal": "一詮",
-    "industry": "광전자",
-    "shares": 240482510.0,
+    "code": "1773",
+    "ticker": "1773.TW",
+    "name": "SHINY  CHEMICAL (勝一)",
+    "nameLocal": "勝一",
+    "industry": "화학",
+    "shares": 300000000.0,
     "exchange": "TWSE"
    },
    {
-    "code": "8926",
-    "ticker": "8926.TW",
-    "name": "TCC (台汽電)",
-    "nameLocal": "台汽電",
-    "industry": "석유·가스·전력",
-    "shares": 830282000.0,
+    "code": "1795",
+    "ticker": "1795.TW",
+    "name": "Lotus Pharm (美時)",
+    "nameLocal": "美時",
+    "industry": "바이오·의료",
+    "shares": 270035257.0,
     "exchange": "TWSE"
    },
    {
-    "code": "8112",
-    "ticker": "8112.TW",
-    "name": "Supreme (至上)",
-    "nameLocal": "至上",
-    "industry": "전자 유통",
-    "shares": 565293058.0,
+    "code": "3035",
+    "ticker": "3035.TW",
+    "name": "Faraday (智原)",
+    "nameLocal": "智原",
+    "industry": "반도체",
+    "shares": 260550313.0,
     "exchange": "TWSE"
    },
    {
@@ -7020,66 +7039,48 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2312",
-    "ticker": "2312.TW",
-    "name": "KINPO (金寶)",
-    "nameLocal": "金寶",
-    "industry": "기타 전자",
-    "shares": 1505953211.0,
+    "code": "2481",
+    "ticker": "2481.TW",
+    "name": "PANJIT (強茂)",
+    "nameLocal": "強茂",
+    "industry": "반도체",
+    "shares": 382114927.0,
     "exchange": "TWSE"
    },
    {
-    "code": "9941",
-    "ticker": "9941.TW",
-    "name": "TAC (裕融)",
-    "nameLocal": "裕融",
-    "industry": "기타",
-    "shares": 587149073.0,
+    "code": "8926",
+    "ticker": "8926.TW",
+    "name": "TCC (台汽電)",
+    "nameLocal": "台汽電",
+    "industry": "석유·가스·전력",
+    "shares": 830282000.0,
     "exchange": "TWSE"
    },
    {
-    "code": "2539",
-    "ticker": "2539.TW",
-    "name": "SAKURAD (櫻花建)",
-    "nameLocal": "櫻花建",
+    "code": "2352",
+    "ticker": "2352.TW",
+    "name": "Qisda (佳世達)",
+    "nameLocal": "佳世達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 1580506505.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "4919",
+    "ticker": "4919.TW",
+    "name": "NTC (新唐)",
+    "nameLocal": "新唐",
+    "industry": "반도체",
+    "shares": 452397767.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5522",
+    "ticker": "5522.TW",
+    "name": "Farglory (遠雄)",
+    "nameLocal": "遠雄",
     "industry": "건설·건자재",
-    "shares": 1455585149.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6271",
-    "ticker": "6271.TW",
-    "name": "THEIL (同欣電)",
-    "nameLocal": "同欣電",
-    "industry": "반도체",
-    "shares": 209058024.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4763",
-    "ticker": "4763.TW",
-    "name": "ACE (材料*-KY)",
-    "nameLocal": "材料*-KY",
-    "industry": "화학",
-    "shares": 989146670.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4991",
-    "ticker": "4991.TWO",
-    "name": "環宇-KY",
-    "nameLocal": "環宇-KY",
-    "industry": "반도체",
-    "shares": 121363372.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "1795",
-    "ticker": "1795.TW",
-    "name": "Lotus Pharm (美時)",
-    "nameLocal": "美時",
-    "industry": "바이오·의료",
-    "shares": 270035257.0,
+    "shares": 781596241.0,
     "exchange": "TWSE"
    },
    {
@@ -7092,57 +7093,57 @@
     "exchange": "TWSE"
    },
    {
-    "code": "3163",
-    "ticker": "3163.TWO",
-    "name": "波若威",
-    "nameLocal": "波若威",
-    "industry": "통신·네트워크",
-    "shares": 94635370.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "3563",
-    "ticker": "3563.TW",
-    "name": "MACHVISION (牧德)",
-    "nameLocal": "牧德",
-    "industry": "광전자",
-    "shares": 63960858.0,
+    "code": "4763",
+    "ticker": "4763.TW",
+    "name": "ACE (材料*-KY)",
+    "nameLocal": "材料*-KY",
+    "industry": "화학",
+    "shares": 989146670.0,
     "exchange": "TWSE"
    },
    {
-    "code": "6672",
-    "ticker": "6672.TW",
-    "name": "Ventec (騰輝電子-KY)",
-    "nameLocal": "騰輝電子-KY",
-    "industry": "전자부품",
-    "shares": 82311633.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "8028",
-    "ticker": "8028.TW",
-    "name": "PSI (昇陽半導體)",
-    "nameLocal": "昇陽半導體",
-    "industry": "반도체",
-    "shares": 183550260.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3211",
-    "ticker": "3211.TWO",
-    "name": "順達",
-    "nameLocal": "順達",
-    "industry": "컴퓨터·주변기기",
-    "shares": 155449021.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2540",
-    "ticker": "2540.TW",
-    "name": "JSL (愛山林)",
-    "nameLocal": "愛山林",
+    "code": "2539",
+    "ticker": "2539.TW",
+    "name": "SAKURAD (櫻花建)",
+    "nameLocal": "櫻花建",
     "industry": "건설·건자재",
-    "shares": 944873965.0,
+    "shares": 1455585149.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9941",
+    "ticker": "9941.TW",
+    "name": "TAC (裕融)",
+    "nameLocal": "裕融",
+    "industry": "기타",
+    "shares": 587149073.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3363",
+    "ticker": "3363.TWO",
+    "name": "上詮",
+    "nameLocal": "上詮",
+    "industry": "통신·네트워크",
+    "shares": 113640567.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "8112",
+    "ticker": "8112.TW",
+    "name": "Supreme (至上)",
+    "nameLocal": "至上",
+    "industry": "전자 유통",
+    "shares": 565293058.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2312",
+    "ticker": "2312.TW",
+    "name": "KINPO (金寶)",
+    "nameLocal": "金寶",
+    "industry": "기타 전자",
+    "shares": 1505953211.0,
     "exchange": "TWSE"
    },
    {
@@ -7155,13 +7156,31 @@
     "exchange": "TWSE"
    },
    {
-    "code": "3090",
-    "ticker": "3090.TW",
-    "name": "NDB (日電貿)",
-    "nameLocal": "日電貿",
-    "industry": "전자부품",
-    "shares": 287567150.0,
+    "code": "2540",
+    "ticker": "2540.TW",
+    "name": "JSL (愛山林)",
+    "nameLocal": "愛山林",
+    "industry": "건설·건자재",
+    "shares": 944873965.0,
     "exchange": "TWSE"
+   },
+   {
+    "code": "3163",
+    "ticker": "3163.TWO",
+    "name": "波若威",
+    "nameLocal": "波若威",
+    "industry": "통신·네트워크",
+    "shares": 94635370.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "5903",
+    "ticker": "5903.TWO",
+    "name": "全家",
+    "nameLocal": "全家",
+    "industry": "생활용품",
+    "shares": 223220000.0,
+    "exchange": "TPEx"
    },
    {
     "code": "3680",
@@ -7173,21 +7192,39 @@
     "exchange": "TPEx"
    },
    {
-    "code": "2421",
-    "ticker": "2421.TW",
-    "name": "SUNON (建準)",
-    "nameLocal": "建準",
+    "code": "6672",
+    "ticker": "6672.TW",
+    "name": "Ventec (騰輝電子-KY)",
+    "nameLocal": "騰輝電子-KY",
     "industry": "전자부품",
-    "shares": 286943669.0,
+    "shares": 82311633.0,
     "exchange": "TWSE"
    },
    {
-    "code": "5903",
-    "ticker": "5903.TWO",
-    "name": "全家",
-    "nameLocal": "全家",
-    "industry": "생활용품",
-    "shares": 223220000.0,
+    "code": "3211",
+    "ticker": "3211.TWO",
+    "name": "順達",
+    "nameLocal": "順達",
+    "industry": "컴퓨터·주변기기",
+    "shares": 155449021.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "8415",
+    "ticker": "8415.TWO",
+    "name": "大國鋼",
+    "nameLocal": "大國鋼",
+    "industry": "철강",
+    "shares": 1031500000.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "4991",
+    "ticker": "4991.TWO",
+    "name": "環宇-KY",
+    "nameLocal": "環宇-KY",
+    "industry": "반도체",
+    "shares": 121363372.0,
     "exchange": "TPEx"
    },
    {
@@ -7209,12 +7246,57 @@
     "exchange": "TWSE"
    },
    {
-    "code": "2851",
-    "ticker": "2851.TW",
-    "name": "Central Re (中再保)",
-    "nameLocal": "中再保",
-    "industry": "금융·보험",
-    "shares": 800388750.0,
+    "code": "6271",
+    "ticker": "6271.TW",
+    "name": "THEIL (同欣電)",
+    "nameLocal": "同欣電",
+    "industry": "반도체",
+    "shares": 209058024.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3583",
+    "ticker": "3583.TW",
+    "name": "Scientech (辛耘)",
+    "nameLocal": "辛耘",
+    "industry": "반도체",
+    "shares": 83858644.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3090",
+    "ticker": "3090.TW",
+    "name": "NDB (日電貿)",
+    "nameLocal": "日電貿",
+    "industry": "전자부품",
+    "shares": 287567150.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2486",
+    "ticker": "2486.TW",
+    "name": "I-CHIUN (一詮)",
+    "nameLocal": "一詮",
+    "industry": "광전자",
+    "shares": 240482510.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3563",
+    "ticker": "3563.TW",
+    "name": "MACHVISION (牧德)",
+    "nameLocal": "牧德",
+    "industry": "광전자",
+    "shares": 63960858.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2421",
+    "ticker": "2421.TW",
+    "name": "SUNON (建準)",
+    "nameLocal": "建準",
+    "industry": "전자부품",
+    "shares": 286943669.0,
     "exchange": "TWSE"
    },
    {
@@ -7227,219 +7309,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6116",
-    "ticker": "6116.TW",
-    "name": "Hannstar (彩晶)",
-    "nameLocal": "彩晶",
-    "industry": "광전자",
-    "shares": 2858654851.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6451",
-    "ticker": "6451.TW",
-    "name": "ShunSin (訊芯-KY)",
-    "nameLocal": "訊芯-KY",
-    "industry": "반도체",
-    "shares": 117853601.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "1409",
-    "ticker": "1409.TW",
-    "name": "SSFC (新纖)",
-    "nameLocal": "新纖",
-    "industry": "섬유",
-    "shares": 1618409286.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6173",
-    "ticker": "6173.TWO",
-    "name": "信昌電",
-    "nameLocal": "信昌電",
-    "industry": "전자부품",
-    "shares": 160928000.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2458",
-    "ticker": "2458.TW",
-    "name": "ELAN (義隆)",
-    "nameLocal": "義隆",
-    "industry": "반도체",
-    "shares": 303880392.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2504",
-    "ticker": "2504.TW",
-    "name": "GBM (國產)",
-    "nameLocal": "國產",
-    "industry": "건설·건자재",
-    "shares": 1180000000.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6197",
-    "ticker": "6197.TW",
-    "name": "JPC (佳必琪)",
-    "nameLocal": "佳必琪",
-    "industry": "전자부품",
-    "shares": 123439128.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3016",
-    "ticker": "3016.TW",
-    "name": "EPi (嘉晶)",
-    "nameLocal": "嘉晶",
-    "industry": "반도체",
-    "shares": 293256903.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "8415",
-    "ticker": "8415.TWO",
-    "name": "大國鋼",
-    "nameLocal": "大國鋼",
-    "industry": "철강",
-    "shares": 1031500000.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2015",
-    "ticker": "2015.TW",
-    "name": "FH (豐興)",
-    "nameLocal": "豐興",
-    "industry": "철강",
-    "shares": 581599424.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2464",
-    "ticker": "2464.TW",
-    "name": "Mirle (盟立)",
-    "nameLocal": "盟立",
-    "industry": "기타 전자",
-    "shares": 227368886.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6670",
-    "ticker": "6670.TW",
-    "name": "FSP (復盛應用)",
-    "nameLocal": "復盛應用",
-    "industry": "스포츠·레저",
-    "shares": 139386973.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "1736",
-    "ticker": "1736.TW",
-    "name": "JHT (喬山)",
-    "nameLocal": "喬山",
-    "industry": "스포츠·레저",
-    "shares": 303394617.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6592",
-    "ticker": "6592.TW",
-    "name": "HOTAI FINANCE (和潤企業)",
-    "nameLocal": "和潤企業",
-    "industry": "기타",
-    "shares": 641845008.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6023",
-    "ticker": "6023.TWO",
-    "name": "元大期貨",
-    "nameLocal": "元大期貨",
+    "code": "2851",
+    "ticker": "2851.TW",
+    "name": "Central Re (中再保)",
+    "nameLocal": "中再保",
     "industry": "금융·보험",
-    "shares": 447972732.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "8932",
-    "ticker": "8932.TWO",
-    "name": "智通*",
-    "nameLocal": "智通*",
-    "industry": "디지털·클라우드",
-    "shares": 426013152.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "9939",
-    "ticker": "9939.TW",
-    "name": "HON CHUAN (宏全)",
-    "nameLocal": "宏全",
-    "industry": "기타",
-    "shares": 295786475.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6890",
-    "ticker": "6890.TW",
-    "name": "Lai Yih (來億-KY)",
-    "nameLocal": "來億-KY",
-    "industry": "스포츠·레저",
-    "shares": 250296650.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4966",
-    "ticker": "4966.TWO",
-    "name": "譜瑞-KY",
-    "nameLocal": "譜瑞-KY",
-    "industry": "반도체",
-    "shares": 78957788.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2388",
-    "ticker": "2388.TW",
-    "name": "VIA (威盛)",
-    "nameLocal": "威盛",
-    "industry": "반도체",
-    "shares": 555955941.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "3715",
-    "ticker": "3715.TW",
-    "name": "Dynamic Holding (定穎投控)",
-    "nameLocal": "定穎投控",
-    "industry": "전자부품",
-    "shares": 283574584.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "8070",
-    "ticker": "8070.TW",
-    "name": "CHANG WAH (長華*)",
-    "nameLocal": "長華*",
-    "industry": "전자 유통",
-    "shares": 725648455.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6290",
-    "ticker": "6290.TWO",
-    "name": "良維",
-    "nameLocal": "良維",
-    "industry": "전자부품",
-    "shares": 169652410.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "2351",
-    "ticker": "2351.TW",
-    "name": "SDI (順德)",
-    "nameLocal": "順德",
-    "industry": "반도체",
-    "shares": 193734061.0,
+    "shares": 800388750.0,
     "exchange": "TWSE"
    },
    {
@@ -7452,21 +7327,66 @@
     "exchange": "TWSE"
    },
    {
-    "code": "5469",
-    "ticker": "5469.TW",
-    "name": "HSB (瀚宇博)",
-    "nameLocal": "瀚宇博",
-    "industry": "전자부품",
-    "shares": 486166000.0,
+    "code": "1409",
+    "ticker": "1409.TW",
+    "name": "SSFC (新纖)",
+    "nameLocal": "新纖",
+    "industry": "섬유",
+    "shares": 1618409286.0,
     "exchange": "TWSE"
    },
    {
-    "code": "3010",
-    "ticker": "3010.TW",
-    "name": "WAH LEE (華立)",
-    "nameLocal": "華立",
-    "industry": "전자 유통",
-    "shares": 259436817.0,
+    "code": "2015",
+    "ticker": "2015.TW",
+    "name": "FH (豐興)",
+    "nameLocal": "豐興",
+    "industry": "철강",
+    "shares": 581599424.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6116",
+    "ticker": "6116.TW",
+    "name": "Hannstar (彩晶)",
+    "nameLocal": "彩晶",
+    "industry": "광전자",
+    "shares": 2858654851.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6670",
+    "ticker": "6670.TW",
+    "name": "FSP (復盛應用)",
+    "nameLocal": "復盛應用",
+    "industry": "스포츠·레저",
+    "shares": 139386973.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2458",
+    "ticker": "2458.TW",
+    "name": "ELAN (義隆)",
+    "nameLocal": "義隆",
+    "industry": "반도체",
+    "shares": 303880392.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8028",
+    "ticker": "8028.TW",
+    "name": "PSI (昇陽半導體)",
+    "nameLocal": "昇陽半導體",
+    "industry": "반도체",
+    "shares": 183550260.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6592",
+    "ticker": "6592.TW",
+    "name": "HOTAI FINANCE (和潤企業)",
+    "nameLocal": "和潤企業",
+    "industry": "기타",
+    "shares": 641845008.0,
     "exchange": "TWSE"
    },
    {
@@ -7479,6 +7399,87 @@
     "exchange": "TWSE"
    },
    {
+    "code": "2504",
+    "ticker": "2504.TW",
+    "name": "GBM (國產)",
+    "nameLocal": "國產",
+    "industry": "건설·건자재",
+    "shares": 1180000000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6023",
+    "ticker": "6023.TWO",
+    "name": "元大期貨",
+    "nameLocal": "元大期貨",
+    "industry": "금융·보험",
+    "shares": 447972732.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6890",
+    "ticker": "6890.TW",
+    "name": "Lai Yih (來億-KY)",
+    "nameLocal": "來億-KY",
+    "industry": "스포츠·레저",
+    "shares": 250296650.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "9939",
+    "ticker": "9939.TW",
+    "name": "HON CHUAN (宏全)",
+    "nameLocal": "宏全",
+    "industry": "기타",
+    "shares": 295786475.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "5469",
+    "ticker": "5469.TW",
+    "name": "HSB (瀚宇博)",
+    "nameLocal": "瀚宇博",
+    "industry": "전자부품",
+    "shares": 486166000.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8070",
+    "ticker": "8070.TW",
+    "name": "CHANG WAH (長華*)",
+    "nameLocal": "長華*",
+    "industry": "전자 유통",
+    "shares": 725648455.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2464",
+    "ticker": "2464.TW",
+    "name": "Mirle (盟立)",
+    "nameLocal": "盟立",
+    "industry": "기타 전자",
+    "shares": 227368886.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "8932",
+    "ticker": "8932.TWO",
+    "name": "智通*",
+    "nameLocal": "智通*",
+    "industry": "디지털·클라우드",
+    "shares": 426013152.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "1736",
+    "ticker": "1736.TW",
+    "name": "JHT (喬山)",
+    "nameLocal": "喬山",
+    "industry": "스포츠·레저",
+    "shares": 303394617.0,
+    "exchange": "TWSE"
+   },
+   {
     "code": "8422",
     "ticker": "8422.TW",
     "name": "Cleanaway (可寧衛*)",
@@ -7488,30 +7489,39 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6282",
-    "ticker": "6282.TW",
-    "name": "Acbel (康舒)",
-    "nameLocal": "康舒",
+    "code": "6173",
+    "ticker": "6173.TWO",
+    "name": "信昌電",
+    "nameLocal": "信昌電",
     "industry": "전자부품",
-    "shares": 856100705.0,
-    "exchange": "TWSE"
+    "shares": 160928000.0,
+    "exchange": "TPEx"
    },
    {
-    "code": "8016",
-    "ticker": "8016.TW",
-    "name": "Sitronix (矽創)",
-    "nameLocal": "矽創",
+    "code": "4966",
+    "ticker": "4966.TWO",
+    "name": "譜瑞-KY",
+    "nameLocal": "譜瑞-KY",
     "industry": "반도체",
-    "shares": 120136876.0,
+    "shares": 78957788.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "6451",
+    "ticker": "6451.TW",
+    "name": "ShunSin (訊芯-KY)",
+    "nameLocal": "訊芯-KY",
+    "industry": "반도체",
+    "shares": 117853601.0,
     "exchange": "TWSE"
    },
    {
-    "code": "6491",
-    "ticker": "6491.TW",
-    "name": "PEGAVISION (晶碩)",
-    "nameLocal": "晶碩",
-    "industry": "바이오·의료",
-    "shares": 78000000.0,
+    "code": "3016",
+    "ticker": "3016.TW",
+    "name": "EPi (嘉晶)",
+    "nameLocal": "嘉晶",
+    "industry": "반도체",
+    "shares": 293256903.0,
     "exchange": "TWSE"
    },
    {
@@ -7524,12 +7534,75 @@
     "exchange": "TWSE"
    },
    {
-    "code": "7822",
-    "ticker": "7822.TW",
-    "name": "V5 TECHNOLOGIES (倍利科)",
-    "nameLocal": "倍利科",
+    "code": "4772",
+    "ticker": "4772.TWO",
+    "name": "台特化",
+    "nameLocal": "台特化",
+    "industry": "화학",
+    "shares": 147681552.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "8016",
+    "ticker": "8016.TW",
+    "name": "Sitronix (矽創)",
+    "nameLocal": "矽創",
     "industry": "반도체",
-    "shares": 45560763.0,
+    "shares": 120136876.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "2388",
+    "ticker": "2388.TW",
+    "name": "VIA (威盛)",
+    "nameLocal": "威盛",
+    "industry": "반도체",
+    "shares": 555955941.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6290",
+    "ticker": "6290.TWO",
+    "name": "良維",
+    "nameLocal": "良維",
+    "industry": "전자부품",
+    "shares": 169652410.0,
+    "exchange": "TPEx"
+   },
+   {
+    "code": "2548",
+    "ticker": "2548.TW",
+    "name": "HUAKU (華固)",
+    "nameLocal": "華固",
+    "industry": "건설·건자재",
+    "shares": 335704631.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3715",
+    "ticker": "3715.TW",
+    "name": "Dynamic Holding (定穎投控)",
+    "nameLocal": "定穎投控",
+    "industry": "전자부품",
+    "shares": 283574584.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "3010",
+    "ticker": "3010.TW",
+    "name": "WAH LEE (華立)",
+    "nameLocal": "華立",
+    "industry": "전자 유통",
+    "shares": 259436817.0,
+    "exchange": "TWSE"
+   },
+   {
+    "code": "6282",
+    "ticker": "6282.TW",
+    "name": "Acbel (康舒)",
+    "nameLocal": "康舒",
+    "industry": "전자부품",
+    "shares": 856100705.0,
     "exchange": "TWSE"
    },
    {
@@ -7542,75 +7615,12 @@
     "exchange": "TWSE"
    },
    {
-    "code": "6456",
-    "ticker": "6456.TW",
-    "name": "GIS (GIS-KY)",
-    "nameLocal": "GIS-KY",
-    "industry": "광전자",
-    "shares": 337939800.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "7795",
-    "ticker": "7795.TW",
-    "name": "EPM (長廣)",
-    "nameLocal": "長廣",
-    "industry": "전자부품",
-    "shares": 78828500.0,
-    "exchange": "TWSE"
-   },
-   {
     "code": "2498",
     "ticker": "2498.TW",
     "name": "HTC (宏達電)",
     "nameLocal": "宏達電",
     "industry": "통신·네트워크",
     "shares": 836097086.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "6715",
-    "ticker": "6715.TW",
-    "name": "Lintes (嘉基)",
-    "nameLocal": "嘉基",
-    "industry": "전자부품",
-    "shares": 74274026.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2472",
-    "ticker": "2472.TW",
-    "name": "LELON (立隆電)",
-    "nameLocal": "立隆電",
-    "industry": "전자부품",
-    "shares": 164735137.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2849",
-    "ticker": "2849.TW",
-    "name": "EnTie Bank (安泰銀)",
-    "nameLocal": "安泰銀",
-    "industry": "금융·보험",
-    "shares": 1957609349.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4772",
-    "ticker": "4772.TWO",
-    "name": "台特化",
-    "nameLocal": "台特化",
-    "industry": "화학",
-    "shares": 147681552.0,
-    "exchange": "TPEx"
-   },
-   {
-    "code": "1434",
-    "ticker": "1434.TW",
-    "name": "F.T.C (福懋)",
-    "nameLocal": "福懋",
-    "industry": "섬유",
-    "shares": 1684664637.0,
     "exchange": "TWSE"
    },
    {
@@ -7623,12 +7633,12 @@
     "exchange": "TPEx"
    },
    {
-    "code": "2607",
-    "ticker": "2607.TW",
-    "name": "EITC (榮運)",
-    "nameLocal": "榮運",
-    "industry": "해운",
-    "shares": 533570547.0,
+    "code": "1215",
+    "ticker": "1215.TW",
+    "name": "CPE (卜蜂)",
+    "nameLocal": "卜蜂",
+    "industry": "식품",
+    "shares": 294790098.0,
     "exchange": "TWSE"
    },
    {
@@ -7639,76 +7649,13 @@
     "industry": "무역·백화점",
     "shares": 1416940589.0,
     "exchange": "TWSE"
-   },
-   {
-    "code": "2201",
-    "ticker": "2201.TW",
-    "name": "YL (裕隆)",
-    "nameLocal": "裕隆",
-    "industry": "자동차",
-    "shares": 1070001251.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "4583",
-    "ticker": "4583.TW",
-    "name": "APEXDYNA (台灣精銳)",
-    "nameLocal": "台灣精銳",
-    "industry": "전기기계",
-    "shares": 80171351.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "1215",
-    "ticker": "1215.TW",
-    "name": "CPE (卜蜂)",
-    "nameLocal": "卜蜂",
-    "industry": "식품",
-    "shares": 294790098.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "1314",
-    "ticker": "1314.TW",
-    "name": "CPDC (中石化)",
-    "nameLocal": "中石化",
-    "industry": "플라스틱",
-    "shares": 3784850130.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2897",
-    "ticker": "2897.TW",
-    "name": "O-Bank (王道銀行)",
-    "nameLocal": "王道銀行",
-    "industry": "금융·보험",
-    "shares": 2805357878.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "2548",
-    "ticker": "2548.TW",
-    "name": "HUAKU (華固)",
-    "nameLocal": "華固",
-    "industry": "건설·건자재",
-    "shares": 335704631.0,
-    "exchange": "TWSE"
-   },
-   {
-    "code": "7751",
-    "ticker": "7751.TWO",
-    "name": "竑騰",
-    "nameLocal": "竑騰",
-    "industry": "반도체",
-    "shares": 26888600.0,
-    "exchange": "TPEx"
    }
   ],
   "info": {
    "source": "대만증권거래소·장외시장 공식 공개자료(OpenAPI)",
-   "count": 309,
+   "count": 292,
    "notes": [
-    "장외(TPEx) 897종목 중 시가총액 계산 873종목"
+    "장외(TPEx) 897종목 중 시가총액 계산 883종목"
    ]
   }
  }
