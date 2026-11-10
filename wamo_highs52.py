@@ -41,8 +41,13 @@ KST = timezone(timedelta(hours=9))
 
 KR_MIN_CAP = 1e11      # 1,000억 원
 US_MIN_CAP = 2e9       # 20억 달러
+# 나스닥 목록의 시총은 '목록을 받은 때의 가격' 기준이라, 그날 크게 오른 경계 종목(11/6 ARHS·REPL·VIR, 시총 20억 달러 안팎)이
+# 빠졌다. 그래서 기준의 70%까지 넓게 받은 뒤, 그날 종가로 시총을 다시 계산해 기준을 본다(노션은 그날 마감 시총).
+US_CAP_SLACK = 0.7
 TOUCH = 0.9999         # 노션 기록과 같은 허용치(소수점 반올림 차이)
-MIN_PRIOR_BARS = 20
+# 새로 상장한 종목(MSG Rangers 등)은 1년치가 없어도 있는 기간의 최고가로 본다. 노션 기록(트레이딩뷰)이 그렇게
+# 센다(2026-11-03·04·06·09 노션에만 MSGR). 5거래일보다 짧으면 판단하지 않는다.
+MIN_PRIOR_BARS = 5
 INDEX = {'KR': '^KS11', 'US': '^GSPC'}
 LABEL = {'KR': '한국', 'US': '미국'}
 US_EXCLUDE = {'BRK.A', 'BRK-A'}
@@ -143,6 +148,7 @@ def universe_us(fetch=get_json):
         key = company_key(name) or symbol
         caps[key] = max(caps.get(key, 0.0), cap)
         items.append({'code': symbol, 'yahoo': symbol.replace('.', '-'), 'name': name, 'cap': cap, 'key': key,
+                      'lastsale': r.get('lastsale'),
                       'sector': str(r.get('sector') or '').strip(), 'industry': str(r.get('industry') or '').strip()})
     # 노션 기록(트레이딩뷰)은 같은 회사의 주식 종류(LLYVA·LLYVK, FWONA·FWONK, BF.A)를 각각 센다(2026-11-06 비교).
     # 그래서 종류마다 따로 두고, 시총이 비어 있는 종류(BF.A 등)는 같은 회사 다른 종류의 시총으로 기준을 본다.
@@ -150,8 +156,15 @@ def universe_us(fetch=get_json):
     for it in items:
         key = it.pop('key')
         cap = it['cap'] or caps.get(key, 0.0)
-        if cap >= US_MIN_CAP:
+        if cap >= US_MIN_CAP * US_CAP_SLACK:
             it['cap'] = cap
+            it['minCap'] = US_MIN_CAP
+            try:
+                it['last'] = float(str(it.pop('lastsale', '') or '').replace('$', '').replace(',', '')) or None
+            except ValueError:
+                it['last'] = None
+            if it['last'] is None and cap < US_MIN_CAP:
+                continue
             out.append(it)
     return out
 
@@ -246,6 +259,14 @@ def target_day(market, now=None, fetch=get_json):
 
 
 # ------------------------------------------------------------------ run
+def day_cap(item, close):
+    """그날 종가로 다시 계산한 시총. 목록 가격(last)이 없으면 목록 시총 그대로."""
+    last = item.get('last')
+    if not last or not close:
+        return item['cap']
+    return round(item['cap'] * close / last)
+
+
 def scan(market, day, universe, fetch=get_json, workers=WORKERS):
     def work(item):
         try:
@@ -262,9 +283,13 @@ def scan(market, day, universe, fetch=get_json, workers=WORKERS):
                 missing += 1
                 continue
             hi, lo, close, chg = result
+            cap = day_cap(item, close)
+            if item.get('minCap') and cap < item['minCap']:
+                continue
             lows += bool(lo)
             if hi:
-                row = {k: item[k] for k in ('code', 'name', 'cap') if k in item}
+                row = {k: item[k] for k in ('code', 'name') if k in item}
+                row['cap'] = cap
                 row.update({k: item[k] for k in ('board', 'sector', 'industry') if item.get(k)})
                 row['close'] = round(close, 4)
                 row['chgPct'] = None if chg is None else round(chg, 2)
