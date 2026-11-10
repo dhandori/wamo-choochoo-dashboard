@@ -40,6 +40,15 @@ def chart(rows):
         'volume': [r[4] for r in rows]}]}}]}}
 
 
+class DayCapTests(unittest.TestCase):
+    def test_cap_is_rescaled_to_the_day_close(self):
+        # 목록 가격 10 → 그날 종가 11: 시총 19억 → 20.9억, 기준(20억)을 넘는다(11/6 ARHS 같은 경계 종목)
+        item = {'cap': 1.9e9, 'last': 10.0, 'minCap': 2e9}
+        self.assertGreaterEqual(h.day_cap(item, 11.0), 2e9)
+        self.assertLess(h.day_cap(item, 10.0), 2e9)
+        self.assertEqual(h.day_cap({'cap': 5}, 9.0), 5)   # 목록 가격이 없으면 그대로(한국)
+
+
 class JudgeTests(unittest.TestCase):
     def test_touching_the_one_year_high_counts(self):
         rows = bars(last_high=104.0 * 0.99995)   # 1년 최고가 104 의 0.9999 배 이상이면 신고가(노션 기록과 같은 허용치)
@@ -52,7 +61,9 @@ class JudgeTests(unittest.TestCase):
         self.assertFalse(h.judge({d: (a, b, c) for d, a, b, c, _ in rows}, DAY)[0])
 
     def test_short_history_or_missing_day_is_not_judged(self):
-        self.assertIsNone(h.judge({d: (a, b, c) for d, a, b, c, _ in bars(days=10)}, DAY))
+        self.assertIsNone(h.judge({d: (a, b, c) for d, a, b, c, _ in bars(days=4)}, DAY))
+        # 새로 상장한 종목은 5거래일 이상이면 있는 기간의 최고가로 본다(노션·트레이딩뷰와 같음)
+        self.assertIsNotNone(h.judge({d: (a, b, c) for d, a, b, c, _ in bars(days=12)}, DAY))
         self.assertIsNone(h.judge({d: (a, b, c) for d, a, b, c, _ in bars()[:-1]}, DAY))
 
     def test_halted_day_is_dropped(self):
