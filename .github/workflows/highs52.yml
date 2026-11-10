@@ -64,4 +64,4 @@ jobs:
       - name: data 브랜치에 올리기
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python3 wamo_data_branch.py publish -m '52주 신고가 공통 계산' wamo_highs52.json
+        run: python3 wamo_data_branch.py publish -m '52주 신고가 공통 계산' wamo_highs52.json wamo_highs52_universe_US.json
