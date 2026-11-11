@@ -40,22 +40,72 @@ def chart(rows):
         'volume': [r[4] for r in rows]}]}}]}}
 
 
-class UniverseCacheTests(unittest.TestCase):
-    def test_blocked_list_falls_back_to_saved_copy(self):
+NASDAQ_FILE = """Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares
+GOOGL|Alphabet Inc. - Class A Common Stock|Q|N|N|100|N|N
+GOOG|Alphabet Inc. - Class C Capital Stock|Q|N|N|100|N|N
+QQQ|Invesco QQQ Trust, Series 1|G|N|N|100|Y|N
+ZTEST|Test Stock|Q|Y|N|100|N|N
+SPAX|Some Acquisition Corp - Class A|S|N|N|100|N|N
+ABCW|ABC Corp - Warrant|S|N|N|100|N|N
+TINY|Tiny Co - Common Stock|S|N|N|100|N|N
+File Creation Time: 1110202618:01|||||||"""
+OTHER_FILE = """ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol
+BRK.B|Berkshire Hathaway Inc. Class B|N|BRK.B|N|100|N|BRK.B
+BRK.A|Berkshire Hathaway Inc. Class A|N|BRK.A|N|1|N|BRK.A
+BF.A|Brown Forman Inc Class A Common Stock|N|BF.A|N|100|N|BF.A
+BF.B|Brown Forman Inc Class B Common Stock|N|BF.B|N|100|N|BF.B
+EXR|Extra Space Storage Inc Common Stock|N|EXR|N|100|N|EXR
+ABR$D|Arbor Realty Preferred D|N|ABR-D|N|100|N|ABR-D
+SPY|SPDR S&P 500 ETF Trust|P|SPY|Y|100|N|SPY
+ARCA|Some Arca Stock|P|ARCA|N|100|N|ARCA
+File Creation Time: 1110202618:01|||||||"""
+CAPS = {'GOOGL': 3e12, 'GOOG': 3e12, 'BRK-B': 1e12, 'BF-B': 1.4e10, 'EXR': 3e10, 'TINY': 1e9}
+
+
+def fake_text(url):
+    body = NASDAQ_FILE if 'nasdaqlisted' in url else OTHER_FILE
+    return body + ''.join(f'\nF{i}|Filler {i} Common Stock|N|F{i}|N|100|N|F{i}' if 'other' in url else '' for i in range(3000))
+
+
+def fake_cap(url, **k):
+    sym = url.split('/timeseries/')[1].split('?')[0]
+    cap = CAPS.get(sym)
+    return {'timeseries': {'result': [{'trailingMarketCap': [
+        {'asOfDate': '2026-11-09', 'reportedValue': {'raw': cap}}] if cap else []}]}}
+
+
+class UniverseTests(unittest.TestCase):
+    def test_symbol_files_keep_common_stocks_and_share_classes(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            got = h.universe_us(fetch=fake_cap, text=fake_text, cache=Path(d) / 'u.json')
+        self.assertEqual(sorted(x['code'] for x in got), ['BF.A', 'BF.B', 'BRK.B', 'EXR', 'GOOG', 'GOOGL'])
+        self.assertEqual(next(x for x in got if x['code'] == 'BRK.B')['yahoo'], 'BRK-B')
+        # 시총이 비어 있는 종류(BF.A)는 같은 회사 다른 종류의 시총으로 본다(노션은 종류마다 센다)
+        self.assertEqual(next(x for x in got if x['code'] == 'BF.A')['cap'], 1.4e10)
+        self.assertEqual(next(x for x in got if x['code'] == 'EXR')['capDate'], '2026-11-09')
+
+    def test_blocked_list_falls_back_to_saved_copy_and_caps_are_reused(self):
         import tempfile, urllib.error
-        rows = [{'symbol': f'S{i}', 'name': f'Co {i} Common Stock', 'marketCap': '3000000000', 'lastsale': '$10'}
-                for i in range(1200)]
+        from datetime import date
         with tempfile.TemporaryDirectory() as d:
             cache = Path(d) / 'u.json'
-            first = h.universe_us(fetch=lambda url, **k: {'data': {'rows': rows}}, cache=cache)
-            self.assertTrue(cache.exists())
+            first = h.universe_us(fetch=fake_cap, text=fake_text, cache=cache, today=date(2026, 11, 11))
+            calls = []
 
-            def blocked(url, **k):
+            def counting(url, **k):
+                calls.append(url)
+                return fake_cap(url)
+
+            def blocked(url):
                 raise urllib.error.HTTPError(url, 403, 'Forbidden', None, None)
-            self.assertEqual(h.universe_us(fetch=blocked, cache=cache), first)
+            again = h.universe_us(fetch=counting, text=blocked, cache=cache, today=date(2026, 11, 12))
+            self.assertEqual(again, first)
+            # 다음 날에는 기준 근처(10~40억 달러) 종목만 다시 받는다: TINY(10억)
+            self.assertEqual([u.split('/timeseries/')[1].split('?')[0] for u in calls], ['TINY'])
             cache.unlink()
             with self.assertRaises(urllib.error.HTTPError):
-                h.universe_us(fetch=blocked, cache=cache)
+                h.universe_us(fetch=fake_cap, text=blocked, cache=cache)
 
 
 class DayCapTests(unittest.TestCase):
@@ -112,22 +162,6 @@ class UniverseTests(unittest.TestCase):
         got = h.universe_kr(fetch=self.naver({('KOSPI', 1): page}))
         self.assertEqual([x['code'] for x in got], ['005930', '000660'])
         self.assertEqual(got[0]['yahoo'], '005930.KS')
-
-    def test_us_keeps_each_share_class_like_notion_and_reads_slash_tickers(self):
-        # 2026-11-06: 노션(트레이딩뷰)은 LLYVA·LLYVK, FWONA·FWONK, BF.A 를 각각 센다. 시총이 빈 종류는 같은 회사 시총으로 본다.
-        rows = [{'symbol': s, 'name': n, 'marketCap': c} for s, n, c in (
-            ('GOOGL', 'Alphabet Inc. Class A Common Stock', '3e12'), ('GOOG', 'Alphabet Inc. Class C Capital Stock', '3e12'),
-            ('BRK/B', 'Berkshire Hathaway Inc. Class B', '1e12'), ('BRK/A', 'Berkshire Hathaway Inc. Class A', '1e12'),
-            ('BF/A', 'Brown Forman Corporation Class A', ''), ('BF/B', 'Brown Forman Corporation Class B', '1.4e10'),
-            ('EXR', 'Extra Space Storage Inc Common Stock', '3e10'), ('SPAX', 'Some SPAC Corp', '3e9'),
-            ('SPY', 'SPDR S&P 500 ETF Trust', '6e11'), ('ABC.WS', 'ABC Corp Warrant', '3e9'), ('TINY', 'Tiny Co', '1e9'))]
-        rows += [{'symbol': f'X{i}', 'name': f'Filler {i}', 'marketCap': '1'} for i in range(1000)]
-        got = h.universe_us(fetch=lambda url, **k: {'data': {'rows': rows}})
-        codes = sorted(x['code'] for x in got)
-        self.assertEqual(codes, ['BF.A', 'BF.B', 'BRK.B', 'EXR', 'GOOG', 'GOOGL'])
-        self.assertEqual(next(x for x in got if x['code'] == 'BRK.B')['yahoo'], 'BRK-B')
-        self.assertEqual(next(x for x in got if x['code'] == 'BF.A')['cap'], 1.4e10)
-        self.assertTrue(all('key' not in x for x in got))
 
     def test_early_result_is_rechecked_once_after_close_settles(self):
         import tempfile, json as J
