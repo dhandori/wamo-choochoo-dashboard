@@ -39,7 +39,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 22  # 2026-11-11 FTD Day 1: 내린 날 Day 1은 거래량 전일 1.5배 이상
+TREND_VERSION = 23  # 2026-11-11 신용잔고·반대매매 카드(KR)
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -1373,6 +1373,16 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if secondary and bench2:
         known[sym2] = (label2, bench2)
     strip = index_strip(market, asof, known, fetch_network, index_fetcher)
+    credit = None
+    if market == 'KR':
+        # 신용잔고·반대매매(금융투자협회). 실패해도 다른 신호는 그대로 만든다.
+        try:
+            import wamo_credit
+            kospi = {r['date']: r.get('close') for r in ftd_history.get('^KS11', []) if r.get('close')}
+            credit = wamo_credit.build(root, kospi=kospi, fetch_network=fetch_network)
+        except Exception as exc:  # noqa: BLE001
+            print(f'신용잔고·반대매매 카드 생략: {type(exc).__name__}: {exc}', flush=True)
+
     return {
         'asOf': asof, 'universe': len(universe), 'version': TREND_VERSION,
         'strip': strip,
@@ -1384,6 +1394,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'weather': {**weather(idx, dist, br, hl, synthetic, secondary, liq), 'distribution': dist, 'breadth': br, 'highsLows': hl,
                     'byIndex': weather_by_index(market, universe, {**idx, 'symbol': symbol}, dist, secondary, liq, synthetic)},
         'liquidity': liq,
+        'credit': credit,
         'volumeSchedule': volume_schedule(history_meta.get('_confirmChecks', {}).get(market)),
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
                       'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
@@ -1431,7 +1442,8 @@ def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
     return result, built
 
 
-OUTPUTS = [OUTPUT, SIGNAL_LOG, EARNINGS_CACHE, 'wamo_ftd_history.json', 'wamo_chart_KR.json', 'wamo_chart_US.json']
+OUTPUTS = [OUTPUT, SIGNAL_LOG, EARNINGS_CACHE, 'wamo_ftd_history.json', 'wamo_chart_KR.json', 'wamo_chart_US.json',
+           'wamo_credit_KR.json']
 
 
 if __name__ == '__main__':

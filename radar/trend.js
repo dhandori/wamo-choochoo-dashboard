@@ -399,7 +399,7 @@ function weatherDetail(b, market) {
   } else c4.append(el('p', '자료 없음'));
   c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교해요.'));
   grid.append(c1, c2, c3, c4);
-  wrap.append(factors, liquidityCard(b, market), grid);
+  wrap.append(factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : []), grid);
   return wrap;
 }
 
@@ -569,6 +569,91 @@ function liquidityCard(b, market) {
   if (market === 'US') { const sn = scheduleNote(b.volumeSchedule); if (sn) card.append(sn); }
   return card;
 }
+
+// ------------------------------------------------------------ 신용잔고와 반대매매 (한국, 금융투자협회)
+// 2026-11-11 사용자 요청. 파란 선 = 신용융자 잔고(조 원, 오른쪽 눈금), 막대 = 반대매매 금액(억 원, 왼쪽 눈금),
+// 주황 막대 = 그날 반대매매가 직전 20거래일 평균의 1.5배 이상(급증일). 코스피 겹쳐 보기는 회색 점선(눈금 없음).
+let crRange = '1Y', crKospi = false;
+const jo = v => isNum(v) ? fmt(v / 10000, 1) : '—';   // 억 원 → 조 원
+const eokStr = v => isNum(v) ? `${Math.round(v).toLocaleString('ko-KR')}억 원` : '—';
+function creditChart(series, showKospi, onPick) {
+  const narrow = window.innerWidth < 760;
+  const W = narrow ? 420 : 1000, H = narrow ? 260 : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 40 : 52, t: 26, b: 24 };
+  const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b, n = series.length, slot = plotW / n, bw = Math.max(1, slot * 0.7);
+  const fMax = Math.max(100, ...series.map(p => p.forced || 0));
+  const step = fMax > 1200 ? 400 : fMax > 600 ? 200 : 100, fTop = Math.ceil(fMax / step) * step;
+  const cs = series.map(p => p.credit).filter(isNum), cLo = Math.min(...cs), cHi = Math.max(...cs);
+  const cStep = (cHi - cLo) / 10000 > 8 ? 40000 : 20000;
+  const cMin = Math.floor(cLo / cStep) * cStep, cMax = Math.max(cMin + cStep, Math.ceil(cHi / cStep) * cStep);
+  const x = k => pad.l + slot * (k + 0.5), yF = v => pad.t + (1 - v / fTop) * plotH, yC = v => pad.t + (1 - (v - cMin) / (cMax - cMin)) * plotH;
+  const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg cr-svg', role: 'img', 'aria-label': '신용융자 잔고와 반대매매 금액' });
+  for (let t = 0; t <= fTop + 1e-9; t += step) {
+    node('line', { x1: pad.l, x2: pad.l + plotW, y1: yF(t), y2: yF(t), class: 'pc-grid' }, svg);
+    text(svg, pad.l - 6, yF(t) + 4, t.toLocaleString('ko-KR'), { class: 'pc-axis', 'text-anchor': 'end' });
+  }
+  for (let t = cMin; t <= cMax + 1e-9; t += cStep) text(svg, W - pad.r + 6, yC(t) + 4, fmt(t / 10000, 0), { class: 'pc-axis cr-axis-credit' });
+  text(svg, pad.l - 6, 11, '억 원', { class: 'pc-axis cr-unit', 'text-anchor': 'end' });
+  text(svg, W - pad.r + 6, 11, '조 원', { class: 'pc-axis cr-unit cr-axis-credit' });
+  series.forEach((p, k) => { if (isNum(p.forced) && p.forced > 0) node('rect', { x: x(k) - bw / 2, y: yF(p.forced), width: bw, height: Math.max(1, yF(0) - yF(p.forced)), class: `cr-bar${p.spike ? ' spike' : ''}` }, svg); });
+  const line = series.map((p, k) => isNum(p.credit) ? `${x(k)},${yC(p.credit)}` : null).filter(Boolean);
+  if (line.length > 1) node('polyline', { points: line.join(' '), class: 'cr-credit' }, svg);
+  if (showKospi) {
+    const ks = series.map(p => p.kospi).filter(isNum);
+    if (ks.length > 1) {
+      const kLo = Math.min(...ks), kHi = Math.max(...ks), yK = v => pad.t + 6 + (1 - (v - kLo) / ((kHi - kLo) || 1)) * (plotH - 12);
+      const pts = series.map((p, k) => isNum(p.kospi) ? `${x(k)},${yK(p.kospi)}` : null).filter(Boolean);
+      node('polyline', { points: pts.join(' '), class: 'cr-kospi' }, svg);
+    }
+  }
+  const marks = narrow ? [0, Math.floor((n - 1) / 2), n - 1] : [0, Math.floor((n - 1) / 4), Math.floor((n - 1) / 2), Math.floor(3 * (n - 1) / 4), n - 1];
+  marks.forEach((k, j) => text(svg, x(k), H - 6, crRange === '1Y' ? md(series[k].date) : series[k].date.slice(2, 7).replace('-', '.'), { class: 'pc-axis', 'text-anchor': j === 0 ? 'start' : j === marks.length - 1 ? 'end' : 'middle' }));
+  const cursor = node('line', { x1: 0, x2: 0, y1: pad.t, y2: pad.t + plotH, class: 'cr-cursor', visibility: 'hidden' }, svg);
+  const hit = node('rect', { x: pad.l, y: pad.t, width: plotW, height: plotH, fill: 'transparent', class: 'cr-hit' }, svg);
+  const pick = e => {
+    const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * W;
+    const k = Math.max(0, Math.min(n - 1, Math.floor((px - pad.l) / slot)));
+    cursor.setAttribute('x1', x(k)); cursor.setAttribute('x2', x(k)); cursor.setAttribute('visibility', 'visible');
+    onPick(series[k]);
+  };
+  hit.addEventListener('pointermove', pick); hit.addEventListener('pointerdown', pick);
+  hit.addEventListener('pointerleave', () => { cursor.setAttribute('visibility', 'hidden'); onPick(series[n - 1]); });
+  return svg;
+}
+function creditCard(b) {
+  const c = b.credit, card = el('article', null, 'tr-card lq-card cr-card');
+  card.append(el('h3', '신용잔고와 반대매매 (빚투가 얼마나 쌓였고, 얼마나 강제로 팔렸나)'));
+  if (!c || c.status !== 'OK') { card.append(el('p', c?.note || '신용잔고·반대매매 자료는 다음 자동 갱신 때 채워져요.', 'tr-help')); return card; }
+  const L = c.latest || {}, peak = c.creditPeak;
+  const chips = el('div', null, 'cr-chips');
+  const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
+  chip(`반대매매 · ${md(c.asOf)}`, eokStr(L.forced), isNum(L.ratio) ? `직전 20거래일 평균 ${eokStr(L.avg20)}의 ${fmt(L.ratio, 2)}배${L.spike ? ' · 급증' : ''}` : '평균 계산 전', L.spike ? 'warn' : '');
+  chip('신용융자 잔고', `${jo(L.credit)}조 원`, `20거래일 ${pct(c.credit20dChangePct)}${peak && isNum(L.credit) ? ` · ${md(peak.date)} 고점 ${jo(peak.credit)}조 대비 ${pct((L.credit / peak.credit - 1) * 100)}` : ''}`, c.credit20dChangePct <= -10 ? 'down' : c.credit20dChangePct >= 10 ? 'up' : '');
+  chip('최근 1년 반대매매 급증일', `${c.yearSpikeDays}일`, `거래일 ${c.yearDays}일 중 · 최근 20거래일 ${c.recentSpikeDays}일`, c.recentSpikeDays >= 5 ? 'warn' : '');
+  card.append(chips);
+  const tools = el('div', null, 'cr-tools');
+  const holder = el('div', null, 'cr-chart'), readout = el('p', null, 'cr-readout');
+  const show = p => {
+    readout.replaceChildren(el('b', p.date.replace(/-/g, '.')), el('span', `반대매매 ${eokStr(p.forced)}${isNum(p.ratio) ? ` (20일 평균의 ${fmt(p.ratio, 2)}배)` : ''}`, p.spike ? 'warn' : ''),
+      el('span', `신용잔고 ${jo(p.credit)}조 원 (코스피 ${jo(p.creditKospi)} · 코스닥 ${jo(p.creditKosdaq)})`), el('span', `미수금 ${eokStr(p.misu)} · 반대매매 비중 ${isNum(p.forcedPct) ? fmt(p.forcedPct, 1) + '%' : '—'}`),
+      ...(crKospi && isNum(p.kospi) ? [el('span', `코스피 ${fmt(p.kospi, 2)}`)] : []));
+  };
+  const draw = () => {
+    const all = c.series || [], cut = new Date(c.asOf); cut.setFullYear(cut.getFullYear() - 1);
+    const s = crRange === '1Y' ? all.filter(p => p.date > cut.toISOString().slice(0, 10)) : all;
+    holder.replaceChildren(creditChart(s, crKospi, show)); show(s[s.length - 1]);
+    tools.querySelectorAll('button').forEach(t => t.classList.toggle('active', t.dataset.k === crRange || (t.dataset.k === 'kospi' && crKospi)));
+  };
+  [['1Y', '1년'], ['3Y', '3년']].forEach(([k, label]) => { const t = btn(label, false, () => { crRange = k; draw(); }); t.dataset.k = k; tools.append(t); });
+  const kb = btn('+ 코스피 겹쳐 보기', false, () => { crKospi = !crKospi; kb.textContent = crKospi ? '− 코스피 빼기' : '+ 코스피 겹쳐 보기'; draw(); }, 'cr-kospi-btn'); kb.dataset.k = 'kospi'; tools.append(kb);
+  const lg = el('div', null, 'pc-legend small');
+  [['cr-key-credit', '신용융자 잔고 (조 원, 오른쪽)'], ['cr-key-bar', '반대매매 금액 (억 원, 왼쪽)'], ['cr-key-spike', `20일 평균의 ${c.spikeRatio}배 이상 (급증)`], ['cr-key-kospi', '코스피 (겹쳐 보기, 눈금 없음)']].forEach(([cls, t]) => { const k = el('span', null, `pc-key ${cls}`); k.append(el('i'), el('b', t)); lg.append(k); });
+  card.append(tools, lg, holder, readout);
+  card.append(help('신용융자는 증권사에서 돈을 빌려 산 주식(빚투)의 잔고예요. 반대매매는 빌린 돈이나 미수(외상으로 산 주식) 대금을 제때 못 갚아 증권사가 강제로 판 금액이에요. 주가가 급히 빠지면 반대매매가 몰리고, 그 매도가 다시 지수를 누르기도 해요. 반대매매 급증이 몇 번 몰려 나온 뒤 잦아들면 빚이 정리됐다는 신호로 보기도 해요.'));
+  card.append(el('p', `자료: ${c.source} · ${c.note}`, 'tr-help cr-source'));
+  draw();
+  return card;
+}
+
 
 const MINI_MA = MA.filter(m => m.n === 50 || m.n === 200);
 function miniChart(item) {
