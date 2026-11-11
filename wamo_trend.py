@@ -39,7 +39,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 23  # 2026-11-11 신용잔고·반대매매 카드(KR)
+TREND_VERSION = 24  # 2026-11-11 신용잔고·투매일 카드(US)
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -1374,6 +1374,13 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         known[sym2] = (label2, bench2)
     strip = index_strip(market, asof, known, fetch_network, index_fetcher)
     credit = None
+    if market == 'US':
+        # 미국 신용잔고(FINRA)·투매일(S&P 500). 실패해도 다른 신호는 그대로 만든다.
+        try:
+            import wamo_credit_us
+            credit = wamo_credit_us.build(root, fetch_network=fetch_network)
+        except Exception as exc:  # noqa: BLE001
+            print(f'미국 신용잔고·투매일 카드 생략: {type(exc).__name__}: {exc}', flush=True)
     if market == 'KR':
         # 신용잔고·반대매매(금융투자협회). 실패해도 다른 신호는 그대로 만든다.
         try:
@@ -1443,7 +1450,7 @@ def build(root=None, markets=('KR', 'US'), fetch_network=True, now=None):
 
 
 OUTPUTS = [OUTPUT, SIGNAL_LOG, EARNINGS_CACHE, 'wamo_ftd_history.json', 'wamo_chart_KR.json', 'wamo_chart_US.json',
-           'wamo_credit_KR.json']
+           'wamo_credit_KR.json', 'wamo_credit_US.json']
 
 
 if __name__ == '__main__':

@@ -47,3 +47,21 @@ class CreditCardTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class CreditUSTest(unittest.TestCase):
+    def test_flush_day_needs_two_percent_drop_and_heavier_volume(self):
+        import wamo_credit_us as us
+        spx, d = [], date(2026, 1, 2)
+        closes = [100.0] * 30 + [97.9, 95.0]
+        vols = [1000] * 30 + [1200, 1100]
+        for c, v in zip(closes, vols):
+            while d.weekday() > 4:
+                d += timedelta(days=1)
+            spx.append({'date': d.isoformat(), 'close': c, 'volume': v})
+            d += timedelta(days=1)
+        c = us.card([['2025-12', 100.0], ['2026-01', 110.0]], spx)
+        self.assertTrue(c['series'][-2]['flush'])         # -2.1% on 1.2x volume
+        self.assertFalse(c['series'][-1]['flush'])        # -3.0% but volume only ~1.1x
+        self.assertEqual(c['margin']['month'], '2026-01')
+        self.assertEqual(c['lastFlush']['date'], c['series'][-2]['date'])

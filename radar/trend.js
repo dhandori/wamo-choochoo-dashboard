@@ -399,7 +399,7 @@ function weatherDetail(b, market) {
   } else c4.append(el('p', '자료 없음'));
   c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교해요.'));
   grid.append(c1, c2, c3, c4);
-  wrap.append(factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : []), grid);
+  wrap.append(factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : market === 'US' ? [creditCardUS(b)] : []), grid);
   return wrap;
 }
 
@@ -649,6 +649,92 @@ function creditCard(b) {
   [['cr-key-credit', '신용융자 잔고 (조 원, 오른쪽)'], ['cr-key-bar', '반대매매 금액 (억 원, 왼쪽)'], ['cr-key-spike', `20일 평균의 ${c.spikeRatio}배 이상 (급증)`], ['cr-key-kospi', '코스피 (겹쳐 보기, 눈금 없음)']].forEach(([cls, t]) => { const k = el('span', null, `pc-key ${cls}`); k.append(el('i'), el('b', t)); lg.append(k); });
   card.append(tools, lg, holder, readout);
   card.append(help('신용융자는 증권사에서 돈을 빌려 산 주식(빚투)의 잔고예요. 반대매매는 빌린 돈이나 미수(외상으로 산 주식) 대금을 제때 못 갚아 증권사가 강제로 판 금액이에요. 주가가 급히 빠지면 반대매매가 몰리고, 그 매도가 다시 지수를 누르기도 해요. 반대매매 급증이 몇 번 몰려 나온 뒤 잦아들면 빚이 정리됐다는 신호로 보기도 해요.'));
+  card.append(el('p', `자료: ${c.source} · ${c.note}`, 'tr-help cr-source'));
+  draw();
+  return card;
+}
+
+// ------------------------------------------------------------ 미국: 신용잔고(FINRA, 월별)와 투매일(S&P 500)
+// 2026-11-11 사용자 요청. 미국은 반대매매 금액이 공개되지 않아 막대는 S&P 500 하락폭, 주황은 투매일
+// (하루 -2% 이상 + 거래량 직전 20거래일 평균의 1.2배 이상). 파란 점선 = FINRA 신용융자 잔고(월말, 조 달러).
+let usRange = '1Y', usSpx = false;
+const tri = v => isNum(v) ? fmt(v / 1e6, 2) : '—';   // 백만 달러 → 조 달러
+function creditChartUS(c, series, showSpx, onPick) {
+  const narrow = window.innerWidth < 760;
+  const W = narrow ? 420 : 1000, H = narrow ? 260 : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 44 : 56, t: 26, b: 24 };
+  const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b, n = series.length, slot = plotW / n, bw = Math.max(1, slot * 0.7);
+  const dMax = Math.max(2, ...series.map(p => isNum(p.changePct) && p.changePct < 0 ? -p.changePct : 0));
+  const dTop = Math.ceil(dMax), step = dTop > 6 ? 2 : 1;
+  const x = k => pad.l + slot * (k + 0.5), yD = v => pad.t + (1 - v / dTop) * plotH;
+  const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg cr-svg', role: 'img', 'aria-label': '미국 신용융자 잔고와 S&P 500 투매일' });
+  for (let t = 0; t <= dTop + 1e-9; t += step) {
+    node('line', { x1: pad.l, x2: pad.l + plotW, y1: yD(t), y2: yD(t), class: 'pc-grid' }, svg);
+    text(svg, pad.l - 6, yD(t) + 4, t ? `-${t}%` : '0', { class: 'pc-axis', 'text-anchor': 'end' });
+  }
+  text(svg, pad.l - 6, 11, '하락폭', { class: 'pc-axis cr-unit', 'text-anchor': 'end' });
+  series.forEach((p, k) => { if (isNum(p.changePct) && p.changePct < 0) node('rect', { x: x(k) - bw / 2, y: yD(-p.changePct), width: bw, height: Math.max(1, yD(0) - yD(-p.changePct)), class: `cr-bar${p.flush ? ' spike' : ''}` }, svg); });
+  // 월말 신용잔고: 그 달의 마지막 거래일 위치에 점을 찍고 잇는다.
+  const lastIdx = {}; series.forEach((p, k) => { lastIdx[p.date.slice(0, 7)] = k; });
+  const pts = (c.months || []).filter(([ym]) => ym in lastIdx).map(([ym, v]) => [lastIdx[ym], v]);
+  if (pts.length) {
+    const vs = pts.map(q => q[1]), lo = Math.min(...vs), hi = Math.max(...vs), stepM = (hi - lo) > 4e5 ? 2e5 : 1e5;
+    const mMin = Math.floor(lo / stepM) * stepM, mMax = Math.max(mMin + stepM, Math.ceil(hi / stepM) * stepM);
+    const yM = v => pad.t + (1 - (v - mMin) / (mMax - mMin)) * plotH;
+    for (let t = mMin; t <= mMax + 1e-9; t += stepM) text(svg, W - pad.r + 6, yM(t) + 4, fmt(t / 1e6, 1), { class: 'pc-axis cr-axis-credit' });
+    text(svg, W - pad.r + 6, 11, '조 달러', { class: 'pc-axis cr-unit cr-axis-credit' });
+    if (pts.length > 1) node('polyline', { points: pts.map(([k, v]) => `${x(k)},${yM(v)}`).join(' '), class: 'cr-credit' }, svg);
+    pts.forEach(([k, v]) => node('circle', { cx: x(k), cy: yM(v), r: 3, class: 'cr-dot' }, svg));
+  }
+  if (showSpx) {
+    const ks = series.map(p => p.close).filter(isNum), lo = Math.min(...ks), hi = Math.max(...ks);
+    const yK = v => pad.t + 6 + (1 - (v - lo) / ((hi - lo) || 1)) * (plotH - 12);
+    node('polyline', { points: series.map((p, k) => `${x(k)},${yK(p.close)}`).join(' '), class: 'cr-kospi' }, svg);
+  }
+  const marks = narrow ? [0, Math.floor((n - 1) / 2), n - 1] : [0, Math.floor((n - 1) / 4), Math.floor((n - 1) / 2), Math.floor(3 * (n - 1) / 4), n - 1];
+  marks.forEach((k, j) => text(svg, x(k), H - 6, usRange === '1Y' ? md(series[k].date) : series[k].date.slice(2, 7).replace('-', '.'), { class: 'pc-axis', 'text-anchor': j === 0 ? 'start' : j === marks.length - 1 ? 'end' : 'middle' }));
+  const cursor = node('line', { x1: 0, x2: 0, y1: pad.t, y2: pad.t + plotH, class: 'cr-cursor', visibility: 'hidden' }, svg);
+  const hit = node('rect', { x: pad.l, y: pad.t, width: plotW, height: plotH, fill: 'transparent', class: 'cr-hit' }, svg);
+  const pick = e => {
+    const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * W;
+    const k = Math.max(0, Math.min(n - 1, Math.floor((px - pad.l) / slot)));
+    cursor.setAttribute('x1', x(k)); cursor.setAttribute('x2', x(k)); cursor.setAttribute('visibility', 'visible');
+    onPick(series[k]);
+  };
+  hit.addEventListener('pointermove', pick); hit.addEventListener('pointerdown', pick);
+  hit.addEventListener('pointerleave', () => { cursor.setAttribute('visibility', 'hidden'); onPick(series[n - 1]); });
+  return svg;
+}
+function creditCardUS(b) {
+  const c = b.credit, card = el('article', null, 'tr-card lq-card cr-card');
+  card.append(el('h3', '신용잔고와 투매일 (빚투가 얼마나 쌓였고, 언제 한꺼번에 던졌나)'));
+  if (!c || c.status !== 'OK') { card.append(el('p', c?.note || '미국 신용잔고·투매일 자료는 다음 자동 갱신 때 채워져요.', 'tr-help')); return card; }
+  const m = c.margin || {}, lf = c.lastFlush, mon = ym => `${+ym.slice(0, 4) % 100}년 ${+ym.slice(5, 7)}월`;
+  const chips = el('div', null, 'cr-chips');
+  const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
+  chip(`신용융자 잔고 · ${mon(m.month)} 말`, `${tri(m.level)}조 달러`, `1년 전보다 ${pct(m.yoyPct)} · 전월 ${pct(m.momPct)} · 최근 12개월 고점(${mon(m.peak12.month)}) 대비 ${pct(m.fromPeakPct)}`, m.yoyPct >= 30 ? 'warn' : '');
+  chip('마지막 투매일', lf ? md(lf.date) + (lf.date.slice(0, 4) !== c.asOf.slice(0, 4) ? ` (${lf.date.slice(0, 4)})` : '') : '없음', lf ? `S&P 500 ${pct(lf.changePct)} · 거래량 20일 평균의 ${fmt(lf.volRatio, 2)}배` : '최근 3년 안에 없음');
+  chip('최근 1년 투매일', `${c.yearFlushDays}일`, `거래일 ${c.yearDays}일 중 · 최근 20거래일 ${c.recentFlushDays}일`, c.recentFlushDays >= 2 ? 'warn' : '');
+  card.append(chips);
+  const monthVal = {}; (c.months || []).forEach(([ym, v]) => { monthVal[ym] = v; });
+  const tools = el('div', null, 'cr-tools'), holder = el('div', null, 'cr-chart'), readout = el('p', null, 'cr-readout');
+  const show = p => {
+    const ym = p.date.slice(0, 7), mv = monthVal[ym];
+    readout.replaceChildren(el('b', p.date.replace(/-/g, '.')), el('span', `S&P 500 ${fmt(p.close, 2)} (${pct(p.changePct)})`, p.flush ? 'warn' : ''),
+      el('span', `거래량 20일 평균의 ${fmt(p.volRatio, 2)}배${p.flush ? ' · 투매일' : ''}`, p.flush ? 'warn' : ''),
+      el('span', isNum(mv) ? `${mon(ym)} 말 신용잔고 ${tri(mv)}조 달러` : `${mon(ym)} 신용잔고는 아직 발표 전`));
+  };
+  const draw = () => {
+    const all = c.series || [], cut = new Date(c.asOf); cut.setFullYear(cut.getFullYear() - 1);
+    const s = usRange === '1Y' ? all.filter(p => p.date > cut.toISOString().slice(0, 10)) : all;
+    holder.replaceChildren(creditChartUS(c, s, usSpx, show)); show(s[s.length - 1]);
+    tools.querySelectorAll('button').forEach(t => t.classList.toggle('active', t.dataset.k === usRange || (t.dataset.k === 'spx' && usSpx)));
+  };
+  [['1Y', '1년'], ['3Y', '3년']].forEach(([k, label]) => { const t = btn(label, false, () => { usRange = k; draw(); }); t.dataset.k = k; tools.append(t); });
+  const kb = btn('+ S&P 500 겹쳐 보기', false, () => { usSpx = !usSpx; kb.textContent = usSpx ? '− S&P 500 빼기' : '+ S&P 500 겹쳐 보기'; draw(); }, 'cr-kospi-btn'); kb.dataset.k = 'spx'; tools.append(kb);
+  const lg = el('div', null, 'pc-legend small');
+  [['cr-key-credit', '신용융자 잔고 (월말, 조 달러, 오른쪽)'], ['cr-key-bar', 'S&P 500 하루 하락폭 (왼쪽)'], ['cr-key-spike', `투매일 (${c.dropPct}% 이하 + 거래량 20일 평균의 ${c.volRatio}배 이상)`], ['cr-key-kospi', 'S&P 500 (겹쳐 보기, 눈금 없음)']].forEach(([cls, t]) => { const k = el('span', null, `pc-key ${cls}`); k.append(el('i'), el('b', t)); lg.append(k); });
+  card.append(tools, lg, holder, readout);
+  card.append(help('신용융자는 증권사에서 돈을 빌려 산 주식(빚투)의 잔고예요. 미국은 반대매매(빚을 못 갚아 증권사가 강제로 판 금액)를 공개하지 않아서, 지수가 하루 2% 넘게 빠지면서 거래량이 평소보다 크게 늘어난 날을 투매일로 표시했어요. 빚이 많이 쌓인 상태(1년 전보다 30% 넘게 증가)에서 투매일이 몰리면 강제 매도가 매도를 부르는 흐름을 조심해요.'));
   card.append(el('p', `자료: ${c.source} · ${c.note}`, 'tr-help cr-source'));
   draw();
   return card;
