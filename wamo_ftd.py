@@ -12,8 +12,9 @@ POLICY = {
     'deepDrawdownPct': 8, 'fallingMaDrawdownPct': 5, 'maDays': 50, 'slopeDays': 10,
     'distributionDropPct': 0.2, 'postFtdWindow': 10, 'postFtdDistributionWarn': 3,
     'strongGainPct': 2.0, 'volumeAvgDays': 50,
+    'reversalVolumeRatio': 1.5,  # 내린 날 Day 1(위쪽 절반 마감)은 거래량이 전일의 1.5배 이상 (2026-11-11 사용자 결정)
     'correction': '종가가 50일선 아래이고, 최근 63거래일 최고 종가 대비 8% 이상 하락. 또는 5% 이상 하락하며 50일선이 10거래일 전보다 하락.',
-    'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감한 날.',
+    'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감하고 거래량이 전일의 1.5배 이상인 날.',
     'bottom': '하락 국면 시작(또는 직전 무효) 이후 Day 1까지의 장중 최저가. 이 가격을 장중에 깨면 반등 시도 무효.',
     'confirmation': 'Day 4 이후 하루 +1.7% 이상 상승하고 거래량이 전일보다 많으면 FTD. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
     'failure': '기준 저점 장중 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함) 3번 이상은 경고.',
@@ -195,7 +196,7 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
                 rally=ftd=None; phase='CORRECTION'; bottom=r['low']
             if rally is None:
                 bottom=r['low'] if bottom is None else min(bottom,r['low'])
-                kind='UP_CLOSE' if change>0 else 'REVERSAL' if new_low and upper_half(r) else None
+                kind='UP_CLOSE' if change>0 else 'REVERSAL' if new_low and upper_half(r) and ratio>=POLICY['reversalVolumeRatio']-1e-9 else None
                 if kind:
                     rally=dict(date=r['date'], low=bottom, dayOneLow=r['low'], startIndex=i, day=1, kind=kind)
                     phase='RALLY';event('RALLY',r,low=bottom,dayOneKind=kind)

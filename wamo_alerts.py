@@ -166,7 +166,6 @@ def ftd_followups(market, block, sent_keys, provisional, closed):
             continue
         sym = idx.get('symbol')
         recent = [r.get('date') for r in (idx.get('series') or [])[-FTD_FRESH_SESSIONS:]]
-        prelim_date = (idx.get('volumePrelim') or {}).get('date')
         ftd_by_date = {ev.get('date'): ev for ev in idx.get('events') or [] if ev.get('type') == 'FTD'}
         name = idx.get('label') or sym
         for key in sent_keys:
@@ -175,10 +174,10 @@ def ftd_followups(market, block, sent_keys, provisional, closed):
             if m != market or s != sym or key in closed or day not in recent:
                 continue
             ev = ftd_by_date.get(day)
-            if ev is None and day != prelim_date:
+            if ev is None:
                 out.append((key, 'withdrawn', '\n'.join([
                     f"↩️ FTD 취소 · {TITLE.get(market, market)} {name} · {day}",
-                    f"{day[5:].replace('-', '/')}에 보낸 FTD 알림을 거둬들여요. 거래량이 확정되고 다시 계산해 보니 FTD 조건(전일보다 많은 거래량)을 채우지 못했어요.",
+                    f"{day[5:].replace('-', '/')}에 보낸 FTD 알림을 거둬들여요. 다시 계산해 보니 이 날은 FTD 조건을 채우지 못했어요(거래량 확정 또는 판정 기준 변경).",
                     '아직 반등 시도 중이에요. 다음 FTD를 기다려요.',
                     '',
                     f"자세히 보기: {site_url()}radar.html?market={market}&tab=ftd"])[:4000]))
