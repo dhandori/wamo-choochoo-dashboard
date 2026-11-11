@@ -55,6 +55,9 @@ def compose(market, block, watchlist):
             continue
         phase = idx.get('phase')
         extra = f" (Day {idx['rally']['day']})" if phase in ('RALLY', 'LATE') and idx.get('rally') else ''
+        ev = idx.get('ftd') or {}
+        if phase == 'CONFIRMED' and ev and volume_estimate(idx, ev):
+            extra = ' (잠정 · 거래량 확정 전)'
         lines.append(f"FTD 상태 · {idx.get('label', idx.get('symbol', '지수'))}: {FTD_PHASE.get(phase, phase)}{extra}")
 
     watch = watch_symbols(watchlist, market)
@@ -113,12 +116,34 @@ def fresh_ftds(market, block):
     return found
 
 
+def volume_estimate(idx, ev):
+    """The FTD rests on an estimated volume: today's Yahoo volume is still the first (preliminary)
+    figure and, as observed, it is NOT above yesterday's final volume. The model scales it by
+    yesterday's own revision factor (wamo_ftd.same_basis_latest), so the FTD may still disappear
+    once today's volume is final. Returns (raw ratio, scale) or None when nothing is estimated."""
+    p = idx.get('volumePrelim') or {}
+    scale, ratio = p.get('scale'), ev.get('volumeRatio')
+    if p.get('date') != ev.get('date') or not scale or not ratio:
+        return None
+    raw = ratio / scale
+    return (raw, scale) if raw <= 1 else None
+
+
 def compose_ftd(market, idx, ev):
     q = sum(1 for ok in (not ev.get('late'), (ev.get('changePct') or 0) >= 2.0,
                          (ev.get('volumeVsAvg') or 0) > 1) if ok)
     name = idx.get('label') or idx.get('symbol')
-    lines = [f"🚨 FTD 발생 · {TITLE.get(market, market)} {name} · {ev['date']} 종가",
-             f"반등 {ev.get('rallyDay')}일째에 {ev.get('changePct', 0):+.2f}% 상승, 거래량은 전일의 {ev.get('volumeRatio', 0):.2f}배예요."]
+    est = volume_estimate(idx, ev)
+    if est:
+        raw, scale = est
+        lines = [f"🟠 잠정 FTD · {TITLE.get(market, market)} {name} · {ev['date']} 종가 (거래량 확정 전)",
+                 f"반등 {ev.get('rallyDay')}일째에 {ev.get('changePct', 0):+.2f}% 올랐어요. 상승 조건은 채웠어요.",
+                 f"거래량은 아직 확정 전이에요. 지금 숫자는 전일의 {raw:.2f}배라 전일보다 많지 않아요. "
+                 f"전날 거래량이 확정되며 늘어난 비율({scale:.2f}배)만큼 늘면 전일의 {ev.get('volumeRatio', 0):.2f}배가 돼요.",
+                 '거래량이 확정되면 FTD가 맞는지 다시 알려 드려요.']
+    else:
+        lines = [f"🚨 FTD 발생 · {TITLE.get(market, market)} {name} · {ev['date']} 종가",
+                 f"반등 {ev.get('rallyDay')}일째에 {ev.get('changePct', 0):+.2f}% 상승, 거래량은 전일의 {ev.get('volumeRatio', 0):.2f}배예요."]
     if ev.get('volumeVsAvg'):
         lines.append(f"50일 평균 거래량의 {ev['volumeVsAvg']:.2f}배")
     lines.append(f"신호 품질 {q}/3" + (" · 늦은 FTD(반등 8일째 이후)" if ev.get('late') else ''))
@@ -130,6 +155,40 @@ def compose_ftd(market, idx, ev):
     lines.append('')
     lines.append(f"자세히 보기: {site_url()}radar.html?market={market}&tab=ftd")
     return '\n'.join(lines)[:4000]
+
+
+def ftd_followups(market, block, sent_keys, provisional, closed):
+    """Messages for FTDs already alerted: confirmed once the volume is final, or withdrawn when the
+    model no longer finds the FTD on that day. Returns [(key, kind, text)]."""
+    out = []
+    for idx in (block.get('ftd') or {}).get('indexes', []):
+        if idx.get('status') not in ('OK', 'STALE'):
+            continue
+        sym = idx.get('symbol')
+        recent = [r.get('date') for r in (idx.get('series') or [])[-FTD_FRESH_SESSIONS:]]
+        prelim_date = (idx.get('volumePrelim') or {}).get('date')
+        ftd_by_date = {ev.get('date'): ev for ev in idx.get('events') or [] if ev.get('type') == 'FTD'}
+        name = idx.get('label') or sym
+        for key in sent_keys:
+            m, _, rest = key.partition(':')
+            s, _, day = rest.rpartition(':')
+            if m != market or s != sym or key in closed or day not in recent:
+                continue
+            ev = ftd_by_date.get(day)
+            if ev is None and day != prelim_date:
+                out.append((key, 'withdrawn', '\n'.join([
+                    f"↩️ FTD 취소 · {TITLE.get(market, market)} {name} · {day}",
+                    f"{day[5:].replace('-', '/')}에 보낸 FTD 알림을 거둬들여요. 거래량이 확정되고 다시 계산해 보니 FTD 조건(전일보다 많은 거래량)을 채우지 못했어요.",
+                    '아직 반등 시도 중이에요. 다음 FTD를 기다려요.',
+                    '',
+                    f"자세히 보기: {site_url()}radar.html?market={market}&tab=ftd"])[:4000]))
+            elif ev is not None and key in provisional and not volume_estimate(idx, ev):
+                out.append((key, 'confirmed', '\n'.join([
+                    f"✅ FTD 확정 · {TITLE.get(market, market)} {name} · {day}",
+                    f"거래량이 확정됐어요. {day[5:].replace('-', '/')} 거래량은 전일의 {ev.get('volumeRatio', 0):.2f}배로, 잠정으로 알려 드린 FTD가 맞아요.",
+                    '',
+                    f"자세히 보기: {site_url()}radar.html?market={market}&tab=ftd"])[:4000]))
+    return out
 
 
 def telegram_send(token, chat_id, text, opener=None):
@@ -156,14 +215,32 @@ def send_for_markets(root, markets, sender=telegram_send, env=None):
     state = read_json(root / STATE, {'sent': {}})
     sent_any = False
     ftd_sent = state.setdefault('ftdSent', [])
+    provisional = state.setdefault('ftdProvisional', [])   # alerted as 잠정 (volume estimated)
+    closed = state.setdefault('ftdClosed', [])             # confirmed or withdrawn already told
     for market in markets:
-        for key, idx, ev in fresh_ftds(market, trend.get(market) or {}):
+        block = trend.get(market) or {}
+        for key, kind, text in ftd_followups(market, block, list(ftd_sent), provisional, closed):
+            try:
+                sender(token, chat, text)
+                closed.append(key)
+                del closed[:-50]
+                if key in provisional:
+                    provisional.remove(key)
+                state['updatedAt'] = datetime.now(timezone.utc).isoformat()
+                sent_any = True
+                print(f'텔레그램 FTD {"확정" if kind == "confirmed" else "취소"} 알림 전송 · {key}', flush=True)
+            except Exception as exc:  # noqa: BLE001 - never print the token
+                print(f'텔레그램 FTD 후속 알림 실패 · {key}: {type(exc).__name__}', flush=True)
+        for key, idx, ev in fresh_ftds(market, block):
             if key in ftd_sent:
                 continue
             try:
                 sender(token, chat, compose_ftd(market, idx, ev))
                 ftd_sent.append(key)
                 del ftd_sent[:-50]
+                if volume_estimate(idx, ev):
+                    provisional.append(key)
+                    del provisional[:-20]
                 state['updatedAt'] = datetime.now(timezone.utc).isoformat()
                 sent_any = True
                 print(f'텔레그램 FTD 알림 전송 · {key}', flush=True)
