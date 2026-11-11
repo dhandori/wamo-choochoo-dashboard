@@ -250,6 +250,22 @@ function indexFactorTable(w, byIdx) {
   table.append(el('p', `위쪽 큰 판정(${w.label || '—'} ${w.score > 0 ? '+' : ''}${w.score ?? '—'}점)은 지수 추세·기울기·분산일·거래대금은 두 지수 중 나쁜 쪽, 시장 체력·신고가는 전체 종목으로 매긴 점수예요. 종목을 볼 때는 그 종목이 속한 시장 칸을 보세요.`, 'tr-idx-note'));
   return table;
 }
+// 분산일 자세히: 화면 가운데 큰 팝업. 바깥·× ·Esc 로 닫는다.
+const MARKET_NAME = { KR: '한국', US: '미국', JP: '일본', TW: '대만' };
+function openDistDialog(summary, more, market) {
+  let d = document.getElementById('dist-dialog');
+  if (!d) {
+    d = el('dialog'); d.id = 'dist-dialog'; d.className = 'dist-dialog';
+    d.setAttribute('aria-labelledby', 'dist-dialog-title');
+    d.addEventListener('click', e => { if (e.target === d) d.close(); });
+    document.body.append(d);
+  }
+  const close = el('button', '×', 'close'); close.type = 'button'; close.setAttribute('aria-label', '분산일 자세히 닫기'); close.onclick = () => d.close();
+  const title = el('h2', `분산일 (기관이 판 흔적)${MARKET_NAME[market] ? ` · ${MARKET_NAME[market]}` : ''}`); title.id = 'dist-dialog-title';
+  const head = summary.cloneNode(true); head.classList.add('dist-dialog-summary');
+  d.replaceChildren(close, title, head, more);
+  d.showModal(); d.scrollTop = 0;
+}
 function weatherDetail(b, market) {
   const w = b.weather || {}, wrap = el('section', null, 'tr-weather-detail');
   const byIdx = (w.byIndex || []).filter(x => x && x.indexLabel && (x.factors || []).length);
@@ -352,19 +368,12 @@ function weatherDetail(b, market) {
       }
     });
     more.append(help(dist.note || ''));
-    more.hidden = true;
-    const toggle = btn('자세히 보기 ▾', false, null, 'tr-dist-toggle');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.onclick = () => {
-      const open = more.hidden;
-      more.hidden = !open;
-      c2.classList.toggle('open', open);
-      toggle.textContent = open ? '간단히 보기 ▴' : '자세히 보기 ▾';
-      toggle.setAttribute('aria-expanded', String(open));
-      if (!open) c2.scrollIntoView({ block: 'nearest' });
-    };
+    // '자세히 보기'는 카드를 아래로 늘리지 않고 큰 팝업으로 연다(2026-11-11 사용자 요청).
+    const toggle = btn('자세히 보기 ⤢', false, null, 'tr-dist-toggle');
+    toggle.setAttribute('aria-haspopup', 'dialog');
+    toggle.onclick = () => openDistDialog(summary, more, market);
     c2.classList.add('tr-dist-card');
-    c2.append(summary, toggle, more);
+    c2.append(summary, toggle);
   } else { c2.append(el('p', '자료 없음')); c2.append(help(dist.note || '')); }
   // Breadth
   const br = w.breadth || {}, c3 = el('article', null, 'tr-card');

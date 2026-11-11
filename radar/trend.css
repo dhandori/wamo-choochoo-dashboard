@@ -562,16 +562,17 @@ dialog[open] ~ .to-top { display: none; }
 .pc-bench { margin-top: 6px; }
 .pc-benchline { fill: none; stroke: #7b9fc6; stroke-width: 1.8; stroke-linejoin: round; }
 
-/* 분산일 카드: 접힌 상태에서는 옆 카드들과 아래 끝을 맞추고, '자세히 보기'를 누르면 그 카드만 아래로 펼쳐진다 */
+/* 분산일 카드: 카드는 지수별 횟수와 지금 단계만 보여 주고, '자세히 보기'는 큰 팝업(#dist-dialog)으로 연다 */
 .tr-dist-card { align-self: stretch; }
-.tr-dist-card.open { align-self: start; }
 .tr-dist-summary { display: flex; flex-direction: column; gap: 6px; }
 .tr-dist-summary .tr-stage-now { margin: 0; }
 .tr-dist-toggle { margin-top: auto; align-self: stretch; min-height: 32px; padding: 5px 10px; font-size: 11.5px; background: transparent; border: 1px solid var(--line); border-radius: 8px; color: inherit; cursor: pointer; }
 .tr-dist-toggle:hover { border-color: #5b6f88; }
-.tr-dist-card.open .tr-dist-toggle { margin-top: 4px; }
-.tr-dist-more { display: flex; flex-direction: column; gap: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
-.tr-dist-more[hidden] { display: none; }
+.tr-dist-more { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.dist-dialog { width: min(980px, 96vw); max-height: 92vh; overflow-y: auto; }
+.dist-dialog h2 { margin-bottom: 14px; }
+.dist-dialog .dist-dialog-summary { margin-bottom: 12px; }
+@media (max-width: 760px) { .dist-dialog { width: 100vw; max-width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0; border-radius: 0; padding: 16px; } }
 .tr-dist-sub { margin: 6px 0 0; font-size: 12px; font-weight: 600; color: #bccbdd; }
 :root[data-theme="light"] .tr-dist-sub { color: #243141; }
 
