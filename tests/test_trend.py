@@ -491,6 +491,70 @@ class FtdAlertTest(unittest.TestCase):
             old = alerts.fresh_ftds('KR', self.block('2026-04-15', ['2026-10-27', '2026-10-28', '2026-10-29']))
             self.assertEqual(old, [])
 
+    def kosdaq_1111(self, *, prelim=True, ftd=True, next_day=False):
+        # 2026-11-11 KOSDAQ: +5.6% on rally day 4; raw volume 384,991 < 11/10 final 402,100,
+        # counted as FTD only after scaling by 11/10's own revision factor 1.061.
+        dates = ['2026-11-09', '2026-11-10', '2026-11-11'] + (['2026-11-12'] if next_day else [])
+        block = self.block('2026-11-11', dates)
+        idx = block['ftd']['indexes'][0]
+        idx.update(symbol='^KQ11', label='코스닥')
+        ev = idx['events'][-1]
+        ev.update(changePct=5.6156, volumeRatio=1.0158 if prelim else 1.08, rallyDay=4, volumeVsAvg=0.729)
+        idx['ftd'] = ev
+        if not ftd:
+            idx['events'] = idx['events'][:-1]
+            idx.update(ftd=None, phase='RALLY')
+        if prelim:
+            idx['volumePrelim'] = {'date': '2026-11-11', 'scale': 1.061, 'prevDate': '2026-11-10'}
+        elif next_day:
+            idx['volumePrelim'] = {'date': '2026-11-12', 'scale': 1.05, 'prevDate': '2026-11-11'}
+        return block
+
+    def run_alerts(self, root, block, sent):
+        env = {'TELEGRAM_BOT_TOKEN': 't', 'TELEGRAM_CHAT_ID': 'c'}
+        (root / 'wamo_trend.json').write_text(json.dumps({'markets': {'KR': block}}))
+        with contextlib.redirect_stdout(io.StringIO()):
+            alerts.send_for_markets(root, ['KR'], sender=lambda *a: sent.append(a[2]), env=env)
+
+    def test_ftd_on_estimated_volume_is_sent_as_provisional_then_confirmed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, sent = Path(directory), []
+            self.run_alerts(root, self.kosdaq_1111(), sent)
+            ftd = [m for m in sent if 'FTD' in m.split('\n')[0]]
+            self.assertEqual(len(ftd), 1)
+            self.assertIn('잠정 FTD', ftd[0])
+            self.assertNotIn('FTD 발생', ftd[0])
+            self.assertIn('전일의 0.96배', ftd[0])
+            self.assertIn('FTD 나옴 · 상승 전환 신호 (잠정 · 거래량 확정 전)', alerts.compose('KR', self.kosdaq_1111(), {}))
+            sent.clear()
+            self.run_alerts(root, self.kosdaq_1111(), sent)          # same data again: nothing new
+            self.assertEqual([m for m in sent if 'FTD' in m.split('\n')[0]], [])
+            self.run_alerts(root, self.kosdaq_1111(prelim=False, next_day=True), sent)
+            self.assertEqual(len([m for m in sent if m.startswith('✅ FTD 확정')]), 1)
+            sent.clear()
+            self.run_alerts(root, self.kosdaq_1111(prelim=False, next_day=True), sent)
+            self.assertEqual([m for m in sent if 'FTD' in m.split('\n')[0]], [])
+
+    def test_alerted_ftd_that_disappears_after_final_volume_is_withdrawn(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root, sent = Path(directory), []
+            self.run_alerts(root, self.kosdaq_1111(), sent)
+            sent.clear()
+            self.run_alerts(root, self.kosdaq_1111(prelim=False, ftd=False, next_day=True), sent)
+            withdrawn = [m for m in sent if m.startswith('↩️ FTD 취소')]
+            self.assertEqual(len(withdrawn), 1)
+            self.assertIn('코스닥', withdrawn[0])
+            sent.clear()
+            self.run_alerts(root, self.kosdaq_1111(prelim=False, ftd=False, next_day=True), sent)
+            self.assertEqual([m for m in sent if 'FTD' in m.split('\n')[0]], [])
+
+    def test_ftd_with_raw_volume_already_higher_is_not_provisional(self):
+        block = self.kosdaq_1111()
+        block['ftd']['indexes'][0]['events'][-1]['volumeRatio'] = 1.2   # raw 1.13x: already above
+        idx = block['ftd']['indexes'][0]
+        self.assertIsNone(alerts.volume_estimate(idx, idx['events'][-1]))
+        self.assertIn('FTD 발생', alerts.compose_ftd('KR', idx, idx['events'][-1]))
+
     def test_daily_message_shows_ftd_phase(self):
         block = self.block('2026-04-15', ['2026-10-26'])
         block['ftd']['indexes'][0].update(phase='RALLY', rally={'day': 2})
