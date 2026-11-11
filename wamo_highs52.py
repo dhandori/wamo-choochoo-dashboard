@@ -122,7 +122,7 @@ def us_excluded(symbol, name):
     if not symbol or len(symbol) > 8 or any(c in symbol for c in '^=+/') or symbol in US_EXCLUDE:
         return True
     # 낱말 단위로 본다: 'SPAC' 이 'Extra SPACE Storage' 를 빼던 일(2026-11-06 노션 비교에서 EXR 누락)이 있었다.
-    words = (' ETF', ' ETN', 'EXCHANGE TRADED', 'INDEX FUND', 'WARRANT', 'RIGHTS', ' ACQUISITION', ' SPAC ', 'UNITS',
+    words = (' ETF', ' ETN', 'EXCHANGE TRADED', 'INDEX FUND', 'WARRANT', 'RIGHTS', ' RIGHT ', ' ACQUISITION', ' SPAC ', 'UNITS',
              ' UNIT ', 'PREFERRED', 'DEPOSITARY SHARE', 'DEPOSITARY RECEIPT', ' ADR ', ' ADS ', 'TEST STOCK', ' NOTES ')
     if any(w in upper for w in words):
         return True
@@ -131,71 +131,151 @@ def us_excluded(symbol, name):
 
 US_CACHE = ROOT / 'wamo_highs52_universe_US.json'
 US_CACHE_DAYS = 7
+# 미국 종목 목록은 나스닥이 자동 접속용으로 공개한 상장 종목 파일을 쓴다. 나스닥 홈페이지 목록(api.nasdaq.com)은
+# 2026-11-10 저녁부터 아카마이 봇 차단(403)으로 막혀, 2026-11-11 사용자 결정으로 바꿨다.
+SYMDIR = ('https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt',
+          'https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt')
+US_EXCHANGES = {'N', 'A'}      # otherlisted 의 거래소: N=NYSE, A=NYSE American (P=Arca 는 거의 ETF)
+CAP_FRESH_DAYS = 7             # 시총(야후)은 이 기간마다 다시 받는다
+CAP_NEAR = (0.5, 2.0)          # 기준의 이 배수 사이(10억~40억 달러)는 매일 다시 받는다
+CAP_WORKERS = 12
 
 
-def universe_us(fetch=get_json, cache=None):
-    """나스닥 목록을 받는다. 받으면 data 브랜치에 사본을 두고, 막히면(2026-11-10 깃허브 서버에서 403) 그 사본을 쓴다.
-    사본의 시총은 그날 종가로 다시 계산되므로(day_cap) 며칠 지난 목록이어도 기준 판정은 맞다."""
-    if cache is None and fetch is not get_json:
-        return _universe_us_live(fetch)   # 시험용 가짜 자료는 사본을 쓰지도 읽지도 않는다
-    cache = Path(cache or US_CACHE)
-    try:
-        out = _universe_us_live(fetch)
-    except (urllib.error.HTTPError, RuntimeError, OSError, ValueError) as exc:
+def get_text(url, retries=3, timeout=30):
+    last = None
+    for attempt in range(retries):
         try:
-            saved = json.loads(cache.read_text(encoding='utf-8'))
-            age = datetime.now(timezone.utc) - datetime.fromisoformat(saved['savedAt'])
-        except (OSError, ValueError, KeyError, TypeError):
-            raise exc
-        if age > timedelta(days=US_CACHE_DAYS):
-            raise
-        print(f'나스닥 목록을 받지 못해({type(exc).__name__}) {saved["savedAt"][:16]} 사본 {len(saved["items"])}종목을 씁니다', flush=True)
-        return saved['items']
-    try:
-        cache.write_text(json.dumps({'savedAt': datetime.now(timezone.utc).isoformat(), 'items': out},
-                                    ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
-    except OSError:
-        pass
+            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.read().decode('utf-8', 'replace')
+        except urllib.error.HTTPError as exc:
+            if exc.code in (400, 401, 403, 404):
+                raise
+            last = exc
+        except OSError as exc:
+            last = exc
+        time.sleep(1.5 * (attempt + 1))
+    raise RuntimeError(f'{type(last).__name__}: {url}')
+
+
+def us_symbols(text=get_text):
+    """나스닥·NYSE·NYSE American 보통주 [(티커, 이름)]. ETF·시험 종목·우선주($)·워런트·유닛은 뺀다."""
+    out = []
+    for url in SYMDIR:
+        lines = text(url).splitlines()
+        head = lines[0].split('|') if lines else []
+        for line in lines[1:]:
+            if line.startswith('File Creation Time'):
+                continue
+            r = dict(zip(head, line.split('|')))
+            if r.get('ETF') == 'Y' or r.get('Test Issue') == 'Y':
+                continue
+            if 'Exchange' in r and r['Exchange'] not in US_EXCHANGES:
+                continue
+            sym = str(r.get('Symbol') or r.get('ACT Symbol') or '').strip().upper()
+            name = str(r.get('Security Name') or '').strip()
+            if '$' in sym or us_excluded(sym, name):
+                continue
+            out.append((sym, name))
+    if len(out) < 3000:
+        raise RuntimeError(f'미국 상장 종목 목록이 비정상적으로 적습니다: {len(out)}')
     return out
 
 
-def _universe_us_live(fetch=get_json):
-    payload = fetch('https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=10000&offset=0&download=true',
-                    headers={'Referer': 'https://www.nasdaq.com/market-activity/stocks/screener'})
-    rows = ((payload or {}).get('data') or {}).get('rows') or []
-    if len(rows) < 1000:
-        raise RuntimeError(f'나스닥 종목 목록이 비정상적으로 적습니다: {len(rows)}')
-    items, caps = [], {}
-    for r in rows:
-        # 나스닥 목록은 주식 종류를 'BRK/B' 처럼 적는다. 제외하지 말고 'BRK.B' 로 읽는다.
-        symbol, name = str(r.get('symbol') or '').strip().upper().replace('/', '.'), str(r.get('name') or '').strip()
+def yahoo_cap(symbol, fetch=get_json, now=None):
+    """야후의 최근 시가총액(trailingMarketCap)과 그 날짜. 없으면 (None, None)."""
+    now = int((now or datetime.now(timezone.utc)).timestamp())
+    url = ('https://query1.finance.yahoo.com/ws/fundamentals-timeseries/v1/finance/timeseries/'
+           f'{urllib.parse.quote(symbol)}?type=trailingMarketCap&period1={now - 40 * 86400}&period2={now}')
+    try:
+        res = ((fetch(url).get('timeseries') or {}).get('result')) or []
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            return None, None
+        raise
+    vals = [v for r in res for v in (r.get('trailingMarketCap') or []) if v and v.get('reportedValue')]
+    if not vals:
+        return None, None
+    v = max(vals, key=lambda x: x.get('asOfDate') or '')
+    return float(v['reportedValue']['raw']), v.get('asOfDate')
+
+
+def universe_us(fetch=get_json, text=get_text, cache=None, today=None):
+    """미국 대상 종목: 상장 종목 파일 + 야후 시총. 시총은 사본(data 브랜치)에 두고 7일마다, 기준 근처는 매일 다시 받는다.
+    시총은 그날 종가로 다시 계산되므로(day_cap) 며칠 지난 시총이어도 기준 판정은 맞다."""
+    test = cache is None and fetch is not get_json      # 시험용 가짜 자료는 사본을 쓰지도 읽지도 않는다
+    cache = None if test else Path(cache or US_CACHE)
+    today = today or datetime.now(timezone.utc).date()
+    try:
+        saved = json.loads(cache.read_text(encoding='utf-8')) if cache else {}
+    except (OSError, ValueError):
+        saved = {}
+    caps = saved.get('caps') or {}
+    try:
+        symbols = us_symbols(text)
+    except (urllib.error.HTTPError, RuntimeError, OSError, ValueError) as exc:
         try:
-            cap = float(str(r.get('marketCap') or '0').replace(',', '') or 0)
-        except ValueError:
-            cap = 0.0
-        if us_excluded(symbol, name):
-            continue
-        key = company_key(name) or symbol
-        caps[key] = max(caps.get(key, 0.0), cap)
-        items.append({'code': symbol, 'yahoo': symbol.replace('.', '-'), 'name': name, 'cap': cap, 'key': key,
-                      'lastsale': r.get('lastsale'),
-                      'sector': str(r.get('sector') or '').strip(), 'industry': str(r.get('industry') or '').strip()})
-    # 노션 기록(트레이딩뷰)은 같은 회사의 주식 종류(LLYVA·LLYVK, FWONA·FWONK, BF.A)를 각각 센다(2026-11-06 비교).
-    # 그래서 종류마다 따로 두고, 시총이 비어 있는 종류(BF.A 등)는 같은 회사 다른 종류의 시총으로 기준을 본다.
-    out = []
-    for it in items:
-        key = it.pop('key')
-        cap = it['cap'] or caps.get(key, 0.0)
-        if cap >= US_MIN_CAP * US_CAP_SLACK:
-            it['cap'] = cap
-            it['minCap'] = US_MIN_CAP
-            try:
-                it['last'] = float(str(it.pop('lastsale', '') or '').replace('$', '').replace(',', '')) or None
-            except ValueError:
-                it['last'] = None
-            if it['last'] is None and cap < US_MIN_CAP:
+            age = datetime.now(timezone.utc) - datetime.fromisoformat(saved['savedAt'])
+            symbols = [tuple(x) for x in saved['symbols']]
+        except (KeyError, TypeError, ValueError):
+            raise exc
+        if age > timedelta(days=US_CACHE_DAYS):
+            raise
+        print(f'상장 종목 목록을 받지 못해({type(exc).__name__}) {saved["savedAt"][:16]} 사본 {len(symbols)}종목을 씁니다', flush=True)
+
+    def stale(sym):
+        c = caps.get(sym)
+        if not c:
+            return True
+        cap, _, checked = c
+        try:
+            age = (today - date.fromisoformat(checked)).days
+        except (TypeError, ValueError):
+            return True
+        near = cap and CAP_NEAR[0] * US_MIN_CAP <= cap <= CAP_NEAR[1] * US_MIN_CAP
+        return age >= CAP_FRESH_DAYS or (near and age >= 1)
+
+    todo = [sym for sym, _ in symbols if stale(sym)]
+    failed = 0
+
+    def work(sym):
+        try:
+            return sym, yahoo_cap(sym.replace('.', '-'), fetch)
+        except (RuntimeError, urllib.error.HTTPError, OSError, ValueError):
+            return sym, None
+    with ThreadPoolExecutor(CAP_WORKERS) as pool:
+        for sym, got in pool.map(work, todo):
+            if got is None:
+                failed += 1
                 continue
-            out.append(it)
+            caps[sym] = [got[0] or 0, got[1], today.isoformat()]
+    if todo:
+        print(f'미국 시총 새로 받음 {len(todo) - failed}/{len(todo)} (사본 {len(caps)}종목)', flush=True)
+    if len(todo) > 500 and failed > len(todo) * 0.3:
+        raise RuntimeError(f'야후 시총 조회 실패가 너무 많습니다: {failed}/{len(todo)}')
+    if cache:
+        try:
+            keep = {sym for sym, _ in symbols}
+            cache.write_text(json.dumps({'savedAt': datetime.now(timezone.utc).isoformat(), 'symbols': symbols,
+                                         'caps': {k: v for k, v in caps.items() if k in keep}},
+                                        ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
+        except OSError:
+            pass
+    # 노션 기록(트레이딩뷰)은 같은 회사의 주식 종류(LLYVA·LLYVK, BF.A)를 각각 센다(2026-11-06 비교).
+    # 종류마다 따로 두고, 시총이 비어 있는 종류는 같은 회사 다른 종류의 시총으로 기준을 본다.
+    company = {}
+    for sym, name in symbols:
+        key = company_key(name) or sym
+        c = caps.get(sym) or [0, None, None]
+        if (c[0] or 0) > company.get(key, (0, None))[0]:
+            company[key] = (c[0], c[1])
+    out = []
+    for sym, name in symbols:
+        c = caps.get(sym) or [0, None, None]
+        cap, cap_date = (c[0], c[1]) if c[0] else company.get(company_key(name) or sym, (0, None))
+        if cap and cap >= US_MIN_CAP * US_CAP_SLACK:
+            out.append({'code': sym, 'yahoo': sym.replace('.', '-'), 'name': name, 'cap': cap,
+                        'capDate': cap_date, 'minCap': US_MIN_CAP})
     return out
 
 
@@ -300,9 +380,19 @@ def day_cap(item, close):
 def scan(market, day, universe, fetch=get_json, workers=WORKERS):
     def work(item):
         try:
-            return item, judge(yahoo_bars(item['yahoo'], day, fetch), day), None
+            bars = yahoo_bars(item['yahoo'], day, fetch)
         except RuntimeError as exc:
             return item, None, str(exc)
+        if item.get('capDate') and bars:
+            # 시총을 잰 날의 종가(그날 봉이 없으면 그 전 마지막 봉)를 기준 가격으로 둔다 → day_cap 이 그날 종가로 환산
+            try:
+                cd = date.fromisoformat(item['capDate'])
+                prev = [d for d in bars if d <= cd]
+                if prev:
+                    item = {**item, 'last': bars[max(prev)][2]}
+            except ValueError:
+                pass
+        return item, judge(bars, day), None
     highs, lows, failed, missing = [], 0, [], 0
     with ThreadPoolExecutor(workers) as pool:
         for item, result, error in pool.map(work, universe):
