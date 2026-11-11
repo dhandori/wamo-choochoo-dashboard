@@ -39,7 +39,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 21  # 2026-11-05 선도업종 단계(20일 확인·1주 주춤)·큰 업종·업종 상세
+TREND_VERSION = 22  # 2026-11-11 FTD Day 1: 내린 날 Day 1은 거래량 전일 1.5배 이상
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
