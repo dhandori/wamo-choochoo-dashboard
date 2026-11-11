@@ -22,7 +22,7 @@ const lastEvent=s=>(s.events||[]).slice(-1)[0]?.type;
 const uptrendDone=s=>s.phase==='OUTSIDE'&&lastEvent(s)==='UPTREND';
 const phaseName=s=>uptrendDone(s)?'상승 전환 완료':PHASES[s.phase]||s.phase;
 const phaseNote=s=>uptrendDone(s)?'FTD 뒤 지수가 하락 전 고점을 되찾았습니다. 하락장이 끝나 새 FTD는 찾지 않고, 선도주가 계속 버티는지 봅니다.':s.phase==='OUTSIDE'&&lastEvent(s)==='RECOVERED'?'FTD 없이 지수가 하락 전 고점을 되찾았습니다. 지금은 하락장이 아니라서 FTD를 찾지 않습니다.':NOTE[s.phase];
-const DAY_ONE_KIND={UP_CLOSE:'상승 마감한 날',REVERSAL:'장중 새 저점을 찍고 위쪽 절반에서 마감한 날'};
+const DAY_ONE_KIND={UP_CLOSE:'상승 마감한 날',REVERSAL:'장중 새 저점을 찍고 위쪽 절반에서 마감 · 거래량 전일 1.5배 이상'};
 function link(text,url){const a=n('a',text);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
 function metric(labelNode,value,sub){const box=n('div',null,'ftd-metric');const head=n('span');head.append(labelNode);box.append(head,n('strong',value),n('small',sub));return box;}
 function badge(text,phase){return n('span',text,`ftd-badge ftd-${phase.toLowerCase()}`);}

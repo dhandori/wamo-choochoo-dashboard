@@ -108,12 +108,20 @@ class FTDTests(unittest.TestCase):
 
     def test_down_close_in_upper_half_after_new_low_is_day_one(self):
         rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
-        rows[-1].update(low=88.0, high=91.0, close=90.0)  # new low, closes 2/3 up the range
+        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=150)  # new low, closes 2/3 up the range, 1.5x volume
         result = self.run_signal(rows)
         self.assertEqual(result['phase'], 'RALLY')
         self.assertEqual(result['rally']['day'], 1)
         self.assertEqual(result['rally']['kind'], 'REVERSAL')
         rows[-1].update(close=89.4)  # lower half: not a Day 1
+        self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
+
+    def test_down_reversal_needs_one_and_half_times_volume(self):
+        # 2026-11-06 KOSDAQ: new low, closed at 52% of the range, volume only 1.02x the day before.
+        rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
+        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=149)
+        self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
+        rows[-1].update(volume=102)
         self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
 
     def test_same_day_up_reversal_starts_new_day_one(self):
