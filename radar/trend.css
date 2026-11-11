@@ -697,3 +697,4 @@ dialog[open] ~ .to-top { display: none; }
 :root[data-theme="light"] .pc-key.cr-key-kospi i { background: repeating-linear-gradient(90deg, #55657c 0 4px, transparent 4px 7px); }
 :root[data-theme="light"] .cr-bar { fill: #7d93bb; }
 :root[data-theme="light"] .cr-readout b { color: #1b2533; }
+.cr-dot { fill: var(--blue); }
