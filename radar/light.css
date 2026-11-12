@@ -230,25 +230,25 @@
 }
 :root .ind-list-note { font-size: 12px; }
 :root .ind-header { font-size: 12px; }
-:root .ind-chip { font-size: 11px; }
+:root .ind-chip { font-size: 12px; }
 :root .ind-foot { font-size: 12px; }
 @media (max-width: 760px) {
-:root .industry-rail .rail-group small { font-size: 11px; }
+:root .industry-rail .rail-group small { font-size: 12px; }
 }
 @media (max-width: 760px) {
 :root .metric span { font-size: 12px; }
 }
 :root .metric .metric-share em { font-size: 12px; }
 @media (max-width: 760px) {
-:root .metric .metric-share em { font-size: 11px; }
+:root .metric .metric-share em { font-size: 12px; }
 }
-:root .tr-gauge small { font-size: 11.5px; }
+:root .tr-gauge small { font-size: 12px; }
 :root .flow-box-cell small { font-size: 12px; }
 :root .flow-box-cell em { font-size: 12px; }
 @media (max-width: 760px) {
-:root .hint-short { font-size: 11.5px; }
+:root .hint-short { font-size: 12px; }
 }
-:root .board-badge { font-size: 11.5px; }
+:root .board-badge { font-size: 12px; }
 
 /* ===== trend.css (밝은 테마) ===== */
 :root[data-theme="light"] .tr-weather-text { color: #151f2b; }
@@ -488,19 +488,19 @@
 :root .date-info { font-size: 12px; }
 }
 :root .tr-dist-list > small { font-size: 12px; }
-:root .tr-dist-head { font-size: 11.5px; }
+:root .tr-dist-head { font-size: 12px; }
 :root .cx-label { font-size: 12px; }
-:root .cx-strip-wrap figcaption { font-size: 11.5px; }
-:root .cx-vol-label { font-size: 11.5px; }
+:root .cx-strip-wrap figcaption { font-size: 12px; }
+:root .cx-vol-label { font-size: 12px; }
 @media (max-width: 760px) {
 :root .tr-fold { font-size: 12px; }
 }
 :root .tr-stage-step span { font-size: 12px; }
-:root .ix-move i { font-size: 11px; }
-:root .ix-date { font-size: 11.5px; }
+:root .ix-move i { font-size: 12px; }
+:root .ix-date { font-size: 12px; }
 :root .spm-crowd { font-size: 12px; }
 :root .spm-rank { font-size: 12px; }
-:root .spm-name small { font-size: 11.5px; }
+:root .spm-name small { font-size: 12px; }
 :root .spm-sector { font-size: 12px; }
 :root .spm-note, :root .spm-empty { font-size: 12px; }
 
@@ -1057,7 +1057,7 @@
 :root .pt-name small { font-size: 12px; }
 :root .pt-setup small { font-size: 12px; }
 :root .pt-label { font-size: 12px; }
-:root .pt-key { font-size: 11.5px; }
+:root .pt-key { font-size: 12px; }
 :root .pt-ev { font-size: 12px; }
 :root .pt-tag { font-size: 12px; }
 :root .pt-gate-title { font-size: 12px; }
@@ -1083,3 +1083,55 @@
 :root[data-theme="light"] svg [stroke="#9aacc3"] { stroke: #6b7c92; }
 :root[data-theme="light"] i[style*="#ecf3fc"], :root[data-theme="light"] i[style*="#eaf0f8"] { background: #1b2635 !important; }
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
+
+/* ===== 2026-11-12 가시성 정리(사용자 요청): 내용·정보는 그대로, 배치·크기만 고친다 ===== */
+/* 태블릿(761~1100px): 데스크톱 탭 줄이 좁아 글자가 세로로 꺾이고 표가 잘리던 것.
+   휴대폰과 같은 '단계 칸 + 고른 단계의 탭' 메뉴와 종목 카드(2열)로 보인다. 그 밖의 휴대폰 전용 숨김은 따라오지 않는다. */
+@media (min-width: 761px) and (max-width: 1100px) {
+  nav.tabs.steps { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 8px !important; margin: 8px 0 10px; padding: 8px 0; border-bottom: 1px solid var(--line); overflow: visible; }
+  .tabs.steps .tab-group { display: contents !important; }
+  .step-arrow { display: none; }
+  .tabs.steps .step-head { grid-row: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%; min-height: 46px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); }
+  .tabs.steps .step-head .step-hint { white-space: normal; }
+  .tabs.steps .tab-group.active .step-head { background: #1d3b33; border-color: #3b7f69; }
+  .tabs.steps .tab-group.active .step-head .tab-group-label { color: #c5ffec; }
+  .tabs.steps .step-tabs { grid-row: 2; grid-column: 1 / -1; display: none; flex-wrap: wrap; gap: 6px; min-width: 0; padding: 2px 0; }
+  .tabs.steps .tab-group.active .step-tabs { display: flex; }
+  .tabs.steps .step-tabs button { flex: none; min-height: 44px; padding: 6px 12px !important; border: 1px solid var(--line) !important; border-radius: 999px !important; background: var(--panel) !important; font-size: 13px; white-space: nowrap; display: flex; align-items: center; gap: 6px; box-shadow: none; }
+  .tabs.steps .step-tabs button.active { background: #1d3b33 !important; border-color: #3b7f69 !important; color: #c5ffec; }
+  .tab-count { display: block; margin: 0; font-size: 12px; color: var(--muted); font-weight: 500; }
+  .tabs .active .tab-count { color: var(--green); }
+  .table-wrap { display: none; }
+  .stock-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .stock-card { padding: 13px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
+  .stock-card-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+  .stock-card-top .naver-row, .stock-card-top .card-links { flex-shrink: 0; }
+  .stock-link { max-width: none; min-width: 0; }
+  .stock-link strong { font-size: 14px; }
+  .stock-link small { font-size: 12px; }
+  .card-quote { display: flex; align-items: center; gap: 12px; margin: 9px 0 11px; }
+  .card-quote strong { font-size: 18px; }
+  .card-quote > span { font-size: 13px; }
+  .card-quote .spark { margin-left: auto; }
+  .card-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .card-stats .stat strong { font-size: 14px; }
+  .card-stats .stat span { font-size: 12px; }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+:root[data-theme="light"] .tabs.steps .tab-group.active .step-head { background: #dfefeb; border-color: #83c1ad; }
+:root[data-theme="light"] .tabs.steps .tab-group.active .step-head .tab-group-label { color: #033726; }
+:root[data-theme="light"] .tabs.steps .step-tabs button.active { background: #dfefeb !important; border-color: #83c1ad !important; color: #033726; }
+}
+/* 휴대폰: 고른 단계의 탭이 화면 밖으로 숨지 않게 다음 줄로 내린다('AI 섹터' 등). */
+@media (max-width: 760px) {
+  .tabs.steps .step-tabs { flex-wrap: wrap; overflow-x: visible; }
+}
+/* 휴대폰·태블릿: 자주 누르는 버튼은 손가락 크기(44px) 이상, 체크박스는 18px. */
+@media (max-width: 1100px) {
+  .theme-toggle, .market-switch button, .date-info .refresh-button, .run-now-button, .tr-more, .tr-fold, .sort-fold > summary { min-height: 44px; }
+  input[type="checkbox"] { width: 18px; height: 18px; }
+}
+/* 밝은 화면에서 흐려서 안 읽히던 글자(대비 4.5:1 미만). 선 색 표시는 그대로 두고 글자만 진하게. */
+:root[data-theme="light"] .q-mid { background: #f3e6c4; color: #5a4410; }
+:root[data-theme="light"] .pt-key .k-ma { color: #2a3646; }
+:root[data-theme="light"] .pt-key .k-ma::before { border-top-color: var(--c); }
