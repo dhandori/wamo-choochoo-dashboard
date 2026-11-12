@@ -12,7 +12,7 @@
   공포탐욕지수는 0~100 점수 자체가 기준이라 고정 구간을 쓴다.
 
 자료 출처(모두 무료·공개)
-  한국은행 ECOS(인증키 ECOS_API_KEY — GitHub 비밀값), 미국 연준 FRED, Yahoo(MOVE),
+  한국은행 ECOS(인증키 ECOS_API_KEY — GitHub 비밀값), 미국 연준 FRED,
   한국투자증권 API(VKOSPI, 지수코드 0503), feargreedmeter.com·finhacker.cz(CNN 공포탐욕)
 """
 from __future__ import annotations
@@ -64,8 +64,6 @@ INDICATORS = [
          help='미국 주식이 앞으로 한 달 동안 얼마나 출렁일지 시장이 예상하는 값이에요. 20 아래면 평온, 30 위면 공포 구간이에요.'),
     dict(key='vix_ratio', group='변동성', name='VIX ÷ VIX3M (단기 공포 쏠림)', unit='x', risk='high',
          help='한 달짜리 공포(VIX)를 석 달짜리 공포(VIX3M)로 나눈 값이에요. 1을 넘으면 먼 미래보다 지금 당장이 더 무섭다는 뜻이고, 급락장에서 나타나요.'),
-    dict(key='move', group='변동성', name='MOVE (미국 채권 공포지수)', unit='', risk='high',
-         help='미국 국채 금리가 앞으로 얼마나 출렁일지 예상하는 값이에요(채권판 VIX). 높으면 금리가 불안해서 주식과 채권 모두에 부담이에요.'),
     dict(key='vkospi', group='변동성', name='VKOSPI (한국 주식 공포지수)', unit='', risk='high',
          help='코스피200이 앞으로 한 달 동안 얼마나 출렁일지 예상하는 값이에요(한국판 VIX). 높을수록 한국 시장이 불안하다는 뜻이에요.'),
     dict(key='fng', group='심리', name='CNN 공포탐욕지수', unit='점', risk='fng',
@@ -350,10 +348,7 @@ def build():
         series['us_liq'] = {d: round(walcl[d] / 1000 - tga[d] / 1000 - f['RRPONTSYD'][d], 1)
                             for d in days if d in walcl and d in tga}
 
-    # MOVE (Yahoo)
-    move = attempt('Yahoo MOVE', lambda: yahoo_series('%5EMOVE'))
-    if move:
-        series['move'] = move
+    # MOVE(채권 공포지수)는 2026-11-12 사용자 결정으로 뺐다(지표 13개 → 12개).
 
     # VKOSPI (한투 API, 결과는 이력 파일에 쌓아 다음날 다시 받지 않아도 되게)
     vk_hist = {date.fromisoformat(k): v for k, v in (history.get('vkospi') or {}).items()}
