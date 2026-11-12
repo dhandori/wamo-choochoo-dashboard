@@ -1389,11 +1389,30 @@
       ]
     },
     "businessModelEasy": "Marathon Petroleum Corporation Common Stock은 Nasdaq 분류상 석유·가스 (Integrated oil Companies)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Petroleum Refining입니다.",
-    "catalysts": [],
-    "eps_yoy": 347.7,
+    "catalysts": [
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-29",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": 489.6,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 53.8,
+    "sales_yoy": 61.0,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 31.2,
@@ -1419,23 +1438,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q2",
-        "growthPct": -8.5
-      },
-      {
         "frame": "CY2025Q3",
         "growthPct": 141.2
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 347.7
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 489.6
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": -0.8
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 8.5
@@ -1443,16 +1458,20 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 53.8
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 61.0
       }
     ],
     "epsAcceleration": true,
     "salesAcceleration": true,
     "grossMargin": null,
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 14.1,
-      "priorYearPct": 6.5,
-      "changePp": 7.6,
+      "frame": "CY2026Q3",
+      "latestPct": 18.7,
+      "priorYearPct": 7.8,
+      "changePp": 10.9,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -1464,12 +1483,12 @@
       "profitPositive": true,
       "leveragePass": false,
       "liquidityPass": true,
-      "assets": 94310000000.0,
-      "liabilities": 68590000000.0,
-      "equity": 19077000000.0,
+      "assets": 102514000000.0,
+      "liabilities": 72662000000.0,
+      "equity": 23209000000.0,
       "netIncome": 4047000000.0,
-      "debtRatioPct": 359.5,
-      "currentRatioPct": 125.0,
+      "debtRatioPct": 313.1,
+      "currentRatioPct": 144.6,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -1485,7 +1504,7 @@
     "sic": "2911",
     "sicDescription": "Petroleum Refining",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "VLO": {
     "secStatus": "LIVE",
@@ -3669,6 +3688,12 @@
     "businessModelEasy": "Teck Resources Ltd Ordinary Shares은 Nasdaq 분류상 금속·광업 (Mining & Quarrying of Nonmetallic Minerals (No Fuels))에 속한 미국 상장기업입니다. SEC SIC 공식명은 Mining & Quarrying of  Nonmetallic Minerals (No Fuels)입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-30",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -3750,7 +3775,7 @@
     "sic": "1400",
     "sicDescription": "Mining & Quarrying of  Nonmetallic Minerals (No Fuels)",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "SEIC": {
     "secStatus": "LIVE",
@@ -4252,7 +4277,7 @@
     "sic": "1000",
     "sicDescription": "Metal Mining",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "BBVA": {
     "secStatus": "LIVE",
@@ -4277,6 +4302,12 @@
     },
     "businessModelEasy": "Banco Bilbao Vizcaya Argentaria S.A. Common Stock은 Nasdaq 분류상 은행 (Commercial Banks)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Commercial Banks, NEC입니다.",
     "catalysts": [
+      {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
       {
         "date": "2026-11-03",
         "category": "SEC 공시",
@@ -4315,12 +4346,6 @@
       },
       {
         "date": "2026-10-26",
-        "category": "SEC 공시",
-        "report": "6-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-10-20",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
@@ -4371,7 +4396,7 @@
     "sic": "6029",
     "sicDescription": "Commercial Banks, NEC",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "SHG": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -5085,11 +5110,30 @@
       ]
     },
     "businessModelEasy": "Expeditors International of Washington Inc. Common Stock은 Nasdaq 분류상 산업재 세부산업 (Integrated Freight & Logistics)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Arrangement of  Transportation of  Freight & Cargo입니다.",
-    "catalysts": [],
-    "eps_yoy": 51.5,
+    "catalysts": [
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": 61.6,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 32.1,
+    "sales_yoy": 41.9,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 4.0,
@@ -5115,23 +5159,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 0.6
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 16.3
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 51.5
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 61.6
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": -3.5
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 4.4
@@ -5139,16 +5179,20 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 32.1
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 41.9
       }
     ],
     "epsAcceleration": true,
     "salesAcceleration": true,
     "grossMargin": null,
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 10.0,
-      "priorYearPct": 9.3,
-      "changePp": 0.6,
+      "frame": "CY2026Q3",
+      "latestPct": 10.8,
+      "priorYearPct": 10.0,
+      "changePp": 0.9,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -5160,12 +5204,12 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 5134910000.0,
-      "liabilities": 3016208000.0,
-      "equity": 2118702000.0,
+      "assets": 5786044000.0,
+      "liabilities": 3444615000.0,
+      "equity": 2341429000.0,
       "netIncome": 810332000.0,
-      "debtRatioPct": 142.4,
-      "currentRatioPct": 156.6,
+      "debtRatioPct": 147.1,
+      "currentRatioPct": 155.8,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -5181,7 +5225,7 @@
     "sic": "4731",
     "sicDescription": "Arrangement of  Transportation of  Freight & Cargo",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "DGX": {
     "secStatus": "LIVE",
@@ -5627,7 +5671,7 @@
     "sic": "6022",
     "sicDescription": "State Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "SWK": {
     "secStatus": "LIVE",
@@ -7161,16 +7205,28 @@
     "businessModelEasy": "Watts Water Technologies Inc. Class A Common Stock은 Nasdaq 분류상 금속·광업 (Metal Fabrications)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Miscellaneous Fabricated Metal Products입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-01",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 17.3,
+    "eps_yoy": 77.1,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 18.6,
+    "sales_yoy": 19.0,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 17.0,
@@ -7196,23 +7252,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 18.9
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 34.4
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 17.3
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 77.1
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 12.5
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 21.4
@@ -7220,23 +7272,27 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 18.6
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 19.0
       }
     ],
     "epsAcceleration": false,
     "salesAcceleration": false,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 49.0,
-      "priorYearPct": 50.6,
-      "changePp": -1.6,
+      "frame": "CY2026Q3",
+      "latestPct": 55.1,
+      "priorYearPct": 48.8,
+      "changePp": 6.3,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 20.2,
-      "priorYearPct": 21.0,
-      "changePp": -0.8,
+      "frame": "CY2026Q3",
+      "latestPct": 26.2,
+      "priorYearPct": 18.2,
+      "changePp": 8.0,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -7248,28 +7304,28 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 2951500000.0,
-      "liabilities": 762100000.0,
-      "equity": 2189400000.0,
+      "assets": 3076800000.0,
+      "liabilities": 757400000.0,
+      "equity": 2319400000.0,
       "netIncome": 340800000.0,
-      "debtRatioPct": 34.8,
-      "currentRatioPct": 266.0,
+      "debtRatioPct": 32.7,
+      "currentRatioPct": 280.3,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
       "status": "CHECK",
-      "epsPass": false,
+      "epsPass": true,
       "salesPass": false,
       "epsAcceleration": false,
       "salesAcceleration": false,
-      "marginImproving": false,
+      "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
     "sic": "3490",
     "sicDescription": "Miscellaneous Fabricated Metal Products",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "ABBV": {
     "secStatus": "LIVE",
@@ -7685,7 +7741,7 @@
     "sic": "6029",
     "sicDescription": "Commercial Banks, NEC",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "JNJ": {
     "secStatus": "LIVE",
@@ -8128,6 +8184,18 @@
     "businessModelEasy": "Ovintiv Inc. (DE)은 Nasdaq 분류상 석유·가스 (Oil & Gas Production)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Crude Petroleum & Natural Gas입니다.",
     "catalysts": [
       {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-26",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -8140,10 +8208,10 @@
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 37.3,
+    "eps_yoy": 249.1,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 29.7,
+    "sales_yoy": 26.6,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 13.5,
@@ -8169,23 +8237,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q2",
-        "growthPct": -7.1
-      },
-      {
         "frame": "CY2025Q3",
         "growthPct": -70.3
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 37.3
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 249.1
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": -7.3
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 8.5
@@ -8193,16 +8257,20 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 29.7
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 26.6
       }
     ],
-    "epsAcceleration": false,
-    "salesAcceleration": true,
+    "epsAcceleration": true,
+    "salesAcceleration": false,
     "grossMargin": null,
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 34.6,
-      "priorYearPct": 23.1,
-      "changePp": 11.5,
+      "frame": "CY2026Q3",
+      "latestPct": 34.3,
+      "priorYearPct": 13.5,
+      "changePp": 20.8,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -8214,20 +8282,20 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 19280000000.0,
-      "liabilities": 7781000000.0,
-      "equity": 11499000000.0,
+      "assets": 19604000000.0,
+      "liabilities": 8001000000.0,
+      "equity": 11603000000.0,
       "netIncome": 1242000000.0,
-      "debtRatioPct": 67.7,
-      "currentRatioPct": 100.8,
+      "debtRatioPct": 69.0,
+      "currentRatioPct": 84.0,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
       "status": "STRONG",
       "epsPass": true,
       "salesPass": true,
-      "epsAcceleration": false,
-      "salesAcceleration": true,
+      "epsAcceleration": true,
+      "salesAcceleration": false,
       "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
@@ -8235,7 +8303,7 @@
     "sic": "1311",
     "sicDescription": "Crude Petroleum & Natural Gas",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "QSR": {
     "secStatus": "LIVE",
@@ -8394,6 +8462,18 @@
     "businessModelEasy": "ING Group N.V. Common Stock은 Nasdaq 분류상 은행 (Commercial Banks)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Commercial Banks, NEC입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-29",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -8425,18 +8505,6 @@
       },
       {
         "date": "2026-10-13",
-        "category": "SEC 공시",
-        "report": "6-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-10-06",
-        "category": "SEC 공시",
-        "report": "6-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-29",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
@@ -8487,7 +8555,7 @@
     "sic": "6029",
     "sicDescription": "Commercial Banks, NEC",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "SAN": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -8913,7 +8981,20 @@
       ]
     },
     "businessModelEasy": "Canadian Natural Resources Limited Common Stock은 Nasdaq 분류상 석유·가스 (Oil & Gas Production)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Crude Petroleum & Natural Gas입니다.",
-    "catalysts": [],
+    "catalysts": [
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
     "eps_yoy": null,
     "eps_growth_mode": null,
     "epsConcept": null,
@@ -8959,7 +9040,7 @@
     "sic": "1311",
     "sicDescription": "Crude Petroleum & Natural Gas",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "BNY": {
     "secStatus": "LIVE",
@@ -9351,7 +9432,7 @@
     "sic": "4011",
     "sicDescription": "Railroads, Line-Haul Operating",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "CPAY": {
     "secStatus": "LIVE",
@@ -9871,8 +9952,21 @@
       ]
     },
     "businessModelEasy": "Targa Resources Inc. Common Stock은 Nasdaq 분류상 석유·가스 (Natural Gas Distribution)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Natural Gas Transmission입니다.",
-    "catalysts": [],
-    "eps_yoy": 23.3,
+    "catalysts": [
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": 38.2,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
     "sales_yoy": 4.6,
@@ -9901,16 +9995,16 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 25.7
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 142.9
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 23.3
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 38.2
       }
     ],
     "quarterlySalesGrowthHistory": [
@@ -9953,17 +10047,17 @@
       "profitPositive": true,
       "leveragePass": false,
       "liquidityPass": false,
-      "assets": 28515100000.0,
-      "liabilities": 24858600000.0,
-      "equity": 3656500000.0,
+      "assets": 29595800000.0,
+      "liabilities": 25780100000.0,
+      "equity": 3815700000.0,
       "netIncome": 1923000000.0,
-      "debtRatioPct": 679.8,
-      "currentRatioPct": 77.1,
+      "debtRatioPct": 675.6,
+      "currentRatioPct": 74.3,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
       "status": "CHECK",
-      "epsPass": false,
+      "epsPass": true,
       "salesPass": false,
       "epsAcceleration": false,
       "salesAcceleration": false,
@@ -9974,7 +10068,7 @@
     "sic": "4922",
     "sicDescription": "Natural Gas Transmission",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "BEN": {
     "secStatus": "LIVE",
@@ -10214,7 +10308,7 @@
     "sic": "6021",
     "sicDescription": "National Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "HPE": {
     "secStatus": "LIVE",
@@ -10807,45 +10901,85 @@
     "secFetchedAt": "2026-11-10"
   },
   "SKM": {
-    "secStatus": "NASDAQ_FALLBACK",
-    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
-    "profileStatus": "LIVE",
-    "profileSource": "Nasdaq Company Profile",
-    "businessModelUrl": "https://www.sktelecom.com",
-    "businessModelReportDate": "12/31/2025",
-    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
-    "businessModelEasy": "SK Telecom Co. Ltd. Common Stock은 Nasdaq 공식 분류상 Telecommunications · Telecommunications Equipment 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "secStatus": "LIVE",
+    "secSource": "SEC EDGAR submissions + XBRL companyfacts",
+    "cik": "0001015650",
+    "secCompanyUrl": "https://www.sec.gov/edgar/browse/?CIK=1015650&owner=exclude",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/1015650/000119312526188763/d78252d20f.htm",
+    "businessModelUrl": "https://www.sec.gov/Archives/edgar/data/1015650/000119312526188763/d78252d20f.htm",
+    "businessModelReportDate": "2026-04-29",
+    "businessModelSource": "SEC EDGAR 10-K·XBRL",
     "businessProfile": {
-      "summary": "SK Telecom Co. Ltd. Common Stock은 Nasdaq 공식 분류상 Telecommunications · Telecommunications Equipment 기업입니다.",
-      "products": "Nasdaq 공식 회사설명(영문): SK Telecom has been leading the growth of the mobile industry since 1984. Now, it is taking customer experience to new heights by extending beyond connectivity. By placing AI at the core of its business, SK Telecom is rapidly transforming into an AI company with a strong global presence. It is focusing on driving innovations in areas of AI Infrastructure, AI Transformation (AIX) and AI Service to deliver greater value for industry, society, and life.",
-      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
-      "revenue": "최근 연간 매출은 11,870,000천달러로 전년 대비 -2.6%입니다(결산기준 12/31/2025).",
-      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "summary": "SK Telecom Co. Ltd. Common Stock은 Nasdaq 분류상 Telecommunications Equipment에 속한 미국 상장기업입니다. SEC SIC 공식명은 Radiotelephone Communications입니다.",
+      "products": "SEC 10-K Item 1 원문에서 주요 제품·서비스를 확인해야 합니다.",
+      "customers": "SEC 10-K Item 1 및 위험요인 원문에서 고객 집중도를 확인해야 합니다.",
+      "revenue": "SEC XBRL에서 비교 가능한 매출 계정을 확보하지 못했습니다.",
+      "drivers": "실적 성장률, 가격·거래량, 산업 동조와 신규 SEC 공시를 함께 확인합니다.",
       "segments": [
         "통신 (Telecommunications)",
-        "Telecommunications",
-        "Telecommunications Equipment"
+        "Telecommunications Equipment",
+        "Radiotelephone Communications"
       ]
     },
+    "businessModelEasy": "SK Telecom Co. Ltd. Common Stock은 Nasdaq 분류상 Telecommunications Equipment에 속한 미국 상장기업입니다. SEC SIC 공식명은 Radiotelephone Communications입니다.",
+    "catalysts": [
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-29",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-28",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-14",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": null,
+    "eps_growth_mode": null,
+    "epsConcept": null,
+    "sales_yoy": null,
+    "sales_growth_mode": null,
+    "salesConcept": null,
+    "latest_annual_eps_yoy": null,
+    "annual_eps_cagr_3y": null,
+    "annualEpsSeries": [],
+    "annualConcept": null,
+    "quarterlyEpsGrowthHistory": [],
+    "quarterlySalesGrowthHistory": [],
+    "epsAcceleration": false,
+    "salesAcceleration": false,
+    "grossMargin": null,
+    "operatingMargin": null,
     "financialHealth": {
-      "status": "PASS",
-      "source": "Nasdaq 연간 재무제표(SEC 대체)",
-      "period": "12/31/2025",
+      "status": "FAIL",
+      "source": "SEC EDGAR XBRL 공식 재무제표",
       "sectorRule": "GENERAL",
-      "equityPositive": true,
-      "profitPositive": true,
-      "leveragePass": true,
+      "equityPositive": false,
+      "profitPositive": false,
+      "leveragePass": false,
       "liquidityPass": true,
-      "assets": 20900000.0,
-      "liabilities": 11907000.0,
-      "equity": 8929000.0,
-      "netIncome": 260000.0,
-      "debtRatioPct": 133.4,
-      "currentRatioPct": 103.0,
-      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+      "assets": null,
+      "liabilities": null,
+      "equity": null,
+      "netIncome": null,
+      "debtRatioPct": null,
+      "currentRatioPct": null,
+      "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
-    "annualSalesYoyNasdaq": -2.6,
-    "catalysts": [],
     "sepaFundamental": {
       "status": "CHECK",
       "epsPass": false,
@@ -10854,13 +10988,12 @@
       "salesAcceleration": false,
       "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
-      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+      "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
-    "sector": "Telecommunications",
-    "industry": "Telecommunications Equipment",
-    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
-    "profileFetchedAt": "2026-08-26",
-    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+    "sic": "4812",
+    "sicDescription": "Radiotelephone Communications",
+    "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
+    "secFetchedAt": "2026-11-11"
   },
   "APA": {
     "secStatus": "LIVE",
@@ -11005,16 +11138,22 @@
     "businessModelEasy": "Arista Networks Inc. Common Stock은 Nasdaq 분류상 컴퓨터·IT 하드웨어 (Computer Communications Equipment)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Computer Communications Equipment입니다.",
     "catalysts": [
       {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-11-03",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 35.7,
+    "eps_yoy": 82.1,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 37.7,
+    "sales_yoy": 58.5,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 23.3,
@@ -11040,23 +11179,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 15.5
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 25.0
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 35.7
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 82.1
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 27.5
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 35.1
@@ -11064,23 +11199,27 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 37.7
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 58.5
       }
     ],
     "epsAcceleration": true,
     "salesAcceleration": true,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 62.9,
-      "priorYearPct": 65.2,
-      "changePp": -2.3,
+      "frame": "CY2026Q3",
+      "latestPct": 63.6,
+      "priorYearPct": 64.6,
+      "changePp": -1.0,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 45.4,
-      "priorYearPct": 44.7,
-      "changePp": 0.7,
+      "frame": "CY2026Q3",
+      "latestPct": 44.9,
+      "priorYearPct": 42.4,
+      "changePp": 2.5,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -11092,12 +11231,12 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 23720100000.0,
-      "liabilities": 8922400000.0,
-      "equity": 14797700000.0,
+      "assets": 25264100000.0,
+      "liabilities": 8817400000.0,
+      "equity": 16446700000.0,
       "netIncome": 3511400000.0,
-      "debtRatioPct": 60.3,
-      "currentRatioPct": 295.7,
+      "debtRatioPct": 53.6,
+      "currentRatioPct": 329.3,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -11113,7 +11252,7 @@
     "sic": "3576",
     "sicDescription": "Computer Communications Equipment",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "EMBJ": {
     "secStatus": "LIVE",
@@ -11893,60 +12032,143 @@
     "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
   },
   "PH": {
-    "secStatus": "NASDAQ_FALLBACK",
-    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
-    "profileStatus": "LIVE",
-    "profileSource": "Nasdaq Company Profile",
-    "businessModelUrl": "https://www.parker.com",
-    "businessModelReportDate": "6/30/2026",
-    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
-    "businessModelEasy": "Parker-Hannifin Corporation Common Stock은 Nasdaq 공식 분류상 Industrials · Metal Fabrications 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "secStatus": "LIVE",
+    "secSource": "SEC EDGAR submissions + XBRL companyfacts",
+    "cik": "0000076334",
+    "secCompanyUrl": "https://www.sec.gov/edgar/browse/?CIK=76334&owner=exclude",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/76334/000007633426000105/ph-20260630.htm",
+    "businessModelUrl": "https://www.sec.gov/Archives/edgar/data/76334/000007633426000105/ph-20260630.htm",
+    "businessModelReportDate": "2026-08-21",
+    "businessModelSource": "SEC EDGAR 10-K·XBRL",
     "businessProfile": {
-      "summary": "Parker-Hannifin Corporation Common Stock은 Nasdaq 공식 분류상 Industrials · Metal Fabrications 기업입니다.",
-      "products": "Nasdaq 공식 회사설명(영문): Parker Hannifin is a Fortune 250 global leader in motion and control technologies. For more than a century the company has been enabling engineering breakthroughs that lead to a better tomorrow. Parker has increased its annual dividend per share paid to shareholders for 70 consecutive fiscal years, among the top five longest-running dividend-increase records in the S&P 500 index.",
-      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
-      "revenue": "최근 연간 매출은 21,499,000천달러로 전년 대비 +8.3%입니다(결산기준 6/30/2026).",
-      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "summary": "Parker-Hannifin Corporation Common Stock은 Nasdaq 분류상 Metal Fabrications에 속한 미국 상장기업입니다. SEC SIC 공식명은 Miscellaneous Fabricated Metal Products입니다.",
+      "products": "SEC 10-K Item 1 원문에서 주요 제품·서비스를 확인해야 합니다.",
+      "customers": "SEC 10-K Item 1 및 위험요인 원문에서 고객 집중도를 확인해야 합니다.",
+      "revenue": "SEC XBRL 매출 계정(RevenueFromContractWithCustomerExcludingAssessedTax)으로 최근 분기 성장률을 계산합니다.",
+      "drivers": "실적 성장률, 가격·거래량, 산업 동조와 신규 SEC 공시를 함께 확인합니다.",
       "segments": [
         "산업재 (Industrials)",
-        "Industrials",
-        "Metal Fabrications"
+        "Metal Fabrications",
+        "Miscellaneous Fabricated Metal Products"
       ]
+    },
+    "businessModelEasy": "Parker-Hannifin Corporation Common Stock은 Nasdaq 분류상 Metal Fabrications에 속한 미국 상장기업입니다. SEC SIC 공식명은 Miscellaneous Fabricated Metal Products입니다.",
+    "catalysts": [
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": 10.0,
+    "eps_growth_mode": "YOY",
+    "epsConcept": "EarningsPerShareDiluted",
+    "sales_yoy": 17.9,
+    "sales_growth_mode": "YOY",
+    "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "latest_annual_eps_yoy": 5.0,
+    "annual_eps_cagr_3y": 21.1,
+    "annualEpsSeries": [
+      {
+        "year": 2023,
+        "value": 16.04
+      },
+      {
+        "year": 2024,
+        "value": 21.84
+      },
+      {
+        "year": 2025,
+        "value": 27.12
+      },
+      {
+        "year": 2026,
+        "value": 28.48
+      }
+    ],
+    "annualConcept": "EarningsPerShareDiluted",
+    "quarterlyEpsGrowthHistory": [
+      {
+        "frame": "CY2025Q4",
+        "growthPct": -9.0
+      },
+      {
+        "frame": "CY2026Q1",
+        "growthPct": -4.2
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 10.0
+      }
+    ],
+    "quarterlySalesGrowthHistory": [
+      {
+        "frame": "CY2025Q4",
+        "growthPct": 9.1
+      },
+      {
+        "frame": "CY2026Q1",
+        "growthPct": 10.6
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 17.9
+      }
+    ],
+    "epsAcceleration": false,
+    "salesAcceleration": false,
+    "grossMargin": null,
+    "operatingMargin": {
+      "frame": "CY2026Q3",
+      "latestPct": 23.5,
+      "priorYearPct": 23.3,
+      "changePp": 0.3,
+      "numeratorConcept": "OperatingIncomeLoss",
+      "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "financialHealth": {
       "status": "PASS",
-      "source": "Nasdaq 연간 재무제표(SEC 대체)",
-      "period": "6/30/2026",
+      "source": "SEC EDGAR XBRL 공식 재무제표",
       "sectorRule": "GENERAL",
       "equityPositive": true,
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 30877000.0,
-      "liabilities": 15464000.0,
-      "equity": 15404000.0,
-      "netIncome": 3648000.0,
-      "debtRatioPct": 100.4,
-      "currentRatioPct": 126.2,
-      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+      "assets": 41927000000.0,
+      "liabilities": 25857000000.0,
+      "equity": 15968000000.0,
+      "netIncome": 2844215000.0,
+      "debtRatioPct": 161.9,
+      "currentRatioPct": 94.4,
+      "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
-    "annualSalesYoyNasdaq": 8.3,
-    "catalysts": [],
     "sepaFundamental": {
       "status": "CHECK",
       "epsPass": false,
       "salesPass": false,
       "epsAcceleration": false,
       "salesAcceleration": false,
-      "marginImproving": false,
+      "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
-      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+      "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
-    "sector": "Industrials",
-    "industry": "Metal Fabrications",
-    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
-    "profileFetchedAt": "2026-08-26",
-    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+    "sic": "3490",
+    "sicDescription": "Miscellaneous Fabricated Metal Products",
+    "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
+    "secFetchedAt": "2026-11-11"
   },
   "CVE": {
     "secStatus": "LIVE",
@@ -12496,7 +12718,7 @@
     "sic": "1040",
     "sicDescription": "Gold and Silver Ores",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "REGN": {
     "secStatus": "LIVE",
@@ -12522,6 +12744,18 @@
     "businessModelEasy": "Regeneron Pharmaceuticals Inc. Common Stock은 Nasdaq 분류상 바이오테크 (Biotechnology: Pharmaceutical Preparations)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Pharmaceutical Preparations입니다.",
     "catalysts": [
       {
+        "date": "2026-10-30",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-30",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-06",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -12534,10 +12768,10 @@
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": -4.5,
+    "eps_yoy": 35.5,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 16.7,
+    "sales_yoy": 36.3,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 8.2,
@@ -12563,23 +12797,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 18.0
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": -7.2
       },
       {
         "frame": "CY2026Q2",
         "growthPct": -4.5
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 35.5
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 0.9
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 19.0
@@ -12587,16 +12817,20 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 16.7
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 36.3
       }
     ],
-    "epsAcceleration": false,
+    "epsAcceleration": true,
     "salesAcceleration": false,
     "grossMargin": null,
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 30.1,
-      "priorYearPct": 29.4,
-      "changePp": 0.8,
+      "frame": "CY2026Q3",
+      "latestPct": 40.0,
+      "priorYearPct": 27.3,
+      "changePp": 12.7,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -12608,19 +12842,19 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 41730600000.0,
-      "liabilities": 10019200000.0,
-      "equity": 31711400000.0,
+      "assets": 44405200000.0,
+      "liabilities": 10906700000.0,
+      "equity": 33498500000.0,
       "netIncome": 4504900000.0,
-      "debtRatioPct": 31.6,
-      "currentRatioPct": 333.5,
+      "debtRatioPct": 32.6,
+      "currentRatioPct": 335.3,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
-      "status": "CHECK",
-      "epsPass": false,
-      "salesPass": false,
-      "epsAcceleration": false,
+      "status": "STRONG",
+      "epsPass": true,
+      "salesPass": true,
+      "epsAcceleration": true,
       "salesAcceleration": false,
       "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
@@ -12629,7 +12863,7 @@
     "sic": "2834",
     "sicDescription": "Pharmaceutical Preparations",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "FNV": {
     "secStatus": "LIVE",
@@ -12718,7 +12952,7 @@
     "sic": "1040",
     "sicDescription": "Gold and Silver Ores",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "EXPE": {
     "secStatus": "LIVE",
@@ -14555,11 +14789,24 @@
       ]
     },
     "businessModelEasy": "Solventum Corporation Common Stock은 Nasdaq 분류상 의료·헬스케어 (Medical/Dental Instruments)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Surgical & Medical Instruments & Apparatus입니다.",
-    "catalysts": [],
-    "eps_yoy": 3.9,
+    "catalysts": [
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": -101.0,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 2.2,
+    "sales_yoy": -7.0,
     "sales_growth_mode": "YOY",
     "salesConcept": "Revenues",
     "latest_annual_eps_yoy": 221.7,
@@ -14577,23 +14824,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 931.4
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": -91.0
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 3.9
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": -101.0
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 0.7
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": -3.0
@@ -14601,23 +14844,27 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 2.2
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": -7.0
       }
     ],
     "epsAcceleration": false,
     "salesAcceleration": false,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 58.2,
-      "priorYearPct": 54.4,
-      "changePp": 3.8,
+      "frame": "CY2026Q3",
+      "latestPct": 54.5,
+      "priorYearPct": 54.2,
+      "changePp": 0.3,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "Revenues"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 8.2,
-      "priorYearPct": 9.9,
-      "changePp": -1.7,
+      "frame": "CY2026Q3",
+      "latestPct": 3.5,
+      "priorYearPct": 80.6,
+      "changePp": -77.1,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "Revenues"
     },
@@ -14629,12 +14876,12 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 14243000000.0,
-      "liabilities": 9443000000.0,
-      "equity": 4800000000.0,
+      "assets": 14165000000.0,
+      "liabilities": 9360000000.0,
+      "equity": 4805000000.0,
       "netIncome": 1556000000.0,
-      "debtRatioPct": 196.7,
-      "currentRatioPct": 102.1,
+      "debtRatioPct": 194.8,
+      "currentRatioPct": 103.3,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -14650,7 +14897,7 @@
     "sic": "3841",
     "sicDescription": "Surgical & Medical Instruments & Apparatus",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "BXP": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -16743,7 +16990,7 @@
     "sic": "1311",
     "sicDescription": "Crude Petroleum & Natural Gas",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "WELL": {
     "secStatus": "LIVE",
@@ -17037,14 +17284,7 @@
       ]
     },
     "businessModelEasy": "Mizuho Financial Group Inc. Sponosred ADR (Japan)은 Nasdaq 분류상 은행 (Major Banks)에 속한 미국 상장기업입니다. SEC SIC 공식명은 National Commercial Banks입니다.",
-    "catalysts": [
-      {
-        "date": "2026-09-24",
-        "category": "SEC 공시",
-        "report": "6-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      }
-    ],
+    "catalysts": [],
     "eps_yoy": null,
     "eps_growth_mode": null,
     "epsConcept": null,
@@ -17090,7 +17330,7 @@
     "sic": "6021",
     "sicDescription": "National Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "RPRX": {
     "secStatus": "LIVE",
@@ -17954,45 +18194,103 @@
     "secFetchedAt": "2026-11-05"
   },
   "MT": {
-    "secStatus": "NASDAQ_FALLBACK",
-    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
-    "profileStatus": "LIVE",
-    "profileSource": "Nasdaq Company Profile",
-    "businessModelUrl": "http://www.arcelormittal.com",
-    "businessModelReportDate": "12/31/2025",
-    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
-    "businessModelEasy": "Arcelor Mittal NY Registry Shares NEW은 Nasdaq 공식 분류상 Industrials · Steel/Iron Ore 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "secStatus": "LIVE",
+    "secSource": "SEC EDGAR submissions + XBRL companyfacts",
+    "cik": "0001243429",
+    "secCompanyUrl": "https://www.sec.gov/edgar/browse/?CIK=1243429&owner=exclude",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/1243429/000124342926000020/mt-20251231.htm",
+    "businessModelUrl": "https://www.sec.gov/Archives/edgar/data/1243429/000124342926000020/mt-20251231.htm",
+    "businessModelReportDate": "2026-03-06",
+    "businessModelSource": "SEC EDGAR 10-K·XBRL",
     "businessProfile": {
-      "summary": "Arcelor Mittal NY Registry Shares NEW은 Nasdaq 공식 분류상 Industrials · Steel/Iron Ore 기업입니다.",
-      "products": "Nasdaq 공식 회사설명(영문): ArcelorMittal is one of the world's leading integrated steel and mining companies with a presence in 60 countries and primary steelmaking operations in 14 countries. It is the largest steel producer in Europe, among the largest in the Americas, and has a growing presence in Asia through its joint venture AM/NS India. ArcelorMittal sells its products to a diverse range of customers including the automotive, engineering, construction and machinery industries, and in 2025 generated revenues of $61.4 billion, produced 55.6 million metric tonnes of crude steel and 48.8 million tonnes of iron ore. Our purpose is to produce smarter steels for people and planet. Steels made using innovative processes which use less energy, emit significantly less carbon and reduce costs. Steels that are cleaner, stronger and reusable. Steels for the renewable energy infrastructure that will support societies as they transform through this century.",
-      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
-      "revenue": "최근 연간 매출은 61,352,000천달러로 전년 대비 -1.7%입니다(결산기준 12/31/2025).",
-      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "summary": "Arcelor Mittal NY Registry Shares NEW은 Nasdaq 분류상 Steel/Iron Ore에 속한 미국 상장기업입니다. SEC SIC 공식명은 Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)입니다.",
+      "products": "SEC 10-K Item 1 원문에서 주요 제품·서비스를 확인해야 합니다.",
+      "customers": "SEC 10-K Item 1 및 위험요인 원문에서 고객 집중도를 확인해야 합니다.",
+      "revenue": "SEC XBRL에서 비교 가능한 매출 계정을 확보하지 못했습니다.",
+      "drivers": "실적 성장률, 가격·거래량, 산업 동조와 신규 SEC 공시를 함께 확인합니다.",
       "segments": [
         "산업재 (Industrials)",
-        "Industrials",
-        "Steel/Iron Ore"
+        "Steel/Iron Ore",
+        "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)"
       ]
     },
+    "businessModelEasy": "Arcelor Mittal NY Registry Shares NEW은 Nasdaq 분류상 Steel/Iron Ore에 속한 미국 상장기업입니다. SEC SIC 공식명은 Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)입니다.",
+    "catalysts": [
+      {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-02",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-28",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-26",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-19",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": null,
+    "eps_growth_mode": null,
+    "epsConcept": null,
+    "sales_yoy": null,
+    "sales_growth_mode": null,
+    "salesConcept": null,
+    "latest_annual_eps_yoy": null,
+    "annual_eps_cagr_3y": null,
+    "annualEpsSeries": [],
+    "annualConcept": null,
+    "quarterlyEpsGrowthHistory": [],
+    "quarterlySalesGrowthHistory": [],
+    "epsAcceleration": false,
+    "salesAcceleration": false,
+    "grossMargin": null,
+    "operatingMargin": null,
     "financialHealth": {
       "status": "PASS",
-      "source": "Nasdaq 연간 재무제표(SEC 대체)",
-      "period": "12/31/2025",
+      "source": "SEC EDGAR XBRL 공식 재무제표",
       "sectorRule": "GENERAL",
       "equityPositive": true,
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 97703000.0,
-      "liabilities": 41167000.0,
-      "equity": 54466000.0,
-      "netIncome": 3243000.0,
-      "debtRatioPct": 75.6,
+      "assets": 97703000000.0,
+      "liabilities": 41167000000.0,
+      "equity": 56536000000.0,
+      "netIncome": 3243000000.0,
+      "debtRatioPct": 72.8,
       "currentRatioPct": 135.9,
-      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+      "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
-    "annualSalesYoyNasdaq": -1.7,
-    "catalysts": [],
     "sepaFundamental": {
       "status": "CHECK",
       "epsPass": false,
@@ -18001,13 +18299,12 @@
       "salesAcceleration": false,
       "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
-      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+      "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
-    "sector": "Industrials",
-    "industry": "Steel/Iron Ore",
-    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
-    "profileFetchedAt": "2026-08-26",
-    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+    "sic": "3312",
+    "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
+    "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
+    "secFetchedAt": "2026-11-11"
   },
   "EHC": {
     "secStatus": "LIVE",
@@ -18615,7 +18912,7 @@
     "sic": "6029",
     "sicDescription": "Commercial Banks, NEC",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "CVX": {
     "secStatus": "LIVE",
@@ -18641,6 +18938,12 @@
     "businessModelEasy": "Chevron Corporation Common Stock은 Nasdaq 분류상 석유·가스 (Integrated oil Companies)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Petroleum Refining입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-30",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -18659,10 +18962,10 @@
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 321.4,
+    "eps_yoy": 178.0,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 51.4,
+    "sales_yoy": 35.4,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": -31.8,
@@ -18688,23 +18991,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": -26.6
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": -44.5
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 321.4
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 178.0
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": -1.5
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 3.2
@@ -18712,10 +19011,14 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 51.4
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 35.4
       }
     ],
     "epsAcceleration": false,
-    "salesAcceleration": true,
+    "salesAcceleration": false,
     "grossMargin": null,
     "operatingMargin": null,
     "financialHealth": {
@@ -18726,20 +19029,20 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 330135000000.0,
-      "liabilities": 134577000000.0,
-      "equity": 189883000000.0,
+      "assets": 333786000000.0,
+      "liabilities": 133809000000.0,
+      "equity": 194327000000.0,
       "netIncome": 12299000000.0,
-      "debtRatioPct": 70.9,
-      "currentRatioPct": 125.2,
+      "debtRatioPct": 68.9,
+      "currentRatioPct": 134.2,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
-      "status": "STRONG",
+      "status": "CHECK",
       "epsPass": true,
       "salesPass": true,
       "epsAcceleration": false,
-      "salesAcceleration": true,
+      "salesAcceleration": false,
       "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
@@ -18747,7 +19050,7 @@
     "sic": "2911",
     "sicDescription": "Petroleum Refining",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "CSX": {
     "secStatus": "LIVE",
@@ -21211,7 +21514,7 @@
     "sic": "4813",
     "sicDescription": "Telephone Communications (No Radiotelephone)",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "FTI": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -21727,13 +22030,19 @@
     "businessModelEasy": "American Homes 4 Rent Common Shares of Beneficial Interest은 Nasdaq 분류상 부동산·리츠 (Real Estate Investment Trusts)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Real Estate Investment Trusts입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-11-04",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 10.7,
+    "eps_yoy": -14.8,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
     "sales_yoy": 3.5,
@@ -21762,16 +22071,16 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 35.0
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 16.7
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 10.7
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": -14.8
       }
     ],
     "quarterlySalesGrowthHistory": [
@@ -21800,11 +22109,11 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 13121098000.0,
-      "liabilities": 5642083000.0,
-      "equity": 6807579000.0,
+      "assets": 13055060000.0,
+      "liabilities": 5686770000.0,
+      "equity": 6702604000.0,
       "netIncome": 513392000.0,
-      "debtRatioPct": 82.9,
+      "debtRatioPct": 84.8,
       "currentRatioPct": null,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
@@ -21821,7 +22130,7 @@
     "sic": "6798",
     "sicDescription": "Real Estate Investment Trusts",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "AEG": {
     "secStatus": "LIVE",
@@ -22005,7 +22314,7 @@
     "sic": "6029",
     "sicDescription": "Commercial Banks, NEC",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "EG": {
     "secStatus": "LIVE",
@@ -23035,7 +23344,7 @@
     "sic": "7372",
     "sicDescription": "Services-Prepackaged Software",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "MFC": {
     "secStatus": "LIVE",
@@ -23417,6 +23726,12 @@
     "businessModelEasy": "ENI S.p.A. Common Stock은 Nasdaq 분류상 석유·가스 (Oil & Gas Production)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Crude Petroleum & Natural Gas입니다.",
     "catalysts": [
       {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-28",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -23448,12 +23763,6 @@
       },
       {
         "date": "2026-09-30",
-        "category": "SEC 공시",
-        "report": "6-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-23",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
@@ -23504,7 +23813,7 @@
     "sic": "1311",
     "sicDescription": "Crude Petroleum & Natural Gas",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "SBUX": {
     "secStatus": "LIVE",
@@ -24577,12 +24886,6 @@
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-25",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
       }
     ],
     "eps_yoy": -71.8,
@@ -24687,7 +24990,7 @@
     "sic": "6798",
     "sicDescription": "Real Estate Investment Trusts",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "IHG": {
     "secStatus": "LIVE",
@@ -25146,6 +25449,12 @@
     "businessModelEasy": "Vodafone Group Plc American Depositary Shares은 Nasdaq 분류상 통신서비스 (Telecommunications Equipment)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Radiotelephone Communications입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-11-02",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -25183,12 +25492,6 @@
       },
       {
         "date": "2026-10-21",
-        "category": "SEC 공시",
-        "report": "6-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-10-08",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
@@ -25239,7 +25542,7 @@
     "sic": "4812",
     "sicDescription": "Radiotelephone Communications",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "CM": {
     "secStatus": "LIVE",
@@ -25504,6 +25807,12 @@
     "businessModelEasy": "TotalEnergies SE Ordinary Shares은 Nasdaq 분류상 석유·가스 (Oil & Gas Production)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Crude Petroleum & Natural Gas입니다.",
     "catalysts": [
       {
+        "date": "2026-11-02",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-29",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -25561,7 +25870,7 @@
     "sic": "1311",
     "sicDescription": "Crude Petroleum & Natural Gas",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "AGNC": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -25742,7 +26051,7 @@
     "sic": "6021",
     "sicDescription": "National Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "SLF": {
     "secStatus": "LIVE",
@@ -25863,6 +26172,18 @@
     "businessModelEasy": "PNC Financial Services Group Inc. (The) Common Stock은 Nasdaq 분류상 은행 (Major Banks)에 속한 미국 상장기업입니다. SEC SIC 공식명은 National Commercial Banks입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-23",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -25887,7 +26208,7 @@
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 24.9,
+    "eps_yoy": 14.3,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
     "sales_yoy": -8.2,
@@ -25916,16 +26237,16 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 24.6
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 17.7
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 24.9
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 14.3
       }
     ],
     "quarterlySalesGrowthHistory": [
@@ -25954,11 +26275,11 @@
       "profitPositive": false,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 616034000000.0,
-      "liabilities": 551973000000.0,
-      "equity": 64008000000.0,
+      "assets": 627816000000.0,
+      "liabilities": 565406000000.0,
+      "equity": 62353000000.0,
       "netIncome": null,
-      "debtRatioPct": 862.4,
+      "debtRatioPct": 906.8,
       "currentRatioPct": null,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
@@ -25975,7 +26296,7 @@
     "sic": "6021",
     "sicDescription": "National Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "CNI": {
     "secStatus": "LIVE",
@@ -26357,13 +26678,25 @@
     "businessModelEasy": "Regions Financial Corporation Common Stock은 Nasdaq 분류상 은행 (Major Banks)에 속한 미국 상장기업입니다. SEC SIC 공식명은 National Commercial Banks입니다.",
     "catalysts": [
       {
+        "date": "2026-11-09",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-16",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 8.5,
+    "eps_yoy": 16.4,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
     "sales_yoy": null,
@@ -26392,16 +26725,16 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 24.5
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 21.6
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 8.5
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 16.4
       }
     ],
     "quarterlySalesGrowthHistory": [],
@@ -26417,11 +26750,11 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 161299000000.0,
-      "liabilities": 142388000000.0,
-      "equity": 18840000000.0,
+      "assets": 163213000000.0,
+      "liabilities": 145247000000.0,
+      "equity": 17847000000.0,
       "netIncome": 2156000000.0,
-      "debtRatioPct": 755.8,
+      "debtRatioPct": 813.8,
       "currentRatioPct": null,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
@@ -26438,7 +26771,7 @@
     "sic": "6021",
     "sicDescription": "National Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "EPD": {
     "secStatus": "LIVE",
@@ -30312,7 +30645,7 @@
     "sic": "7372",
     "sicDescription": "Services-Prepackaged Software",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "SNOW": {
     "secStatus": "LIVE",
@@ -30660,6 +30993,12 @@
     "businessModelEasy": "Fox Corporation Class A Common Stock은 Nasdaq 분류상 방송 (Broadcasting)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Television Broadcasting Stations입니다.",
     "catalysts": [
       {
+        "date": "2026-11-06",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-11-04",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -30784,7 +31123,7 @@
     "sic": "4833",
     "sicDescription": "Television Broadcasting Stations",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "AGI": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -31149,6 +31488,12 @@
     "businessModelEasy": "Fox Corporation Class B Common Stock은 Nasdaq 분류상 방송 (Broadcasting)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Television Broadcasting Stations입니다.",
     "catalysts": [
       {
+        "date": "2026-11-06",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-11-04",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -31273,7 +31618,7 @@
     "sic": "4833",
     "sicDescription": "Television Broadcasting Stations",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "PAAS": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -32717,11 +33062,24 @@
       ]
     },
     "businessModelEasy": "Cloudflare Inc. Class A Common Stock은 Nasdaq 분류상 소프트웨어 (Computer Software: Prepackaged Software)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Services-Prepackaged Software입니다.",
-    "catalysts": [],
+    "catalysts": [
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
     "eps_yoy": null,
     "eps_growth_mode": null,
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 35.9,
+    "sales_yoy": 39.2,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": null,
@@ -32748,33 +33106,33 @@
     "quarterlyEpsGrowthHistory": [],
     "quarterlySalesGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 30.7
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 33.5
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 35.9
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 39.2
       }
     ],
     "epsAcceleration": false,
     "salesAcceleration": true,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 71.8,
-      "priorYearPct": 74.9,
-      "changePp": -3.1,
+      "frame": "CY2026Q3",
+      "latestPct": 71.2,
+      "priorYearPct": 74.0,
+      "changePp": -2.8,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": -29.6,
-      "priorYearPct": -13.1,
-      "changePp": -16.4,
+      "frame": "CY2026Q3",
+      "latestPct": -8.7,
+      "priorYearPct": -6.7,
+      "changePp": -2.0,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -32784,14 +33142,14 @@
       "sectorRule": "GENERAL",
       "equityPositive": true,
       "profitPositive": false,
-      "leveragePass": true,
+      "leveragePass": false,
       "liquidityPass": true,
-      "assets": 6474127000.0,
-      "liabilities": 4854107000.0,
-      "equity": 1620020000.0,
+      "assets": 7696800000.0,
+      "liabilities": 6231998000.0,
+      "equity": 1464802000.0,
       "netIncome": -102267000.0,
-      "debtRatioPct": 299.6,
-      "currentRatioPct": 181.8,
+      "debtRatioPct": 425.4,
+      "currentRatioPct": 379.7,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -32807,7 +33165,7 @@
     "sic": "7372",
     "sicDescription": "Services-Prepackaged Software",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "APH": {
     "secStatus": "LIVE",
@@ -32953,7 +33311,7 @@
     "sic": "3678",
     "sicDescription": "Electronic Connectors",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "DVN": {
     "secStatus": "LIVE",
@@ -33300,6 +33658,18 @@
     "businessModelEasy": "Entegris Inc. Common Stock은 Nasdaq 분류상 산업재 세부산업 (Plastic Products)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Plastics Products, NEC입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-29",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-29",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -33312,10 +33682,10 @@
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 74.3,
+    "eps_yoy": 123.9,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 11.5,
+    "sales_yoy": 24.6,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": -19.7,
@@ -33341,23 +33711,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": -9.8
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 46.3
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 74.3
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 123.9
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": -0.1
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 5.0
@@ -33365,23 +33731,27 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 11.5
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 24.6
       }
     ],
     "epsAcceleration": true,
-    "salesAcceleration": false,
+    "salesAcceleration": true,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 47.6,
-      "priorYearPct": 44.4,
-      "changePp": 3.2,
+      "frame": "CY2026Q3",
+      "latestPct": 49.7,
+      "priorYearPct": 43.5,
+      "changePp": 6.2,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 18.6,
-      "priorYearPct": 13.4,
-      "changePp": 5.2,
+      "frame": "CY2026Q3",
+      "latestPct": 22.9,
+      "priorYearPct": 15.2,
+      "changePp": 7.7,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -33393,20 +33763,20 @@
       "profitPositive": true,
       "leveragePass": false,
       "liquidityPass": true,
-      "assets": 8418500000.0,
-      "liabilities": 7298583000.0,
+      "assets": 8540600000.0,
+      "liabilities": 7420683000.0,
       "equity": 1119917000.0,
       "netIncome": 235600000.0,
-      "debtRatioPct": 651.7,
-      "currentRatioPct": 304.9,
+      "debtRatioPct": 662.6,
+      "currentRatioPct": 266.0,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
-      "status": "CHECK",
+      "status": "STRONG",
       "epsPass": true,
-      "salesPass": false,
+      "salesPass": true,
       "epsAcceleration": true,
-      "salesAcceleration": false,
+      "salesAcceleration": true,
       "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
@@ -33414,7 +33784,7 @@
     "sic": "3089",
     "sicDescription": "Plastics Products, NEC",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "WSM": {
     "secStatus": "LIVE",
@@ -33730,12 +34100,6 @@
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-25",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
       }
     ],
     "eps_yoy": null,
@@ -33801,7 +34165,7 @@
     "sic": "2911",
     "sicDescription": "Petroleum Refining",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "BBIO": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -34076,7 +34440,14 @@
       ]
     },
     "businessModelEasy": "Credicorp Ltd. Common Stock은 Nasdaq 분류상 은행 (Commercial Banks)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Commercial Banks, NEC입니다.",
-    "catalysts": [],
+    "catalysts": [
+      {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
     "eps_yoy": null,
     "eps_growth_mode": null,
     "epsConcept": null,
@@ -34122,7 +34493,7 @@
     "sic": "6029",
     "sicDescription": "Commercial Banks, NEC",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "DCI": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -34347,12 +34718,6 @@
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-15",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
       }
     ],
     "eps_yoy": 34.0,
@@ -34450,7 +34815,7 @@
     "sic": "3724",
     "sicDescription": "Aircraft Engines & Engine Parts",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-30"
+    "secFetchedAt": "2026-11-11"
   },
   "SCI": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -35420,7 +35785,7 @@
     "sic": "1531",
     "sicDescription": "Operative Builders",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "FANG": {
     "secStatus": "LIVE",
@@ -35851,6 +36216,12 @@
     "businessModelEasy": "BP p.l.c. Common Stock은 Nasdaq 분류상 석유·가스 (Integrated oil Companies)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Petroleum Refining입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-11-02",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -35938,7 +36309,7 @@
     "sic": "2911",
     "sicDescription": "Petroleum Refining",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "LTM": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -36129,60 +36500,131 @@
     "secFetchedAt": "2026-11-10"
   },
   "ZM": {
-    "secStatus": "NASDAQ_FALLBACK",
-    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
-    "profileStatus": "LIVE",
-    "profileSource": "Nasdaq Company Profile",
-    "businessModelUrl": "https://www.zoom.com",
-    "businessModelReportDate": "1/31/2026",
-    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
-    "businessModelEasy": "Zoom Communications Inc. Class A Common Stock은 Nasdaq 공식 분류상 Technology · Computer Software: Programming, Data Processing 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "secStatus": "LIVE",
+    "secSource": "SEC EDGAR submissions + XBRL companyfacts",
+    "cik": "0001585521",
+    "secCompanyUrl": "https://www.sec.gov/edgar/browse/?CIK=1585521&owner=exclude",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/1585521/000158552126000030/zm-20260131.htm",
+    "businessModelUrl": "https://www.sec.gov/Archives/edgar/data/1585521/000158552126000030/zm-20260131.htm",
+    "businessModelReportDate": "2026-02-27",
+    "businessModelSource": "SEC EDGAR 10-K·XBRL",
     "businessProfile": {
-      "summary": "Zoom Communications Inc. Class A Common Stock은 Nasdaq 공식 분류상 Technology · Computer Software: Programming, Data Processing 기업입니다.",
-      "products": "Nasdaq 공식 회사설명(영문): Zoom (NASDAQ: ZM) is a system of action for modern work, turning live collaboration into completed results. From entrepreneurs to global enterprises, customers choose Zoom to seamlessly collaborate, communicate, and drive outcomes across meetings, phone, contact center, and more - all with the built-in assistance of Zoom AI. Founded in 2011, Zoom is headquartered in San Jose, CA. For more information, visit zoom.com.",
-      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
-      "revenue": "최근 연간 매출은 4,868,769천달러로 전년 대비 +4.4%입니다(결산기준 1/31/2026).",
-      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "summary": "Zoom Communications Inc. Class A Common Stock은 Nasdaq 분류상 Computer Software: Programming, Data Processing에 속한 미국 상장기업입니다. SEC SIC 공식명은 Services-Computer Programming, Data Processing, Etc.입니다.",
+      "products": "SEC 10-K Item 1 원문에서 주요 제품·서비스를 확인해야 합니다.",
+      "customers": "SEC 10-K Item 1 및 위험요인 원문에서 고객 집중도를 확인해야 합니다.",
+      "revenue": "SEC XBRL 매출 계정(RevenueFromContractWithCustomerExcludingAssessedTax)으로 최근 분기 성장률을 계산합니다.",
+      "drivers": "실적 성장률, 가격·거래량, 산업 동조와 신규 SEC 공시를 함께 확인합니다.",
       "segments": [
         "기술 (Technology)",
-        "Technology",
-        "Computer Software: Programming, Data Processing"
+        "Computer Software: Programming, Data Processing",
+        "Services-Computer Programming, Data Processing, Etc."
       ]
+    },
+    "businessModelEasy": "Zoom Communications Inc. Class A Common Stock은 Nasdaq 분류상 Computer Software: Programming, Data Processing에 속한 미국 상장기업입니다. SEC SIC 공식명은 Services-Computer Programming, Data Processing, Etc.입니다.",
+    "catalysts": [],
+    "eps_yoy": 344.0,
+    "eps_growth_mode": "YOY",
+    "epsConcept": "EarningsPerShareDiluted",
+    "sales_yoy": 4.9,
+    "sales_growth_mode": "YOY",
+    "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "latest_annual_eps_yoy": 92.5,
+    "annual_eps_cagr_3y": 162.9,
+    "annualEpsSeries": [
+      {
+        "year": 2023,
+        "value": 0.34
+      },
+      {
+        "year": 2024,
+        "value": 2.07
+      },
+      {
+        "year": 2025,
+        "value": 3.21
+      },
+      {
+        "year": 2026,
+        "value": 6.18
+      }
+    ],
+    "annualConcept": "EarningsPerShareDiluted",
+    "quarterlyEpsGrowthHistory": [
+      {
+        "frame": "CY2025Q3",
+        "growthPct": 204.5
+      },
+      {
+        "frame": "CY2026Q1",
+        "growthPct": 75.3
+      },
+      {
+        "frame": "CY2026Q2",
+        "growthPct": 344.0
+      }
+    ],
+    "quarterlySalesGrowthHistory": [
+      {
+        "frame": "CY2025Q3",
+        "growthPct": 4.4
+      },
+      {
+        "frame": "CY2026Q1",
+        "growthPct": 5.5
+      },
+      {
+        "frame": "CY2026Q2",
+        "growthPct": 4.9
+      }
+    ],
+    "epsAcceleration": false,
+    "salesAcceleration": false,
+    "grossMargin": {
+      "frame": "CY2026Q2",
+      "latestPct": 77.2,
+      "priorYearPct": 77.6,
+      "changePp": -0.4,
+      "numeratorConcept": "GrossProfit",
+      "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    "operatingMargin": {
+      "frame": "CY2026Q2",
+      "latestPct": 24.6,
+      "priorYearPct": 26.4,
+      "changePp": -1.8,
+      "numeratorConcept": "OperatingIncomeLoss",
+      "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "financialHealth": {
       "status": "PASS",
-      "source": "Nasdaq 연간 재무제표(SEC 대체)",
-      "period": "1/31/2026",
+      "source": "SEC EDGAR XBRL 공식 재무제표",
       "sectorRule": "GENERAL",
       "equityPositive": true,
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 11960416.0,
-      "liabilities": 2152158.0,
-      "equity": 9808258.0,
-      "netIncome": 1900148.0,
-      "debtRatioPct": 21.9,
-      "currentRatioPct": 433.1,
-      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+      "assets": 13585396000.0,
+      "liabilities": 2281785000.0,
+      "equity": 11303611000.0,
+      "netIncome": 1900148000.0,
+      "debtRatioPct": 20.2,
+      "currentRatioPct": 382.6,
+      "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
-    "annualSalesYoyNasdaq": 4.4,
-    "catalysts": [],
     "sepaFundamental": {
       "status": "CHECK",
-      "epsPass": false,
+      "epsPass": true,
       "salesPass": false,
       "epsAcceleration": false,
       "salesAcceleration": false,
       "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
-      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+      "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
-    "sector": "Technology",
-    "industry": "Computer Software: Programming, Data Processing",
-    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
-    "profileFetchedAt": "2026-08-26",
-    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+    "sic": "7370",
+    "sicDescription": "Services-Computer Programming, Data Processing, Etc.",
+    "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
+    "secFetchedAt": "2026-11-11"
   },
   "GS": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -36264,6 +36706,18 @@
     "businessModelEasy": "Taiwan Semiconductor Manufacturing Company Ltd.은 Nasdaq 분류상 반도체 (Semiconductors)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Semiconductors & Related Devices입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-22",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -36277,12 +36731,6 @@
       },
       {
         "date": "2026-10-08",
-        "category": "SEC 공시",
-        "report": "6-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-24",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
@@ -36333,7 +36781,7 @@
     "sic": "3674",
     "sicDescription": "Semiconductors & Related Devices",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "TER": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -36527,7 +36975,7 @@
     "sic": "6022",
     "sicDescription": "State Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "ELAN": {
     "secStatus": "LIVE",
@@ -37014,11 +37462,30 @@
       ]
     },
     "businessModelEasy": "AMETEK Inc.은 Nasdaq 분류상 산업기계·장비 (Industrial Machinery/Components)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Industrial Instruments For Measurement, Display, and Control입니다.",
-    "catalysts": [],
-    "eps_yoy": 14.2,
+    "catalysts": [
+      {
+        "date": "2026-11-06",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": 15.6,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 15.0,
+    "sales_yoy": 17.3,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 7.9,
@@ -37044,23 +37511,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 8.8
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 14.5
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 14.2
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 15.6
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 10.8
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 11.3
@@ -37068,16 +37531,20 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 15.0
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 17.3
       }
     ],
     "epsAcceleration": false,
     "salesAcceleration": false,
     "grossMargin": null,
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 25.8,
-      "priorYearPct": 26.0,
-      "changePp": -0.1,
+      "frame": "CY2026Q3",
+      "latestPct": 26.3,
+      "priorYearPct": 25.8,
+      "changePp": 0.5,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -37089,12 +37556,12 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 16594713000.0,
-      "liabilities": 5333950000.0,
-      "equity": 11260763000.0,
+      "assets": 22388535000.0,
+      "liabilities": 10692327000.0,
+      "equity": 11696208000.0,
       "netIncome": 1480142000.0,
-      "debtRatioPct": 47.4,
-      "currentRatioPct": 121.4,
+      "debtRatioPct": 91.4,
+      "currentRatioPct": 143.1,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -37103,14 +37570,14 @@
       "salesPass": false,
       "epsAcceleration": false,
       "salesAcceleration": false,
-      "marginImproving": false,
+      "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
     "sic": "3823",
     "sicDescription": "Industrial Instruments For Measurement, Display, and Control",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "AIT": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -37577,7 +38044,7 @@
     "sic": "3585",
     "sicDescription": "Air-Cond & Warm Air Heatg Equip & Comm & Indl Refrig Equip",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "CNA": {
     "secStatus": "LIVE",
@@ -39015,7 +39482,7 @@
     "sic": "3490",
     "sicDescription": "Miscellaneous Fabricated Metal Products",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "PBR": {
     "secStatus": "LIVE",
@@ -39733,7 +40200,7 @@
     "sic": "6021",
     "sicDescription": "National Commercial Banks",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "STX": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -40473,16 +40940,28 @@
     "businessModelEasy": "Advanced Micro Devices Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Semiconductors & Related Devices입니다.",
     "catalysts": [
       {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-09-28",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 155.6,
+    "eps_yoy": 94.7,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 50.1,
+    "sales_yoy": 44.7,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 165.0,
@@ -40508,23 +40987,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 59.6
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 90.9
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 155.6
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 94.7
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 35.6
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 37.8
@@ -40532,23 +41007,27 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 50.1
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 44.7
       }
     ],
-    "epsAcceleration": true,
-    "salesAcceleration": true,
+    "epsAcceleration": false,
+    "salesAcceleration": false,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 53.8,
-      "priorYearPct": 39.8,
-      "changePp": 14.0,
+      "frame": "CY2026Q3",
+      "latestPct": 53.9,
+      "priorYearPct": 51.7,
+      "changePp": 2.2,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 17.3,
-      "priorYearPct": -1.7,
-      "changePp": 19.0,
+      "frame": "CY2026Q3",
+      "latestPct": 21.2,
+      "priorYearPct": 13.7,
+      "changePp": 7.4,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
@@ -40560,20 +41039,20 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 84464000000.0,
-      "liabilities": 17240000000.0,
-      "equity": 67224000000.0,
+      "assets": 94812000000.0,
+      "liabilities": 26423000000.0,
+      "equity": 68389000000.0,
       "netIncome": 4335000000.0,
-      "debtRatioPct": 25.6,
-      "currentRatioPct": 260.9,
+      "debtRatioPct": 38.6,
+      "currentRatioPct": 272.5,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
-      "status": "STRONG",
+      "status": "CHECK",
       "epsPass": true,
       "salesPass": true,
-      "epsAcceleration": true,
-      "salesAcceleration": true,
+      "epsAcceleration": false,
+      "salesAcceleration": false,
       "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
@@ -40581,7 +41060,7 @@
     "sic": "3674",
     "sicDescription": "Semiconductors & Related Devices",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "VTRS": {
     "secStatus": "LIVE",
@@ -41232,7 +41711,7 @@
     "sic": "7372",
     "sicDescription": "Services-Prepackaged Software",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "TT": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -41877,7 +42356,20 @@
       ]
     },
     "businessModelEasy": "Eversource Energy (D/B/A) Common Stock은 Nasdaq 분류상 전력 유틸리티 (Electric Utilities: Central)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Electric Services입니다.",
-    "catalysts": [],
+    "catalysts": [
+      {
+        "date": "2026-11-06",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
     "eps_yoy": -85.4,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
@@ -41973,7 +42465,7 @@
     "sic": "4911",
     "sicDescription": "Electric Services",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "TDY": {
     "secStatus": "LIVE",
@@ -44135,14 +44627,7 @@
       ]
     },
     "businessModelEasy": "Analog Devices Inc. Common Stock은 Nasdaq 분류상 반도체 (Semiconductors)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Semiconductors & Related Devices입니다.",
-    "catalysts": [
-      {
-        "date": "2026-09-17",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      }
-    ],
+    "catalysts": [],
     "eps_yoy": 163.5,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
@@ -44245,7 +44730,7 @@
     "sic": "3674",
     "sicDescription": "Semiconductors & Related Devices",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "MO": {
     "secStatus": "LIVE",
@@ -44746,6 +45231,12 @@
     "businessModelEasy": "Emera Incorporated Common Shares은 Nasdaq 분류상 전력 유틸리티 (Electric Utilities: Central)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Electric Services입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "6-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-19",
         "category": "SEC 공시",
         "report": "6-K 제출 · 촉매 여부는 원문 확인",
@@ -44809,7 +45300,7 @@
     "sic": "4911",
     "sicDescription": "Electric Services",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "KIM": {
     "secStatus": "LIVE",
@@ -45080,16 +45571,22 @@
     "businessModelEasy": "Nucor Corporation Common Stock은 Nasdaq 분류상 금속·광업 (Steel/Iron Ore)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-26",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": 93.8,
+    "eps_yoy": 120.5,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 23.0,
+    "sales_yoy": 32.0,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 516.4,
@@ -45115,23 +45612,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 150.5
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 382.1
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 93.8
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 120.5
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 14.5
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 21.3
@@ -45139,6 +45632,10 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 23.0
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 32.0
       }
     ],
     "epsAcceleration": false,
@@ -45160,12 +45657,12 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 36954000000.0,
-      "liabilities": 13688000000.0,
-      "equity": 22109000000.0,
+      "assets": 38364000000.0,
+      "liabilities": 14273000000.0,
+      "equity": 22811000000.0,
       "netIncome": 1744000000.0,
-      "debtRatioPct": 61.9,
-      "currentRatioPct": 250.8,
+      "debtRatioPct": 62.6,
+      "currentRatioPct": 246.2,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -45181,7 +45678,7 @@
     "sic": "3312",
     "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-29"
+    "secFetchedAt": "2026-11-11"
   },
   "RS": {
     "secStatus": "LIVE",
@@ -46267,9 +46764,28 @@
       ]
     },
     "businessModelEasy": "CVS Health Corporation Common Stock은 Nasdaq 분류상 제약 (Retail-Drug Stores and Proprietary Stores)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Retail-Drug Stores and Proprietary Stores입니다.",
-    "catalysts": [],
-    "eps_yoy": 188.7,
-    "eps_growth_mode": "YOY",
+    "catalysts": [
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": null,
+    "eps_growth_mode": "TURNAROUND",
     "epsConcept": "EarningsPerShareDiluted",
     "sales_yoy": 36.6,
     "sales_growth_mode": "YOY",
@@ -46342,17 +46858,17 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 253768000000.0,
-      "liabilities": 173869000000.0,
-      "equity": 79702000000.0,
+      "assets": 258075000000.0,
+      "liabilities": 177386000000.0,
+      "equity": 80497000000.0,
       "netIncome": 1768000000.0,
-      "debtRatioPct": 218.1,
-      "currentRatioPct": 86.6,
+      "debtRatioPct": 220.4,
+      "currentRatioPct": 85.3,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
-      "status": "STRONG",
-      "epsPass": true,
+      "status": "CHECK",
+      "epsPass": false,
       "salesPass": true,
       "epsAcceleration": true,
       "salesAcceleration": true,
@@ -46363,7 +46879,7 @@
     "sic": "5912",
     "sicDescription": "Retail-Drug Stores and Proprietary Stores",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "ABEV": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -46684,7 +47200,7 @@
     "sic": "4400",
     "sicDescription": "Water Transportation",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "MPWR": {
     "secStatus": "LIVE",
@@ -48099,6 +48615,12 @@
     "businessModelEasy": "Steel Dynamics Inc.은 Nasdaq 분류상 금속·광업 (Steel/Iron Ore)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-23",
         "category": "SEC 공시",
         "report": "10-Q 제출 · 촉매 여부는 원문 확인",
@@ -48112,12 +48634,6 @@
       },
       {
         "date": "2026-10-19",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-18",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
@@ -48225,63 +48741,153 @@
     "sic": "3312",
     "sicDescription": "Steel Works, Blast Furnaces & Rolling Mills (Coke Ovens)",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-30"
+    "secFetchedAt": "2026-11-11"
   },
   "LSCC": {
-    "secStatus": "NASDAQ_FALLBACK",
-    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
-    "profileStatus": "LIVE",
-    "profileSource": "Nasdaq Company Profile",
-    "businessModelUrl": "https://www.latticesemi.com",
-    "businessModelReportDate": "1/3/2026",
-    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
-    "businessModelEasy": "Lattice Semiconductor Corporation Common Stock은 Nasdaq 공식 분류상 Technology · Semiconductors 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "secStatus": "LIVE",
+    "secSource": "SEC EDGAR submissions + XBRL companyfacts",
+    "cik": "0000855658",
+    "secCompanyUrl": "https://www.sec.gov/edgar/browse/?CIK=855658&owner=exclude",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/855658/000143774926004100/lscc20260103_10k.htm",
+    "businessModelUrl": "https://www.sec.gov/Archives/edgar/data/855658/000143774926004100/lscc20260103_10k.htm",
+    "businessModelReportDate": "2026-02-13",
+    "businessModelSource": "SEC EDGAR 10-K·XBRL",
     "businessProfile": {
-      "summary": "Lattice Semiconductor Corporation Common Stock은 Nasdaq 공식 분류상 Technology · Semiconductors 기업입니다.",
-      "products": "Nasdaq 공식 회사설명(영문): Lattice Semiconductor (NASDAQ: LSCC) is the low power programmable leader. We solve customer challenges from the Edge to the Cloud, in the growing Compute, Communications, Industrial, and Embedded markets. With the addition of AMI's industry-leading, silicon-neutral platform firmware and infrastructure manageability solutions, Lattice now delivers the industry's most complete secure management and control platform for cloud and AI data center infrastructure. Our technology, long-standing relationships, and commitment to world-class support let our customers quickly and easily unleash their innovation to create a smart, secure, and connected world.",
-      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
-      "revenue": "최근 연간 매출은 523,262천달러로 전년 대비 +2.7%입니다(결산기준 1/3/2026).",
-      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "summary": "Lattice Semiconductor Corporation Common Stock은 Nasdaq 분류상 Semiconductors에 속한 미국 상장기업입니다. SEC SIC 공식명은 Semiconductors & Related Devices입니다.",
+      "products": "SEC 10-K Item 1 원문에서 주요 제품·서비스를 확인해야 합니다.",
+      "customers": "SEC 10-K Item 1 및 위험요인 원문에서 고객 집중도를 확인해야 합니다.",
+      "revenue": "SEC XBRL 매출 계정(RevenueFromContractWithCustomerExcludingAssessedTax)으로 최근 분기 성장률을 계산합니다.",
+      "drivers": "실적 성장률, 가격·거래량, 산업 동조와 신규 SEC 공시를 함께 확인합니다.",
       "segments": [
         "기술 (Technology)",
-        "Technology",
-        "Semiconductors"
+        "Semiconductors",
+        "Semiconductors & Related Devices"
       ]
+    },
+    "businessModelEasy": "Lattice Semiconductor Corporation Common Stock은 Nasdaq 분류상 Semiconductors에 속한 미국 상장기업입니다. SEC SIC 공식명은 Semiconductors & Related Devices입니다.",
+    "catalysts": [
+      {
+        "date": "2026-11-03",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-02",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-10-22",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": 300.0,
+    "eps_growth_mode": "YOY",
+    "epsConcept": "EarningsPerShareDiluted",
+    "sales_yoy": 118.3,
+    "sales_growth_mode": "YOY",
+    "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+    "latest_annual_eps_yoy": -95.5,
+    "annual_eps_cagr_3y": -74.9,
+    "annualEpsSeries": [
+      {
+        "year": 2022,
+        "value": 1.27
+      },
+      {
+        "year": 2023,
+        "value": 1.85
+      },
+      {
+        "year": 2024,
+        "value": 0.44
+      },
+      {
+        "year": 2025,
+        "value": 0.02
+      }
+    ],
+    "annualConcept": "EarningsPerShareDiluted",
+    "quarterlyEpsGrowthHistory": [
+      {
+        "frame": "CY2026Q1",
+        "growthPct": 300.0
+      },
+      {
+        "frame": "CY2026Q2",
+        "growthPct": 600.0
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 300.0
+      }
+    ],
+    "quarterlySalesGrowthHistory": [
+      {
+        "frame": "CY2026Q1",
+        "growthPct": 42.2
+      },
+      {
+        "frame": "CY2026Q2",
+        "growthPct": 62.2
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 118.3
+      }
+    ],
+    "epsAcceleration": false,
+    "salesAcceleration": true,
+    "grossMargin": {
+      "frame": "CY2026Q3",
+      "latestPct": 67.4,
+      "priorYearPct": 67.9,
+      "changePp": -0.5,
+      "numeratorConcept": "GrossProfit",
+      "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
+    },
+    "operatingMargin": {
+      "frame": "CY2026Q3",
+      "latestPct": 8.2,
+      "priorYearPct": -1.2,
+      "changePp": 9.4,
+      "numeratorConcept": "OperatingIncomeLoss",
+      "revenueConcept": "RevenueFromContractWithCustomerExcludingAssessedTax"
     },
     "financialHealth": {
       "status": "PASS",
-      "source": "Nasdaq 연간 재무제표(SEC 대체)",
-      "period": "1/3/2026",
+      "source": "SEC EDGAR XBRL 공식 재무제표",
       "sectorRule": "GENERAL",
       "equityPositive": true,
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 883120.0,
-      "liabilities": 169066.0,
-      "equity": 714054.0,
-      "netIncome": 3084.0,
-      "debtRatioPct": 23.7,
-      "currentRatioPct": 309.2,
-      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+      "assets": 2609565000.0,
+      "liabilities": 1192332000.0,
+      "equity": 1417233000.0,
+      "netIncome": 3084000.0,
+      "debtRatioPct": 84.1,
+      "currentRatioPct": 192.4,
+      "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
-    "annualSalesYoyNasdaq": 2.7,
-    "catalysts": [],
     "sepaFundamental": {
-      "status": "CHECK",
-      "epsPass": false,
-      "salesPass": false,
+      "status": "STRONG",
+      "epsPass": true,
+      "salesPass": true,
       "epsAcceleration": false,
-      "salesAcceleration": false,
-      "marginImproving": false,
+      "salesAcceleration": true,
+      "marginImproving": true,
       "earningsSurpriseStatus": "UNKNOWN",
-      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+      "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
-    "sector": "Technology",
-    "industry": "Semiconductors",
-    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
-    "profileFetchedAt": "2026-08-26",
-    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+    "sic": "3674",
+    "sicDescription": "Semiconductors & Related Devices",
+    "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
+    "secFetchedAt": "2026-11-11"
   },
   "ODFL": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -48589,7 +49195,7 @@
     "sic": "3841",
     "sicDescription": "Surgical & Medical Instruments & Apparatus",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "HUM": {
     "secStatus": "LIVE",
@@ -56046,12 +56652,6 @@
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-25",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
       }
     ],
     "eps_yoy": 11.9,
@@ -56156,7 +56756,7 @@
     "sic": "5122",
     "sicDescription": "Wholesale-Drugs, Proprietaries & Druggists' Sundries",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "PSKY": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -59752,6 +60352,18 @@
     "businessModelEasy": "Brookfield Asset Management Inc Class A Limited Voting Shares은 Nasdaq 분류상 건설·건자재 (Building operators)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Investment Advice입니다.",
     "catalysts": [
       {
+        "date": "2026-11-09",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-06",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-13",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -59779,7 +60391,7 @@
     "eps_yoy": 2160.0,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 12.5,
+    "sales_yoy": 31.7,
     "sales_growth_mode": "YOY",
     "salesConcept": "RevenueFromContractWithCustomerExcludingAssessedTax",
     "latest_annual_eps_yoy": 2160.0,
@@ -59798,20 +60410,20 @@
     "quarterlyEpsGrowthHistory": [],
     "quarterlySalesGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 11.6
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 3.8
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 12.5
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 31.7
       }
     ],
     "epsAcceleration": false,
-    "salesAcceleration": false,
+    "salesAcceleration": true,
     "grossMargin": null,
     "operatingMargin": null,
     "financialHealth": {
@@ -59822,20 +60434,20 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 20080000000.0,
-      "liabilities": 8212000000.0,
+      "assets": 27409000000.0,
+      "liabilities": 12680000000.0,
       "equity": 8461000000.0,
       "netIncome": 2398000000.0,
-      "debtRatioPct": 97.1,
+      "debtRatioPct": 149.9,
       "currentRatioPct": null,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
-      "status": "CHECK",
+      "status": "STRONG",
       "epsPass": true,
-      "salesPass": false,
+      "salesPass": true,
       "epsAcceleration": false,
-      "salesAcceleration": false,
+      "salesAcceleration": true,
       "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
@@ -59843,7 +60455,7 @@
     "sic": "6282",
     "sicDescription": "Investment Advice",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "UL": {
     "secStatus": "LIVE",
@@ -60209,7 +60821,7 @@
     "sic": "7372",
     "sicDescription": "Services-Prepackaged Software",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-03"
+    "secFetchedAt": "2026-11-11"
   },
   "MTD": {
     "secStatus": "LIVE",
@@ -61540,6 +62152,24 @@
     "businessModelEasy": "Kimberly-Clark Corporation Common Stock은 Nasdaq 분류상 포장재·용기 (Containers/Packaging)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Converted Paper & Paperboard Prods (No Contaners/Boxes)입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-11-02",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -61568,30 +62198,12 @@
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-10-13",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-10-01",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-28",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
       }
     ],
-    "eps_yoy": -32.0,
+    "eps_yoy": 300.7,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 0.6,
+    "sales_yoy": -0.4,
     "sales_growth_mode": "YOY",
     "salesConcept": "Revenues",
     "latest_annual_eps_yoy": -80.1,
@@ -61617,23 +62229,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q4",
-        "growthPct": 11.9
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 17.6
       },
       {
         "frame": "CY2026Q2",
         "growthPct": -32.0
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 300.7
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q4",
-        "growthPct": -0.6
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 2.7
@@ -61641,23 +62249,27 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 0.6
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": -0.4
       }
     ],
     "epsAcceleration": false,
     "salesAcceleration": false,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 38.3,
-      "priorYearPct": 35.0,
-      "changePp": 3.3,
+      "frame": "CY2026Q3",
+      "latestPct": 34.9,
+      "priorYearPct": 36.0,
+      "changePp": -1.1,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "Revenues"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 15.1,
-      "priorYearPct": 14.2,
-      "changePp": 0.9,
+      "frame": "CY2026Q3",
+      "latestPct": 12.5,
+      "priorYearPct": 15.0,
+      "changePp": -2.5,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "Revenues"
     },
@@ -61669,28 +62281,28 @@
       "profitPositive": true,
       "leveragePass": false,
       "liquidityPass": true,
-      "assets": 18554000000.0,
-      "liabilities": 16804000000.0,
-      "equity": 1750000000.0,
+      "assets": 17719000000.0,
+      "liabilities": 14787000000.0,
+      "equity": 2932000000.0,
       "netIncome": 499000000.0,
-      "debtRatioPct": 960.2,
-      "currentRatioPct": 90.9,
+      "debtRatioPct": 504.3,
+      "currentRatioPct": 89.2,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
       "status": "CHECK",
-      "epsPass": false,
+      "epsPass": true,
       "salesPass": false,
       "epsAcceleration": false,
       "salesAcceleration": false,
-      "marginImproving": true,
+      "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
     "sic": "2670",
     "sicDescription": "Converted Paper & Paperboard Prods (No Contaners/Boxes)",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "SPOT": {
     "secStatus": "LIVE",
@@ -62624,6 +63236,24 @@
     "businessModelEasy": "STERIS plc (Ireland) Ordinary Shares은 Nasdaq 분류상 헬스케어 세부산업 (Industrial Specialties)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Orthopedic, Prosthetic & Surgical Appliances & Supplies입니다.",
     "catalysts": [
       {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-04",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-13",
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
@@ -62633,7 +63263,7 @@
     "eps_yoy": 27.9,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 7.3,
+    "sales_yoy": 8.8,
     "sales_growth_mode": "YOY",
     "salesConcept": "Revenues",
     "latest_annual_eps_yoy": 27.9,
@@ -62673,33 +63303,33 @@
     ],
     "quarterlySalesGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 9.9
-      },
-      {
         "frame": "CY2025Q4",
         "growthPct": 9.2
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 7.3
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 8.8
       }
     ],
     "epsAcceleration": false,
     "salesAcceleration": false,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 45.8,
-      "priorYearPct": 45.1,
-      "changePp": 0.7,
+      "frame": "CY2026Q3",
+      "latestPct": 44.7,
+      "priorYearPct": 44.2,
+      "changePp": 0.5,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "Revenues"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 19.1,
-      "priorYearPct": 17.7,
-      "changePp": 1.5,
+      "frame": "CY2026Q3",
+      "latestPct": 18.5,
+      "priorYearPct": 18.2,
+      "changePp": 0.3,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "Revenues"
     },
@@ -62711,12 +63341,12 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 10736100000.0,
-      "liabilities": 3514800000.0,
-      "equity": 7206700000.0,
+      "assets": 10713600000.0,
+      "liabilities": 3441900000.0,
+      "equity": 7257300000.0,
       "netIncome": 782300000.0,
-      "debtRatioPct": 48.8,
-      "currentRatioPct": 190.6,
+      "debtRatioPct": 47.4,
+      "currentRatioPct": 205.3,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
@@ -62732,7 +63362,7 @@
     "sic": "3842",
     "sicDescription": "Orthopedic, Prosthetic & Surgical Appliances & Supplies",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "BE": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -63453,11 +64083,24 @@
       ]
     },
     "businessModelEasy": "Ferguson Enterprises Inc. Common Stock은 Nasdaq 분류상 기타 세부산업 (Miscellaneous)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Wholesale-Hardware & Plumbing & Heating Equipment & Supplies입니다.",
-    "catalysts": [],
-    "eps_yoy": 148.6,
+    "catalysts": [
+      {
+        "date": "2026-11-09",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-09",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": 48.8,
     "eps_growth_mode": "YOY",
     "epsConcept": "EarningsPerShareDiluted",
-    "sales_yoy": 27.3,
+    "sales_yoy": 18.4,
     "sales_growth_mode": "YOY",
     "salesConcept": "Revenues",
     "latest_annual_eps_yoy": 9.3,
@@ -63475,23 +64118,19 @@
     "annualConcept": "EarningsPerShareDiluted",
     "quarterlyEpsGrowthHistory": [
       {
-        "frame": "CY2025Q3",
-        "growthPct": 23.9
-      },
-      {
         "frame": "CY2026Q1",
         "growthPct": 23.1
       },
       {
         "frame": "CY2026Q2",
         "growthPct": 6.9
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": -4.9
       }
     ],
     "quarterlySalesGrowthHistory": [
-      {
-        "frame": "CY2025Q3",
-        "growthPct": 5.1
-      },
       {
         "frame": "CY2026Q1",
         "growthPct": 3.6
@@ -63499,23 +64138,27 @@
       {
         "frame": "CY2026Q2",
         "growthPct": 4.6
+      },
+      {
+        "frame": "CY2026Q3",
+        "growthPct": 9.5
       }
     ],
     "epsAcceleration": false,
     "salesAcceleration": false,
     "grossMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 31.0,
-      "priorYearPct": 31.2,
-      "changePp": -0.3,
+      "frame": "CY2026Q3",
+      "latestPct": 30.9,
+      "priorYearPct": 31.3,
+      "changePp": -0.5,
       "numeratorConcept": "GrossProfit",
       "revenueConcept": "Revenues"
     },
     "operatingMargin": {
-      "frame": "CY2026Q2",
-      "latestPct": 10.2,
-      "priorYearPct": 10.1,
-      "changePp": 0.1,
+      "frame": "CY2026Q3",
+      "latestPct": 9.8,
+      "priorYearPct": 10.2,
+      "changePp": -0.4,
       "numeratorConcept": "OperatingIncomeLoss",
       "revenueConcept": "Revenues"
     },
@@ -63527,28 +64170,28 @@
       "profitPositive": true,
       "leveragePass": true,
       "liquidityPass": true,
-      "assets": 19303000000.0,
-      "liabilities": 13102000000.0,
-      "equity": 6201000000.0,
+      "assets": 21211000000.0,
+      "liabilities": 14552000000.0,
+      "equity": 6659000000.0,
       "netIncome": 1856000000.0,
-      "debtRatioPct": 211.3,
-      "currentRatioPct": 172.9,
+      "debtRatioPct": 218.5,
+      "currentRatioPct": 174.2,
       "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
     "sepaFundamental": {
       "status": "CHECK",
       "epsPass": true,
-      "salesPass": true,
+      "salesPass": false,
       "epsAcceleration": false,
       "salesAcceleration": false,
-      "marginImproving": true,
+      "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
       "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
     "sic": "5070",
     "sicDescription": "Wholesale-Hardware & Plumbing & Heating Equipment & Supplies",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "EFX": {
     "secStatus": "LIVE",
@@ -64837,6 +65480,12 @@
     "businessModelEasy": "Elevance Health Inc. Common Stock은 Nasdaq 분류상 의료·헬스케어 (Medical Specialities)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Hospital & Medical Service Plans입니다.",
     "catalysts": [
       {
+        "date": "2026-11-10",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-21",
         "category": "SEC 공시",
         "report": "10-Q 제출 · 촉매 여부는 원문 확인",
@@ -64944,7 +65593,7 @@
     "sic": "6324",
     "sicDescription": "Hospital & Medical Service Plans",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "CPRT": {
     "secStatus": "LIVE",
@@ -65749,7 +66398,7 @@
     "sic": "7340",
     "sicDescription": "Services-To Dwellings & Other Buildings",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-30"
+    "secFetchedAt": "2026-11-11"
   },
   "DG": {
     "secStatus": "LIVE",
@@ -66602,7 +67251,7 @@
     "sic": "7372",
     "sicDescription": "Services-Prepackaged Software",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-02"
+    "secFetchedAt": "2026-11-11"
   },
   "BSY": {
     "secStatus": "LIVE",
@@ -74488,45 +75137,147 @@
     "secFetchedAt": "2026-11-06"
   },
   "DTE": {
-    "secStatus": "NASDAQ_FALLBACK",
-    "secSource": "SEC 직접접속 실패 · Nasdaq Company Profile/Annual Financials 대체",
-    "profileStatus": "LIVE",
-    "profileSource": "Nasdaq Company Profile",
-    "businessModelUrl": "https://www.dteenergy.com",
-    "businessModelReportDate": "12/31/2025",
-    "businessModelSource": "Nasdaq Company Profile · Annual Financials (SEC 대체)",
-    "businessModelEasy": "DTE Energy Company Common Stock은 Nasdaq 공식 분류상 Utilities · Electric Utilities: Central 기업입니다. 아래에는 Nasdaq 공식 회사설명 원문을 병기합니다.",
+    "secStatus": "LIVE",
+    "secSource": "SEC EDGAR submissions + XBRL companyfacts",
+    "cik": "0000936340",
+    "secCompanyUrl": "https://www.sec.gov/edgar/browse/?CIK=936340&owner=exclude",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/936340/000093634026000054/dte-20251231.htm",
+    "businessModelUrl": "https://www.sec.gov/Archives/edgar/data/936340/000093634026000054/dte-20251231.htm",
+    "businessModelReportDate": "2026-02-17",
+    "businessModelSource": "SEC EDGAR 10-K·XBRL",
     "businessProfile": {
-      "summary": "DTE Energy Company Common Stock은 Nasdaq 공식 분류상 Utilities · Electric Utilities: Central 기업입니다.",
-      "products": "Nasdaq 공식 회사설명(영문): DTE Energy (NYSE:DTE) is a Detroit-based diversified energy company involved in the development and management of energy-related businesses and services nationwide. Its operating units include an electric company serving 2.3 million customers in Southeast Michigan and a natural gas company serving 1.4 million customers across Michigan. The DTE portfolio also includes energy businesses focused on custom energy solutions, renewable energy generation, and energy marketing and trading. DTE has continued to accelerate its carbon reduction goals to meet aggressive targets and is committed to serving with its energy through volunteerism, education and employment initiatives, philanthropy, emission reductions and economic progress. Information about DTE is available at dteenergy.com, empoweringmichigan.com, x.com/DTE_Energy and facebook.com/dteenergy.",
-      "customers": "Nasdaq 회사설명에는 고객 집중도가 표준화되어 있지 않아 SEC 원문 연결 전에는 임의 판정하지 않습니다.",
-      "revenue": "최근 연간 매출은 15,814,000천달러로 전년 대비 +26.9%입니다(결산기준 12/31/2025).",
-      "drivers": "가격·거래량·섹터 흐름과 Nasdaq 연간 재무 변화를 함께 확인합니다.",
+      "summary": "DTE Energy Company Common Stock은 Nasdaq 분류상 Electric Utilities: Central에 속한 미국 상장기업입니다. SEC SIC 공식명은 Electric Services입니다.",
+      "products": "SEC 10-K Item 1 원문에서 주요 제품·서비스를 확인해야 합니다.",
+      "customers": "SEC 10-K Item 1 및 위험요인 원문에서 고객 집중도를 확인해야 합니다.",
+      "revenue": "SEC XBRL 매출 계정(Revenues)으로 최근 분기 성장률을 계산합니다.",
+      "drivers": "실적 성장률, 가격·거래량, 산업 동조와 신규 SEC 공시를 함께 확인합니다.",
       "segments": [
         "유틸리티 (Utilities)",
-        "Utilities",
-        "Electric Utilities: Central"
+        "Electric Utilities: Central",
+        "Electric Services"
       ]
+    },
+    "businessModelEasy": "DTE Energy Company Common Stock은 Nasdaq 분류상 Electric Utilities: Central에 속한 미국 상장기업입니다. SEC SIC 공식명은 Electric Services입니다.",
+    "catalysts": [
+      {
+        "date": "2026-11-06",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-06",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "10-Q 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-11-05",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
+        "date": "2026-09-28",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      }
+    ],
+    "eps_yoy": -44.4,
+    "eps_growth_mode": "YOY",
+    "epsConcept": "EarningsPerShareDiluted",
+    "sales_yoy": 16.0,
+    "sales_growth_mode": "YOY",
+    "salesConcept": "Revenues",
+    "latest_annual_eps_yoy": 3.8,
+    "annual_eps_cagr_3y": 8.4,
+    "annualEpsSeries": [
+      {
+        "year": 2022,
+        "value": 5.52
+      },
+      {
+        "year": 2023,
+        "value": 6.76
+      },
+      {
+        "year": 2024,
+        "value": 6.77
+      },
+      {
+        "year": 2025,
+        "value": 7.03
+      }
+    ],
+    "annualConcept": "EarningsPerShareDiluted",
+    "quarterlyEpsGrowthHistory": [
+      {
+        "frame": "CY2025Q2",
+        "growthPct": -29.0
+      },
+      {
+        "frame": "CY2025Q3",
+        "growthPct": -12.6
+      },
+      {
+        "frame": "CY2026Q1",
+        "growthPct": -44.4
+      }
+    ],
+    "quarterlySalesGrowthHistory": [
+      {
+        "frame": "CY2017Q3",
+        "growthPct": 10.8
+      },
+      {
+        "frame": "CY2017Q4",
+        "growthPct": 13.8
+      },
+      {
+        "frame": "CY2018Q1",
+        "growthPct": 16.0
+      }
+    ],
+    "epsAcceleration": false,
+    "salesAcceleration": false,
+    "grossMargin": null,
+    "operatingMargin": {
+      "frame": "CY2018Q1",
+      "latestPct": 13.4,
+      "priorYearPct": 18.1,
+      "changePp": -4.6,
+      "numeratorConcept": "OperatingIncomeLoss",
+      "revenueConcept": "Revenues"
     },
     "financialHealth": {
       "status": "FAIL",
-      "source": "Nasdaq 연간 재무제표(SEC 대체)",
-      "period": "12/31/2025",
+      "source": "SEC EDGAR XBRL 공식 재무제표",
       "sectorRule": "GENERAL",
       "equityPositive": true,
       "profitPositive": true,
       "leveragePass": false,
       "liquidityPass": true,
-      "assets": 54066000.0,
-      "liabilities": 41758000.0,
-      "equity": 12303000.0,
-      "netIncome": 1462000.0,
-      "debtRatioPct": 339.4,
-      "currentRatioPct": 80.4,
-      "criterion": "SEC 직접접속 실패 시 Nasdaq 연간 재무로 자본·순이익 양수, 비금융 부채비율 300% 이하를 검사"
+      "assets": 55108000000.0,
+      "liabilities": 42785000000.0,
+      "equity": 12323000000.0,
+      "netIncome": 1462000000.0,
+      "debtRatioPct": 347.2,
+      "currentRatioPct": 95.3,
+      "criterion": "자본·연간 순이익 양수 + 비금융 부채비율 300% 이하 + 확인 가능한 경우 유동비율 80% 이상"
     },
-    "annualSalesYoyNasdaq": 26.9,
-    "catalysts": [],
     "sepaFundamental": {
       "status": "CHECK",
       "epsPass": false,
@@ -74535,13 +75286,12 @@
       "salesAcceleration": false,
       "marginImproving": false,
       "earningsSurpriseStatus": "UNKNOWN",
-      "earningsSurpriseNote": "SEC 분기 XBRL·무료 컨센서스 미연결로 가속화와 서프라이즈는 자동 판정하지 않습니다."
+      "earningsSurpriseNote": "무료 컨센서스 미연결로 어닝 서프라이즈·추정치 상향은 자동 판정하지 않습니다."
     },
-    "sector": "Utilities",
-    "industry": "Electric Utilities: Central",
-    "sectorValidationSource": "Nasdaq Company Profile Sector/Industry",
-    "profileFetchedAt": "2026-08-27",
-    "secFallbackReason": "GitHub Actions에서 SEC EDGAR 403 발생"
+    "sic": "4911",
+    "sicDescription": "Electric Services",
+    "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
+    "secFetchedAt": "2026-11-11"
   },
   "RYAAY": {
     "secStatus": "NASDAQ_FALLBACK",
@@ -78786,12 +79536,6 @@
         "category": "SEC 공시",
         "report": "8-K 제출 · 촉매 여부는 원문 확인",
         "polarity": "NEUTRAL"
-      },
-      {
-        "date": "2026-09-23",
-        "category": "SEC 공시",
-        "report": "8-K 제출 · 촉매 여부는 원문 확인",
-        "polarity": "NEUTRAL"
       }
     ],
     "eps_yoy": 12.4,
@@ -78889,7 +79633,7 @@
     "sic": "4400",
     "sicDescription": "Water Transportation",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "WMG": {
     "secStatus": "LIVE",
@@ -87144,7 +87888,7 @@
     "sic": "6798",
     "sicDescription": "Real Estate Investment Trusts",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-10-30"
+    "secFetchedAt": "2026-11-11"
   },
   "PAYC": {
     "secStatus": "LIVE",
@@ -135820,6 +136564,12 @@
     "businessModelEasy": "SiriusXM Holdings Inc. Common Stock은 Nasdaq 분류상 방송 (Broadcasting)에 속한 미국 상장기업입니다. SEC SIC 공식명은 Radio Broadcasting Stations입니다.",
     "catalysts": [
       {
+        "date": "2026-11-09",
+        "category": "SEC 공시",
+        "report": "8-K 제출 · 촉매 여부는 원문 확인",
+        "polarity": "NEUTRAL"
+      },
+      {
         "date": "2026-10-29",
         "category": "SEC 공시",
         "report": "10-Q 제출 · 촉매 여부는 원문 확인",
@@ -135934,7 +136684,7 @@
     "sic": "4832",
     "sicDescription": "Radio Broadcasting Stations",
     "sectorValidationSource": "Nasdaq Sector/Industry + SEC SIC",
-    "secFetchedAt": "2026-11-04"
+    "secFetchedAt": "2026-11-11"
   },
   "BCH": {
     "secStatus": "LIVE",
