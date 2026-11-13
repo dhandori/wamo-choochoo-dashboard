@@ -122,7 +122,7 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
 .ld-tr.open{background:#17293f}
 .ld-caret{font-style:normal;color:#7f97b2;font-size:12px;margin-left:4px}
 .ld-ind-sub{display:block;margin-top:3px;font-size:12px;color:#7f97b2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ld-ind-table .ld-tr{grid-template-columns:44px minmax(0,1fr) 92px 46px 74px 48px 54px 52px 70px 62px}
+.ld-ind-table .ld-tr{grid-template-columns:44px minmax(0,1fr) 92px 46px 104px 48px 54px 52px 70px 62px}
 .ld-td.c-spark{display:flex;justify-content:flex-end}
 .ld-stock-table .ld-tr{grid-template-columns:minmax(0,1.3fr) 74px 48px 70px 62px minmax(0,1.3fr)}
 .ld-detail{grid-column:1/-1;border-top:1px solid #1d2a3a;background:#0f1824;padding:14px 14px 16px 56px;display:grid;gap:12px}
@@ -155,3 +155,9 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
 .ld-mem-table .ld-stock,.ld-mem-table .ld-stock:hover{border:0;background:transparent;padding:0}
 .ld-stage.stage-dip{background:transparent;border-style:dashed;color:#9aacc3;font-weight:600}
 .ld-dip{margin-left:6px;font-size:12px;font-weight:600;color:#9aacc3}
+/* RS 20일 변화: '72→87 +15' (작은 차트를 대신함) */
+.ld-shift{display:inline-flex;align-items:baseline;gap:4px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ld-shift small{font-size:12px;color:#8a9db5}.ld-shift b{font-size:14px}.ld-shift .ld-delta{font-size:13px;font-weight:700}
+.ld-shift-label{margin-right:0 !important}
+@media(max-width:760px){.ld-table .ld-td.c-shift{grid-column:1/-1;order:9}.ld-table .ld-td.c-shift::before{display:inline-block !important;margin-right:8px}}
+.ld-top-rs .ld-shift b{font-size:16px;line-height:1.2}.ld-top-rs .ld-shift small,.ld-top-rs .ld-shift-label{margin-right:0}
