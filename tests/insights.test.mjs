@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {selectStocks,acceptSnapshot,validSnapshot,refreshSnapshot,marketStatus,safeUrl,createRefresher} from '../radar/model.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {sameRelease,selectStocks,acceptSnapshot,validSnapshot,refreshSnapshot,marketStatus,safeUrl,createRefresher} from '../radar/model.mjs';
 const stock=(id,patch={})=>({id,name:id,symbol:id,industry:'Test',asOf:'2026-10-13',close:100,changePct:1,return5d:2,highDistancePct:5,volumeRatio:1,rs:80,...patch});const m={asOf:'2026-10-13',status:'CURRENT',nextScheduledFor:'2026-10-14T00:00:00Z',stocks:[stock('near'),stock('high',{intradayHigh52:true,highDistancePct:0}),stock('fall',{changePct:-8,highDistancePct:40,volumeRatio:2})],industries:[],warnings:[],expectedSession:'2026-10-13',source:'verified',movers:[],coverage:{total:3,valid:3,excluded:0,eligible52w:3}};const snap={schemaVersion:1,generatedAt:'2026-10-14T00:00:00Z',markets:{KR:m,US:m}};
 test('comparison validation keeps legacy snapshots valid and rejects invalid baseline dates or values',()=>{
  const valid={asOf:'2026-10-12',expectedSession:'2026-10-12',stocks:[{id:'near',rs:79,stage2:false,highDistancePct:15}]};
@@ -47,4 +47,21 @@ test('cap floor then RS then distance sorts in steps, missing caps excluded',()=
  assert.deepEqual(selectStocks({stocks},{tab:'all',minCap:1e12,sort:'rs',sort2:'highDistancePct'}).map(s=>s.id),['big-c','big-b','big-a','big-norsi']);
  assert.deepEqual(selectStocks({stocks},{tab:'all',sort:'highDistancePct',sort2:'rs'}).map(s=>s.id)[0],'no-cap');
  assert.equal(selectStocks({stocks},{tab:'all',minCap:1e12}).some(s=>s.id==='no-cap'),false);
+});
+
+test('unchanged release is confirmed from the first bytes without downloading the whole file',async()=>{
+ const calls=[];const head=`{"schemaVersion":1,"generatedAt":"${snap.generatedAt}","patternMeta":{`;
+ const fetcher=async(url,opt)=>{calls.push(opt?.headers?.Range||'full');return opt?.headers?.Range?{ok:true,text:async()=>head}:{ok:true,json:async()=>snap};};
+ const r=await refreshSnapshot(snap,{fetcher});assert.equal(r.snapshot,snap);assert.equal(r.failed,false);assert.equal(r.unchanged,true);assert.deepEqual(calls,['bytes=0-199']);
+ // 서버 판이 다르면 전체를 받는다.
+ const newer={...snap,generatedAt:'2099-01-01T00:00:00+00:00'};calls.length=0;
+ const r2=await refreshSnapshot(snap,{fetcher:async(url,opt)=>{calls.push(opt?.headers?.Range||'full');return opt?.headers?.Range?{ok:true,text:async()=>head.replace(snap.generatedAt,newer.generatedAt)}:{ok:true,json:async()=>newer};}});
+ assert.equal(r2.snapshot.generatedAt,newer.generatedAt);assert.deepEqual(calls,['bytes=0-199','full']);
+ // 화면에 자료가 없으면 앞부분 확인 없이 바로 전체를 받는다.
+ calls.length=0;await refreshSnapshot(null,{fetcher});assert.deepEqual(calls,['full']);
+ assert.equal(await sameRelease(snap,async()=>({ok:false})),false);
+});
+test('stable movers mode keeps only ranked names in rank order',()=>{
+ const ranked={...m,stocks:[stock('a',{stableRank:2}),stock('b'),stock('c',{stableRank:1})],coverage:{total:3,valid:3,excluded:0,eligible52w:3}};
+ assert.deepEqual(selectStocks(ranked,{tab:'movers',mode:'stable'}).map(s=>s.id),['c','a']);
 });

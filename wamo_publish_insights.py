@@ -41,6 +41,11 @@ def collect_snapshot(root, now=None):
         attach_news(result, cache, current_time)
     except (OSError, ValueError, TypeError, KeyError, AttributeError):
         pass  # Optional headlines never prevent publication of valid prices.
+    try:
+        from wamo_insights import attach_stable_movers
+        attach_stable_movers(result, json.loads((root/'wamo_movers_cache.json').read_text(encoding='utf-8')))
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        pass  # 재무안정 상승률 순위는 선택 자료다. 없어도 가격 화면은 그대로 나간다.
     return result
 
 

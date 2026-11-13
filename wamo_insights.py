@@ -403,6 +403,36 @@ def build_market(market,payload,now,previous_market=None,baseline_market=None):
            'comparison':comparison_snapshot(market,asof if stocks else None,previous_market,baseline_market)}
 
 
+def attach_stable_movers(result, cache):
+    """옛 '상승률 TOP 30' 화면(movers.html)을 레이더 특징주 탭으로 옮긴다.
+
+    wamo_movers_cache.json 의 순위를 같은 기준일의 종목에 stableRank 로 붙이고, 시장에는 기준 설명(stableMovers)을 둔다.
+    기준일이 다르거나 자료가 없으면 아무것도 붙이지 않는다(화면은 단추를 숨긴다).
+    """
+    for market, key in (('KR', 'korea'), ('US', 'us')):
+        block = (result.get('markets') or {}).get(market)
+        if not isinstance(block, dict):
+            continue
+        block.pop('stableMovers', None)
+        for stock in block.get('stocks') or []:
+            stock.pop('stableRank', None)
+        rows, meta = (cache or {}).get(key), ((cache or {}).get('meta') or {}).get(key) or {}
+        if not isinstance(rows, list) or not rows or not block.get('asOf') or meta.get('asOf') != block.get('asOf'):
+            continue
+        by_symbol = {str(stock.get('symbol')): stock for stock in block.get('stocks') or []}
+        matched = 0
+        for rank, row in enumerate(rows, 1):
+            stock = by_symbol.get(str((row or {}).get('ticker') or '').split('.')[0])
+            if stock is not None:
+                stock['stableRank'] = rank
+                matched += 1
+        if matched:
+            block['stableMovers'] = {'asOf': meta.get('asOf'), 'updatedAt': meta.get('updatedAt'), 'count': matched,
+                                     'candidateCount': meta.get('candidateCount'), 'financialFailCount': meta.get('financialFailCount'),
+                                     'universe': meta.get('universe')}
+    return result
+
+
 def refresh_market_status(block,market,now):
     """Stored JP/TW blocks age between their own runs: re-derive freshness at publish time."""
     m=copy.deepcopy(block);expected=expected_session(market,now)

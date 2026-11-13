@@ -46,7 +46,8 @@ jobs:
         run: >-
           python3 -I tools/pages_package.py build . _site --manifest manifest.json
           ${OVERLAY:+--overlay "$OVERLAY" --on-duplicate overlay}
-          --min-files 100 --require index.html:10000 --require us.html:10000 --require radar.html:10000
+          --min-files 100 --require index.html:100 --require us.html:100 --require radar.html:10000
+          --stub index.html=_redirects/index.html --stub us.html=_redirects/us.html --stub movers.html=_redirects/movers.html --stub discovery.html=_redirects/discovery.html
       - name: 지금 사이트와 비교
         run: |
           git fetch --depth=40 origin main

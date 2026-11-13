@@ -55,6 +55,8 @@ const STEP_LABEL = { market: '① 시장 판단', sector: '② 주도 업종', s
 const lastTabOfStep = { market: 'trend', sector: 'leaders', stock: 'near' };   // 단계 칸을 누르면 그 단계에서 마지막으로 보던 탭으로
 const CURRENCY = { KR: ['₩', '원', 0], US: ['$', '달러', 2], JP: ['¥', '엔', 0], TW: ['NT$', '대만달러', 2] };
 const state = { ...defaults, market: MARKET_NAMES[params.get('market')] ? params.get('market') : 'KR', tab: ['near','high','high60','industries','movers','patterns','ai','trend','ftd','leaders'].includes(params.get('tab'))?params.get('tab'):'trend' };
+// 옛 '상승률 TOP 30' 화면 주소에서 넘어오면 특징주 탭의 '재무안정' 보기로 바로 연다.
+if (state.tab === 'movers' && params.get('mode') === 'stable') state.mode = 'stable';
 let snapshot = null, refreshFailed = false, refreshing = false;
 // Sort settings (cap floor, 1st/2nd key) are remembered per market in this browser.
 const SORT_STORE='wamo-sort-v1';
@@ -185,7 +187,8 @@ function signals(s) {
   return [s.intradayHigh52 ? '장중 신고가' : null, s.closeHigh52 ? '종가 신고가' : null,
     !high52 && (s.intradayHigh60 === true || s.closeHigh60 === true) ? '60일 신고가' : null,
     s.changePct >= 3 ? '당일 상승 3% 이상' : s.changePct <= -3 ? '당일 하락 3% 이상' : null,
-    s.volumeRatio >= 1.5 ? '거래량 1.5배 이상' : null].filter(Boolean);
+    s.volumeRatio >= 1.5 ? '거래량 1.5배 이상' : null,
+    numeric(s.stableRank) ? `재무안정 상승률 ${s.stableRank}위` : null].filter(Boolean);
 }
 function changes(s) {
   const m=snapshot.markets[state.market];
@@ -526,7 +529,16 @@ function renderControls() {
     const label = el('span', null, 'filter-label'); label.append(helpLabel('고점 거리')); group.append(label); [5, 10, 15].forEach(v => group.append(button(`${v}% 이내`, state.distance === v, () => change('distance', v))));
   }
   if (['high', 'high60'].includes(state.tab)) [['either', '모두'], ['intraday', '장중 고점'], ['close', '종가 고점']].forEach(([v, text]) => group.append(button(text, state.high === v, () => change('high', v))));
-  if (state.tab === 'movers') [['all', '전체'], ['up', '상승 ≥3%'], ['down', '하락 ≤−3%'], ['volume', '거래량 ≥1.5×']].forEach(([v, text]) => group.append(button(text, state.mode === v, () => change('mode', v))));
+  if (state.tab === 'movers') {
+    [['all', '전체'], ['up', '상승 ≥3%'], ['down', '하락 ≤−3%'], ['volume', '거래량 ≥1.5×']].forEach(([v, text]) => group.append(button(text, state.mode === v, () => change('mode', v))));
+    // 옛 '상승률 TOP 30' 화면을 옮겨 온 보기. 자료에 순위 칸이 없는 판(병합 직후·아시아)에서는 단추를 숨긴다.
+    const stable = snapshot.markets[state.market]?.stableMovers;
+    if (stable || state.mode === 'stable') {
+      const b = button('재무안정 TOP 30', state.mode === 'stable', () => change('mode', 'stable'));
+      b.title = stable ? `${stable.universe || '중대형 일반기업'} 가운데 재무 기준을 통과한 종목의 당일 상승률 상위 30 · 후보 ${stable.candidateCount ?? '—'}종목 중 재무 기준 탈락 ${stable.financialFailCount ?? '—'}종목 제외` : '재무 기준을 통과한 중대형주의 당일 상승률 상위 30';
+      group.append(b);
+    }
+  }
   if(state.tab==='ai') {
     const sectors=el('select');sectors.setAttribute('aria-label','AI 분야');
     const listed=new Set(aiOverview(snapshot.markets[state.market],state.market).groups.filter(g=>g.catalogCount>0).map(g=>g.id));
@@ -559,7 +571,7 @@ function renderControls() {
   }
 }
 // What "기본 정렬" means on each tab, in words.
-function defaultSortLabel(){return state.tab==='ai'?'선택 기간 수익률 높은 순':state.tab==='near'?'신고가에 가까운 순':state.tab==='movers'?'당일 변동 큰 순':'5일 수익률 높은 순';}
+function defaultSortLabel(){return state.tab==='ai'?'선택 기간 수익률 높은 순':state.tab==='near'?'신고가에 가까운 순':state.tab==='movers'?(state.mode==='stable'?'재무안정 상승률 순위 순':'당일 변동 큰 순'):'5일 수익률 높은 순';}
 function sortKeysForTab(){const extra=state.tab==='ai'?['return60d','return120d','return200d']:[];return ['rs','highDistancePct','marketCap','marketCapAsc','changePct','absolute','return5d','return20d',...extra,'volumeRatio','name'];}
 function capLabel(){return (CAP_FLOORS[state.market].find(([v])=>v===state.minCap)||[0,'전체'])[1];}
 // Step-by-step sort: ① market-cap floor → ② first key → ③ tie-break key.
@@ -837,7 +849,7 @@ function render() {
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
   renderSpMovers($('sp-movers'), { market: state.market, tab: state.tab, onPick: t => { const s = (m.stocks || []).find(x => x.ticker === t); if (s) detail(s); else window.open(`https://finance.yahoo.com/quote/${encodeURIComponent(t.replace('.', '-'))}`, '_blank', 'noopener'); } });
   const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에서 봐요'], high: ['당일 신고가', '이 거래일에 52주 고점을 실제로 넘긴 종목'], high60: ['60일 신고가', '이 거래일에 최근 60거래일(약 3개월) 고점을 넘긴 종목 · 52주보다 짧은 돌파라 조정 뒤 다시 올라오는 종목을 일찍 잡지만 가짜 돌파도 많아요'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 보여요'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿔요'] };
-  $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = labels[state.tab][1];
+  $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = state.tab === 'movers' && state.mode === 'stable' ? '재무 기준을 통과한 중대형주 가운데 당일 상승률이 높은 30종목 · 옛 ‘상승률 TOP 30’ 화면을 옮겨 왔어요' : labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();
   if (state.tab === 'industries' && !state.industry) {
     content.append(industryList(m));

@@ -523,7 +523,10 @@ def main():
             if args.publish:
                 # Finish this market before the next checkpoint. Leaving these
                 # tracked files dirty makes a concurrent push's rebase unsafe.
-                publish([*SHARED, STATUS.name, *[v[1] for v in MARKETS.values()]])
+                # 재무안정 상승률 순위는 레이더 특징주 탭이 보여 준다. 순위가 바뀌었으니 레이더 자료도 다시 만든다.
+                stable_files = refresh_insights() if report['moversStatus'] == 'PASS' else []
+                changed.extend(stable_files)
+                publish([*SHARED, STATUS.name, *[v[1] for v in MARKETS.values()], *stable_files])
     # Apply navigation/status fixes even to the market whose provider failed.
     for market, (_, page, _, _) in MARKETS.items():
         path = ROOT / page

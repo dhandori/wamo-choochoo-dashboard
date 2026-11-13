@@ -90,7 +90,7 @@ export const SORT_KEYS={marketCap:['시총 큰 순','desc'],marketCapAsc:['시�
 function compareBy(key){
  const value=s=>key==='marketCap'||key==='marketCapAsc'?(numeric(s.marketCap)&&s.marketCap>0?s.marketCap:null):key==='absolute'?(numeric(s.changePct)?Math.abs(s.changePct):null):numeric(s[key])?s[key]:null;
  if(key==='name')return (a,b)=>a.name.localeCompare(b.name,'ko');
- const asc=SORT_KEYS[key]?.[1]==='asc';
+ const asc=key==='stableRank'||SORT_KEYS[key]?.[1]==='asc';
  return (a,b)=>{const x=value(a),y=value(b);if(x==null||y==null)return x==null&&y==null?0:x==null?1:-1;return asc?x-y:y-x;};
 }
 export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',sort2='none',minCap=0,aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
@@ -106,20 +106,33 @@ export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',
  if(tab==='near') rows=rows.filter(s=>numeric(s.highDistancePct)&&s.highDistancePct<=distance);
  // 당일 신고가(52주)·60일 신고가: 장중·종가·둘 중 하나.
  if(tab==='high'||tab==='high60'){const p=tab==='high60'?'60':'52',i=`intradayHigh${p}`,c=`closeHigh${p}`;rows=rows.filter(s=>high==='intraday'?s[i]===true:high==='close'?s[c]===true:s[i]===true||s[c]===true);}
- if(tab==='movers') rows=rows.filter(s=>mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
+ if(tab==='movers') rows=rows.filter(s=>mode==='stable'?numeric(s.stableRank):mode==='up'?s.changePct>=3:mode==='down'?s.changePct<=-3:mode==='volume'?s.volumeRatio>=1.5:Math.abs(s.changePct)>=3||s.volumeRatio>=1.5);
  if(industry) rows=rows.filter(s=>industry.members.includes(s.id));
  if(newOnly)rows=rows.filter(s=>signalChanges(s,priorSignal(m,s),tab==='near'?distance:10).entered.length>0);
  // Cap floor: stocks without a known market cap cannot prove they pass, so they drop out.
  if(minCap>0)rows=rows.filter(s=>numeric(s.marketCap)&&s.marketCap>=minCap);
  const periodKey=aiPeriod==='1d'?'changePct':['5d','20d','60d','120d','200d'].includes(aiPeriod)?`return${aiPeriod}`:'return5d';
- const key=sort==='default'?(tab==='near'?'highDistancePct':tab==='movers'?'absolute':tab==='ai'?periodKey:'return5d'):sort;
+ const key=sort==='default'?(tab==='near'?'highDistancePct':tab==='movers'?(mode==='stable'?'stableRank':'absolute'):tab==='ai'?periodKey:'return5d'):sort;
  const first=compareBy(key),second=sort2&&sort2!=='none'&&sort2!==key?compareBy(sort2):null;
  return rows.sort((a,b)=>first(a,b)||(second?second(a,b):0));
 }
 export function marketStatus(m,now=Date.now()) {const deadline=Date.parse(m.verifiedThrough||m.nextScheduledFor);return m.status!=='UNAVAILABLE'&&Number.isFinite(deadline)&&now>deadline+90*60000?'STALE':m.status;}
+// 화면에 이미 든 자료와 서버 자료가 같은 판인지 파일 앞 200바이트(generatedAt)만 받아 확인한다.
+// 같으면 1MB짜리 전체 파일을 다시 받지 않는다. 확인이 안 되면(오류·옛 브라우저) 예전처럼 전체를 받는다.
+export async function sameRelease(current,fetcher=fetch,signal) {
+ if(!validSnapshot(current))return false;
+ try {const r=await fetcher('wamo_insights.json',{cache:'no-store',headers:{Range:'bytes=0-199'},signal});if(!r.ok)return false;
+  const m=(await r.text()).slice(0,400).match(/"generatedAt"\s*:\s*"([^"]+)"/);return !!m&&m[1]===current.generatedAt;}catch{return false;}
+}
 export async function refreshSnapshot(current,{fetcher=fetch,timeout=6500}={}) {
  const controller=new AbortController();let timer;
- try {const result=await Promise.race([fetcher('wamo_insights.json',{cache:'no-store',signal:controller.signal}).then(async r=>{if(!r.ok)throw Error('HTTP');return r.json();}),new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('timeout'));},Math.min(timeout,8000));})]);const next=acceptSnapshot(current,result);return {snapshot:next,failed:!validSnapshot(result)};}catch{return {snapshot:current,failed:true};}finally{clearTimeout(timer);}
+ // 앞부분 확인과 전체 받기가 한 시간 제한을 나눠 쓴다. 응답이 없으면 한 번만 기다리고 지금 자료를 지킨다.
+ const deadline=new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('timeout'));},Math.min(timeout,8000));});
+ try {
+  if(await Promise.race([sameRelease(current,fetcher,controller.signal),deadline]))return {snapshot:current,failed:false,unchanged:true};
+  const result=await Promise.race([fetcher('wamo_insights.json',{cache:'no-store',signal:controller.signal}).then(async r=>{if(!r.ok)throw Error('HTTP');return r.json();}),deadline]);
+  const next=acceptSnapshot(current,result);return {snapshot:next,failed:!validSnapshot(result)};
+ }catch{return {snapshot:current,failed:true};}finally{clearTimeout(timer);}
 }
 export function safeUrl(value) {if(typeof value!=='string'||!value.trim())return null;try {const u=new URL(value, 'https://wamo.invalid/');return ['http:','https:'].includes(u.protocol)?value:null;}catch{return null;}}
 
