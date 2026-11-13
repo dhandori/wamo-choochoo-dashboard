@@ -707,12 +707,25 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
   .card-stats .stat strong { font-size: 14px; }
   .card-stats .stat span { font-size: 12px; }
 }
-/* 휴대폰: 고른 단계의 탭이 화면 밖으로 숨지 않게 다음 줄로 내린다('AI 섹터' 등). */
+/* 휴대폰: 고른 단계의 탭이 화면 밖에 더 있으면('AI 섹터' 등) 오른쪽 끝을 흐리게 해 옆으로 밀 수 있음을 보인다.
+   여러 줄로 내리면 첫 화면이 50~100px 밀려(radar_browser 첫 종목 위치 검사) 한 줄 가로 밀기는 그대로 둔다. */
 @media (max-width: 760px) {
-  .tabs.steps .step-tabs { flex-wrap: wrap; overflow-x: visible; }
+  .tabs.steps .step-tabs { padding-right: 28px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }
 }
-/* 휴대폰·태블릿: 자주 누르는 버튼은 손가락 크기(44px) 이상, 체크박스는 18px. */
+/* 휴대폰·태블릿: 자주 누르는 버튼은 누르는 영역만 위아래로 넓혀 44px 이상으로 한다.
+   보이는 크기를 키우면 첫 화면에서 종목이 아래로 밀려(radar_browser 첫 종목 위치 검사) 보이는 크기는 그대로 둔다. */
 @media (max-width: 1100px) {
-  .theme-toggle, .market-switch button, .date-info .refresh-button, .run-now-button, .tr-more, .tr-fold, .sort-fold > summary { min-height: 44px; }
+  .theme-toggle, .market-switch button, .date-info .refresh-button, .run-now-button, .tr-more, .tr-fold { position: relative; }
+  .theme-toggle::after, .market-switch button::after, .date-info .refresh-button::after, .run-now-button::after, .tr-more::after, .tr-fold::after { content: ""; position: absolute; left: 0; right: 0; top: -7px; bottom: -7px; }
   input[type="checkbox"] { width: 18px; height: 18px; }
+}
+/* 휴대폰: 12px 최소 글자로 늘어난 높이(약 15px)만큼 구역 사이 여백을 2~4px씩 줄여 첫 종목 위치를 예전과 같게 둔다. */
+@media (max-width: 760px) {
+  #index-strip { margin-bottom: 8px; }
+  #weather { margin-bottom: 8px; }
+  #notice { margin-bottom: 9px; }
+  .meta-row { margin-top: 6px; }
+  nav.tabs.steps { margin-top: 6px !important; margin-bottom: 8px !important; }
+  #controls { margin-top: 8px; margin-bottom: 8px; }
+  .industry-rail { margin-bottom: 8px; }
 }

@@ -157,6 +157,9 @@
 :root[data-theme="light"] .tabs.steps .tab-group.active .step-head .tab-group-label { color: #033726; }
 :root[data-theme="light"] .tabs.steps .step-tabs button.active { background: #dfefeb !important; border-color: #a2d8c9 !important; color: #033726; }
 }
+@media (max-width: 760px) {
+:root[data-theme="light"] .tabs.steps .step-tabs { -webkit-mask-image: linear-gradient(to right, #ffffff calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #ffffff calc(100% - 32px), transparent); }
+}
 
 /* ===== style.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ai-sector-card small { color: #b4c5da; }
