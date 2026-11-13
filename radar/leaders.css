@@ -33,7 +33,7 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
 .ld-watch{border-top:3px solid #f2c474}.ld-industry.watch{border-color:#5f5232}
 .ld-qbox{border:1px dashed #324d67;border-radius:10px;padding:10px 13px;margin:0 0 12px}.ld-qbox summary{cursor:pointer;font-size:12px;color:#c9d6e6;font-weight:700}.ld-questions{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}.ld-questions li{display:grid;gap:2px}.ld-questions b{font-size:12px;color:#eaf0f8}.ld-questions span{font-size:12px;line-height:1.6;color:#9aacc3}
 .ld-early{display:grid;gap:4px;margin:0 0 12px;padding:10px 13px;border-radius:10px;background:#101f31}.ld-early p{margin:0;font-size:12px;line-height:1.7;color:#c9d6e6}
-.ld-score{display:grid;gap:4px;justify-items:end;flex-shrink:0;font-size:12px;font-weight:700;color:#f2d38e}.ld-score-bar{display:flex;gap:3px}.ld-score-bar i{width:12px;height:6px;border-radius:2px;background:#23374e}.ld-score-bar i.on{background:#f2c474}
+.ld-score{display:grid;gap:4px;justify-items:end;flex-shrink:0;font-size:12px;font-weight:700;color:#f2d38e}.ld-score-bar{display:flex;gap:3px}.ld-score-bar i{width:10px;height:6px;border-radius:2px;background:#23374e}.ld-score-bar i.on{background:#f2c474}
 .ld-checks{list-style:none;padding:0;margin:10px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 12px}.ld-checks li{display:flex;gap:6px;font-size:12px;color:#6f86a0}.ld-checks li.ok{color:#86e6c6}.ld-checks i{font-style:normal;font-weight:700;width:10px}
 .ld-matrix-wrap{overflow-x:auto;margin-top:10px}.ld-matrix{width:100%;border-collapse:collapse;font-size:12px}.ld-matrix th{color:#9aacc3;font-weight:700;padding:6px 4px;border-bottom:1px solid #2f4259;text-align:center}.ld-matrix th small{display:block;font-size: 12px;font-weight:400}.ld-matrix th:first-child{text-align:left}.ld-matrix td{padding:6px 4px;border-bottom:1px solid #1d2a3a;text-align:center;color:#5f7690}.ld-matrix td.ok{color:#86e6c6;font-weight:700}.ld-matrix td.nm{text-align:left;color:#dfe9f4;white-space:nowrap}.ld-matrix td.sc{color:#eaf0f8;font-weight:700}.ld-matrix tr.watch td.sc{color:#f2c474}.ld-matrix tr.lead td.sc{color:#62d7b5}.ld-matrix em{font-style:normal;font-size: 12px;color:#62d7b5}
 @media(max-width:760px){.ld-matrix{font-size:12px}.ld-matrix th small{display:none}.ld-matrix td.nm{max-width:120px;overflow:hidden;text-overflow:ellipsis}.ld-phase{padding:12px}.ld-checks{grid-template-columns:1fr 1fr}.ld-score{justify-items:start}}
@@ -143,8 +143,11 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
   .ld-tops{grid-template-columns:1fr 1fr}.ld-top-rs b{font-size:22px}
   .ld-conds{grid-template-columns:1fr 1fr}
   .ld-detail{padding:12px}
+  /* 위쪽(데스크톱) 칸 너비 규칙이 휴대폰용 3칸 배치를 덮어써 10칸이 한 줄에 겹치던 문제(2026-11-13) — 휴대폰에서는 다시 3칸으로 */
+  .ld-ind-table .ld-tr,.ld-stock-table .ld-tr,.ld-watch-table .ld-tr{grid-template-columns:repeat(3,minmax(0,1fr))}
   .ld-ind-table .ld-tr{padding-left:56px}
-  .ld-table .ld-td.c-spark{justify-content:flex-start}
+  .ld-table .ld-td.c-spark{grid-column:1/-1;order:9;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px}
+  .ld-table .ld-td.c-spark::before{display:inline-block !important}
   .ld-mem-table .ld-tr{padding-left:10px}
   .ld-ind-sub{white-space:normal}
 }
