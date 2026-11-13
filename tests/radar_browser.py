@@ -144,7 +144,24 @@ with sync_playwright() as p:
                 expect(page.get_by_role('tooltip')).not_to_be_visible()
                 expect(page.locator('#drawer')).to_be_visible()
                 page.screenshot(path=str(OUT/f'radar-{market}-{width}-drawer.png'),full_page=False)
+                # 창 닫기(2026-11-13): 넓은 화면에서는 창이 오른쪽에 붙고 왼쪽 빈 자리를 누르면 닫힌다. 뒤로 가기로도 닫히고 주소는 그대로다.
+                reopen="() => { const d=document.getElementById('drawer'); if(!d.open) d.showModal(); }"
+                if width>=1000:
+                    box=page.locator('#drawer').bounding_box()
+                    assert box['x']>=width*0.3 and abs(box['x']+box['width']-width)<=2, box
+                    page.mouse.click(box['x']+box['width']/2,box['y']+box['height']/2)
+                    expect(page.locator('#drawer')).to_be_visible()      # 창 안쪽을 눌러서는 닫히지 않는다
+                    page.mouse.click(box['x']/2,box['y']+box['height']/2)
+                    expect(page.locator('#drawer')).not_to_be_visible()
+                    page.evaluate(reopen)
+                before=page.url
+                page.go_back()
+                expect(page.locator('#drawer')).not_to_be_visible()
+                assert page.url==before, (before,page.url)
+                page.evaluate(reopen)
+                expect(page.locator('#drawer')).to_be_visible()
                 page.locator('#close-drawer').click()
+                expect(page.locator('#drawer')).not_to_be_visible()
                 currency='원' if market=='KR' else '달러'
                 for sort,reverse in [('marketCap',True),('marketCapAsc',False)]:
                     sort_box(page).select_option(sort)

@@ -140,6 +140,9 @@
 :root[data-theme="light"] .tabs.steps .tab-group.active .step-head .tab-group-label { color: #033726; }
 :root[data-theme="light"] .tabs.steps .tab-group.active .hint-short { color: #1c5441; }
 }
+@media (min-width: 761px) {
+:root[data-theme="light"] #drawer::backdrop { background: rgba(236, 241, 250, 0.6); }
+}
 :root[data-theme="light"] .detail-chips .chip { background: #ebf0f7; color: #1a2635; }
 :root[data-theme="light"] .detail-chips .chip.good { border-color: #a2d8c9; background: #e5f3f0; color: #1c5441; }
 :root[data-theme="light"] .detail-chips .chip.hot { border-color: #d6c6a3; background: #f3ece6; color: #62430e; }
