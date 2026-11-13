@@ -35,9 +35,7 @@
   먼저 `python3 wamo_data_branch.py setup` 으로 최신 자료를 받은 뒤(위 '자료 분리'):
   `python3 wamo_publish_insights.py && python3 tools/make_radar_fixture.py`
 - CI 는 같은 검사를 실제 자료로도 한 번 더 돌리되(`WAMO_RADAR_LIVE=1`) 결과를 막지 않는다.
-- `tests/browser_smoke.py` · `tests/discovery_browser.py` 는 자료가 통째로 든 옛 화면(`index.html`·`us.html`,
-  합쳐 36MB)을 띄우므로 고정 자료로 옮기지 않았다. 대신 자료 응답·시계는 검사가 통제하고, 특정 종목을 가정하는
-  곳은 그날 자료에서 조건에 맞는 종목을 고른다. 새 검사를 쓸 때도 종목을 못 박지 않는다.
+- 옛 화면 검사(`tests/browser_smoke.py` · `tests/discovery_browser.py`)는 2026-11-13 옛 화면을 없애면서 지웠다(아래 '옛 화면 정리').
 
 ## 생성 파일을 손으로 고쳐야 할 때(충돌 등)
 
@@ -89,3 +87,15 @@
   모두 남긴다('배터리 셀'은 늘 그 이름).
 - 지금은 52주 신고가 공통 계산(`wamo_highs52.json` 의 `group`·`detail`·`baskets`·`byGroup`)에만 붙는다. 레이더 업종 탭·노션·흐름판이
   이 분류를 읽게 바꾸는 것은 52주 신고가 전환과 함께 한다. 표 원본(테마 표·야후 업종 표)은 이 파일이고, 노션 기록 쪽 `n52_class.py` 는 옛 사본이다.
+
+## 옛 화면 정리 (2026-11-13 사용자 결정)
+
+옛 한국·미국 화면(`index.html`·`us.html`), 상승률 TOP 30(`movers.html`), 글로벌 종목 발견(`discovery.html`)은 사이트에서 없앴다.
+- 사이트에는 `_redirects/` 의 작은 이동 페이지가 대신 실린다(`pages-deploy.yml` 의 `--stub`). 넷 다 레이더로 넘어간다.
+- **`index.html`·`us.html` 은 화면이 아니라 저장 파일로 남아 있다.** 수집 단계 15곳이 그 안의 `window.WAMO_DATA` 를 읽고 쓰기 때문에
+  data 브랜치에 그대로 두고 사이트에만 싣지 않는다. 지우거나 이름을 바꾸면 갱신이 멈춘다.
+- 상승률 TOP 30 은 레이더 특징주 탭의 '재무안정 TOP 30' 단추가 됐다. `wamo_movers_cache.json` 의 순위를 `wamo_insights.attach_stable_movers` 가
+  종목의 `stableRank` 와 시장의 `stableMovers` 로 붙인다(기준일이 같을 때만). `movers.html` 은 수집 단계가 계속 만들지만 사이트에는 나가지 않는다.
+- 글로벌 종목 발견 화면 코드(`discovery/`, `wamo_discovery.js`)는 지웠다. 그 화면에 자료를 대던 `wamo_catalog.py`·`wamo_radar.py` 수집 단계는 아직 돈다.
+- 레이더는 화면에 든 자료와 서버 자료가 같은 판인지 `wamo_insights.json` 앞 200바이트(`generatedAt`)만 받아 확인하고, 다를 때만 전체를 받는다
+  (`radar/model.mjs` 의 `sameRelease`). 그래서 `generatedAt` 은 파일 맨 앞 200바이트 안에 있어야 한다.

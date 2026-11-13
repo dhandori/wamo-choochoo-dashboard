@@ -63,6 +63,16 @@ def cmd_build(a):
                 if a.on_duplicate == 'src':
                     continue
             origin[n] = a.overlay
+    # 이동 쪽지: 사이트에는 자료 파일 대신 작은 이동 페이지를 내보낸다(옛 화면 index.html·us.html 등).
+    # 자료 브랜치의 원본은 수집 단계가 계속 읽고 쓰는 저장 파일이라 그대로 두고, 사이트에만 싣지 않는다.
+    stubs = {}
+    for spec in getattr(a, 'stub', None) or []:
+        name, _, path = spec.partition('=')
+        if not name or not os.path.isfile(os.path.join(a.src, path)):
+            print(f'이동 쪽지 파일이 없습니다: {spec}')
+            return 1
+        stubs[name] = path
+        origin[name] = a.src
     names = list(origin)
     files = sorted(n for n in names if not is_hidden(n))
     skipped = sorted(n for n in names if is_hidden(n))
@@ -71,7 +81,7 @@ def cmd_build(a):
         shutil.rmtree(dest)
     manifest, frontmatter = {}, []
     for p in files:
-        s, d = os.path.join(origin[p], p), os.path.join(dest, p)
+        s, d = os.path.join(origin[p], stubs.get(p, p)), os.path.join(dest, p)
         os.makedirs(os.path.dirname(d), exist_ok=True)
         shutil.copyfile(s, d)
         with open(s, 'rb') as f:
@@ -203,6 +213,8 @@ def main():
     b.add_argument('--min-files', type=int, default=0, help='이보다 파일이 적으면 실패')
     b.add_argument('--require', action='append', default=[], metavar='경로:최소바이트',
                    help='이 파일이 없거나 그보다 작으면 실패 (여러 번 쓸 수 있다)')
+    b.add_argument('--stub', action='append', default=[], metavar='경로=쪽지파일',
+                   help='이 경로에는 자료 대신 SRC 안의 작은 이동 페이지를 싣는다(여러 번 쓸 수 있음)')
     b.add_argument('--overlay', metavar='DIR', help='자료 브랜치를 받아 둔 폴더. 그 추적 파일을 합쳐 담는다')
     b.add_argument('--on-duplicate', choices=('src', 'overlay', 'fail'), default='fail',
                    help='같은 경로가 양쪽에 있을 때: src=코드 쪽, overlay=자료 쪽, fail=실패 (기본)')

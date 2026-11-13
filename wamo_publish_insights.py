@@ -36,11 +36,24 @@ def collect_snapshot(root, now=None):
     except (OSError, ValueError, TypeError, KeyError, RuntimeError):
         pass  # No Asia file yet, or calendar missing: Korea/US publish as before.
     try:
+        from wamo_runtime import market_closures
+        for market, block in (result.get('markets') or {}).items():
+            if isinstance(block, dict):
+                try:block['closures'] = market_closures(market, current_time)
+                except (RuntimeError, KeyError, ValueError):pass
+    except ImportError:
+        pass  # 휴장일 표시는 덧붙이는 정보다. 달력이 없어도 화면은 그대로 낸다.
+    try:
         from wamo_news import attach_news
         cache = json.loads((root/'wamo_news.json').read_text(encoding='utf-8'))
         attach_news(result, cache, current_time)
     except (OSError, ValueError, TypeError, KeyError, AttributeError):
         pass  # Optional headlines never prevent publication of valid prices.
+    try:
+        from wamo_insights import attach_stable_movers
+        attach_stable_movers(result, json.loads((root/'wamo_movers_cache.json').read_text(encoding='utf-8')))
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
+        pass  # 재무안정 상승률 순위는 선택 자료다. 없어도 가격 화면은 그대로 나간다.
     return result
 
 

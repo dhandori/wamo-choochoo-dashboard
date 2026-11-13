@@ -9,6 +9,7 @@ import os
 import sys
 import tempfile
 from datetime import datetime
+from zoneinfo import ZoneInfo
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 # 기본은 tests/fixtures/radar 의 고정 자료로 돈다. 그날 시장 상황·수집 실패에 따라 결과가 바뀌지 않게 하려는 것.
@@ -450,6 +451,32 @@ with sync_playwright() as p:
     assert page.locator('#coverage-detail .universe-rule').count()==0
     assert not errors,errors
     context.close();print('RADAR UNIVERSE RULES ABSENT PASS JP')
+    # 휴장일: 화면은 '보는 순간의 시장 현지 날짜'를 closures(wamo_runtime.market_closures)에서 찾는다.
+    # 자료 날짜에 기대지 않도록 검사가 closures 를 꾸민다: 한국은 오늘이 휴장일, 미국은 오늘이 거래일.
+    from wamo_publish_insights import render_page as _render
+    now=CLOCK or datetime.now().astimezone()
+    holiday=json.loads(json.dumps(DATA))
+    kr_today=now.astimezone(ZoneInfo('Asia/Seoul')).date().isoformat()
+    holiday['markets']['KR']['closures']={'timeZone':'Asia/Seoul','closed':[{'date':kr_today,'name':'개천절','nextOpen':'2099-01-02'}]}
+    holiday['markets']['US']['closures']={'timeZone':'America/New_York','closed':[{'date':'2000-01-01','name':'주말','nextOpen':'2000-01-03'}]}
+    holiday_json=json.dumps(holiday,ensure_ascii=False)
+    (SITE/'radar-holiday-check.html').write_text(_render((ROOT/'radar.template.html').read_text(encoding='utf-8'),holiday,ROOT)[1],encoding='utf-8')
+    for market,closed in (('KR',True),('US',False)):
+        context=browser.new_context();page=context.new_page();errors=[]
+        page.on('pageerror',lambda error:errors.append(str(error)))
+        page.route('**/wamo_insights.json*',lambda route:route.fulfill(status=200,content_type='application/json',body=holiday_json))
+        page.goto(f'{base}/radar-holiday-check.html?market={market}',wait_until='networkidle')
+        badge=page.locator('#date-info .status-holiday')
+        if closed:
+            expect(badge).to_contain_text('오늘 휴장 · 개천절')
+            expect(badge).to_contain_text('다음 개장 1/2(금)')
+            expect(page.locator('#notice')).to_contain_text('한국 시장은 오늘')
+            expect(page.locator('#notice')).to_contain_text('개천절로 휴장입니다')
+        else:
+            assert badge.count()==0,'거래일에 휴장 배지가 붙었습니다'
+        assert not errors,errors
+        context.close();print('RADAR HOLIDAY PASS',market,'휴장' if closed else '거래일')
+    (SITE/'radar-holiday-check.html').unlink()
     # 패턴 셋업: 셋업북 12개 패턴 중 진행 중인 것만 카드로 보여 준다. 두 시장 모두 확인한다.
     for market in ('US','KR'):
         context=browser.new_context();page=context.new_page();errors=[]

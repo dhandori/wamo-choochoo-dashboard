@@ -36,6 +36,7 @@
 :root[data-theme="light"] .badge { border: 1px solid #aecbbf; }
 :root[data-theme="light"] .status-partial { color: #4f4422; border-color: #d1c5a8; }
 :root[data-theme="light"] .status-stale, :root[data-theme="light"] .status-unavailable { color: #5f3411; border-color: #d6baa4; }
+:root[data-theme="light"] .status-holiday { border-color: #a6bdd4; }
 :root[data-theme="light"] .metric span { color: #273546; }
 :root[data-theme="light"] .checkbox-control { color: #273546; }
 :root[data-theme="light"] td { border-top: 1px solid #a7bad3; }
@@ -81,6 +82,7 @@
 :root[data-theme="light"] .sort-summary { color: #293647; }
 :root[data-theme="light"] .sort-summary b { color: #080d14; }
 :root[data-theme="light"] .sort-summary small { color: #2c3745; }
+:root[data-theme="light"] .cross-link:hover, :root[data-theme="light"] .cross-link:focus-visible { color: var(--text, #0b1118); }
 :root[data-theme="light"] .tab-group-label { background: #dfe6ef; color: #2a3646; }
 :root[data-theme="light"] .status-partial, :root[data-theme="light"] .status-stale, :root[data-theme="light"] .status-unavailable { color: #594817; border-color: #d5c9a4; }
 :root[data-theme="light"] .detail-signals .badge { border-color: #a6bdd4; }
@@ -704,6 +706,7 @@
 :root[data-theme="light"] .ld-now-badge { background: #edebe5; border: 1px solid #baa782; color: #5a4516; }
 :root[data-theme="light"] .ld-stage.stage-dip { color: #2b3745; }
 :root[data-theme="light"] .ld-dip { color: #2b3745; }
+:root[data-theme="light"] .ld-shift small { color: #2d3743; }
 
 /* ===== leaders.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ld-intro p { color: #b6c4d7; }
@@ -758,6 +761,7 @@
 :root:not([data-theme="light"]) .ld-rsline-foot { color: #b9c6d5; }
 :root:not([data-theme="light"]) .ld-stage.stage-dip { color: #b9c5d5; }
 :root:not([data-theme="light"]) .ld-dip { color: #b9c5d5; }
+:root:not([data-theme="light"]) .ld-shift small { color: #bac5d4; }
 
 /* ===== leaders.css (작은 글씨 키우기) ===== */
 

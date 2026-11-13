@@ -44,6 +44,7 @@ p { color: var(--muted); line-height: 1.65; margin: 6px 0; }
 .badge { display: inline-block; padding: 3px 8px; border-radius: 5px; border: 1px solid #365447; color: var(--green); font-size: 12px; }
 .status-partial { color: #d6c694; border-color: #5f5232; }
 .status-stale, .status-unavailable { color: #f1bc91; border-color: #775336; }
+.status-holiday { color: var(--blue); border-color: #324d67; }   /* 휴장: 파랑 = 중립 강조 */
 .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .metric { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 3px 12px; padding: 11px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
 .metric span { font-size: 13px; color: #b7c7da; }
@@ -307,6 +308,9 @@ table { font-size: 13px; }
 /* ===== 2026-10-19 UI 개선: 첫 화면 순서·탭 묶음·정렬 한 줄·휴대폰 산업 흐름 ===== */
 .meta-row { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 10px 0 2px; }
 .schedule-wrap { color: var(--muted); font-size: 12px; }
+/* 짝 화면(시장 흐름판)으로 가는 링크 */
+.cross-link { margin-left: auto; padding: 5px 0; color: var(--muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.cross-link:hover, .cross-link:focus-visible { color: var(--text, #e6edf5); }
 .schedule-wrap > summary { cursor: pointer; width: fit-content; padding: 5px 0; }
 .tab-group { display: flex; align-items: flex-end; gap: 22px; }
 .tab-group-label { align-self: center; margin-right: -6px; padding: 2px 7px; border-radius: 4px; background: #1d2a3a; color: #8ea4c0; font-size: 12px; font-weight: 700; letter-spacing: .6px; white-space: nowrap; }

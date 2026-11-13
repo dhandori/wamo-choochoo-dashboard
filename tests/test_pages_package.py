@@ -65,6 +65,23 @@ class OverlayTest(unittest.TestCase):
         built = json.loads((self.root / 'm.json').read_text(encoding='utf-8'))
         return rc, built
 
+    def test_이동_쪽지가_자료_파일_대신_실린다(self):
+        (self.code / '_redirects').mkdir()
+        (self.code / '_redirects' / 'index.html').write_text('<script>location.replace("radar.html")</script>', encoding='utf-8')
+        subprocess.run(['git', '-C', str(self.code), 'add', '-A'], check=True, capture_output=True)
+        subprocess.run(['git', '-C', str(self.code), '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'stub'], check=True, capture_output=True)
+        rc, built = self.build(stub=['index.html=_redirects/index.html', 'movers.html=_redirects/index.html'])
+        self.assertEqual(rc, 0)
+        site = self.root / 'site'
+        self.assertIn('location.replace', (site / 'index.html').read_text(encoding='utf-8'))
+        self.assertNotIn('자료', (site / 'index.html').read_text(encoding='utf-8'))
+        self.assertTrue((site / 'movers.html').is_file())   # 자료 쪽에 없던 경로도 쪽지로 생긴다
+        self.assertFalse((site / '_redirects').exists())    # 쪽지 원본 폴더는 사이트에 싣지 않는다
+        missing = argparse.Namespace(src=str(self.code), dest=str(self.root / 'site2'), manifest=str(self.root / 'm3.json'),
+                                     min_files=0, require=[], overlay=str(self.data), on_duplicate='fail',
+                                     stub=['index.html=_redirects/none.html'])
+        self.assertEqual(quiet(pp.cmd_build, missing), 1)   # 쪽지 파일이 없으면 내보내지 않는다
+
     def test_코드와_자료를_합쳐_담는다(self):
         rc, built = self.build()
         self.assertEqual(rc, 0)
