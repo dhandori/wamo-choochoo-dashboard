@@ -199,6 +199,17 @@ function rankDelta(v) {
   return n('span', `${v > 0 ? '▲' : '▼'}${Math.abs(v)}`, `ld-delta ${v > 0 ? 'up' : 'down'}`);
 }
 
+// RS 20일 변화: 작은 차트 대신 '20일 전 → 지금 (변화)' 숫자로 보여 준다(2026-11-13 사용자 요청: 작은 차트는 읽을 수 없음).
+function rsShift(hist, now) {
+  const v = (hist || []).filter(isNum), box = n('span', null, 'ld-shift');
+  if (v.length < 2) { box.append(n('span', '—', 'ld-delta flat')); return box; }
+  const from = v[0], to = isNum(now) ? now : v[v.length - 1], d = Math.round(to - from);
+  box.append(n('small', `${Math.round(from)}→`), n('b', `${Math.round(to)}`),
+    n('span', d === 0 ? '–' : `${d > 0 ? '+' : '−'}${Math.abs(d)}`, `ld-delta ${d > 0 ? 'up' : d < 0 ? 'down' : 'flat'}`));
+  box.title = `RS ${v.length - 1}거래일 전 ${Math.round(from)} → 지금 ${Math.round(to)}`;
+  return box;
+}
+
 // 표 한 칸: 값 + (조건을 채웠으면 초록). 휴대폰에서는 칸 앞에 이름을 붙인다(data-label).
 function cell(label, node, ok = null, cls = '') {
   const c = n('div', null, `ld-td ${cls}${ok === true ? ' ok' : ok === false ? ' no' : ''}`.trim());
@@ -232,7 +243,7 @@ function topCard(L, market, openStock, rerender, no, flow, openRow) {
     const top = n('div', null, 'ld-top-head');
     top.append(n('span', `${x.rank}`, 'ld-rank'), n('strong', labelOf(x)), stageChip(x.stage, x.dip));
     const mid = n('div', null, 'ld-top-rs');
-    mid.append(n('b', num(x.rs)), n('small', 'RS'), spark(x.rsHistory, { w: 90, h: 28, lo: 0, hi: 100, base: L.policy?.industryTopPct ?? 80 }));
+    mid.append(n('b', num(x.rs)), n('small', 'RS'), n('small', '20일', 'ld-shift-label'), rsShift(x.rsHistory, x.rs));
     const stats = n('div', null, 'ld-top-stats');
     const d5 = rankDelta(x.rankChange5), d20 = rankDelta(x.rankChange20);
     const s1 = n('span'); s1.append('1주 ', d5, ' · 1개월 ', d20);
@@ -324,7 +335,7 @@ function industryCard(L, market, openStock, rerender, no, flow) {
   card.append(stageLegend());
   if (ind.status !== 'OK' || !ind.items?.length) { card.append(n('div', ind.note || '업종 순위를 계산할 자료가 부족합니다.', 'ld-empty')); return card; }
   const table = n('div', null, 'ld-table ld-ind-table');
-  table.append(headRow([[null, '#', 'c-rank'], [null, '업종', 'c-name'], ['ldStage', '단계', 'c-stage'], ['industryRs', 'RS'], [null, '20일 흐름', 'c-spark'], ['rankChange', '1주'], ['rankChange', '1개월'], ['newHighs', '신고가'], ['above50', '50일선 위'], ['persist', '상위권']]));
+  table.append(headRow([[null, '#', 'c-rank'], [null, '업종', 'c-name'], ['ldStage', '단계', 'c-stage'], ['industryRs', 'RS'], [null, 'RS 20일 변화', 'c-shift'], ['rankChange', '1주'], ['rankChange', '1개월'], ['newHighs', '신고가'], ['above50', '50일선 위'], ['persist', '상위권']]));
   const list = ind.items.slice(0, showAllInd ? 15 : 10);
   list.forEach(x => {
     const c = x.conditions || {};
@@ -345,7 +356,7 @@ function industryCard(L, market, openStock, rerender, no, flow) {
     name.append(n('small', [`${x.members}종목${mix ? ` (${mix})` : ''}`, subLine].filter(Boolean).join(' · '), 'ld-ind-sub'));
     const rank = n('div', null, 'ld-td c-rank'); rank.append(n('span', `${x.rank}`, 'ld-rank'), n('i', open ? '▾' : '▸', 'ld-caret'));
     const stage = n('div', null, 'ld-td c-stage'); stage.dataset.label = '단계'; stage.append(stageChip(x.stage, x.dip));
-    const sp = n('div', null, 'ld-td c-spark'); sp.dataset.label = '20일 흐름'; sp.append(spark(x.rsHistory, { w: 70, h: 22, lo: 0, hi: 100, base: L.policy?.industryTopPct ?? 80 }));
+    const sp = n('div', null, 'ld-td c-shift'); sp.dataset.label = 'RS 20일 변화'; sp.append(rsShift(x.rsHistory, x.rs));
     row.append(rank, name, stage,
       cell('RS', num(x.rs), !!c.rsTop), sp,
       cell('1주', rankDelta(x.rankChange5)),
