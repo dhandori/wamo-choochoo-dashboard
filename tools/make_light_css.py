@@ -158,6 +158,11 @@ FIXES = '''
 :root[data-theme="light"] svg [stroke="#9aacc3"] { stroke: #6b7c92; }
 :root[data-theme="light"] i[style*="#ecf3fc"], :root[data-theme="light"] i[style*="#eaf0f8"] { background: #1b2635 !important; }
 :root[data-theme="light"] i[style*="#9aacc3"], :root[data-theme="light"] i[style*="#8aa0b9"] { background: #6b7c92 !important; }
+
+/* ===== 밝은 화면에서 대비 4.5:1 미만이던 글자 (2026-11-12). 선 색 표시는 그대로 두고 글자만 진하게 ===== */
+:root[data-theme="light"] .q-mid { background: #f3e6c4; color: #5a4410; }
+:root[data-theme="light"] .pt-key .k-ma { color: #2a3646; }
+:root[data-theme="light"] .pt-key .k-ma::before { border-top-color: var(--c); }
 '''
 
 
