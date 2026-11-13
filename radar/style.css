@@ -594,6 +594,18 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
 /* 종목 상세: 넓은 창 · 제목줄 고정 · 핵심 수치는 차트 옆(휴대폰은 차트 위) */
 #drawer { width: min(1120px, 96vw); max-width: none; max-height: 92vh; padding: 0; overflow: hidden; }
 #drawer[open] { display: flex; flex-direction: column; }
+/* 종목 창은 시장 흐름판처럼 오른쪽에 붙인다(2026-11-13 사용자 요청). 왼쪽에 남는 넓은 자리를 아무 데나 누르면 닫힌다.
+   예전에는 화면 가운데를 거의 다 덮어(1440 중 1120) 바깥을 누를 자리가 좁았고, 결국 × 를 찾아 눌러야 했다. */
+@media (min-width: 761px) {
+  #drawer { width: min(860px, 62vw); min-width: min(720px, 100vw); height: 100dvh; max-height: none; margin: 0 0 0 auto; border-width: 0 0 0 1px; border-radius: 0; box-shadow: -10px 0 34px #0008; }
+  #drawer[open] { animation: drawer-in .16s ease-out; }
+  #drawer::backdrop { background: #050a1399; cursor: pointer; }
+  #drawer .detail-body { grid-template-columns: 1fr; }
+  #drawer .detail-body .chart-panel { grid-row: auto; }
+  #drawer .detail-side { order: 0; }
+}
+@keyframes drawer-in { from { transform: translateX(28px); opacity: .6; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { #drawer[open] { animation: none; } }
 #detail { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 26px 26px; }
 .detail-head { position: sticky; top: 0; z-index: 3; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin: 0 -26px 12px; padding: 18px 26px 12px; background: var(--panel); border-bottom: 1px solid var(--line); }
 .detail-head .close { float: none; flex: none; margin: -4px -6px 0 0; }

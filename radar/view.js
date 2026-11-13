@@ -990,6 +990,24 @@ $('search').oninput = e => change('query', e.target.value);
 $('close-drawer').onclick = () => $('drawer').close();
 $('drawer').addEventListener('close', closeHelp);
 $('drawer').onclick = e => { if (e.target === $('drawer')) $('drawer').close(); };
+// 창 닫기를 쉽게(2026-11-13 사용자 요청): 열린 창(종목·분산일·갱신 확인) 바깥을 누르면 닫히고, 뒤로 가기로도 닫힌다.
+// 바깥 누름: 창 안쪽 여백을 눌러도 대상이 dialog 로 잡히므로 좌표가 창 밖일 때만 닫는다.
+document.addEventListener('click', e => {
+  const d = e.target;
+  if (!(d instanceof HTMLDialogElement) || !d.open) return;
+  const r = d.getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) d.close();
+});
+// 뒤로 가기: 창이 열릴 때 방문 기록에 한 칸을 넣어 두고, 뒤로 가면 페이지를 떠나는 대신 창만 닫는다.
+// 다른 방법(×·Esc·바깥 누름)으로 닫으면 넣어 둔 한 칸을 되돌린다.
+let dialogHistory = false, ownBack = 0;   // ownBack: 우리가 부른 history.back() 이 낸 popstate 는 건너뛴다
+const openDialogs = () => [...document.querySelectorAll('dialog[open]')];
+new MutationObserver(() => {
+  const open = openDialogs().length > 0;
+  if (open && !dialogHistory) { dialogHistory = true; try { history.pushState(history.state, ''); } catch { dialogHistory = false; } }
+  else if (!open && dialogHistory) { dialogHistory = false; ownBack++; history.back(); }
+}).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open'] });
+addEventListener('popstate', () => { if (ownBack > 0) { ownBack--; return; } if (!dialogHistory) return; dialogHistory = false; openDialogs().forEach(d => d.close()); });
 try { const embedded = JSON.parse($('wamo-snapshot')?.textContent || 'null'); if (validSnapshot(embedded)) snapshot = embedded; } catch {}
 try { snapshot = acceptSnapshot(snapshot, JSON.parse(localStorage.getItem('wamo-verified-v1') || 'null')); } catch {}
 render();
