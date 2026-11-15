@@ -875,9 +875,6 @@ function scoreSection(b, openStock) {
   return wrap;
 }
 
-// 하위 탭 칸의 날씨 낱말: [넓은 화면, 휴대폰]
-const WEATHER_WORD = { GREEN: ['공격 가능', '공격'], YELLOW: ['조심', '조심'], RED: ['현금 확대', '현금'] };
-
 export function renderTrend(content, market, { openStock, onSubtab }) {
   content.replaceChildren();
   const b = block(market);
@@ -917,24 +914,7 @@ export function renderTrend(content, market, { openStock, onSubtab }) {
       if (top < 0) window.scrollTo({ top: window.scrollY + top, behavior: 'instant' });
     });
     t.dataset.sub = k;
-    t.append(el('span', label, 'lbl-full'), el('span', short, 'lbl-short'));
-    // 시장 날씨 칸은 지수가 둘 이상이면(KOSPI·KOSDAQ, S&P 500·나스닥) 지수별 판정을 한 줄씩 보여 준다(2026-11-15 사용자 요청).
-    // 위 큰 판정은 두 지수 중 나쁜 쪽이라, 한쪽만 나쁠 때 어느 쪽인지 여기서 바로 보인다.
-    const byIdx = k === 'weather' ? (b.weather?.byIndex || []).filter(x => x && x.indexLabel) : [];
-    if (byIdx.length > 1) {
-      const box = el('span', null, 'tab-count tr-sub-idx');
-      byIdx.forEach(x => {
-        const lv = x.level || 'UNKNOWN', word = WEATHER_WORD[lv] || ['—', '—'];
-        const row = el('span', null, `tr-sub-idx-row weather-${lv.toLowerCase()}`);
-        row.append(el('b', x.indexLabel, 'lbl-full'), el('b', x.indexLabel.replace(/ 500$/, ''), 'lbl-short'), el('span', word[0], 'lbl-full lv'), el('span', word[1], 'lbl-short lv'));
-        box.append(row);
-      });
-      t.classList.add('has-idx');
-      t.title = byIdx.map(x => `${x.indexLabel} ${(WEATHER_WORD[x.level] || ['—'])[0]} ${x.score > 0 ? '+' : ''}${x.score ?? ''}`).join(' · ');
-      t.append(box);
-    } else {
-      t.append(el('span', `${counts[k]}`, `tab-count ${k === 'weather' ? 'weather-' + (b.weather?.level || 'UNKNOWN').toLowerCase() : ''}`));
-    }
+    t.append(el('span', label, 'lbl-full'), el('span', short, 'lbl-short'), el('span', `${counts[k]}`, `tab-count ${k === 'weather' ? 'weather-' + (b.weather?.level || 'UNKNOWN').toLowerCase() : ''}`));
     seg.append(t);
   });
   content.append(anchor, seg, body);
