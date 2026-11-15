@@ -389,6 +389,9 @@ with sync_playwright() as p:
                 if len(by_index)>1:
                     expect(page.locator('.tr-idx-head .tr-idx-name')).to_have_text([x['indexLabel'] for x in by_index])
                     expect(page.locator('.tr-idx-pill')).to_have_count(len(by_index))
+                    # 2026-11-15 휴대폰에서도 지수별 표는 두 열: 같은 항목 줄의 지수 칸이 나란히(같은 높이) 놓인다.
+                    tops=page.locator('.tr-idx-row:not(.tr-idx-head)').first.locator('.tr-idx-cell').evaluate_all('(els)=>els.map(e=>Math.round(e.getBoundingClientRect().top))')
+                    assert len(tops)==len(by_index) and len(set(tops))==1,tops
                 for key in ('sell','score','earnings','rs','weather'):
                     page.locator(f'.tr-subtabs button[data-sub={key}]').click()
                     assert f'sub={key}' in page.url,page.url
