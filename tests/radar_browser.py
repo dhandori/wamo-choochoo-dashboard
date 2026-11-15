@@ -309,12 +309,37 @@ with sync_playwright() as p:
             # The market-weather strip is a deliberate always-on summary; budget the rest.
             weather_height=page.locator('#weather').evaluate('(node)=>node.hidden?0:node.getBoundingClientRect().height+parseFloat(getComputedStyle(node).marginBottom)')
             if width<760:assert weather_height<=280,weather_height  # 2026-10-23 개편: 휴대폰에서 점수 막대·'자세히' 버튼이 따로 한 줄을 쓰고, 미국은 지수 두 개라 칩이 한 줄 더 늘 수 있음
-            else:assert weather_height<=120,weather_height  # 2026-10-19 redesign: larger weather conclusion line
+            else:
+                # 2026-11-15 벤토 요약판: 넓은 화면에서 날씨는 지수·집계와 한 판에 나란히 들어가 따로 쌓이지 않는다.
+                # 날씨만 빼 주던 여유를 없애고(첫 종목 예산이 그만큼 엄격해진다) 요약판 전체 높이에 상한을 둔다.
+                bento_height=page.locator('.bento').evaluate('(n)=>n.getBoundingClientRect().height')
+                assert bento_height<=320,bento_height
+                weather_height=0
             # Phone tabs wrap into two rows so every tab stays visible; budget the extra row.
-            tabs_extra=max(0,page.locator('.tabs').evaluate('(n)=>n.getBoundingClientRect().height')-56)
+            # 2026-11-15 넓은 화면의 왼쪽 메뉴는 본문을 밀어내지 않으므로 탭 높이를 더하지 않는다.
+            side_nav=page.evaluate("matchMedia('(min-width: 1100px)').matches&&!document.documentElement.classList.contains('nav-top')")
+            tabs_extra=0 if side_nav else max(0,page.locator('.tabs').evaluate('(n)=>n.getBoundingClientRect().height')-56)
             legend_extra=page.locator('.card-legend').first.evaluate('(n)=>n.offsetParent?n.getBoundingClientRect().height+8:0') if page.locator('.card-legend').count() else 0
             weather_height+=tabs_extra+legend_extra
             print('FIRST STOCK Y',market,width,round(first_y),'NOTICE',round(notice_height),'WEATHER',round(weather_height))
+            if width==1440:
+                assert side_nav
+                # 2026-11-15 왼쪽 메뉴: 메뉴는 본문 왼쪽에 붙어 있고, 스크롤해도 화면에 남는다.
+                nav_box=page.locator('nav.tabs').bounding_box();list_box=page.locator('.workspace').bounding_box()
+                assert nav_box['x']+nav_box['width']<=list_box['x'],(nav_box,list_box)
+                # 접기를 누르면 원래 가로 탭으로 돌아가고, 새로고침해도 그 상태를 기억한다. 다시 펼치면 왼쪽 메뉴.
+                page.locator('.nav-toggle').click()
+                assert page.evaluate("document.documentElement.classList.contains('nav-top')")
+                nav_box=page.locator('nav.tabs').bounding_box()
+                assert nav_box['y']+nav_box['height']<=page.locator('.workspace').bounding_box()['y']+1,nav_box
+                expect(page.locator('.nav-toggle')).to_have_attribute('aria-expanded','false')
+                page.reload();page.wait_for_selector('.stock-link')
+                assert page.evaluate("document.documentElement.classList.contains('nav-top')")
+                page.locator('.nav-toggle').click()
+                assert not page.evaluate("document.documentElement.classList.contains('nav-top')")
+                expect(page.locator('.nav-toggle')).to_have_attribute('aria-expanded','true')
+                page.evaluate('window.scrollTo(0,0)')
+            else:expect(page.locator('.nav-toggle')).to_be_hidden()
             if width==1440:assert first_y-notice_height-weather_height<800,first_y  # 2026-10-19 layout: two-row tabs; 2026-10-28 3단계 탭 머리줄(단계 이름·설명) 한 줄 추가 · 정렬 패널은 기본 접힘
             else:assert first_y-notice_height-weather_height<1100,first_y  # phones: industry-flow strip sits above the list since 2026-10-19; 2026-10-23 grouped tabs and metric bars add ~70px
             if (SITE/'wamo_trend.json').exists():
@@ -373,7 +398,8 @@ with sync_playwright() as p:
                 page.locator('.tr-subtabs button[data-sub=score]').click(); page.wait_for_timeout(200)
                 bar=page.locator('.tr-subtabs').bounding_box()
                 # 2026-10-28: 탭 줄이 화면 위에 고정되므로 하위 탭 줄은 그 바로 아래에 붙는다.
-                tabs_h=page.locator('.tabs').bounding_box()['height']
+                # 2026-11-15 넓은 화면의 왼쪽 메뉴일 때는 위에 붙는 탭 줄이 없으므로 화면 맨 위에 붙는다.
+                tabs_h=0 if side_nav else page.locator('.tabs').bounding_box()['height']
                 assert tabs_h-1<=bar['y']<=tabs_h+2,(bar,tabs_h)
                 page.locator('.tr-subtabs button[data-sub=weather]').click()
                 dimensions=page.evaluate('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})')
