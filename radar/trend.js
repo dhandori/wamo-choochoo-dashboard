@@ -162,7 +162,10 @@ export function renderWeather(container, market, onOpen) {
   chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히', false, onOpen, 'tr-more');
   more.setAttribute('aria-label', '시장 날씨 자세히 보기');
-  head.append(more);
+  // 두 단추(자세히·펼치기)는 한 묶음으로 둬서 좁은 화면에서 줄이 바뀌어도 갈라지지 않게 한다.
+  const acts = el('span', null, 'tr-weather-acts');
+  acts.append(more);
+  head.append(acts);
   // 휴대폰에서는 띠가 첫 화면을 다 차지하지 않게 설명·항목 칩을 접을 수 있다.
   // 판정·점수가 있는 머리줄은 항상 보이고, 접힘 상태는 브라우저가 기억한다. 화면이 넓으면 항상 펼쳐진 모양 그대로다.
   const FOLD_KEY = 'wamo-weather-fold';
@@ -172,7 +175,7 @@ export function renderWeather(container, market, onOpen) {
   const paintFold = () => { container.classList.toggle('collapsed', folded); fold.textContent = folded ? '펼치기 ▾' : '접기 ▴'; fold.setAttribute('aria-expanded', String(!folded)); };
   fold.onclick = () => { folded = !folded; try { localStorage.setItem(FOLD_KEY, folded ? '1' : '0'); } catch {} paintFold(); };
   fold.setAttribute('aria-label', '시장 날씨 설명과 항목별 판정 접기/펼치기');
-  head.append(fold);
+  acts.append(fold);
   paintFold();
   container.append(head, text, chips);
 }

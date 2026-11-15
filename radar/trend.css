@@ -17,7 +17,9 @@
 .tr-weather-kicker { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .tr-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--tone); box-shadow: 0 0 0 4px color-mix(in srgb, var(--tone) 22%, transparent); flex: none; }
 .tr-weather-text { grid-area: text; color: #d3deeb; font-size: 14px; min-width: 0; }
-.tr-more { margin-left: auto; min-height: 30px; padding: 3px 11px; font-size: 12px; background: transparent; white-space: nowrap; }
+.tr-weather-acts { display: inline-flex; align-items: center; flex: none; margin-left: auto; }
+.tr-weather-acts .tr-more { margin-left: 0 !important; }
+.tr-more { min-height: 30px; padding: 3px 11px; font-size: 12px; background: transparent; white-space: nowrap; }
 .tr-chips { grid-area: chips; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
 .tr-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--chip); font-size: 12px; white-space: nowrap; }
 .tr-chip-dot { width: 7px; height: 7px; border-radius: 50%; background: #5f7690; flex: none; }

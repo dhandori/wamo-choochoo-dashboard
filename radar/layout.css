@@ -12,7 +12,6 @@
 .bento .tr-weather-head { flex-wrap: wrap; row-gap: 6px; }
 .bento .tr-weather-head strong { font-size: 24px; }
 .bento .tr-idx-pills { margin: 0; }
-.bento .tr-weather-head .tr-more { margin-left: auto; }
 .bento .tr-weather-text { font-size: 13.5px; line-height: 1.45; }
 .bento .tr-chips { justify-content: flex-start; gap: 5px; }
 .bento .tr-chip { padding: 2px 8px 2px 7px; font-size: 11.5px; }
@@ -37,6 +36,19 @@
   .bento .ix-bottom { min-width: 0; }
   .bento .ix-spark { flex: 0 1 46px; min-width: 24px; }
   .bento .metric { padding: 8px 10px; }
+  /* 날씨 칸을 줄인다(2026-11-15 사용자 요청): 점수 막대는 제목 옆에, '자세히'·'펼치기'는 지수별 판정 옆에 붙인다.
+     폭이 모자라면 다음 줄로 넘어갈 뿐 내용은 그대로다. 막대 옆 '-6 ~ +6' 범위만 휴대폰에서 숨긴다. */
+  .bento .tr-weather { padding: 10px 12px; gap: 6px; }
+  .bento .tr-weather-head { gap: 6px 8px; }
+  .bento .tr-weather-head strong { font-size: 20px; }
+  .bento .tr-gauge { width: auto; flex: 1 1 96px; margin: 0; min-width: 96px; }
+  .bento .tr-gauge small { display: none; }
+  .bento .tr-gauge-track { min-width: 48px; }
+  .bento .tr-idx-pills { width: auto; margin: 0; flex: 0 1 auto; }
+  .bento .tr-idx-pill { gap: 4px; padding: 2px 8px; font-size: 11.5px; }
+  .bento .tr-idx-pill b { font-size: 11.5px; }
+  /* 설명·칩이 접혀 있으면 아래 빈 칸 몫의 간격을 두지 않는다. */
+  .bento .tr-weather.collapsed { row-gap: 0; }
   /* 원래 규칙 유지: 휴대폰 추세·종목 탭은 탭 숫자와 겹치는 집계 칸을 숨긴다(AI 탭만 보임). */
   body:not([data-view="ai"]) .bento > #metrics { display: none; }
 }
