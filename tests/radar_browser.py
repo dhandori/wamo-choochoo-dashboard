@@ -389,6 +389,8 @@ with sync_playwright() as p:
                 if len(by_index)>1:
                     expect(page.locator('.tr-idx-head .tr-idx-name')).to_have_text([x['indexLabel'] for x in by_index])
                     expect(page.locator('.tr-idx-pill')).to_have_count(len(by_index))
+                    # 2026-11-15 하위 탭 줄의 '시장 날씨' 칸도 지수별로 한 줄씩(지수 이름 + 그 지수의 판정).
+                    expect(page.locator('.tr-subtabs [data-sub=weather] .tr-sub-idx-row')).to_have_count(len(by_index))
                 for key in ('sell','score','earnings','rs','weather'):
                     page.locator(f'.tr-subtabs button[data-sub={key}]').click()
                     assert f'sub={key}' in page.url,page.url
