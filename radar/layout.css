@@ -1,0 +1,88 @@
+/* 레이더 배치 (2026-11-15 사용자 결정)
+   - 02 벤토 요약판: 지수·시장 날씨·집계를 한 판에 모은다(.bento). 계산·자료는 그대로이고 배치만 바꾼다.
+   - 05 사이드바: 넓은 화면(1100px 이상)에서 단계 탭을 왼쪽 세로 메뉴로 둔다. '접기'를 누르면 원래 가로 탭(:root.nav-top)으로
+     돌아가고, 고른 상태는 localStorage 'wamoNav' 에 기억한다(radar.template.html 머리말 스크립트).
+   휴대폰·좁은 화면의 탭은 바뀌지 않는다. */
+/* ===== 시안 02 벤토 요약판: 날씨(왼쪽 2/5) + 지수 2·집계 4(오른쪽 3칸×2줄) ===== */
+.bento { display: grid; gap: 10px; margin: 0 0 12px; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-flow: row dense; }
+.bento > #index-strip, .bento > #metrics { display: contents; }
+.bento > #index-strip[hidden] { display: none; }
+.bento .tr-weather { grid-column: 1 / 3; grid-row: 1 / span 2; margin: 0; padding: 12px 14px; align-content: start;
+  grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "text" "chips"; gap: 8px; }
+.bento .tr-weather-head { flex-wrap: wrap; row-gap: 6px; }
+.bento .tr-weather-head strong { font-size: 24px; }
+.bento .tr-idx-pills { margin: 0; }
+.bento .tr-weather-head .tr-more { margin-left: auto; }
+.bento .tr-weather-text { font-size: 13.5px; line-height: 1.45; }
+.bento .tr-chips { justify-content: flex-start; gap: 5px; }
+.bento .tr-chip { padding: 2px 8px 2px 7px; font-size: 11.5px; }
+.bento .tr-chip small { font-size: 11.5px; }
+.bento .ix-cell, .bento .metric { margin: 0; min-height: 0; }
+.bento .ix-cell { justify-content: center; }
+.bento .metric { padding: 10px 14px; }
+.bento .metric strong { font-size: 24px; }
+@media (max-width: 1280px) and (min-width: 761px) {
+  /* 좁은 PC·태블릿: 5칸이면 오른쪽 칸이 너무 좁아 4칸(날씨 2 + 2칸×3줄)으로 */
+  .bento { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .bento .tr-weather { grid-row: 1 / span 3; }
+}
+@media (max-width: 760px) {
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .bento .tr-weather { grid-column: 1 / -1; grid-row: auto; order: -1; padding: 12px 14px; gap: 8px; }
+  .bento .tr-weather-head strong { font-size: 22px; }
+  .bento .tr-weather-text { font-size: 13px; }
+  .bento .ix-cell { padding: 8px 10px; }
+  .bento .ix-date { display: none; }   /* 거래일은 바로 위에 적혀 있다 */
+  /* 반 폭 칸에서 긴 지수(나스닥 25,000대)와 미니 차트가 넘치지 않게 차트가 줄어든다. */
+  .bento .ix-bottom { min-width: 0; }
+  .bento .ix-spark { flex: 0 1 46px; min-width: 24px; }
+  .bento .metric { padding: 8px 10px; }
+  /* 원래 규칙 유지: 휴대폰 추세·종목 탭은 탭 숫자와 겹치는 집계 칸을 숨긴다(AI 탭만 보임). */
+  body:not([data-view="ai"]) .bento > #metrics { display: none; }
+}
+
+/* ===== 접기·펼치기 단추 (넓은 화면에서만) ===== */
+/* 휴대폰용 .tabs button 규칙보다 우선하도록 nav.tabs.steps 로 묶는다. */
+nav.tabs.steps .nav-toggle { display: none; }
+@media (min-width: 1100px) {
+  nav.tabs.steps .nav-toggle { display: inline-flex; align-items: center; gap: 6px; flex: none; min-height: 30px; padding: 4px 10px !important;
+    border: 1px solid var(--line) !important; border-radius: 8px !important; background: transparent !important; color: var(--muted);
+    font-size: 12px; font-weight: 600; box-shadow: none !important; cursor: pointer; }
+  nav.tabs.steps .nav-toggle:hover { color: var(--text); border-color: #3a4d66 !important; }
+  /* 접힌 상태(가로 탭): 탭 줄 오른쪽 끝 */
+  :root.nav-top nav.tabs.steps .nav-toggle { margin-left: auto; align-self: center; }
+}
+
+/* ===== 시안 05 사이드바: 펼친 상태(기본). 접으면 원래 가로 탭 ===== */
+@media (min-width: 1100px) {
+  :root:not(.nav-top) .shell { display: grid; grid-template-columns: 212px minmax(0, 1fr); column-gap: 28px; align-items: start; }
+  :root:not(.nav-top) .shell > * { grid-column: 2; min-width: 0; }
+  :root:not(.nav-top) .shell > .topbar, :root:not(.nav-top) .shell > footer { grid-column: 1 / -1; }
+  /* 탭이 왼쪽으로 빠지면 위에 붙는 탭 줄이 없으니 고정 요소를 내리지 않는다. */
+  :root:not(.nav-top) { --tabs-h: 0px !important; }
+  :root:not(.nav-top) nav.tabs.steps { grid-column: 1; grid-row: 2 / span 40; position: sticky; top: 16px; align-self: start;
+    display: flex; flex-direction: column; align-items: stretch; gap: 14px; margin: 18px 0 0; padding: 10px 10px 14px;
+    border: 1px solid var(--line); border-radius: 12px; background: var(--panel); max-height: calc(100vh - 32px); overflow-y: auto; }
+  :root:not(.nav-top) nav.tabs.steps .nav-toggle { order: -1; align-self: flex-end; margin: 0 0 -6px; }
+  :root:not(.nav-top) nav.tabs.steps .step-arrow { display: none; }
+  :root:not(.nav-top) nav.tabs.steps .tab-group { flex-direction: column; align-items: stretch; gap: 4px; padding: 0; border: 0; border-radius: 0; background: none; }
+  :root:not(.nav-top) nav.tabs.steps .tab-group.active { background: none; }
+  :root:not(.nav-top) nav.tabs.steps .step-head { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 2px 6px 6px; }
+  :root:not(.nav-top) nav.tabs.steps .tab-group-label { align-self: flex-start; }
+  :root:not(.nav-top) nav.tabs.steps .step-hint { white-space: normal; }
+  :root:not(.nav-top) nav.tabs.steps .step-tabs { flex-direction: column; gap: 2px; }
+  :root:not(.nav-top) nav.tabs.steps .step-tabs button { display: flex; justify-content: space-between; align-items: center; width: 100%;
+    padding: 8px 10px !important; border-radius: 8px; text-align: left; box-shadow: none; }
+  :root:not(.nav-top) nav.tabs.steps .step-tabs button:hover { background: rgba(255,255,255,.04); }
+  :root:not(.nav-top) nav.tabs.steps .step-tabs button.active { background: #1d3b33; color: #c5ffec; box-shadow: inset 3px 0 var(--green); }
+  /* 밝은 화면: 메뉴 단추마다 씌워지는 상자를 걷어내고 고른 탭만 칠한다. */
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps { background: #fff; }
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .tab-group,
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .tab-group.active,
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-head,
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .tab-group.active .step-head { background: transparent !important; border-color: transparent !important; }
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs button { background: transparent !important; border-color: transparent !important; }
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs button:hover { background: rgba(0,0,0,.04) !important; }
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs button.active { background: #dfefeb !important; color: #033726; box-shadow: inset 3px 0 #1f9d78; }
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs { -webkit-mask-image: none; mask-image: none; }
+}

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="./radar/patterns.css">
   <link rel="stylesheet" href="./radar/schedule.css">
   <link rel="stylesheet" href="./radar/light.css">
+  <link rel="stylesheet" href="./radar/layout.css">
   <script>
 (function(){
   var root=document.documentElement,store=function(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){}return null;};
@@ -24,6 +25,26 @@
     var sync=function(){var light=root.dataset.theme==="light";b.textContent=light?"어둡게":"밝게";b.setAttribute("aria-label",light?"어두운 화면으로 바꾸기":"밝은 화면으로 바꾸기");};
     b.addEventListener("click",function(){var next=root.dataset.theme==="light"?"dark":"light";if(next==="light")root.dataset.theme="light";else delete root.dataset.theme;store("wamoTheme",next);sync();});
     sync();var br=document.querySelector(".topbar .brand");if(br)br.after(b);else document.body.append(b);
+  });
+})();
+</script>
+<script>
+(function(){
+  // 사이드바 접기·펼치기. 접으면 원래 가로 탭으로 돌아간다. 고른 상태는 이 브라우저에 기억한다.
+  var root=document.documentElement,KEY="wamoNav";
+  var get=function(){try{return localStorage.getItem(KEY);}catch(e){return null;}};
+  var put=function(v){try{localStorage.setItem(KEY,v);}catch(e){}};
+  if(get()==="top")root.classList.add("nav-top");
+  document.addEventListener("DOMContentLoaded",function(){
+    var nav=document.querySelector("nav.tabs.steps");if(!nav)return;
+    var b=document.createElement("button");b.type="button";b.className="nav-toggle";
+    var sync=function(){var top=root.classList.contains("nav-top");
+      b.textContent=top?"메뉴 펼치기 ⇥":"⇤ 접기";
+      b.setAttribute("aria-label",top?"탭을 왼쪽 메뉴로 펼치기":"왼쪽 메뉴를 접어 위쪽 가로 탭으로");
+      b.setAttribute("aria-expanded",top?"false":"true");};
+    b.addEventListener("click",function(){var top=!root.classList.contains("nav-top");
+      root.classList.toggle("nav-top",top);put(top?"top":"side");sync();});
+    sync();nav.append(b);
   });
 })();
 </script>
@@ -39,10 +60,12 @@
       <div><div class="eyebrow">DAILY SCANNER</div><h1>데일리 마켓 레이더</h1></div>
       <div id="date-info" class="date-info"></div>
     </section>
-    <section id="index-strip" class="ix-strip" aria-label="주요 지수" hidden></section>
-    <section id="weather" class="tr-weather" aria-label="시장 날씨" hidden></section>
     <div id="notice" class="notice" hidden></div>
-    <div id="metrics" class="metrics" aria-label="전체 스크리닝 대상 집계"></div>
+    <div class="bento" aria-label="오늘 시장 요약">
+      <section id="index-strip" class="ix-strip" aria-label="주요 지수" hidden></section>
+      <section id="weather" class="tr-weather" aria-label="시장 날씨" hidden></section>
+      <div id="metrics" class="metrics" aria-label="전체 스크리닝 대상 집계"></div>
+    </div>
     <div class="meta-row">
       <details class="disclosure"><summary id="coverage-summary">데이터 범위와 기준</summary><div id="coverage-detail"></div></details>
       <span class="color-legend" aria-label="색 안내"><i class="lg up"></i>상승 <i class="lg down"></i>하락 <i class="lg bad"></i>경고·나쁨 <i class="lg good"></i>좋음</span>
