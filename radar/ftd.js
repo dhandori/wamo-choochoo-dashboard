@@ -82,12 +82,19 @@ function chart(s,dist){
   const DIST_WINDOW=25,trendDays=dist?.status==='OK'?new Map((dist.days||[]).filter(d=>d.distribution).map(d=>[d.date,d])):null;
   const isLive=(r,i)=>trendDays?!!(trendDays.get(r.date)&&!trendDays.get(r.date).expired):i>=rows.length-DIST_WINDOW;
   const distCount=trendDays&&typeof dist.count==='number'?dist.count:rows.filter((r,i)=>r.dist&&isLive(r,i)).length;
-  rows.forEach((r,i)=>{if(!r.dist)return;const live=isLive(r,i),cx=x(i),cy=y(r.close)+(phone?9:10),td=trendDays?.get(r.date);
-    const mark=add('circle',{cx,cy,r:phone?3.4:3,class:`ftd-dist ${live?'recent':'old'} ${r.dist.toLowerCase()}`});
-    const chg=i?((r.close/rows[i-1].close-1)*100):null,t=document.createElementNS(NS,'title');
+  // 가격선 위에는 지금 세는 분산일만 작은 ▼로, 지난 분산일은 가격 차트 아래 얇은 눈금 줄에만 흐리게 남긴다(2026-11-16 사용자 요청).
+  const rugY=P+14,tickW=Math.max(1.6,Math.min(3,(W-L-R)/rows.length*.5));
+  rows.forEach((r,i)=>{if(!r.dist)return;const live=isLive(r,i),cx=x(i),td=trendDays?.get(r.date);
+    const chg=i?((r.close/rows[i-1].close-1)*100):null;
     const why=live?' · 지금 세는 분산일':td?.expiredByFtd?` · ${td.expiredByFtd} FTD로 지워짐`:td?.expiredOn?` · ${td.expiredOn} 5% 넘게 회복해 지워짐`:td?.expired?' · 지워짐':i>=rows.length-DIST_WINDOW?' · 추세 탭이 아직 세지 않은 날(거래량 확정 전 등)':' · 25거래일 지나 세지 않음';
-    t.textContent=`${r.date} · ${DIST_NAMES[r.dist]||'분산일'}${chg==null?'':` · 지수 ${chg>0?'+':''}${chg.toFixed(2)}%`}${why}`;mark.append(t);
-    add('rect',{x:cx-1,y:V-6,width:2,height:4,class:`ftd-dist-tick ${live?'recent':'old'}`});});
+    const label=`${r.date} · ${DIST_NAMES[r.dist]||'분산일'}${chg==null?'':` · 지수 ${chg>0?'+':''}${chg.toFixed(2)}%`}${why}`;
+    const tick=add('rect',{x:cx-tickW/2,y:rugY-(live?4:3),width:tickW,height:live?8:6,rx:tickW/2,class:`ftd-dist-tick ${live?'live':'past'}`});
+    const t1=document.createElementNS(NS,'title');t1.textContent=label;tick.append(t1);
+    if(!live)return;
+    const cy=y(r.close)-(phone?10:9),sz=phone?5:4.5;
+    const tri=add('path',{d:`M${cx-sz},${cy-sz*1.1}L${cx+sz},${cy-sz*1.1}L${cx},${cy+sz*.6}Z`,class:`ftd-dist-mark ${r.dist.toLowerCase()}`});
+    const t2=document.createElementNS(NS,'title');t2.textContent=label;tri.append(t2);});
+  if(rows.some(r=>r.dist))add('text',{x:W-R+6,y:rugY+4,fill:'#7d90a8','font-size':FS-1},'분산일');
   const events=(s.events||[]).filter(e=>['FTD','RALLY'].includes(e.type));
   events.forEach(e=>{const i=rows.findIndex(r=>r.date===e.date);if(i<0)return;const isFTD=e.type==='FTD',cy=y(rows[i].close);const dot=add('circle',{cx:x(i),cy,r:isFTD?5:3.5,fill:isFTD?'#5bd4b1':'#f2c474',stroke:'#0a1421','stroke-width':2});const title=document.createElementNS(NS,'title');title.textContent=`${e.date} · ${EVENT_NAMES[e.type]}`;dot.append(title);if(isFTD)add('text',{x:x(i),y:cy-11,fill:'#5bd4b1','font-size':FS,'font-weight':700,'text-anchor':'middle'},'FTD');});
   // Date axis.
@@ -96,8 +103,8 @@ function chart(s,dist){
   wrap.append(svg);
   const legend=n('div',null,'ftd-legend');
   for(const [label,color] of [['종가','#ecf3fc'],['20일선','#e39a5b'],['50일선','#659de3'],['반등 1일째','#f2c474'],['FTD','#5bd4b1']]){const item=n('span');const sw=n('i');sw.style.background=color;item.append(sw,n('span',label));legend.append(item);}
-  {const item=n('span');const sw=n('i','','ftd-dist-key');item.append(sw,n('span',`분산일 · 지금 ${distCount}번`));legend.append(item);}
-  legend.append(n('small',`점: 발생일 · 빨간 점: 분산일(채움 = 지금 세는 날, 테두리 = 지워졌거나 25거래일 지난 날) · 점선: 지금 지켜볼 저가 · 최근 ${rows.length}거래일`));wrap.append(legend);return wrap;
+  {const item=n('span');const sw=n('i','▼','ftd-dist-key');item.append(sw,n('span',`분산일 · 지금 ${distCount}번`));legend.append(item);}
+  legend.append(n('small',`점: 발생일 · ▼: 지금 세는 분산일 · 아래 눈금 줄: 분산일이 나온 날(흐린 눈금 = 지워졌거나 25거래일 지난 날) · 점선: 지금 지켜볼 저가 · 최근 ${rows.length}거래일`));wrap.append(legend);return wrap;
 }
 
 export function renderFTD(container,market,block,{expected,failed=false,openLeaders}={}){

@@ -25,8 +25,8 @@ body[data-view="ftd"] .scanner-layout{display:block}body[data-view="ftd"] .list-
 .ftd-go,.ld-link{margin-top:14px;border:1px solid #4a9d83;background:#164135;color:#cdf3e6;border-radius:8px;padding:9px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}.ftd-go:hover,.ld-link:hover{background:#1c5244}
 .glossary{margin:0 0 18px;border:1px solid #324d67;border-radius:10px;background:#101f31;padding:12px 16px}.glossary summary{cursor:pointer;color:#d3deeb;font-size:13px;font-weight:600;min-height:22px}.glossary dl{margin:12px 0 0;display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:10px 18px}.glossary dt{color:#eaf0f8;font-size:12px;font-weight:700}.glossary dd{margin:0;color:#afc1d8;font-size:12px;line-height:1.75}
 @media(max-width:760px){.ftd-flow{padding:13px 12px}.ftd-flow ol{grid-template-columns:1fr;gap:6px}.ftd-flow li{padding:10px}.ftd-checks{grid-template-columns:1fr 1fr}.ftd-quality ul{grid-template-columns:1fr}.glossary dl{grid-template-columns:1fr;gap:3px}.glossary dd{margin-bottom:9px}}
-/* 지수 차트의 분산일 표시 (2026-11-16) */
-.ftd-dist{stroke-width:1.4}.ftd-dist.recent{fill:#ff6b6b;stroke:#0a1421}.ftd-dist.old{fill:none;stroke:#c86a6a}.ftd-dist.light,.ftd-dist.stall{opacity:.8}
-.ftd-dist-tick.recent{fill:#ff6b6b}.ftd-dist-tick.old{fill:#7a4a4a}
-.ftd-legend i.ftd-dist-key{width:8px;height:8px;border-radius:50%;background:#ff6b6b}
-:root[data-theme="light"] .ftd-dist.recent{fill:#d63c3c;stroke:#fff}:root[data-theme="light"] .ftd-dist.old{stroke:#c06060}:root[data-theme="light"] .ftd-legend i.ftd-dist-key{background:#d63c3c}
+/* 지수 차트의 분산일 표시 (2026-11-16): 가격선 위 ▼ = 지금 세는 날, 아래 눈금 줄 = 지난 분산일 */
+.ftd-dist-mark{fill:#ff7a7a;stroke:#0f1825;stroke-width:1;stroke-linejoin:round}
+.ftd-dist-tick.live{fill:#ff7a7a}.ftd-dist-tick.past{fill:#4b5d74}
+.ftd-legend i.ftd-dist-key{width:auto;height:auto;background:none;color:#ff7a7a;font-style:normal;font-size:10px;line-height:1}
+:root[data-theme="light"] .ftd-dist-mark{fill:#e05252;stroke:#fff}:root[data-theme="light"] .ftd-dist-tick.live{fill:#e05252}:root[data-theme="light"] .ftd-dist-tick.past{fill:#b8c4d3}:root[data-theme="light"] .ftd-legend i.ftd-dist-key{color:#e05252}
