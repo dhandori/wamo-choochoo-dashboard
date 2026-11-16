@@ -5217,5 +5217,32 @@
     "sectorConfidence": "HIGH",
     "updatedAt": "2026-10-29",
     "failed": false
+  },
+  "950260": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "당사는 신약 연구개발을 주력으로 하여 제품 제조를 위한 원재료 매입이 없고, 연구개발 단계별 필요에 따라 비정기적으로 발생하는 연구 재료비 구조이므로 원재료 가격 변동 추이는 해당 사항이 없습니다.",
+      "products": "주요 제품으로는 아일리아, 루센티스, 아바스틴(비허가 사용), Beovue, Anti-VEGF 바이오시밀러, 그리고 이중특이성 항체인 바비스모(항-VEGF 및 ANG2)가 있습니다.",
+      "customers": "신용위험은 기업 및 개인 고객에 대한 신용거래 및 채권뿐 아니라 현금성자산, 채무상품의 계약 현금흐름 및 예치금 등에서도 발생합니다.",
+      "revenue": "당사는 현재 신약 후보물질을 개발 중인 회사로 생산 및 판매 중인 제품이 없어 공시대상기간 중 매출원가 발생액이 없습니다.",
+      "drivers": "사업보고서 원문에서 확인 필요",
+      "segments": [
+        "소프트웨어·플랫폼",
+        "유통·커머스",
+        "식품·음료",
+        "바이오·신약",
+        "전력·에너지"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20261116",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261116000370",
+    "detailSector": "제약·바이오",
+    "sectorTags": [
+      "제약·바이오"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-11-16",
+    "failed": false
   }
 }
