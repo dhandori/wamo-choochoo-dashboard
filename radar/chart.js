@@ -340,24 +340,48 @@ export function rsChart(series, { days = 60 } = {}) {
 }
 
 /** Plain line chart with axes for percentages (market breadth). */
-export function lineChart(points, { lines, min = 0, max = 100, unit = '%', height = 130 } = {}) {
-  const W = 300, H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+// 카드에 들어가는 작은 차트의 그림 폭. 카드 폭과 비슷하게 그려야 축 글자가 다른 차트와 같은 크기로 보인다.
+// 휴대폰(760px 미만)은 카드가 한 줄에 하나, 그 위는 두 줄이라 카드 폭이 약 330px · 470px이다.
+function cardWidth() { return typeof window !== 'undefined' && window.innerWidth < 760 ? 330 : 470; }
+
+/**
+ * Line chart for 0~100% series. bands: [{from, to, cls, label}] shades a value range;
+ * refs: [{value, cls, label}] draws a labelled reference line. A finger or mouse shows the day's values.
+ */
+export function lineChart(points, { lines, min = 0, max = 100, unit = '%', height, bands = [], refs = [] } = {}) {
+  const W = cardWidth(), H = height || Math.round(W * 0.42), pad = { l: 4, r: 40, t: 8, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const x = k => pad.l + k / Math.max(1, points.length - 1) * plotW, y = v => pad.t + (1 - (v - min) / (max - min)) * plotH;
   const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg', role: 'img', 'aria-label': lines.map(l => l.label).join(', ') });
-  niceTicks(min, max, 4).forEach(t => { node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(t), y2: y(t), class: t === 50 ? 'pc-grid mid' : 'pc-grid' }, svg); text(svg, W - pad.r + 6, y(t) + 4, `${t}${unit}`, { class: 'pc-axis' }); });
+  bands.forEach(b => { const r = node('rect', { x: pad.l, y: y(b.to), width: plotW, height: Math.max(0, y(b.from) - y(b.to)), class: `pc-band ${b.cls || ''}` }, svg); if (b.label) { const t = node('title', {}, r); t.textContent = b.label; } });
+  niceTicks(min, max, 4).forEach(t => { node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(t), y2: y(t), class: 'pc-grid' }, svg); text(svg, W - pad.r + 6, y(t) + 4, `${t}${unit}`, { class: 'pc-axis' }); });
+  refs.forEach(r => { node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(r.value), y2: y(r.value), class: `pc-ref ${r.cls || ''}` }, svg); if (r.label) text(svg, pad.l + 4, y(r.value) - 4, r.label, { class: `pc-ref-label ${r.cls || ''}` }); });
   const axisY = H - pad.b; node('line', { x1: pad.l, x2: pad.l + plotW, y1: axisY, y2: axisY, class: 'pc-baseline' }, svg);
   const marks = [0, Math.floor((points.length - 1) / 2), points.length - 1];
-  marks.forEach((k, j) => text(svg, x(k), axisY + 15, md(points[k].date), { class: 'pc-axis', 'text-anchor': ['start', 'middle', 'end'][j] }));
+  marks.forEach((k, j) => text(svg, x(k), axisY + 16, md(points[k].date), { class: 'pc-axis', 'text-anchor': ['start', 'middle', 'end'][j] }));
   lines.forEach(l => {
     const pts = points.map((p, k) => p[l.key] != null ? `${x(k)},${y(p[l.key])}` : null).filter(Boolean);
     if (pts.length > 1) node('polyline', { points: pts.join(' '), stroke: l.color, class: `pc-line ${l.dash ? 'dash' : ''}` }, svg);
   });
+  // 손가락·마우스를 댄 날의 값. 차트 위쪽에 한 줄로 적고 세로선을 긋는다.
+  const cursor = node('line', { x1: 0, x2: 0, y1: pad.t, y2: axisY, class: 'pc-cursor', visibility: 'hidden' }, svg);
+  const read = text(svg, pad.l + plotW, pad.t + 12, '', { class: 'pc-readout', 'text-anchor': 'end', visibility: 'hidden' });
+  const hit = node('rect', { x: pad.l, y: pad.t, width: plotW, height: plotH, fill: 'transparent', class: 'pc-hit' }, svg);
+  const show = ev => {
+    const box = svg.getBoundingClientRect(); if (!box.width || points.length < 2) return;
+    const vx = (ev.clientX - box.left) / box.width * W;
+    const k = Math.max(0, Math.min(points.length - 1, Math.round((vx - pad.l) / plotW * (points.length - 1)))), p = points[k];
+    cursor.setAttribute('x1', x(k)); cursor.setAttribute('x2', x(k)); cursor.setAttribute('visibility', 'visible');
+    read.textContent = `${md(p.date)} · ` + lines.filter(l => p[l.key] != null).map(l => `${l.label} ${Math.round(p[l.key])}${unit}`).join(' · ');
+    read.setAttribute('visibility', 'visible');
+  };
+  const hide = () => { cursor.setAttribute('visibility', 'hidden'); read.setAttribute('visibility', 'hidden'); };
+  hit.addEventListener('pointermove', show); hit.addEventListener('pointerdown', show); hit.addEventListener('pointerleave', hide);
   return svg;
 }
 
 /** Mirrored bar chart around a zero line: positives up (green), negatives down (red). */
-export function mirrorBars(points, { upKey, downKey, upLabel, downLabel, height = 130 } = {}) {
-  const W = 300, H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+export function mirrorBars(points, { upKey, downKey, upLabel, downLabel, height } = {}) {
+  const W = cardWidth(), H = height || Math.round(W * 0.42), pad = { l: 4, r: 40, t: 8, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const top = Math.max(1, ...points.map(p => Math.max(p[upKey], p[downKey])));
   const ticks = niceTicks(0, top, 2), scaleMax = Math.max(top, ticks.at(-1) || top);
   const mid = pad.t + plotH / 2, unit = (plotH / 2) / scaleMax;

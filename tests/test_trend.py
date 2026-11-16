@@ -43,6 +43,16 @@ class TrendMathTests(unittest.TestCase):
         self.assertEqual(trend.stage_at(down, 259), 4)
         self.assertIsNone(trend.stage_at(up, 100))
 
+    def test_breadth_chart_covers_stored_history(self):
+        # 260거래일 이력이면 50일선이 생기는 날부터 210거래일을 그린다(화면 시장 체력 차트).
+        universe = [stock(f'S{k}', [100 + i * (1 if k % 2 else -0.1) for i in range(260)]) for k in range(4)]
+        out = trend.breadth(universe, sessions=trend.BREADTH_CHART_SESSIONS)
+        self.assertEqual(out['status'], 'OK')
+        self.assertEqual(len(out['series']), 210)
+        self.assertEqual(out['above50Pct'], 50.0)
+        self.assertIsNone(out['series'][0]['above200'])
+        self.assertIsNotNone(out['series'][-1]['above200'])
+
     def test_distribution_days_count_and_expire(self):
         dates = sessions(26)
         bench = [{'date': d, 'close': 100.0, 'volume': 100.0} for d in dates]
