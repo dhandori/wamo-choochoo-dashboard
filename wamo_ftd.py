@@ -280,7 +280,23 @@ def for_market(rows, market, asof, *, synthetic=False, expected=None, traded=Non
         first=min(traded) if traded else asof   # only judge days the stock histories cover
         closed=[d for d in sessions if d not in traded and first<=d<asof]
         sessions=[d for d in sessions if d not in closed]
+        # Yahoo keeps a filler bar (volume 0, or no prices at all) for such a closure;
+        # it is not a session, so it must not enter the count either (Taiwan 2026-10-23).
+        rows=[r for r in rows if not (isinstance(r,dict) and r.get('date') in closed)]
+    pending=None
+    if traded is not None and not synthetic and rows and isinstance(rows[-1],dict) and rows[-1].get('date')==asof \
+            and len(rows)>1 and not valid_num(rows[-1].get('volume')):
+        # Japan/Taiwan: Yahoo posts the index volume hours after the close. Judge through the
+        # previous session instead of giving up; the scheduled retries pick the day up later.
+        pending=asof
+        rows=rows[:-1]
+        asof=rows[-1].get('date')
+        if sessions is not None:
+            sessions=[d for d in sessions if d<=asof]
     result=analyze(rows,asof=asof,expected=expected,synthetic=synthetic,sessions=sessions)
+    if pending and result.get('status')!='UNAVAILABLE':
+        result.update(status='STALE',pendingSession=pending,
+                      note=f'{pending} 지수 거래량이 아직 공개되지 않아 {asof}까지로 판정했습니다. 거래량이 들어오면 다시 계산합니다.')
     if closed:
         result['unscheduledClosures']=closed
     return result

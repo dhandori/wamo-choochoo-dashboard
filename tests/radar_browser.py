@@ -672,11 +672,17 @@ with sync_playwright() as p:
         assert not errors,errors
         assert 'tab=patterns' in page.url
         context.close();print('RADAR PATTERNS PASS',market,f'cards={cards}')
-    # 일본·대만은 셋업 판정을 제공하지 않는다. 빈 화면 대신 그 사실을 적어야 한다.
-    context=browser.new_context();page=context.new_page()
-    page.goto(f'{base}/radar.html?market=JP&tab=patterns',wait_until='networkidle')
-    expect(page.locator('#content .empty')).to_contain_text('한국과 미국')
-    context.close();print('RADAR PATTERNS LITE NOTICE PASS')
+    # 일본·대만도 수집 단계가 셋업을 판정해 둔다(2026-11-17부터 화면에 연다). 안내문 대신 카드가 나와야 한다.
+    for market in ('JP','TW'):
+        context=browser.new_context();page=context.new_page();errors=[]
+        page.on('pageerror',lambda error:errors.append(str(error)))
+        page.goto(f'{base}/radar.html?market={market}&tab=patterns',wait_until='networkidle')
+        assert page.locator('#content .empty', has_text='제공하지 않습니다').count()==0
+        if DATA['markets'][market]['patternSummary']['withSetup']:
+            page.locator('.pt-chip', has_text='전체').first.click()
+            expect(page.locator('.pt-card').first).to_be_visible()
+        assert not errors,errors
+        context.close();print('RADAR PATTERNS LITE PASS',market)
     for name,market in [('index.html','KR'),('us.html','US')]:
         page=browser.new_page()
         page.goto(base+'/'+name,wait_until='domcontentloaded');page.wait_for_url(f'**/radar.html?market={market}')
