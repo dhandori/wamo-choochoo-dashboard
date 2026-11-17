@@ -413,6 +413,8 @@ function stageCard(sd) {
   const card = el('article', null, 'tr-card tr-stage-card');
   card.append(el('h3', '스테이지 분포 (Stage 1~4)'));
   if (!sd || sd.status !== 'OK' || !Array.isArray(sd.stages)) { card.append(el('p', '자료 없음')); return card; }
+  const by = Object.fromEntries(sd.stages.map(x => [x.stage, x]));
+  card.append(el('p', stageVerdict(by), 'tr-stage-verdict'));
   const bar = el('div', null, 'tr-stage-bar');
   bar.setAttribute('role', 'img');
   bar.setAttribute('aria-label', sd.stages.map(x => `Stage ${x.stage} ${fmt(x.pct)}%`).join(', '));
@@ -422,8 +424,13 @@ function stageCard(sd) {
     const box = el('div', null, `tr-stage-box s${x.stage}`);
     const head = el('span', null, 'tr-stage-name'); const dot = el('i'); dot.style.background = STAGE_COLOR[x.stage];
     head.append(dot, document.createTextNode(`Stage ${x.stage} · ${x.name}`));
-    const ch = isNum(x.change5d) ? `5일 ${x.change5d > 0 ? '+' : ''}${fmt(x.change5d)}%p` : '';
-    box.append(head, el('b', `${fmt(x.pct)}%`), el('span', `${x.count.toLocaleString('ko-KR')}종목${ch ? ` · ${ch}` : ''}`, 'tr-stage-sub'));
+    box.append(head, el('b', `${fmt(x.pct)}%`), el('span', `${x.count.toLocaleString('ko-KR')}종목`, 'tr-stage-sub'));
+    if (isNum(x.change5d)) {
+      // Stage 2가 늘거나 Stage 4가 줄면 좋은 쪽(초록), 반대면 나쁜 쪽(주황). Stage 1·3은 색 없이.
+      const good = x.stage === 2 ? x.change5d > 0 : x.stage === 4 ? x.change5d < 0 : null;
+      const cls = Math.abs(x.change5d) < 0.05 || good === null ? '' : good ? ' good' : ' bad';
+      box.append(el('span', `5일 ${x.change5d > 0 ? '+' : ''}${fmt(x.change5d)}%p`, `tr-stage-sub tr-stage-chg${cls}`));
+    }
     boxes.append(box);
   });
   const body = el('div', null, 'tr-stage-body'), left = el('div', null, 'tr-stage-left'), right = el('div', null, 'tr-stage-right');
@@ -437,9 +444,32 @@ function stageCard(sd) {
     right.append(lg); body.append(right);
   }
   card.append(body);
-  card.append(help(`200일 이력이 있는 ${sd.denominator.toLocaleString('ko-KR')}종목 기준이에요. Stage 2(상승 추세)가 늘고 Stage 4(하락 추세)가 줄면 시장 안쪽에서 추세가 살아나는 중이에요. 시장 날씨 점수에는 넣지 않았어요.`));
-  card.append(help(sd.note || ''));
+  card.append(help(`200일 이력이 있는 ${sd.denominator.toLocaleString('ko-KR')}종목 기준이에요. 시장 날씨 점수에는 넣지 않았어요.`));
+  if (sd.note) {
+    const more = el('details', null, 'tr-stage-rule');
+    more.append(el('summary', '단계 기준 보기'), el('p', sd.note, 'tr-help'));
+    card.append(more);
+  }
   return card;
+}
+
+// 한 줄 결론: Stage 2와 Stage 4 중 어느 쪽이 많은지, 5일 동안 어느 쪽으로 움직였는지.
+function stageVerdict(by) {
+  const s2 = by[2]?.pct, s4 = by[4]?.pct;
+  if (!isNum(s2) || !isNum(s4)) return '';
+  const gap = s2 - s4;
+  const lead = gap >= 10 ? '상승 추세 종목이 하락 추세보다 확실히 많아요.'
+    : gap >= 2 ? '상승 추세 종목이 하락 추세보다 조금 많아요.'
+    : gap > -2 ? '상승 추세와 하락 추세 종목 수가 비슷해요.'
+    : gap > -10 ? '하락 추세 종목이 상승 추세보다 조금 많아요.'
+    : '하락 추세 종목이 상승 추세보다 훨씬 많아요. 약한 시장이에요.';
+  const d2 = by[2]?.change5d, d4 = by[4]?.change5d;
+  let move = '';
+  if (isNum(d2) && isNum(d4)) {
+    if (d2 - d4 >= 2) move = ' 최근 5일은 추세가 살아나는 쪽이에요.';
+    else if (d4 - d2 >= 2) move = ' 최근 5일은 하락 추세로 넘어가는 종목이 늘고 있어요.';
+  }
+  return lead + move;
 }
 
 // ------------------------------------------------------------ market turnover (liquidity)

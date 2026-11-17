@@ -47,6 +47,12 @@
 .tr-big b { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.15; }
 .tr-big span { color: var(--muted); font-size: 12px; }
 .tr-stage-card { margin-top: 12px; min-height: 0; }
+.tr-stage-card h3 { font-size: 14px; }
+.tr-stage-verdict { color: var(--text); font-size: 14px !important; font-weight: 600; line-height: 1.5; }
+.tr-stage-box.s2 { border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+.tr-stage-box.s4 { border-color: color-mix(in srgb, var(--down) 45%, var(--line)); }
+.tr-stage-rule summary { cursor: pointer; color: var(--muted); font-size: 12px; padding: 4px 0; }
+.tr-stage-rule summary:hover { color: var(--text); }
 .tr-stage-bar { display: flex; height: 12px; gap: 2px; border-radius: 6px; overflow: hidden; background: var(--line); }
 .tr-stage-bar i { display: block; height: 100%; min-width: 0; }
 .tr-stage-boxes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
@@ -716,3 +722,5 @@ dialog[open] ~ .to-top { display: none; }
 :root[data-theme="light"] .cr-bar { fill: #7d93bb; }
 :root[data-theme="light"] .cr-readout b { color: #1d2a3a; }
 .cr-dot { fill: var(--blue); }
+.tr-stage-chg.good { color: var(--green); }
+.tr-stage-chg.bad { color: var(--bad); }

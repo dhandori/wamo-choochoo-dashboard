@@ -945,3 +945,9 @@
 :root[data-theme="light"] .q-mid { background: #f3e6c4; color: #5a4410; }
 :root[data-theme="light"] .pt-key .k-ma { color: #2a3646; }
 :root[data-theme="light"] .pt-key .k-ma::before { border-top-color: var(--c); }
+
+/* 스테이지 분포 카드 (2026-11-17) */
+:root[data-theme="light"] .tr-stage-verdict { color: #1a2635; }
+:root[data-theme="light"] .tr-stage-box { background: #fff; }
+:root[data-theme="light"] .tr-stage-chg.good { color: #0f7a5c; }
+:root[data-theme="light"] .tr-stage-chg.bad { color: #b45309; }
