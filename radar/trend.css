@@ -46,6 +46,26 @@
 .tr-big { display: flex; align-items: baseline; gap: 8px; }
 .tr-big b { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.15; }
 .tr-big span { color: var(--muted); font-size: 12px; }
+.tr-stage-card { margin-top: 12px; min-height: 0; }
+.tr-stage-card h3 { font-size: 14px; }
+.tr-stage-verdict { color: var(--text); font-size: 14px !important; font-weight: 600; line-height: 1.5; }
+.tr-stage-box.s2 { border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+.tr-stage-box.s4 { border-color: color-mix(in srgb, var(--down) 45%, var(--line)); }
+.tr-stage-rule summary { cursor: pointer; color: var(--muted); font-size: 12px; padding: 4px 0; }
+.tr-stage-rule summary:hover { color: var(--text); }
+.tr-stage-bar { display: flex; height: 12px; gap: 2px; border-radius: 6px; overflow: hidden; background: var(--line); }
+.tr-stage-bar i { display: block; height: 100%; min-width: 0; }
+.tr-stage-boxes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.tr-stage-box { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; }
+.tr-stage-box b { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.tr-stage-name { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.tr-stage-name i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.tr-stage-sub { font-size: 12px; color: var(--muted); }
+.tr-stage-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.tr-stage-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tr-stage-right { min-width: 0; }
+@media (min-width: 900px) { .tr-stage-body { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: center; gap: 18px; } }
+@media (max-width: 760px) { .tr-stage-boxes { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tr-stage-box b { font-size: 20px; } }
 .tr-index-line { display: grid; gap: 1px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
 .tr-index-line:last-of-type { border-bottom: 0; }
 .tr-index-line small { color: var(--muted); font-size: 12px; }
@@ -702,3 +722,5 @@ dialog[open] ~ .to-top { display: none; }
 :root[data-theme="light"] .cr-bar { fill: #7d93bb; }
 :root[data-theme="light"] .cr-readout b { color: #1d2a3a; }
 .cr-dot { fill: var(--blue); }
+.tr-stage-chg.good { color: var(--green); }
+.tr-stage-chg.bad { color: var(--bad); }

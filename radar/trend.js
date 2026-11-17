@@ -402,8 +402,74 @@ function weatherDetail(b, market) {
   } else c4.append(el('p', '자료 없음'));
   c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교해요.'));
   grid.append(c1, c2, c3, c4);
-  wrap.append(factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : market === 'US' ? [creditCardUS(b)] : []), grid);
+  wrap.append(factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : market === 'US' ? [creditCardUS(b)] : []), grid, stageCard(w.stages));
   return wrap;
+}
+
+// ------------------------------------------------------------ market stage distribution (2026-11-17)
+// 시장 전체 종목의 Stage 1~4 비율. 날씨 점수에는 들어가지 않고 보여 주기만 한다.
+const STAGE_COLOR = { 1: '#9aacc3', 2: 'var(--green)', 3: 'var(--bad)', 4: 'var(--down)' };
+function stageCard(sd) {
+  const card = el('article', null, 'tr-card tr-stage-card');
+  card.append(el('h3', '스테이지 분포 (Stage 1~4)'));
+  if (!sd || sd.status !== 'OK' || !Array.isArray(sd.stages)) { card.append(el('p', '자료 없음')); return card; }
+  const by = Object.fromEntries(sd.stages.map(x => [x.stage, x]));
+  card.append(el('p', stageVerdict(by), 'tr-stage-verdict'));
+  const bar = el('div', null, 'tr-stage-bar');
+  bar.setAttribute('role', 'img');
+  bar.setAttribute('aria-label', sd.stages.map(x => `Stage ${x.stage} ${fmt(x.pct)}%`).join(', '));
+  sd.stages.forEach(x => { const seg = el('i'); seg.style.width = `${Math.max(0, x.pct || 0)}%`; seg.style.background = STAGE_COLOR[x.stage]; seg.title = `Stage ${x.stage} ${x.name} ${fmt(x.pct)}%`; bar.append(seg); });
+  const boxes = el('div', null, 'tr-stage-boxes');
+  sd.stages.forEach(x => {
+    const box = el('div', null, `tr-stage-box s${x.stage}`);
+    const head = el('span', null, 'tr-stage-name'); const dot = el('i'); dot.style.background = STAGE_COLOR[x.stage];
+    head.append(dot, document.createTextNode(`Stage ${x.stage} · ${x.name}`));
+    box.append(head, el('b', `${fmt(x.pct)}%`), el('span', `${x.count.toLocaleString('ko-KR')}종목`, 'tr-stage-sub'));
+    if (isNum(x.change5d)) {
+      // Stage 2가 늘거나 Stage 4가 줄면 좋은 쪽(초록), 반대면 나쁜 쪽(주황). Stage 1·3은 색 없이.
+      const good = x.stage === 2 ? x.change5d > 0 : x.stage === 4 ? x.change5d < 0 : null;
+      const cls = Math.abs(x.change5d) < 0.05 || good === null ? '' : good ? ' good' : ' bad';
+      box.append(el('span', `5일 ${x.change5d > 0 ? '+' : ''}${fmt(x.change5d)}%p`, `tr-stage-sub tr-stage-chg${cls}`));
+    }
+    boxes.append(box);
+  });
+  const body = el('div', null, 'tr-stage-body'), left = el('div', null, 'tr-stage-left'), right = el('div', null, 'tr-stage-right');
+  left.append(bar, boxes); body.append(left);
+  const s = sd.series || [];
+  if (s.length > 1) {
+    const top = Math.min(100, Math.ceil(Math.max(...s.flatMap(p => [p.s2 || 0, p.s4 || 0])) / 20) * 20 || 100);
+    right.append(lineChart(s, { lines: [{ key: 's2', label: 'Stage 2', color: STAGE_COLOR[2] }, { key: 's4', label: 'Stage 4', color: STAGE_COLOR[4], dash: true }], max: top }));
+    const lg = el('div', null, 'pc-legend small');
+    [[STAGE_COLOR[2], 'Stage 2 비율 (최근 60거래일)', ''], [STAGE_COLOR[4], 'Stage 4 비율', 'dash']].forEach(([c, t, cls]) => { const k = el('span', null, `pc-key ${cls}`); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
+    right.append(lg); body.append(right);
+  }
+  card.append(body);
+  card.append(help(`200일 이력이 있는 ${sd.denominator.toLocaleString('ko-KR')}종목 기준이에요. 시장 날씨 점수에는 넣지 않았어요.`));
+  if (sd.note) {
+    const more = el('details', null, 'tr-stage-rule');
+    more.append(el('summary', '단계 기준 보기'), el('p', sd.note, 'tr-help'));
+    card.append(more);
+  }
+  return card;
+}
+
+// 한 줄 결론: Stage 2와 Stage 4 중 어느 쪽이 많은지, 5일 동안 어느 쪽으로 움직였는지.
+function stageVerdict(by) {
+  const s2 = by[2]?.pct, s4 = by[4]?.pct;
+  if (!isNum(s2) || !isNum(s4)) return '';
+  const gap = s2 - s4;
+  const lead = gap >= 10 ? '상승 추세 종목이 하락 추세보다 확실히 많아요.'
+    : gap >= 2 ? '상승 추세 종목이 하락 추세보다 조금 많아요.'
+    : gap > -2 ? '상승 추세와 하락 추세 종목 수가 비슷해요.'
+    : gap > -10 ? '하락 추세 종목이 상승 추세보다 조금 많아요.'
+    : '하락 추세 종목이 상승 추세보다 훨씬 많아요. 약한 시장이에요.';
+  const d2 = by[2]?.change5d, d4 = by[4]?.change5d;
+  let move = '';
+  if (isNum(d2) && isNum(d4)) {
+    if (d2 - d4 >= 2) move = ' 최근 5일은 추세가 살아나는 쪽이에요.';
+    else if (d4 - d2 >= 2) move = ' 최근 5일은 하락 추세로 넘어가는 종목이 늘고 있어요.';
+  }
+  return lead + move;
 }
 
 // ------------------------------------------------------------ market turnover (liquidity)
