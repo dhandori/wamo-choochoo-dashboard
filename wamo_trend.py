@@ -39,7 +39,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 25  # 2026-11-17 시장 스테이지 분포 카드
+TREND_VERSION = 26  # 2026-11-17 종목별 스테이지(stageById)
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -1447,6 +1447,8 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'liquidity': liq,
         'credit': credit,
         'volumeSchedule': volume_schedule(history_meta.get('_confirmChecks', {}).get(market)),
+        # 종목 상세 창의 Stage 1~4 배지용(시장 스테이지 분포와 같은 stage_at 기준).
+        'stageById': {u['id']: u['stage'] for u in universe if u.get('stage')},
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
                       'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),
