@@ -1298,9 +1298,11 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if market not in ('KR', 'US'):
         # Days on which at least half the screened stocks traded; typhoon/emergency closures drop out.
         counts = {}
+        # Yahoo keeps closure days as zero-volume filler bars, so only count real trades.
         for s in universe:
             for r in s['rows']:
-                counts[r['date']] = counts.get(r['date'], 0) + 1
+                if (r.get('volume') or 0) > 0:
+                    counts[r['date']] = counts.get(r['date'], 0) + 1
         traded = {d for d, n in counts.items() if n >= len(universe) * 0.5}
     ftd_indexes, climax_rows = [], []
     ftd_history = read_json(root / "wamo_ftd_history.json", {})

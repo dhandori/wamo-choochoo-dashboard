@@ -268,3 +268,33 @@ class UnscheduledClosure(unittest.TestCase):
             holey = [r for r in rows if r['date'] != gap]
             self.assertEqual(wamo_ftd.for_market(holey, 'TW', SESSION, expected=SESSION, traded=traded)['status'], 'UNAVAILABLE')
 
+    def test_filler_bar_on_closure_day_is_dropped(self):
+        # Taiwan 2026-10-23: Yahoo kept a volume-0 bar for the closed day; it must not block FTD.
+        import wamo_ftd
+        days = weekdays(300)
+        typhoon = days[200]
+        rows = rows_for(0.001, 300)
+        filler = next(r for r in rows if r['date'] == typhoon)
+        filler['volume'] = 0
+        with mock.patch('wamo_ftd.market_sessions', lambda m, start, end: [d for d in days if start <= d <= end]):
+            ok = wamo_ftd.for_market(rows, 'TW', SESSION, expected=SESSION, traded=set(days) - {typhoon})
+        self.assertEqual(ok['status'], 'OK')
+        self.assertEqual(ok['unscheduledClosures'], [typhoon])
+        self.assertNotIn(typhoon, [r['date'] for r in ok['series']])
+
+    def test_today_without_index_volume_is_judged_through_yesterday(self):
+        # Yahoo posts the Japan/Taiwan index volume hours after the close (2026-11-17: 0).
+        import wamo_ftd
+        days = weekdays(300)
+        rows = rows_for(0.001, 300)
+        rows[-1]['volume'] = 0
+        with mock.patch('wamo_ftd.market_sessions', lambda m, start, end: [d for d in days if start <= d <= end]):
+            res = wamo_ftd.for_market(rows, 'JP', SESSION, expected=SESSION, traded=set(days))
+            strict = wamo_ftd.for_market(rows, 'JP', SESSION, expected=SESSION)   # Korea/US path unchanged
+        self.assertEqual(res['status'], 'STALE')                 # not OK: the retries keep running
+        self.assertEqual(res['asOf'], days[-2])
+        self.assertEqual(res['pendingSession'], SESSION)
+        self.assertTrue(res['series'])
+        self.assertIn('거래량', res['note'])
+        self.assertEqual(strict['status'], 'UNAVAILABLE')
+
