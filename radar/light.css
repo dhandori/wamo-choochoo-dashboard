@@ -951,3 +951,7 @@
 :root[data-theme="light"] .tr-stage-box { background: #fff; }
 :root[data-theme="light"] .tr-stage-chg.good { color: #0f7a5c; }
 :root[data-theme="light"] .tr-stage-chg.bad { color: #b45309; }
+:root[data-theme="light"] .stage-badge.st1 { color: #4b5b70; }
+:root[data-theme="light"] .stage-badge.st2 { color: #0f7a5c; background: #e3f5ee; }
+:root[data-theme="light"] .stage-badge.st3 { color: #b45309; }
+:root[data-theme="light"] .stage-badge.st4 { color: #1f5fbf; background: #e6effc; }

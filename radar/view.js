@@ -200,6 +200,16 @@ function changeBadges(s) {
   return wrap;
 }
 // 소속 시장 배지(KOSPI·KOSDAQ / NASDAQ·NYSE). 자료에 없으면(일본·대만·옛 자료) 붙이지 않는다.
+// 종목의 Stage 1~4(추세 신호 계산, 시장 스테이지 분포와 같은 기준). 자료가 없으면 null.
+const STAGE_INFO = { 1: ['바닥권', 'Stage 2·3·4 어디에도 들지 않는 구간이에요. 하락 뒤 바닥을 다지거나 막 회복하는 중이라 200일선이 아직 오르지 않았어요. 주가가 많이 올랐어도 200일선이 위로 돌아서야 Stage 2가 돼요.'],
+  2: ['상승 추세', '주가 > 50일선 > 150일선 > 200일선이고 200일선이 한 달 전보다 높아요. 추세추종으로 사기 좋은 단계예요.'],
+  3: ['고점 횡보', '200일선은 아직 꺾이지 않았는데 주가가 50일선 아래로 내려왔거나 50일선이 150일선 아래예요. 상승이 지쳐 가는 단계예요.'],
+  4: ['하락 추세', '주가와 50일선이 200일선 아래이고 200일선도 내려가요. 새로 사지 않는 단계예요.'] };
+function stageOf(s) { const n = trendBlock(s.market || state.market)?.stageById?.[s.id]; return STAGE_INFO[n] ? n : null; }
+function stageBadge(s) {
+  const n = stageOf(s); if (!n) return null;
+  const b = el('span', `Stage ${n} · ${STAGE_INFO[n][0]}`, `stage-badge st${n}`); b.title = STAGE_INFO[n][1]; return b;
+}
 function boardBadge(s) {
   if (!s.board) return null;
   const b = el('span', s.board, `board-badge board-${s.board.toLowerCase().replace(/[^a-z]/g, '')}`); b.title = `${s.board} 상장`; return b;
@@ -283,7 +293,7 @@ function detailChips(s) {
   [[`RS ${fmt(s.rs, 0)}`, numeric(s.rs) ? (s.rs >= 80 ? 'good' : s.rs < 50 ? 'weak' : '') : 'weak'],
     [`고점까지 ${numeric(s.highDistancePct) ? distance(s) : '기록 부족'}`, numeric(s.highDistancePct) ? (s.highDistancePct <= 5 ? 'good' : s.highDistancePct > 15 ? 'weak' : '') : 'weak'],
     [`거래량 ${volume(s)}`, numeric(s.volumeRatio) ? (s.volumeRatio >= 1.5 ? 'hot' : s.volumeRatio < 0.7 ? 'weak' : '') : 'weak'],
-    [`Stage 2 ${stage}`, s.stage2 === true ? 'good' : s.stage2 === false ? 'weak' : 'weak']].forEach(([t, c]) => chips.append(el('span', t, `chip ${c}`.trim())));
+    [`8조건 ${stage}`, s.stage2 === true ? 'good' : s.stage2 === false ? 'weak' : 'weak']].forEach(([t, c]) => chips.append(el('span', t, `chip ${c}`.trim())));
   return chips;
 }
 function renderDetail(s, data) {
@@ -292,7 +302,7 @@ function renderDetail(s, data) {
   const head = el('header', null, 'detail-head'), titles = el('div', null, 'detail-titles');
   const heading = el('h2', s.name); heading.id = 'stock-detail-title';
   // 시장 배지는 제목 옆에 두되 제목(창 이름) 글자에는 섞지 않는다.
-  const titleRow = el('div', null, 'detail-title-row'), mb = boardBadge(s); titleRow.append(heading); if (mb) titleRow.append(mb);
+  const titleRow = el('div', null, 'detail-title-row'), mb = boardBadge(s), sb = stageBadge(s); titleRow.append(heading); if (mb) titleRow.append(mb); if (sb) titleRow.append(sb);
   titles.append(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), titleRow, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
   const ml = boardMarketLine(s); if (ml) titles.append(ml);
   const membership=aiMembership(s);
@@ -370,7 +380,8 @@ function strengthSection(s) {
   return kvSection('강도·거래', [
     kvRow('RS', fmt(s.rs, 0), { cls: numeric(s.rs) && s.rs >= 80 ? 'good' : '', bar: rsBar(s) }),
     kvRow('거래량 배수', volume(s), { bar: volBar(s) }),
-    kvRow('Stage 2', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '' }),
+    kvRow('추세 단계', stageOf(s) ? `Stage ${stageOf(s)} · ${STAGE_INFO[stageOf(s)][0]}` : '정보 없음', { cls: stageOf(s) === 2 ? 'good' : '', note: stageOf(s) ? STAGE_INFO[stageOf(s)][1] : null }),
+    kvRow('8조건', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '', note: '미너비니의 8가지 조건(이평선 정배열·52주 고점 근처·RS 등)을 모두 채웠는지예요. Stage 2보다 엄격해요.' }),
     kvRow('시가총액', marketCap(s, true)),
   ]);
 }
