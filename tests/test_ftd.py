@@ -98,28 +98,21 @@ class FTDTests(unittest.TestCase):
         self.assertEqual(result['rally']['day'], 1)
         self.assertTrue(any(e['type']=='RALLY_FAILED' for e in result['events']))
 
-    def test_dip_below_day_one_low_but_above_bottom_keeps_counting(self):
-        # Day 1 low is 90.7, the correction bottom (prior session) is 89.7.
+    def test_dip_below_day_one_low_invalidates_attempt(self):
+        # Day 1 low is 90.7, the correction bottom (prior session) is 89.7. The common FTD rule
+        # (2026-11-18 user decision): undercutting Day 1's own low ends the attempt.
         rows = recovery(); rows[-2]['low'] = 90.6
         result = self.run_signal(rows)
-        self.assertEqual(result['phase'], 'CONFIRMED')
-        self.assertEqual(result['rally']['low'], 89.7)
-        self.assertEqual(result['rally']['dayOneLow'], 90.7)
-        # The dip is a warning ('반등 위태'), recorded on the attempt and on the FTD.
-        self.assertTrue(any(e['type']=='DAY1_UNDERCUT' for e in result['events']))
-        self.assertEqual(result['ftd']['afterDayOneUndercut'], rows[-2]['date'])
+        self.assertNotEqual(result['phase'], 'CONFIRMED')
+        failed = [e for e in result['events'] if e['type']=='RALLY_FAILED']
+        self.assertEqual(failed[-1]['rallyLow'], 90.7)
 
-    def test_day_one_undercut_warns_while_attempt_is_open(self):
-        rows = recovery()[:-1]; rows[-1]['low'] = 90.6   # no FTD yet, Day 1 low broken, bottom held
-        result = self.run_signal(rows)
-        self.assertEqual(result['phase'], 'RALLY')
-        self.assertEqual([w['code'] for w in result['warnings']], ['DAY1_UNDERCUT'])
-        self.assertEqual(result['warnings'][0]['bottom'], 89.7)
-
-    def test_clean_attempt_has_no_day_one_undercut(self):
+    def test_rally_keeps_day_one_low_and_correction_low(self):
         result = self.run_signal(recovery())
-        self.assertIsNone(result['ftd']['afterDayOneUndercut'])
-        self.assertFalse(any(e['type']=='DAY1_UNDERCUT' for e in result['events']))
+        self.assertEqual(result['phase'], 'CONFIRMED')
+        self.assertEqual(result['rally']['low'], 90.7)
+        self.assertEqual(result['rally']['dayOneLow'], 90.7)
+        self.assertEqual(result['rally']['correctionLow'], 89.7)
 
     def test_down_close_in_upper_half_after_new_low_is_day_one(self):
         rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
