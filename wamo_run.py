@@ -384,7 +384,15 @@ def main():
     parser.add_argument('--recovery', action='store_true')
     parser.add_argument('--finalize-interrupted', action='store_true')
     parser.add_argument('--confirm-volume', choices=['first', 'second'])
+    parser.add_argument('--alerts-only', action='store_true',
+                        help='Telegram 알림만 다시 확인해 보낸다(FTD 확정·취소 등). 자료는 다시 받지 않는다.')
     args = parser.parse_args()
+    if args.alerts_only:
+        files = send_alerts(['KR', 'US'])
+        if files and args.publish:
+            publish(files)
+        print('알림만 확인 · ' + ('보낸 알림 있음' if files else '보낼 알림 없음'), flush=True)
+        return
     if args.confirm_volume:
         confirm_volume(args.confirm_volume, args.publish)
         return
