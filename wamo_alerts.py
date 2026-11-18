@@ -188,6 +188,8 @@ def ftd_followups(market, block, sent_keys, provisional, closed):
                 out.append((key, 'confirmed', '\n'.join([
                     f"✅ FTD 확정 · {TITLE.get(market, market)} {name} · {day}",
                     f"거래량이 확정됐어요. {day[5:].replace('-', '/')} 거래량은 전일의 {ev.get('volumeRatio', 0):.2f}배로, 잠정으로 알려 드린 FTD가 맞아요.",
+                    *([f"⚠️ 다만 {ev['afterDayOneUndercut'][5:].replace('-', '/')}에 Day 1 저가를 깬 뒤(반등 위태) 나온 FTD라 신뢰도가 낮아요. "
+                       '기준 저점은 지켜서 무효는 아니에요.'] if ev.get('afterDayOneUndercut') else []),
                     '',
                     f"자세히 보기: {site_url()}radar.html?market={market}&tab=ftd"])[:4000]))
     return out
