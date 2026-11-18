@@ -105,6 +105,21 @@ class FTDTests(unittest.TestCase):
         self.assertEqual(result['phase'], 'CONFIRMED')
         self.assertEqual(result['rally']['low'], 89.7)
         self.assertEqual(result['rally']['dayOneLow'], 90.7)
+        # The dip is a warning ('반등 위태'), recorded on the attempt and on the FTD.
+        self.assertTrue(any(e['type']=='DAY1_UNDERCUT' for e in result['events']))
+        self.assertEqual(result['ftd']['afterDayOneUndercut'], rows[-2]['date'])
+
+    def test_day_one_undercut_warns_while_attempt_is_open(self):
+        rows = recovery()[:-1]; rows[-1]['low'] = 90.6   # no FTD yet, Day 1 low broken, bottom held
+        result = self.run_signal(rows)
+        self.assertEqual(result['phase'], 'RALLY')
+        self.assertEqual([w['code'] for w in result['warnings']], ['DAY1_UNDERCUT'])
+        self.assertEqual(result['warnings'][0]['bottom'], 89.7)
+
+    def test_clean_attempt_has_no_day_one_undercut(self):
+        result = self.run_signal(recovery())
+        self.assertIsNone(result['ftd']['afterDayOneUndercut'])
+        self.assertFalse(any(e['type']=='DAY1_UNDERCUT' for e in result['events']))
 
     def test_down_close_in_upper_half_after_new_low_is_day_one(self):
         rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
