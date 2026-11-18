@@ -951,3 +951,17 @@
 :root[data-theme="light"] .pc-ref-label { stroke: #ffffff; } :root[data-theme="light"] .pc-ref-label.good { fill: #1f7a57; } :root[data-theme="light"] .pc-ref-label.bad { fill: #a84a2e; }
 :root[data-theme="light"] .pc-cursor { stroke: #8fa3bd; }
 :root[data-theme="light"] .pc-readout { fill: #273546; stroke: #ffffff; }
+
+/* 스테이지 분포 카드 (2026-11-17) */
+:root[data-theme="light"] .tr-stage-verdict { color: #1a2635; }
+:root[data-theme="light"] .tr-stage-box { background: #fff; }
+:root[data-theme="light"] .tr-stage-chg.good { color: #0f7a5c; }
+:root[data-theme="light"] .tr-stage-chg.bad { color: #b45309; }
+:root[data-theme="light"] .stage-badge.st1 { color: #4b5b70; }
+:root[data-theme="light"] .stage-badge.st2 { color: #0f7a5c; background: #e3f5ee; }
+:root[data-theme="light"] .stage-badge.st3 { color: #b45309; }
+:root[data-theme="light"] .stage-badge.st4 { color: #1f5fbf; background: #e6effc; }
+:root[data-theme="light"] .ftd-caution { border: 1px solid #c98a52; background: #f8ece0; }
+:root[data-theme="light"] .ftd-caution strong { color: #7a3a00; }
+:root[data-theme="light"] .ftd-caution p { color: #3a2410; }
+:root[data-theme="light"] .ftd-index-warn { color: #8a4300; }

@@ -38,6 +38,10 @@ on:
         description: 검증 결과를 실제 게시 (대시보드 '지금 갱신'은 켠 상태로 실행)
         type: boolean
         default: true
+      alerts_only:
+        description: 자료는 그대로 두고 텔레그램 알림(FTD 확정·취소 등)만 다시 확인해 보내기
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths: ['wamo_*.py', 'wamo_status.js', 'requirements.txt', '.github/workflows/main.yml']
@@ -111,6 +115,7 @@ jobs:
           REQUESTED_MARKET: ${{ inputs.market || 'auto' }}
           EVENT_SCHEDULE: ${{ github.event.schedule || '' }}
           PUBLISH_RESULT: ${{ inputs.publish || github.event_name == 'schedule' }}
+          ALERTS_ONLY: ${{ inputs.alerts_only || false }}
         run: |
           set -euo pipefail
           market="$REQUESTED_MARKET"
@@ -123,6 +128,12 @@ jobs:
               '20 20 * * 1-5'|'20 21 * * 1-5') market='US' ;;
               *) market='auto'; recovery='yes' ;;
             esac
+          fi
+          if [[ "${ALERTS_ONLY:-false}" == 'true' ]]; then
+            args=(--alerts-only)
+            if [[ "$PUBLISH_RESULT" == 'true' ]]; then args+=(--publish); fi
+            python -u wamo_run.py "${args[@]}"
+            exit 0
           fi
           if [[ "$EVENT_SCHEDULE" == '10 9 * * 2-6' || "$EVENT_SCHEDULE" == '10 12 * * 2-6' ]]; then
             slot=$([[ "$EVENT_SCHEDULE" == '10 9 * * 2-6' ]] && echo first || echo second)

@@ -685,6 +685,11 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
 .board-kospi, .board-nyse { color: #8fc3f0; border-color: #33557a; }
 .detail-title-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .detail-title-row .board-badge { margin: 3px 0 0; font-size: 12px; }
+.stage-badge { display: inline-block; margin-top: 3px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; line-height: 1.55; white-space: nowrap; border: 1px solid currentColor; cursor: help; }
+.stage-badge.st1 { color: #b6c4d7; }
+.stage-badge.st2 { color: var(--green); background: rgba(98, 215, 181, .12); }
+.stage-badge.st3 { color: var(--bad); }
+.stage-badge.st4 { color: var(--down); background: rgba(94, 168, 255, .10); }
 .detail-board { margin: 4px 0 0 !important; font-size: 13px !important; color: var(--muted); }
 .detail-board b { color: var(--text); }
 .detail-board.phase-confirmed span { color: var(--green); } .detail-board.phase-pressure span, .detail-board.phase-correction span { color: var(--bad); }

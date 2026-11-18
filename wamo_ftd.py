@@ -15,9 +15,9 @@ POLICY = {
     'reversalVolumeRatio': 1.5,  # 내린 날 Day 1(위쪽 절반 마감)은 거래량이 전일의 1.5배 이상 (2026-11-11 사용자 결정)
     'correction': '종가가 50일선 아래이고, 최근 63거래일 최고 종가 대비 8% 이상 하락. 또는 5% 이상 하락하며 50일선이 10거래일 전보다 하락.',
     'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감하고 거래량이 전일의 1.5배 이상인 날.',
-    'bottom': '하락 국면 시작(또는 직전 무효) 이후 Day 1까지의 장중 최저가. 이 가격을 장중에 깨면 반등 시도 무효.',
+    'bottom': 'Day 1(반등 첫날)의 장중 저가. 이 가격을 장중에 깨면 반등 시도 무효이고, 그 뒤 Day 1 조건을 채운 날부터 다시 셉니다(일반적인 FTD 기준, 2026-11-18 사용자 결정). 하락 국면의 최저가는 correctionLow 로 따로 둡니다.',
     'confirmation': 'Day 4 이후 하루 +1.7% 이상 상승하고 거래량이 전일보다 많으면 FTD. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
-    'failure': '기준 저점 장중 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함) 3번 이상은 경고.',
+    'failure': 'Day 1 장중 저가 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함) 3번 이상은 경고.',
     'completion': 'FTD 이후 종가가 하락 전 고점을 다시 넘으면 상승 전환 완료로 보고 추적을 끝냅니다. 그 FTD는 이력으로만 남깁니다.',
     'note': 'WAMO 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승 지속을 보장하지 않습니다.',
     'sources': [
@@ -198,8 +198,10 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
                 bottom=r['low'] if bottom is None else min(bottom,r['low'])
                 kind='UP_CLOSE' if change>0 else 'REVERSAL' if new_low and upper_half(r) and ratio>=POLICY['reversalVolumeRatio']-1e-9 else None
                 if kind:
-                    rally=dict(date=r['date'], low=bottom, dayOneLow=r['low'], startIndex=i, day=1, kind=kind)
-                    phase='RALLY';event('RALLY',r,low=bottom,dayOneKind=kind)
+                    # The attempt dies when Day 1's own intraday low is undercut (2026-11-18 user decision,
+                    # the common FTD rule). The correction's lowest low is kept only for display.
+                    rally=dict(date=r['date'], low=r['low'], dayOneLow=r['low'], correctionLow=bottom, startIndex=i, day=1, kind=kind)
+                    phase='RALLY';event('RALLY',r,low=r['low'],correctionLow=bottom,dayOneKind=kind)
             elif rally:
                 rally['day']=i-rally['startIndex']+1
                 if ftd is None and rally['day']>=4 and change>=POLICY['gainPct']-1e-9 and ratio>1:
@@ -284,7 +286,23 @@ def for_market(rows, market, asof, *, synthetic=False, expected=None, traded=Non
         first=min(traded) if traded else asof   # only judge days the stock histories cover
         closed=[d for d in sessions if d not in traded and first<=d<asof]
         sessions=[d for d in sessions if d not in closed]
+        # Yahoo keeps a filler bar (volume 0, or no prices at all) for such a closure;
+        # it is not a session, so it must not enter the count either (Taiwan 2026-10-23).
+        rows=[r for r in rows if not (isinstance(r,dict) and r.get('date') in closed)]
+    pending=None
+    if traded is not None and not synthetic and rows and isinstance(rows[-1],dict) and rows[-1].get('date')==asof \
+            and len(rows)>1 and not valid_num(rows[-1].get('volume')):
+        # Japan/Taiwan: Yahoo posts the index volume hours after the close. Judge through the
+        # previous session instead of giving up; the scheduled retries pick the day up later.
+        pending=asof
+        rows=rows[:-1]
+        asof=rows[-1].get('date')
+        if sessions is not None:
+            sessions=[d for d in sessions if d<=asof]
     result=analyze(rows,asof=asof,expected=expected,synthetic=synthetic,sessions=sessions)
+    if pending and result.get('status')!='UNAVAILABLE':
+        result.update(status='STALE',pendingSession=pending,
+                      note=f'{pending} 지수 거래량이 아직 공개되지 않아 {asof}까지로 판정했습니다. 거래량이 들어오면 다시 계산합니다.')
     if closed:
         result['unscheduledClosures']=closed
     return result

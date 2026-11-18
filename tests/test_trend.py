@@ -290,6 +290,22 @@ class TrendMathTests(unittest.TestCase):
             self.assertIn(block['weather']['level'], ('GREEN', 'YELLOW', 'RED', 'UNKNOWN'))
             self.assertTrue((root / 'wamo_signal_log.json').exists())
 
+    def test_stage_distribution_counts_each_stage(self):
+        def stock(closes):
+            return {'closes': closes, 'rows': [{'date': f'2026-{i:04d}'} for i in range(len(closes))]}
+        up = [100 + i for i in range(260)]                  # 꾸준히 오름 → Stage 2
+        down = [400 - i for i in range(260)]                # 꾸준히 내림 → Stage 4
+        short = [100.0] * 100                               # 200일 이력 없음 → 제외
+        out = trend.stage_distribution([stock(up), stock(up), stock(down), stock(short)], sessions=30)
+        self.assertEqual(out['status'], 'OK')
+        self.assertEqual(out['denominator'], 3)
+        by = {x['stage']: x for x in out['stages']}
+        self.assertEqual((by[2]['count'], by[4]['count'], by[1]['count'], by[3]['count']), (2, 1, 0, 0))
+        self.assertAlmostEqual(by[2]['pct'], 66.7)
+        self.assertEqual(by[2]['change5d'], 0.0)
+        self.assertEqual(len(out['series']), 30)
+        self.assertEqual(trend.stage_distribution([stock(short)])['status'], 'UNAVAILABLE')
+
 
 class PartialRerunTests(unittest.TestCase):
     slot = datetime(2026, 10, 16, 7, tzinfo=UTC)

@@ -1,0 +1,34 @@
+/* RS 한눈에 상자 (rs.js, 2026-11-18). 색은 테마 변수만 써서 밝은 테마에서도 그대로 맞는다. */
+.rs-slot { margin: 12px 0; }
+.rs-load { font-size: 13px; }
+.rs-box { padding: 14px 16px; border: 1px solid var(--line); border-left: 4px solid var(--muted); border-radius: 12px; background: var(--panel); }
+.rs-box.good { border-left-color: var(--green); }
+.rs-box.mid { border-left-color: var(--bad); }
+.rs-box.weak { border-left-color: var(--down); }
+.rs-box .rs-title { margin: 0 0 6px; font-size: 16px; color: var(--text); }
+.rs-box .rs-verdict { margin: 0 0 12px; font-size: 15px; line-height: 1.6; font-weight: 650; color: var(--text); }
+.rsg { position: relative; margin: 4px 8px 6px; }
+.rsg-track { position: relative; height: 10px; border-radius: 6px; background: color-mix(in srgb, var(--green) 22%, transparent); }
+.rsg-weak { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px 0 0 6px; background: color-mix(in srgb, var(--muted) 22%, transparent); }
+.rsg-base { position: absolute; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; background: var(--text); }
+.rsg-dot { position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--blue); border: 2px solid var(--panel); }
+.rs-box.good .rsg-dot { background: var(--green); }
+.rs-box.weak .rsg-dot { background: var(--down); }
+.rsg-lab { position: relative; height: 19px; font-size: 12px; color: var(--muted); }
+.rsg-lab span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.rsg-lab span.me { font-weight: 800; font-size: 13px; color: var(--text); }
+.rsg-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+.rs-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 10px; }
+.rs-facts div { display: grid; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; }
+.rs-facts em { font-style: normal; font-size: 12px; color: var(--muted); }
+.rs-facts b { font-size: 18px; font-variant-numeric: tabular-nums; color: var(--text); }
+.rs-facts b.good { color: var(--green); } .rs-facts b.weak { color: var(--down); }
+.rs-facts small { font-size: 12px; color: var(--muted); }
+.rs-chart { margin-top: 12px; }
+.rs-cap { font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+.rs-line-svg { width: 100%; height: auto; display: block; }
+.rs-avg { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 4 3; }
+.rs-why { margin-top: 12px; }
+.rs-why summary { cursor: pointer; font-weight: 750; font-size: 14px; color: var(--blue); min-height: 24px; }
+.rs-why p { margin: 8px 0 0; font-size: 14px; line-height: 1.7; }
+.rs-why p b { color: var(--text); }

@@ -39,7 +39,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 24  # 2026-11-11 신용잔고·투매일 카드(US)
+TREND_VERSION = 28  # 2026-11-18 FTD 반등 무효선을 Day 1 장중 저가로
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -480,6 +480,48 @@ def breadth(universe, sessions=60):
             'above50Change5d': rnd(last['above50'] - ago5['above50'], 1) if ago5 else None,
             'above50Change20d': rnd(last['above50'] - ago20['above50'], 1) if ago20 else None,
             'series': [{'date': p['date'], 'above50': p['above50'], 'above200': p['above200']} for p in series]}
+
+
+STAGE_NAMES = {1: '바닥권', 2: '상승 추세', 3: '고점 횡보', 4: '하락 추세'}
+
+
+def stage_distribution(universe, sessions=60):
+    """시장 전체 종목의 스테이지(1~4) 비율과 최근 추이. 스테이지는 종목 경고와 같은 stage_at 기준이다.
+
+    시장 날씨 점수에는 넣지 않는다(시장 체력과 겹치는 정보라 보여 주기만 한다)."""
+    by_date = {}
+    for s in universe:
+        closes, rows = s['closes'], s['rows']
+        n = len(rows)
+        for i in range(max(0, n - sessions), n):
+            st = stage_at(closes, i)
+            if st is None:
+                continue
+            slot = by_date.setdefault(rows[i]['date'], [0, 0, 0, 0])
+            slot[st - 1] += 1
+    if not by_date:
+        return {'status': 'UNAVAILABLE'}
+    top = max(sum(v) for v in by_date.values()) or 1
+    series = []
+    for d, v in sorted(by_date.items()):
+        total = sum(v)
+        if total >= top * 0.8:
+            series.append({'date': d, 'n': total, 'counts': v,
+                           **{f's{k}': rnd(v[k - 1] / total * 100, 1) for k in (1, 2, 3, 4)}})
+    if not series:
+        return {'status': 'UNAVAILABLE'}
+    last = series[-1]
+    ago5 = series[-6] if len(series) >= 6 else None
+    ago20 = series[-21] if len(series) >= 21 else None
+    stages = [{'stage': k, 'name': STAGE_NAMES[k], 'count': last['counts'][k - 1], 'pct': last[f's{k}'],
+               'change5d': rnd(last[f's{k}'] - ago5[f's{k}'], 1) if ago5 else None,
+               'change20d': rnd(last[f's{k}'] - ago20[f's{k}'], 1) if ago20 else None} for k in (1, 2, 3, 4)]
+    return {'status': 'OK', 'date': last['date'], 'denominator': last['n'], 'stages': stages,
+            'series': [{k: p[k] for k in ('date', 's1', 's2', 's3', 's4')} for p in series],
+            'note': ('Stage 2 = 주가 > 50일선 > 150일선 > 200일선이고 200일선이 한 달 전보다 높음. '
+                     'Stage 4 = 주가와 50일선이 200일선 아래이고 200일선이 내려가는 중. '
+                     'Stage 3 = 200일선이 아직 꺾이지 않았는데(한 달 전의 99.5% 이상) 주가가 50일선 아래이거나 50일선이 150일선 아래. '
+                     '나머지는 Stage 1(바닥권). 200일 이력이 없는 종목은 빼고 셉니다.')}
 
 
 def highs_lows(universe, sessions=10):
@@ -1239,6 +1281,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     # 화면 차트는 저장 이력(260거래일)으로 그릴 수 있는 만큼 길게: 50일선이 생기는 첫날부터 약 210거래일.
     br = breadth(universe, sessions=BREADTH_CHART_SESSIONS)
     hl = highs_lows(universe)
+    sd = stage_distribution(universe)
     assign_board_bench(universe, market, bench2, label2, asof)
     leaders, warnings = analyze_stocks(universe, bench)
     book = update_signal_log(log, market, universe, bench, asof)
@@ -1259,9 +1302,11 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if market not in ('KR', 'US'):
         # Days on which at least half the screened stocks traded; typhoon/emergency closures drop out.
         counts = {}
+        # Yahoo keeps closure days as zero-volume filler bars, so only count real trades.
         for s in universe:
             for r in s['rows']:
-                counts[r['date']] = counts.get(r['date'], 0) + 1
+                if (r.get('volume') or 0) > 0:
+                    counts[r['date']] = counts.get(r['date'], 0) + 1
         traded = {d for d, n in counts.items() if n >= len(universe) * 0.5}
     ftd_indexes, climax_rows = [], []
     ftd_history = read_json(root / "wamo_ftd_history.json", {})
@@ -1403,10 +1448,13 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},
         'weather': {**weather(idx, dist, br, hl, synthetic, secondary, liq), 'distribution': dist, 'breadth': br, 'highsLows': hl,
+                    'stages': sd,
                     'byIndex': weather_by_index(market, universe, {**idx, 'symbol': symbol}, dist, secondary, liq, synthetic)},
         'liquidity': liq,
         'credit': credit,
         'volumeSchedule': volume_schedule(history_meta.get('_confirmChecks', {}).get(market)),
+        # 종목 상세 창의 Stage 1~4 배지용(시장 스테이지 분포와 같은 stage_at 기준).
+        'stageById': {u['id']: u['stage'] for u in universe if u.get('stage')},
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
                       'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),

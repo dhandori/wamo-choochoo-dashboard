@@ -30,3 +30,6 @@ body[data-view="ftd"] .scanner-layout{display:block}body[data-view="ftd"] .list-
 .ftd-dist-tick.live{fill:#ff7a7a}.ftd-dist-tick.past{fill:#4b5d74}
 .ftd-legend i.ftd-dist-key{width:auto;height:auto;background:none;color:#ff7a7a;font-style:normal;font-size:10px;line-height:1}
 :root[data-theme="light"] .ftd-dist-mark{fill:#e05252;stroke:#fff}:root[data-theme="light"] .ftd-dist-tick.live{fill:#e05252}:root[data-theme="light"] .ftd-dist-tick.past{fill:#b8c4d3}:root[data-theme="light"] .ftd-legend i.ftd-dist-key{color:#e05252}
+/* 2026-11-18: weak FTD (after Day 1 low break) and estimated volume, shown up top */
+.ftd-caution{border:1px solid #c0702c;background:#33200f;border-radius:9px;padding:12px 15px;margin:0 0 18px}.ftd-caution strong{color:#ffb070;font-size:14px}.ftd-caution p{margin:7px 0 0;font-size:13px;line-height:1.7;color:#f6dcc4}
+.ftd-index-warn{display:block;color:#ffb070;font-weight:700;margin-top:4px}
