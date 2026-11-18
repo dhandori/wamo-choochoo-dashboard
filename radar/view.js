@@ -9,6 +9,7 @@ import { runnerButton, initRunner, getRefreshStatus } from './runner.js';
 import { renderSchedule } from './schedule.js';
 import { renderSpMovers } from './spmovers.js';
 import { loadChartData, stockSeries, priceChart, benchChart, rsChart, MA } from './chart.js';
+import { stockRsSlot, industryRsSlot } from './rs.js';
 const CARD_MA = MA.filter(m => m.n === 50 || m.n === 200);
 const phone = () => window.matchMedia('(max-width: 760px)').matches;
 let cardObserver = null;
@@ -315,6 +316,8 @@ function renderDetail(s, data) {
   const links = el('div', null, 'detail-links'); links.append(naverLink(s, true));
   const tvDetail = tvLink(s, true); if (tvDetail) links.append(tvDetail);
   quote.append(links); d.append(quote);
+  // RS 한눈에: 1년 RS 점수 vs 시장 기준선, RS선 흐름, 왜 중요한가(rs.js). 차트 자료가 늦으면 자리만 잡고 나중에 채운다.
+  d.append(stockRsSlot(s, s.market || state.market, data || null));
   // 본문: 왼쪽 차트, 오른쪽 수치·수급·신호·전일 변화. 좁은 화면에서는 수치가 차트보다 먼저 온다.
   const body = el('div', null, 'detail-body');
   const chart = el('section', null, 'chart-panel');
@@ -885,7 +888,9 @@ function render() {
     content.append(industryList(m));
   } else {
     const rows = selectStocks(m, { ...state, tab: state.industry ? 'industry' : state.tab }), pages = Math.max(1, Math.ceil(rows.length / 30));
-    state.page = Math.min(state.page, pages); content.append(table(rows));
+    state.page = Math.min(state.page, pages);
+    if (state.industry && state.tab !== 'ai') content.append(industryRsSlot(state.industry, state.market));
+    content.append(table(rows));
     $('result-summary').textContent = `${rows.length}종목 · ${state.newOnly?'새로 들어온 종목 · 현재 조건 기준':'현재 조건 기준'}${state.industry ? ' · 선택한 산업 종목' : ''}${state.tab==='ai'?` · ${AI_SECTORS.find(g=>g.id===state.aiSector)?.name||'AI 전체'} · 중복 제외`:''}`;
     const toList = () => { const t = $('section-title'); const tabsH = document.querySelector('.tabs')?.getBoundingClientRect().height ?? 0; const top = (t?.getBoundingClientRect().top ?? 0) - tabsH; if (top < 0) window.scrollTo({ top: window.scrollY + top - 8, behavior: 'instant' }); };
     const prev = button('이전', false, () => { state.page--; render(); toList(); }), next = button('다음', false, () => { state.page++; render(); toList(); });
