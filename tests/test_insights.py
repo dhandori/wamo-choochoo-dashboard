@@ -278,7 +278,7 @@ class InsightsTests(unittest.TestCase):
         kr=stock('086520',industry='메모리 반도체')
         m=build_insights({'KR':payload(kr)},NOW)['markets']['KR']
         self.assertEqual(m['stocks'][0]['industry'],'양극재·전구체')
-        self.assertEqual(m['stocks'][0]['industrySource'],'WAMO 분류표')
+        self.assertEqual(m['stocks'][0]['industrySource'],'와모 분류표')
         self.assertEqual(m['stocks'][0]['industryGroup'],'2차전지')
         self.assertEqual(m['industries'][0]['name'],'양극재·전구체')
         self.assertIn('medianReturn20d',m['industries'][0])

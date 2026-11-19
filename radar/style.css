@@ -28,7 +28,7 @@ button.active { background: #254538; border-color: #529b83; color: #c5ffec; }
 button:disabled { cursor: default; opacity: .4; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
-.brand { color: var(--text); font-size: 24px; font-weight: 850; letter-spacing: 2px; }
+.brand { color: var(--text); font-size: 24px; font-weight: 850; letter-spacing: 2px; white-space: nowrap; }
 .brand span { font-size: 12px; color: var(--muted); letter-spacing: 1.8px; margin-left: 10px; }
 .market-switch { display: flex; gap: 6px; }
 .market-switch button { padding: 7px 14px; font-size: 12px; }
@@ -169,7 +169,7 @@ dialog h2 { font-size: 22px; margin: 8px 50px 0 0; line-height: 1.4; overflow-wr
   .industry-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 760px) {
-  .shell { padding: 16px 14px; }.topbar { padding-bottom: 13px; }.brand { font-size: 22px; }.brand span { display: none; }
+  .shell { padding: 16px 14px; }.topbar { padding-bottom: 13px; }.brand { font-size: 18px; letter-spacing: 0; }.brand span { display: none; }
   .intro { display: block; margin: 18px 0 14px; }h1 { font-size: 22px; }.date-info { justify-content: flex-start; gap: 7px; margin-top: 12px; font-size: 12px; }
   .metrics { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }.metric { padding: 11px; gap: 2px 6px; }.metric span { font-size: 12px; }.metric strong { font-size: 24px; }.metric small { font-size: 12px; }
   .tabs { gap: 0; justify-content: space-between; margin-bottom: 16px; }.tabs button { font-size: 12px; letter-spacing: -.4px; padding: 12px 0; }

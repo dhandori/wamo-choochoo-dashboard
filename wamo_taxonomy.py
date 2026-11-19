@@ -260,9 +260,9 @@ class Classifier:
         if hit:
             industry, group = hit
         elif basket:
-            industry, group, source = basket['names'][0], WAMO_GROUP.get(basket['group'], '기타'), 'WAMO 분류표'
+            industry, group, source = basket['names'][0], WAMO_GROUP.get(basket['group'], '기타'), '와모 분류표'
         else:
             industry, group, source = '기타', '기타', '분류 없음'
         if basket:
-            industry, source = basket['names'][0], source + '+WAMO 분류표'
+            industry, source = basket['names'][0], source + '+와모 분류표'
         return {'group': group, 'industry': industry, 'baskets': list(basket['names']) if basket else [], 'source': source}

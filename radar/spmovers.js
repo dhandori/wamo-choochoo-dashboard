@@ -58,7 +58,7 @@ export function renderSpMovers(panel, { market, tab, onPick } = {}) {
   const head = el('div', null, 'spm-head');
   const cap = el('div');
   cap.append(el('h3', `S&P 500 상승·하락 상위 ${d.gainers.length}`),
-    el('p', `${md(d.asOf)} 종가 기준 · 500종목 전체에서 뽑았어요 (아래 목록은 WAMO 스크리닝 종목 기준이라 다를 수 있어요)`));
+    el('p', `${md(d.asOf)} 종가 기준 · 500종목 전체에서 뽑았어요 (아래 목록은 와모 스크리닝 종목 기준이라 다를 수 있어요)`));
   const breadth = el('div', null, 'spm-breadth');
   const total = (d.advancers || 0) + (d.decliners || 0) || 1;
   const bar = el('span', null, 'spm-adv'); const up = el('i', null, 'spm-upfill'); up.style.width = `${(d.advancers || 0) / total * 100}%`; bar.append(up);

@@ -81,16 +81,16 @@ def local_edition(payload, market, now):
             symbol=symbol, name=stock.get('name') or symbol,
             currency='KRW' if market == 'KR' else 'USD', as_of=expected.replace('-', ''),
             industry_path=[sector], micro_verified=False, classification_status='WAMO_SECTOR',
-            classification_caveats=['WAMO 기존 업종 분류'], current_close=stock['close'],
+            classification_caveats=['와모 기존 업종 분류'], current_close=stock['close'],
             entry_status='52주 신고가 · 매매판단은 별도', flags=flags))
     if validated / len(stocks) < .9:
         raise ValueError('local verified coverage below 90%')
     industries = [dict(market=market, industry_path=list(path),
         eligible_classified_issuers=counts[0], current_signal_issuers=counts[1],
-        micro_verified=False, phase='52주 신고가 관측', comparison_scope='WAMO 검증 종목군')
+        micro_verified=False, phase='52주 신고가 관측', comparison_scope='와모 검증 종목군')
         for path, counts in groups.items() if counts[1]]
     return dict(status='PASS', generatedAt=now.isoformat(), sessions=sessions,
-        source='WAMO_52W', scope=f'WAMO {market} 검증 종목군 · 최근 252거래일',
+        source='WAMO_52W', scope=f'와모 {market} 검증 종목군 · 최근 252거래일',
         coverage=dict(totalCount=len(stocks), currentCount=len(fresh), validatedCount=validated,
                       eligible52WeekCount=eligible, excludedCount=len(exclusions)),
         exclusions=exclusions,
@@ -236,7 +236,7 @@ def main():
                     error=ERROR_LABELS[code] + ' · 이전 결과는 현재 신호가 아닙니다.')
         print(edition, editions[edition]['status'], editions[edition].get('errorCode', ''))
     save_result(dest, dict(schemaVersion=1, checkedAt=now.isoformat(), editions=editions,
-                         scope='52주 신고가 기준. 원본 대기 시 WAMO 한국·미국 검증 종목군으로 대체합니다. 대체 결과는 일본·중국·홍콩을 포함하지 않습니다.'), previous, now)
+                         scope='52주 신고가 기준. 원본 대기 시 와모 한국·미국 검증 종목군으로 대체합니다. 대체 결과는 일본·중국·홍콩을 포함하지 않습니다.'), previous, now)
     for page, market in (('index.html', 'KR'), ('us.html', 'US')):
         path = root / page
         original = path.read_text(encoding='utf-8')

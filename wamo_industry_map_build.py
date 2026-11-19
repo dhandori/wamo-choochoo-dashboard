@@ -34,7 +34,7 @@ def build(baskets_path):
                 row.setdefault("also", []).append(item["name"])
     for code, (group, industry) in MANUAL.items():
         out.setdefault(code, {"group": group, "industry": industry})
-    return {"_source": "WAMO 산업 분류표(global-high-radar 제품 단위) + 수동 보정", "map": dict(sorted(out.items()))}
+    return {"_source": "와모 산업 분류표(global-high-radar 제품 단위) + 수동 보정", "map": dict(sorted(out.items()))}
 
 if __name__ == "__main__":
     result = build(sys.argv[1])

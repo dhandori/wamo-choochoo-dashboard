@@ -477,7 +477,7 @@ def run(market, day=None, out=OUT, fetch=get_json, now=None, classifier=None):
         import wamo_taxonomy
         classifier = classifier or wamo_taxonomy.Classifier(wamo_taxonomy.load_baskets(None if fetch is get_json else fetch))
         result['byGroup'] = classify_rows(market, result['highs'], classifier)
-        result['taxonomy'] = {'source': '공통 업종 분류(wamo_taxonomy: 큰 업종 21개 + WAMO 산업 분류표 세부 산업)',
+        result['taxonomy'] = {'source': '공통 업종 분류(wamo_taxonomy: 큰 업종 21개 + 와모 산업 분류표 세부 산업)',
                               'inBaskets': sum(1 for r in result['highs'] if r.get('baskets'))}
     except Exception as exc:  # noqa: BLE001 - 분류표를 못 받아도 신고가 결과는 낸다
         result['taxonomy'] = {'error': type(exc).__name__}

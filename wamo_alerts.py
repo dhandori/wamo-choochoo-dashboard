@@ -45,7 +45,7 @@ def watch_symbols(watchlist, market):
 
 def compose(market, block, watchlist):
     w = block.get('weather') or {}
-    lines = [f"📊 WAMO {TITLE[market]} 추세 알림 · {block.get('asOf')} 종가",
+    lines = [f"📊 와모 {TITLE[market]} 추세 알림 · {block.get('asOf')} 종가",
              f"시장 날씨: {LIGHT.get(w.get('level'), '⚪')} {w.get('label', '판단 보류')}",
              w.get('advice', '')]
     for f in w.get('factors', [])[:4]:
@@ -151,7 +151,7 @@ def compose_ftd(market, idx, ev):
     lines.append('하락장이 끝나고 상승으로 바뀔 수 있다는 첫 신호예요. 보통은 총자금 10% 이내 시험 매수부터 해요.')
     if ev.get('low'):
         lines.append(f"FTD 당일 저가 {ev['low']:,.2f} 아래로 마감하면 신호가 약해진 거예요.")
-    lines.append('WAMO 고정 규칙에 따른 참고 신호이고, 상승을 보장하지 않아요.')
+    lines.append('와모 고정 규칙에 따른 참고 신호이고, 상승을 보장하지 않아요.')
     lines.append('')
     lines.append(f"자세히 보기: {site_url()}radar.html?market={market}&tab=ftd")
     return '\n'.join(lines)[:4000]

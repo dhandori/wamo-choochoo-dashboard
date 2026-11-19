@@ -261,7 +261,7 @@ def project(stock,market,asof):
     if market=='KR':
         mapped=industry_map_kr().get(symbol)
         if mapped:
-            name,classification_source,industry_group=mapped['industry'],'WAMO 분류표',mapped.get('group')
+            name,classification_source,industry_group=mapped['industry'],'와모 분류표',mapped.get('group')
             also=[a.strip() for a in mapped.get('also') or [] if isinstance(a,str) and a.strip() and a.strip()!=name.strip()]
     reasons=[]
     change=ret(1)

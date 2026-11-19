@@ -19,7 +19,7 @@ POLICY = {
     'confirmation': 'Day 4 이후 하루 +1.7% 이상 상승하고 거래량이 전일보다 많으면 FTD. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
     'failure': 'Day 1 장중 저가 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함) 3번 이상은 경고.',
     'completion': 'FTD 이후 종가가 하락 전 고점을 다시 넘으면 상승 전환 완료로 보고 추적을 끝냅니다. 그 FTD는 이력으로만 남깁니다.',
-    'note': 'WAMO 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승 지속을 보장하지 않습니다.',
+    'note': '와모 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승 지속을 보장하지 않습니다.',
     'sources': [
         {'title': 'IBD · 반등 시도와 Day 4 이후 FTD', 'url': 'https://www.investors.com/how-to-invest/how-to-invest-in-stocks-in-market-correction-follow-through-day/'},
         {'title': 'Morales·Kacher · 1.5%·거래량 기준과 한계', 'url': 'https://www.virtueofselfishinvesting.com/reports/view/mlr-time-to-buy-qe3-and-its-effect-on-the-general-market-and-gold/amp'},
