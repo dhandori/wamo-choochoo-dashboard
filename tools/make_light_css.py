@@ -9,7 +9,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCES = ['style.css', 'trend.css', 'ftd.css', 'leaders.css', 'schedule.css', 'patterns.css']
-PREFIX = ':root[data-theme="light"]'
+# :where() 는 우선순위를 더하지 않는다. 그래서 밝은 규칙끼리의 우열이 어두운 판과 똑같이 유지된다.
+# (예전에는 접두어가 우선순위를 올려서, 어두운 판에서 '배경 없음'으로 둔 종목 이름 단추까지 회색으로 칠해졌다. 2026-11-20)
+PREFIX = ':where(:root[data-theme="light"])'
+# 색 글자가 없어도(transparent, none, var(--x), 0) 그대로 옮겨 적어야 하는 속성. 앞선 밝은 규칙을 다시 덮어야 순서가 맞는다.
+PAINT = re.compile(r'^(background(-color|-image)?|color|border(-(top|right|bottom|left))?(-color)?|outline(-color)?|box-shadow|fill|stroke)$')
 
 TOGGLE = '''
 /* 밝게/어둡게 버튼: 맨 위 제목 오른쪽에 붙어요 */
@@ -21,12 +25,12 @@ HEADER = '''/* 밝은 테마. <html data-theme="light">일 때만 적용돼요. 
    상승·유입 = 빨강, 하락·유출 = 파랑, 나쁨·경고 = 주황, 좋음 = 초록, 보통 = 노랑 */
 :root[data-theme="light"] {
   color-scheme: light;
-  --bg: #edf0f4; --panel: #ffffff; --line: #a9b7ca; --muted: #34455b;
+  --bg: #f4f6f8; --panel: #ffffff; --line: #d2d9e3; --muted: #46556b;
   --text: #080f1a; --green: #076b4a; --blue: #1347a0;
   --up: #c4132c; --down: #1553b5; --bad: #a85000; --red: var(--bad);
   --up-bg: rgba(209, 35, 59, .10); --down-bg: rgba(27, 99, 196, .10);
   --amber: #7a5500; --amber-bg: #fff4d6; --green-bg: #e0f4ec; --red-bg: #ffeedb;
-  --ink-2: #172536; --ink-3: #3d4f66; --rule: #c9d4e2; --chip: #eef2f8;
+  --ink-2: #172536; --ink-3: #46556b; --rule: #e4e8ee; --chip: #f3f5f8;
   --ma20: #b36f00; --ma50: #1f6fd1; --ma150: #0e8a5f; --ma200: #c2336c;
 }
 '''
@@ -50,17 +54,22 @@ def flip(c, prop=''):
     r, g, b, a = parse(c)
     h, l, s = colorsys.rgb_to_hls(r, g, b)
     text = prop == 'color'
+    edge = prop.startswith('border') or prop == 'outline-color'
+    neutral = s < 0.55 and l < 0.35 and not text    # 어두운 판의 남색 바탕·칸막이
     if s > 0.45 and 0.45 < l <= 0.8:
         l2 = l * 0.52                   # 어두운 바탕 위의 밝은 강조색 -> 흰 바탕에서도 읽히는 진한 색
-    elif s < 0.55 and l < 0.35 and not text:
-        l2 = 1 - 0.55 * l               # 어두운 회색 바탕은 아주 밝게 (칸막이가 너무 무겁지 않도록)
+    elif neutral:
+        l2 = 1 - 0.28 * l               # 어두운 남색 바탕은 흰색에 가까운 옅은 회색으로
     else:
         l2 = 1 - l                      # 나머지는 밝기를 뒤집음 (배경은 밝게, 글씨는 어둡게)
     if text:
         l2 = min(l2, 0.22)              # 글씨는 항상 흰 바탕에서 읽힐 만큼 어둡게
-    if prop.startswith('border') or prop == 'outline-color':
-        l2 = min(l2, 0.74)             # 테두리는 흰 바탕에서도 또렷하게
-    sat = min(0.9, s) if l2 >= 0.7 else s * 0.9
+    if edge:
+        l2 = min(l2, 0.86 if neutral else 0.74)   # 칸막이는 가늘고 옅게, 색 있는 테두리는 또렷하게
+    if neutral:
+        sat = s * (0.55 if edge else 0.38)        # 푸른 기를 빼서 흰 바탕과 섞여도 얼룩져 보이지 않게
+    else:
+        sat = min(0.9, s) if l2 >= 0.7 else s * 0.9
     r2, g2, b2 = colorsys.hls_to_rgb(h, l2, sat)
     if a is None:
         return '#%02x%02x%02x' % tuple(round(x * 255) for x in (r2, g2, b2))
@@ -129,7 +138,15 @@ def convert(rules, wrap=None, fn=None, prefix=None):
         for d in declarations(body):
             prop, _, value = d.partition(':')
             prop, value = prop.strip(), value.strip()
-            if prop.startswith('--') or not COLOR.search(value):
+            if prop.startswith('--'):
+                continue
+            if not COLOR.search(value):
+                if fn is flip and PAINT.match(prop):
+                    var = re.search(r'var\([^()]*\)', value)
+                    if re.fullmatch(r'border(-(top|right|bottom|left))?', prop) and var:
+                        decls.append(f'{prop}-color: {var.group(0)}')   # 굵기·모양은 건드리지 않고 색만 옮김
+                    else:
+                        decls.append(f'{prop}: {value}')
                 continue
             new = COLOR.sub(lambda m: fn(m.group(0), prop), value)
             if new != value:
@@ -163,6 +180,20 @@ FIXES = '''
 :root[data-theme="light"] .q-mid { background: #f3e6c4; color: #5a4410; }
 :root[data-theme="light"] .pt-key .k-ma { color: #2a3646; }
 :root[data-theme="light"] .pt-key .k-ma::before { border-top-color: var(--c); }
+
+/* ===== 스테이지 분포 카드 (2026-11-17), 주의 상자 ===== */
+:root[data-theme="light"] .tr-stage-verdict { color: #1a2635; }
+:root[data-theme="light"] .tr-stage-box { background: #fff; }
+:root[data-theme="light"] .tr-stage-chg.good { color: #0f7a5c; }
+:root[data-theme="light"] .tr-stage-chg.bad { color: #b45309; }
+:root[data-theme="light"] .stage-badge.st1 { color: #4b5b70; }
+:root[data-theme="light"] .stage-badge.st2 { color: #0f7a5c; background: #e3f5ee; }
+:root[data-theme="light"] .stage-badge.st3 { color: #b45309; }
+:root[data-theme="light"] .stage-badge.st4 { color: #1f5fbf; background: #e6effc; }
+:root[data-theme="light"] .ftd-caution { border: 1px solid #c98a52; background: #f8ece0; }
+:root[data-theme="light"] .ftd-caution strong { color: #7a3a00; }
+:root[data-theme="light"] .ftd-caution p { color: #3a2410; }
+:root[data-theme="light"] .ftd-index-warn { color: #8a4300; }
 '''
 
 
