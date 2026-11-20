@@ -1,0 +1,14 @@
+[
+  {"_comment": "정시 깨우개 일정표(tools/pacemaker.py). 시각은 각 시간대의 현지 시각, days 는 그 시간대의 요일(1=월). 휴장일은 각 작업이 스스로 건너뛴다. 2026-11-20"},
+  {"name": "한국장 마감 갱신", "at": "15:52", "tz": "Asia/Seoul", "days": [1,2,3,4,5], "workflow": "main.yml", "inputs": {"market": "KR", "publish": true}},
+  {"name": "일본·대만 마감 갱신", "at": "15:55", "tz": "Asia/Seoul", "days": [1,2,3,4,5], "workflow": "asia.yml"},
+  {"name": "한국 52주 신고가", "at": "16:15", "tz": "Asia/Seoul", "days": [1,2,3,4,5], "workflow": "highs52.yml", "inputs": {"market": "KR"}},
+  {"name": "한국장 마감 갱신 재시도", "at": "16:20", "tz": "Asia/Seoul", "days": [1,2,3,4,5], "workflow": "main.yml", "inputs": {"market": "KR", "publish": true}},
+  {"name": "한국 52주 신고가 다시 확인·노션 비교", "at": "17:15", "tz": "Asia/Seoul", "days": [1,2,3,4,5], "workflow": "highs52.yml", "inputs": {"market": "KR"}},
+  {"name": "매크로 지수 저녁(알림 없음)", "at": "18:30", "tz": "Asia/Seoul", "days": [1,2,3,4,5], "workflow": "macro.yml", "inputs": {"notify": false}},
+  {"name": "매크로 지수 아침", "at": "07:05", "tz": "Asia/Seoul", "days": [1,2,3,4,5,6], "workflow": "macro.yml"},
+  {"name": "미국 52주 다시 확인·노션 비교", "at": "08:30", "tz": "Asia/Seoul", "days": [2,3,4,5,6], "workflow": "highs52.yml", "inputs": {"market": "US"}},
+  {"name": "미국장 마감 갱신", "at": "16:12", "tz": "America/New_York", "days": [1,2,3,4,5], "workflow": "main.yml", "inputs": {"market": "US", "publish": true}},
+  {"name": "미국 52주 신고가", "at": "16:20", "tz": "America/New_York", "days": [1,2,3,4,5], "workflow": "highs52.yml", "inputs": {"market": "US"}},
+  {"name": "미국장 마감 갱신 재시도", "at": "16:40", "tz": "America/New_York", "days": [1,2,3,4,5], "workflow": "main.yml", "inputs": {"market": "US", "publish": true}}
+]
