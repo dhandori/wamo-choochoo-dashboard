@@ -324,7 +324,7 @@ function renderDetail(s, data) {
   chart.append(el('div', '최근 60거래일 · 종가 추이', 'chart-caption'), spark(s, true));
   // 핵심 수치는 네 묶음으로: 수익률(작은 칸 6개) · 고점 위치 · 강도·거래 · 변동성·손절(차트 자료가 오면 채움).
   const side = el('div', null, 'detail-side');
-  side.append(returnsSection(s), positionSection(s), strengthSection(s), riskSection(data && stockSeries(data, s.symbol), s));
+  side.append(returnsSection(s), positionSection(s), strengthSection(s, data && stockSeries(data, s.symbol)), riskSection(data && stockSeries(data, s.symbol), s));
   const extra = el('div', null, 'detail-extra');
   const flowBox = flowSection(s); if (flowBox) extra.append(flowBox);
   const signalBox = el('div', null, 'detail-signals'); signalBox.setAttribute('aria-label', '특징주 신호');
@@ -379,14 +379,23 @@ function positionSection(s) {
     kvRow('60일 고점까지', numeric(s.high60DistancePct) ? `${fmt(s.high60DistancePct)}%` : '—', { cls: new60 ? 'good' : '', sub: numeric(s.high60) ? `고점 ${fmt(s.high60, 2)}${s.closeHigh60 === true ? ' · 오늘 60일 종가 신고가' : s.intradayHigh60 === true ? ' · 오늘 60일 장중 신고가' : ''}` : null }),
   ]);
 }
-function strengthSection(s) {
+// 200일선 이격도(보조자료): 종가가 200일선보다 몇 % 위·아래인지. 차트 자료(종가 260일)로 계산해 늦으면 나중에 채운다.
+function gap200Row(series) {
+  const c = series?.closes, n = c?.length || 0;
+  if (n < 200) return kvRow('200일선 이격도', '—', { sub: series ? '200거래일 기록이 모자라요' : '차트 자료가 오면 채워져요' });
+  let sum = 0; for (let i = n - 200; i < n; i++) sum += c[i];
+  const ma = sum / 200, gap = (c[n - 1] / ma - 1) * 100;
+  return kvRow('200일선 이격도', `${gap > 0 ? '+' : ''}${fmt(gap)}%`, { sub: `200일선 ${fmt(ma, 2)}`, note: '종가가 200일 이동평균선보다 몇 % 위·아래인지예요. 많이 벌어질수록 과열이나 과매도에 가까워요. 참고용이에요.' });
+}
+function strengthSection(s, series) {
   return kvSection('강도·거래', [
     kvRow('RS', fmt(s.rs, 0), { cls: numeric(s.rs) && s.rs >= 80 ? 'good' : '', bar: rsBar(s) }),
     kvRow('거래량 배수', volume(s), { bar: volBar(s) }),
     kvRow('추세 단계', stageOf(s) ? `Stage ${stageOf(s)} · ${STAGE_INFO[stageOf(s)][0]}` : '정보 없음', { cls: stageOf(s) === 2 ? 'good' : '', note: stageOf(s) ? STAGE_INFO[stageOf(s)][1] : null }),
+    gap200Row(series),
     kvRow('8조건', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '', note: '미너비니의 8가지 조건(이평선 정배열·52주 고점 근처·RS 등)을 모두 채웠는지예요. Stage 2보다 엄격해요.' }),
     kvRow('시가총액', marketCap(s, true)),
-  ]);
+  ], 'strength-sec');
 }
 // 변동성·손절: ATR(14일)와 두 가지 손절 기준. 종가를 매수가로 가정한다.
 // ① −8% 한도(미너비니 최대 손절) ② 2×ATR(그 종목의 보통 흔들림 밖). ATR은 차트 자료(고가·저가)에서 와서 늦으면 나중에 채운다.
@@ -419,6 +428,7 @@ function fillDetailChart(panel, s, ready) {
     const series = data && stockSeries(data, s.symbol);
     if (!series || !panel.isConnected) return;
     const risk = panel.closest('.detail-body')?.querySelector('.risk-sec'); if (risk) risk.replaceWith(riskSection(series, s));
+    const strength = panel.closest('.detail-body')?.querySelector('.strength-sec'); if (strength) strength.replaceWith(strengthSection(s, series));
     const draw = () => {
       const head = el('div', null, 'chart-head');
       head.append(el('div', `일봉 · 최근 ${chartDays}거래일`, 'chart-caption'));
