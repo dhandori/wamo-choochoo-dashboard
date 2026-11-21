@@ -306,7 +306,31 @@ def synthetic_benchmark(universe):
 
 
 # ------------------------------------------------------------ index data
-def fetch_index(symbol, days=420, opener=None):
+# 지수 이력은 200일선 이격도의 지난 1년 범위(200 + 252거래일)를 내려고 길게 받는다.
+# 나머지 계산(분산일·FTD·차트 등)은 예전처럼 최근 INDEX_KEEP 거래일만 쓴다.
+INDEX_FETCH_DAYS = 700
+INDEX_KEEP = 290
+GAP_WINDOW = 252
+
+
+def gap200_stats(rows, asof=None, window=GAP_WINDOW):
+    """200일선 이격도(%)의 최근 window 거래일 범위와 오늘 값의 자리(보조자료, 점수에 안 씀).
+    gap200Pctile = 그 기간 가운데 오늘보다 이격도가 낮았던 날의 비율(%). 기록이 20거래일 미만이면 빈 dict."""
+    closes = [r['close'] for r in (rows or []) if r.get('date') and (asof is None or r['date'] <= asof) and num(r.get('close'))]
+    gaps, total = [], sum(closes[:200]) if len(closes) >= 200 else 0
+    for i in range(199, len(closes)):
+        if i > 199:
+            total += closes[i] - closes[i - 200]
+        gaps.append((closes[i] / (total / 200) - 1) * 100)
+    gaps = gaps[-window:]
+    if len(gaps) < 20:
+        return {}
+    cur, past = gaps[-1], gaps[:-1]
+    return {'gap200': rnd(cur), 'gap200Lo': rnd(min(gaps)), 'gap200Hi': rnd(max(gaps)),
+            'gap200Pctile': rnd(sum(g < cur for g in past) / len(past) * 100, 0), 'gap200Days': len(gaps)}
+
+
+def fetch_index(symbol, days=INDEX_FETCH_DAYS, opener=None):
     now = int(time.time())
     q = urllib.parse.urlencode({'period1': now - days * 86400, 'period2': now + 86400,
                                 'interval': '1d', 'events': 'history'})
@@ -602,6 +626,17 @@ def index_strip(market, asof, known, fetch_network, index_fetcher):
         if item:
             out.append(item)
     return out
+
+
+def gap_stats_for(long_rows, bench, asof):
+    """길게 받은 이력이 기준일까지 와 있으면 그것으로, 아니면 판정에 쓴 이력으로 이격도 범위를 낸다."""
+    rows = [r for r in (long_rows or []) if r.get('date') and r['date'] <= asof]
+    if not rows or rows[-1]['date'] != asof:
+        rows = bench
+    try:
+        return gap200_stats(rows, asof)
+    except Exception:  # noqa: BLE001 - 보조자료라 실패해도 판정은 그대로 낸다
+        return {}
 
 
 def index_trend(bench):
@@ -1209,12 +1244,14 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if not asof or len(universe) < 30:
         raise RuntimeError(f'{market} 검증 가격 부족')
     symbol, label = INDEX[market]
+    gap_rows = {}   # 길게 받은 지수 이력(200일선 이격도 범위용)
     bench, synthetic, source = load_fixture(market), False, 'Yahoo Finance ' + symbol
     if bench:
         source = '미리보기 고정자료 ' + symbol
     elif fetch_network:
         try:
             bench = index_fetcher(symbol)
+            gap_rows[symbol], bench = bench, (bench or [])[-INDEX_KEEP:]
         except Exception as exc:  # noqa: BLE001
             print(f'{market} 지수 이력 실패 · 종목 중앙값으로 대체: {exc}', flush=True)
     live = bench
@@ -1246,13 +1283,15 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if not synthetic:
         confirmed[symbol] = confirmed_latest(bench, first_seen_all.get(symbol, {}))
         bench, prelim[symbol] = same_basis_latest(bench, first_seen_all.get(symbol, {}))
-    idx = {**index_trend(bench), 'label': label if not synthetic else '종목 중앙값 지수'}
+    idx = {**index_trend(bench), **({} if synthetic else gap_stats_for(gap_rows.get(symbol), bench, asof)),
+           'label': label if not synthetic else '종목 중앙값 지수'}
     secondary = None
     sym2, label2 = SECONDARY.get(market, (None, None))
     bench2 = (load_fixture(market + '2') if os.getenv('WAMO_INDEX_FIXTURE') else None)
     if sym2 and bench2 is None and fetch_network and not os.getenv('WAMO_INDEX_FIXTURE'):
         try:
             bench2 = index_fetcher(sym2)
+            gap_rows[sym2], bench2 = bench2, (bench2 or [])[-INDEX_KEEP:]
         except Exception as exc:  # noqa: BLE001
             print(f'{market} 보조지수 {label2} 실패 · 주지수만 사용: {exc}', flush=True)
     if bench2:
@@ -1270,7 +1309,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         bench2, prelim[sym2] = same_basis_latest(bench2, first_seen_all.get(sym2, {}))
     if bench2:
         if bench2 and bench2[-1]['date'] == asof and len(bench2) >= 200:
-            secondary = {**index_trend(bench2), 'symbol': sym2, 'label': label2,
+            secondary = {**index_trend(bench2), **gap_stats_for(gap_rows.get(sym2), bench2, asof), 'symbol': sym2, 'label': label2,
                          'source': 'Yahoo Finance ' + sym2, 'distribution': dict(distribution_days(bench2), prelim=prelim.get(sym2), confirmed=confirmed.get(sym2))}
     dist = (dict(distribution_days(bench), prelim=prelim.get(symbol), confirmed=confirmed.get(symbol)) if not synthetic else {
         'status': 'UNAVAILABLE', 'count': None, 'window': 25, 'days': [],
