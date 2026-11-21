@@ -243,8 +243,12 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
                 event('UPTREND',r,ftdDate=ftd['date'],peak=cycle['peak'])
                 cycle=rally=ftd=None; bottom=None; warnings=[]; phase='OUTSIDE'
         prev_gate=gate
-        result['series'].append(dict(date=r['date'],close=r['close'],low=r['low'],volume=r['volume'],
-                                     ma50=round(ma,4),phase=phase))
+        point=dict(date=r['date'],close=r['close'],low=r['low'],volume=r['volume'],ma50=round(ma,4),phase=phase)
+        # 차트에 찍을 분산일(추세 탭과 같은 판정). 지워짐(5% 회복·FTD) 여부는 따지지 않은 그날의 원래 판정이다.
+        dist=distribution_kind(rows[i-1],r,POLICY['distributionDropPct'],advancing=near_recent_high(rows,i))
+        if dist:
+            point['dist']=dist
+        result['series'].append(point)
         result['latest']=dict(close=r['close'],changePct=round(change,4),volumeRatio=round(ratio,4),
                               drawdownPct=round(dd,2),ma50=round(ma,2),belowMa50=r['close']<ma,
                               ma50Falling=ma<oldma,correctionGate=gate,

@@ -471,6 +471,9 @@ def distribution_stage(count, heavy):
     return out
 
 
+BREADTH_CHART_SESSIONS = 210
+
+
 def breadth(universe, sessions=60):
     by_date = {}
     for s in universe:
@@ -1314,7 +1317,8 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     dist = (dict(distribution_days(bench), prelim=prelim.get(symbol), confirmed=confirmed.get(symbol)) if not synthetic else {
         'status': 'UNAVAILABLE', 'count': None, 'window': 25, 'days': [],
         'note': '지수 자료를 받지 못해 분산일을 계산하지 않았어요.'})
-    br = breadth(universe)
+    # 화면 차트는 저장 이력(260거래일)으로 그릴 수 있는 만큼 길게: 50일선이 생기는 첫날부터 약 210거래일.
+    br = breadth(universe, sessions=BREADTH_CHART_SESSIONS)
     hl = highs_lows(universe)
     sd = stage_distribution(universe)
     assign_board_bench(universe, market, bench2, label2, asof)

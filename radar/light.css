@@ -1375,6 +1375,12 @@
 :root[data-theme="light"] .q-mid { background: #f3e6c4; color: #5a4410; }
 :root[data-theme="light"] .pt-key .k-ma { color: #2a3646; }
 :root[data-theme="light"] .pt-key .k-ma::before { border-top-color: var(--c); }
+:root[data-theme="light"] .pc-band.good { fill: rgba(30, 150, 105, 0.08); }
+:root[data-theme="light"] .pc-band.bad { fill: rgba(200, 80, 50, 0.07); }
+:root[data-theme="light"] .pc-ref.good { stroke: #3c9a76; } :root[data-theme="light"] .pc-ref.bad { stroke: #c46a4f; }
+:root[data-theme="light"] .pc-ref-label { stroke: #ffffff; } :root[data-theme="light"] .pc-ref-label.good { fill: #1f7a57; } :root[data-theme="light"] .pc-ref-label.bad { fill: #a84a2e; }
+:root[data-theme="light"] .pc-cursor { stroke: #8fa3bd; }
+:root[data-theme="light"] .pc-readout { fill: #273546; stroke: #ffffff; }
 
 /* ===== 스테이지 분포 카드 (2026-11-17), 주의 상자 ===== */
 :root[data-theme="light"] .tr-stage-verdict { color: #1a2635; }
