@@ -4,7 +4,7 @@ import { renderLeaders, leadersSummary } from './leaders.js';
 import { renderPatterns, patternsSummary } from './patterns.js';
 import { CAP_FLOORS, SORT_KEYS, validSnapshot, acceptSnapshot, selectStocks, marketStatus, safeUrl, numeric, createRefresher, aiOverview, aiMembership, AI_SECTORS, AI_REVIEWED, signalChanges, priorSignal, hasComparison } from './model.mjs';
 import { helpLabel, helpButton, closeHelp } from './help.js';
-import { loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js';
+import { gapRangeText, loadTrend, trendTabLabel, renderWeather, renderStrip, renderTrendMetrics, renderTrend, getSubtab, setSubtab, trendBlock, trendLoadFailed } from './trend.js';
 import { runnerButton, initRunner, getRefreshStatus } from './runner.js';
 import { renderSchedule } from './schedule.js';
 import { renderSpMovers } from './spmovers.js';
@@ -383,9 +383,13 @@ function positionSection(s) {
 function gap200Row(series) {
   const c = series?.closes, n = c?.length || 0;
   if (n < 200) return kvRow('200일선 이격도', '—', { sub: series ? '200거래일 기록이 모자라요' : '차트 자료가 오면 채워져요' });
-  let sum = 0; for (let i = n - 200; i < n; i++) sum += c[i];
-  const ma = sum / 200, gap = (c[n - 1] / ma - 1) * 100;
-  return kvRow('200일선 이격도', `${gap > 0 ? '+' : ''}${fmt(gap)}%`, { sub: `200일선 ${fmt(ma, 2)}`, note: '종가가 200일 이동평균선보다 몇 % 위·아래인지예요. 많이 벌어질수록 과열이나 과매도에 가까워요. 참고용이에요.' });
+  // 저장된 종가가 260거래일이라 이격도 기록은 최근 61거래일까지만 나온다. 그 범위 안에서 지금 자리를 함께 적는다.
+  const gaps = []; let sum = 0, ma = null;
+  for (let i = 0; i < n; i++) { sum += c[i]; if (i >= 200) sum -= c[i - 200]; if (i >= 199) { ma = sum / 200; gaps.push((c[i] / ma - 1) * 100); } }
+  const gap = gaps[gaps.length - 1], past = gaps.slice(0, -1);
+  const range = past.length >= 19 ? gapRangeText(Math.min(...gaps), Math.max(...gaps), past.filter(g => g < gap).length / past.length * 100, gaps.length) : null;
+  return kvRow('200일선 이격도', `${gap > 0 ? '+' : ''}${fmt(gap)}%`, { sub: `200일선 ${fmt(ma, 2)}`,
+    note: `${range ? range + ' ' : ''}종가가 200일 이동평균선보다 몇 % 위·아래인지예요. 종목마다 평소 벌어지는 크기가 달라 그 종목의 과거 범위와 견줘 봐요. 참고용이에요.` });
 }
 function strengthSection(s, series) {
   return kvSection('강도·거래', [

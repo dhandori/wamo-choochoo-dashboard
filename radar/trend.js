@@ -269,6 +269,13 @@ function openDistDialog(summary, more, market) {
   d.replaceChildren(close, title, head, more);
   d.showModal(); d.scrollTop = 0;
 }
+// 이격도는 지수·종목마다 평소 크기가 달라, 자기 과거 범위 안에서 지금 자리를 함께 적는다.
+export function gapRangeText(lo, hi, pctile, days) {
+  const span = days >= 250 ? '지난 1년' : `최근 ${days}거래일`;
+  const where = pctile >= 90 ? ' 과거와 견줘 많이 벌어진 편이에요.' : pctile <= 10 ? ' 과거와 견줘 많이 눌린 편이에요.' : '';
+  const r1 = v => Math.round(v * 10) / 10 || 0;   // -0.0% 로 찍히지 않게
+  return `${span} 범위 ${pct(r1(lo))} ~ ${pct(r1(hi))} · 이 기간의 ${fmt(pctile, 0)}% 날보다 지금이 높아요.${where}`;
+}
 function weatherDetail(b, market) {
   const w = b.weather || {}, wrap = el('section', null, 'tr-weather-detail');
   const byIdx = (w.byIndex || []).filter(x => x && x.indexLabel && (x.factors || []).length);
@@ -292,10 +299,13 @@ function weatherDetail(b, market) {
       // 보조자료: 종가가 200일선에서 얼마나 떨어져 있는지. 날씨 점수에는 넣지 않는다.
       ...(isNum(i.close) && isNum(i.ma200) && i.ma200 > 0
         ? [el('p', `200일선 이격도: ${pct((i.close / i.ma200 - 1) * 100)} (200일선 ${fmt(i.ma200, 2)})`, 'tr-gap200')] : []),
+      // 지난 1년(자료가 짧으면 있는 만큼) 이격도 범위에서 지금이 어디쯤인지. 자료에 없으면 줄을 뺀다.
+      ...(isNum(i.gap200Lo) && isNum(i.gap200Hi) && isNum(i.gap200Pctile)
+        ? [el('p', gapRangeText(i.gap200Lo, i.gap200Hi, i.gap200Pctile, i.gap200Days), 'tr-gap200-range')] : []),
       el('p', `기울기: 50일선 ${sl(i.ma50Slope, i.ma50Dir, 10)} · 200일선 ${sl(i.ma200Slope, i.ma200Dir, 20)}`, 'tr-slope'));
     c1.append(line);
   });
-  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : `가격: ${idx2 ? '두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨' : '50일선과 200일선 위에 있으면 좋음, 200일선 아래면 나쁨'}. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평). 200일선 이격도는 종가가 200일선보다 몇 % 위·아래인지예요. 참고용이라 점수에는 넣지 않았어요.`));
+  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : `가격: ${idx2 ? '두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨' : '50일선과 200일선 위에 있으면 좋음, 200일선 아래면 나쁨'}. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평). 200일선 이격도는 종가가 200일선보다 몇 % 위·아래인지예요. 지수마다 평소 벌어지는 크기가 달라 지난 1년 범위와 함께 보여 줘요. 참고용이라 점수에는 넣지 않았어요.`));
   // Distribution days
   const dist = w.distribution || {}, c2 = el('article', null, 'tr-card');
   c2.append(el('h3', '분산일 (기관이 판 흔적)'));
