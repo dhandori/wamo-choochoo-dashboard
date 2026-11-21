@@ -297,6 +297,26 @@ class RunTests(unittest.TestCase):
             self.assertEqual(json.loads(out.read_text())['markets']['KR']['shadow']['both'], 1)
             self.assertFalse(h.refresh_shadow('KR', DAY, out, fetch=notion))   # 이미 채웠으면 그대로
 
+    def test_failed_recheck_still_fills_notion_comparison(self):
+        """다시 확인이 실패해도(처음 계산 유지) 노션 비교 칸은 채운다(2026-11-20 미국 칸이 늘 비던 문제)."""
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / 'h.json'
+            out.write_text(json.dumps({'markets': {'US': {'asOf': DAY.isoformat(), 'final': False,
+                                                          'highs': [], 'shadow': {'notion': None}}}}), encoding='utf-8')
+            calls = []
+            orig_run, orig_refresh = h.run, h.refresh_shadow
+
+            def fail(*a, **k):
+                raise RuntimeError('일봉이 없는 종목이 너무 많습니다')
+            h.run = fail
+            h.refresh_shadow = lambda market, day, out=None, fetch=None: calls.append((market, day)) or True
+            try:
+                self.assertEqual(h.main(['--market', 'US', '--day', DAY.isoformat(), '--out', str(out)]), 0)
+            finally:
+                h.run, h.refresh_shadow = orig_run, orig_refresh
+            self.assertEqual(calls, [('US', DAY)])
+            self.assertFalse(json.loads(out.read_text())['markets']['US']['final'])   # 처음 계산은 그대로
+
     def test_too_many_failures_stop_the_run(self):
         def fail(url, **k):
             raise RuntimeError('boom')
