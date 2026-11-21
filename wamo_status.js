@@ -144,8 +144,8 @@
       empty.textContent=visible ? '' : '검색 결과가 없습니다.';
     });
     create('p', '기존 세부업종과 한투 제공 업종은 분류 기준이 달라 함께 표시합니다. 한투 업종명은 상세 사업설명이나 사업별 매출 구성을 뜻하지 않습니다.', panel);
-    if (market === 'KR') create('p', `추정실적 응답: ${meta.kisMeta?.estimateCount || 0}종목. 항목·단위와 예상치 기준을 검증 중이며, Forward PER(예상 주당순이익 기준 주가수익비율)과 컨센서스 상향률은 아직 제공하지 않습니다. 조회일을 추정치 작성일로 간주하지 않습니다.`, panel);
-    if (market === 'US') create('p', '현재가·PER·EPS·PBR·52주 가격·업종을 연결했습니다. Forward PER(예상 EPS 기준 PER)과 컨센서스는 미연결입니다.', panel);
+    if (market === 'KR') create('p', `추정실적 응답: ${meta.kisMeta?.estimateCount || 0}종목. 항목·단위와 예상치 기준을 검증 중이며, Forward PER(예상 주당순이익 기준 주가수익비율)과 컨센서스 상향률은 아직 제공하지 않습니다. 조회일을 추정치 작성일로 보지 않습니다.`, panel);
+    if (market === 'US') create('p', '현재가·PER·EPS·PBR·52주 가격·업종을 연결했습니다. Forward PER(예상 EPS 기준 PER)과 컨센서스는 아직 연결하지 않았습니다.', panel);
     box.after(panel);
     // The existing detail drawer updates its ticker label whenever a stock opens.
     const detailSub = document.getElementById('detailSub');

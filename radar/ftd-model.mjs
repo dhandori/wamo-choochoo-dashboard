@@ -7,7 +7,7 @@ export const PHASE_MEANING={
   LATE:'반등이 7일 넘게 이어졌지만 아직 FTD가 없어요. 지금 나오면 "늦은 FTD"예요.',
   CONFIRMED:'FTD가 나왔어요. 시험 매수(총자금 10% 이내)를 해도 되는 단계예요.',
   PRESSURE:'FTD 뒤 힘이 빠지는 경고가 나왔어요. 비중을 늘리지 말고 지켜봐요.',
-  EXPIRED:'예전 규칙의 결과예요. 다음 갱신 때 새 규칙으로 다시 계산돼요.',
+  EXPIRED:'예전 규칙의 결과예요. 다음 갱신 때 새 규칙으로 다시 계산해요.',
   UNAVAILABLE:'지수 가격·거래량 자료가 모두 확인돼야 판정해요.'};
 export const freshIndex=(s,expected)=>!!s&&s.status==='OK'&&!!expected&&s.asOf===expected;
 export function ftdSummary(block,expected,failed=false){
