@@ -19,7 +19,7 @@ const sv = (tag, attrs = {}, text) => { const e = document.createElementNS(SVG, 
 const clip = (t, k) => { t = short(t); return t.length > k ? `${t.slice(0, k - 1)}…` : t; };
 
 const EMERGENCE = {
-  CONFIRMED: ['출현 확인', 'good', 'FTD 뒤 10거래일 안에 기준 이상의 선도주가 신고가를 뚫었어요. 상승장이 진짜일 가능성이 커졌다는 뜻이에요. 비중 확대를 따져 볼 수 있는 단계예요.'],
+  CONFIRMED: ['출현 확인', 'good', 'FTD 뒤 10거래일 안에 신고가를 뚫은 선도주가 기준 수를 넘었어요. 상승장이 진짜일 가능성이 커졌다는 뜻이에요. 비중을 늘릴지 따져 볼 만한 단계예요.'],
   WATCHING: ['확인 중', 'mid', 'FTD 뒤 10거래일이 아직 지나지 않았어요. 신고가를 뚫는 선도주 수를 매일 세고 있어요.'],
   WEAK: ['선도주 부족', 'bad', 'FTD 뒤 10거래일이 지났는데 신고가를 뚫은 선도주가 기준보다 적어요. FTD를 믿기 어렵다는 뜻이라 총자금 10% 이내 원칙을 지켜요.'],
   NO_FTD: ['FTD 없음', 'none', '지금 살아 있는 FTD가 없어서 "출현" 판정은 하지 않아요. 아래 숫자는 최근 10거래일 신고가 돌파 수(참고용)예요.'],
@@ -232,7 +232,7 @@ function topCard(L, market, openStock, rerender, no, flow, openRow) {
   head.append(h, n('span', `선도업종 ${ind.leadingCount ?? 0}개 / ${ind.count ?? 0}개 업종`, 'ld-status tone-none'));
   card.append(head);
   const vt = viewToggle(L, market, rerender); if (vt) card.append(vt);
-  card.append(n('p', '업종 RS(시장보다 얼마나 강한지) 순서예요. 숫자 옆 작은 선은 최근 20거래일 RS 흐름이에요. 카드를 누르면 아래 순위 표에서 구성 종목과 업종 흐름이 펼쳐져요.', 'ld-meaning'));
+  card.append(n('p', '업종 RS(시장보다 얼마나 강한지) 순서예요. 숫자 아래 작은 숫자는 RS가 20거래일 전에서 지금까지 얼마나 달라졌는지예요. 카드를 누르면 아래 순위 표에서 구성 종목과 업종 흐름이 펼쳐져요.', 'ld-meaning'));
   if (ind.status !== 'OK' || !ind.items?.length) { card.append(n('div', ind.note || '업종 순위를 계산할 자료가 부족합니다.', 'ld-empty')); return card; }
   const grid = n('div', null, 'ld-tops');
   ind.items.slice(0, 5).forEach(x => {
@@ -331,7 +331,7 @@ function industryCard(L, market, openStock, rerender, no, flow) {
   head.append(h, n('span', `선도업종 ${ind.leadingCount ?? 0}개 / ${ind.count ?? 0}개 업종`, 'ld-status tone-none'));
   card.append(head);
   const vt = viewToggle(L, market, rerender); if (vt) card.append(vt);
-  card.append(n('p', `업종 종목들을 같은 무게로 묶어 RS 점수를 매겨요. 초록 숫자는 선도업종 조건(RS 상위 20% · 신고가 3종목+ · 50일선 위 60%+ · 10일 중 5일+ 상위권)을 채운 칸이고, 4칸이 모두 초록이면 선도업종(✔)이에요. 줄을 누르면 구성 종목·업종 흐름이 펼쳐져요.${big ? ' 큰 업종은 공통 업종 분류 21개로 세부 업종을 묶은 것이에요.' : ''}`, 'ld-meaning'));
+  card.append(n('p', `업종에 든 종목을 같은 비중으로 묶어 RS 점수를 매겨요. 초록 숫자는 선도업종 조건(RS 상위 20% · 신고가 3종목+ · 50일선 위 60%+ · 10일 중 5일+ 상위권)을 채운 칸이고, 4칸이 모두 초록이면 선도업종(✔)이에요. 줄을 누르면 구성 종목·업종 흐름이 펼쳐져요.${big ? ' 큰 업종은 세부 업종을 공통 업종 분류 21개로 묶은 거예요.' : ''}`, 'ld-meaning'));
   card.append(stageLegend());
   if (ind.status !== 'OK' || !ind.items?.length) { card.append(n('div', ind.note || '업종 순위를 계산할 자료가 부족합니다.', 'ld-empty')); return card; }
   const table = n('div', null, 'ld-table ld-ind-table');
@@ -428,7 +428,7 @@ function leaderCard(L, openStock, rerender, no, market) {
     const cnt = new Map(); items.forEach(x => cnt.set(keyOf(x), (cnt.get(keyOf(x)) || 0) + 1));
     items = [...items].sort((a, b) => (cnt.get(keyOf(b)) - cnt.get(keyOf(a))) || keyOf(a).localeCompare(keyOf(b)) || ((b.rs || 0) - (a.rs || 0)));
   }
-  if (!items.length) { card.append(n('div', '조건에 맞는 선도주가 없어요. 시장이 약할 때는 선도주가 거의 없는 것이 정상이에요.', 'ld-empty')); return card; }
+  if (!items.length) { card.append(n('div', '조건에 맞는 선도주가 없어요. 시장이 약할 때는 선도주가 거의 없는 게 정상이에요.', 'ld-empty')); return card; }
   const table = n('div', null, 'ld-table ld-stock-table');
   table.append(headRow([[null, '종목 · 업종', 'c-name'], [null, '60일', 'c-spark'], ['rsOneil', 'RS'], ['ldDistance', '고점까지'], [null, '당일'], [null, '표시', 'c-flags']]));
   let lastKey = null;
@@ -454,8 +454,8 @@ function leaderCard(L, openStock, rerender, no, market) {
 
 
 const PHASE_BANNER = {
-  WAIT: ['FTD 전 · 준비하는 때', 'mid', '시장은 아직 바닥을 확인하지 못했어요. 지금은 사는 때가 아니라, 지수보다 먼저 강해지는 업종을 찾아 워치리스트를 만들어 두는 때예요. FTD가 나오면 이 목록부터 봅니다.'],
-  FTD: ['FTD 나옴 · 선도주를 확인하는 때', 'good', 'FTD가 나왔어요. 미리 준비한 업종의 종목들이 실제로 거래량을 실어 신고가를 뚫는지 확인해요. 뚫는 종목이 많아야 진짜 상승장이에요.'],
+  WAIT: ['FTD 전 · 준비하는 때', 'mid', '시장은 아직 바닥을 확인하지 못했어요. 지금은 사는 때가 아니라, 지수보다 먼저 강해지는 업종을 찾아 워치리스트를 만들어 두는 때예요. FTD가 나오면 이 목록부터 봐요.'],
+  FTD: ['FTD 나옴 · 선도주를 확인하는 때', 'good', 'FTD가 나왔어요. 미리 준비한 업종의 종목이 실제로 거래량을 싣고 신고가를 뚫는지 확인해요. 뚫는 종목이 많아야 진짜 상승장이에요.'],
   UPTREND: ['상승장 · 선도업종이 버티는지 보는 때', 'none', '지수가 크게 빠진 상태가 아니에요. 선도업종이 계속 강한지, 다음으로 올라오는 업종(워치리스트)이 무엇인지 봐요.'],
   UNKNOWN: ['시장 상태 판정 보류', 'none', 'FTD 판정 자료가 없어 시장 상태를 정하지 않았어요. 아래 숫자는 그대로 볼 수 있어요.'],
 };
@@ -510,7 +510,7 @@ function mapCard(L, no, focusIndustry, market, rerender) {
   const h = n('h3'); h.append(`${no} `, term('industryMap', '업종 지도'), ' · RS × 신고가 근접');
   head.append(h, n('span', `${pts.length}개 업종`, 'ld-status tone-none')); card.append(head);
   { const vt = viewToggle(L, market, rerender); if (vt) card.append(vt); }
-  card.append(n('p', '상대강도(RS)와 52주 신고가를 함께 봅니다. 오른쪽 위로 갈수록 시장보다 강하고 고점 근처 종목도 많은 업종이에요. 초록은 선도업종, 노랑은 FTD 대기 워치리스트예요. 점을 누르면 업종 정보가 나와요.', 'ld-meaning'));
+  card.append(n('p', '상대강도(RS)와 52주 신고가를 함께 봐요. 오른쪽 위로 갈수록 시장보다 강하고 고점 근처 종목도 많은 업종이에요. 초록은 선도업종, 노랑은 FTD 대기 워치리스트예요. 점을 누르면 업종 정보가 나와요.', 'ld-meaning'));
   if (pts.length < 3) { card.append(n('div', '지도를 그릴 업종 자료가 부족합니다.', 'ld-empty')); return card; }
   // 휴대폰은 좁은 판으로 다시 그려 글자가 작아지지 않게 한다.
   const narrow = typeof window !== 'undefined' && window.innerWidth < 700;
@@ -598,7 +598,7 @@ function watchCard(L, openStock, rerender, no, flow = new Map(), market = 'KR') 
   const head = n('div', null, 'ld-card-head');
   const h = n('h3'); h.append(`${no} `, term('watchlist', 'FTD 대기 워치리스트'));
   head.append(h, n('span', `${ind.watchCount ?? 0}개 업종`, 'ld-status tone-mid')); card.append(head);
-  card.append(n('p', '매수 목록이 아니라 기회를 준비하는 목록이에요. 지수보다 먼저 강해지는 업종을 6가지 질문(①~⑥, 초록 = 예)으로 점검해 4개 이상 "예"인 업종을 올려 둡니다. 시장이 FTD를 만들면 이 업종의 후보 종목부터 봐요. 업종 줄을 누르면 구성 종목이 펼쳐져요(워치리스트는 세부 업종 기준).', 'ld-meaning'));
+  card.append(n('p', '매수 목록이 아니라 기회가 올 때를 대비하는 목록이에요. 지수보다 먼저 강해지는 업종을 6가지 질문(①~⑥, 초록 = 예)으로 점검해 4개 이상 "예"인 업종을 올려 둬요. 시장에서 FTD가 나오면 이 업종의 후보 종목부터 봐요. 업종 줄을 누르면 구성 종목이 펼쳐져요(워치리스트는 세부 업종 기준).', 'ld-meaning'));
   const q = n('ol', null, 'ld-questions');
   checks.forEach((c, i) => { const li = n('li'); li.append(n('b', `${NO[i]} ${c.label}`), n('span', c.meaning)); q.append(li); });
   const qd = n('details', null, 'ld-qbox'); qd.append(n('summary', '6가지 질문과 숫자 기준 보기'), q); card.append(qd);
@@ -700,7 +700,7 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   // 판정('지금 할 일')을 맨 위에, 소개와 용어는 그 아래 접기로(내용은 그대로).
   const intro = n('details', null, 'intro-fold');
   const sum = n('summary'); sum.append('선도주·선도업종을 왜 보는지 · 보는 방법'); intro.append(sum);
-  const p = n('p'); p.append('상승장은 ', term('leader', '선도주'), '와 ', term('leadingIndustry', '선도업종'), '이 끌고 갑니다. 선도업종은 지수보다 먼저 움직이는 경우가 많아서, FTD 전에 미리 찾아 두는 것이 중요해요. 상대강도(RS)와 52주 신고가를 함께 보고, 준비된 업종을 워치리스트로 관리합니다. 밑줄 친 말을 누르면 뜻이 나와요.');
+  const p = n('p'); p.append('상승장은 ', term('leader', '선도주'), '와 ', term('leadingIndustry', '선도업종'), '이 끌고 가요. 선도업종은 지수보다 먼저 움직일 때가 많아서 FTD 전에 미리 찾아 둬야 해요. 상대강도(RS)와 52주 신고가를 함께 보고, 준비된 업종을 워치리스트로 관리해요. 밑줄 친 말을 누르면 뜻이 나와요.');
   intro.append(p);
   const gloss = glossary(LEADER_TERMS, ['leader', 'core', 'rsOneil', 'ldDistance', 'rsLead', 'ldBreakout', 'heldUp', 'emergence', 'industryRs', 'rankChange', 'industryRsLine', 'newHighs', 'above50', 'persist', 'leadingIndustry', 'ldStage', 'stageNEW', 'stageUP', 'stageHOLD', 'stageDOWN', 'stageOUT', 'stageDIP', 'phaseMode', 'industryMap', 'watchlist', 'watchScore', 'candidate', 'growthBack', 'heldUpIndustry', 'leadsIndex']);
   const L = block?.leadership;
@@ -731,12 +731,12 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   const rules = n('details', null, 'ftd-rules'); rules.append(n('summary', '판정 기준·데이터 범위'));
   const pol = L.policy || {};
   rules.append(
-    n('p', `기준일 ${L.asOf || '—'} · 분석 대상 ${L.universe ?? '—'}종목 (와모 스크리닝 목록 안에서의 비교이며 시장 전체가 아닙니다).`),
+    n('p', `기준일 ${L.asOf || '—'} · 분석 대상 ${L.universe ?? '—'}종목 (와모 스크리닝 목록 안에서 비교한 것이며 시장 전체가 아닙니다).`),
     n('p', `선도주: RS(오닐 방식) ${pol.rsMin} 이상, 52주 고점 ${pol.highDistanceMax}% 이내, Stage 2, 유동성(${({US:'시총 10억 달러 이상',KR:'20일 평균 거래대금 50억 원 이상',JP:'20일 평균 거래대금 5억 엔 이상',TW:'20일 평균 거래대금 1억 대만달러 이상'})[market]}). 핵심은 RS ${pol.rsCore} 이상.`),
     n('p', `선도주 출현: FTD 뒤 ${pol.emergenceWindow}거래일 안에 RS ${pol.rsMin} 이상 종목이 52주 최고 종가를 50일 평균 ${pol.breakoutVolume}배 이상 거래량으로 돌파한 수. 기준 ${pol.emergenceMin?.[market] ?? pol.emergenceMin?.KR}종목 (와모 기본값).`),
-    n('p', `업종: 구성 ${pol.industryMinMembers}종목 이상인 업종만. 업종 RS는 구성 종목 RS 원점수의 중간값으로 업종끼리 순위를 매깁니다. 분류는 가격 화면의 산업 분류를 그대로 씁니다.`),
+    n('p', `업종: 구성 ${pol.industryMinMembers}종목 이상인 업종만. 업종 RS는 구성 종목 RS 원점수의 중간값으로 업종끼리 순위를 매긴 값입니다. 분류는 가격 화면의 산업 분류를 그대로 씁니다.`),
     n('p', `FTD 대기 워치리스트: 선도업종이 아닌 업종 중 6문항(${(L.watchChecks || []).map(c => c.label).join(' · ')}) 가운데 ${pol.watchScoreMin}개 이상을 채운 업종. 문항별 숫자 기준은 워치리스트 카드의 "6가지 질문" 상자에 있습니다(와모 기본값).`),
-    n('p', '모든 숫자는 표시된 거래일까지의 종가·거래량만으로 계산하며, 매수 권유가 아닙니다. RS·신고가는 과거 가격의 상대 비교입니다.'),
+    n('p', '모든 숫자는 표시된 거래일까지의 종가·거래량만으로 계산하며, 매수 권유가 아닙니다. RS·신고가는 과거 가격을 서로 비교한 값입니다.'),
   );
   if (L.note) rules.append(n('p', L.note));
   container.append(rules);

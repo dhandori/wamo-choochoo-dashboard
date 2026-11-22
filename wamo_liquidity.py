@@ -76,9 +76,9 @@ def _quadrant(price_dir, flow_dir):
     key = (price_dir, flow_dir)
     return {
         ('up', 'up'): ('HEALTHY', '건강한 상승', '최근 5일 동안 지수가 오르면서 거래량도 늘었어요. 돈이 들어오는 상승이라 돌파 매매에 좋은 환경이에요.', 1),
-        ('up', 'down'): ('THIN', '힘 빠진 상승', '최근 5일 동안 지수는 올랐는데 거래량은 줄었어요. 돈이 따라오지 않는 상승이라 신고가 돌파가 잘 실패해요. 비중을 천천히 늘리세요.', 0),
+        ('up', 'down'): ('THIN', '힘 빠진 상승', '최근 5일 동안 지수는 올랐는데 거래량은 줄었어요. 돈이 따라오지 않는 상승이라 신고가 돌파가 실패하기 쉬워요. 비중을 천천히 늘리세요.', 0),
         ('down', 'up'): ('DISTRIBUTION', '분산 (큰손 매도)', '최근 5일 동안 지수가 내리면서 거래량이 늘었어요. 큰손이 팔고 있다는 뜻이라 새로 사지 않고 지키는 게 먼저예요.', -1),
-        ('down', 'down'): ('EXHAUSTION', '매도세 소진', '최근 5일 동안 지수가 내렸지만 거래량도 줄었어요. 팔 사람이 줄어드는 중이라 바닥을 다지는 후보 구간이에요. FTD를 기다리세요.', 0),
+        ('down', 'down'): ('EXHAUSTION', '매도세 소진', '최근 5일 동안 지수가 내렸지만 거래량도 줄었어요. 팔 사람이 줄고 있어서 바닥을 다지는 구간일 수 있어요. FTD를 기다리세요.', 0),
     }.get(key, ('FLAT', '뚜렷한 방향 없음', '지수와 거래량 모두 5일 동안 큰 변화가 없어요.', 0))
 
 
@@ -214,7 +214,7 @@ def analyze(universe, bench=None, asof=None):
                   'priceChange5dPct': _r(price_chg5), 'flowChange5dPct': _r(flow_chg)},
         'liquidity': {'key': liq[0], 'label': liq[1], 'text': liq[2], 'score': liq[3], 'ratio20to50': _r(liq_ratio, 2)},
         'upDown': {'today': _r(ud_today, 2), 'avg10': _r(ud10, 2), 'inflowDays10': inflow_days,
-                   'note': '오른 종목들의 거래대금 ÷ 내린 종목들의 거래대금. 1보다 크면 돈이 들어온 날, 작으면 나간 날이에요.'},
+                   'note': '오른 종목의 거래대금 ÷ 내린 종목의 거래대금. 1보다 크면 돈이 들어온 날, 작으면 나간 날이에요.'},
         'sellingClimax': climax,
         'industries': {'inflow': inflow, 'outflow': outflow,
                        'all': sorted(industries, key=lambda x: -(x['sharePct'] or 0)),
@@ -224,7 +224,7 @@ def analyze(universe, bench=None, asof=None):
                     'up': closes[i] is not None and closes[i - 1] is not None and closes[i] >= closes[i - 1] if closes[i] is not None else (d['medianChg'] or 0) >= 0}
                    for i, d in enumerate(days) if i >= n - WINDOW],
         'score': score,
-        'note': '거래대금 = 화면 속 종목들의 (종가 × 거래량) 합. 거래소 전체 공식 숫자와는 다르지만 같은 기준으로 매일 비교해요.',
+        'note': '거래대금 = 화면 속 종목의 (종가 × 거래량) 합. 거래소 전체 공식 숫자와는 다르지만 같은 기준으로 매일 비교해요.',
     }
 
 

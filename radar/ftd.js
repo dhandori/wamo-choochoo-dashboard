@@ -10,7 +10,7 @@ const term = (key,label) => helpButton(label||FTD_TERMS[key][0], key);
 const ask = (key) => helpButton(FTD_TERMS[key][0], key, true);
 const selected={KR:0,US:0,JP:0,TW:0};
 const EVENT_NAMES={WINDOW_EXPIRED:'판정 기간 종료 (예전 규칙)',LATE_WINDOW:'반등 Day 8 · 늦은 구간 진입',CORRECTION:'하락장 진입',NEW_CORRECTION:'새 하락장',RALLY:'반등 Day 1',RALLY_FAILED:'반등 무효 (Day 1 저가 이탈)',FTD:'FTD 나옴',FTD_FAILED:'FTD 무효 (Day 1 저가 이탈)',RECOVERED:'FTD 없이 전고점 회복 · FTD 찾기 종료',UPTREND:'FTD 뒤 전고점 회복 · 상승 전환 완료'};
-const NOTE={EXPIRED:'예전 규칙(Day 8 이후 불인정)으로 계산된 결과입니다. 다음 자동 갱신에서 새 규칙으로 다시 계산합니다.',OUTSIDE:'지금은 하락장이 아니라서 FTD를 찾지 않습니다. 하락장이 오면 그때부터 반등 날짜를 셉니다.',
+const NOTE={EXPIRED:'예전 규칙(Day 8 이후 불인정)으로 계산한 결과입니다. 다음 자동 갱신에서 새 규칙으로 다시 계산합니다.',OUTSIDE:'지금은 하락장이 아니라서 FTD를 찾지 않습니다. 하락장이 오면 그때부터 반등 날짜를 셉니다.',
   CORRECTION:'지수가 하락장에 들어왔습니다. 지수가 처음으로 반등하는 날(Day 1)을 기다립니다.',
   RALLY:'반등을 시도하는 중입니다. Day 1 장중 저가를 깨지 않고, Day 4 이후에 지수가 +1.7% 넘게 오르면서 거래량도 전날보다 많으면 FTD입니다.',
   LATE:'반등이 Day 8을 넘겼지만 아직 FTD가 없습니다. 지금부터 나오는 FTD는 "늦은 FTD"로 표시하고, 힘이 약하다고 봅니다.',
@@ -109,14 +109,14 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   const active=indexes.some(x=>freshIndex(x,expected)&&!failed&&['CONFIRMED','PRESSURE'].includes(x.phase));
   const rule=n('div',null,`ftd-rule${active?' active':''}`);
   rule.append(n('strong','내 원칙 · FTD 뒤에는 총자금의 10% 이내로 발담그기만'),
-    n('span','FTD는 "이제 사도 된다"가 아니라 "조금 시험해 봐도 된다"는 신호입니다. 처음에는 총자금의 10% 안에서만 삽니다. 비중을 더 늘리는 것은 선도주가 실제로 신고가를 뚫고(선도주 출현), 시장이 계속 버텨 줄 때 따로 판단합니다.'));
-  if(active)rule.append(n('em','지금 FTD 신호가 켜져 있어요 → 10% 이내'));
+    n('span','FTD는 "이제 사도 된다"가 아니라 "조금 시험해 봐도 된다"는 신호입니다. 처음에는 총자금의 10% 안에서만 삽니다. 비중을 더 늘릴지는 선도주가 실제로 신고가를 뚫고(선도주 출현), 시장이 계속 버텨 줄 때 따로 판단합니다.'));
+  if(active)rule.append(n('em','지금 FTD 신호가 켜져 있어요 · 10% 이내'));
   container.append(rule);
   const intro=n('details',null,'intro-fold');const sum=n('summary');sum.append('FTD가 무엇인지 · 판정 방식 보기',badge('종가 기준 · 자체 규칙','OUTSIDE'));intro.append(sum);
-  const p=n('p');p.append(term('ftd','FTD(Follow-Through Day)'),'는 하락장이 끝나고 다시 오르기 시작했는지 확인하는 신호입니다. 지수가 크게 떨어진 뒤 반등을 시작하고, Day 4 이후에 +1.7% 넘게 오르면서 거래량도 늘면 FTD로 봅니다. 밑줄 친 말을 누르면 뜻이 나와요.');intro.append(p);
+  const p=n('p');p.append(term('ftd','FTD(Follow-Through Day)'),'는 하락장이 끝나고 다시 오르기 시작했는지 확인하는 신호입니다. 지수가 크게 떨어진 뒤 반등을 시작하고, Day 4 이후에 +1.7% 넘게 오르면서 거래량도 늘면 FTD로 봅니다. 밑줄 친 말을 누르면 뜻이 나옵니다.');intro.append(p);
   container.append(intro);
   container.append(glossary(FTD_TERMS,['ftd','correction','dayOne','rallyDay','bottom','ftdLow','distribution','lateFtd','quality','failed','uptrendDone','drawdown','dayChange','volRatio']));
-  if(!indexes.length){container.append(n('div','FTD 지수 기록을 준비 중입니다. 다음 자동 갱신 때 가격과 거래량을 확인한 뒤 보여 드려요.','ftd-empty'));return;}
+  if(!indexes.length){container.append(n('div','FTD 지수 기록을 준비 중입니다. 다음 자동 갱신 때 가격과 거래량을 확인한 뒤 보여 드립니다.','ftd-empty'));return;}
   const s=indexes[selected[market]]||indexes[0],fresh=freshIndex(s,expected)&&!failed;
   if(!fresh){const messages=[failed?'최신 파일을 다시 불러오지 못했습니다.':null,s.note||'지수 데이터가 최신인지, 빠진 날이 없는지 확인하지 못했습니다.',expected&&s.asOf!==expected?`최근 마감 거래일 ${expected}`:null];container.append(n('div',messages.filter(Boolean).join(' '),'ftd-data-warning'));}
   container.append(flow(s,fresh));
@@ -142,7 +142,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
       check(term('rallyDay','반등 일수'),!!day&&day>=4,day?`Day ${day} · Day 4부터 가능${day>7?' (Day 8 이후는 늦은 FTD)':day>1&&day<4?' (Day 2~3 급등은 불인정)':''}`:'Day 1 대기'),
       check(term('dayChange','상승률'),latest.changePct>=1.7,`${pct(latest.changePct)} / 기준 +1.7%`),
       check(term('volRatio','거래량'),latest.volumeRatio>1,`${num(latest.volumeRatio,2)}배 / 1.00배 초과`));
-    panel.append(checks,n('p','위 다섯 칸은 오늘 하루의 관찰값입니다. 이미 나온 FTD가 계속 유효하려고 매일 이 조건을 다시 채울 필요는 없습니다.','ftd-caption'));
+    panel.append(checks,n('p','위 다섯 칸은 오늘 하루만 본 값입니다. 이미 나온 FTD는 매일 이 조건을 다시 채우지 않아도 유효합니다.','ftd-caption'));
   }
   if(s.ftd){const signal=n('div',null,'ftd-signal');
     const top=n('div',null,'ftd-signal-top');top.append(n('strong',`${fresh?'최근':'과거'} FTD ${s.ftd.date}`),n('span',`당시 ${pct(s.ftd.changePct)} · 거래량 전일의 ${num(s.ftd.volumeRatio,2)}배 · 반등 Day ${s.ftd.rallyDay} · 이후 ${s.ftdAge??0}거래일`));

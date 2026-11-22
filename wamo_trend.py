@@ -692,7 +692,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
     states = [(i.get('label') or '지수', *_index_state(i)) for i in indexes]
     known = [st for _, st, _ in states if st is not None]
     if not known:
-        add('index', '지수 추세', 0, '지수 이동평균선을 계산할 수 없습니다.')
+        add('index', '지수 추세', 0, '지수 이동평균선을 계산할 수 없어요.')
     else:
         score = -1 if -1 in known else 1 if all(k == 1 for k in known) else 0
         if len(states) == 1:
@@ -700,16 +700,16 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
                     0: '지수가 50일선 아래예요. 200일선 위라 큰 추세는 아직 살아 있어요.'}[known[0]]
         else:
             text = ' · '.join(f'{label} {desc}' for label, _, desc in states)
-            text += {1: ' — 둘 다 상승 추세예요.', -1: ' — 200일선 아래로 내려간 지수가 있어요.',
-                     0: ' — 큰 추세는 살아 있지만 단기 힘이 빠졌어요.'}[score]
+            text += {1: '. 둘 다 상승 추세예요.', -1: '. 200일선 아래로 내려간 지수가 있어요.',
+                     0: '. 큰 추세는 살아 있지만 단기 힘이 빠졌어요.'}[score]
         add('index', '지수 추세', score, text)
     slopes = [(i.get('label') or '지수', *_slope_state(i)) for i in indexes]
     known_s = [st for _, st, _ in slopes if st is not None]
     if known_s:
         score = -1 if -1 in known_s else 1 if all(k == 1 for k in known_s) else 0
         text = ' / '.join(f'{label}: {desc}' if len(slopes) > 1 else desc for label, st, desc in slopes if st is not None)
-        text += {1: ' — 이평선이 모두 위를 향해요.', -1: ' — 이평선이 아래를 향하기 시작했어요.',
-                 0: ' — 기울기가 꺾이거나 평평해졌어요.'}[score]
+        text += {1: '. 이평선이 모두 위를 향해요.', -1: '. 이평선이 아래를 향하기 시작했어요.',
+                 0: '. 기울기가 꺾이거나 평평해졌어요.'}[score]
         add('slope', '이평선 기울기', score, text)
     dists = [(idx.get('label') or '지수', dist)]
     if secondary and (secondary.get('distribution') or {}).get('status') == 'OK':
@@ -729,7 +729,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
         if in_corr and score_ == 1:
             score_ = 0
         add('distribution', '분산일', score_,
-            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail}이에요. '
+            f'최근 25거래일 동안 기관이 판 흔적(분산일)은 {detail} 단계예요. '
             + (f"대응: {worst['action']}." if worst['level']
                else '지금은 조정 중이라 분산일이 적어도 안심할 때가 아니에요. 새 매수는 FTD를 기다려요.' if in_corr
                else '정상 매매를 이어가도 돼요.'))
@@ -764,7 +764,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
     else:
         level, label, advice = 'YELLOW', '조심', '좋고 나쁜 신호가 섞여 있어요. 사더라도 조금씩, 확실한 종목만요.'
     if synthetic:
-        advice += ' (지수 자료가 없어 화면 속 종목들의 중앙값으로 대신 계산했어요.)'
+        advice += ' (지수 자료가 없어 화면 속 종목의 중앙값으로 대신 계산했어요.)'
     return {'level': level, 'label': label, 'advice': advice, 'score': total, 'factors': factors}
 
 
@@ -1015,7 +1015,7 @@ def scorecard(book):
     return {'status': 'OK' if events else 'EMPTY', 'since': dates[0] if dates else None,
             'eventCount': len(events), 'backfilled': any(e.get('backfill') for e in events),
             'signals': out,
-            'note': '신호가 나온 날 종가로 샀다고 치고, 5·20·60거래일 뒤 수익률을 셉니다. 수수료·세금은 빼지 않았어요. '
+            'note': '신호가 나온 날 종가로 샀다고 치고, 5·20·60거래일 뒤 수익률을 계산해요. 수수료·세금은 빼지 않았어요. '
                     '처음 40거래일은 현재 종목 목록으로 거꾸로 계산한 값이라 이미 빠진 종목은 들어 있지 않아요.'}
 
 
@@ -1491,7 +1491,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         # 종목 상세 창의 Stage 1~4 배지용(시장 스테이지 분포와 같은 stage_at 기준).
         'stageById': {u['id']: u['stage'] for u in universe if u.get('stage')},
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
-                      'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
+                      'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수와 견줘 지금이 가장 강하다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),
                          'items': warnings[:80],
                          'note': '최근 20거래일 안에 상승 추세였던 종목만 봐요. 경고는 팔라는 명령이 아니라 확인하라는 신호예요.'},

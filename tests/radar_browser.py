@@ -209,7 +209,7 @@ with sync_playwright() as p:
             expect(page.locator('#industry-rail')).to_be_hidden()
             expect(page.locator('.trend-breadth')).to_have_count(AI_CARDS)
             page.locator('#ai-overview [data-help=trendBreadth]').click()
-            expect(page.get_by_role('tooltip')).to_contain_text('동일 종목')
+            expect(page.get_by_role('tooltip')).to_contain_text('같은 종목')
             check_help_bounds(page)
             page.keyboard.press('Escape')
             page.get_by_role('button',name='기간 비교',exact=True).click()

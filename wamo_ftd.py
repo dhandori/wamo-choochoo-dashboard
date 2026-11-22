@@ -13,13 +13,13 @@ POLICY = {
     'distributionDropPct': 0.2, 'postFtdWindow': 10, 'postFtdDistributionWarn': 3,
     'strongGainPct': 2.0, 'volumeAvgDays': 50,
     'reversalVolumeRatio': 1.5,  # 내린 날 Day 1(위쪽 절반 마감)은 거래량이 전일의 1.5배 이상 (2026-11-11 사용자 결정)
-    'correction': '종가가 50일선 아래이고, 최근 63거래일 최고 종가 대비 8% 이상 하락. 또는 5% 이상 하락하며 50일선이 10거래일 전보다 하락.',
-    'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감하고 거래량이 전일의 1.5배 이상인 날.',
-    'bottom': 'Day 1(반등 첫날)의 장중 저가. 이 가격을 장중에 깨면 반등 시도 무효이고, 그 뒤 Day 1 조건을 채운 날부터 다시 셉니다(일반적인 FTD 기준, 2026-11-18 사용자 결정). 하락 국면의 최저가는 correctionLow 로 따로 둡니다.',
-    'confirmation': 'Day 4 이후 하루 +1.7% 이상 상승하고 거래량이 전일보다 많으면 FTD. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
-    'failure': 'Day 1 장중 저가 이탈은 반등·FTD 무효. FTD 당일 저가보다 낮은 종가, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함) 3번 이상은 경고.',
+    'correction': '종가가 50일선 아래이고, 최근 63거래일 최고 종가보다 8% 이상 내린 상태입니다. 또는 5% 이상 내리면서 50일선이 10거래일 전보다 낮아진 상태입니다.',
+    'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날입니다. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감하고 거래량이 전일의 1.5배 이상인 날입니다.',
+    'bottom': 'Day 1(반등 첫날)의 장중 저가입니다. 이 가격을 장중에 깨면 반등 시도는 무효가 되고, 그 뒤 Day 1 조건을 채운 날부터 다시 셉니다(일반적인 FTD 기준, 2026-11-18 사용자 결정). 하락 국면의 최저가는 correctionLow 로 따로 둡니다.',
+    'confirmation': 'Day 4 이후 하루 +1.7% 이상 오르고 거래량이 전일보다 많으면 FTD입니다. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
+    'failure': 'Day 1 장중 저가를 깨면 반등·FTD는 무효입니다. 종가가 FTD 당일 저가보다 낮거나, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함)이 3번 이상 나오면 경고입니다.',
     'completion': 'FTD 이후 종가가 하락 전 고점을 다시 넘으면 상승 전환 완료로 보고 추적을 끝냅니다. 그 FTD는 이력으로만 남깁니다.',
-    'note': 'WAMO 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승 지속을 보장하지 않습니다.',
+    'note': 'WAMO 고정 규칙에 따른 참고 신호입니다. IBD 공식 판정이 아니며 한국 시장에도 같은 규칙을 적용합니다. 상승이 이어진다고 보장하지는 않습니다.',
     'sources': [
         {'title': 'IBD · 반등 시도와 Day 4 이후 FTD', 'url': 'https://www.investors.com/how-to-invest/how-to-invest-in-stocks-in-market-correction-follow-through-day/'},
         {'title': 'Morales·Kacher · 1.5%·거래량 기준과 한계', 'url': 'https://www.virtueofselfishinvesting.com/reports/view/mlr-time-to-buy-qe3-and-its-effect-on-the-general-market-and-gold/amp'},
@@ -130,7 +130,7 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
     if synthetic:
         return unavailable('실제 지수가 아닌 대체 지수로는 FTD를 판정하지 않습니다.')
     if not isinstance(raw, list) or len(raw) < 70:
-        return unavailable('지수의 연속된 일별 고가·저가·종가·거래량이 70거래일 이상 필요합니다.')
+        return unavailable('지수의 일별 고가·저가·종가·거래량이 70거래일 이상 끊김 없이 있어야 합니다.')
     rows=[]; dates=set()
     for r in raw:
         if not isinstance(r, dict):
@@ -146,14 +146,14 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
         if d in dates or (rows and d<rows[-1]['date']):
             return unavailable('지수 날짜가 중복되거나 순서가 맞지 않습니다.')
         if not all(valid_num(r.get(k)) for k in ('close','high','low','volume')):
-            return unavailable('지수 저가 또는 거래량이 누락·0·비정상입니다. 추정값으로 판정하지 않습니다.')
+            return unavailable('지수 저가나 거래량이 빠졌거나 0이거나 정상 값이 아닙니다. 추정값으로는 판정하지 않습니다.')
         if not r['low']<=r['close']<=r['high']:
             return unavailable('지수 고가·저가·종가의 관계가 맞지 않습니다.')
         rows.append({k:r[k] for k in ('date','close','high','low','volume')});dates.add(d)
     if len(rows)<70 or rows[-1]['date']!=asof:
         return unavailable('가격 기준일까지 이어지는 지수 이력이 없습니다.')
     if sessions is not None and [r['date'] for r in rows]!=[d for d in sessions if rows[0]['date']<=d<=asof]:
-        return unavailable('거래일 이력이 누락되어 반등 일수를 확정할 수 없습니다.')
+        return unavailable('거래일 이력이 빠져 있어 반등 일수를 확정할 수 없습니다.')
     closes=[r['close'] for r in rows]
     vols=[r['volume'] for r in rows]
     events=[]; cycle=None; rally=None; ftd=None; last_ftd=None; phase='OUTSIDE'; prev_gate=False
