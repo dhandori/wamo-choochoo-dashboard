@@ -566,8 +566,12 @@ def main(argv=None):
         except RuntimeError as exc:
             if not recheck:
                 raise
-            # 다시 확인이 실패하면 처음 계산을 그대로 둔다(덮어쓰지 않음).
-            print(f'{market} {day}: 다시 확인 실패 · 처음 계산 유지 ({exc})', flush=True)
+            # 다시 확인이 실패하면 처음 계산을 그대로 둔다(덮어쓰지 않음). 노션 비교 칸은 그래도 채운다
+            # (미국은 마감 직후 계산이라 08:30 KST 회차가 늘 다시 확인으로 빠지는데, 야후 일봉 누락으로 실패하면
+            #  비교 칸까지 건너뛰어 11/13~11/19 내내 '노션 기록에 그날 자료가 아직 없음'으로 남았다. 2026-11-20).
+            filled = refresh_shadow(market, day, a.out)
+            print(f'{market} {day}: 다시 확인 실패 · 처음 계산 유지 ({exc})'
+                  + (' · 노션 비교만 채움' if filled else ''), flush=True)
             continue
         sh = r.get('shadow') or {}
         print(f"{market} {r['asOf']}: 신고가 {r['highCount']} · 신저가 {r['lowCount']} · 대상 {r['universe']} · "

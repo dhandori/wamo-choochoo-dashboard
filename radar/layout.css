@@ -95,6 +95,6 @@ nav.tabs.steps .nav-toggle { display: none; }
   :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .tab-group.active .step-head { background: transparent !important; border-color: transparent !important; }
   :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs button { background: transparent !important; border-color: transparent !important; }
   :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs button:hover { background: rgba(0,0,0,.04) !important; }
-  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs button.active { background: #dfefeb !important; color: #033726; box-shadow: inset 3px 0 #1f9d78; }
+  :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs button.active { background: #d9eee5 !important; color: #033726; box-shadow: inset 4px 0 #076b4a; font-weight: 700; }
   :root[data-theme="light"]:not(.nav-top) nav.tabs.steps .step-tabs { -webkit-mask-image: none; mask-image: none; }
 }

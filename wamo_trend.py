@@ -39,7 +39,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 26  # 2026-11-17 종목별 스테이지(stageById)
+TREND_VERSION = 28  # 2026-11-18 FTD 반등 무효선을 Day 1 장중 저가로
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -306,7 +306,31 @@ def synthetic_benchmark(universe):
 
 
 # ------------------------------------------------------------ index data
-def fetch_index(symbol, days=420, opener=None):
+# 지수 이력은 200일선 이격도의 지난 1년 범위(200 + 252거래일)를 내려고 길게 받는다.
+# 나머지 계산(분산일·FTD·차트 등)은 예전처럼 최근 INDEX_KEEP 거래일만 쓴다.
+INDEX_FETCH_DAYS = 700
+INDEX_KEEP = 290
+GAP_WINDOW = 252
+
+
+def gap200_stats(rows, asof=None, window=GAP_WINDOW):
+    """200일선 이격도(%)의 최근 window 거래일 범위와 오늘 값의 자리(보조자료, 점수에 안 씀).
+    gap200Pctile = 그 기간 가운데 오늘보다 이격도가 낮았던 날의 비율(%). 기록이 20거래일 미만이면 빈 dict."""
+    closes = [r['close'] for r in (rows or []) if r.get('date') and (asof is None or r['date'] <= asof) and num(r.get('close'))]
+    gaps, total = [], sum(closes[:200]) if len(closes) >= 200 else 0
+    for i in range(199, len(closes)):
+        if i > 199:
+            total += closes[i] - closes[i - 200]
+        gaps.append((closes[i] / (total / 200) - 1) * 100)
+    gaps = gaps[-window:]
+    if len(gaps) < 20:
+        return {}
+    cur, past = gaps[-1], gaps[:-1]
+    return {'gap200': rnd(cur), 'gap200Lo': rnd(min(gaps)), 'gap200Hi': rnd(max(gaps)),
+            'gap200Pctile': rnd(sum(g < cur for g in past) / len(past) * 100, 0), 'gap200Days': len(gaps)}
+
+
+def fetch_index(symbol, days=INDEX_FETCH_DAYS, opener=None):
     now = int(time.time())
     q = urllib.parse.urlencode({'period1': now - days * 86400, 'period2': now + 86400,
                                 'interval': '1d', 'events': 'history'})
@@ -604,6 +628,17 @@ def index_strip(market, asof, known, fetch_network, index_fetcher):
     return out
 
 
+def gap_stats_for(long_rows, bench, asof):
+    """길게 받은 이력이 기준일까지 와 있으면 그것으로, 아니면 판정에 쓴 이력으로 이격도 범위를 낸다."""
+    rows = [r for r in (long_rows or []) if r.get('date') and r['date'] <= asof]
+    if not rows or rows[-1]['date'] != asof:
+        rows = bench
+    try:
+        return gap200_stats(rows, asof)
+    except Exception:  # noqa: BLE001 - 보조자료라 실패해도 판정은 그대로 낸다
+        return {}
+
+
 def index_trend(bench):
     closes = [r['close'] for r in bench]
     n = len(closes)
@@ -657,7 +692,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
     states = [(i.get('label') or '지수', *_index_state(i)) for i in indexes]
     known = [st for _, st, _ in states if st is not None]
     if not known:
-        add('index', '지수 추세', 0, '지수 이동평균선을 계산할 수 없습니다.')
+        add('index', '지수 추세', 0, '지수 이동평균선을 계산할 수 없어요.')
     else:
         score = -1 if -1 in known else 1 if all(k == 1 for k in known) else 0
         if len(states) == 1:
@@ -665,16 +700,16 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
                     0: '지수가 50일선 아래예요. 200일선 위라 큰 추세는 아직 살아 있어요.'}[known[0]]
         else:
             text = ' · '.join(f'{label} {desc}' for label, _, desc in states)
-            text += {1: ' — 둘 다 상승 추세예요.', -1: ' — 200일선 아래로 내려간 지수가 있어요.',
-                     0: ' — 큰 추세는 살아 있지만 단기 힘이 빠졌어요.'}[score]
+            text += {1: '. 둘 다 상승 추세예요.', -1: '. 200일선 아래로 내려간 지수가 있어요.',
+                     0: '. 큰 추세는 살아 있지만 단기 힘이 빠졌어요.'}[score]
         add('index', '지수 추세', score, text)
     slopes = [(i.get('label') or '지수', *_slope_state(i)) for i in indexes]
     known_s = [st for _, st, _ in slopes if st is not None]
     if known_s:
         score = -1 if -1 in known_s else 1 if all(k == 1 for k in known_s) else 0
         text = ' / '.join(f'{label}: {desc}' if len(slopes) > 1 else desc for label, st, desc in slopes if st is not None)
-        text += {1: ' — 이평선이 모두 위를 향해요.', -1: ' — 이평선이 아래를 향하기 시작했어요.',
-                 0: ' — 기울기가 꺾이거나 평평해졌어요.'}[score]
+        text += {1: '. 이평선이 모두 위를 향해요.', -1: '. 이평선이 아래를 향하기 시작했어요.',
+                 0: '. 기울기가 꺾이거나 평평해졌어요.'}[score]
         add('slope', '이평선 기울기', score, text)
     dists = [(idx.get('label') or '지수', dist)]
     if secondary and (secondary.get('distribution') or {}).get('status') == 'OK':
@@ -694,7 +729,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
         if in_corr and score_ == 1:
             score_ = 0
         add('distribution', '분산일', score_,
-            f'최근 25거래일 동안 기관이 판 흔적(분산일)이 {detail}이에요. '
+            f'최근 25거래일 동안 기관이 판 흔적(분산일)은 {detail} 단계예요. '
             + (f"대응: {worst['action']}." if worst['level']
                else '지금은 조정 중이라 분산일이 적어도 안심할 때가 아니에요. 새 매수는 FTD를 기다려요.' if in_corr
                else '정상 매매를 이어가도 돼요.'))
@@ -729,7 +764,7 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
     else:
         level, label, advice = 'YELLOW', '조심', '좋고 나쁜 신호가 섞여 있어요. 사더라도 조금씩, 확실한 종목만요.'
     if synthetic:
-        advice += ' (지수 자료가 없어 화면 속 종목들의 중앙값으로 대신 계산했어요.)'
+        advice += ' (지수 자료가 없어 화면 속 종목의 중앙값으로 대신 계산했어요.)'
     return {'level': level, 'label': label, 'advice': advice, 'score': total, 'factors': factors}
 
 
@@ -980,7 +1015,7 @@ def scorecard(book):
     return {'status': 'OK' if events else 'EMPTY', 'since': dates[0] if dates else None,
             'eventCount': len(events), 'backfilled': any(e.get('backfill') for e in events),
             'signals': out,
-            'note': '신호가 나온 날 종가로 샀다고 치고, 5·20·60거래일 뒤 수익률을 셉니다. 수수료·세금은 빼지 않았어요. '
+            'note': '신호가 나온 날 종가로 샀다고 치고, 5·20·60거래일 뒤 수익률을 계산해요. 수수료·세금은 빼지 않았어요. '
                     '처음 40거래일은 현재 종목 목록으로 거꾸로 계산한 값이라 이미 빠진 종목은 들어 있지 않아요.'}
 
 
@@ -1209,12 +1244,14 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if not asof or len(universe) < 30:
         raise RuntimeError(f'{market} 검증 가격 부족')
     symbol, label = INDEX[market]
+    gap_rows = {}   # 길게 받은 지수 이력(200일선 이격도 범위용)
     bench, synthetic, source = load_fixture(market), False, 'Yahoo Finance ' + symbol
     if bench:
         source = '미리보기 고정자료 ' + symbol
     elif fetch_network:
         try:
             bench = index_fetcher(symbol)
+            gap_rows[symbol], bench = bench, (bench or [])[-INDEX_KEEP:]
         except Exception as exc:  # noqa: BLE001
             print(f'{market} 지수 이력 실패 · 종목 중앙값으로 대체: {exc}', flush=True)
     live = bench
@@ -1246,13 +1283,15 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
     if not synthetic:
         confirmed[symbol] = confirmed_latest(bench, first_seen_all.get(symbol, {}))
         bench, prelim[symbol] = same_basis_latest(bench, first_seen_all.get(symbol, {}))
-    idx = {**index_trend(bench), 'label': label if not synthetic else '종목 중앙값 지수'}
+    idx = {**index_trend(bench), **({} if synthetic else gap_stats_for(gap_rows.get(symbol), bench, asof)),
+           'label': label if not synthetic else '종목 중앙값 지수'}
     secondary = None
     sym2, label2 = SECONDARY.get(market, (None, None))
     bench2 = (load_fixture(market + '2') if os.getenv('WAMO_INDEX_FIXTURE') else None)
     if sym2 and bench2 is None and fetch_network and not os.getenv('WAMO_INDEX_FIXTURE'):
         try:
             bench2 = index_fetcher(sym2)
+            gap_rows[sym2], bench2 = bench2, (bench2 or [])[-INDEX_KEEP:]
         except Exception as exc:  # noqa: BLE001
             print(f'{market} 보조지수 {label2} 실패 · 주지수만 사용: {exc}', flush=True)
     if bench2:
@@ -1270,7 +1309,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         bench2, prelim[sym2] = same_basis_latest(bench2, first_seen_all.get(sym2, {}))
     if bench2:
         if bench2 and bench2[-1]['date'] == asof and len(bench2) >= 200:
-            secondary = {**index_trend(bench2), 'symbol': sym2, 'label': label2,
+            secondary = {**index_trend(bench2), **gap_stats_for(gap_rows.get(sym2), bench2, asof), 'symbol': sym2, 'label': label2,
                          'source': 'Yahoo Finance ' + sym2, 'distribution': dict(distribution_days(bench2), prelim=prelim.get(sym2), confirmed=confirmed.get(sym2))}
     dist = (dict(distribution_days(bench), prelim=prelim.get(symbol), confirmed=confirmed.get(symbol)) if not synthetic else {
         'status': 'UNAVAILABLE', 'count': None, 'window': 25, 'days': [],
@@ -1452,7 +1491,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         # 종목 상세 창의 Stage 1~4 배지용(시장 스테이지 분포와 같은 stage_at 기준).
         'stageById': {u['id']: u['stage'] for u in universe if u.get('stage')},
         'rsLeaders': {'count': len(leaders), 'leadingCount': sum(x['leading'] for x in leaders), 'items': leaders[:50],
-                      'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수보다 가장 강하게 버티고 있다는 뜻이에요.'},
+                      'note': 'RS선 = 주가 ÷ 지수. RS선이 1년 중 가장 높다는 건 지수와 견줘 지금이 가장 강하다는 뜻이에요.'},
         'sellWarnings': {'count': len(warnings), 'highCount': sum(x['severity'] == 'HIGH' for x in warnings),
                          'items': warnings[:80],
                          'note': '최근 20거래일 안에 상승 추세였던 종목만 봐요. 경고는 팔라는 명령이 아니라 확인하라는 신호예요.'},

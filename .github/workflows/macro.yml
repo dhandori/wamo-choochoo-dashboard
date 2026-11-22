@@ -4,6 +4,11 @@ name: WAMO 매크로 지수
 # 화면은 산업강도판(dhandori/industry-strength) 세 번째 탭이 이 JSON을 읽어 그린다.
 on:
   workflow_dispatch:
+    inputs:
+      notify:
+        description: 텔레그램 알림 보내기(같은 날 이미 보냈으면 다시 보내지 않음)
+        type: boolean
+        default: true
   schedule:
     # 한국 시간 월~토 아침 07:05 (미국장 마감·한국 전일 금리 반영 후)
     - cron: '5 22 * * 0-5'
@@ -40,8 +45,10 @@ jobs:
           KIS_APP_SEC: ${{ secrets.KIS_APP_SEC || secrets.KIS_APP_SECRET }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          # 알림은 아침 실행(07:05)과 수동 실행에서만 보낸다. 저녁 실행(18:30)과 코드 수정 실행은 화면만 갱신
-          SEND: ${{ (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '5 22 * * 0-5')) && '--telegram' || '' }}
+          # 알림은 아침 실행(07:05)과 수동 실행에서만 보낸다. 저녁 실행(18:30)과 코드 수정 실행은 화면만 갱신.
+          # 아침은 깃허브 예약·정시 깨우개·Claude '30 깃허브 깨우기'가 겹쳐 걸 수 있어 하루 한 번만 보낸다(wamo_macro.py, 2026-11-20).
+          # 저녁 회차를 직접 걸 때는 notify=false 로 건다.
+          SEND: ${{ ((github.event_name == 'workflow_dispatch' && inputs.notify) || (github.event_name == 'schedule' && github.event.schedule == '5 22 * * 0-5')) && '--telegram' || '' }}
         run: python wamo_macro.py $SEND
       - name: 결과 올리기 (data 브랜치. 다른 작업이 먼저 올렸으면 받아서 다시 시도)
         run: python3 wamo_data_branch.py publish -m "매크로 지수 갱신 $(TZ=Asia/Seoul date +%F)" wamo_macro.json wamo_macro_history.json

@@ -564,19 +564,40 @@ def telegram_text(data):
     return '\n'.join(lines)
 
 
-def main(argv):
-    data, history = build()
+def previous_sent():
+    """지난 결과에 적힌 '텔레그램 보낸 날'(KST 날짜). 없으면 None."""
+    try:
+        return json.loads(OUT.read_text(encoding='utf-8')).get('telegramSent')
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def write_out(data):
     OUT.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
+
+
+def main(argv):
+    sent_before = previous_sent()
+    data, history = build()
+    if sent_before:
+        data['telegramSent'] = sent_before
+    write_out(data)
     HISTORY.write_text(json.dumps(history, ensure_ascii=False, indent=0) + '\n', encoding='utf-8')
     text = telegram_text(data)
     log(text)
     if '--telegram' in argv:
+        today = datetime.now(KST).date().isoformat()
         token, chat = os.getenv('TELEGRAM_BOT_TOKEN'), os.getenv('TELEGRAM_CHAT_ID')
-        if token and chat:
+        if sent_before == today:
+            # 아침 회차를 여러 길(깃허브 예약·정시 깨우개·Claude 깨우기)이 겹쳐 걸어도 하루 한 통만 보낸다(2026-11-20)
+            log(f'오늘({today}) 이미 텔레그램을 보냄 · 전송 생략')
+        elif token and chat:
             from wamo_alerts import telegram_send
             try:
                 telegram_send(token, chat, text)
                 log('텔레그램 전송 완료')
+                data['telegramSent'] = today
+                write_out(data)
             except Exception as exc:  # noqa: BLE001 - 토큰은 출력하지 않는다
                 log(f'텔레그램 전송 실패: {type(exc).__name__}')
         else:

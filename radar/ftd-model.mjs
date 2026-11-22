@@ -3,11 +3,11 @@ export const PHASES={OUTSIDE:'하락장 아님',EXPIRED:'반등 실패 · 기간
 export const PHASE_MEANING={
   OUTSIDE:'지수가 크게 떨어진 상태가 아니라서 FTD를 찾지 않아요.',
   CORRECTION:'지수가 크게 떨어진 상태예요. 처음 반등하는 날(Day 1)을 기다려요.',
-  RALLY:'반등을 시작했어요. 기준 저점을 지키면서 Day 4 이후 큰 상승을 기다려요.',
+  RALLY:'반등을 시작했어요. Day 1 저가를 지키면서 Day 4 이후 큰 상승을 기다려요.',
   LATE:'반등이 7일 넘게 이어졌지만 아직 FTD가 없어요. 지금 나오면 "늦은 FTD"예요.',
   CONFIRMED:'FTD가 나왔어요. 시험 매수(총자금 10% 이내)를 해도 되는 단계예요.',
   PRESSURE:'FTD 뒤 힘이 빠지는 경고가 나왔어요. 비중을 늘리지 말고 지켜봐요.',
-  EXPIRED:'예전 규칙의 결과예요. 다음 갱신 때 새 규칙으로 다시 계산돼요.',
+  EXPIRED:'예전 규칙의 결과예요. 다음 갱신 때 새 규칙으로 다시 계산해요.',
   UNAVAILABLE:'지수 가격·거래량 자료가 모두 확인돼야 판정해요.'};
 export const freshIndex=(s,expected)=>!!s&&s.status==='OK'&&!!expected&&s.asOf===expected;
 export function ftdSummary(block,expected,failed=false){

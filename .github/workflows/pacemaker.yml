@@ -1,0 +1,54 @@
+name: 정시 깨우개
+
+# 깃허브 예약(cron)이 2~9시간씩 밀려서(2026-11-19 측정), 정해진 시각에 이 저장소의 작업을 직접(workflow_dispatch)
+# 시작시킨다. 직접 시작은 밀리지 않는다. 일정표: tools/pacemaker.json. 2026-11-20 사용자 결정(밀림 보강 B안).
+# 한 실행은 약 5시간 반 동안 기다렸다 걸기를 되풀이한 뒤 자기 자신을 다시 걸어 이어 달린다(작업 한도 6시간).
+# 공개 저장소라 실행 시간 비용이 없다. 사슬이 끊기면 아래 백업 예약이 다시 잇는다(이미 돌고 있으면 바로 끝남).
+# Claude 예약 작업(20·21·22·30·99)이 주 장치이고 이 작업은 보조다. 겹쳐 걸어도 각 작업이 이미 한 회차는 건너뛴다.
+on:
+  schedule:
+    - cron: "7 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      since:
+        description: "앞 실행이 어디까지 걸었는지(유닉스 초). 손으로 걸 때는 비워 둔다"
+        type: string
+        default: ""
+  push:
+    branches: [main]
+    paths: ["tools/pacemaker.py", "tools/pacemaker.json", ".github/workflows/pacemaker.yml"]
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - name: 사슬 하나만 남기기
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          others=$(gh run list -R "$GITHUB_REPOSITORY" -w pacemaker.yml -L 20 --json databaseId,status \
+            -q "[.[] | select(.databaseId != $GITHUB_RUN_ID and (.status == \"in_progress\" or .status == \"queued\" or .status == \"waiting\" or .status == \"pending\"))] | .[].databaseId")
+          echo "다른 깨우개: ${others:-없음}"
+          if [ "$EVENT" = "push" ]; then
+            # 일정표나 코드가 바뀌면 옛 사슬을 멈추고 새 코드로 잇는다
+            for id in $others; do gh run cancel "$id" -R "$GITHUB_REPOSITORY" || true; done
+          elif [ "$EVENT" = "schedule" ] && [ -n "$others" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "이미 도는 깨우개가 있어 끝냄"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.skip != 'true'
+        with:
+          sparse-checkout: tools
+      - name: 정시에 걸기
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SINCE: ${{ inputs.since }}
+        run: python3 tools/pacemaker.py --since "$SINCE" --budget 330
