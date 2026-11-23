@@ -308,7 +308,7 @@ table { font-size: 13px; }
 /* ===== 2026-10-19 UI 개선: 첫 화면 순서·탭 묶음·정렬 한 줄·휴대폰 산업 흐름 ===== */
 .meta-row { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 10px 0 2px; }
 .schedule-wrap { color: var(--muted); font-size: 12px; }
-/* 짝 화면(시장 흐름판)으로 가는 링크 */
+/* 짝 화면(시장 상황판)으로 가는 링크 */
 .cross-link { margin-left: auto; padding: 5px 0; color: var(--muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 .cross-link:hover, .cross-link:focus-visible { color: var(--text, #e6edf5); }
 .schedule-wrap > summary { cursor: pointer; width: fit-content; padding: 5px 0; }
@@ -594,7 +594,7 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
 /* 종목 상세: 넓은 창 · 제목줄 고정 · 핵심 수치는 차트 옆(휴대폰은 차트 위) */
 #drawer { width: min(1120px, 96vw); max-width: none; max-height: 92vh; padding: 0; overflow: hidden; }
 #drawer[open] { display: flex; flex-direction: column; }
-/* 종목 창은 시장 흐름판처럼 오른쪽에 붙인다(2026-11-13 사용자 요청). 왼쪽에 남는 넓은 자리를 아무 데나 누르면 닫힌다.
+/* 종목 창은 시장 상황판처럼 오른쪽에 붙인다(2026-11-13 사용자 요청). 왼쪽에 남는 넓은 자리를 아무 데나 누르면 닫힌다.
    예전에는 화면 가운데를 거의 다 덮어(1440 중 1120) 바깥을 누를 자리가 좁았고, 결국 × 를 찾아 눌러야 했다. */
 @media (min-width: 761px) {
   #drawer { width: min(860px, 62vw); min-width: min(720px, 100vw); height: 100dvh; max-height: none; margin: 0 0 0 auto; border-width: 0 0 0 1px; border-radius: 0; box-shadow: -10px 0 34px #0008; }
