@@ -5265,5 +5265,36 @@
     "sectorConfidence": "LOW",
     "updatedAt": "2026-11-19",
     "failed": false
+  },
+  "491000": {
+    "schemaVersion": 9,
+    "businessProfile": {
+      "summary": "리브스메드는 보험료를 받고 위험을 인수하는 보험사업이 핵심입니다.",
+      "products": "개인·기업 대상 보험상품과 보험자산 운용",
+      "customers": "개인·기업 보험계약자가 고객이며 설계사·대리점·온라인 채널 등을 통해 판매합니다.",
+      "revenue": "보험료에서 지급보험금과 사업비를 뺀 보험손익과 보험자산 운용수익으로 돈을 법니다.",
+      "drivers": "손해율, 신계약 판매, 보험계약마진(CSM), 해지율, 금리와 운용수익률이 중요합니다.",
+      "segments": [
+        "건설·플랜트",
+        "소프트웨어·플랫폼",
+        "보험",
+        "유통·커머스",
+        "식품·음료",
+        "바이오·신약",
+        "전력·에너지"
+      ]
+    },
+    "businessModelSource": "OpenDART 정기보고서 직접추출 · OpenDART 원문 ZIP",
+    "businessModelReportDate": "20260323",
+    "businessModelUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260323001621",
+    "detailSector": "미용의료·의료기기",
+    "sectorTags": [
+      "미용의료·의료기기",
+      "제약·바이오",
+      "로봇·모션"
+    ],
+    "sectorConfidence": "HIGH",
+    "updatedAt": "2026-11-23",
+    "failed": false
   }
 }
