@@ -932,6 +932,7 @@ function markStep() {
   lastTabOfStep[step] = state.tab;
   document.querySelectorAll('.tabs .tab-group').forEach(g => { const on = g.dataset.step === step; g.classList.toggle('active', on); g.querySelector('.step-head')?.setAttribute('aria-current', on ? 'step' : 'false'); });
   const label = $('section-step'); if (label) label.textContent = STEP_LABEL[step];
+  paintTabOverflow(true);
 }
 // After switching tabs from far down the page, bring the list back to its start
 // instead of leaving the reader in the middle of a different list. The tab bar is
@@ -947,6 +948,25 @@ function keepTabsInView() {
   const set = () => document.documentElement.style.setProperty('--tabs-h', `${Math.ceil(tabs.getBoundingClientRect().height)}px`);
   set(); if ('ResizeObserver' in window) new ResizeObserver(set).observe(tabs); window.addEventListener('resize', set, { passive: true });
 })();
+// 휴대폰: 고른 단계의 탭 줄이 옆으로 넘치면 어느 쪽에 탭이 더 있는지 data-more 로 알려 그쪽 끝을 흐리게 하고,
+// 오른쪽에 더 있으면 탭 줄 끝에 '›' 표시(nav.more-right)를 띄운다. 고른 탭이 가려져 있으면 보이는 자리로 민다(2026-11-23).
+function paintTabOverflow(reveal = false) {
+  const nav = document.querySelector('nav.tabs.steps'); if (!nav) return;
+  let right = false;
+  nav.querySelectorAll('.step-tabs').forEach(row => {
+    if (!row.clientWidth) { row.removeAttribute('data-more'); return; }
+    if (reveal) {
+      const on = row.querySelector('button.active');
+      if (on) { const l = on.offsetLeft - row.offsetLeft, r = l + on.offsetWidth; if (l < row.scrollLeft || r > row.scrollLeft + row.clientWidth - 36) row.scrollLeft = Math.max(0, r - row.clientWidth + 44); }
+    }
+    const max = row.scrollWidth - row.clientWidth, more = max <= 1 ? '' : row.scrollLeft <= 1 ? 'right' : row.scrollLeft >= max - 1 ? 'left' : 'both';
+    row.dataset.more = more; if (more === 'right' || more === 'both') right = true;
+    if (!row.dataset.moreWatch) { row.dataset.moreWatch = '1'; row.addEventListener('scroll', () => paintTabOverflow(), { passive: true }); }
+  });
+  nav.classList.toggle('more-right', right);
+}
+window.addEventListener('resize', () => paintTabOverflow(), { passive: true });
+document.fonts?.ready?.then(() => paintTabOverflow());
 document.querySelectorAll('[data-step-go]').forEach(b => b.onclick = () => {
   const step = b.dataset.stepGo, tab = lastTabOfStep[step];
   if (!tab || tab === state.tab) { keepTabsInView(); return; }
