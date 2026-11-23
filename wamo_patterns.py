@@ -27,7 +27,7 @@ IMPORTANCE = {
 NAMES = {
     'stage': '2단계 상승 추세', 'vcp': '변동성 수축(VCP)', 'cup': '컵앤핸들',
     'flat': '플랫 베이스',
-    'dbl': '더블바텀', 'htf': '하이 타이트 플래그', 'pp': '포켓 피벗',
+    'dbl': '더블 바텀', 'htf': '하이 타이트 플래그', 'pp': '포켓 피벗',
     'darvas': '다바스 박스', 'cheat': '3C 치트 진입', 'asc': '상승 삼각형',
 }
 MASTERS = {
@@ -451,7 +451,7 @@ def detect_dbl(bars):
         pivot = peak
         confirmed = _confirm(bars, pivot)
         status, distance = _stage(bars, pivot, confirmed)
-        label = {'BREAKOUT': '더블바텀 확정', 'READY': '가운데 봉우리 근접', 'WATCH': 'W 바닥 형성'}[status]
+        label = {'BREAKOUT': '더블 바텀 확정', 'READY': '가운데 봉우리 근접', 'WATCH': 'W 바닥 형성'}[status]
         return _result(
             'dbl', status, label, pivot, low2, distance, t2 - t1,
             {'bottomGapPct': _r(gap, 1), 'undercut': bool(low2 < low1),

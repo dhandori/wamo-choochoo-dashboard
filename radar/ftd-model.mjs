@@ -1,4 +1,4 @@
-export const PHASES={OUTSIDE:'하락장 아님',EXPIRED:'반등 실패 · 기간 지남',CORRECTION:'하락장',RALLY:'반등 시도 중',LATE:'반등 시도 중 · 늦은 구간',CONFIRMED:'FTD 나옴 · 상승 전환 신호',PRESSURE:'FTD 흔들림 · 경고',UNAVAILABLE:'판정 보류'};
+export const PHASES={OUTSIDE:'하락장 아님',EXPIRED:'반등 실패 · 기간 지남',CORRECTION:'하락장',RALLY:'반등 시도 중',LATE:'반등 시도 중 · 늦은 구간',CONFIRMED:'FTD 나옴 · 상승 전환 신호',PRESSURE:'FTD 흔들림 · 경고',UNAVAILABLE:'판단 보류'};
 // One-line meaning shown under every phase label, so the word never stands alone.
 export const PHASE_MEANING={
   OUTSIDE:'지수가 크게 떨어진 상태가 아니라서 FTD를 찾지 않아요.',

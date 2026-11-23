@@ -60,7 +60,7 @@ const EV = {
   undercut: ['언더컷', 'bool'], firstBottom: ['첫 바닥', 'date'], secondBottom: ['두 번째 바닥', 'date'],
   poleGainPct: ['깃대 상승', 'pct'], poleDays: ['깃대 기간', 'days'],
   flagDropPct: ['깃발 하락', 'pct'], flagDays: ['깃발 기간', 'days'], flagVolumeRatio: ['깃발 거래량', 'x'],
-  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['눌림 저가–이평 거리', 'raw'],
+  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['눌림 저가–이동평균선 거리', 'raw'],
   closeToMa10Pct: ['종가–10일선', 'pct'], closeToMa50Pct: ['종가–50일선', 'pct'],
   reboundPct: ['최근 반등', 'pct'],
   boxWidthPct: ['박스 폭', 'pct'], boxDays: ['박스 기간', 'days'],
@@ -146,7 +146,7 @@ function selectRows(block, query, leading, meta = {}, market, only = {}) {
     // 시총을 모르는 종목은 하한을 걸면 뺀다(넘는지 알 수 없다).
     if (cap > 0 && !(isNum(stock.marketCap) && stock.marketCap >= cap)) continue;
     if (sector !== 'all' && stock.sector !== sector) continue;
-    if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry]
+    if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry, stock.industryLabel]
       .some(v => String(v || '').toLowerCase().includes(text))) continue;
     const setups = found.setups.filter(s =>
       (wantPhase === 'all' || s.status === wantPhase)
@@ -513,7 +513,7 @@ function card(row, market, meta, openStock, leading) {
   const head = n('div', null, 'pt-head');
   const name = n('button', null, 'pt-name'); name.type = 'button';
   name.onclick = () => openStock(stock.id);
-  const where = [stock.sector, stock.industry].filter((v, i, a) => v && a.indexOf(v) === i);
+  const where = [stock.sector, stock.industryLabel || stock.industry].filter((v, i, a) => v && a.indexOf(v) === i);
   name.append(n('strong', short(stock.name)), n('small', [stock.symbol, ...(where.length ? where : ['산업 미분류'])].join(' · ')));
   head.append(name, n('span', phaseLabel, `pt-phase phase-${phaseCls}`));
   box.append(head);
