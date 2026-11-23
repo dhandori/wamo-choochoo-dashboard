@@ -284,4 +284,18 @@ class InsightsTests(unittest.TestCase):
         self.assertIn('medianReturn20d',m['industries'][0])
         us=build_insights({'US':payload(stock('AAPL',industry='Chips'))},NOW)['markets']['US']
         self.assertEqual(us['stocks'][0]['industrySource'],'industry')
+
+    def test_us_industry_gets_korean_display_label(self):
+        # 2026-11-23: 미국 업종은 원문(name·industry)을 그대로 두고 화면용 한국어 이름만 붙인다. 표에 없는 이름엔 붙이지 않는다.
+        rows=[stock('MSFT',industry='Computer Software: Prepackaged Software'),stock('ZZZZ',industry='Made Up Industry')]
+        us=build_insights({'US':payload(*rows)},NOW)['markets']['US']
+        by={s['symbol']:s for s in us['stocks']}
+        self.assertEqual(by['MSFT']['industry'],'Computer Software: Prepackaged Software')
+        self.assertEqual(by['MSFT']['industryLabel'],'소프트웨어')
+        self.assertNotIn('industryLabel',by['ZZZZ'])
+        groups={g['name']:g for g in us['industries']}
+        self.assertEqual(groups['Computer Software: Prepackaged Software']['label'],'소프트웨어')
+        self.assertNotIn('label',groups['Made Up Industry'])
+        kr=build_insights({'KR':payload(stock('005930',industry='반도체'))},NOW)['markets']['KR']
+        self.assertNotIn('label',kr['industries'][0])
 if __name__=='__main__': unittest.main()

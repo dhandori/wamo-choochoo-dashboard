@@ -143,14 +143,17 @@ export function renderWeather(container, market, onOpen) {
     { 1: '이동평균선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
   chip('기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '),
     { 1: '상승', 0: '꺾임', '-1': '하락' }[ss] ?? '—', ss);
-  // 두 지수를 함께 적을 때는 숫자마다 지수 이름을 붙여 어느 쪽 값인지 보이게 한다(2026-11-23, 예: 'KOSPI 6 · KOSDAQ 4 / 25일').
+  // 두 지수를 함께 적을 때는 횟수마다 지수 이름을 붙여 어느 쪽 값인지 보이게 한다(2026-11-23, 예: 'KOSPI 6 · KOSDAQ 4 / 25일').
+  // 이름을 붙이면 칩이 길어져 넓은 화면 날씨 칸이 한 줄 늘어나므로, 가중 위험 점수는 칩 안내(마우스 올림·읽어 주기)에만 적는다.
+  // 위험 점수는 분산일 카드(시장 전환·FTD, 추세 신호 자세히)에 그대로 나온다.
   const dpairs = [[idx, dist], [idx2, dist2]].filter(([, d]) => d?.status === 'OK');
   const dok = dpairs.map(([, d]) => d);
   const dcount = dok.map(d => d.count);
   const named = dpairs.length > 1 && dpairs.every(([i]) => i?.label);
   const tag = (i, v) => named ? `${i.label} ${v}` : `${v}`;
   const riskNote = dok.some(d => isNum(d.score) && d.score !== d.count) ? ` · 위험 점수 ${dpairs.map(([i, d]) => tag(i, fmt(d.score, 1))).join(' · ')}` : '';
-  chip('분산일', dcount.length ? `${dpairs.map(([i, d]) => tag(i, d.count)).join(' · ')} / 25일${riskNote}` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
+  chip('분산일', dcount.length ? `${dpairs.map(([i, d]) => tag(i, d.count)).join(' · ')} / 25일` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
+  if (riskNote) { const c = chips.lastChild; c.title = c.title.replace(/( \([^)]*\))?$/, m => `${riskNote}${m}`); c.setAttribute('aria-label', c.title); }
   chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
   // Turnover verdict: a chip on wide screens; on phones it rides on the advice line so the strip keeps two chip rows.
   const lq = b.liquidity;
