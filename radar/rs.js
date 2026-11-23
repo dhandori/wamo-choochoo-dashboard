@@ -1,7 +1,7 @@
 // RS 한눈에 (2026-11-18 사용자 요청): 종목 상세 창과 산업을 골랐을 때 RS선·RS 점수·시장 기준선과 '왜 중요한가' 풀이.
 // 자료는 wamo_chart_{시장}.json(종목별 최근 260거래일 종가와 지수) 하나로 화면에서 계산한다. 수집 단계는 바꾸지 않는다.
 // - 1년 RS 점수: 오닐식 가중 수익률(최근 3개월 40%, 6·9·12개월 각 20%)을 차트 자료 안 종목끼리 1~99 등수로 매긴다.
-//   선도주 탭(wamo_trend.py oneil_raw)과 시장 흐름판(industry-strength update.py)과 같은 가중이다.
+//   선도주 탭(wamo_trend.py oneil_raw)과 시장 상황판(industry-strength update.py)과 같은 가중이다.
 // - 시장 기준선: 지수의 같은 가중 수익률을 종목들 사이에 한 칸 끼워 넣었을 때의 점수. 이보다 높으면 '시장보다 강한' 종목이다.
 // - 단기 RS: 표의 'RS' 칸(5·20·60일 20·40·40%)과 같은 값이며, 지수의 단기 기준선도 같은 방법으로 붙인다.
 // - 업종: 구성 종목을 같은 비중으로 묶은 지수 ÷ 시장 지수(RS선)와, 그 지수의 1년 RS 점수(종목 잣대).
@@ -16,7 +16,7 @@ function node(tag, attrs, parent) { const n = document.createElementNS(NS, tag);
 const isNum = v => typeof v === 'number' && Number.isFinite(v);
 const md = d => d ? `${+d.slice(5, 7)}/${+d.slice(8, 10)}` : '';
 
-// 가중 수익률. weights 의 가장 짧은 기간 기록이 없으면 null, 긴 기간이 없으면 있는 기간끼리 가중을 다시 나눈다(흐름판과 같다).
+// 가중 수익률. weights 의 가장 짧은 기간 기록이 없으면 null, 긴 기간이 없으면 있는 기간끼리 가중을 다시 나눈다(상황판과 같다).
 function weighted(closes, weights) {
   const n = closes.length, last = closes[n - 1];
   if (!isNum(last)) return null;
@@ -31,7 +31,7 @@ function weighted(closes, weights) {
 // 지수 배열은 중간에 빈 값이 있을 수 있어 앞 값으로 채운다.
 function ffill(a) { let p = null; return (a || []).map(v => (isNum(v) ? (p = v) : p)); }
 
-function scores(values) {   // {key: raw} → {key: 1~99} (같은 값은 평균 순위, 흐름판의 rank(pct=True)와 같다)
+function scores(values) {   // {key: raw} → {key: 1~99} (같은 값은 평균 순위, 상황판의 rank(pct=True)와 같다)
   const keys = Object.keys(values).filter(k => isNum(values[k]));
   const sorted = keys.map(k => values[k]).sort((a, b) => a - b), n = sorted.length, out = {};
   for (const k of keys) {
