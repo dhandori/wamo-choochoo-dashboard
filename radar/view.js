@@ -232,7 +232,7 @@ function stockButton(s) {
   const b = button('', false, () => detail(s)); b.className = 'stock-link'; b.title = s.name;
   const member=state.tab==='ai'?aiMembership(s):null;
   const name = el('strong', shortName(s)); const mb = boardBadge(s); if (mb) name.append(mb);
-  b.append(name, el('small', `${s.symbol} · ${member?member.role:s.industry}`));
+  b.append(name, el('small', `${s.symbol} · ${member?member.role:stockIndustry(s)}`));
   if(member)b.append(el('span',AI_SECTORS.filter(g=>member.sectors.includes(g.id)).map(g=>g.name).join(' · '),'ai-tags'));
   b.append(changeBadges(s));
   return b;
@@ -304,7 +304,7 @@ function renderDetail(s, data) {
   const heading = el('h2', s.name); heading.id = 'stock-detail-title';
   // 시장 배지는 제목 옆에 두되 제목(창 이름) 글자에는 섞지 않는다.
   const titleRow = el('div', null, 'detail-title-row'), mb = boardBadge(s), sb = stageBadge(s); titleRow.append(heading); if (mb) titleRow.append(mb); if (sb) titleRow.append(sb);
-  titles.append(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), titleRow, el('p', `${s.industry} · ${s.asOf} 거래일 종가`));
+  titles.append(el('div', `${s.symbol} · ${s.market}${s.exchange ? ' / ' + s.exchange : ''}`, 'eyebrow'), titleRow, el('p', `${stockIndustry(s)} · ${s.asOf} 거래일 종가`));
   const ml = boardMarketLine(s); if (ml) titles.append(ml);
   const membership=aiMembership(s);
   if(membership)titles.append(el('p',`AI 연관 분류: ${AI_SECTORS.filter(g=>membership.sectors.includes(g.id)).map(g=>g.name).join(' · ')} / ${membership.role}`,'ai-detail'));
@@ -506,6 +506,10 @@ function railValue(m, g, period) {
   const mid = nums.length >> 1;
   return nums.length % 2 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
 }
+// 미국 업종은 자료에 한국어 이름(label·industryLabel)이 있으면 그것을 보이고, 영문 원문은 마우스를 올리면 나온다(2026-11-23).
+// 예전 자료(이름 칸이 없음)는 원문 그대로 보인다.
+const industryName = g => g?.label || g?.name || '';
+const stockIndustry = s => s.industryLabel || s.industry;
 function openIndustry(g) {
   Object.assign(state, { tab: 'industries', industry: g, query: '', rs: false, stage: false, newOnly:false, page: 1 }); $('search').value = ''; render();
 }
@@ -528,7 +532,7 @@ function renderRail(m) {
   groups.forEach(g => {
     const b = button('', false, () => openIndustry(g)); b.className = 'rail-group';
     const v = value(g);
-    const top = el('div', null, 'rail-group-top'); const nm = el('strong', g.name); nm.title = g.name; top.append(nm, el('span', pct(v), tone(v)));
+    const top = el('div', null, 'rail-group-top'); const nm = el('strong', industryName(g)); nm.title = g.label ? `${g.label} · ${g.name}` : g.name; top.append(nm, el('span', pct(v), tone(v)));
     const bar = el('div', null, 'flow-bar'); bar.setAttribute('aria-hidden', 'true');
     if (numeric(v)) {
       const fill = el('span', null, tone(v));
@@ -636,7 +640,7 @@ function sortPanel(){
 function industryList(m) {
   const value = g => railValue(m, g, railPeriod);
   const q = state.query.toLowerCase();
-  const all = m.industries.filter(g => (!state.confirmed || g.confirmed) && (!q || g.name.toLowerCase().includes(q)));
+  const all = m.industries.filter(g => (!state.confirmed || g.confirmed) && (!q || `${g.name} ${g.label || ''}`.toLowerCase().includes(q)));
   const shown = all.filter(g => state.smallGroups || bigEnough(g));
   shown.sort((a, b) => (value(b) ?? -Infinity) - (value(a) ?? -Infinity) || b.nearHighCount - a.nearHighCount);
   const hidden = all.length - shown.length;
@@ -656,7 +660,7 @@ function industryList(m) {
   const scale = Math.max(1, ...shown.map(g => Math.abs(value(g) || 0)));
   shown.forEach((g, i) => {
     const row = button('', false, () => openIndustry(g)); row.className = `ind-row${g.confirmed ? ' confirmed' : ''}`; row.setAttribute('role', 'row');
-    const name = el('span', null, 'c-name'); name.append(el('strong', g.name));
+    const name = el('span', null, 'c-name'); const nmStrong = el('strong', industryName(g)); if (g.label) nmStrong.title = g.name; name.append(nmStrong);
     if (g.confirmed) name.append(el('em', '동반 강세', 'ind-chip'));
     const v = value(g), bar = el('i', null, 'ind-bar'); const fill = el('b', null, tone(v)); fill.style.width = `${Math.min(100, Math.abs(v || 0) / scale * 100)}%`; bar.append(fill); name.append(bar);
     const ret = (key, period) => el('span', pct(railValue(m, g, period)), `c-ret p-${period} ${tone(railValue(m, g, period))}${period === railPeriod ? ' sel' : ''}`);
@@ -665,7 +669,7 @@ function industryList(m) {
     adv.append(el('span', `${a5}/${g.memberCount}`), track);
     row.append(el('span', String(i + 1), 'c-rank'), name, el('span', `${g.memberCount}`, 'c-num c-members'), ret('medianChangePct', '1d'), ret('medianReturn5d', '5d'), ret('medianReturn20d', '20d'), adv,
       el('span', `${g.nearHighCount}`, `c-num${g.nearHighCount ? ' hot' : ''}`), el('span', `${g.volumeConfirmedCount}`, `c-num${g.volumeConfirmedCount ? ' hot' : ''}`));
-    row.setAttribute('aria-label', `${i + 1}위 ${g.name} · ${g.memberCount}종목 · ${RAIL_PERIODS[railPeriod][0]} ${pct(v)}`);
+    row.setAttribute('aria-label', `${i + 1}위 ${industryName(g)} · ${g.memberCount}종목 · ${RAIL_PERIODS[railPeriod][0]} ${pct(v)}`);
     table.append(row);
   });
   wrap.append(table);
@@ -896,7 +900,7 @@ function render() {
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
   renderSpMovers($('sp-movers'), { market: state.market, tab: state.tab, onPick: t => { const s = (m.stocks || []).find(x => x.ticker === t); if (s) detail(s); else window.open(`https://finance.yahoo.com/quote/${encodeURIComponent(t.replace('.', '-'))}`, '_blank', 'noopener'); } });
   const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에서 봐요'], high: ['당일 신고가', '이 거래일에 52주 고점을 실제로 넘긴 종목'], high60: ['60일 신고가', '이 거래일에 최근 60거래일(약 3개월) 고점을 넘긴 종목 · 52주보다 기간이 짧아 조정 뒤 다시 오르는 종목을 일찍 잡지만 가짜 돌파도 많아요'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 보여요'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿔요'] };
-  $('section-title').textContent = state.industry ? state.industry.name : labels[state.tab][0]; $('section-description').textContent = state.tab === 'movers' && state.mode === 'stable' ? '재무 기준을 통과한 중대형주 가운데 당일 상승률이 높은 30종목 · 옛 ‘상승률 TOP 30’ 화면을 옮겨 왔어요' : labels[state.tab][1];
+  $('section-title').textContent = state.industry ? industryName(state.industry) : labels[state.tab][0]; $('section-description').textContent = state.tab === 'movers' && state.mode === 'stable' ? '재무 기준을 통과한 중대형주 가운데 당일 상승률이 높은 30종목 · 옛 ‘상승률 TOP 30’ 화면을 옮겨 왔어요' : labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();
   if (state.tab === 'industries' && !state.industry) {
     content.append(industryList(m));
