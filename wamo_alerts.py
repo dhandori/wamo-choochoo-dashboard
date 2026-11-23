@@ -20,7 +20,7 @@ TITLE = {'KR': '한국장', 'US': '미국장', 'JP': '일본장', 'TW': '대만�
 # Same words as the radar's FTD tab (radar/ftd-model.mjs PHASES).
 FTD_PHASE = {'OUTSIDE': '하락장 아님', 'CORRECTION': '하락장', 'RALLY': '반등 시도 중',
              'LATE': '반등 시도 중 · 늦은 구간', 'CONFIRMED': 'FTD 나옴 · 상승 전환 신호',
-             'PRESSURE': 'FTD 흔들림 · 경고', 'UNAVAILABLE': '판정 보류'}
+             'PRESSURE': 'FTD 흔들림 · 경고', 'UNAVAILABLE': '판단 보류'}
 FTD_FRESH_SESSIONS = 3  # only alert on an FTD from the last few sessions (catch-up after a failed run)
 
 

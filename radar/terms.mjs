@@ -48,7 +48,7 @@ export const LEADER_TERMS = {
   growthBack: ['실적 뒷받침', '최근 분기 EPS 기준(CAN SLIM C)을 통과했거나 매출이 1년 전보다 20% 이상 늘어난 종목입니다. 한국은 OpenDART, 미국은 SEC·Nasdaq 재무 자료를 씁니다. 자료가 없으면 판단하지 않습니다.'],
 };
 
-export const WATCH_SHORT = { rsRising: 'RS↑', nearHigh: '신고가', together: '함께', reclaim: '이평+거래량', growth: '실적', candidate: '후보' };
+export const WATCH_SHORT = { rsRising: 'RS↑', nearHigh: '신고가', together: '함께', reclaim: '50일선+거래량', growth: '실적', candidate: '후보' };
 
 export const STAGES = {
   NEW: ['🆕', '신규 진입', '5거래일 전에는 상위 20% 밖이었는데, 이번에 안으로 들어왔어요.'],

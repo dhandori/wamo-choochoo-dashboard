@@ -397,7 +397,7 @@ function strengthSection(s, series) {
     kvRow('거래량 배수', volume(s), { bar: volBar(s) }),
     kvRow('추세 단계', stageOf(s) ? `Stage ${stageOf(s)} · ${STAGE_INFO[stageOf(s)][0]}` : '정보 없음', { cls: stageOf(s) === 2 ? 'good' : '', note: stageOf(s) ? STAGE_INFO[stageOf(s)][1] : null }),
     gap200Row(series),
-    kvRow('8조건', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '', note: '미너비니의 8가지 조건(이평선 정배열·52주 고점 근처·RS 등)을 모두 채웠는지예요. Stage 2보다 엄격해요.' }),
+    kvRow('8조건', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '', note: '미너비니의 8가지 조건(이동평균선 정배열·52주 고점 근처·RS 등)을 모두 채웠는지예요. Stage 2보다 엄격해요.' }),
     kvRow('시가총액', marketCap(s, true)),
   ], 'strength-sec');
 }

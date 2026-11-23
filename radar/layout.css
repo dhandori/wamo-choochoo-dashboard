@@ -14,8 +14,8 @@
 .bento .tr-idx-pills { margin: 0; }
 .bento .tr-weather-text { font-size: 13.5px; line-height: 1.45; }
 .bento .tr-chips { justify-content: flex-start; gap: 5px; }
-.bento .tr-chip { padding: 2px 8px 2px 7px; font-size: 11.5px; }
-.bento .tr-chip small { font-size: 11.5px; }
+.bento .tr-chip { padding: 2px 8px 2px 7px; font-size: 12px; }
+.bento .tr-chip small { font-size: 12px; }
 .bento .ix-cell, .bento .metric { margin: 0; min-height: 0; }
 .bento .ix-cell { justify-content: center; }
 .bento .metric { padding: 10px 14px; }
@@ -45,8 +45,8 @@
   .bento .tr-gauge small { display: none; }
   .bento .tr-gauge-track { min-width: 48px; }
   .bento .tr-idx-pills { width: auto; margin: 0; flex: 0 1 auto; }
-  .bento .tr-idx-pill { gap: 4px; padding: 2px 8px; font-size: 11.5px; }
-  .bento .tr-idx-pill b { font-size: 11.5px; }
+  .bento .tr-idx-pill { gap: 4px; padding: 2px 8px; font-size: 12px; }
+  .bento .tr-idx-pill b { font-size: 12px; }
   /* 설명·칩이 접혀 있으면 아래 빈 칸 몫의 간격을 두지 않는다. */
   .bento .tr-weather.collapsed { row-gap: 0; }
   /* 원래 규칙 유지: 휴대폰 추세·종목 탭은 탭 숫자와 겹치는 집계 칸을 숨긴다(AI 탭만 보임). */

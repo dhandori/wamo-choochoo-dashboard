@@ -708,9 +708,9 @@ def weather(idx, dist, br, hl, synthetic, secondary=None, liq=None, scope='전�
     if known_s:
         score = -1 if -1 in known_s else 1 if all(k == 1 for k in known_s) else 0
         text = ' / '.join(f'{label}: {desc}' if len(slopes) > 1 else desc for label, st, desc in slopes if st is not None)
-        text += {1: '. 이평선이 모두 위를 향해요.', -1: '. 이평선이 아래를 향하기 시작했어요.',
+        text += {1: '. 이동평균선이 모두 위를 향해요.', -1: '. 이동평균선이 아래를 향하기 시작했어요.',
                  0: '. 기울기가 꺾이거나 평평해졌어요.'}[score]
-        add('slope', '이평선 기울기', score, text)
+        add('slope', '이동평균선 기울기', score, text)
     dists = [(idx.get('label') or '지수', dist)]
     if secondary and (secondary.get('distribution') or {}).get('status') == 'OK':
         dists.append((secondary.get('label'), secondary['distribution']))

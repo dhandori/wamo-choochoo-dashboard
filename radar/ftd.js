@@ -56,7 +56,8 @@ function chart(s){
   const rows=all.slice(off), m20=ma20.slice(off);
   const NS='http://www.w3.org/2000/svg';
   // Phone uses a narrow drawing so text stays readable after scaling.
-  const W=phone?400:900,H=phone?330:380,L=8,R=phone?52:70,T=14,P=phone?220:255,V=P+30,VH=phone?44:56,FS=phone?12:12;
+  // 휴대폰 폭은 카드 안쪽 폭(화면 폭 - 약 58px)에 맞춰 축 글자가 화면 기준 12px 그대로 보이게 한다(2026-11-23, 예전 400 고정은 0.83배).
+  const W=phone?Math.max(280,Math.min(400,Math.round(window.innerWidth-58))):900,H=phone?330:380,L=8,R=phone?52:70,T=14,P=phone?220:255,V=P+30,VH=phone?44:56,FS=phone?12:12;
   const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('role','img');svg.setAttribute('aria-label',`${s.label} 종가·20일선·50일선·거래량과 FTD 기준선`);
   function add(tag,attrs,text){const el=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));if(text)el.textContent=text;svg.append(el);return el;}
   const levels=[s.rally?.low,s.ftd?.low].filter(v=>typeof v==='number');
@@ -100,7 +101,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   const deck=n('div',null,'ftd-indexes');
   indexes.forEach((s,i)=>{const b=n('button',null,`ftd-index ${selected[market]===i?'selected':''}`);b.type='button';b.setAttribute('aria-pressed',String(selected[market]===i));
     const isFresh=freshIndex(s,expected)&&!failed;
-    b.append(n('span',s.label),badge(isFresh?(weakFtd(s)?'FTD 나옴 · 신뢰도 낮음':phaseName(s)):'판정 보류',isFresh?(weakFtd(s)?'PRESSURE':s.phase):'UNAVAILABLE'),n('small',isFresh?(uptrendDone(s)?'FTD 뒤 하락 전 고점을 되찾았어요.':weakFtd(s)?'FTD는 나왔지만 신뢰도가 낮아요. 시험 매수도 더 조심스럽게 봐요.':PHASE_MEANING[s.phase]||''):'자료 확인 전에는 판정하지 않아요.'),
+    b.append(n('span',s.label),badge(isFresh?(weakFtd(s)?'FTD 나옴 · 신뢰도 낮음':phaseName(s)):'판단 보류',isFresh?(weakFtd(s)?'PRESSURE':s.phase):'UNAVAILABLE'),n('small',isFresh?(uptrendDone(s)?'FTD 뒤 하락 전 고점을 되찾았어요.':weakFtd(s)?'FTD는 나왔지만 신뢰도가 낮아요. 시험 매수도 더 조심스럽게 봐요.':PHASE_MEANING[s.phase]||''):'자료 확인 전에는 판정하지 않아요.'),
       ...(isFresh&&(weakFtd(s)||(s.ftd&&s.ftd.date===s.asOf&&volEstimated(s)))?[n('small',[weakFtd(s)?`⚠ ${md(s.ftd.afterDayOneUndercut)} Day 1 저가 이탈 뒤 FTD · 신뢰도 낮음`:null,s.ftd.date===s.asOf&&volEstimated(s)?'거래량 확정 전(잠정)':null].filter(Boolean).join(' · '),'ftd-index-warn')]:[]),n('small',`${s.asOf||'—'} 종가${s.rally?` · 반등 Day ${s.rally.day}`:['CORRECTION'].includes(s.phase)?' · 반등 대기':''}`,'ftd-index-sub'));
     b.onclick=()=>{selected[market]=i;renderFTD(container,market,block,{expected,failed,openLeaders});};deck.append(b);
   });
@@ -121,7 +122,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   if(!fresh){const messages=[failed?'최신 파일을 다시 불러오지 못했습니다.':null,s.note||'지수 데이터가 최신인지, 빠진 날이 없는지 확인하지 못했습니다.',expected&&s.asOf!==expected?`최근 마감 거래일 ${expected}`:null];container.append(n('div',messages.filter(Boolean).join(' '),'ftd-data-warning'));}
   container.append(flow(s,fresh));
   const panel=n('section',null,`ftd-panel ftd-${fresh?s.phase.toLowerCase():'unavailable'}`);
-  const head=n('div',null,'ftd-panel-head'),title=n('div');title.append(n('div',s.label,'eyebrow'),n('h3',fresh?(weakFtd(s)?'FTD 나옴 · 신뢰도 낮음':phaseName(s)):'현재 판정 보류'),n('p',fresh?phaseNote(s):(s.status==='STALE'?`${s.asOf} 기준 과거 상태: ${PHASES[s.phase]}`:NOTE.UNAVAILABLE)));head.append(title);panel.append(head);
+  const head=n('div',null,'ftd-panel-head'),title=n('div');title.append(n('div',s.label,'eyebrow'),n('h3',fresh?(weakFtd(s)?'FTD 나옴 · 신뢰도 낮음':phaseName(s)):'현재 판단 보류'),n('p',fresh?phaseNote(s):(s.status==='STALE'?`${s.asOf} 기준 과거 상태: ${PHASES[s.phase]}`:NOTE.UNAVAILABLE)));head.append(title);panel.append(head);
   if(fresh&&(weakFtd(s)||(s.ftd&&s.ftd.date===s.asOf&&volEstimated(s)))){const c=n('div',null,'ftd-caution');c.append(n('strong','⚠ 이 FTD는 조심해서 보세요'));
     if(s.ftd&&s.ftd.date===s.asOf&&volEstimated(s))c.append(n('p',`오늘 거래량은 아직 확정 전입니다. 지금 ${num(s.ftd.volumeRatio,2)}배는 추정값이라, 내일 거래량이 확정되면 FTD가 취소될 수 있습니다.`));
     panel.append(c);}

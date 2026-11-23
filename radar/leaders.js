@@ -17,6 +17,19 @@ const NO = ['①', '②', '③', '④', '⑤', '⑥', '⑦'];
 const SVG = 'http://www.w3.org/2000/svg';
 const sv = (tag, attrs = {}, text) => { const e = document.createElementNS(SVG, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (text != null) e.textContent = text; return e; };
 const clip = (t, k) => { t = short(t); return t.length > k ? `${t.slice(0, k - 1)}…` : t; };
+/** 지도 이름표용: k글자 넘는 이름을 두 줄로 나눈다. 괄호 앞·빈칸 앞·가운뎃점 뒤에서 끊고, 둘째 줄도 넘치면 '…'. */
+const mapLines = (t, k) => {
+  t = short(t); if (t.length <= k) return [t];
+  const paren = t.indexOf('(');
+  let cut = paren >= 2 && paren <= k && t.length - paren <= k ? paren : -1;
+  for (let i = Math.min(k, t.length - 1); cut < 0 && i > k / 2; i--) {
+    if (/[\s(]/.test(t[i])) cut = i;
+    else if (/[·/,:]/.test(t[i]) && i < k) cut = i + 1;
+  }
+  if (cut < 0) cut = k;
+  const a = t.slice(0, cut).trim(), b = t.slice(cut).trim();
+  return [a, b.length > k ? `${b.slice(0, k - 1)}…` : b];
+};
 
 const EMERGENCE = {
   CONFIRMED: ['출현 확인', 'good', 'FTD 뒤 10거래일 안에 신고가를 뚫은 선도주가 기준 수를 넘었어요. 상승장이 진짜일 가능성이 커졌다는 뜻이에요. 비중을 늘릴지 따져 볼 만한 단계예요.'],
@@ -142,7 +155,7 @@ function emergenceCard(L, market, openStock, openFTD, no) {
   const [label, tone, meaning] = EMERGENCE[e.status] || EMERGENCE.NO_FTD;
   const card = n('section', null, `ld-card ld-emergence tone-${tone}`); card.id = 'ld-sec-emergence';
   const head = n('div', null, 'ld-card-head');
-  const h = n('h3'); h.append(`${no} `, term('emergence', '선도주 출현 신호'));
+  const h = n('h3'); h.append(term('emergence', '선도주 출현 신호'));
   head.append(h, n('span', label, `ld-status tone-${tone}`)); card.append(head);
   card.append(n('p', meaning, 'ld-meaning'));
   const meter = n('div', null, 'ld-meter');
@@ -228,7 +241,7 @@ function topCard(L, market, openStock, rerender, no, flow, openRow) {
   const ind = blockOf(L, market);
   const card = n('section', null, 'ld-card'); card.id = 'ld-sec-top';
   const head = n('div', null, 'ld-card-head');
-  const h = n('h3'); h.append(`${no} 지금 강한 업종 TOP 5`);
+  const h = n('h3'); h.append('지금 강한 업종 TOP 5');
   head.append(h, n('span', `선도업종 ${ind.leadingCount ?? 0}개 / ${ind.count ?? 0}개 업종`, 'ld-status tone-none'));
   card.append(head);
   const vt = viewToggle(L, market, rerender); if (vt) card.append(vt);
@@ -327,7 +340,7 @@ function industryCard(L, market, openStock, rerender, no, flow) {
   const ind = blockOf(L, market), big = viewOf(L, market) === 'big';
   const card = n('section', null, 'ld-card'); card.id = 'ld-sec-industries';
   const head = n('div', null, 'ld-card-head');
-  const h = n('h3'); h.append(`${no} `, term('industryRs', '업종 RS'), ' 순위 · ', term('leadingIndustry', '선도업종'));
+  const h = n('h3'); h.append(term('industryRs', '업종 RS'), ' 순위 · ', term('leadingIndustry', '선도업종'));
   head.append(h, n('span', `선도업종 ${ind.leadingCount ?? 0}개 / ${ind.count ?? 0}개 업종`, 'ld-status tone-none'));
   card.append(head);
   const vt = viewToggle(L, market, rerender); if (vt) card.append(vt);
@@ -383,7 +396,7 @@ function leaderCard(L, openStock, rerender, no, market) {
   const ld = L.leaders || {};
   const card = n('section', null, 'ld-card'); card.id = 'ld-sec-leaders';
   const head = n('div', null, 'ld-card-head');
-  const h = n('h3'); h.append(`${no} `, term('leader', '선도주'), ' 목록');
+  const h = n('h3'); h.append(term('leader', '선도주'), ' 목록');
   head.append(h, n('span', `${ld.count ?? 0}종목 · 핵심 ${ld.coreCount ?? 0}`, 'ld-status tone-none'));
   card.append(head);
   card.append(n('p', 'RS 80 이상 · 52주 고점 15% 이내 · Stage 2 · 유동성을 모두 채운 종목이에요. 표시(★·돌파·버팀)를 누르면 뜻이 나와요. 종목을 누르면 차트가 열려요.', 'ld-meaning'));
@@ -457,7 +470,7 @@ const PHASE_BANNER = {
   WAIT: ['FTD 전 · 준비하는 때', 'mid', '시장은 아직 바닥을 확인하지 못했어요. 지금은 사는 때가 아니라, 지수보다 먼저 강해지는 업종을 찾아 워치리스트를 만들어 두는 때예요. FTD가 나오면 이 목록부터 봐요.'],
   FTD: ['FTD 나옴 · 선도주를 확인하는 때', 'good', 'FTD가 나왔어요. 미리 준비한 업종의 종목이 실제로 거래량을 싣고 신고가를 뚫는지 확인해요. 뚫는 종목이 많아야 진짜 상승장이에요.'],
   UPTREND: ['상승장 · 선도업종이 버티는지 보는 때', 'none', '지수가 크게 빠진 상태가 아니에요. 선도업종이 계속 강한지, 다음으로 올라오는 업종(워치리스트)이 무엇인지 봐요.'],
-  UNKNOWN: ['시장 상태 판정 보류', 'none', 'FTD 판정 자료가 없어 시장 상태를 정하지 않았어요. 아래 숫자는 그대로 볼 수 있어요.'],
+  UNKNOWN: ['시장 상태 판단 보류', 'none', 'FTD 판정 자료가 없어 시장 상태를 정하지 않았어요. 아래 숫자는 그대로 볼 수 있어요.'],
 };
 const PHASE_WORD = { OUTSIDE: '하락장 아님', CORRECTION: '하락장', RALLY: '반등 시도', LATE: '반등 시도(늦은 구간)', CONFIRMED: 'FTD 나옴', PRESSURE: 'FTD 흔들림' };
 
@@ -493,7 +506,7 @@ const SEC_NAME = { top: '강한 업종 TOP 5', emergence: '출현 신호', leade
 function sectionNav(order, jump, now) {
   const nav = n('nav', null, 'ld-nav'); nav.setAttribute('aria-label', '선도주 화면 바로가기');
   order.forEach((key, i) => {
-    const b = n('button', `${NO[i]} ${SEC_NAME[key]}${key === now ? ' · 지금 볼 카드' : ''}`, key === now ? 'now' : ''); b.type = 'button';
+    const b = n('button', `${SEC_NAME[key]}${key === now ? ' · 지금 볼 카드' : ''}`, key === now ? 'now' : ''); b.type = 'button';
     b.dataset.sec = key; b.onclick = () => jump(key); nav.append(b);
   });
   return nav;
@@ -507,14 +520,15 @@ function mapCard(L, no, focusIndustry, market, rerender) {
   const pts = (ind.map || []).filter(p => isNum(p.rs) && isNum(p.nearHighPct));
   const card = n('section', null, 'ld-card'); card.id = 'ld-sec-map';
   const head = n('div', null, 'ld-card-head');
-  const h = n('h3'); h.append(`${no} `, term('industryMap', '업종 지도'), ' · RS × 신고가 근접');
+  const h = n('h3'); h.append(term('industryMap', '업종 지도'), ' · RS × 신고가 근접');
   head.append(h, n('span', `${pts.length}개 업종`, 'ld-status tone-none')); card.append(head);
   { const vt = viewToggle(L, market, rerender); if (vt) card.append(vt); }
   card.append(n('p', '상대강도(RS)와 52주 신고가를 함께 봐요. 오른쪽 위로 갈수록 시장보다 강하고 고점 근처 종목도 많은 업종이에요. 초록은 선도업종, 노랑은 FTD 대기 워치리스트예요. 점을 누르면 업종 정보가 나와요.', 'ld-meaning'));
   if (pts.length < 3) { card.append(n('div', '지도를 그릴 업종 자료가 부족합니다.', 'ld-empty')); return card; }
   // 휴대폰은 좁은 판으로 다시 그려 글자가 작아지지 않게 한다.
   const narrow = typeof window !== 'undefined' && window.innerWidth < 700;
-  const W = narrow ? 380 : 640, H = narrow ? 300 : 330, ml = narrow ? 50 : 64, mr = 12, mt = 14, band = 34, mb = 40, pw = W - ml - mr, ph = H - mt - band - mb;
+  // 휴대폰 판 폭은 실제 화면 폭에 맞춰 줄여 글자가 화면 기준 11px 아래로 작아지지 않게 한다(카드 안쪽 여백 약 50px).
+  const W = narrow ? Math.max(300, Math.min(380, Math.round(window.innerWidth - 50))) : 640, H = narrow ? 300 : 330, ml = narrow ? 50 : 64, mr = 12, mt = 14, band = 34, mb = 40, pw = W - ml - mr, ph = H - mt - band - mb;
   const X = v => ml + (v / 100) * pw, Y = v => mt + (1 - v / 100) * ph, bandY = mt + ph + band / 2;
   const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, class: 'ld-map', role: 'img', 'aria-label': '업종 RS와 신고가 근접 비율 지도' });
   const pol = L.policy || {};
@@ -565,13 +579,19 @@ function mapCard(L, no, focusIndustry, market, rerender) {
   const placed = [];
   labelled.forEach(p => {
     const [x, y0] = pos.get(p), inBand = p.nearHighPct === 0;
-    const y = inBand ? mt + ph - 6 : (y0 - 10 < mt + 8 ? y0 + 16 : y0 - 10), txt = clip(labelOf(p), 12);
+    // 긴 업종 이름은 잘라 버리지 않고 두 줄까지 나눠 쓴다(2026-11-23). 셋째 줄 몫만 '…'로 줄인다.
+    const lines = mapLines(labelOf(p), 12), lh = 13, extra = (lines.length - 1) * lh;
+    // 이름표 묶음의 마지막 줄 기준선(y)과 첫 줄 기준선(top). 점 위에 둘 때는 위로 쌓고, 위가 모자라면 점 아래로 내린다.
+    const above = !inBand && y0 - 10 - extra >= mt + 8;
+    const y = inBand ? mt + ph - 6 : above ? y0 - 10 : y0 + 16 + extra, top = y - extra;
     // Korean/Chinese characters are about one font-size wide; Latin letters about half.
-    const w = [...txt].reduce((sum, ch) => sum + (/[ᄀ-鿿가-힯＀-￯]/.test(ch) ? 11.8 : 6.8), 0);
+    const w = Math.max(...lines.map(t => [...t].reduce((sum, ch) => sum + (/[ᄀ-鿿가-힯＀-￯]/.test(ch) ? 11.8 : 6.8), 0)));
     const left = Math.max(ml + 2, Math.min(W - mr - w, x - w / 2));
-    if (placed.some(q => Math.abs(q.y - y) < 12 && left < q.r + 4 && left + w > q.l - 4)) return;
-    placed.push({ l: left, r: left + w, y });
-    svg.append(sv('text', { x: left, y, class: `ld-map-name ${kind(p)}` }, txt));
+    if (placed.some(q => top - 12 < q.y && q.top - 12 < y && left < q.r + 4 && left + w > q.l - 4)) return;
+    placed.push({ l: left, r: left + w, y, top });
+    const t = sv('text', { x: left, y: top, class: `ld-map-name ${kind(p)}` });
+    lines.forEach((line, i) => t.append(sv('tspan', { x: left, dy: i ? lh : 0 }, line)));
+    svg.append(t);
   });
   card.append(svg, info);
   const legend = n('div', null, 'ld-map-legend');
@@ -596,7 +616,7 @@ function watchCard(L, openStock, rerender, no, flow = new Map(), market = 'KR') 
   const checks = L.watchChecks || [];
   const card = n('section', null, 'ld-card ld-watch'); card.id = 'ld-sec-watch';
   const head = n('div', null, 'ld-card-head');
-  const h = n('h3'); h.append(`${no} `, term('watchlist', 'FTD 대기 워치리스트'));
+  const h = n('h3'); h.append(term('watchlist', 'FTD 대기 워치리스트'));
   head.append(h, n('span', `${ind.watchCount ?? 0}개 업종`, 'ld-status tone-mid')); card.append(head);
   card.append(n('p', '매수 목록이 아니라 기회가 올 때를 대비하는 목록이에요. 지수보다 먼저 강해지는 업종을 6가지 질문(①~⑥, 초록 = 예)으로 점검해 4개 이상 "예"인 업종을 올려 둬요. 시장에서 FTD가 나오면 이 업종의 후보 종목부터 봐요. 업종 줄을 누르면 구성 종목이 펼쳐져요(워치리스트는 세부 업종 기준).', 'ld-meaning'));
   const q = n('ol', null, 'ld-questions');
@@ -723,8 +743,9 @@ export function renderLeaders(container, market, block, { openStock, openFTD, st
   };
   const make = { top: no => topCard(L, market, openStock, rerender, no, flow, openRow), watch: no => watchCard(L, openStock, rerender, no, flow, market), map: no => mapCard(L, no, focusIndustry, market, rerender), industries: no => industryCard(L, market, openStock, rerender, no, flow), emergence: no => emergenceCard(L, market, openStock, null, no), leaders: no => leaderCard(L, openStock, rerender, no, market) };
   container.append(phaseBanner(L, openFTD, jump, market), sectionNav(order, jump, now), intro, gloss);
-  order.forEach((key, i) => {
-    const c = make[key](NO[i]);
+  // 카드 제목에는 번호를 붙이지 않는다. ①②③은 화면 위 단계(시장·업종·종목) 이름에 쓰여 헷갈린다(2026-11-23).
+  order.forEach(key => {
+    const c = make[key]();
     if (key === now) { c.classList.add('ld-now'); c.querySelector('.ld-card-head')?.append(n('span', '지금 볼 카드', 'ld-now-badge')); }
     container.append(c);
   });

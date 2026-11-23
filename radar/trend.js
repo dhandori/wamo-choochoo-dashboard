@@ -140,13 +140,17 @@ export function renderWeather(container, market, onOpen) {
   const arrow = d => ({ up: '↗', flat: '→', down: '↘' })[d] || '·';
   const si = score('index'), ss = score('slope');
   chip('지수', [idx, idx2].filter(Boolean).map(i => `${i.label} ${pct(i.changePct)}`).join(' · '),
-    { 1: '이평선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
+    { 1: '이동평균선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
   chip('기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '),
     { 1: '상승', 0: '꺾임', '-1': '하락' }[ss] ?? '—', ss);
-  const dok = [dist, dist2].filter(d => d?.status === 'OK');
+  // 두 지수를 함께 적을 때는 숫자마다 지수 이름을 붙여 어느 쪽 값인지 보이게 한다(2026-11-23, 예: 'KOSPI 6 · KOSDAQ 4 / 25일').
+  const dpairs = [[idx, dist], [idx2, dist2]].filter(([, d]) => d?.status === 'OK');
+  const dok = dpairs.map(([, d]) => d);
   const dcount = dok.map(d => d.count);
-  const riskNote = dok.some(d => isNum(d.score) && d.score !== d.count) ? ` · 위험 점수 ${dok.map(d => fmt(d.score, 1)).join(' · ')}` : '';
-  chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일${riskNote}` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
+  const named = dpairs.length > 1 && dpairs.every(([i]) => i?.label);
+  const tag = (i, v) => named ? `${i.label} ${v}` : `${v}`;
+  const riskNote = dok.some(d => isNum(d.score) && d.score !== d.count) ? ` · 위험 점수 ${dpairs.map(([i, d]) => tag(i, fmt(d.score, 1))).join(' · ')}` : '';
+  chip('분산일', dcount.length ? `${dpairs.map(([i, d]) => tag(i, d.count)).join(' · ')} / 25일${riskNote}` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
   chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
   // Turnover verdict: a chip on wide screens; on phones it rides on the advice line so the strip keeps two chip rows.
   const lq = b.liquidity;
@@ -159,7 +163,7 @@ export function renderWeather(container, market, onOpen) {
       chips.lastChild.title = `거래량: ${lq.summary}`;
     }
   }
-  chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
+  chip('신고가·신저가', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히', false, onOpen, 'tr-more');
   more.setAttribute('aria-label', '시장 날씨 자세히 보기');
   // 두 단추(자세히·펼치기)는 한 묶음으로 둬서 좁은 화면에서 줄이 바뀌어도 갈라지지 않게 한다.
@@ -180,6 +184,9 @@ export function renderWeather(container, market, onOpen) {
   container.append(head, text, chips);
 }
 
+// 휴대폰 차트의 그림 폭: 카드 안쪽 폭(화면 폭 - 약 58px)에 맞춰 그려 축 글자가 화면에서 줄지 않게 한다(2026-11-23).
+// 예전에는 420으로 그려 390px 화면에서 0.79배(축 글자 9.5px)로 줄었다. 높이도 같은 비율로 줄여 차트 크기는 예전과 같다.
+const phoneW = base => Math.max(280, Math.min(base, Math.round(window.innerWidth - 58)));
 // --------------------------------------------------------------- index strip
 // 화면 맨 위 지수 띠: 지수마다 종가, 전일 대비, 최근 20거래일 작은 선. 띠 자료가 없으면 주지수·보조지수로 대신 채운다.
 function spark(values) {
@@ -496,7 +503,7 @@ function volumeChart(series) {
   // 60 bars = index official volume as a multiple of its 50-day average (units differ by index).
   // Colour = index up/down that day; orange line = 20-day average ÷ 50-day average; dashed = 1.0 (normal).
   const narrow = window.innerWidth < 760;
-  const W = narrow ? 420 : 1000, H = narrow ? 240 : 210, pad = { l: 6, r: narrow ? 46 : 58, t: 10, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  const W = narrow ? phoneW(420) : 1000, H = narrow ? Math.round(240 * W / 420) : 210, pad = { l: 6, r: narrow ? 46 : 58, t: 10, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const n = series.length, slot = plotW / n, bw = Math.max(2, slot * 0.66);
   const top = Math.max(2, Math.ceil(Math.max(...series.map(p => p.x50 || 0)) * 2) / 2);
   const x = k => pad.l + slot * (k + 0.5), y = v => pad.t + (1 - v / top) * plotH;
@@ -660,7 +667,7 @@ const jo = v => isNum(v) ? fmt(v / 10000, 1) : '—';   // 억 원 → 조 원
 const eokStr = v => isNum(v) ? `${Math.round(v).toLocaleString('ko-KR')}억 원` : '—';
 function creditChart(series, showKospi, onPick) {
   const narrow = window.innerWidth < 760;
-  const W = narrow ? 420 : 1000, H = narrow ? 260 : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 40 : 52, t: 26, b: 24 };
+  const W = narrow ? phoneW(420) : 1000, H = narrow ? Math.round(260 * W / 420) : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 40 : 52, t: 26, b: 24 };
   const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b, n = series.length, slot = plotW / n, bw = Math.max(1, slot * 0.7);
   const fMax = Math.max(100, ...series.map(p => p.forced || 0));
   const step = fMax > 1200 ? 400 : fMax > 600 ? 200 : 100, fTop = Math.ceil(fMax / step) * step;
@@ -710,7 +717,7 @@ function creditCard(b) {
   const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
   chip(`반대매매 · ${md(c.asOf)}`, eokStr(L.forced), isNum(L.ratio) ? `직전 20거래일 평균 ${eokStr(L.avg20)}의 ${fmt(L.ratio, 2)}배${L.spike ? ' · 급증' : ''}` : '평균 계산 전', L.spike ? 'warn' : '');
   chip('신용융자 잔고', `${jo(L.credit)}조 원`, `20거래일 ${pct(c.credit20dChangePct)}${peak && isNum(L.credit) ? ` · ${md(peak.date)} 고점 ${jo(peak.credit)}조 대비 ${pct((L.credit / peak.credit - 1) * 100)}` : ''}`, c.credit20dChangePct <= -10 ? 'down' : c.credit20dChangePct >= 10 ? 'up' : '');
-  chip('최근 1년 반대매매 급증일', `${c.yearSpikeDays}일`, `거래일 ${c.yearDays}일 중 · 최근 20거래일 ${c.recentSpikeDays}일`, c.recentSpikeDays >= 5 ? 'warn' : '');
+  chip('최근 1년 반대매매 급증일', `${c.yearSpikeDays}일`, `거래한 ${c.yearDays}일 중 · 최근 20거래일 중 ${c.recentSpikeDays}일`, c.recentSpikeDays >= 5 ? 'warn' : '');
   card.append(chips);
   const tools = el('div', null, 'cr-tools');
   const holder = el('div', null, 'cr-chart'), readout = el('p', null, 'cr-readout');
@@ -743,7 +750,7 @@ let usRange = '1Y', usSpx = false;
 const tri = v => isNum(v) ? fmt(v / 1e6, 2) : '—';   // 백만 달러 → 조 달러
 function creditChartUS(c, series, showSpx, onPick) {
   const narrow = window.innerWidth < 760;
-  const W = narrow ? 420 : 1000, H = narrow ? 260 : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 44 : 56, t: 26, b: 24 };
+  const W = narrow ? phoneW(420) : 1000, H = narrow ? Math.round(260 * W / 420) : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 44 : 56, t: 26, b: 24 };
   const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b, n = series.length, slot = plotW / n, bw = Math.max(1, slot * 0.7);
   const dMax = Math.max(2, ...series.map(p => isNum(p.changePct) && p.changePct < 0 ? -p.changePct : 0));
   const dTop = Math.ceil(dMax), step = dTop > 6 ? 2 : 1;
@@ -795,7 +802,7 @@ function creditCardUS(b) {
   const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
   chip(`신용융자 잔고 · ${mon(m.month)} 말`, `${tri(m.level)}조 달러`, `1년 전보다 ${pct(m.yoyPct)} · 전월 ${pct(m.momPct)} · 최근 12개월 고점(${mon(m.peak12.month)}) 대비 ${pct(m.fromPeakPct)}`, m.yoyPct >= 30 ? 'warn' : '');
   chip('마지막 투매일', lf ? md(lf.date) + (lf.date.slice(0, 4) !== c.asOf.slice(0, 4) ? ` (${lf.date.slice(0, 4)})` : '') : '없음', lf ? `S&P 500 ${pct(lf.changePct)} · 거래량 20일 평균의 ${fmt(lf.volRatio, 2)}배` : '최근 3년 안에 없음');
-  chip('최근 1년 투매일', `${c.yearFlushDays}일`, `거래일 ${c.yearDays}일 중 · 최근 20거래일 ${c.recentFlushDays}일`, c.recentFlushDays >= 2 ? 'warn' : '');
+  chip('최근 1년 투매일', `${c.yearFlushDays}일`, `거래한 ${c.yearDays}일 중 · 최근 20거래일 중 ${c.recentFlushDays}일`, c.recentFlushDays >= 2 ? 'warn' : '');
   card.append(chips);
   const monthVal = {}; (c.months || []).forEach(([ym, v]) => { monthVal[ym] = v; });
   const tools = el('div', null, 'cr-tools'), holder = el('div', null, 'cr-chart'), readout = el('p', null, 'cr-readout');

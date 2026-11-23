@@ -194,6 +194,8 @@ FIXES = '''
 :root[data-theme="light"] .ftd-caution strong { color: #7a3a00; }
 :root[data-theme="light"] .ftd-caution p { color: #3a2410; }
 :root[data-theme="light"] .ftd-index-warn { color: #8a4300; }
+/* 분산일 '지금 6번 · 위험' 처럼 주황 바탕 위 주황 글자는 글자만 한 단계 진하게(대비 4.5 이상, 2026-11-23). 테두리·바탕은 그대로. */
+:root[data-theme="light"] .tr-stage-now.bad b, :root[data-theme="light"] .tr-stage-step.on.bad { color: #8a4100; }
 '''
 
 

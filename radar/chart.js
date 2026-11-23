@@ -252,7 +252,8 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
 function drawShape(svg, marks, { x, y, at, plotW, pad, compact }) {
   if (!marks.points.length && !marks.boxes.length && !marks.lines.length) return;
   const g = node('g', { class: 'pc-shape' }, svg);
-  const right = pad.l + plotW, fs = compact ? 10 : 11;
+  // 지점 이름(왼쪽 고점·바닥 등)은 축 글자와 같은 12px. 작은 카드 차트에서 10px이던 것을 키웠다(2026-11-23).
+  const right = pad.l + plotW, fs = 12;
   marks.boxes.forEach(b => {
     const x0 = x(at(b.from)), x1 = at(b.to) != null ? x(at(b.to)) : right;
     node('rect', { x: x0, y: y(b.top), width: Math.max(2, x1 - x0), height: Math.max(2, y(b.bottom) - y(b.top)), class: 'pc-mark-box' }, g);
@@ -340,8 +341,11 @@ export function rsChart(series, { days = 60 } = {}) {
 }
 
 /** Plain line chart with axes for percentages (market breadth). */
+// 작은 칸 차트(시장 체력·신고가 vs 신저가)의 그림 폭. 넓은 화면에서는 칸이 약 240px이라 300으로 그리면 0.8배로 줄어
+// 축 글자가 10px 아래가 된다. 칸 폭에 맞춰 그려 화면 글자가 11px 이상이 되게 한다(2026-11-23). 휴대폰은 칸이 넓어 그대로.
+const miniW = () => (typeof window !== 'undefined' && window.innerWidth >= 761 ? 240 : 300);
 export function lineChart(points, { lines, min = 0, max = 100, unit = '%', height = 130 } = {}) {
-  const W = 300, H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  const W = miniW(), H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const x = k => pad.l + k / Math.max(1, points.length - 1) * plotW, y = v => pad.t + (1 - (v - min) / (max - min)) * plotH;
   const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg', role: 'img', 'aria-label': lines.map(l => l.label).join(', ') });
   niceTicks(min, max, 4).forEach(t => { node('line', { x1: pad.l, x2: pad.l + plotW, y1: y(t), y2: y(t), class: t === 50 ? 'pc-grid mid' : 'pc-grid' }, svg); text(svg, W - pad.r + 6, y(t) + 4, `${t}${unit}`, { class: 'pc-axis' }); });
@@ -357,7 +361,7 @@ export function lineChart(points, { lines, min = 0, max = 100, unit = '%', heigh
 
 /** Mirrored bar chart around a zero line: positives up (green), negatives down (red). */
 export function mirrorBars(points, { upKey, downKey, upLabel, downLabel, height = 130 } = {}) {
-  const W = 300, H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  const W = miniW(), H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const top = Math.max(1, ...points.map(p => Math.max(p[upKey], p[downKey])));
   const ticks = niceTicks(0, top, 2), scaleMax = Math.max(top, ticks.at(-1) || top);
   const mid = pad.t + plotH / 2, unit = (plotH / 2) / scaleMax;

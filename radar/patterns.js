@@ -60,7 +60,7 @@ const EV = {
   undercut: ['언더컷', 'bool'], firstBottom: ['첫 바닥', 'date'], secondBottom: ['두 번째 바닥', 'date'],
   poleGainPct: ['깃대 상승', 'pct'], poleDays: ['깃대 기간', 'days'],
   flagDropPct: ['깃발 하락', 'pct'], flagDays: ['깃발 기간', 'days'], flagVolumeRatio: ['깃발 거래량', 'x'],
-  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['눌림 저가–이평 거리', 'raw'],
+  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['눌림 저가–이동평균선 거리', 'raw'],
   closeToMa10Pct: ['종가–10일선', 'pct'], closeToMa50Pct: ['종가–50일선', 'pct'],
   reboundPct: ['최근 반등', 'pct'],
   boxWidthPct: ['박스 폭', 'pct'], boxDays: ['박스 기간', 'days'],
