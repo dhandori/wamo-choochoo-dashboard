@@ -728,10 +728,18 @@ td.num-cell .cell-bar { margin-left: auto; max-width: 84px; }
   .card-stats .stat strong { font-size: 14px; }
   .card-stats .stat span { font-size: 12px; }
 }
-/* 휴대폰: 고른 단계의 탭이 화면 밖에 더 있으면('AI 섹터' 등) 오른쪽 끝을 흐리게 해 옆으로 밀 수 있음을 보인다.
-   여러 줄로 내리면 첫 화면이 50~100px 밀려(radar_browser 첫 종목 위치 검사) 한 줄 가로 밀기는 그대로 둔다. */
+/* 휴대폰: 고른 단계의 탭이 화면 밖에 더 있으면('AI 섹터' 등) 그쪽 끝을 흐리게 하고 오른쪽에는 '›' 표시를 띄워 옆으로 밀 수 있음을 보인다.
+   여러 줄로 내리면 화면 위에 붙어 다니는 탭 줄이 2~3줄로 커져(휴대폰에서 탭 줄은 스크롤해도 남는다) 한 줄 가로 밀기는 그대로 둔다.
+   어느 쪽이 더 있는지는 view.js 가 data-more(left·right·both)로 알려 준다. 스크립트가 없으면 예전처럼 오른쪽 끝만 흐리게. (2026-11-23) */
 @media (max-width: 760px) {
   .tabs.steps .step-tabs { padding-right: 28px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent); }
+  .tabs.steps .step-tabs[data-more] { padding-right: 36px; }
+  .tabs.steps .step-tabs[data-more=""] { -webkit-mask-image: none; mask-image: none; }
+  .tabs.steps .step-tabs[data-more="right"] { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent calc(100% - 8px)); mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent calc(100% - 8px)); }
+  .tabs.steps .step-tabs[data-more="left"] { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 40px), transparent); }
+  .tabs.steps .step-tabs[data-more="both"] { -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 56px), transparent calc(100% - 8px)); mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 56px), transparent calc(100% - 8px)); }
+  nav.tabs.steps.more-right::after { content: "›"; position: absolute; right: 10px; bottom: 10px; display: flex; align-items: center; justify-content: center; width: 26px; height: 40px;
+    border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--text); font-size: 20px; font-weight: 700; line-height: 1; pointer-events: none; }
 }
 /* 휴대폰·태블릿: 자주 누르는 버튼은 누르는 영역만 위아래로 넓혀 44px 이상으로 한다.
    보이는 크기를 키우면 첫 화면에서 종목이 아래로 밀려(radar_browser 첫 종목 위치 검사) 보이는 크기는 그대로 둔다. */

@@ -10,9 +10,17 @@
        평소보다 유난히 크면(표준점수 2 이상) 한 단계, 아주 크면(3 이상) 두 단계 더 위험하게
   금리차(장단기)는 너무 낮아도(역전) 너무 높아도(급격한 재가파름) 경기 신호라서 양쪽 끝을 모두 본다.
   공포탐욕지수는 0~100 점수 자체가 기준이라 고정 구간을 쓴다.
+  3) 절대 기준 바닥(2026-11-22): VIX 30↑·VKOSPI 40↑ 은 최소 🟠경계, VIX 40↑·VKOSPI 60↑ 은 🔴위기.
+       공포지수가 오래 높으면 '5년 중 위치'가 무뎌지는 것을 막는다.
+
+종합 판정(2026-11-22 사용자 결정): 지표를 한데 평균하지 않고 나라별로 두 줄로 나눠 낸다.
+  '주식시장 충격'(변동성·심리·주가 낙폭)과 '신용·자금 스트레스'(금리차·유동성). 나라의 대표 단계는 둘 중 나쁜 쪽,
+  전체 대표 단계(composite.level)는 한국·미국 중 나쁜 쪽이다. 11/20 급락 때 채권 지표가 조용하다는 이유로
+  종합이 '관심'~'경계'에 머문 것을 고치려는 것이다. 주가를 직접 보는 지표(1년 고점 대비 낙폭)도 이때 넣었다.
 
 자료 출처(모두 무료·공개)
   한국은행 ECOS(인증키 ECOS_API_KEY — GitHub 비밀값), 미국 연준 FRED,
+  야후 파이낸스(VIX·VIX3M·S&P500·코스피. VIX는 FRED가 하루 늦어 2026-11-22 야후로 바꿨고 FRED는 예비),
   한국투자증권 API(VKOSPI, 지수코드 0503), feargreedmeter.com·finhacker.cz(CNN 공포탐욕)
 """
 from __future__ import annotations
@@ -45,30 +53,46 @@ LEVELS = {
 # risk: 'high' 높을수록 위험 / 'low' 낮을수록 위험 / 'both' 양쪽 끝 모두 경계
 INDICATORS = [
     dict(key='kr_aa', group='한국 신용', name='우량 회사채 가산금리 (AA- − 국고채 3년)', unit='bp', risk='high',
-         help='튼튼한 회사가 나라보다 돈을 빌릴 때 더 내는 이자예요. 이 차이가 벌어지면 회사들이 돈 빌리기 어려워졌다는 뜻이에요.'),
+         help='튼튼한 회사가 나라보다 돈을 빌릴 때 더 내는 이자입니다. 이 차이가 벌어지면 회사들이 돈 빌리기가 어려워진 것입니다.'),
     dict(key='kr_bbb', group='한국 신용', name='비우량 회사채 가산금리 (BBB- − 국고채 3년)', unit='bp', risk='high',
-         help='신용등급이 낮은 편인 회사가 나라보다 더 내는 이자예요. 돈줄이 막히기 시작하면 가장 먼저, 가장 크게 벌어져요.'),
+         help='신용등급이 낮은 편인 회사가 나라보다 더 내는 이자입니다. 돈줄이 막히기 시작하면 가장 먼저, 가장 크게 벌어집니다.'),
     dict(key='kr_cpcd', group='한국 신용', name='기업 단기자금 금리차 (CP − CD 91일)', unit='bp', risk='high',
-         help='회사가 3개월짜리로 급히 빌리는 돈(CP)의 이자에서 은행 단기 금리(CD)를 뺀 값이에요. 벌어지면 회사들의 당장 쓸 돈 사정이 나빠졌다는 신호예요.'),
+         help='회사가 3개월짜리로 급히 빌리는 돈(CP)의 이자에서 은행 단기 금리(CD)를 뺀 값입니다. 이 차이가 벌어지면 회사들이 당장 쓸 돈 사정이 나빠졌다는 신호입니다.'),
     dict(key='kr_curve', group='한국 금리', name='한국 장단기 금리차 (국고채 10년 − 3년)', unit='bp', risk='both',
-         help='10년 국채 금리에서 3년 국채 금리를 뺀 값이에요. 0 아래로 뒤집히면 경기 둔화 신호이고, 갑자기 크게 벌어져도 불안 신호예요.'),
+         help='10년 국채 금리에서 3년 국채 금리를 뺀 값입니다. 0 아래로 뒤집히면 경기 둔화 신호이고, 갑자기 크게 벌어져도 불안 신호입니다.'),
     dict(key='us_hy', group='미국 신용', name='미국 하이일드 스프레드 (저신용 회사채)', unit='bp', risk='high',
-         help='신용등급이 낮은 미국 회사가 국채보다 더 내는 이자예요. 위기가 오면 가장 먼저, 가장 빠르게 치솟는 대표 경보등이에요.'),
+         help='신용등급이 낮은 미국 회사가 국채보다 더 내는 이자입니다. 위기가 오면 가장 먼저, 가장 빠르게 치솟는 대표 경보등입니다.'),
     dict(key='us_ig', group='미국 신용', name='미국 투자등급 스프레드 (우량 회사채)', unit='bp', risk='high',
-         help='튼튼한 미국 회사가 국채보다 더 내는 이자예요. 하이일드보다 느리게 움직이지만, 이것까지 오르면 불안이 넓게 퍼졌다는 뜻이에요.'),
+         help='튼튼한 미국 회사가 국채보다 더 내는 이자입니다. 하이일드보다 느리게 움직이지만, 이것까지 오르면 불안이 넓게 퍼졌다고 봐야 합니다.'),
     dict(key='us_liq', group='미국 유동성', name='미국 순유동성 (시장에 풀린 달러)', unit='십억$', risk='low',
-         help='연준이 푼 돈에서 정부 통장(TGA)과 역레포(RRP)에 묶인 돈을 뺀 값이에요. 시장에서 실제로 돌고 있는 돈이라 줄어들면 주식에 부담이에요.'),
+         help='연준이 푼 돈에서 정부 통장(TGA)과 역레포(RRP)에 묶인 돈을 뺀 값입니다. 시장에서 실제로 도는 돈이라서 줄어들면 주식에 부담이 됩니다.'),
     dict(key='us_curve', group='미국 금리', name='미국 장단기 금리차 (10년 − 2년)', unit='bp', risk='both',
-         help='10년 국채 금리에서 2년 국채 금리를 뺀 값이에요. 0 아래로 뒤집히면 경기침체 예고이고, 뒤집혔다가 빠르게 다시 벌어질 때도 과거 침체 직전에 자주 나왔어요.'),
+         help='10년 국채 금리에서 2년 국채 금리를 뺀 값입니다. 0 아래로 뒤집히면 경기침체 예고로 보고, 뒤집혔다가 빠르게 다시 벌어지는 모습도 과거 침체 직전에 자주 나왔습니다.'),
     dict(key='vix', group='변동성', name='VIX (미국 주식 공포지수)', unit='', risk='high',
-         help='미국 주식이 앞으로 한 달 동안 얼마나 출렁일지 시장이 예상하는 값이에요. 20 아래면 평온, 30 위면 공포 구간이에요.'),
+         help='미국 주식이 앞으로 한 달 동안 얼마나 출렁일지 시장이 예상하는 값입니다. 20 아래면 평온하고, 30 위면 공포 구간입니다.'),
     dict(key='vix_ratio', group='변동성', name='VIX ÷ VIX3M (단기 공포 쏠림)', unit='x', risk='high',
-         help='한 달짜리 공포(VIX)를 석 달짜리 공포(VIX3M)로 나눈 값이에요. 1을 넘으면 먼 미래보다 지금 당장이 더 무섭다는 뜻이고, 급락장에서 나타나요.'),
+         help='한 달짜리 공포(VIX)를 석 달짜리 공포(VIX3M)로 나눈 값입니다. 1을 넘으면 시장이 먼 앞날보다 지금 당장을 더 무서워하는 상태인데, 급락장에서 이렇게 됩니다.'),
     dict(key='vkospi', group='변동성', name='VKOSPI (한국 주식 공포지수)', unit='', risk='high',
-         help='코스피200이 앞으로 한 달 동안 얼마나 출렁일지 예상하는 값이에요(한국판 VIX). 높을수록 한국 시장이 불안하다는 뜻이에요.'),
+         help='코스피200이 앞으로 한 달 동안 얼마나 출렁일지 예상하는 값입니다(한국판 VIX). 높을수록 한국 시장이 불안합니다.'),
     dict(key='fng', group='심리', name='CNN 공포탐욕지수', unit='점', risk='fng',
-         help='미국 투자자들의 분위기를 0~100점으로 나타낸 값이에요. 25점 아래면 겁먹은 시장, 75점 위면 너무 들뜬(과열) 시장이에요.'),
+         help='미국 투자자들의 분위기를 0~100점으로 나타낸 값입니다. 25점 아래면 겁먹은 시장이고, 75점 위면 너무 들뜬(과열) 시장입니다.'),
+    dict(key='sp_dd', group='주가', name='S&P500 고점 대비 낙폭 (최근 1년 최고가 기준)', unit='%', risk='low',
+         help='S&P500이 최근 1년 동안 가장 높았던 종가에서 지금 몇 % 내려와 있는지 나타냅니다. 0이면 신고가이고, -10%를 넘으면 조정장, -20%를 넘으면 약세장이라고 부릅니다.'),
+    dict(key='ks_dd', group='주가', name='코스피 고점 대비 낙폭 (최근 1년 최고가 기준)', unit='%', risk='low',
+         help='코스피가 최근 1년 동안 가장 높았던 종가에서 지금 몇 % 내려와 있는지 나타냅니다. 0이면 신고가이고, -10%를 넘으면 조정장, -20%를 넘으면 약세장이라고 부릅니다.'),
 ]
+
+# 종합 판정의 두 줄: 주식시장 충격(변동성·심리·주가) / 신용·자금 스트레스(나머지)
+STOCK_KEYS = {'vix', 'vix_ratio', 'vkospi', 'fng', 'sp_dd', 'ks_dd'}
+AXES = (('stock', '주식시장 충격'), ('credit', '신용·자금 스트레스'))
+# 절대 기준 바닥: (이 값 이상이면, 이 단계보다 좋게 매기지 않는다). 지난 10년 VIX 30↑ 은 2020년 80일·2022년 48일 말고는
+# 한 해 12일 이하, VKOSPI 40↑ 은 2022~2025년 4년 동안 8일이었다(2026-11-22 확인).
+FLOORS = {'vix': ((40, 1), (30, 2)), 'vkospi': ((60, 1), (40, 2))}
+DD_WINDOW = 252           # 고점 대비 낙폭: 최근 1년(252거래일) 최고 종가 기준
+
+
+def axis_of(key):
+    return 'stock' if key in STOCK_KEYS else 'credit'
 
 
 def log(msg):
@@ -130,9 +154,13 @@ def yahoo_series(symbol):
         raise RuntimeError(f'Yahoo {symbol} 없음')
     ts, closes = res[0].get('timestamp') or [], res[0]['indicators']['quote'][0].get('close') or []
     out = {}
+    # 날짜는 그 거래소 시각으로 끊는다(코스피를 뉴욕 시각으로 끊으면 하루 밀린다)
+    tz = timezone(timedelta(seconds=(res[0].get('meta') or {}).get('gmtoffset', -4 * 3600)))
     for t, c in zip(ts, closes):
         if c is not None:
-            out[datetime.fromtimestamp(t, timezone.utc).astimezone(timezone(timedelta(hours=-4))).date()] = float(c)
+            out[datetime.fromtimestamp(t, timezone.utc).astimezone(tz).date()] = float(c)
+    if not out:
+        raise RuntimeError(f'Yahoo {symbol} 비어 있음')
     return out
 
 
@@ -210,6 +238,25 @@ def ffill_to(series, dates):
     return out
 
 
+def drawdown(prices, window=DD_WINDOW):
+    """{날짜: 종가} → {날짜: 최근 window거래일 최고 종가 대비 낙폭(%)}. 0 = 신고가."""
+    days, out = sorted(prices), {}
+    for i in range(window - 1, len(days)):
+        peak = max(prices[d] for d in days[i - window + 1:i + 1])
+        out[days[i]] = round((prices[days[i]] / peak - 1) * 100, 2)
+    return out
+
+
+def apply_floor(key, row):
+    """절대 기준 바닥. 값이 기준을 넘으면 단계를 그만큼 위험하게 고치고 floor 칸에 기준값을 남긴다."""
+    for limit, worst in FLOORS.get(key, ()):
+        if row.get('value') is not None and row['value'] >= limit:
+            if row['level'] > worst:
+                row.update(level=worst, floor=limit)
+            break
+    return row
+
+
 def percentile(values, x):
     below = sum(1 for v in values if v < x)
     equal = sum(1 for v in values if v == x)
@@ -259,14 +306,33 @@ def judge_fng(fg):
 
 
 def composite(levels):
-    """13개 단계를 하나로. 평균 위험도에 '위기 지표가 여럿이면 가중'을 더한다."""
+    """한 묶음의 단계들을 하나로. 평균 위험도에 '위기 지표가 여럿이면 가중'을 더한다."""
     if not levels:
         return None
     risk = statistics.fmean(6 - lv for lv in levels)          # 1(정상)~5(위기)
     reds = sum(1 for lv in levels if lv == 1)
     oranges = sum(1 for lv in levels if lv == 2)
     risk += 0.5 * (reds >= 3) + 0.5 * (reds + oranges >= len(levels) / 2)
-    return max(1, min(5, 6 - round(risk)))
+    # round() 는 2.5 를 2 로, 3.5 를 4 로 내려 같은 반 칸이 다르게 처리된다. 반 칸은 늘 위험한 쪽으로 올린다
+    return max(1, min(5, 6 - math.floor(risk + 0.5)))
+
+
+def _verdict(rows):
+    levels = [r['level'] for r in rows if r.get('level')]
+    lv = composite(levels)
+    return dict(level=lv, emoji=LEVELS[lv][0] if lv else '⚪', label=LEVELS[lv][1] if lv else '확인 불가',
+                counts={str(k): sum(1 for x in levels if x == k) for k in range(1, 6)},
+                available=len(levels), total=len(rows))
+
+
+def market_axes(rows, mk):
+    """나라 하나의 두 줄 판정. level 은 둘 중 나쁜 쪽(대표 단계)."""
+    mine = [r for r in rows if _market_of(r) == mk]
+    out = {ax: _verdict([r for r in mine if axis_of(r['key']) == ax]) for ax, _ in AXES}
+    got = [v['level'] for v in out.values() if v['level']]
+    lv = min(got) if got else None
+    out.update(level=lv, emoji=LEVELS[lv][0] if lv else '⚪', label=LEVELS[lv][1] if lv else '확인 불가')
+    return out
 
 
 def fmt_value(ind, v):
@@ -331,17 +397,30 @@ def build():
 
     # 미국 (FRED)
     f = {s: attempt(f'FRED {s}', lambda s=s: fred_series(s, start)) for s in (
-        'BAMLH0A0HYM2', 'BAMLC0A0CM', 'T10Y2Y', 'VIXCLS', 'VXVCLS', 'WALCL', 'WTREGEN', 'RRPONTSYD')}
+        'BAMLH0A0HYM2', 'BAMLC0A0CM', 'T10Y2Y', 'WALCL', 'WTREGEN', 'RRPONTSYD')}
     if f['BAMLH0A0HYM2']:
         series['us_hy'] = {d: round(v * 100, 1) for d, v in f['BAMLH0A0HYM2'].items()}
     if f['BAMLC0A0CM']:
         series['us_ig'] = {d: round(v * 100, 1) for d, v in f['BAMLC0A0CM'].items()}
     if f['T10Y2Y']:
         series['us_curve'] = {d: round(v * 100, 1) for d, v in f['T10Y2Y'].items()}
-    if f['VIXCLS']:
-        series['vix'] = f['VIXCLS']
-    if f['VIXCLS'] and f['VXVCLS']:
-        series['vix_ratio'] = combine(f['VIXCLS'], f['VXVCLS'], lambda a, b: round(a / b, 3))
+    # VIX·VIX3M: 야후(미국 마감 직후 값). FRED 는 하루 늦게 올라와 급락한 날 판정이 한두 단계 늦었다(2026-11-20).
+    # 야후를 못 받을 때만 FRED 로 대신한다.
+    def vol(symbol, sid):
+        got = attempt(f'야후 {symbol}', lambda: yahoo_series(symbol))
+        if not got:
+            got = attempt(f'FRED {sid}', lambda: fred_series(sid, start))
+        return got
+    vix, vix3m = vol('%5EVIX', 'VIXCLS'), vol('%5EVIX3M', 'VXVCLS')
+    if vix:
+        series['vix'] = vix
+    if vix and vix3m:
+        series['vix_ratio'] = combine(vix, vix3m, lambda a, b: round(a / b, 3))
+    # 주가: 1년 고점 대비 낙폭 (야후 일봉 종가)
+    for key, symbol in (('sp_dd', '%5EGSPC'), ('ks_dd', '%5EKS11')):
+        px = attempt(f'야후 {symbol}', lambda symbol=symbol: yahoo_series(symbol))
+        if px and len(px) > DD_WINDOW + 200:
+            series[key] = drawdown(px)
     if f['WALCL'] and f['WTREGEN'] and f['RRPONTSYD']:
         days = sorted(f['RRPONTSYD'])
         walcl, tga = ffill_to(f['WALCL'], days), ffill_to(f['WTREGEN'], days)
@@ -385,7 +464,7 @@ def build():
                 s = series.get(ind['key'])
                 if not s:
                     raise RuntimeError('자료 없음')
-                row.update(judge(s, ind['risk']))
+                row.update(apply_floor(ind['key'], judge(s, ind['risk'])))
                 row['series'] = [[d.isoformat(), round(v, 4)] for d, v in sorted(s.items())][-CHART_DAYS:]
             emoji, label = LEVELS[row['level']]
             row.update(emoji=emoji, label=label, valueText=fmt_value(ind, row['value']),
@@ -398,24 +477,29 @@ def build():
             else:
                 row.update(level=None, emoji='⚪', label='확인 불가', valueText='-', changeText='',
                            error=str(exc)[:120], series=[])
+        row['axis'] = axis_of(ind['key'])
         items.append(row)
 
     levels = [r['level'] for r in items if r['level']]
-    comp = composite(levels)
+    markets = {mk: market_axes(items, mk) for mk in ('US', 'KR')}
+    got = [m['level'] for m in markets.values() if m['level']]
+    comp = min(got) if got else None          # 전체 대표 단계 = 두 나라 중 나쁜 쪽
     counts = {str(lv): sum(1 for x in levels if x == lv) for lv in range(1, 6)}
     data = dict(
         asOf=datetime.now(KST).isoformat(timespec='minutes'),
         composite=dict(level=comp, emoji=LEVELS[comp][0] if comp else '⚪',
                        label=LEVELS[comp][1] if comp else '확인 불가', counts=counts,
                        available=len(levels), total=len(items)),
-        indicators=items, errors=errors,
+        markets=markets, indicators=items, errors=errors,
         method='5년 백분위(위험한 쪽) 5단계 + 1개월 변화 표준점수 2↑ 한 단계·3↑ 두 단계 보정. '
-               '장단기 금리차는 양쪽 끝, 공포탐욕은 고정 구간(10/25/40/55, 75↑ 과열).')
+               '장단기 금리차는 양쪽 끝, 공포탐욕은 고정 구간(10/25/40/55, 75↑ 과열). '
+               'VIX 30↑·VKOSPI 40↑ 은 최소 경계, VIX 40↑·VKOSPI 60↑ 은 위기. '
+               '종합은 나라별로 주식시장 충격과 신용·자금 스트레스를 따로 내고 대표 단계는 나쁜 쪽.')
     return data, history
 
 
 def _market_of(r):
-    return 'KR' if r['key'] == 'vkospi' or r['key'].startswith('kr_') else 'US'
+    return 'KR' if r['key'] in ('vkospi', 'ks_dd') or r['key'].startswith('kr_') else 'US'
 
 
 def _vix_temp(v):
@@ -431,21 +515,22 @@ def market_summary(rows, mk):
     ok = [r for r in rows if r.get('level')]
     if not ok:
         return ['종합 확인 불가']
-    lv = composite([r['level'] for r in ok])
+    ax = market_axes(rows, mk)
     cnt = {k: sum(1 for r in ok if r['level'] == k) for k in range(1, 6)}
-    out = [f'종합 {lv}단계({LEVELS[lv][1]}) {LEVELS[lv][0]}, 🔴{cnt[1]} 🟠{cnt[2]} 🟡{cnt[3]} 🔵{cnt[4]} 🟢{cnt[5]}']
+    out = [' · '.join(f'{title} {ax[k]["emoji"]} {ax[k]["label"]}' for k, title in AXES if ax[k]['level']),
+           f'🔴{cnt[1]} 🟠{cnt[2]} 🟡{cnt[3]} 🔵{cnt[4]} 🟢{cnt[5]}']
     bad = [r for r in ok if r['level'] <= 2]
     fast = [r for r in ok if (r.get('speedBump') or 0) > 0]
-    words = [f'{len(ok)}개 지표 중 {len(bad)}개가 경계 이상' if bad else f'{len(ok)}개 지표 모두 경계보다 아래']
+    words = [f'{len(ok)}개 지표 중 {len(bad)}개가 경계 이상입니다' if bad else f'{len(ok)}개 지표 모두 경계보다 아래입니다']
     if bad:
-        words.append('경보: ' + ', '.join(r['name'].split(' (')[0] for r in bad))
+        words.append(', '.join(r['name'].split(' (')[0] for r in bad) + '에 경보가 켜졌습니다')
     if fast:
-        words.append('한 달 사이 빠르게 나빠짐: ' + ', '.join(r['name'].split(' (')[0] for r in fast))
+        words.append('한 달 사이 빠르게 나빠진 지표는 ' + ', '.join(r['name'].split(' (')[0] for r in fast) + '입니다')
     if mk == 'US':
         vx = next((r for r in ok if r['key'] == 'vix'), None)
         fg = next((r for r in ok if r['key'] == 'fng'), None)
         if vx and fg and abs(_fng_temp(fg['value']) - _vix_temp(vx['value'])) >= 2:
-            words.append('VIX와 공포탐욕지수가 엇갈림')
+            words.append('VIX와 공포탐욕지수가 엇갈립니다')
     out.append('결론: ' + '. '.join(words) + '.')
     return out
 
@@ -455,7 +540,8 @@ def telegram_text(data):
     cnt = c['counts']
     d = datetime.fromisoformat(data['asOf'])
     lines = [f'📊 매크로 지수 {d.month}/{d.day}',
-             f'전체 종합 {c["level"]}단계({c["label"]}) {c["emoji"]}, 🔴{cnt["1"]} 🟠{cnt["2"]} 🟡{cnt["3"]} 🔵{cnt["4"]} 🟢{cnt["5"]}']
+             f'대표 단계 {c["level"]}단계({c["label"]}) {c["emoji"]} (나라·묶음 가운데 가장 나쁜 쪽), '
+             f'🔴{cnt["1"]} 🟠{cnt["2"]} 🟡{cnt["3"]} 🔵{cnt["4"]} 🟢{cnt["5"]}']
     # 미국 먼저, 굵은 구분선 뒤에 한국 (화면과 같은 순서)
     bar = '━━━━━━━━━━━━━━'
     for mk, title in (('US', '🇺🇸 미국'), ('KR', '🇰🇷 한국')):
@@ -470,6 +556,8 @@ def telegram_text(data):
             warn = ' ⚠️과열' if r.get('overheat') else ''
             ch = f' (1M {r["changeText"]})' if r.get('changeText') else ''
             stale = ' (이전 자료)' if r.get('stale') else ''
+            if r.get('unit') == '%' and r.get('valueText', '-') != '-':
+                extra = '%' + extra
             lines.append(f'{r["emoji"]} {r["name"]}: {r["valueText"]}{extra}{ch}{warn}{stale}')
     # 화면은 산업강도판의 세 번째 탭(🌐 매크로 지수)에 있다
     lines += ['', '👉 https://dhandori.github.io/industry-strength/#US-macro (한국은 #KR-macro)']

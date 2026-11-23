@@ -94,7 +94,7 @@ function compareBy(key){
  return (a,b)=>{const x=value(a),y=value(b);if(x==null||y==null)return x==null&&y==null?0:x==null?1:-1;return asc?x-y:y-x;};
 }
 export function selectStocks(m,{tab='near',distance=10,high='either',mode='all',query='',rs=false,stage=false,industry=null,sort='default',sort2='none',minCap=0,aiSector='all',aiSignal='all',aiPeriod='5d',newOnly=false}={}) {
- let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
+ let rows=m.stocks.filter(s=> (!query||[s.name,s.symbol,s.industry,s.industryLabel||'',tab==='ai'?aiSearchText(s):''].join(' ').toLowerCase().includes(query.toLowerCase())) && (!rs||s.rs>=80)&&(!stage||s.stage2===true));
  if(tab==='ai') {
   rows=rows.filter(s=>{const member=aiMembership(s);return member&&(aiSector==='all'||member.sectors.includes(aiSector));});
   if(aiSignal==='near')rows=rows.filter(s=>numeric(s.highDistancePct)&&s.highDistancePct<=10);

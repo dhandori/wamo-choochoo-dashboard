@@ -13,6 +13,7 @@ from pathlib import Path
 from statistics import median
 from urllib.parse import quote, urlparse
 from wamo_patterns import compact as compact_patterns, detect_patterns
+from wamo_industry_names import name_of as industry_name_ko
 from wamo_patterns import meta as pattern_meta
 from wamo_runtime import calendar, expected_session, next_slot
 
@@ -282,7 +283,7 @@ def project(stock,market,asof):
             **({'investorFlow':flow} if flow else {}),
             **({'patterns':patterns} if patterns else {}),
             'marketCap':market_cap if market_cap is not None and market_cap>0 else None,
-            'industry':name.strip(),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,'sector':broad_sector(stock,market,industry_group,name.strip()),
+            'industry':name.strip(),**({'industryLabel':industry_label(market,name.strip())} if industry_label(market,name.strip()) else {}),**({'alsoIndustries':also} if also else {}),'industrySource':'sector (broad)' if classification_source=='sector' else classification_source,'industryGroup':industry_group,'sector':broad_sector(stock,market,industry_group,name.strip()),
             'asOf':asof,'close':close,'changePct':change,'return5d':ret(5),'return20d':ret(20),'return60d':ret(60),'return120d':ret(120),'return200d':ret(200),'high52':high,
             'highDistancePct':round(max(0,(1-close/high)*100),6) if high else None,
             'intradayHigh52':breakout('high'),'closeHigh52':breakout('close'),
@@ -345,6 +346,13 @@ def pattern_summary(stocks):
             'breakoutStocks':sorted(set(breakouts))}
 
 
+def industry_label(market,name):
+    """화면에 보일 한국어 업종 이름. 미국만 붙이고, 원문과 같으면(표에 없음) None."""
+    if market!='US' or not isinstance(name,str):return None
+    label=industry_name_ko('US',name)
+    return label if label and label!=name else None
+
+
 def industries(stocks,market):
     groups=defaultdict(list)
     # 한 종목이 겹쳐 소속된 산업(alsoIndustries)에도 들어간다. 같은 산업에 두 번 들어가지는 않는다.
@@ -352,6 +360,9 @@ def industries(stocks,market):
         for name in dict.fromkeys([stock['industry'],*(stock.get('alsoIndustries') or [])]): groups[name].append(stock)
     result=[]
     for name,members in sorted(groups.items()):
+        # 미국 업종은 나스닥 분류 원문(영문)이 그대로 이름이다. 화면용 한국어 이름은 'label' 로 따로 붙인다(2026-11-23).
+        # 'name'·'id' 는 원문 그대로 둬서 묶음·주소·지난 자료와의 비교가 바뀌지 않는다. 표에 없는 이름은 label 을 달지 않는다.
+        label=industry_label(market,name)
         count=len(members);near=sum(s['highDistancePct'] is not None and s['highDistancePct']<=10 for s in members)
         advancing=sum(s['changePct'] is not None and s['changePct']>0 for s in members)
         def med(key):
@@ -360,7 +371,7 @@ def industries(stocks,market):
         advancing5d=sum(s['return5d'] is not None and s['return5d']>0 for s in members)
         volume_count=sum(s['volumeRatio'] is not None and s['volumeRatio']>=1.5 for s in members)
         confirmed=(count>=3 and advancing>=2 and advancing5d>=2 and advancing5d/count>=0.5 and med('return5d') is not None and med('return5d')>0 and (near>=2 or volume_count>=2) and name not in {'Unclassified','산업 미분류','KRX 업종 미분류'})
-        result.append({'id':f'{market}:{name}','name':name,'memberCount':count,'nearHighCount':near,'nearHighPct':round(near/count*100,2),
+        result.append({'id':f'{market}:{name}','name':name,**({'label':label} if label else {}),'memberCount':count,'nearHighCount':near,'nearHighPct':round(near/count*100,2),
             'newHighCount':sum(s['intradayHigh52'] is True for s in members),'advancingCount':advancing,'advancingPct':round(advancing/count*100,2),
             'medianReturn5d':med('return5d'),'medianReturn20d':med('return20d'),'medianChangePct':med('changePct'),'volumeConfirmedCount':sum(s['volumeRatio'] is not None and s['volumeRatio']>=1.5 for s in members),
             'advancing5dCount':advancing5d,'advancing5dPct':round(advancing5d/count*100,2),'confirmed':confirmed,'leaders':[s['id'] for s in sorted(members,key=lambda s:s['return5d'] if s['return5d'] is not None else -math.inf,reverse=True)[:3]],'members':[s['id'] for s in members]})

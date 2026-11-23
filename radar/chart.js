@@ -252,7 +252,8 @@ export function priceChart(series, { market = 'KR', days = 60, compact = false, 
 function drawShape(svg, marks, { x, y, at, plotW, pad, compact }) {
   if (!marks.points.length && !marks.boxes.length && !marks.lines.length) return;
   const g = node('g', { class: 'pc-shape' }, svg);
-  const right = pad.l + plotW, fs = compact ? 10 : 11;
+  // 지점 이름(왼쪽 고점·바닥 등)은 축 글자와 같은 12px. 작은 카드 차트에서 10px이던 것을 키웠다(2026-11-23).
+  const right = pad.l + plotW, fs = 12;
   marks.boxes.forEach(b => {
     const x0 = x(at(b.from)), x1 = at(b.to) != null ? x(at(b.to)) : right;
     node('rect', { x: x0, y: y(b.top), width: Math.max(2, x1 - x0), height: Math.max(2, y(b.bottom) - y(b.top)), class: 'pc-mark-box' }, g);
@@ -340,16 +341,31 @@ export function rsChart(series, { days = 60 } = {}) {
 }
 
 /** Plain line chart with axes for percentages (market breadth). */
-// 카드에 들어가는 작은 차트의 그림 폭. 카드 폭과 비슷하게 그려야 축 글자가 다른 차트와 같은 크기로 보인다.
-// 휴대폰(760px 미만)은 카드가 한 줄에 하나, 그 위는 두 줄이라 카드 폭이 약 330px · 470px이다.
-function cardWidth() { return typeof window !== 'undefined' && window.innerWidth < 760 ? 330 : 470; }
-
+// 작은 칸 차트(시장 체력·신고가 vs 신저가)는 칸 폭과 같은 폭으로 그려야 축 글자가 다른 차트와 같은 크기(12px)로 보인다.
+// 칸 폭은 화면 배치에 따라 240~470px로 달라서 화면 폭으로 짐작하지 않는다. 처음에는 짐작한 폭으로 그리고,
+// 칸에 붙은 뒤 실제 폭이 8% 넘게 다르면 그 폭으로 다시 그린다(2026-11-23, 1000px 태블릿에서 글자가 1.8배로 커지던 문제).
+const miniW = () => (typeof window !== 'undefined' && window.innerWidth >= 761 ? 240 : 300);
+function fitWidth(build) {
+  let W = miniW(), svg = build(W);
+  if (typeof ResizeObserver === 'undefined') return svg;
+  const ro = new ResizeObserver(() => {
+    const w = Math.round(svg.getBoundingClientRect().width);
+    if (w < 120 || Math.abs(w - W) / W < 0.08) return;
+    W = w;
+    const next = build(W);
+    ro.unobserve(svg); svg.replaceWith(next); svg = next; ro.observe(svg);
+  });
+  ro.observe(svg);
+  return svg;
+}
 /**
  * Line chart for 0~100% series. bands: [{from, to, cls, label}] shades a value range;
- * refs: [{value, cls, label}] draws a labelled reference line. A finger or mouse shows the day's values.
+ * refs: [{value, cls, label}] draws a labelled reference line. A finger or mouse shows the day's values
+ * (line.short, when given, is the shorter name used in that readout so it fits the narrow card).
  */
-export function lineChart(points, { lines, min = 0, max = 100, unit = '%', height, bands = [], refs = [] } = {}) {
-  const W = cardWidth(), H = height || Math.round(W * 0.42), pad = { l: 4, r: 40, t: 8, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+export function lineChart(points, opts = {}) { return fitWidth(W => drawLine(points, opts, W)); }
+function drawLine(points, { lines, min = 0, max = 100, unit = '%', height = 130, bands = [], refs = [] } = {}, W) {
+  const H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const x = k => pad.l + k / Math.max(1, points.length - 1) * plotW, y = v => pad.t + (1 - (v - min) / (max - min)) * plotH;
   const svg = node('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pc-svg', role: 'img', 'aria-label': lines.map(l => l.label).join(', ') });
   bands.forEach(b => { const r = node('rect', { x: pad.l, y: y(b.to), width: plotW, height: Math.max(0, y(b.from) - y(b.to)), class: `pc-band ${b.cls || ''}` }, svg); if (b.label) { const t = node('title', {}, r); t.textContent = b.label; } });
@@ -371,7 +387,7 @@ export function lineChart(points, { lines, min = 0, max = 100, unit = '%', heigh
     const vx = (ev.clientX - box.left) / box.width * W;
     const k = Math.max(0, Math.min(points.length - 1, Math.round((vx - pad.l) / plotW * (points.length - 1)))), p = points[k];
     cursor.setAttribute('x1', x(k)); cursor.setAttribute('x2', x(k)); cursor.setAttribute('visibility', 'visible');
-    read.textContent = `${md(p.date)} · ` + lines.filter(l => p[l.key] != null).map(l => `${l.label} ${Math.round(p[l.key])}${unit}`).join(' · ');
+    read.textContent = `${md(p.date)} · ` + lines.filter(l => p[l.key] != null).map(l => `${l.short || l.label} ${Math.round(p[l.key])}${unit}`).join(' · ');
     read.setAttribute('visibility', 'visible');
   };
   const hide = () => { cursor.setAttribute('visibility', 'hidden'); read.setAttribute('visibility', 'hidden'); };
@@ -380,8 +396,9 @@ export function lineChart(points, { lines, min = 0, max = 100, unit = '%', heigh
 }
 
 /** Mirrored bar chart around a zero line: positives up (green), negatives down (red). */
-export function mirrorBars(points, { upKey, downKey, upLabel, downLabel, height } = {}) {
-  const W = cardWidth(), H = height || Math.round(W * 0.42), pad = { l: 4, r: 40, t: 8, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+export function mirrorBars(points, opts = {}) { return fitWidth(W => drawMirror(points, opts, W)); }
+function drawMirror(points, { upKey, downKey, upLabel, downLabel, height = 130 } = {}, W) {
+  const H = height, pad = { l: 4, r: 36, t: 8, b: 20 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const top = Math.max(1, ...points.map(p => Math.max(p[upKey], p[downKey])));
   const ticks = niceTicks(0, top, 2), scaleMax = Math.max(top, ticks.at(-1) || top);
   const mid = pad.t + plotH / 2, unit = (plotH / 2) / scaleMax;

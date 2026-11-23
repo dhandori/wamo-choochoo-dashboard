@@ -60,7 +60,7 @@ const EV = {
   undercut: ['언더컷', 'bool'], firstBottom: ['첫 바닥', 'date'], secondBottom: ['두 번째 바닥', 'date'],
   poleGainPct: ['깃대 상승', 'pct'], poleDays: ['깃대 기간', 'days'],
   flagDropPct: ['깃발 하락', 'pct'], flagDays: ['깃발 기간', 'days'], flagVolumeRatio: ['깃발 거래량', 'x'],
-  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['눌림 저가–이평 거리', 'raw'],
+  volumeVsMaxDownDay: ['하락일 최대 대비', 'x'], distanceToMaPct: ['눌림 저가–이동평균선 거리', 'raw'],
   closeToMa10Pct: ['종가–10일선', 'pct'], closeToMa50Pct: ['종가–50일선', 'pct'],
   reboundPct: ['최근 반등', 'pct'],
   boxWidthPct: ['박스 폭', 'pct'], boxDays: ['박스 기간', 'days'],
@@ -146,7 +146,7 @@ function selectRows(block, query, leading, meta = {}, market, only = {}) {
     // 시총을 모르는 종목은 하한을 걸면 뺀다(넘는지 알 수 없다).
     if (cap > 0 && !(isNum(stock.marketCap) && stock.marketCap >= cap)) continue;
     if (sector !== 'all' && stock.sector !== sector) continue;
-    if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry]
+    if (text && ![stock.name, stock.symbol, stock.ticker, stock.industry, stock.industryLabel]
       .some(v => String(v || '').toLowerCase().includes(text))) continue;
     const setups = found.setups.filter(s =>
       (wantPhase === 'all' || s.status === wantPhase)
@@ -281,7 +281,7 @@ function filters(block, meta, redraw, market, counted) {
 /** 시장 판단 띠. 셋업북 ①-1은 시장 방향을 셋업보다 먼저 보라고 적었다. */
 const GATE = {
   GREEN: ['공격 가능', 'green',
-    '돌파를 따라갈 수 있는 구간입니다. 그래도 셋업북 ②-3대로 피벗 위 5% 안에서만 삽니다.'],
+    '돌파를 따라 사도 되는 구간입니다. 그래도 셋업북 ②-3대로 피벗 위 5% 안에서만 삽니다.'],
   YELLOW: ['조심', 'yellow',
     '돌파가 나와도 실패가 늘어나는 구간입니다. 비중을 줄이고 손절선을 더 엄격하게 지킵니다.'],
   RED: ['현금 비중 확대', 'red',
@@ -513,7 +513,7 @@ function card(row, market, meta, openStock, leading) {
   const head = n('div', null, 'pt-head');
   const name = n('button', null, 'pt-name'); name.type = 'button';
   name.onclick = () => openStock(stock.id);
-  const where = [stock.sector, stock.industry].filter((v, i, a) => v && a.indexOf(v) === i);
+  const where = [stock.sector, stock.industryLabel || stock.industry].filter((v, i, a) => v && a.indexOf(v) === i);
   name.append(n('strong', short(stock.name)), n('small', [stock.symbol, ...(where.length ? where : ['산업 미분류'])].join(' · ')));
   head.append(name, n('span', phaseLabel, `pt-phase phase-${phaseCls}`));
   box.append(head);
@@ -533,7 +533,7 @@ function card(row, market, meta, openStock, leading) {
   if (info.logic) box.append(n('p', info.logic, 'pt-logic'));
 
   const flags = [];
-  if (best.unconfirmed) flags.push(['셋업북 ②-1: 피벗 위로 올라왔지만 돌파일 거래량(50일 평균의 1.5배)이 없었습니다. 거래량을 확인하고 삽니다.', 'warn']);
+  if (best.unconfirmed) flags.push(['셋업북 ②-1: 피벗 위로 올라왔지만 거래량(50일 평균의 1.5배)이 실린 돌파일이 없었습니다. 거래량을 확인하고 삽니다.', 'warn']);
   if (best.extended) flags.push(['셋업북 ②-3: 피벗 위 5%를 넘었습니다. 추격 매수하지 않고 다음 눌림을 기다립니다.', 'bad']);
   if (best.stopTooWide) flags.push([`셋업북 ②-4: ${isNum(best.pivot) ? '피벗' : '종가'}에서 손절선까지 ${num(best.stopDistancePct)}%로 8%를 넘습니다. 이 자리는 건너뜁니다.`, 'bad']);
   for (const [text, cls] of flags) box.append(ruledNode('p', text, `pt-flag ${cls}`));
@@ -577,7 +577,7 @@ export function renderPatterns(root, market, block, meta, options = {}) {
   meta = meta || {};
   // 지원하지 않는 시장이라는 사실이 자료 대기보다 먼저다(일본 자료가 비어 있는 날에도 같은 안내).
   if (!SUPPORTED.has(market) || (block?.stocks?.length && !block.patternSummary)) {
-    root.append(n('div', `${market} 시장은 아직 셋업 판정을 제공하지 않습니다. 한국·미국·일본·대만만 지원합니다.`, 'empty'));
+    root.append(n('div', `${market} 시장은 아직 셋업을 판정하지 않습니다. 한국·미국·일본·대만만 지원합니다.`, 'empty'));
     return;
   }
   if (!block || !block.stocks?.length) {

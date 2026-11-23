@@ -105,7 +105,7 @@ export function renderWeather(container, market, onOpen) {
     container.hidden = !failed && !data;
     if (failed || data) {
       container.className = 'tr-weather level-unknown';
-      container.append(el('span', null, 'tr-dot'), el('div', '시장 날씨 자료를 준비하고 있어요. 다음 자동 갱신 때 채워집니다.', 'tr-weather-text'));
+      container.append(el('span', null, 'tr-dot'), el('div', '시장 날씨 자료를 준비하고 있어요. 다음 자동 갱신 때 채워져요.', 'tr-weather-text'));
     }
     return;
   }
@@ -124,7 +124,7 @@ export function renderWeather(container, market, onOpen) {
   }
   const text = el('div', w.advice || '', 'tr-weather-text');
   // A late index bar never turns into a fake-index verdict; the last real one stays and says so.
-  if (b.kept) text.append(el('span', ` ⏳ 지수 자료 지연 · ${md(b.asOf)} 종가 기준 판정을 유지 중이에요. 다음 정기 확인 때 다시 계산해요.`, 'tr-weather-kept'));
+  if (b.kept) text.append(el('span', ` ⏳ 지수 자료 지연 · ${md(b.asOf)} 종가 기준 판정을 그대로 쓰고 있어요. 다음 정기 확인 때 다시 계산해요.`, 'tr-weather-kept'));
   const chips = el('div', null, 'tr-chips');
   const dist = w.distribution || {}, br = w.breadth || {}, hl = w.highsLows || {}, idx = b.index || {};
   const score = key => (w.factors || []).find(f => f.key === key)?.score;
@@ -140,13 +140,20 @@ export function renderWeather(container, market, onOpen) {
   const arrow = d => ({ up: '↗', flat: '→', down: '↘' })[d] || '·';
   const si = score('index'), ss = score('slope');
   chip('지수', [idx, idx2].filter(Boolean).map(i => `${i.label} ${pct(i.changePct)}`).join(' · '),
-    { 1: '이평선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
+    { 1: '이동평균선 위', 0: '50일선 아래', '-1': '200일선 아래' }[si] ?? '—', si);
   chip('기울기', [idx, idx2].filter(Boolean).map(i => `${idx2 ? i.label + ' ' : ''}50${arrow(i.ma50Dir)} 200${arrow(i.ma200Dir)}`).join(' · '),
     { 1: '상승', 0: '꺾임', '-1': '하락' }[ss] ?? '—', ss);
-  const dok = [dist, dist2].filter(d => d?.status === 'OK');
+  // 두 지수를 함께 적을 때는 횟수마다 지수 이름을 붙여 어느 쪽 값인지 보이게 한다(2026-11-23, 예: 'KOSPI 6 · KOSDAQ 4 / 25일').
+  // 이름을 붙이면 칩이 길어져 넓은 화면 날씨 칸이 한 줄 늘어나므로, 가중 위험 점수는 칩 안내(마우스 올림·읽어 주기)에만 적는다.
+  // 위험 점수는 분산일 카드(시장 전환·FTD, 추세 신호 자세히)에 그대로 나온다.
+  const dpairs = [[idx, dist], [idx2, dist2]].filter(([, d]) => d?.status === 'OK');
+  const dok = dpairs.map(([, d]) => d);
   const dcount = dok.map(d => d.count);
-  const riskNote = dok.some(d => isNum(d.score) && d.score !== d.count) ? ` · 위험 점수 ${dok.map(d => fmt(d.score, 1)).join(' · ')}` : '';
-  chip('분산일', dcount.length ? `${dcount.join(' · ')} / 25일${riskNote}` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
+  const named = dpairs.length > 1 && dpairs.every(([i]) => i?.label);
+  const tag = (i, v) => named ? `${i.label} ${v}` : `${v}`;
+  const riskNote = dok.some(d => isNum(d.score) && d.score !== d.count) ? ` · 위험 점수 ${dpairs.map(([i, d]) => tag(i, fmt(d.score, 1))).join(' · ')}` : '';
+  chip('분산일', dcount.length ? `${dpairs.map(([i, d]) => tag(i, d.count)).join(' · ')} / 25일` : '자료 없음', dcount.length ? `${dcount.join('·')}` : '—', score('distribution'));
+  if (riskNote) { const c = chips.lastChild; c.title = c.title.replace(/( \([^)]*\))?$/, m => `${riskNote}${m}`); c.setAttribute('aria-label', c.title); }
   chip('50일선 위', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}% 종목` : '—', br.status === 'OK' ? `${fmt(br.above50Pct, 0)}%` : '—', score('breadth'));
   // Turnover verdict: a chip on wide screens; on phones it rides on the advice line so the strip keeps two chip rows.
   const lq = b.liquidity;
@@ -159,7 +166,7 @@ export function renderWeather(container, market, onOpen) {
       chips.lastChild.title = `거래량: ${lq.summary}`;
     }
   }
-  chip('신고·신저', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
+  chip('신고가·신저가', hl.status === 'OK' ? `${hl.newHighs} · ${hl.newLows}` : '—', hl.status === 'OK' ? `${hl.newHighs}·${hl.newLows}` : '—', score('highsLows'));
   const more = btn('자세히', false, onOpen, 'tr-more');
   more.setAttribute('aria-label', '시장 날씨 자세히 보기');
   // 두 단추(자세히·펼치기)는 한 묶음으로 둬서 좁은 화면에서 줄이 바뀌어도 갈라지지 않게 한다.
@@ -180,6 +187,9 @@ export function renderWeather(container, market, onOpen) {
   container.append(head, text, chips);
 }
 
+// 휴대폰 차트의 그림 폭: 카드 안쪽 폭(화면 폭 - 약 58px)에 맞춰 그려 축 글자가 화면에서 줄지 않게 한다(2026-11-23).
+// 예전에는 420으로 그려 390px 화면에서 0.79배(축 글자 9.5px)로 줄었다. 높이도 같은 비율로 줄여 차트 크기는 예전과 같다.
+const phoneW = base => Math.max(280, Math.min(base, Math.round(window.innerWidth - 58)));
 // --------------------------------------------------------------- index strip
 // 화면 맨 위 지수 띠: 지수마다 종가, 전일 대비, 최근 20거래일 작은 선. 띠 자료가 없으면 주지수·보조지수로 대신 채운다.
 function spark(values) {
@@ -250,7 +260,7 @@ function indexFactorTable(w, byIdx) {
     });
     table.append(row);
   });
-  table.append(el('p', `위쪽 큰 판정(${w.label || '—'} ${w.score > 0 ? '+' : ''}${w.score ?? '—'}점)은 지수 추세·기울기·분산일·거래대금은 두 지수 중 나쁜 쪽, 시장 체력·신고가는 전체 종목으로 매긴 점수예요. 종목을 볼 때는 그 종목이 속한 시장 칸을 보세요. 시장 흐름판의 ‘시장 국면’은 대표 지수가 50일·200일선 위인지만 봐서 이 판정과 다를 수 있어요.`, 'tr-idx-note'));
+  table.append(el('p', `위쪽 큰 판정(${w.label || '—'} ${w.score > 0 ? '+' : ''}${w.score ?? '—'}점)은 지수 추세·기울기·분산일·거래대금을 두 지수 중 나쁜 쪽으로, 시장 체력·신고가를 전체 종목으로 매긴 점수예요. 종목을 볼 때는 그 종목이 속한 시장 칸을 보세요. 시장 흐름판의 ‘시장 국면’은 대표 지수가 50일·200일선 위인지만 봐서 이 판정과 다를 수 있어요.`, 'tr-idx-note'));
   return table;
 }
 // 분산일 자세히: 화면 가운데 큰 팝업. 바깥·× ·Esc 로 닫는다.
@@ -274,7 +284,7 @@ export function gapRangeText(lo, hi, pctile, days) {
   const span = days >= 250 ? '지난 1년' : `최근 ${days}거래일`;
   const where = pctile >= 90 ? ' 과거와 견줘 많이 벌어진 편이에요.' : pctile <= 10 ? ' 과거와 견줘 많이 눌린 편이에요.' : '';
   const r1 = v => Math.round(v * 10) / 10 || 0;   // -0.0% 로 찍히지 않게
-  return `${span} 범위 ${pct(r1(lo))} ~ ${pct(r1(hi))} · 이 기간의 ${fmt(pctile, 0)}% 날보다 지금이 높아요.${where}`;
+  return `${span} 범위 ${pct(r1(lo))} ~ ${pct(r1(hi))} · 이 기간 중 ${fmt(pctile, 0)}%의 날보다 지금이 높아요.${where}`;
 }
 function weatherDetail(b, market) {
   const w = b.weather || {}, wrap = el('section', null, 'tr-weather-detail');
@@ -305,7 +315,7 @@ function weatherDetail(b, market) {
       el('p', `기울기: 50일선 ${sl(i.ma50Slope, i.ma50Dir, 10)} · 200일선 ${sl(i.ma200Slope, i.ma200Dir, 20)}`, 'tr-slope'));
     c1.append(line);
   });
-  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목들의 중앙값으로 만든 대체 지수예요.' : `가격: ${idx2 ? '두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨' : '50일선과 200일선 위에 있으면 좋음, 200일선 아래면 나쁨'}. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평). 200일선 이격도는 종가가 200일선보다 몇 % 위·아래인지예요. 지수마다 평소 벌어지는 크기가 달라 지난 1년 범위와 함께 보여 줘요. 참고용이라 점수에는 넣지 않았어요.`));
+  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목의 중앙값으로 만든 대체 지수예요.' : `가격: ${idx2 ? '두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨' : '50일선과 200일선 위에 있으면 좋음, 200일선 아래면 나쁨'}. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평). 200일선 이격도는 종가가 200일선보다 몇 % 위·아래인지예요. 지수마다 평소 벌어지는 크기가 달라 지난 1년 범위와 함께 보여 줘요. 참고용이라 점수에는 넣지 않았어요.`));
   // Distribution days
   const dist = w.distribution || {}, c2 = el('article', null, 'tr-card');
   c2.append(el('h3', '분산일 (기관이 판 흔적)'));
@@ -324,7 +334,7 @@ function weatherDetail(b, market) {
       const c2 = more;
       if (distRows.length > 1) c2.append(el('h4', label, 'tr-dist-sub'));
       if (st) c2.append(stageLadder(st, d.count, corrHealthy, false));
-      if (d.inCorrection) c2.append(el('p', `ⓘ ${distRows.length > 1 ? label + '는 ' : ''}지금 상승 추세가 아니라 조정 중이에요. 분산일은 오르는 시장의 꼭대기를 잡는 신호라, 이미 내린 조정장에서는 숫자가 적어도 '건강함'이 아니에요. 새 매수는 FTD(상승 전환 신호)를 기다리세요.`, 'tr-prelim'));
+      if (d.inCorrection) c2.append(el('p', `ⓘ ${distRows.length > 1 ? label + '는 ' : ''}지금 상승 추세가 아니라 조정 중이에요. 분산일은 오르는 시장의 고점을 잡는 신호라, 이미 내린 조정장에서는 숫자가 적어도 '건강함'으로 보지 않아요. 새 매수는 FTD(상승 전환 신호)를 기다리세요.`, 'tr-prelim'));
       if (d.resetOn) c2.append(el('p', `ⓘ ${md(d.resetOn)} FTD로 새 상승 추세가 시작돼, 그 전 분산일은 지우고 새로 셌어요.`, 'tr-prelim'));
       if (d.prelim) c2.append(prelimNote(d.prelim, b.volumeSchedule));
       else if (d.confirmed) c2.append(confirmedNote(d.confirmed));
@@ -346,7 +356,7 @@ function weatherDetail(b, market) {
       if (watch.length) {
         const box = el('div', null, 'tr-thin tr-watch');
         box.append(el('b', `세지 않은 후보 ${watch.length}번`), el('em', '거래량은 늘었지만 오닐 기준에 못 미쳐 횟수에 넣지 않은 날이에요.'));
-        watch.forEach(x => box.append(el('p', `${md(x.date)} ${pct(x.changePct)} · 거래량 ${fmt(x.volumeRatio, 2)}배 — ${x.watchReason || ''}`, 'tr-watch-row')));
+        watch.forEach(x => box.append(el('p', `${md(x.date)} ${pct(x.changePct)} · 거래량 ${fmt(x.volumeRatio, 2)}배 · ${x.watchReason || ''}`, 'tr-watch-row')));
         c2.append(box);
       }
       if (d.thinRally) c2.append(thinRallyLine(d.thinRally));
@@ -374,10 +384,10 @@ function weatherDetail(b, market) {
         box.append(el('b', `지워진 분산일 ${gone.length}개`));
         gone.forEach(x => {
           const why = x.expiredByFtd
-            ? `${md(x.date)} 분산일(${pct(x.changePct)}) → ${md(x.expiredByFtd)} 팔로우스루데이(FTD)로 새 상승 추세가 시작돼 지웠어요.`
+            ? `${md(x.date)} 분산일(${pct(x.changePct)})은 ${md(x.expiredByFtd)} 팔로우스루데이(FTD)로 새 상승 추세가 시작돼 지웠어요.`
             : x.expiredOn
-            ? `${md(x.date)} 분산일(종가 ${fmt(x.close, 2)}, ${pct(x.changePct)}) → ${md(x.expiredOn)} 종가 ${fmt(x.expiredClose, 2)}로 ${pct(x.expiredRisePct)} 올라 5% 기준을 넘어 지웠어요.`
-            : `${md(x.date)} 분산일(${pct(x.changePct)}) → 그 뒤 지수가 그날 종가보다 5% 넘게 올라 지웠어요.`;
+            ? `${md(x.date)} 분산일(종가 ${fmt(x.close, 2)}, ${pct(x.changePct)})은 ${md(x.expiredOn)} 종가가 ${fmt(x.expiredClose, 2)}로 ${pct(x.expiredRisePct)} 올라 5% 기준을 넘겨서 지웠어요.`
+            : `${md(x.date)} 분산일(${pct(x.changePct)})은 그 뒤 지수가 그날 종가보다 5% 넘게 올라 지웠어요.`;
           box.append(el('p', why));
         });
         c2.append(box);
@@ -398,7 +408,7 @@ function weatherDetail(b, market) {
     const big = el('div', null, 'tr-big'); big.append(el('b', `${fmt(br.above50Pct, 0)}%`), el('span', `5일 ${br.above50Change5d > 0 ? '+' : ''}${fmt(br.above50Change5d, 0)}%p`, tone(br.above50Change5d))); c3.append(big);
     const s = br.series || [];
     // 판정 기준(60% 넘으면 좋음, 40% 아래면 나쁨)을 차트에 그대로 그린다. 기준값은 wamo_trend.weather 와 같다.
-    c3.append(lineChart(s, { lines: [{ key: 'above50', label: '50일선 위', color: 'var(--green)' }, { key: 'above200', label: '200일선 위', color: '#9aacc3', dash: true }],
+    c3.append(lineChart(s, { lines: [{ key: 'above50', label: '50일선 위', short: '50일', color: 'var(--green)' }, { key: 'above200', label: '200일선 위', short: '200일', color: '#9aacc3', dash: true }],
       bands: [{ from: 60, to: 100, cls: 'good', label: '60% 이상 · 건강' }, { from: 0, to: 40, cls: 'bad', label: '40% 미만 · 약한 시장' }],
       refs: [{ value: 60, cls: 'good', label: '60 건강' }, { value: 40, cls: 'bad', label: '40 약함' }] }));
     const lg = el('div', null, 'pc-legend small');
@@ -499,7 +509,7 @@ function volumeChart(series) {
   // 60 bars = index official volume as a multiple of its 50-day average (units differ by index).
   // Colour = index up/down that day; orange line = 20-day average ÷ 50-day average; dashed = 1.0 (normal).
   const narrow = window.innerWidth < 760;
-  const W = narrow ? 420 : 1000, H = narrow ? 240 : 210, pad = { l: 6, r: narrow ? 46 : 58, t: 10, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+  const W = narrow ? phoneW(420) : 1000, H = narrow ? Math.round(240 * W / 420) : 210, pad = { l: 6, r: narrow ? 46 : 58, t: 10, b: 22 }, plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
   const n = series.length, slot = plotW / n, bw = Math.max(2, slot * 0.66);
   const top = Math.max(2, Math.ceil(Math.max(...series.map(p => p.x50 || 0)) * 2) / 2);
   const x = k => pad.l + slot * (k + 0.5), y = v => pad.t + (1 - v / top) * plotH;
@@ -544,7 +554,7 @@ function thinRallyLine(t) {
   const p = el('p', null, `tr-thin ${t.warn ? 'warn' : ''}`);
   p.append(el('b', '보조 신호 · 거래량 줄며 오른 날'),
     el('span', `최근 5거래일 상승 ${t.upDays5}일 중 ${t.thinDays5}일 · 25거래일 상승 ${t.upDays}일 중 ${t.thinDays}일`),
-    el('em', t.warn ? '매수세가 약해지는 중 — 분산일과 같이 나오면 더 조심' : '오르는 날 거래량이 대체로 받쳐 줘요'));
+    el('em', t.warn ? '매수세가 약해지고 있어요. 분산일과 같이 나오면 더 조심해요' : '오르는 날 거래량이 대체로 받쳐 줘요'));
   return p;
 }
 function prelimNote(p, sched) {
@@ -618,7 +628,7 @@ function liquidityCard(b, market) {
     const t1 = el('div', null, `lq-tile ${udTone}`);
     t1.append(el('span', '상승 ÷ 하락 거래대금 · 화면 속 종목', 'lq-tile-label'), el('strong', isNum(ud.today) ? `${fmt(ud.today, 2)}배` : '—'),
       el('small', `오늘 · 최근 10일 평균 ${isNum(ud.avg10) ? fmt(ud.avg10, 2) + '배' : '—'} · 돈 들어온 날 ${ud.inflowDays10}/10 · ${g.members}종목`),
-      el('p', '오른 종목에 몰린 돈 ÷ 내린 종목에 몰린 돈이에요. 1보다 크면 돈이 들어온 날이에요. 지수는 오르는데 계속 1 아래면 소수 대형주만 끌고 가는 장이에요.'));
+      el('p', '오른 종목에 몰린 돈을 내린 종목에 몰린 돈으로 나눈 값이에요. 1보다 크면 돈이 들어온 날이에요. 지수는 오르는데 계속 1 아래면 소수 대형주만 끌고 가는 장이에요.'));
     tiles.append(t1);
   }
   if (g.sellingClimax) {
@@ -663,7 +673,7 @@ const jo = v => isNum(v) ? fmt(v / 10000, 1) : '—';   // 억 원 → 조 원
 const eokStr = v => isNum(v) ? `${Math.round(v).toLocaleString('ko-KR')}억 원` : '—';
 function creditChart(series, showKospi, onPick) {
   const narrow = window.innerWidth < 760;
-  const W = narrow ? 420 : 1000, H = narrow ? 260 : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 40 : 52, t: 26, b: 24 };
+  const W = narrow ? phoneW(420) : 1000, H = narrow ? Math.round(260 * W / 420) : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 40 : 52, t: 26, b: 24 };
   const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b, n = series.length, slot = plotW / n, bw = Math.max(1, slot * 0.7);
   const fMax = Math.max(100, ...series.map(p => p.forced || 0));
   const step = fMax > 1200 ? 400 : fMax > 600 ? 200 : 100, fTop = Math.ceil(fMax / step) * step;
@@ -713,7 +723,7 @@ function creditCard(b) {
   const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
   chip(`반대매매 · ${md(c.asOf)}`, eokStr(L.forced), isNum(L.ratio) ? `직전 20거래일 평균 ${eokStr(L.avg20)}의 ${fmt(L.ratio, 2)}배${L.spike ? ' · 급증' : ''}` : '평균 계산 전', L.spike ? 'warn' : '');
   chip('신용융자 잔고', `${jo(L.credit)}조 원`, `20거래일 ${pct(c.credit20dChangePct)}${peak && isNum(L.credit) ? ` · ${md(peak.date)} 고점 ${jo(peak.credit)}조 대비 ${pct((L.credit / peak.credit - 1) * 100)}` : ''}`, c.credit20dChangePct <= -10 ? 'down' : c.credit20dChangePct >= 10 ? 'up' : '');
-  chip('최근 1년 반대매매 급증일', `${c.yearSpikeDays}일`, `거래일 ${c.yearDays}일 중 · 최근 20거래일 ${c.recentSpikeDays}일`, c.recentSpikeDays >= 5 ? 'warn' : '');
+  chip('최근 1년 반대매매 급증일', `${c.yearSpikeDays}일`, `거래한 ${c.yearDays}일 중 · 최근 20거래일 중 ${c.recentSpikeDays}일`, c.recentSpikeDays >= 5 ? 'warn' : '');
   card.append(chips);
   const tools = el('div', null, 'cr-tools');
   const holder = el('div', null, 'cr-chart'), readout = el('p', null, 'cr-readout');
@@ -746,7 +756,7 @@ let usRange = '1Y', usSpx = false;
 const tri = v => isNum(v) ? fmt(v / 1e6, 2) : '—';   // 백만 달러 → 조 달러
 function creditChartUS(c, series, showSpx, onPick) {
   const narrow = window.innerWidth < 760;
-  const W = narrow ? 420 : 1000, H = narrow ? 260 : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 44 : 56, t: 26, b: 24 };
+  const W = narrow ? phoneW(420) : 1000, H = narrow ? Math.round(260 * W / 420) : 280, pad = { l: narrow ? 40 : 52, r: narrow ? 44 : 56, t: 26, b: 24 };
   const plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b, n = series.length, slot = plotW / n, bw = Math.max(1, slot * 0.7);
   const dMax = Math.max(2, ...series.map(p => isNum(p.changePct) && p.changePct < 0 ? -p.changePct : 0));
   const dTop = Math.ceil(dMax), step = dTop > 6 ? 2 : 1;
@@ -798,7 +808,7 @@ function creditCardUS(b) {
   const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
   chip(`신용융자 잔고 · ${mon(m.month)} 말`, `${tri(m.level)}조 달러`, `1년 전보다 ${pct(m.yoyPct)} · 전월 ${pct(m.momPct)} · 최근 12개월 고점(${mon(m.peak12.month)}) 대비 ${pct(m.fromPeakPct)}`, m.yoyPct >= 30 ? 'warn' : '');
   chip('마지막 투매일', lf ? md(lf.date) + (lf.date.slice(0, 4) !== c.asOf.slice(0, 4) ? ` (${lf.date.slice(0, 4)})` : '') : '없음', lf ? `S&P 500 ${pct(lf.changePct)} · 거래량 20일 평균의 ${fmt(lf.volRatio, 2)}배` : '최근 3년 안에 없음');
-  chip('최근 1년 투매일', `${c.yearFlushDays}일`, `거래일 ${c.yearDays}일 중 · 최근 20거래일 ${c.recentFlushDays}일`, c.recentFlushDays >= 2 ? 'warn' : '');
+  chip('최근 1년 투매일', `${c.yearFlushDays}일`, `거래한 ${c.yearDays}일 중 · 최근 20거래일 중 ${c.recentFlushDays}일`, c.recentFlushDays >= 2 ? 'warn' : '');
   card.append(chips);
   const monthVal = {}; (c.months || []).forEach(([ym, v]) => { monthVal[ym] = v; });
   const tools = el('div', null, 'cr-tools'), holder = el('div', null, 'cr-chart'), readout = el('p', null, 'cr-readout');
@@ -925,7 +935,7 @@ function earningsSection(b, openStock) {
 function scoreSection(b, openStock) {
   const sc = b.scorecard || {}, wrap = el('div');
   wrap.append(help(sc.note || ''));
-  if (sc.status !== 'OK') return wrap.append(emptyBox('아직 기록된 신호가 없어요. 매일 자동으로 쌓입니다.')), wrap;
+  if (sc.status !== 'OK') return wrap.append(emptyBox('아직 기록된 신호가 없어요. 매일 자동으로 쌓여요.')), wrap;
   wrap.append(el('p', `${sc.since}부터 신호 ${sc.eventCount}건 기록 · 5·20·60거래일이 지나야 해당 칸이 채워져요.`, 'tr-sub'));
   const grid = el('div', null, 'tr-score-grid');
   Object.entries(sc.signals || {}).forEach(([key, s]) => {

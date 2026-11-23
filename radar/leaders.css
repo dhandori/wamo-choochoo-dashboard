@@ -36,7 +36,7 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
 .ld-score{display:grid;gap:4px;justify-items:end;flex-shrink:0;font-size:12px;font-weight:700;color:#f2d38e}.ld-score-bar{display:flex;gap:3px}.ld-score-bar i{width:10px;height:6px;border-radius:2px;background:#23374e}.ld-score-bar i.on{background:#f2c474}
 .ld-checks{list-style:none;padding:0;margin:10px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 12px}.ld-checks li{display:flex;gap:6px;font-size:12px;color:#6f86a0}.ld-checks li.ok{color:#86e6c6}.ld-checks i{font-style:normal;font-weight:700;width:10px}
 .ld-matrix-wrap{overflow-x:auto;margin-top:10px}.ld-matrix{width:100%;border-collapse:collapse;font-size:12px}.ld-matrix th{color:#9aacc3;font-weight:700;padding:6px 4px;border-bottom:1px solid #2f4259;text-align:center}.ld-matrix th small{display:block;font-size: 12px;font-weight:400}.ld-matrix th:first-child{text-align:left}.ld-matrix td{padding:6px 4px;border-bottom:1px solid #1d2a3a;text-align:center;color:#5f7690}.ld-matrix td.ok{color:#86e6c6;font-weight:700}.ld-matrix td.nm{text-align:left;color:#dfe9f4;white-space:nowrap}.ld-matrix td.sc{color:#eaf0f8;font-weight:700}.ld-matrix tr.watch td.sc{color:#f2c474}.ld-matrix tr.lead td.sc{color:#62d7b5}.ld-matrix em{font-style:normal;font-size: 12px;color:#62d7b5}
-@media(max-width:760px){.ld-matrix{font-size:12px}.ld-matrix th small{display:none}.ld-matrix td.nm{max-width:120px;overflow:hidden;text-overflow:ellipsis}.ld-phase{padding:12px}.ld-checks{grid-template-columns:1fr 1fr}.ld-score{justify-items:start}}
+@media(max-width:760px){.ld-matrix{font-size:12px}.ld-matrix th small{display:none}.ld-matrix td.nm{max-width:120px;white-space:normal;overflow-wrap:anywhere;line-height:1.3}.ld-phase{padding:12px}.ld-checks{grid-template-columns:1fr 1fr}.ld-score{justify-items:start}}
 
 .ld-chip.money { background: #15302a; color: #86e6c6; border-color: #215741; }
 .ld-chip.money-out { background: #33202a; color: #f2b8bd; border-color: #5a2f3a; }
@@ -161,3 +161,5 @@ body[data-view="leaders"] .scanner-layout{display:block}body[data-view="leaders"
 .ld-shift-label{margin-right:0 !important}
 @media(max-width:760px){.ld-table .ld-td.c-shift{grid-column:1/-1;order:9}.ld-table .ld-td.c-shift::before{display:inline-block !important;margin-right:8px}}
 .ld-top-rs .ld-shift b{font-size:16px;line-height:1.2}.ld-top-rs .ld-shift small,.ld-top-rs .ld-shift-label{margin-right:0}
+/* 휴대폰: 긴 업종 이름·보조 줄을 한 줄에서 잘라 버리지 않고 두 줄까지 보인다(2026-11-23). */
+@media(max-width:760px){.ld-ind-sub{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;white-space:normal}}
