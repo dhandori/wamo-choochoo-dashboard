@@ -6,7 +6,8 @@ nothing. wamo_watchlist.json lists the stocks you care about most.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+import hashlib
 from pathlib import Path
 import json
 import os
@@ -14,6 +15,11 @@ import urllib.parse
 import urllib.request
 
 STATE = 'wamo_alert_state.json'
+# 2026-11-25 사용자 요청: 00:00~07:20 KST 텔레그램은 바로 보내지 않고 이 파일(data 브랜치)에 보류한다.
+# wamo_claude_bot 의 scripts/tg_gate.py 가 07:20 뒤 새벽 알림 묶음을 보낼 때 이 파일을 읽어 함께 넣는다.
+# (이 저장소 워크플로에는 wamo_claude_bot 에 쓸 권한이 없어 읽기 방식으로 잇는다.)
+HOLD = 'wamo_tg_hold.json'
+QUIET_END = (7, 20)
 WATCHLIST = 'wamo_watchlist.json'
 LIGHT = {'GREEN': '🟢', 'YELLOW': '🟡', 'RED': '🔴', 'UNKNOWN': '⚪'}
 TITLE = {'KR': '한국장', 'US': '미국장', 'JP': '일본장', 'TW': '대만장'}
@@ -190,7 +196,32 @@ def ftd_followups(market, block, sent_keys, provisional, closed):
     return out
 
 
-def telegram_send(token, chat_id, text, opener=None):
+def is_quiet(now=None):
+    now = now or datetime.now(timezone.utc)
+    k = now.astimezone(timezone(timedelta(hours=9)))
+    return (k.hour, k.minute) < QUIET_END
+
+
+def hold(text, source='dashboard', root=None, now=None):
+    """새벽 알림을 보류 파일에 쌓는다. 같은 글은 한 번만 넣고 최근 40건만 남긴다."""
+    now = now or datetime.now(timezone.utc)
+    path = Path(root or Path(__file__).resolve().parent) / HOLD
+    data = read_json(path, {'items': []})
+    items = data.get('items') if isinstance(data, dict) else []
+    items = items if isinstance(items, list) else []
+    k = now.astimezone(timezone(timedelta(hours=9)))
+    item_id = hashlib.sha1(f"{k:%Y-%m-%d}|{text}".encode('utf-8')).hexdigest()[:12]
+    if not any(x.get('id') == item_id for x in items):
+        items.append({'id': item_id, 'at': k.strftime('%Y-%m-%d %H:%M'), 'source': source, 'text': text})
+    path.write_text(json.dumps({'items': items[-40:]}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    print(f'새벽({k:%H:%M} KST)이라 텔레그램을 보류합니다 · 07:20 뒤 새벽 알림 묶음으로 나갑니다', flush=True)
+
+
+def telegram_send(token, chat_id, text, opener=None, source='dashboard'):
+    """opener 를 넘긴 시험 호출과 WAMO_TG_GATE_OFF=1 일 때는 새벽에도 바로 보낸다."""
+    if opener is None and not os.environ.get('WAMO_TG_GATE_OFF') and is_quiet():
+        hold(text, source)
+        return
     body = urllib.parse.urlencode({'chat_id': chat_id, 'text': text,
                                    'disable_web_page_preview': 'true'}).encode()
     req = urllib.request.Request(f'https://api.telegram.org/bot{token}/sendMessage', data=body,
@@ -260,7 +291,7 @@ def send_for_markets(root, markets, sender=telegram_send, env=None):
     if not sent_any:
         return []
     (root / STATE).write_text(json.dumps(state, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
-    return [STATE]
+    return [STATE] + ([HOLD] if (root / HOLD).exists() else [])   # 새벽 보류분도 함께 올린다
 
 
 if __name__ == '__main__':

@@ -52,3 +52,6 @@ jobs:
         run: python wamo_macro.py $SEND
       - name: 결과 올리기 (data 브랜치. 다른 작업이 먼저 올렸으면 받아서 다시 시도)
         run: python3 wamo_data_branch.py publish -m "매크로 지수 갱신 $(TZ=Asia/Seoul date +%F)" wamo_macro.json wamo_macro_history.json
+      - name: 새벽에 보류한 텔레그램 올리기 (07:20 전 실행만 생김. 실패해도 매크로 자료는 이미 올라감)
+        if: always()
+        run: python3 wamo_data_branch.py publish -m "새벽 텔레그램 보류 $(TZ=Asia/Seoul date '+%F %H:%M')" wamo_tg_hold.json || echo "보류 파일 올리기 실패"
