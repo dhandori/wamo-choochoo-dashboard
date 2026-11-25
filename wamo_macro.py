@@ -581,108 +581,74 @@ def _josa(word, pair):
     return '로' if jong in ('', 'ㄹ') else '으로'
 
 
+HY_LONG_AVG = 500   # 미국 하이일드 스프레드 장기 평균(bp, 1997년 이후 대략). FRED 는 3년치만 줘서 백분위 단계만으로는 높낮이를 오해하기 쉽다.
+
+
 def telegram_text(data):
-    """2026-11-26 사용자 요청('콤팩트하게, 눈에 들어오게, 투자에 도움되게').
-    결론(판정 + 매크로로 본 대응) → 핵심 4~5줄(숫자 한 문장 + 뜻 한 문장) → 다음 확인(한 단계 더 나빠지는 기준값).
-    문장은 그날 단계 조합에 따라 고른다. 지표 전체 표는 화면(산업강도판 매크로 탭)에 있다."""
-    c = data['composite']
+    """2026-11-26 사용자 요청('담백하게'). 해석은 한 줄 결론에만 두고, 나머지는 숫자와 한 달 변화만 쓴다."""
     d = datetime.fromisoformat(data['asOf'])
     rows = [r for r in data['indicators'] if r.get('level')]
     by = {r['key']: r for r in rows}
     J = _josa
     ax = {mk: market_axes([r for r in data['indicators'] if _market_of(r) == mk], mk) for mk in ('US', 'KR')}
-    lab = lambda r: LEVELS[r['level']][1]
     lv = lambda k: min([ax[mk][k]['level'] for mk in ('US', 'KR') if ax[mk][k]['level']] or [5])
     s_lv, c_lv = lv('stock'), lv('credit')
-    ch = lambda r: f'(한 달 {r["changeText"]})' if r.get('changeText') else ''
+    chg = lambda r: r.get('change1m')
 
     if s_lv <= 2 and c_lv >= 3:
-        head = ('주가는 흔들리는데 신용은 아직 버텨, 지금은 자금 경색 없는 주가 조정입니다. '
-                '매크로로 보면 비중을 늘릴 때가 아니라 버티면서 손절선을 지킬 구간입니다.')
+        head = '주가 변동성은 높고 신용 지표는 크게 움직이지 않았습니다. 주가 조정이며 신용 경색 조짐은 아직 없습니다.'
     elif s_lv <= 2:
-        head = ('주가와 신용이 함께 경계 이상이라 조정이 자금 사정 악화로 번지고 있습니다. '
-                '매크로로 보면 현금 비중을 늘릴 구간입니다.')
+        head = '주가 변동성과 신용 지표가 함께 올랐습니다.'
     elif c_lv <= 2:
-        head = ('주가는 조용한데 신용 쪽에 경보가 켜져 있습니다. '
-                '주가가 뒤늦게 반응할 수 있어 새 매수는 서두르지 않는 편이 낫습니다.')
+        head = '주가는 안정적인데 신용 지표가 올랐습니다.'
     else:
-        head = '주가와 신용 모두 경계 아래입니다. 매크로 쪽에서 매수를 막는 경보는 없습니다.'
-    out = [f'📊 매크로 지수 | {d.month}/{d.day} {c["emoji"]} {c["label"]}', head]
+        head = '주가와 신용 지표 모두 평소 범위입니다.'
+    out = [f'📊 매크로 지수 | {d.month}/{d.day}', head]
 
-    prev, pval = data.get('sentLevels') or {}, data.get('sentValues') or {}
-    moved = [r for r in rows if prev.get(r['key']) and r['level'] != prev[r['key']]]
-    if moved:
-        moved.sort(key=lambda r: r['level'] - prev[r['key']])
-        out.append('- 변화: ' + ', '.join(
-            f'{_short(r)} {pval.get(r["key"], "")}{"→" if pval.get(r["key"]) else ""}{_val(r)}'
-            f'({LEVELS[prev[r["key"]]][1]}→{lab(r)})' for r in moved[:3]) + '.')
-
-    vix, vk, ratio = by.get('vix'), by.get('vkospi'), by.get('vix_ratio')
+    vix, vk, fng = by.get('vix'), by.get('vkospi'), by.get('fng')
     if vix:
-        t = f'- 변동성: VIX {_val(vix)}{ch(vix)}'
-        t += f', VKOSPI {_val(vk)}' if vk else ''
-        t += J(t, '로/으로') + f' 하루 ±{vix["value"] / 15.87:.1f}%' + (f'·±{vk["value"] / 15.87:.1f}%' if vk else '') + ' 출렁임이 가격에 들어 있습니다. '
-        hot = vix['level'] <= 2 or (vk and vk['level'] <= 2)
-        t += '같은 손절폭이면 비중을 평소보다 줄여야 합니다.' if hot else '평소 수준이라 변동성 때문에 비중을 줄일 이유는 없습니다.'
-        out.append(t)
-
-    hy, ig = by.get('us_hy'), by.get('us_ig')
-    if hy and ig:
-        t = f'- 신용: 美 하이일드 {_val(hy)}{ch(hy)}{J(_val(hy) + ch(hy), "은/는")} {lab(hy)}, 투자등급 {_val(ig)}{J(_val(ig), "은/는")} {lab(ig)}입니다. '
-        if hy['level'] <= 2 and ig['level'] <= 2:
-            t += '우량 기업까지 차입 비용이 올라 투자·고용이 줄어드는 경기 둔화 신호입니다.'
-        elif hy['level'] <= 2:
-            t += '저신용 기업부터 돈줄이 마르지만 우량 기업은 멀쩡해, 경기 침체 신호까지는 아닙니다.'
+        t = f'- VIX {_val(vix)}'
+        if chg(vix) is not None:
+            t += f', 한 달 전보다 {abs(chg(vix)):.1f} {"올랐" if chg(vix) > 0 else "내렸"}습니다.'
         else:
-            t += '기업 자금줄에 이상이 없어 경기 걱정은 아직 이릅니다.'
+            t += '입니다.'
+        if vk:
+            t += f' VKOSPI는 {_val(vk)}입니다.'
         out.append(t)
-
-    fng = by.get('fng')
     if fng:
-        if fng['value'] <= 25:
-            t = f'- 심리: 공포탐욕 {_val(fng)}(극단적 공포)라 반등이 나오기 쉬운 자리입니다. '
-            t += ('다만 단기 공포가 3개월 공포보다 커(VIX÷VIX3M ' + _val(ratio) + ') 바닥 확인은 아직입니다.'
-                  if ratio and ratio['value'] >= 1 else '단기 공포는 누그러져 바닥을 다지는 모양입니다.')
-        elif fng['value'] >= 75:
-            t = f'- 심리: 공포탐욕 {_val(fng)}(과열)라 작은 악재에도 조정이 나오기 쉽습니다. 추격 매수는 피하는 편이 낫습니다.'
+        out.append(f'- 공포탐욕지수 {_val(fng)}' + (f'({fng["zone"]})' if fng.get('zone') else '') + '입니다.')
+    hy, ig = by.get('us_hy'), by.get('us_ig')
+    if hy:
+        t = f'- 미국 하이일드 스프레드 {_val(hy)}'
+        if chg(hy) is not None:
+            t += f', 한 달 새 {abs(chg(hy)):.0f}bp {"올랐" if chg(hy) > 0 else "내렸"}습니다.'
         else:
-            t = f'- 심리: 공포탐욕 {_val(fng)}{J(_val(fng), "로/으로")} 한쪽으로 쏠리지 않았습니다.'
+            t += '입니다.'
+        t += f' 장기 평균(약 {HY_LONG_AVG}bp)보다 ' + ('낮습니다.' if hy['value'] < HY_LONG_AVG else '높습니다.')
+        if ig:
+            t += f' 투자등급은 {_val(ig)}입니다.'
         out.append(t)
-
-    ksd = by.get('ks_dd')
     kc = [by[k] for k in ('kr_aa', 'kr_bbb', 'kr_cpcd') if k in by]
-    if ksd or kc:
-        kw = min(kc, key=lambda r: r['level']) if kc else None
-        t = '- 한국: ' + (f'코스피 고점 대비 {_val(ksd)}' if ksd else '')
-        if kw and kw['level'] <= 2:
-            t += (', ' if ksd else '') + f'{_short(kw)} {_val(kw)}{ch(kw)}{J(_val(kw) + ch(kw), "로/으로")} {lab(kw)}입니다. 회사채·단기자금 시장이 막혀 건설·중소형주 부담이 커집니다.'
-        elif ksd and ksd['level'] <= 2:
-            t += '인데 회사채·단기자금 지표는 평소 수준입니다. 주가만 무너졌고 기업 자금 사정은 괜찮습니다.'
-        else:
-            t += (', ' if ksd else '') + '회사채·단기자금 지표는 평소 수준입니다.'
-        out.append(t)
+    if kc:
+        big = [r for r in kc if abs(chg(r) or 0) >= 10]
+        out.append('- 한국 회사채·단기자금 금리차는 ' + (
+            ', '.join(f'{_short(r).replace("한국 ", "")} {_val(r)}(한 달 {r["changeText"]})' for r in big) + '로 움직였습니다.'
+            if big else '한 달간 거의 그대로입니다.'))
+    ksd, spd = by.get('ks_dd'), by.get('sp_dd')
+    if ksd or spd:
+        parts = []
+        if ksd:
+            parts.append(f'코스피 {_val(ksd).lstrip("-")}')
+        if spd:
+            parts.append(f'S&P500 {_val(spd).lstrip("-")}')
+        out.append('- 1년 고점 대비 ' + ', '.join(parts) + ' 내려와 있습니다.')
 
-    # 다음 확인: 한 단계 더 나빠지는 기준값
-    def line(r):
-        nxt = LEVELS[max(1, r['level'] - 1)][1]
-        if r.get('worseAt') is not None and r['level'] > 1:
-            unit = r.get('unit') or ''
-            v = r['worseAt']
-            vs = f'{v:,.0f}{unit}' if abs(v) >= 100 else f'{v:,.1f}{unit}'
-            return f'{_short(r)}{J(_short(r), "이/가")} {vs}{J(vs, "을/를")} 넘으면 {nxt} 단계'
-        return f'{_short(r)}{J(_short(r), "이/가")} {nxt} 단계로 나빠지는지'
-    credit = [r for r in rows if axis_of(r['key']) == 'credit' and r['key'] not in ('us_curve', 'kr_curve')]
-    if s_lv <= 2 and c_lv >= 3 and credit:
-        r = max(credit, key=lambda r: ((r.get('speedZ') or 0), (r.get('riskPct') or 0)))
-        watch = line(r) + '인데(지금 ' + _val(r) + '), 그러면 주가 조정이 신용 문제로 번진다는 신호입니다.'
-    elif c_lv <= 2 and credit:
-        r = min(credit, key=lambda r: (r['level'], -(r.get('riskPct') or 0)))
-        watch = line(r) + '를 봅니다(지금 ' + _val(r) + ').'
+    if c_lv >= 3 and hy:
+        watch = '하이일드 스프레드가 계속 오르는지 봅니다.'
+    elif c_lv <= 2:
+        watch = '신용 지표 상승이 주가로 번지는지 봅니다.'
     else:
-        stock = [r for r in rows if axis_of(r['key']) == 'stock']
-        r = min(stock, key=lambda r: (r['level'], -(r.get('riskPct') or 0))) if stock else None
-        watch = (f'{_short(r)}{J(_short(r), "이/가")} 지금 {_val(r)}인데, 한 단계 내려오면 조정이 끝나 간다는 신호입니다.'
-                 if r and r['level'] <= 2 else '눈에 띄게 빨라진 지표가 생기는지 봅니다.')
+        watch = '변동성이 가라앉는지 봅니다.'
     out += [f'👀 다음 확인: {watch}', '👉 지표 14개: https://dhandori.github.io/industry-strength/#US-macro']
     return '\n'.join(out)
 
