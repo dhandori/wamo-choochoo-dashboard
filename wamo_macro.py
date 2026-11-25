@@ -535,33 +535,113 @@ def market_summary(rows, mk):
     return out
 
 
+SHORT = {'kr_aa': '한국 우량 회사채 가산금리', 'kr_bbb': '한국 비우량 회사채 가산금리', 'kr_cpcd': '한국 CP−CD 금리차',
+         'kr_curve': '한국 장단기 금리차', 'us_hy': '미국 하이일드 스프레드', 'us_ig': '미국 투자등급 스프레드',
+         'us_liq': '미국 순유동성', 'us_curve': '미국 장단기 금리차', 'vix': 'VIX', 'vix_ratio': 'VIX÷VIX3M',
+         'vkospi': 'VKOSPI', 'fng': '공포탐욕지수', 'sp_dd': 'S&P500 낙폭', 'ks_dd': '코스피 낙폭'}
+
+
+def _short(r):
+    return SHORT.get(r['key']) or r['name'].split(' (')[0]
+
+
+def _val(r):
+    v = r.get('valueText', '-')
+    return v + ('%' if r.get('unit') == '%' and v != '-' else '')
+
+
+def _with_change(r):
+    return f'{_short(r)} {_val(r)}' + (f'(한 달 {r["changeText"]})' if r.get('changeText') else '')
+
+
 def telegram_text(data):
+    """2026-11-26 사용자 요청: 지표 14개를 늘어놓지 않고 판단 → 달라진 것 → 경보 → 볼 것 순서로 줄인다.
+    지표 전체 표는 화면(산업강도판 매크로 탭)에 있다. data['sentLevels'] 는 직전 알림 때의 단계다(main 이 이어 붙인다)."""
     c = data['composite']
-    cnt = c['counts']
     d = datetime.fromisoformat(data['asOf'])
-    lines = [f'📊 매크로 지수 {d.month}/{d.day}',
-             f'대표 단계 {c["level"]}단계({c["label"]}) {c["emoji"]} (나라·묶음 가운데 가장 나쁜 쪽), '
-             f'🔴{cnt["1"]} 🟠{cnt["2"]} 🟡{cnt["3"]} 🔵{cnt["4"]} 🟢{cnt["5"]}']
-    # 미국 먼저, 굵은 구분선 뒤에 한국 (화면과 같은 순서)
-    bar = '━━━━━━━━━━━━━━'
+    rows = [r for r in data['indicators'] if r.get('level')]
+    lines = [f'📊 매크로 지수 {d.month}/{d.day} · {c["emoji"]} {c["level"]}단계({c["label"]})', '']
+    ax = {mk: market_axes([r for r in data['indicators'] if _market_of(r) == mk], mk) for mk in ('US', 'KR')}
+
+    def lab(mk, k):
+        return ax[mk][k]['label'] if ax[mk][k]['level'] else '확인 불가'
+    lv = lambda k: min([ax[mk][k]['level'] for mk in ('US', 'KR') if ax[mk][k]['level']] or [5])
+    s_lv, c_lv = lv('stock'), lv('credit')
+    head = (f'주식시장 충격은 미국 {lab("US", "stock")}·한국 {lab("KR", "stock")}, '
+            f'신용·자금은 미국 {lab("US", "credit")}·한국 {lab("KR", "credit")}입니다.')
+    if s_lv <= 2 and c_lv >= 3:
+        verdict = '주가는 크게 흔들리는데 신용 쪽은 아직 버티고 있어, 지금까지는 자금 경색이 아니라 주가 조정입니다.'
+    elif s_lv <= 2 and c_lv <= 2:
+        verdict = '주가와 신용이 함께 경계 이상이라, 주가 조정이 자금 사정 악화로 번지는 구간입니다.'
+    elif c_lv <= 2:
+        verdict = '주가는 조용한데 신용 쪽에 경보가 켜져 있어, 주가가 뒤늦게 반응할 수 있습니다.'
+    else:
+        verdict = '두 축 모두 경계 아래라 시장 전체에 걸린 경보는 없습니다.'
+    lines.append(f'{head} {verdict}')
+    fast = [r for r in rows if (r.get('speedBump') or 0) > 0]
+    if fast:
+        lines.append('한 달 사이 유난히 빠르게 나빠진 지표는 ' + ', '.join(_short(r) for r in fast) + '입니다.')
+    vx = next((r for r in rows if r['key'] == 'vix'), None)
+    fg = next((r for r in rows if r['key'] == 'fng'), None)
+    if vx and fg and abs(_fng_temp(fg['value']) - _vix_temp(vx['value'])) >= 2:
+        lines.append('VIX와 공포탐욕지수가 엇갈립니다.')
+
+    prev = data.get('sentLevels') or {}
+    if prev:
+        worse = [r for r in rows if prev.get(r['key']) and r['level'] < prev[r['key']]]
+        better = [r for r in rows if prev.get(r['key']) and r['level'] > prev[r['key']]]
+        step = lambda r: f'{_short(r)} {LEVELS[prev[r["key"]]][0]}→{r["emoji"]} {_val(r)}'
+        lines += ['', '직전 알림과 달라진 것']
+        if worse:
+            lines.append('나빠짐: ' + ' · '.join(step(r) for r in worse))
+        if better:
+            lines.append('나아짐: ' + ' · '.join(step(r) for r in better))
+        if not worse and not better:
+            lines.append('단계가 바뀐 지표는 없습니다.')
+
     for mk, title in (('US', '🇺🇸 미국'), ('KR', '🇰🇷 한국')):
-        rows = [r for r in data['indicators'] if _market_of(r) == mk]
-        if not rows:
+        mine = [r for r in rows if _market_of(r) == mk]
+        if not mine:
             continue
-        lines += ['', bar, f'{title} 지표 {len(rows)}개', bar]
-        lines += market_summary(rows, mk)
-        lines.append('')
-        for r in rows:
-            extra = f' ({r["zone"]})' if r.get('zone') else ''
-            warn = ' ⚠️과열' if r.get('overheat') else ''
-            ch = f' (1M {r["changeText"]})' if r.get('changeText') else ''
-            stale = ' (이전 자료)' if r.get('stale') else ''
-            if r.get('unit') == '%' and r.get('valueText', '-') != '-':
-                extra = '%' + extra
-            lines.append(f'{r["emoji"]} {r["name"]}: {r["valueText"]}{extra}{ch}{warn}{stale}')
-    # 화면은 산업강도판의 세 번째 탭(🌐 매크로 지수)에 있다
-    lines += ['', '👉 https://dhandori.github.io/industry-strength/#US-macro (한국은 #KR-macro)']
+        lines += ['', f'{title} · 주식 {ax[mk]["stock"]["emoji"]} {lab(mk, "stock")} · 신용 {ax[mk]["credit"]["emoji"]} {lab(mk, "credit")}']
+        bad = sorted([r for r in mine if r['level'] <= 2], key=lambda r: (r['level'], -(r.get('riskPct') or 0)))
+        if bad:
+            lines.append('경보: ' + ' · '.join(f'{r["emoji"]} {_with_change(r)}' for r in bad))
+        else:
+            lines.append('경보: 없음')
+        rest = [r for r in mine if r['level'] >= 3]
+        if rest:
+            cnt = {k: sum(1 for r in rest if r['level'] == k) for k in (3, 4, 5)}
+            lines.append('그 밖: ' + ' · '.join(f'{LEVELS[k][0]} {LEVELS[k][1]} {cnt[k]}개' for k in (3, 4, 5) if cnt[k]))
+
+    credit = [r for r in rows if axis_of(r['key']) == 'credit']
+    stock = [r for r in rows if axis_of(r['key']) == 'stock']
+    pick = lambda xs: max(xs, key=lambda r: ((r.get('speedZ') or 0), (r.get('riskPct') or 0))) if xs else None
+    worst = lambda xs: min(xs, key=lambda r: (r['level'], -(r.get('riskPct') or 0))) if xs else None
+    watch = None
+    if s_lv <= 2 and c_lv >= 3 and credit:
+        r = pick([x for x in credit if x['key'] not in ('us_curve', 'kr_curve')] or credit)
+        watch = (f'신용이 따라 나빠지는지 봅니다. {_with_change(r)}가 지금 {r["emoji"]} {LEVELS[r["level"]][1]}인데, '
+                 '여기서 한 단계 더 나빠지면 주가 조정이 자금 문제로 번진다는 신호입니다.')
+    elif s_lv <= 2 and stock:
+        r = worst(stock)
+        watch = f'{_short(r)}({_val(r)}, {r["emoji"]})가 한 단계 내려오는지가 첫 확인 지점입니다.'
+    elif c_lv <= 2 and credit:
+        r = worst(credit)
+        watch = f'{_with_change(r)}가 더 나빠지는지, 주가 변동성이 따라 오르는지 봅니다.'
+    else:
+        r = pick([x for x in rows if (x.get('speedZ') or 0) >= 1])
+        watch = f'가장 빠르게 움직인 지표는 {_with_change(r)}입니다.' if r else '눈에 띄게 빨라진 지표는 없습니다.'
+    lines += ['', f'👀 볼 것: {watch}', '👉 지표 14개 전체: https://dhandori.github.io/industry-strength/#US-macro (한국은 #KR-macro)']
     return '\n'.join(lines)
+
+
+def previous_levels():
+    """직전 알림 때의 지표별 단계({key: level}). 없으면 빈 dict."""
+    try:
+        return json.loads(OUT.read_text(encoding='utf-8')).get('sentLevels') or {}
+    except (OSError, ValueError, AttributeError):
+        return {}
 
 
 def previous_sent():
@@ -577,10 +657,12 @@ def write_out(data):
 
 
 def main(argv):
-    sent_before = previous_sent()
+    sent_before, sent_levels = previous_sent(), previous_levels()
     data, history = build()
     if sent_before:
         data['telegramSent'] = sent_before
+    if sent_levels:
+        data['sentLevels'] = sent_levels   # 직전 알림 때의 단계. 알림을 보내면 그때 새 값으로 바꾼다
     write_out(data)
     HISTORY.write_text(json.dumps(history, ensure_ascii=False, indent=0) + '\n', encoding='utf-8')
     text = telegram_text(data)
@@ -597,6 +679,7 @@ def main(argv):
                 telegram_send(token, chat, text)
                 log('텔레그램 전송 완료')
                 data['telegramSent'] = today
+                data['sentLevels'] = {r['key']: r['level'] for r in data.get('indicators', []) if r.get('level')}
                 write_out(data)
             except Exception as exc:  # noqa: BLE001 - 토큰은 출력하지 않는다
                 log(f'텔레그램 전송 실패: {type(exc).__name__}')
