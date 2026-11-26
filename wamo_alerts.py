@@ -15,11 +15,11 @@ import urllib.parse
 import urllib.request
 
 STATE = 'wamo_alert_state.json'
-# 2026-11-25 사용자 요청: 00:00~07:30 KST 텔레그램은 바로 보내지 않고 이 파일(data 브랜치)에 보류한다.
-# wamo_claude_bot 의 scripts/tg_gate.py 가 07:30 뒤 새벽 알림 묶음을 보낼 때 이 파일을 읽어 함께 넣는다.
+# 2026-11-25 사용자 요청: 00:00~07:55 KST 텔레그램은 바로 보내지 않고 이 파일(data 브랜치)에 보류한다.
+# wamo_claude_bot 의 scripts/tg_gate.py 가 07:55 뒤 새벽 알림 묶음을 보낼 때 이 파일을 읽어 함께 넣는다.
 # (이 저장소 워크플로에는 wamo_claude_bot 에 쓸 권한이 없어 읽기 방식으로 잇는다.)
 HOLD = 'wamo_tg_hold.json'
-QUIET_END = (7, 30)
+QUIET_END = (7, 55)
 WATCHLIST = 'wamo_watchlist.json'
 LIGHT = {'GREEN': '🟢', 'YELLOW': '🟡', 'RED': '🔴', 'UNKNOWN': '⚪'}
 TITLE = {'KR': '한국장', 'US': '미국장', 'JP': '일본장', 'TW': '대만장'}
@@ -214,7 +214,7 @@ def hold(text, source='dashboard', root=None, now=None):
     if not any(x.get('id') == item_id for x in items):
         items.append({'id': item_id, 'at': k.strftime('%Y-%m-%d %H:%M'), 'source': source, 'text': text})
     path.write_text(json.dumps({'items': items[-40:]}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
-    print(f'새벽({k:%H:%M} KST)이라 텔레그램을 보류합니다 · 07:30 뒤 새벽 알림 묶음으로 나갑니다', flush=True)
+    print(f'새벽({k:%H:%M} KST)이라 텔레그램을 보류합니다 · 07:55 뒤 새벽 알림 묶음으로 나갑니다', flush=True)
 
 
 def telegram_send(token, chat_id, text, opener=None, source='dashboard'):
