@@ -1,0 +1,16 @@
+{
+ "items": [
+  {
+   "id": "f814a7a56f60",
+   "at": "2026-11-26 06:17",
+   "source": "dashboard",
+   "text": "📊 WAMO 미국장 추세 알림 · 2026-11-25 종가\n시장 날씨: 🔴 현금 비중 확대\n시장이 약해요. 새로 사기보다 지키는 게 먼저예요.\n· S&P 500 200일선 아래 · 나스닥 200일선 아래. 200일선 아래로 내려간 지수가 있어요.\n· S&P 500: 50일선 하락(-0.9%) · 200일선 상승(+0.7%) / 나스닥: 50일선 하락(-1.6%) · 200일선 상승(+0.5%). 기울기가 꺾이거나 평평해졌어요.\n· 최근 25거래일 동안 기관이 판 흔적(분산일)은 S&P 500 11번 (꽉 찬 음봉 4 · 긴 아랫꼬리 2) · 위험 / 나스닥 8번 (꽉 찬 음봉 5 · 긴 아랫꼬리 3) · 위험 단계예요. 대응: 보유 물량 대부분 정리, 현금 비중 극대화.\n· 전체 종목 중 55%가 50일선 위에 있어요.\nFTD 상태 · S&P 500: 하락장\nFTD 상태 · 나스닥: 하락장\n\n⭐ 관심 종목\n⚠️ Amazon.com Inc. Common Stock: Stage 3 (고점 다지기), 정배열 붕괴\n⚠️ Snowflake Inc. Common Stock: Stage 3 (고점 다지기), RS 급락\n⚠️ Microsoft Corporation Common Stock: Stage 3 (고점 다지기)\n⚠️ Eli Lilly and Company Common Stock: 정배열 붕괴\n⚠️ Advanced Micro Devices Inc. Common Stock: Stage 3 (고점 다지기)\n⚠️ Palantir Technologies Inc. Class A Common Stock: Stage 3 (고점 다지기)\n⚠️ Palo Alto Networks Inc. Common Stock: Stage 3 (고점 다지기)\n⚠️ CrowdStrike Holdings Inc. Class A Common Stock: Stage 3 (고점 다지기)\n🚀 Eli Lilly and Company Common Stock: RS선 신고가 (주가보다 먼저)\n\n🚀 RS선 선행 신고가 (지수보다 강한 종목)\n· Kymera Therapeutics Inc. Common Stock — 고점까지 3% · RS 100\n· Genmab A/S ADS — 고점까지 5% · RS 100\n· TG Therapeutics Inc. Common Stock — 고점까지 4% · RS 99\n· Viatris Inc. Common Stock — 고점까지 6% · RS 98\n· GameStop Corporation Common Stock — 고점까지 5% · RS 98\n\n⚠️ 강한 경고 (추세가 꺾일 수 있는 종목)\n· Texas Instruments Incorporated Common Stock — 50일선 대량 이탈, Stage 3 (고점 다지기)\n· Analog Devices Inc. Common Stock — Stage 3 (고점 다지기), 대량 급락\n· Hewlett Packard Enterprise Company Common Stock — Stage 3 (고점 다지기), 대량 급락\n· Nutanix Inc. Class A Common Stock — Stage 3 (고점 다지기), 대량 급락\n· Williams-Sonoma Inc. Common Stock (DE) — Stage 3 (고점 다지기), RS 급락\n\n자세히 보기: https://dhandori.github.io/wamo-choochoo-dashboard/radar.html?market=US&tab=trend"
+  },
+  {
+   "id": "b1902e78cec3",
+   "at": "2026-11-26 07:05",
+   "source": "dashboard",
+   "text": "📊 매크로 지수 11/26\n대표 단계 1단계(위기) 🔴 (나라·묶음 가운데 가장 나쁜 쪽), 🔴3 🟠3 🟡3 🔵3 🟢2\n\n━━━━━━━━━━━━━━\n🇺🇸 미국 지표 8개\n━━━━━━━━━━━━━━\n주식시장 충격 🔴 위기 · 신용·자금 스트레스 🟡 주의\n🔴2 🟠2 🟡2 🔵1 🟢1\n결론: 8개 지표 중 4개가 경계 이상입니다. 미국 하이일드 스프레드, VIX, VIX ÷ VIX3M, CNN 공포탐욕지수에 경보가 켜졌습니다. 한 달 사이 빠르게 나빠진 지표는 VIX, VIX ÷ VIX3M입니다.\n\n🟠 미국 하이일드 스프레드 (저신용 회사채): 372bp (1M +42bp)\n🟡 미국 투자등급 스프레드 (우량 회사채): 98bp (1M +8bp)\n🟡 미국 순유동성 (시장에 풀린 달러): 5,824 (1M +23)\n🟢 미국 장단기 금리차 (10년 − 2년): 24bp (1M -8bp)\n🔴 VIX (미국 주식 공포지수): 28.3 (1M +10.8)\n🔴 VIX ÷ VIX3M (단기 공포 쏠림): 1.08x (1M +0.18)\n🟠 CNN 공포탐욕지수: 15 (극단적 공포) (1M -2)\n🔵 S&P500 고점 대비 낙폭 (최근 1년 최고가 기준): -8.1% (1M -6.9)\n\n━━━━━━━━━━━━━━\n🇰🇷 한국 지표 6개\n━━━━━━━━━━━━━━\n주식시장 충격 🔴 위기 · 신용·자금 스트레스 🔵 관심\n🔴1 🟠1 🟡1 🔵2 🟢1\n결론: 6개 지표 중 2개가 경계 이상입니다. VKOSPI, 코스피 고점 대비 낙폭에 경보가 켜졌습니다.\n\n🔵 우량 회사채 가산금리 (AA- − 국고채 3년): 68bp (1M -1bp)\n🔵 비우량 회사채 가산금리 (BBB- − 국고채 3년): 652bp (1M +1bp)\n🟡 기업 단기자금 금리차 (CP − CD 91일): 50bp (1M -2bp)\n🟢 한국 장단기 금리차 (국고채 10년 − 3년): 18bp (1M -10bp)\n🟠 VKOSPI (한국 주식 공포지수): 58.5 (1M +6.7)\n🔴 코스피 고점 대비 낙폭 (최근 1년 최고가 기준): -45.1% (1M -5.1)\n\n👉 https://dhandori.github.io/industry-strength/#US-macro (한국은 #KR-macro)"
+  }
+ ]
+}
