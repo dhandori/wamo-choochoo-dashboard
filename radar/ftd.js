@@ -85,11 +85,12 @@ function reasonBox(s){
   const alt=s.pinkAlt;
   if(alt){
     const ar=alt.rally,af=alt.ftd;
-    let t='참고: 오닐·IBD 원문처럼 핑크 Day 1에 거래량을 따지지 않으면 판정이 달라집니다. ';
-    if(ar)t+=ar.kind==='REVERSAL'?`그 규칙으로는 Day 1이 ${md(ar.date)}(핑크 Day 1)입니다. `:dayOneText(ar,false)+' ';
+    let t='참고: 거래량을 반영하지 않으면 판정이 달라집니다. ';
+    if(ar&&ar.kind==='REVERSAL')t+=`핑크 랠리 데이는 하락장에서 장중 새 저점을 찍은 뒤 내려 마감했어도 종가가 그날 고가·저가 사이 위쪽 절반에 있는 날인데, ${md(ar.date)}에는 종가가 ${typeof ar.closePos==='number'?`아래에서 ${num(ar.closePos,0)}% 높이`:'위쪽 절반'}에 있었으니 핑크 랠리 데이이고, 이날이 Day 1이 됩니다. `;
+    else if(ar)t+=dayOneText(ar,false)+' ';
     if(af)t+=`그 뒤 장중에 Day 1 저가(${num(ar?.low,2)}) 아래로 내려가지 않았고, ${md(af.date)}(반등 Day ${af.rallyDay})에 ${pct(af.changePct)} 오르면서 거래량도 전일의 ${num(af.volumeRatio,2)}배로 늘어 FTD가 됩니다.`;
-    else if(ar)t+=`그 규칙으로도 지금은 반등 Day ${ar.day}라 아직 FTD가 아닙니다.`;
-    else t+=`그 규칙으로는 지금 ${PHASE_SHORT[alt.phase]||alt.phase} 단계입니다.`;
+    else if(ar)t+=`그래도 지금은 반등 Day ${ar.day}라 아직 FTD가 아닙니다.`;
+    else t+=`그 경우 지금은 ${PHASE_SHORT[alt.phase]||alt.phase} 단계입니다.`;
     box.append(n('p',t,'ftd-reason-alt'));
   }
   return box;
