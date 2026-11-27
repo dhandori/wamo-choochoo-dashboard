@@ -96,6 +96,46 @@ function reasonBox(s){
   }
   return box;
 }
+// 데런식 기준(2026-11-27 와모님 요청): 한국 지수에만 붙는 참고 칸. 위 FTD 판정·단계·품질 점수는 바꾸지 않는다.
+// 자료에 daren 칸이 없으면(병합 직후, 미국·아시아 지수) 아무것도 그리지 않는다.
+const DAREN_VERDICT={PASS:['데런식 기준 충족','pass'],EDGE:['경계 구간','edge'],FAIL:['데런식 기준 미달','fail']};
+const DAREN_ORIGIN={current:'지금 유효한 FTD',completed:'상승 전환을 마친 지난 FTD',history:'최근 FTD(이미 무효·종료)'};
+const statLine=x=>x?`과거 ${x.n}건 · 20일 뒤 평균 ${x.ret20>0?'+':''}${num(x.ret20,2)}% · 승률 ${num(x.win)}% · 10일 안 저점 이탈 ${num(x.breach)}%`:'';
+function darenWhy(c,pol){
+  const ema=`21EMA(${num(c.ema21,2)})`;
+  if(!c.aboveEma)return `종가 ${num(c.close,2)}가 ${ema} 아래라 데런식 기준 미달입니다.`;
+  if(c.position<0)return `종가는 ${ema} 위지만 장중 저가 ${num(c.low,2)}가 21EMA 아래로 내려가 위치값이 ${num(c.position,2)}입니다. 0.5에 못 미쳐 경계 구간으로 봅니다.`;
+  if(c.position<pol.momentumMin)return `종가가 ${ema} 위이고 위치값이 ${num(c.position,2)}입니다. 0~0.5는 방향이 아직 서지 않은 경계 구간입니다.`;
+  return `종가가 ${ema} 위이고 위치값이 ${num(c.position,2)}로 0.5를 넘어 모멘텀 구간입니다.`;
+}
+function darenCase(title,c,pol,sub){
+  const v=DAREN_VERDICT[c.verdict]||[c.verdict,''];
+  const box=n('div',null,`ftd-daren-case ${v[1]}`);
+  const top=n('div',null,'ftd-daren-top');top.append(n('strong',title),n('b',v[0],`ftd-daren-badge ${v[1]}`));box.append(top);
+  if(sub)box.append(n('small',sub));
+  box.append(n('p',darenWhy(c,pol)));
+  const band=(pol.bands||[]).find(b=>b.key===c.band),side=(pol.emaStats||[]).find(x=>x.key===(c.aboveEma?'above':'below'));
+  box.append(n('p',`위치값 ${num(c.position,2)}(${band?band.label:'—'} 구간) · 21EMA ${num(c.ema21,2)} · ATR(50) ${num(c.atr50,2)}`,'ftd-daren-num'));
+  if(side)box.append(n('p',`${side.label}: ${statLine(side)}`,'ftd-daren-num'));
+  if(band)box.append(n('p',`위치값 ${band.label}: ${statLine(band)}`,'ftd-daren-num'));
+  return box;
+}
+function darenBox(s){
+  const d=s.daren;if(!d||!d.policy)return null;
+  const pol=d.policy,box=n('section',null,'ftd-daren');
+  box.append(n('h4','데런식 기준 · 21EMA 위치로 FTD 다시 보기'));
+  box.append(n('p','참고용 칸입니다. 위 FTD 판정·단계·품질 점수는 이 결과로 바꾸지 않습니다. 종가가 21EMA 아래면 미달, 위치값 0~0.5는 경계 구간, 0.5 이상이면 충족으로 봅니다.','ftd-daren-lead'));
+  const f=d.ftd;
+  if(f)box.append(darenCase(`${md(f.date)} FTD`,f,pol,`${DAREN_ORIGIN[f.origin]||'최근 FTD'}${f.rallyDay?` · 반등 Day ${f.rallyDay}`:''}${typeof f.changePct==='number'?` · 당일 ${pct(f.changePct)}`:''}`));
+  else box.append(n('p','이력 안에 데런식 기준으로 볼 FTD가 없습니다.'));
+  if(d.today&&['RALLY','LATE','CORRECTION'].includes(s.phase)&&d.today.date!==f?.date)
+    box.append(darenCase(`오늘(${md(d.today.date)}) FTD가 나온다면`,d.today,pol,'반등 중이라 오늘 값으로 미리 본 위치입니다.'));
+  const table=n('details',null,'ftd-daren-table');table.append(n('summary','데런 집계 구간표 보기'));
+  const ul=n('ul');[...(pol.emaStats||[]),...(pol.bands||[]).map(b=>({...b,label:`위치값 ${b.label}`}))].forEach(x=>ul.append(n('li',`${x.label} · ${statLine(x)}`)));
+  table.append(ul,n('p',pol.statsNote||''),n('p',pol.position||''),n('p',pol.basis||''),n('p',`출처: ${pol.title||'트레이더 데런 블로그'}`));
+  box.append(table);
+  return box;
+}
 function link(text,url){const a=n('a',text);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
 function metric(labelNode,value,sub){const box=n('div',null,'ftd-metric');const head=n('span');head.append(labelNode);box.append(head,n('strong',value),n('small',sub));return box;}
 function badge(text,phase){return n('span',text,`ftd-badge ftd-${phase.toLowerCase()}`);}
@@ -249,7 +289,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   if(s.rally){const lows=n('div',null,'ftd-levels');lows.append(metric(term('bottom','Day 1 저가 (반등 무효선)'),num(s.rally.low,2),`Day 1(${md(s.rally.date)}) 장중 저가 · 장중에 이 아래로 내려가면 반등·FTD 무효${typeof s.rally.correctionLow==='number'&&s.rally.correctionLow!==s.rally.low?` · 하락장 최저가 ${num(s.rally.correctionLow,2)}`:''}`));if(s.ftd)lows.append(metric(term('ftdLow','FTD 저가 (경고선)'),num(s.ftd.low,2),'종가가 이 가격 아래면 경고'));panel.append(lows);}
   if(s.ftd&&s.ftd.postDistribution){const d=s.ftd.postDistribution;const line=n('p',null,'ftd-caption');const kindName={HEAVY:'꽉 찬 음봉',NORMAL:'보통',LIGHT:'긴 아랫꼬리',HIDDEN:'위장',STALL:'정체'},kinds=s.ftd.postDistributionKind||{};line.append('FTD 뒤 10거래일 안의 ',term('distribution','분산일'),`: ${d.length}번${d.length?` (${d.map(x=>`${x.slice(5).replace('-','/')}${kinds[x]?` ${kindName[kinds[x]]}`:''}`).join(', ')})`:''} · 3번 이상이면 경고`);panel.append(line);}
   panel.append(chart(s,trendDistribution(block,s.symbol)));container.append(panel);
-  if(fresh){const why=reasonBox(s);if(why)container.append(why);}
+  if(fresh){const why=reasonBox(s);if(why)container.append(why);const dr=darenBox(s);if(dr)container.append(dr);}
   const history=n('details',null,'ftd-history');history.append(n('summary',`최근 판정 이력 · ${(s.events||[]).length}건`));
   const list=n('ol');[...(s.events||[])].reverse().slice(0,20).forEach(e=>{const li=n('li');li.append(n('time',e.date),n('strong',EVENT_NAMES[e.type]||e.type),n('span',e.type==='FTD'?`${pct(e.changePct)} · ${num(e.volumeRatio,2)}배 · Day ${e.rallyDay}${e.late?' · 늦은 FTD':''}`:e.type==='RALLY'?`${DAY_ONE_KIND[e.dayOneKind]||'상승 마감'} · Day 1 저가 ${num(e.low,2)}`:`지수 ${num(e.close,2)}`));list.append(li);});history.append(list);container.append(history);
   const rules=n('details',null,'ftd-rules');rules.append(n('summary','판정 기준·데이터 출처'));const pol=s.policy;

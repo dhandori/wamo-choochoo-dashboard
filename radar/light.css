@@ -34,8 +34,7 @@
 :where(:root[data-theme="light"]) a { color: var(--blue); }
 :where(:root[data-theme="light"]) button, :where(:root[data-theme="light"]) select { border-color: var(--line); background: #f4f6f8; color: var(--text); }
 :where(:root[data-theme="light"]) button:hover:not(:disabled), :where(:root[data-theme="light"]) select:hover { border-color: #6a7f9c; }
-/* 고른 메뉴: 연초록 바탕 + 진초록 테두리 + 굵은 글자로 한눈에 보이게(2026-11-21 사용자 요청) */
-:where(:root[data-theme="light"]) button.active { background: #d9eee5; border-color: var(--green); color: #033726; box-shadow: inset 0 0 0 1px var(--green); font-weight: 700; }
+:where(:root[data-theme="light"]) button.active { background: #eef2f0; border-color: #68a994; color: #033726; }
 :where(:root[data-theme="light"]) button:focus-visible, :where(:root[data-theme="light"]) a:focus-visible, :where(:root[data-theme="light"]) input:focus-visible, :where(:root[data-theme="light"]) select:focus-visible, :where(:root[data-theme="light"]) summary:focus-visible { outline: 2px solid var(--green); }
 :where(:root[data-theme="light"]) .topbar { border-bottom-color: var(--line); }
 :where(:root[data-theme="light"]) .brand { color: var(--text); }
@@ -90,7 +89,7 @@
 :where(:root[data-theme="light"]) .industry-rail { background: var(--panel); border-color: var(--line); }
 :where(:root[data-theme="light"]) .rail-seg { border-color: var(--line); background: #f7f8f9; }
 :where(:root[data-theme="light"]) .rail-seg button { border-color: transparent; }
-:where(:root[data-theme="light"]) .rail-seg button.active { background: #d9eee5; border-color: var(--green); color: #033726; font-weight: 700; }
+:where(:root[data-theme="light"]) .rail-seg button.active { background: #f1f4f3; border-color: #d3e3df; color: #033726; }
 :where(:root[data-theme="light"]) .rail-group { border: 0; border-bottom-color: var(--line); background: none; }
 :where(:root[data-theme="light"]) .rail-group small { color: var(--muted); }
 :where(:root[data-theme="light"]) .flow-status { color: var(--muted); background: #eeeff1; }
@@ -181,7 +180,7 @@
 @media (max-width: 760px) {
 :where(:root[data-theme="light"]) .tabs { border-bottom: 0; }
 :where(:root[data-theme="light"]) .tabs button { border-color: var(--line); background: var(--panel) !important; }
-:where(:root[data-theme="light"]) .tabs button.active { background: #d9eee5 !important; border-color: var(--green) !important; box-shadow: inset 0 0 0 1px var(--green); color: #033726; font-weight: 700; }
+:where(:root[data-theme="light"]) .tabs button.active { background: #f1f4f3 !important; border-color: #d3e3df !important; box-shadow: none; color: #033726; }
 :where(:root[data-theme="light"]) .industry-rail .rail-group { border-color: var(--line); }
 :where(:root[data-theme="light"]) .term-tooltip { box-shadow: 0 -8px 30px #000a; }
 }
@@ -256,14 +255,14 @@
 :where(:root[data-theme="light"]) .tabs.steps .tab-group.active { background: #f5f6f8; border-color: var(--line); }
 :where(:root[data-theme="light"]) .step-head { border: 0; background: none; color: var(--muted); }
 :where(:root[data-theme="light"]) .step-head:hover { color: var(--text); border: 0; }
-:where(:root[data-theme="light"]) .tabs.steps .tab-group.active .tab-group-label { background: #d9eee5; color: #033726; }
+:where(:root[data-theme="light"]) .tabs.steps .tab-group.active .tab-group-label { background: #eef2f0; color: #033726; }
 :where(:root[data-theme="light"]) .step-hint { color: #2a3646; }
 :where(:root[data-theme="light"]) .step-arrow { color: #2c3644; }
 :where(:root[data-theme="light"]) .section-step { background: #f1f3f4; color: #2a3646; }
 @media (max-width: 760px) {
 :where(:root[data-theme="light"]) nav.tabs.steps { border-bottom-color: var(--line); }
 :where(:root[data-theme="light"]) .tabs.steps .step-head { border-color: var(--line); background: var(--panel); }
-:where(:root[data-theme="light"]) .tabs.steps .tab-group.active .step-head { background: #d9eee5; border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
+:where(:root[data-theme="light"]) .tabs.steps .tab-group.active .step-head { background: #f1f4f3; border-color: #d3e3df; }
 :where(:root[data-theme="light"]) .tabs.steps .step-head .tab-group-label { background: transparent; color: var(--text); }
 :where(:root[data-theme="light"]) .tabs.steps .tab-group.active .step-head .tab-group-label { background: transparent; color: #033726; }
 :where(:root[data-theme="light"]) .hint-short { color: var(--muted); }
@@ -312,16 +311,20 @@
 @media (min-width: 761px) and (max-width: 1100px) {
 :where(:root[data-theme="light"]) nav.tabs.steps { border-bottom-color: var(--line); }
 :where(:root[data-theme="light"]) .tabs.steps .step-head { border-color: var(--line); background: var(--panel); }
-:where(:root[data-theme="light"]) .tabs.steps .tab-group.active .step-head { background: #d9eee5; border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
+:where(:root[data-theme="light"]) .tabs.steps .tab-group.active .step-head { background: #f1f4f3; border-color: #d3e3df; }
 :where(:root[data-theme="light"]) .tabs.steps .tab-group.active .step-head .tab-group-label { background: transparent; color: #033726; }
 :where(:root[data-theme="light"]) .tabs.steps .step-tabs button { border-color: var(--line); background: var(--panel) !important; box-shadow: none; }
-:where(:root[data-theme="light"]) .tabs.steps .step-tabs button.active { background: #d9eee5 !important; border-color: var(--green) !important; box-shadow: inset 0 0 0 1px var(--green); color: #033726; font-weight: 700; }
+:where(:root[data-theme="light"]) .tabs.steps .step-tabs button.active { background: #f1f4f3 !important; border-color: #d3e3df !important; color: #033726; }
 :where(:root[data-theme="light"]) .tab-count { color: var(--muted); }
 :where(:root[data-theme="light"]) .tabs .active .tab-count { color: var(--green); }
 :where(:root[data-theme="light"]) .stock-card { background: var(--panel); border-color: var(--line); }
 }
 @media (max-width: 760px) {
 :where(:root[data-theme="light"]) .tabs.steps .step-tabs { -webkit-mask-image: linear-gradient(to right, #ffffff calc(100% - 32px), transparent); mask-image: linear-gradient(to right, #ffffff calc(100% - 32px), transparent); }
+:where(:root[data-theme="light"]) .tabs.steps .step-tabs[data-more="right"] { -webkit-mask-image: linear-gradient(to right, #ffffff calc(100% - 56px), transparent calc(100% - 8px)); mask-image: linear-gradient(to right, #ffffff calc(100% - 56px), transparent calc(100% - 8px)); }
+:where(:root[data-theme="light"]) .tabs.steps .step-tabs[data-more="left"] { -webkit-mask-image: linear-gradient(to left, #ffffff calc(100% - 40px), transparent); mask-image: linear-gradient(to left, #ffffff calc(100% - 40px), transparent); }
+:where(:root[data-theme="light"]) .tabs.steps .step-tabs[data-more="both"] { -webkit-mask-image: linear-gradient(to right, transparent, #ffffff 40px, #ffffff calc(100% - 56px), transparent calc(100% - 8px)); mask-image: linear-gradient(to right, transparent, #ffffff 40px, #ffffff calc(100% - 56px), transparent calc(100% - 8px)); }
+:where(:root[data-theme="light"]) nav.tabs.steps.more-right::after { background: var(--panel); border-color: var(--line); color: var(--text); }
 }
 
 /* ===== style.css (어두운 테마 글씨 보정) ===== */
@@ -401,7 +404,7 @@
 :where(:root[data-theme="light"]) .tr-subtabs { background: color-mix(in srgb, var(--bg) 92%, transparent); border-color: var(--line); }
 :where(:root[data-theme="light"]) .tr-subtabs button { border: 0; background: transparent; color: var(--muted); }
 :where(:root[data-theme="light"]) .tr-subtabs button:hover:not(.active) { background: #f4f6f8; color: var(--text); }
-:where(:root[data-theme="light"]) .tr-subtabs button.active { background: #d9eee5; color: #033726; box-shadow: inset 0 0 0 1.5px var(--green); font-weight: 700; }
+:where(:root[data-theme="light"]) .tr-subtabs button.active { background: #f1f4f3; color: #033726; box-shadow: inset 0 0 0 1px #e5ecea; }
 :where(:root[data-theme="light"]) .tr-subtabs .tab-count { color: var(--muted); }
 :where(:root[data-theme="light"]) .tr-subtabs button.active .tab-count { color: #1c5441; }
 :where(:root[data-theme="light"]) .tr-subtabs .tab-count.weather-red { color: var(--red); }
@@ -908,6 +911,29 @@
 :where(:root[data-theme="light"]) .ftd-caution strong { color: #6b3306; }
 :where(:root[data-theme="light"]) .ftd-caution p { color: #38210b; }
 :where(:root[data-theme="light"]) .ftd-index-warn { color: #6b3306; }
+:where(:root[data-theme="light"]) .ftd-reason { border: 1px solid #d4dbe2; background: #f4f5f7; }
+:where(:root[data-theme="light"]) .ftd-reason.yes { border-color: #d5e2de; background: #f6f8f7; }
+:where(:root[data-theme="light"]) .ftd-reason h4 { color: #0b1622; }
+:where(:root[data-theme="light"]) .ftd-reason.yes h4 { color: #144031; }
+:where(:root[data-theme="light"]) .ftd-reason p { color: #273546; }
+:where(:root[data-theme="light"]) .ftd-reason .ftd-reason-alt { border-top: 1px dashed #d5dbe1; color: #5a4516; }
+:where(:root[data-theme="light"]) .ftd-daren { border: 1px solid #9393b3; background: #f4f5f7; }
+:where(:root[data-theme="light"]) .ftd-daren h4 { color: #0b0b22; }
+:where(:root[data-theme="light"]) .ftd-daren p { color: #272f46; }
+:where(:root[data-theme="light"]) .ftd-daren .ftd-daren-lead { color: #2c3244; }
+:where(:root[data-theme="light"]) .ftd-daren-case { border: 1px solid #d6d9e1; background: #f5f6f8; }
+:where(:root[data-theme="light"]) .ftd-daren-case.pass { border-color: #d5e2de; }
+:where(:root[data-theme="light"]) .ftd-daren-case.edge { border-color: #e4dfd3; }
+:where(:root[data-theme="light"]) .ftd-daren-case.fail { border-color: #e4d7d3; }
+:where(:root[data-theme="light"]) .ftd-daren-case small { color: #2d3743; }
+:where(:root[data-theme="light"]) .ftd-daren-top strong { color: #040a12; }
+:where(:root[data-theme="light"]) .ftd-daren-badge { border: 1px solid #d6dbe0; color: #0b1622; }
+:where(:root[data-theme="light"]) .ftd-daren-badge.pass { background: #f6f8f7; color: #1c5541; border-color: #d5e2de; }
+:where(:root[data-theme="light"]) .ftd-daren-badge.edge { background: #f8f7f5; color: #62430e; border-color: #e4dfd3; }
+:where(:root[data-theme="light"]) .ftd-daren-badge.fail { background: #f7f5f4; color: #602b10; border-color: #e4d7d3; }
+:where(:root[data-theme="light"]) .ftd-daren .ftd-daren-num { color: #2a3746; }
+:where(:root[data-theme="light"]) .ftd-daren-table summary { color: #272f46; }
+:where(:root[data-theme="light"]) .ftd-daren-table ul { color: #273546; }
 
 /* ===== ftd.css (어두운 테마 글씨 보정) ===== */
 :root:not([data-theme="light"]) .ftd-intro p { color: #b6c4d7; }
@@ -938,6 +964,9 @@
 :root:not([data-theme="light"]) .ftd-check.unknown .ftd-check-icon { color: #d9c28c; }
 :root:not([data-theme="light"]) .ftd-quality li.wait { color: #d1bf94; }
 :root:not([data-theme="light"]) .glossary dd { color: #b4c5da; }
+:root:not([data-theme="light"]) .ftd-daren .ftd-daren-lead { color: #b9c0d5; }
+:root:not([data-theme="light"]) .ftd-daren-case small { color: #bac5d3; }
+:root:not([data-theme="light"]) .ftd-daren .ftd-daren-num { color: #b7c6d7; }
 
 /* ===== ftd.css (작은 글씨 키우기) ===== */
 
@@ -1396,10 +1425,3 @@
 :root[data-theme="light"] .ftd-index-warn { color: #8a4300; }
 /* 분산일 '지금 6번 · 위험' 처럼 주황 바탕 위 주황 글자는 글자만 한 단계 진하게(대비 4.5 이상, 2026-11-23). 테두리·바탕은 그대로. */
 :root[data-theme="light"] .tr-stage-now.bad b, :root[data-theme="light"] .tr-stage-step.on.bad { color: #8a4100; }
-
-:where(:root[data-theme="light"]) .ftd-reason { background: #f4f6f9; border: 1px solid #cdd8e4; }
-:where(:root[data-theme="light"]) .ftd-reason.yes { background: #f2f7f5; border-color: #c9ddd5; }
-:where(:root[data-theme="light"]) .ftd-reason h4 { color: #13263a; }
-:where(:root[data-theme="light"]) .ftd-reason.yes h4 { color: #1f4a3b; }
-:where(:root[data-theme="light"]) .ftd-reason p { color: #2c3e52; }
-:where(:root[data-theme="light"]) .ftd-reason .ftd-reason-alt { color: #6b4a06; border-top-color: #cdd8e4; }

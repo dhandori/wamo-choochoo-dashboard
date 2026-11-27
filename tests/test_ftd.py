@@ -383,3 +383,47 @@ class PreliminaryVolume(unittest.TestCase):
         self.assertIsNone(same_basis_latest(self.rows(), {})[1])
         naver = self.rows(); naver[-1]['source'] = 'naver'
         self.assertIsNone(same_basis_latest(naver, {'2026-10-20': 2.72e9})[1])
+
+
+class DarenTests(unittest.TestCase):
+    """데런식 기준은 한국 지수에만 붙는 참고 칸이다. 기존 판정을 바꾸면 안 된다(2026-11-27)."""
+    def setUp(self):
+        self.ftd = importlib.import_module('wamo_ftd')
+
+    def market(self, rows, market):
+        sessions = lambda m, start, end: [r['date'] for r in rows if start <= r['date'] <= end]
+        with patch.object(self.ftd, 'market_sessions', sessions):
+            return self.ftd.for_market(copy.deepcopy(rows), market, rows[-1]['date'], expected=rows[-1]['date'])
+
+    def test_korea_only_and_judgement_unchanged(self):
+        rows = recovery()
+        kr, us = self.market(rows, 'KR'), self.market(rows, 'US')
+        self.assertNotIn('daren', us)
+        self.assertEqual({k: v for k, v in kr.items() if k != 'daren'}, us)
+        self.assertEqual(kr['phase'], 'CONFIRMED')
+        check = kr['daren']['ftd']
+        self.assertEqual(check['date'], kr['ftd']['date'])
+        self.assertEqual(check['origin'], 'current')
+        # FTD 종가(약 92.6)가 하락 전 100 근처에 머문 21EMA 아래라 미달이다. FTD 자체는 그대로 유효하다.
+        self.assertFalse(check['aboveEma'])
+        self.assertEqual(check['verdict'], 'FAIL')
+
+    def test_position_formula_and_bands(self):
+        rows = recovery()
+        kr = self.market(rows, 'KR')
+        closes = [r['close'] for r in rows]
+        ema = sum(closes[:21]) / 21
+        for c in closes[21:]:
+            ema = c * 2 / 22 + ema * 20 / 22
+        tr = [max(c['high'] - c['low'], abs(c['high'] - p['close']), abs(c['low'] - p['close'])) for p, c in zip(rows, rows[1:])]
+        atr = sum(tr[-50:]) / 50
+        check = kr['daren']['ftd']
+        self.assertAlmostEqual(check['ema21'], round(ema, 2))
+        self.assertAlmostEqual(check['atr50'], round(atr, 2))
+        self.assertAlmostEqual(check['position'], round((rows[-1]['low'] - ema) / atr, 2))
+        band, verdict = self.ftd.daren_band, self.ftd.daren_verdict
+        self.assertEqual([band(x) for x in (-0.01, 0, 0.49, 0.5, 1.0, 2.99, 3.0)], ['neg', 'edge', 'edge', 'b1', 'b2', 'b3', 'b4'])
+        self.assertEqual([verdict(False, 2), verdict(True, -0.3), verdict(True, 0.3), verdict(True, 0.5)], ['FAIL', 'EDGE', 'EDGE', 'PASS'])
+
+    def test_short_history_has_no_check(self):
+        self.assertIsNone(self.ftd.daren_check(recovery()[:40], {'asOf': recovery()[39]['date']}))
