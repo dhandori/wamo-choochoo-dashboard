@@ -281,6 +281,102 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None, reversa
     return result
 
 
+# 데런식 기준(2026-11-27 와모님 요청): 트레이더 데런 '코스피 FTD 497건'(2026-11-23, 1997~2026 코스피)의 구간별 성과를
+# 한국 FTD 탭 하단에 참고로만 보여 준다. 위 FTD 판정·단계·품질 점수는 이 값으로 바꾸지 않는다.
+DAREN = {
+    'emaDays': 21, 'atrDays': 50, 'momentumMin': 0.5,
+    'title': '트레이더 데런 · 코스피 FTD 497건, 신호를 가른 건 상승폭이 아니라 위치였습니다 (2026-11-23)',
+    'basis': '데런 집계는 1997~2026년 코스피에서 저점 이후 Day 4~10에 +1% 이상 오른 첫날을 FTD로 셌고 거래량 조건은 넣지 않았습니다. 와모 FTD(+1.7%·거래량 증가·Day 1 거래량 조건)와 정의가 달라 숫자는 참고용입니다.',
+    'position': '위치값 = (FTD 당일 저가 − 21일 지수이동평균) ÷ ATR(50). 저가가 21EMA에 닿으면 0, ATR 1배만큼 위면 1입니다. ATR은 최근 50거래일 진폭(전일 종가 포함)의 단순 평균으로 계산합니다.',
+    'emaStats': [
+        {'key': 'below', 'label': '종가 21EMA 아래', 'n': 107, 'ret20': -0.49, 'win': 48.6, 'breach': 30.8},
+        {'key': 'above', 'label': '종가 21EMA 위', 'n': 390, 'ret20': 2.19, 'win': 59.0, 'breach': 5.6},
+    ],
+    'bands': [
+        {'key': 'neg', 'label': '0 미만', 'lo': None, 'hi': 0.0, 'n': 198, 'ret20': -0.11, 'win': 50.0, 'breach': 22.2},
+        {'key': 'edge', 'label': '0~0.5', 'lo': 0.0, 'hi': 0.5, 'n': 70, 'ret20': 0.19, 'win': 51.4, 'breach': 10.0},
+        {'key': 'b1', 'label': '0.5~1.0', 'lo': 0.5, 'hi': 1.0, 'n': 71, 'ret20': 3.93, 'win': 70.4, 'breach': 2.8},
+        {'key': 'b2', 'label': '1.0~2.0', 'lo': 1.0, 'hi': 2.0, 'n': 101, 'ret20': 2.29, 'win': 56.4, 'breach': 2.0},
+        {'key': 'b3', 'label': '2.0~3.0', 'lo': 2.0, 'hi': 3.0, 'n': 42, 'ret20': 5.88, 'win': 76.2, 'breach': 0.0},
+        {'key': 'b4', 'label': '3.0 이상', 'lo': 3.0, 'hi': None, 'n': 15, 'ret20': 3.64, 'win': 60.0, 'breach': 0.0},
+    ],
+    'statsNote': '20일 뒤 평균 등락률, 승률(20일 뒤 오른 비율), 저점 이탈률(10일 안에 랠리 저점을 깬 비율)입니다.',
+}
+
+
+def _ema(values, days):
+    if len(values) < days:
+        return []
+    k = 2 / (days + 1)
+    out = [None] * (days - 1) + [sum(values[:days]) / days]
+    for v in values[days:]:
+        out.append(v * k + out[-1] * (1 - k))
+    return out
+
+
+def _atr(rows, days):
+    tr = [None]
+    for prev, cur in zip(rows, rows[1:]):
+        tr.append(max(cur['high'] - cur['low'], abs(cur['high'] - prev['close']), abs(cur['low'] - prev['close'])))
+    out = []
+    for i in range(len(rows)):
+        window = tr[max(1, i - days + 1):i + 1]
+        out.append(sum(window) / days if i >= days and len(window) == days else None)
+    return out
+
+
+def daren_band(position):
+    for b in DAREN['bands']:
+        if (b['lo'] is None or position >= b['lo'] - 1e-12) and (b['hi'] is None or position < b['hi'] - 1e-12):
+            return b['key']
+    return None
+
+
+def daren_verdict(above, position):
+    if not above:
+        return 'FAIL'
+    return 'PASS' if position >= DAREN['momentumMin'] - 1e-12 else 'EDGE'
+
+
+def daren_check(rows, result):
+    """Reference-only check of the latest FTD (current, completed or in the event log) and of today's bar.
+
+    Never changes phase, ftd, quality or warnings. Returns None when there is not enough history.
+    """
+    rows = [r for r in rows or [] if isinstance(r, dict) and r.get('date', '') <= (result.get('asOf') or '')
+            and all(valid_num(r.get(k)) for k in ('close', 'high', 'low'))]
+    if len(rows) < DAREN['atrDays'] + 1:
+        return None
+    ema = _ema([r['close'] for r in rows], DAREN['emaDays'])
+    atr = _atr(rows, DAREN['atrDays'])
+    index = {r['date']: i for i, r in enumerate(rows)}
+
+    def at(d):
+        i = index.get(d)
+        if i is None or ema[i] is None or atr[i] is None or atr[i] <= 0:
+            return None
+        r = rows[i]
+        position = (r['low'] - ema[i]) / atr[i]
+        above = r['close'] > ema[i]
+        return dict(date=d, close=r['close'], low=r['low'], ema21=round(ema[i], 2), atr50=round(atr[i], 2),
+                    aboveEma=above, position=round(position, 2), band=daren_band(round(position, 2)),
+                    verdict=daren_verdict(above, round(position, 2)))
+
+    ftd = result.get('ftd')
+    origin = 'current' if ftd else None
+    if not ftd and result.get('lastFtd'):
+        ftd, origin = result['lastFtd'], 'completed'
+    if not ftd:
+        ftd = next((e for e in reversed(result.get('events') or []) if e.get('type') == 'FTD'), None)
+        origin = 'history' if ftd else None
+    out = dict(ftd=None, today=at(rows[-1]['date']), policy=DAREN)
+    if ftd:
+        hit = at(ftd['date'])
+        if hit:
+            out['ftd'] = dict(hit, origin=origin, rallyDay=ftd.get('rallyDay'), changePct=ftd.get('changePct'))
+    return out
+
+
 def for_market(rows, market, asof, *, synthetic=False, expected=None, traded=None):
     """Validate actual exchange sessions before counting Day 1, 2, 3, 4.
 
@@ -319,6 +415,10 @@ def for_market(rows, market, asof, *, synthetic=False, expected=None, traded=Non
                       note=f'{pending} 지수 거래량이 아직 공개되지 않아 {asof}까지로 판정했습니다. 거래량이 들어오면 다시 계산합니다.')
     if closed:
         result['unscheduledClosures']=closed
+    if market=='KR' and not synthetic and result.get('status')!='UNAVAILABLE':
+        daren=daren_check(rows,result)   # 참고 값만 덧붙인다. 위 판정은 그대로다.
+        if daren:
+            result['daren']=daren
     return result
 
 

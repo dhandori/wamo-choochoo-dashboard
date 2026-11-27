@@ -683,6 +683,28 @@ with sync_playwright() as p:
             expect(page.locator('.pt-card').first).to_be_visible()
         assert not errors,errors
         context.close();print('RADAR PATTERNS LITE PASS',market)
+    # 데런식 기준(2026-11-27): 한국 FTD 탭 하단에만 참고 칸이 붙고, 미국에는 없다. 자료에 daren 이 없는 지수는 칸을 그리지 않는다.
+    for market in ('KR','US'):
+        for width in (1280,390):
+            context=browser.new_context(viewport={'width':width,'height':900});page=context.new_page();errors=[]
+            page.on('pageerror',lambda error:errors.append(str(error)))
+            page.goto(f'{base}/radar.html?market={market}&tab=ftd',wait_until='networkidle')
+            expect(page.locator('.ftd-panel')).to_be_visible()
+            indexes=TREND['markets'][market]['ftd']['indexes']
+            for i,ix in enumerate(indexes):
+                page.locator('.ftd-index').nth(i).click()
+                box=page.locator('.ftd-daren')
+                if market=='KR' and ix.get('daren') and ix.get('status')=='OK':
+                    expect(box).to_be_visible();expect(box).to_contain_text('데런식 기준')
+                    expect(box).to_contain_text('바꾸지 않습니다')
+                    # 이유 칸 아래(하단)에 있어야 한다.
+                    assert box.evaluate("(b)=>{const r=document.querySelector('.ftd-reason');return !r||!!(r.compareDocumentPosition(b)&Node.DOCUMENT_POSITION_FOLLOWING)}")
+                    assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth+1'),'가로 스크롤이 생겼습니다'
+                    box.screenshot(path=str(OUT/f'radar-ftd-daren-{i}-{width}.png'))
+                else:
+                    assert box.count()==0,(market,ix.get('label'))
+            assert not errors,errors
+            context.close();print('RADAR FTD DAREN PASS',market,width)
     for name,market in [('index.html','KR'),('us.html','US')]:
         page=browser.new_page()
         page.goto(base+'/'+name,wait_until='domcontentloaded');page.wait_for_url(f'**/radar.html?market={market}')
