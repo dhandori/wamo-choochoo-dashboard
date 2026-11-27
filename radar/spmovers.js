@@ -50,7 +50,7 @@ export function renderSpMovers(panel, { market, tab, onPick } = {}) {
   if (panel.hidden) return;
   if (!data) {
     if (failed) { panel.hidden = true; return; }
-    panel.append(el('p', 'S&P 500 상승·하락 상위 자료를 불러오는 중이에요.', 'spm-empty'));
+    panel.append(el('p', 'S&P 500 상승·하락 상위 자료를 불러오는 중입니다.', 'spm-empty'));
     loadSpMovers().then(() => renderSpMovers(panel, { market, tab, onPick }));
     return;
   }
@@ -58,7 +58,7 @@ export function renderSpMovers(panel, { market, tab, onPick } = {}) {
   const head = el('div', null, 'spm-head');
   const cap = el('div');
   cap.append(el('h3', `S&P 500 상승·하락 상위 ${d.gainers.length}`),
-    el('p', `${md(d.asOf)} 종가 기준 · 500종목 전체에서 뽑았어요 (아래 목록은 WAMO 스크리닝 종목 기준이라 다를 수 있어요)`));
+    el('p', `${md(d.asOf)} 종가 기준 · 500종목 전체에서 뽑았습니다 (아래 목록은 WAMO 스크리닝 종목 기준이라 다를 수 있습니다)`));
   const breadth = el('div', null, 'spm-breadth');
   const total = (d.advancers || 0) + (d.decliners || 0) || 1;
   const bar = el('span', null, 'spm-adv'); const up = el('i', null, 'spm-upfill'); up.style.width = `${(d.advancers || 0) / total * 100}%`; bar.append(up);

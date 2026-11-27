@@ -44,7 +44,7 @@ function card(market, s, trend, now) {
   const reason = refreshReason(market, s || undefined);
   let label, tone;
   if (!s) [label, tone] = ['상태 확인 중', 'idle'];
-  else if (stuck) [label, tone] = ['수집이 멈춘 것 같아요', 'bad'];
+  else if (stuck) [label, tone] = ['수집이 멈춘 것 같습니다', 'bad'];
   else if (step) [label, tone] = ['갱신 진행 중', 'run'];
   else if (s.status === 'FAILED') [label, tone] = ['지난 갱신 실패', 'bad'];
   else if (reason) [label, tone] = ['갱신 지연', 'warn'];
@@ -57,7 +57,7 @@ function card(market, s, trend, now) {
     const prog = n('div', null, 'sched-progress');
     const steps = n('ol');
     ['가격 수집', '특징주', '레이더·추세 반영'].forEach((text, i) => steps.append(n('li', text, i + 1 < step[0] ? 'done' : i + 1 === step[0] ? 'now' : '')));
-    prog.append(steps, n('p', `${step[1]} · 시작 ${when(attempted)} · ${span(now - attempted)} 경과 · 보통 10~25분 걸려요`));
+    prog.append(steps, n('p', `${step[1]} · 시작 ${when(attempted)} · ${span(now - attempted)} 경과 · 보통 10~25분 걸립니다`));
     box.append(prog);
   }
 
@@ -67,7 +67,7 @@ function card(market, s, trend, now) {
   row('다음 예약', when(next), next ? until(next, now) : '');
   if (trend?.builtAt) row('추세·FTD·선도주', when(ms(trend.builtAt)), `${ago(ms(trend.builtAt), now)} 계산`);
   box.append(rows);
-  if (reason && !step) box.append(n('p', `왜 지연으로 보나요? ${reason}`, 'sched-reason'));
+  if (reason && !step) box.append(n('p', `지연으로 본 이유: ${reason}`, 'sched-reason'));
   if (s?.warnings?.length) box.append(n('p', `참고: ${s.warnings.join(' · ')}`, 'sched-warn'));
   const foot = n('p', `${RULE[market]} · ${RETRY[market]}`, 'sched-rule');
   if (s?.runUrl) { const a = n('a', '실행 기록 ↗'); a.href = s.runUrl; a.target = '_blank'; a.rel = 'noopener noreferrer'; foot.append(' · ', a); }
@@ -118,11 +118,11 @@ export function renderSchedule(container, status, trendBlock, current, snapshot)
   const now = Date.now();
   container.hidden = false;
   container.replaceChildren();
-  container.append(n('p', '한국시간 기준 · 1분마다 자동으로 다시 확인해요', 'sched-hint'));
+  container.append(n('p', '한국시간 기준 · 1분마다 자동으로 다시 확인합니다', 'sched-hint'));
   const grid = n('div', null, 'sched-grid');
   // The market on screen comes first.
   const order = current === 'US' ? ['US', 'KR', 'ASIA'] : current === 'JP' || current === 'TW' ? ['ASIA', 'KR', 'US'] : ['KR', 'US', 'ASIA'];
   for (const m of order) grid.append(m === 'ASIA' ? asiaCard(snapshot, now) : card(m, status?.[m] || null, trendBlock?.(m), now));
   container.append(grid);
-  container.append(n('p', 'GitHub 예약 실행은 사용량이 몰리면 10~30분쯤 늦게 시작될 수 있어요. 휴장일에는 갱신하지 않아요.', 'sched-note'));
+  container.append(n('p', 'GitHub 예약 실행은 사용량이 몰리면 10~30분쯤 늦게 시작될 수 있습니다. 휴장일에는 갱신하지 않습니다.', 'sched-note'));
 }
