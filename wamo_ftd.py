@@ -12,9 +12,11 @@ POLICY = {
     'deepDrawdownPct': 8, 'fallingMaDrawdownPct': 5, 'maDays': 50, 'slopeDays': 10,
     'distributionDropPct': 0.2, 'postFtdWindow': 10, 'postFtdDistributionWarn': 3,
     'strongGainPct': 2.0, 'volumeAvgDays': 50,
-    'reversalVolumeRatio': 1.5,  # 내린 날 Day 1(위쪽 절반 마감)은 거래량이 전일의 1.5배 이상 (2026-11-11 사용자 결정)
+    # 내린 날 Day 1(핑크 Day 1: 새 저점 뒤 위쪽 절반 마감)에는 거래량 조건을 두지 않는다(오닐·IBD 원래 규칙,
+    # 2026-11-27 사용자 결정). 11/11 에 정한 '거래량 전일 1.5배 이상' 기준은 참고 판정(strictAlt)으로만 계산한다.
+    'reversalVolumeRatio': None, 'altReversalVolumeRatio': 1.5,
     'correction': '종가가 50일선 아래이고, 최근 63거래일 최고 종가보다 8% 이상 내린 상태입니다. 또는 5% 이상 내리면서 50일선이 10거래일 전보다 낮아진 상태입니다.',
-    'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날입니다. 또는 장중 새 저점을 찍었지만 그날 가격 범위의 위쪽 절반(중간보다 위)에서 마감하고 거래량이 전일의 1.5배 이상인 날입니다.',
+    'dayOne': '하락 국면 안에서 처음으로 상승 마감한 날입니다. 내려서 마감했더라도 장중 새 저점을 찍은 뒤 그날 가격 범위의 위쪽 절반에서 마감했으면 Day 1로 봅니다(핑크 Day 1, 오닐·IBD 규칙). 거래량은 따지지 않고, 거래량 전일 1.5배 기준으로 판정이 달라지는 날은 참고로 따로 적습니다.',
     'bottom': 'Day 1(반등 첫날)의 장중 저가입니다. 이 가격을 장중에 깨면 반등 시도는 무효가 되고, 그 뒤 Day 1 조건을 채운 날부터 다시 셉니다(일반적인 FTD 기준, 2026-11-18 사용자 결정). 하락 국면의 최저가는 correctionLow 로 따로 둡니다.',
     'confirmation': 'Day 4 이후 하루 +1.7% 이상 오르고 거래량이 전일보다 많으면 FTD입니다. Day 4~7이 보통이고 Day 8 이후는 \'늦은 FTD\'로 표시합니다. Day 2~3 급등은 인정하지 않습니다.',
     'failure': 'Day 1 장중 저가를 깨면 반등·FTD는 무효입니다. 종가가 FTD 당일 저가보다 낮거나, FTD 뒤 10거래일 안에 분산일(올랐지만 아래쪽에서 끝난 위장 분산일 포함)이 3번 이상 나오면 경고입니다.',
@@ -120,7 +122,7 @@ def valid_num(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and value > 0
 
 
-def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
+def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None, reversal_volume=None, _alt=True):
     result = dict(status='OK', phase='OUTSIDE', asOf=asof, expectedSession=expected or asof,
                   correction=None, rally=None, ftd=None, events=[], series=[], latest=None, policy=POLICY)
 
@@ -196,12 +198,18 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
                 rally=ftd=None; phase='CORRECTION'; bottom=r['low']
             if rally is None:
                 bottom=r['low'] if bottom is None else min(bottom,r['low'])
-                kind='UP_CLOSE' if change>0 else 'REVERSAL' if new_low and upper_half(r) and ratio>=POLICY['reversalVolumeRatio']-1e-9 else None
+                pink=change<=0 and new_low and upper_half(r)
+                kind='UP_CLOSE' if change>0 else 'REVERSAL' if pink and (reversal_volume is None or ratio>=reversal_volume-1e-9) else None
+                if pink and not kind:
+                    event('PINK_SKIPPED',r,low=r['low'],volumeRatio=round(ratio,4),closePos=round((r['close']-r['low'])/(r['high']-r['low'])*100,1))
                 if kind:
                     # The attempt dies when Day 1's own intraday low is undercut (2026-11-18 user decision,
                     # the common FTD rule). The correction's lowest low is kept only for display.
                     rally=dict(date=r['date'], low=r['low'], dayOneLow=r['low'], correctionLow=bottom, startIndex=i, day=1, kind=kind)
-                    phase='RALLY';event('RALLY',r,low=r['low'],correctionLow=bottom,dayOneKind=kind)
+                    extra=dict(changePct=round(change,4),volumeRatio=round(ratio,4),
+                               closePos=round((r['close']-r['low'])/(r['high']-r['low'])*100,1)) if kind=='REVERSAL' else {}
+                    if extra: rally.update(extra)
+                    phase='RALLY';event('RALLY',r,low=r['low'],correctionLow=bottom,dayOneKind=kind,**extra)
             elif rally:
                 rally['day']=i-rally['startIndex']+1
                 if ftd is None and rally['day']>=4 and change>=POLICY['gainPct']-1e-9 and ratio>1:
@@ -260,6 +268,16 @@ def analyze(raw, *, asof, expected=None, synthetic=False, sessions=None):
         result['lastFtd']=dict(last_ftd, age=sum(r['date']>last_ftd['date'] for r in rows))
     if expected and asof!=expected:
         result.update(status='STALE',note=f'{asof}까지의 과거 판정입니다. 최근 마감 거래일 {expected} 자료를 기다립니다.')
+    if _alt and result.get('status')!='UNAVAILABLE':
+        # Same data under the old 11/11 rule (pink Day 1 needs 1.5x volume). Shown only when it changes the answer.
+        alt=analyze(raw,asof=asof,expected=expected,synthetic=synthetic,sessions=sessions,
+                    reversal_volume=POLICY['altReversalVolumeRatio'],_alt=False)
+        key=lambda x:(x.get('phase'),(x.get('rally') or {}).get('date'),(x.get('ftd') or {}).get('date'))
+        if alt.get('status')!='UNAVAILABLE' and key(alt)!=key(result):
+            skipped=[e for e in alt.get('events',[]) if e['type']=='PINK_SKIPPED']
+            result['strictAlt']=dict(volumeRatio=POLICY['altReversalVolumeRatio'],phase=alt['phase'],
+                                     rally={k:alt['rally'][k] for k in ('date','day','low','kind')} if alt.get('rally') else None,
+                                     ftdDate=(alt.get('ftd') or {}).get('date'),skipped=skipped[-1] if skipped else None)
     return result
 
 

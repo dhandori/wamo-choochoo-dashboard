@@ -116,7 +116,7 @@ class FTDTests(unittest.TestCase):
 
     def test_down_close_in_upper_half_after_new_low_is_day_one(self):
         rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
-        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=150)  # new low, closes 2/3 up the range, 1.5x volume
+        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=150)  # new low, closes 2/3 up the range
         result = self.run_signal(rows)
         self.assertEqual(result['phase'], 'RALLY')
         self.assertEqual(result['rally']['day'], 1)
@@ -124,13 +124,20 @@ class FTDTests(unittest.TestCase):
         rows[-1].update(close=89.4)  # lower half: not a Day 1
         self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
 
-    def test_down_reversal_needs_one_and_half_times_volume(self):
-        # 2026-11-06 KOSDAQ: new low, closed at 52% of the range, volume only 1.02x the day before.
+    def test_pink_day_one_needs_no_volume(self):
+        # O'Neil/IBD rule (2026-11-27 user decision): no volume condition on a pink Day 1.
+        # The old 1.5x rule (11/11) is kept only as a reference judgement in strictAlt.
         rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
-        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=149)
-        self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
-        rows[-1].update(volume=102)
-        self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
+        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=102)
+        result = self.run_signal(rows)
+        self.assertEqual(result['phase'], 'RALLY')
+        self.assertEqual(result['rally']['kind'], 'REVERSAL')
+        self.assertAlmostEqual(result['rally']['volumeRatio'], 1.02, places=2)
+        alt = result['strictAlt']
+        self.assertEqual(alt['phase'], 'CORRECTION')
+        self.assertEqual(alt['skipped']['date'], rows[-1]['date'])
+        rows[-1].update(volume=150)  # 1.5x: both rules agree, so no reference line
+        self.assertNotIn('strictAlt', self.run_signal(rows))
 
     def test_same_day_up_reversal_starts_new_day_one(self):
         rows = recovery(); rows[-2].update(low=89.6, close=91.3, high=91.6)

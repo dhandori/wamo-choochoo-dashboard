@@ -28,3 +28,6 @@ body[data-view="ftd"] .scanner-layout{display:block}body[data-view="ftd"] .list-
 /* 2026-11-18: weak FTD (after Day 1 low break) and estimated volume, shown up top */
 .ftd-caution{border:1px solid #c0702c;background:#33200f;border-radius:9px;padding:12px 15px;margin:0 0 18px}.ftd-caution strong{color:#ffb070;font-size:14px}.ftd-caution p{margin:7px 0 0;font-size:13px;line-height:1.7;color:#f6dcc4}
 .ftd-index-warn{display:block;color:#ffb070;font-weight:700;margin-top:4px}
+
+/* FTD인 이유 / 아직 FTD가 아닌 이유 (2026-11-27) */
+.ftd-reason{margin:14px 0 18px;padding:14px 17px;border:1px solid #33506e;border-radius:9px;background:#102033}.ftd-reason.yes{border-color:#2f5f50;background:#12291f}.ftd-reason h4{margin:0 0 6px;font-size:14px;color:#dce8f5}.ftd-reason.yes h4{color:#bceedd}.ftd-reason p{margin:6px 0 0;font-size:13px;line-height:1.75;color:#b7c7da}.ftd-reason .ftd-reason-alt{margin-top:10px;padding-top:9px;border-top:1px dashed #3b536d;color:#e9ce91}

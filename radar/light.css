@@ -173,8 +173,6 @@
 :where(:root[data-theme="light"]) .sort-summary b { color: #080d14; }
 :where(:root[data-theme="light"]) .sort-summary small { color: #2c3745; }
 :where(:root[data-theme="light"]) .schedule-wrap { color: var(--muted); }
-:where(:root[data-theme="light"]) .cross-link { color: var(--muted); }
-:where(:root[data-theme="light"]) .cross-link:hover, :where(:root[data-theme="light"]) .cross-link:focus-visible { color: var(--text, #0b1118); }
 :where(:root[data-theme="light"]) .tab-group-label { background: #f1f3f4; color: #2a3646; }
 :where(:root[data-theme="light"]) .sort-presets select { color: var(--blue); }
 :where(:root[data-theme="light"]) .status-partial, :where(:root[data-theme="light"]) .status-stale, :where(:root[data-theme="light"]) .status-unavailable { color: #594817; border-color: #e3dfd4; }
@@ -1392,3 +1390,10 @@
 :root[data-theme="light"] .ftd-index-warn { color: #8a4300; }
 /* 분산일 '지금 6번 · 위험' 처럼 주황 바탕 위 주황 글자는 글자만 한 단계 진하게(대비 4.5 이상, 2026-11-23). 테두리·바탕은 그대로. */
 :root[data-theme="light"] .tr-stage-now.bad b, :root[data-theme="light"] .tr-stage-step.on.bad { color: #8a4100; }
+
+:where(:root[data-theme="light"]) .ftd-reason { background: #f4f6f9; border: 1px solid #cdd8e4; }
+:where(:root[data-theme="light"]) .ftd-reason.yes { background: #f2f7f5; border-color: #c9ddd5; }
+:where(:root[data-theme="light"]) .ftd-reason h4 { color: #13263a; }
+:where(:root[data-theme="light"]) .ftd-reason.yes h4 { color: #1f4a3b; }
+:where(:root[data-theme="light"]) .ftd-reason p { color: #2c3e52; }
+:where(:root[data-theme="light"]) .ftd-reason .ftd-reason-alt { color: #6b4a06; border-top-color: #cdd8e4; }
