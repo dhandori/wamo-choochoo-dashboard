@@ -287,9 +287,16 @@ def judge(series, risk):
                 z = raw if pct >= 50 else -raw
     bump = 2 if (z or 0) >= 3 else 1 if (z or 0) >= 2 else 0
     final = max(1, level - bump)
+    # 한 단계 더 나빠지는 값(5년 분포의 경계). 알림의 '다음 확인' 기준선으로 쓴다(2026-11-26).
+    worse_at = None
+    cut = {5: 50, 4: 75, 3: 90, 2: 97}.get(level)
+    if cut and risk in ('high', 'low'):
+        q = cut if risk == 'high' else 100 - cut
+        sv = sorted(vals)
+        worse_at = sv[min(len(sv) - 1, max(0, int(round(q / 100 * (len(sv) - 1)))))]
     return dict(value=last, date=last_d.isoformat(), pct=round(pct, 1), riskPct=round(risk_pct, 1),
                 change1m=change, speedZ=None if z is None else round(z, 2),
-                baseLevel=level, speedBump=bump, level=final, sample=len(vals))
+                baseLevel=level, speedBump=bump, level=final, sample=len(vals), worseAt=worse_at)
 
 
 def judge_fng(fg):
@@ -535,33 +542,131 @@ def market_summary(rows, mk):
     return out
 
 
+SHORT = {'kr_aa': '한국 우량 회사채 가산금리', 'kr_bbb': '한국 비우량 회사채 가산금리', 'kr_cpcd': '한국 CP−CD 금리차',
+         'kr_curve': '한국 장단기 금리차', 'us_hy': '미국 하이일드 스프레드', 'us_ig': '미국 투자등급 스프레드',
+         'us_liq': '미국 순유동성', 'us_curve': '미국 장단기 금리차', 'vix': 'VIX', 'vix_ratio': 'VIX÷VIX3M',
+         'vkospi': 'VKOSPI', 'fng': '공포탐욕지수', 'sp_dd': 'S&P500 낙폭', 'ks_dd': '코스피 낙폭'}
+
+
+def _short(r):
+    return SHORT.get(r['key']) or r['name'].split(' (')[0]
+
+
+def _val(r):
+    v = r.get('valueText', '-')
+    return v + ('%' if r.get('unit') == '%' and v != '-' else '')
+
+
+def _with_change(r):
+    return f'{_short(r)} {_val(r)}' + (f'(한 달 {r["changeText"]})' if r.get('changeText') else '')
+
+
+def _josa(word, pair):
+    """받침에 맞는 조사('이/가', '로/으로'). 숫자는 한자음, %·x·bp 는 받침 없는 소리로 읽는다."""
+    w = re.sub(r'[)\s]+$', '', str(word))
+    ch = w[-1] if w else ''
+    if ch.isdigit():
+        jong = {'0': 'ㅇ', '1': 'ㄹ', '3': 'ㅁ', '6': 'ㄱ', '7': 'ㄹ', '8': 'ㄹ'}.get(ch, '')
+    elif '가' <= ch <= '힣':
+        k = (ord(ch) - 0xAC00) % 28
+        jong = '' if k == 0 else ('ㄹ' if k == 8 else 'x')
+    else:
+        jong = ''
+    if pair == '이/가':
+        return '이' if jong else '가'
+    if pair == '을/를':
+        return '을' if jong else '를'
+    if pair == '은/는':
+        return '은' if jong else '는'
+    return '로' if jong in ('', 'ㄹ') else '으로'
+
+
+HY_LONG_AVG = 500   # 미국 하이일드 스프레드 장기 평균(bp, 1997년 이후 대략). FRED 는 3년치만 줘서 백분위 단계만으로는 높낮이를 오해하기 쉽다.
+
+
 def telegram_text(data):
-    c = data['composite']
-    cnt = c['counts']
+    """2026-11-26 사용자 요청('담백하게'). 해석은 한 줄 결론에만 두고, 나머지는 숫자와 한 달 변화만 쓴다."""
     d = datetime.fromisoformat(data['asOf'])
-    lines = [f'📊 매크로 지수 {d.month}/{d.day}',
-             f'대표 단계 {c["level"]}단계({c["label"]}) {c["emoji"]} (나라·묶음 가운데 가장 나쁜 쪽), '
-             f'🔴{cnt["1"]} 🟠{cnt["2"]} 🟡{cnt["3"]} 🔵{cnt["4"]} 🟢{cnt["5"]}']
-    # 미국 먼저, 굵은 구분선 뒤에 한국 (화면과 같은 순서)
-    bar = '━━━━━━━━━━━━━━'
-    for mk, title in (('US', '🇺🇸 미국'), ('KR', '🇰🇷 한국')):
-        rows = [r for r in data['indicators'] if _market_of(r) == mk]
-        if not rows:
-            continue
-        lines += ['', bar, f'{title} 지표 {len(rows)}개', bar]
-        lines += market_summary(rows, mk)
-        lines.append('')
-        for r in rows:
-            extra = f' ({r["zone"]})' if r.get('zone') else ''
-            warn = ' ⚠️과열' if r.get('overheat') else ''
-            ch = f' (1M {r["changeText"]})' if r.get('changeText') else ''
-            stale = ' (이전 자료)' if r.get('stale') else ''
-            if r.get('unit') == '%' and r.get('valueText', '-') != '-':
-                extra = '%' + extra
-            lines.append(f'{r["emoji"]} {r["name"]}: {r["valueText"]}{extra}{ch}{warn}{stale}')
-    # 화면은 산업강도판의 세 번째 탭(🌐 매크로 지수)에 있다
-    lines += ['', '👉 https://dhandori.github.io/industry-strength/#US-macro (한국은 #KR-macro)']
-    return '\n'.join(lines)
+    rows = [r for r in data['indicators'] if r.get('level')]
+    by = {r['key']: r for r in rows}
+    J = _josa
+    ax = {mk: market_axes([r for r in data['indicators'] if _market_of(r) == mk], mk) for mk in ('US', 'KR')}
+    lv = lambda k: min([ax[mk][k]['level'] for mk in ('US', 'KR') if ax[mk][k]['level']] or [5])
+    s_lv, c_lv = lv('stock'), lv('credit')
+    chg = lambda r: r.get('change1m')
+
+    if s_lv <= 2 and c_lv >= 3:
+        head = '주가 변동성은 높고 신용 지표는 크게 움직이지 않았습니다. 주가 조정이며 신용 경색 조짐은 아직 없습니다.'
+    elif s_lv <= 2:
+        head = '주가 변동성과 신용 지표가 함께 올랐습니다.'
+    elif c_lv <= 2:
+        head = '주가는 안정적인데 신용 지표가 올랐습니다.'
+    else:
+        head = '주가와 신용 지표 모두 평소 범위입니다.'
+    out = [f'📊 매크로 지수 | {d.month}/{d.day}', head]
+
+    vix, vk, fng = by.get('vix'), by.get('vkospi'), by.get('fng')
+    if vix:
+        t = f'- VIX {_val(vix)}'
+        if chg(vix) is not None:
+            t += f', 한 달 전보다 {abs(chg(vix)):.1f} {"올랐" if chg(vix) > 0 else "내렸"}습니다.'
+        else:
+            t += '입니다.'
+        if vk:
+            t += f' VKOSPI는 {_val(vk)}입니다.'
+        out.append(t)
+    if fng:
+        out.append(f'- 공포탐욕지수 {_val(fng)}' + (f'({fng["zone"]})' if fng.get('zone') else '') + '입니다.')
+    hy, ig = by.get('us_hy'), by.get('us_ig')
+    if hy:
+        t = f'- 미국 하이일드 스프레드 {_val(hy)}'
+        if chg(hy) is not None:
+            t += f', 한 달 새 {abs(chg(hy)):.0f}bp {"올랐" if chg(hy) > 0 else "내렸"}습니다.'
+        else:
+            t += '입니다.'
+        t += f' 장기 평균(약 {HY_LONG_AVG}bp)보다 ' + ('낮습니다.' if hy['value'] < HY_LONG_AVG else '높습니다.')
+        if ig:
+            t += f' 투자등급은 {_val(ig)}입니다.'
+        out.append(t)
+    kc = [by[k] for k in ('kr_aa', 'kr_bbb', 'kr_cpcd') if k in by]
+    if kc:
+        big = [r for r in kc if abs(chg(r) or 0) >= 10]
+        out.append('- 한국 회사채·단기자금 금리차는 ' + (
+            ', '.join(f'{_short(r).replace("한국 ", "")} {_val(r)}(한 달 {r["changeText"]})' for r in big) + '로 움직였습니다.'
+            if big else '한 달간 거의 그대로입니다.'))
+    ksd, spd = by.get('ks_dd'), by.get('sp_dd')
+    if ksd or spd:
+        parts = []
+        if ksd:
+            parts.append(f'코스피 {_val(ksd).lstrip("-")}')
+        if spd:
+            parts.append(f'S&P500 {_val(spd).lstrip("-")}')
+        out.append('- 1년 고점 대비 ' + ', '.join(parts) + ' 내려와 있습니다.')
+
+    if c_lv >= 3 and hy:
+        watch = '하이일드 스프레드가 계속 오르는지 봅니다.'
+    elif c_lv <= 2:
+        watch = '신용 지표 상승이 주가로 번지는지 봅니다.'
+    else:
+        watch = '변동성이 가라앉는지 봅니다.'
+    out += [f'👀 다음 확인: {watch}', '👉 지표 14개: https://dhandori.github.io/industry-strength/#US-macro']
+    return '\n'.join(out)
+
+
+def previous_values():
+    """직전 알림 때의 지표별 값 글자({key: '28.3'}). 없으면 빈 dict."""
+    try:
+        return json.loads(OUT.read_text(encoding='utf-8')).get('sentValues') or {}
+    except (OSError, ValueError, AttributeError):
+        return {}
+
+
+def previous_levels():
+    """직전 알림 때의 지표별 단계({key: level}). 없으면 빈 dict."""
+    try:
+        return json.loads(OUT.read_text(encoding='utf-8')).get('sentLevels') or {}
+    except (OSError, ValueError, AttributeError):
+        return {}
 
 
 def previous_sent():
@@ -577,10 +682,14 @@ def write_out(data):
 
 
 def main(argv):
-    sent_before = previous_sent()
+    sent_before, sent_levels, sent_values = previous_sent(), previous_levels(), previous_values()
     data, history = build()
     if sent_before:
         data['telegramSent'] = sent_before
+    if sent_levels:
+        data['sentLevels'] = sent_levels   # 직전 알림 때의 단계. 알림을 보내면 그때 새 값으로 바꾼다
+    if sent_values:
+        data['sentValues'] = sent_values
     write_out(data)
     HISTORY.write_text(json.dumps(history, ensure_ascii=False, indent=0) + '\n', encoding='utf-8')
     text = telegram_text(data)
@@ -597,6 +706,8 @@ def main(argv):
                 telegram_send(token, chat, text)
                 log('텔레그램 전송 완료')
                 data['telegramSent'] = today
+                data['sentLevels'] = {r['key']: r['level'] for r in data.get('indicators', []) if r.get('level')}
+                data['sentValues'] = {r['key']: _val(r) for r in data.get('indicators', []) if r.get('level')}
                 write_out(data)
             except Exception as exc:  # noqa: BLE001 - 토큰은 출력하지 않는다
                 log(f'텔레그램 전송 실패: {type(exc).__name__}')

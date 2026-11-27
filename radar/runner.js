@@ -43,16 +43,16 @@ const parse = v => { const t = Date.parse(v || ''); return Number.isFinite(t) ? 
 
 /** Why a market needs a fresh collection, or null when it looks current. */
 export function refreshReason(market, s = statusOf(market), radarStatus = getMarketStatus(market), now = Date.now()) {
-  if (!s) return radarStatus === 'STALE' ? '지난 거래일 데이터예요' : null;
+  if (!s) return radarStatus === 'STALE' ? '지난 거래일 데이터입니다' : null;
   const attempted = parse(s.attemptedAt), next = parse(s.nextScheduledFor);
-  if (s.status === 'RUNNING' && attempted && now - attempted > 40 * 60000) return '수집이 중간에 멈춘 것 같아요';
+  if (s.status === 'RUNNING' && attempted && now - attempted > 40 * 60000) return '수집이 중간에 멈춘 것 같습니다';
   if (s.status === 'RUNNING') return null;
-  if (s.status === 'FAILED') return '지난 수집이 실패했어요';
-  if (next && now > next + LATE_AFTER) return '예약 시각이 지났는데 아직 새 결과가 없어요 (GitHub 예약 지연)';
+  if (s.status === 'FAILED') return '지난 수집이 실패했습니다';
+  if (next && now > next + LATE_AFTER) return '예약 시각이 지났는데 아직 새 결과가 없습니다 (GitHub 예약 지연)';
   const f = s.freshness || {};
   const missing = Number(s.count) - Number(f.currentCount);
-  if (f.expectedSession && s.asOf === f.expectedSession && missing > 0) return `${missing}종목이 빠졌어요`;
-  if (radarStatus === 'STALE') return '지난 거래일 데이터예요';
+  if (f.expectedSession && s.asOf === f.expectedSession && missing > 0) return `${missing}종목이 빠졌습니다`;
+  if (radarStatus === 'STALE') return '지난 거래일 데이터입니다';
   return null;
 }
 
@@ -83,7 +83,7 @@ function paint(box) {
   if (p && ['waiting', 'queued', 'running', 'applying'].includes(p.phase)) {
     b.disabled = true; b.classList.add('busy');
     b.append(el('span', null, 'run-spin'), document.createTextNode(LABEL[p.phase]));
-    b.title = '이미 요청했어요. 끝날 때까지 다시 누를 필요가 없어요.';
+    b.title = '이미 요청했으니 끝날 때까지 다시 누르지 않아도 됩니다.';
     box.append(b);
     if (p.phase === 'waiting') box.append(linkTo(workflowUrl(market), 'GitHub 창 다시 열기'));
     if (p.runUrl) box.append(linkTo(p.runUrl, '실행 기록'));
@@ -96,7 +96,7 @@ function paint(box) {
     return;
   }
   if (p && p.phase === 'failed') {
-    b.textContent = '실패 · 다시 갱신'; b.classList.add('bad'); b.onclick = () => openDialog(market, '지난 요청이 실패했어요');
+    b.textContent = '실패 · 다시 갱신'; b.classList.add('bad'); b.onclick = () => openDialog(market, '지난 요청이 실패했습니다');
     box.append(b); if (p.runUrl) box.append(linkTo(p.runUrl, '실패 기록 보기')); return;
   }
   b.textContent = '지금 갱신';
@@ -110,9 +110,9 @@ const kstTime = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', month
 /** Honest tooltip for a disabled button: either current, or waiting for the next scheduled run. */
 function waitingTitle(market, now = Date.now()) {
   const next = parse(statusOf(market)?.nextScheduledFor);
-  if (next && now >= next) return `예약 갱신(${kstTime.format(new Date(next))})을 기다리는 중이에요. ${Math.ceil((next + LATE_AFTER - now) / 60000)}분 안에 시작되지 않으면 이 버튼이 켜져요.`;
-  if (next) return `마지막 장 마감 데이터까지 반영돼 있어요. 다음 예약 갱신: ${kstTime.format(new Date(next))}`;
-  return '마지막 장 마감 데이터까지 반영돼 있어요.';
+  if (next && now >= next) return `예약 갱신(${kstTime.format(new Date(next))})을 기다리는 중입니다. ${Math.ceil((next + LATE_AFTER - now) / 60000)}분 안에 시작되지 않으면 이 버튼이 켜집니다.`;
+  if (next) return `마지막 장 마감 데이터까지 반영돼 있습니다. 다음 예약 갱신: ${kstTime.format(new Date(next))}`;
+  return '마지막 장 마감 데이터까지 반영돼 있습니다.';
 }
 
 function linkTo(url, text) { const a = el('a', text, 'run-link'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; }
@@ -131,16 +131,16 @@ function openDialog(market, reason) {
   d.append(el('div', 'DATA REFRESH', 'eyebrow'), el('h2', `${NAMES[market]} 데이터 지금 갱신`), el('p', `이유: ${reason}`, 'run-why'));
   const steps = el('ol', null, 'run-steps');
   (ASIA.has(market) ? [
-    ['아래 초록 버튼을 누르면', 'GitHub 실행 화면이 새 창으로 열려요. (저장소 주인 계정으로 로그인되어 있어야 해요)'],
-    ["오른쪽 'Run workflow' 버튼을 누르세요.", "작은 창이 열려요. 체크칸은 비워 두면 돼요. 일본과 대만이 함께 갱신돼요."],
-    ["초록색 'Run workflow'를 한 번 더 누르면 끝나요.", '이 화면으로 돌아오면 실행 대기 → 수집 중 → 완료 순서로 보여드려요. 보통 1~3분 걸려요.'],
+    ['아래 초록 버튼을 누르면', 'GitHub 실행 화면이 새 창으로 열립니다. (저장소 주인 계정으로 로그인되어 있어야 합니다)'],
+    ["오른쪽 'Run workflow' 버튼을 누르세요.", "작은 창이 열립니다. 체크칸은 비워 두면 됩니다. 일본과 대만이 함께 갱신됩니다."],
+    ["초록색 'Run workflow'를 한 번 더 누르면 끝납니다.", '이 화면으로 돌아오면 실행 대기 → 수집 중 → 완료 순서로 보여 드립니다. 보통 1~3분 걸립니다.'],
   ] : [
-    ['아래 초록 버튼을 누르면', 'GitHub 실행 화면이 새 창으로 열려요. (저장소 주인 계정으로 로그인되어 있어야 해요)'],
-    ["오른쪽 'Run workflow' 버튼을 누르세요.", "작은 창이 열려요. 갱신할 시장은 그대로 두거나 " + `'${market}'` + "를 고르고, '검증 결과를 실제 게시'가 체크된 걸 확인하세요."],
-    ["초록색 'Run workflow'를 한 번 더 누르면 끝나요.", '이 화면으로 돌아오면 실행 대기 → 수집 중 → 완료 순서로 보여드려요. 보통 10~25분 걸려요.'],
+    ['아래 초록 버튼을 누르면', 'GitHub 실행 화면이 새 창으로 열립니다. (저장소 주인 계정으로 로그인되어 있어야 합니다)'],
+    ["오른쪽 'Run workflow' 버튼을 누르세요.", "작은 창이 열립니다. 갱신할 시장은 그대로 두거나 " + `'${market}'` + "를 고르고, '검증 결과를 실제 게시'가 체크된 걸 확인하세요."],
+    ["초록색 'Run workflow'를 한 번 더 누르면 끝납니다.", '이 화면으로 돌아오면 실행 대기 → 수집 중 → 완료 순서로 보여 드립니다. 보통 10~25분 걸립니다.'],
   ]).forEach(([title, text]) => { const li = el('li'); li.append(el('b', title), el('span', text)); steps.append(li); });
   d.append(steps);
-  d.append(el('p', '이미 실행 중인 작업이 있으면 GitHub이 순서대로 처리해서 겹치지 않아요. 빠진 종목만 있으면 그 시장만 다시 모으고, 결과가 더 나빠지면 이전 데이터를 그대로 둬요.', 'run-note'));
+  d.append(el('p', '이미 실행 중인 작업이 있으면 GitHub이 순서대로 처리해서 겹치지 않습니다. 빠진 종목만 있으면 그 시장만 다시 모으고, 결과가 더 나빠지면 이전 데이터를 그대로 둡니다.', 'run-note'));
   const actions = el('div', null, 'run-actions');
   const go = el('button', 'GitHub 실행창 열기', 'run-go'); go.type = 'button';
   const cancel = el('button', '닫기'); cancel.type = 'button'; cancel.onclick = () => d.close();

@@ -105,7 +105,7 @@ export function renderWeather(container, market, onOpen) {
     container.hidden = !failed && !data;
     if (failed || data) {
       container.className = 'tr-weather level-unknown';
-      container.append(el('span', null, 'tr-dot'), el('div', '시장 날씨 자료를 준비하고 있어요. 다음 자동 갱신 때 채워져요.', 'tr-weather-text'));
+      container.append(el('span', null, 'tr-dot'), el('div', '시장 날씨 자료를 준비하고 있고, 다음 자동 갱신 때 채워집니다.', 'tr-weather-text'));
     }
     return;
   }
@@ -124,7 +124,7 @@ export function renderWeather(container, market, onOpen) {
   }
   const text = el('div', w.advice || '', 'tr-weather-text');
   // A late index bar never turns into a fake-index verdict; the last real one stays and says so.
-  if (b.kept) text.append(el('span', ` ⏳ 지수 자료 지연 · ${md(b.asOf)} 종가 기준 판정을 그대로 쓰고 있어요. 다음 정기 확인 때 다시 계산해요.`, 'tr-weather-kept'));
+  if (b.kept) text.append(el('span', ` ⏳ 지수 자료 지연 · ${md(b.asOf)} 종가 기준 판정을 그대로 쓰고 있고, 다음 정기 확인 때 다시 계산합니다.`, 'tr-weather-kept'));
   const chips = el('div', null, 'tr-chips');
   const dist = w.distribution || {}, br = w.breadth || {}, hl = w.highsLows || {}, idx = b.index || {};
   const score = key => (w.factors || []).find(f => f.key === key)?.score;
@@ -260,7 +260,7 @@ function indexFactorTable(w, byIdx) {
     });
     table.append(row);
   });
-  table.append(el('p', `위쪽 큰 판정(${w.label || '—'} ${w.score > 0 ? '+' : ''}${w.score ?? '—'}점)은 지수 추세·기울기·분산일·거래대금을 두 지수 중 나쁜 쪽으로, 시장 체력·신고가를 전체 종목으로 매긴 점수예요. 종목을 볼 때는 그 종목이 속한 시장 칸을 보세요. 시장 흐름판의 ‘시장 국면’은 대표 지수가 50일·200일선 위인지만 봐서 이 판정과 다를 수 있어요.`, 'tr-idx-note'));
+  table.append(el('p', `위쪽 큰 판정(${w.label || '—'} ${w.score > 0 ? '+' : ''}${w.score ?? '—'}점)은 지수 추세·기울기·분산일·거래대금을 두 지수 중 나쁜 쪽으로, 시장 체력·신고가를 전체 종목으로 매긴 점수입니다. 종목을 볼 때는 그 종목이 속한 시장 칸을 보세요. 시장 상황판의 ‘시장 국면’은 대표 지수가 50일·200일선 위인지만 봐서 이 판정과 다를 수 있습니다.`, 'tr-idx-note'));
   return table;
 }
 // 분산일 자세히: 화면 가운데 큰 팝업. 바깥·× ·Esc 로 닫는다.
@@ -282,9 +282,9 @@ function openDistDialog(summary, more, market) {
 // 이격도는 지수·종목마다 평소 크기가 달라, 자기 과거 범위 안에서 지금 자리를 함께 적는다.
 export function gapRangeText(lo, hi, pctile, days) {
   const span = days >= 250 ? '지난 1년' : `최근 ${days}거래일`;
-  const where = pctile >= 90 ? ' 과거와 견줘 많이 벌어진 편이에요.' : pctile <= 10 ? ' 과거와 견줘 많이 눌린 편이에요.' : '';
+  const where = pctile >= 90 ? ' 과거와 견줘 많이 벌어진 편입니다.' : pctile <= 10 ? ' 과거와 견줘 많이 눌린 편입니다.' : '';
   const r1 = v => Math.round(v * 10) / 10 || 0;   // -0.0% 로 찍히지 않게
-  return `${span} 범위 ${pct(r1(lo))} ~ ${pct(r1(hi))} · 이 기간 중 ${fmt(pctile, 0)}%의 날보다 지금이 높아요.${where}`;
+  return `${span} 범위 ${pct(r1(lo))} ~ ${pct(r1(hi))} · 이 기간 중 ${fmt(pctile, 0)}%의 날보다 지금이 높습니다.${where}`;
 }
 function weatherDetail(b, market) {
   const w = b.weather || {}, wrap = el('section', null, 'tr-weather-detail');
@@ -315,7 +315,7 @@ function weatherDetail(b, market) {
       el('p', `기울기: 50일선 ${sl(i.ma50Slope, i.ma50Dir, 10)} · 200일선 ${sl(i.ma200Slope, i.ma200Dir, 20)}`, 'tr-slope'));
     c1.append(line);
   });
-  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목의 중앙값으로 만든 대체 지수예요.' : `가격: ${idx2 ? '두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨' : '50일선과 200일선 위에 있으면 좋음, 200일선 아래면 나쁨'}. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봐요 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평). 200일선 이격도는 종가가 200일선보다 몇 % 위·아래인지예요. 지수마다 평소 벌어지는 크기가 달라 지난 1년 범위와 함께 보여 줘요. 참고용이라 점수에는 넣지 않았어요.`));
+  c1.append(help(idx.synthetic ? '지수 자료를 받지 못해 화면 속 종목의 중앙값으로 만든 대체 지수입니다.' : `가격: ${idx2 ? '두 지수 모두 50·200일선 위면 좋음, 하나라도 200일선 아래면 나쁨' : '50일선과 200일선 위에 있으면 좋음, 200일선 아래면 나쁨'}. 기울기: 50일선은 10일, 200일선은 20일 동안 얼마나 변했는지로 봅니다 (50일선 ±0.5%, 200일선 ±0.3%보다 작으면 평평). 200일선 이격도는 종가가 200일선보다 몇 % 위·아래인지입니다. 지수마다 평소 벌어지는 크기가 달라 지난 1년 범위와 함께 보여 줍니다. 참고용이라 점수에는 넣지 않았습니다.`));
   // Distribution days
   const dist = w.distribution || {}, c2 = el('article', null, 'tr-card');
   c2.append(el('h3', '분산일 (기관이 판 흔적)'));
@@ -334,8 +334,8 @@ function weatherDetail(b, market) {
       const c2 = more;
       if (distRows.length > 1) c2.append(el('h4', label, 'tr-dist-sub'));
       if (st) c2.append(stageLadder(st, d.count, corrHealthy, false));
-      if (d.inCorrection) c2.append(el('p', `ⓘ ${distRows.length > 1 ? label + '는 ' : ''}지금 상승 추세가 아니라 조정 중이에요. 분산일은 오르는 시장의 고점을 잡는 신호라, 이미 내린 조정장에서는 숫자가 적어도 '건강함'으로 보지 않아요. 새 매수는 FTD(상승 전환 신호)를 기다리세요.`, 'tr-prelim'));
-      if (d.resetOn) c2.append(el('p', `ⓘ ${md(d.resetOn)} FTD로 새 상승 추세가 시작돼, 그 전 분산일은 지우고 새로 셌어요.`, 'tr-prelim'));
+      if (d.inCorrection) c2.append(el('p', `ⓘ ${distRows.length > 1 ? label + '는 ' : ''}지금 상승 추세가 아니라 조정 중입니다. 분산일은 오르는 시장의 고점을 잡는 신호라, 이미 내린 조정장에서는 숫자가 적어도 '건강함'으로 보지 않습니다. 새 매수는 FTD(상승 전환 신호)가 나온 뒤에 하는 편이 낫습니다.`, 'tr-prelim'));
+      if (d.resetOn) c2.append(el('p', `ⓘ ${md(d.resetOn)} FTD로 새 상승 추세가 시작돼, 그 전 분산일은 지우고 새로 셌습니다.`, 'tr-prelim'));
       if (d.prelim) c2.append(prelimNote(d.prelim, b.volumeSchedule));
       else if (d.confirmed) c2.append(confirmedNote(d.confirmed));
       const k = d.kinds || {};
@@ -355,7 +355,7 @@ function weatherDetail(b, market) {
       const watch = (d.days || []).filter(x => x.stallWatch);
       if (watch.length) {
         const box = el('div', null, 'tr-thin tr-watch');
-        box.append(el('b', `세지 않은 후보 ${watch.length}번`), el('em', '거래량은 늘었지만 오닐 기준에 못 미쳐 횟수에 넣지 않은 날이에요.'));
+        box.append(el('b', `세지 않은 후보 ${watch.length}번`), el('em', '거래량은 늘었지만 오닐 기준에 못 미쳐 횟수에 넣지 않은 날입니다.'));
         watch.forEach(x => box.append(el('p', `${md(x.date)} ${pct(x.changePct)} · 거래량 ${fmt(x.volumeRatio, 2)}배 · ${x.watchReason || ''}`, 'tr-watch-row')));
         c2.append(box);
       }
@@ -384,10 +384,10 @@ function weatherDetail(b, market) {
         box.append(el('b', `지워진 분산일 ${gone.length}개`));
         gone.forEach(x => {
           const why = x.expiredByFtd
-            ? `${md(x.date)} 분산일(${pct(x.changePct)})은 ${md(x.expiredByFtd)} 팔로우스루데이(FTD)로 새 상승 추세가 시작돼 지웠어요.`
+            ? `${md(x.date)} 분산일(${pct(x.changePct)})은 ${md(x.expiredByFtd)} 팔로우스루데이(FTD)로 새 상승 추세가 시작돼 지웠습니다.`
             : x.expiredOn
-            ? `${md(x.date)} 분산일(종가 ${fmt(x.close, 2)}, ${pct(x.changePct)})은 ${md(x.expiredOn)} 종가가 ${fmt(x.expiredClose, 2)}로 ${pct(x.expiredRisePct)} 올라 5% 기준을 넘겨서 지웠어요.`
-            : `${md(x.date)} 분산일(${pct(x.changePct)})은 그 뒤 지수가 그날 종가보다 5% 넘게 올라 지웠어요.`;
+            ? `${md(x.date)} 분산일(종가 ${fmt(x.close, 2)}, ${pct(x.changePct)})은 ${md(x.expiredOn)} 종가가 ${fmt(x.expiredClose, 2)}로 ${pct(x.expiredRisePct)} 올라 5% 기준을 넘겨서 지웠습니다.`
+            : `${md(x.date)} 분산일(${pct(x.changePct)})은 그 뒤 지수가 그날 종가보다 5% 넘게 올라 지웠습니다.`;
           box.append(el('p', why));
         });
         c2.append(box);
@@ -415,7 +415,7 @@ function weatherDetail(b, market) {
     [['var(--green)', `50일선 위 ${fmt(br.above50Pct, 0)}%`, ''], ['#9aacc3', `200일선 위 ${fmt(br.above200Pct, 0)}%`, 'dash']].forEach(([c, t, cls]) => { const k = el('span', null, `pc-key ${cls}`); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
     c3.append(lg);
   } else c3.append(el('p', '자료 없음'));
-  c3.append(help(`60% 넘으면 건강(초록 띠), 40% 아래면 약한 시장(붉은 띠)이에요. 지수는 오르는데 이 비율이 떨어지면 소수 대형주만 끌고 가는 장이에요. 최근 ${(br.series || []).length}거래일이고, 차트에 손가락을 대면 그날 값이 나와요.`));
+  c3.append(help(`60% 넘으면 건강(초록 띠), 40% 아래면 약한 시장(붉은 띠)입니다. 지수는 오르는데 이 비율이 떨어지면 소수 대형주만 끌고 가는 장입니다. 최근 ${(br.series || []).length}거래일 기록이고, 차트에 손가락을 대면 그날 값이 나옵니다.`));
   // Highs vs lows
   const hl = w.highsLows || {}, c4 = el('article', null, 'tr-card');
   c4.append(el('h3', '신고가 vs 신저가'));
@@ -426,7 +426,7 @@ function weatherDetail(b, market) {
     [['var(--up)', '위: 신고가 종목 수'], ['var(--down)', '아래: 신저가 종목 수']].forEach(([c, t]) => { const k = el('span', null, 'pc-key'); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
     c4.append(lg);
   } else c4.append(el('p', '자료 없음'));
-  c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교해요.'));
+  c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교합니다.'));
   grid.append(c1, c2, c3, c4);
   wrap.append(factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : market === 'US' ? [creditCardUS(b)] : []), grid, stageCard(w.stages));
   return wrap;
@@ -470,7 +470,7 @@ function stageCard(sd) {
     right.append(lg); body.append(right);
   }
   card.append(body);
-  card.append(help(`200일 이력이 있는 ${sd.denominator.toLocaleString('ko-KR')}종목 기준이에요. 시장 날씨 점수에는 넣지 않았어요.`));
+  card.append(help(`200일 이력이 있는 ${sd.denominator.toLocaleString('ko-KR')}종목 기준입니다. 시장 날씨 점수에는 넣지 않았습니다.`));
   if (sd.note) {
     const more = el('details', null, 'tr-stage-rule');
     more.append(el('summary', '단계 기준 보기'), el('p', sd.note, 'tr-help'));
@@ -484,16 +484,16 @@ function stageVerdict(by) {
   const s2 = by[2]?.pct, s4 = by[4]?.pct;
   if (!isNum(s2) || !isNum(s4)) return '';
   const gap = s2 - s4;
-  const lead = gap >= 10 ? '상승 추세 종목이 하락 추세보다 확실히 많아요.'
-    : gap >= 2 ? '상승 추세 종목이 하락 추세보다 조금 많아요.'
-    : gap > -2 ? '상승 추세와 하락 추세 종목 수가 비슷해요.'
-    : gap > -10 ? '하락 추세 종목이 상승 추세보다 조금 많아요.'
-    : '하락 추세 종목이 상승 추세보다 훨씬 많아요. 약한 시장이에요.';
+  const lead = gap >= 10 ? '상승 추세 종목이 하락 추세보다 확실히 많습니다.'
+    : gap >= 2 ? '상승 추세 종목이 하락 추세보다 조금 많습니다.'
+    : gap > -2 ? '상승 추세와 하락 추세 종목 수가 비슷합니다.'
+    : gap > -10 ? '하락 추세 종목이 상승 추세보다 조금 많습니다.'
+    : '하락 추세 종목이 상승 추세보다 훨씬 많습니다. 약한 시장입니다.';
   const d2 = by[2]?.change5d, d4 = by[4]?.change5d;
   let move = '';
   if (isNum(d2) && isNum(d4)) {
-    if (d2 - d4 >= 2) move = ' 최근 5일은 추세가 살아나는 쪽이에요.';
-    else if (d4 - d2 >= 2) move = ' 최근 5일은 하락 추세로 넘어가는 종목이 늘고 있어요.';
+    if (d2 - d4 >= 2) move = ' 최근 5일은 추세가 살아나는 쪽입니다.';
+    else if (d4 - d2 >= 2) move = ' 최근 5일은 하락 추세로 넘어가는 종목이 늘고 있습니다.';
   }
   return lead + move;
 }
@@ -533,7 +533,7 @@ function volumeChart(series) {
 const STAGE_TONE = { HEALTHY: 'good', CAUTION: 'mid', WARNING: 'warn', DANGER: 'bad' };
 function stageHead(st, count, corrHealthy = false) {
   const head = el('p', null, `tr-stage-now ${corrHealthy ? 'mid' : STAGE_TONE[st.key]}`);
-  head.append(el('b', `지금 ${count}번 · ${corrHealthy ? '조정 중' : st.label}`), el('span', corrHealthy ? '대응: 분산일은 적지만 조정 중이라 새 매수는 FTD를 기다려요' : `대응: ${st.action}`));
+  head.append(el('b', `지금 ${count}번 · ${corrHealthy ? '조정 중' : st.label}`), el('span', corrHealthy ? '대응: 분산일은 적지만 조정 중이라 새 매수는 FTD를 기다립니다' : `대응: ${st.action}`));
   return head;
 }
 function stageLadder(st, count, corrHealthy = false, withHead = true) {
@@ -546,7 +546,7 @@ function stageLadder(st, count, corrHealthy = false, withHead = true) {
     cell.append(el('b', x.range), el('strong', x.label), el('span', x.action));
     ladder.append(cell);
   });
-  box.append(ladder, el('p', '절대 기준이 아니라 가이드라인이에요. 숫자가 쌓였다고 바로 전량 매도하라는 뜻은 아니고, 보유 종목에서도 매도 신호가 함께 나오는지 확인하세요.', 'tr-help'));
+  box.append(ladder, el('p', '절대 기준이 아니라 가이드라인입니다. 숫자가 쌓였다고 바로 전량 매도하라는 뜻은 아니고, 보유 종목에서도 매도 신호가 함께 나오는지 확인한 뒤 판단하는 편이 낫습니다.', 'tr-help'));
   return box;
 }
 // 보조 신호: 올랐는데 거래량이 줄어든 날 (분산일로 세지는 않음)
@@ -554,30 +554,30 @@ function thinRallyLine(t) {
   const p = el('p', null, `tr-thin ${t.warn ? 'warn' : ''}`);
   p.append(el('b', '보조 신호 · 거래량 줄며 오른 날'),
     el('span', `최근 5거래일 상승 ${t.upDays5}일 중 ${t.thinDays5}일 · 25거래일 상승 ${t.upDays}일 중 ${t.thinDays}일`),
-    el('em', t.warn ? '매수세가 약해지고 있어요. 분산일과 같이 나오면 더 조심해요' : '오르는 날 거래량이 대체로 받쳐 줘요'));
+    el('em', t.warn ? '매수세가 약해지고 있습니다. 분산일과 같이 나오면 더 조심해야 합니다' : '오르는 날 거래량이 대체로 받쳐 줍니다'));
   return p;
 }
 function prelimNote(p, sched) {
-  const when = sched ? ' 저녁 6시 10분에 확정 값으로 다시 계산해요.' : ' 확정되면 다시 계산해요.';
-  return el('p', `ⓘ ${md(p.date)} 거래량은 아직 확정 전이에요. 전날 거래량이 확정되며 ${fmt(p.scale, 2)}배로 늘어난 만큼 이날도 늘려 잡아 비교했어요.${when}`, 'tr-prelim');
+  const when = sched ? ' 저녁 6시 10분에 확정 값으로 다시 계산합니다.' : ' 확정되면 다시 계산합니다.';
+  return el('p', `ⓘ ${md(p.date)} 거래량은 아직 확정 전입니다. 전날 거래량이 확정되며 ${fmt(p.scale, 2)}배로 늘어난 만큼 이날도 늘려 잡아 비교했습니다.${when}`, 'tr-prelim');
 }
 function confirmedNote(c) {
-  return el('p', `✓ ${md(c.date)} 거래량은 확정 값이에요 (처음 나온 값의 ${fmt(c.scale, 2)}배). 확정 값으로 다시 계산했어요.`, 'tr-prelim ok');
+  return el('p', `✓ ${md(c.date)} 거래량은 확정 값입니다 (처음 나온 값의 ${fmt(c.scale, 2)}배). 확정 값으로 다시 계산했습니다.`, 'tr-prelim ok');
 }
 // 미국 지수 거래량이 언제 확정되는지: 저녁 확인 기록이 쌓여 맞다고 나올 때만 '저녁 6시면 확정'이라고 씀
 function scheduleNote(s) {
   if (!s) return null;
-  const head = '미국 지수 거래량은 장이 끝난 직후(한국 시간 아침)엔 확정 전 값이 먼저 나오고, 한국 시간 오후에 확정 값으로 바뀌어요. 그래서 아침에 한 번 계산하고, 저녁 6시 10분에 확정 값으로 한 번 더 계산해요.';
+  const head = '미국 지수 거래량은 장이 끝난 직후(한국 시간 아침)엔 확정 전 값이 먼저 나오고, 한국 시간 오후에 확정 값으로 바뀝니다. 그래서 아침에 한 번 계산하고, 저녁 6시 10분에 확정 값으로 한 번 더 계산합니다.';
   const tail = s.verified
-    ? ` 실제로 최근 ${s.checks}번 중 ${s.confirmedAtFirst}번은 저녁 6시 10분 확인 때 이미 확정돼 있었어요. 아직이면 밤 9시 10분에 한 번 더 봐요.`
-    : ` 저녁 6시 10분이면 확정되는지 기록을 모으는 중이에요 (지금까지 ${s.checks}번 중 ${s.confirmedAtFirst}번 확정). 아직이면 밤 9시 10분에 한 번 더 봐요.`;
+    ? ` 실제로 최근 ${s.checks}번 중 ${s.confirmedAtFirst}번은 저녁 6시 10분 확인 때 이미 확정돼 있었습니다. 아직이면 밤 9시 10분에 한 번 더 봅니다.`
+    : ` 저녁 6시 10분이면 확정되는지 기록을 모으는 중입니다 (지금까지 ${s.checks}번 중 ${s.confirmedAtFirst}번 확정). 아직이면 밤 9시 10분에 한 번 더 봅니다.`;
   return el('p', head + tail, 'tr-help lq-schedule');
 }
 function liquidityCard(b, market) {
   const q = b.liquidity, card = el('article', null, 'tr-card lq-card');
   card.append(el('h3', '시장 거래량 (거래소 전체 · 돈의 흐름)'));
   const groups = q?.groups || [];
-  if (!q || q.status !== 'OK' || !groups.length) { card.append(el('p', q?.note || '거래량 자료는 다음 자동 갱신 때 채워져요.', 'tr-help')); return card; }
+  if (!q || q.status !== 'OK' || !groups.length) { card.append(el('p', q?.note || '거래량 자료는 다음 자동 갱신 때 채워집니다.', 'tr-help')); return card; }
   // 1. one verdict per index, side by side — the conclusion comes first
   const verdicts = el('div', null, 'lq-verdicts');
   groups.forEach(g => {
@@ -628,14 +628,14 @@ function liquidityCard(b, market) {
     const t1 = el('div', null, `lq-tile ${udTone}`);
     t1.append(el('span', '상승 ÷ 하락 거래대금 · 화면 속 종목', 'lq-tile-label'), el('strong', isNum(ud.today) ? `${fmt(ud.today, 2)}배` : '—'),
       el('small', `오늘 · 최근 10일 평균 ${isNum(ud.avg10) ? fmt(ud.avg10, 2) + '배' : '—'} · 돈 들어온 날 ${ud.inflowDays10}/10 · ${g.members}종목`),
-      el('p', '오른 종목에 몰린 돈을 내린 종목에 몰린 돈으로 나눈 값이에요. 1보다 크면 돈이 들어온 날이에요. 지수는 오르는데 계속 1 아래면 소수 대형주만 끌고 가는 장이에요.'));
+      el('p', '오른 종목에 몰린 돈을 내린 종목에 몰린 돈으로 나눈 값으로, 1보다 크면 돈이 들어온 날입니다. 지수는 오르는데 계속 1 아래면 소수 대형주만 끌고 가는 장입니다.'));
     tiles.append(t1);
   }
   if (g.sellingClimax) {
     const sc = g.sellingClimax, t3 = el('div', null, 'lq-tile lead');
     t3.append(el('span', '셀링 클라이맥스 · 바닥 후보', 'lq-tile-label'), el('strong', `${md(sc.date)} · ${pct(sc.changePct)}`),
       el('small', `그날 거래량 50일 평균의 ${fmt(sc.valueVsAvg50, 1)}배 · 1년 최대 · 그 뒤 ${pct(sc.sinceThenPct)}`),
-      el('p', '급락하면서 1년 중 가장 많이 거래된 날이에요. 공포 매도가 한꺼번에 나온 흔적이라 바닥 후보로 보고, FTD가 나오는지 기다려요.'));
+      el('p', '급락하면서 1년 중 가장 많이 거래된 날입니다. 공포 매도가 한꺼번에 나온 흔적이라 바닥 후보로 보고, FTD가 나오는지 기다립니다.'));
     tiles.append(t3);
   }
   detail.append(tiles);
@@ -658,7 +658,7 @@ function liquidityCard(b, market) {
     };
     flow.append(col('거래 비중이 늘어난 업종', ind.inflow || [], 'in'), col('거래 비중이 줄어든 업종', ind.outflow || [], 'out'));
     card.append(el('h4', '업종 거래대금 비중 · 최근 5일 변화 (화면 속 종목)', 'lq-sub'), flow);
-    card.append(help('한 주 움직임이라 이것만으로 돈이 들어오고 나갔다고 보지는 않아요. 20일 비중과 20일 가격까지 같은 쪽으로 움직인 업종에만 💰(돈 몰림)·⬇(돈 빠짐)을 붙였어요. 비중이 늘면서 값도 오르는 업종이 선도업종 후보예요.'));
+    card.append(help('한 주 움직임이라 이것만으로 돈이 들어오고 나갔다고 보지는 않습니다. 20일 비중과 20일 가격까지 같은 쪽으로 움직인 업종에만 💰(돈 몰림)·⬇(돈 빠짐)을 붙였습니다. 비중이 늘면서 값도 오르는 업종이 선도업종 후보입니다.'));
   }
   card.append(help(q.note || ''));
   if (market === 'US') { const sn = scheduleNote(b.volumeSchedule); if (sn) card.append(sn); }
@@ -717,7 +717,7 @@ function creditChart(series, showKospi, onPick) {
 function creditCard(b) {
   const c = b.credit, card = el('article', null, 'tr-card lq-card cr-card');
   card.append(el('h3', '신용잔고와 반대매매 (빚투가 얼마나 쌓였고, 얼마나 강제로 팔렸나)'));
-  if (!c || c.status !== 'OK') { card.append(el('p', c?.note || '신용잔고·반대매매 자료는 다음 자동 갱신 때 채워져요.', 'tr-help')); return card; }
+  if (!c || c.status !== 'OK') { card.append(el('p', c?.note || '신용잔고·반대매매 자료는 다음 자동 갱신 때 채워집니다.', 'tr-help')); return card; }
   const L = c.latest || {}, peak = c.creditPeak;
   const chips = el('div', null, 'cr-chips');
   const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
@@ -743,7 +743,7 @@ function creditCard(b) {
   const lg = el('div', null, 'pc-legend small');
   [['cr-key-credit', '신용융자 잔고 (조 원, 오른쪽)'], ['cr-key-bar', '반대매매 금액 (억 원, 왼쪽)'], ['cr-key-spike', `20일 평균의 ${c.spikeRatio}배 이상 (급증)`], ['cr-key-kospi', '코스피 (겹쳐 보기, 눈금 없음)']].forEach(([cls, t]) => { const k = el('span', null, `pc-key ${cls}`); k.append(el('i'), el('b', t)); lg.append(k); });
   card.append(tools, lg, holder, readout);
-  card.append(help('신용융자는 증권사에서 돈을 빌려 산 주식(빚투)의 잔고예요. 반대매매는 빌린 돈이나 미수(외상으로 산 주식) 대금을 제때 못 갚아 증권사가 강제로 판 금액이에요. 주가가 급히 빠지면 반대매매가 몰리고, 그 매도가 다시 지수를 누르기도 해요. 반대매매 급증이 몇 번 몰려 나온 뒤 잦아들면 빚이 정리됐다는 신호로 보기도 해요.'));
+  card.append(help('신용융자는 증권사에서 돈을 빌려 산 주식(빚투)의 잔고입니다. 반대매매는 빌린 돈이나 미수(외상으로 산 주식) 대금을 제때 못 갚아 증권사가 강제로 판 금액입니다. 주가가 급히 빠지면 반대매매가 몰리고, 그 매도가 다시 지수를 누르기도 합니다. 반대매매 급증이 몇 번 몰려 나온 뒤 잦아들면 빚이 정리됐다는 신호로 보기도 합니다.'));
   card.append(el('p', `자료: ${c.source} · ${c.note}`, 'tr-help cr-source'));
   draw();
   return card;
@@ -802,7 +802,7 @@ function creditChartUS(c, series, showSpx, onPick) {
 function creditCardUS(b) {
   const c = b.credit, card = el('article', null, 'tr-card lq-card cr-card');
   card.append(el('h3', '신용잔고와 투매일 (빚투가 얼마나 쌓였고, 언제 한꺼번에 던졌나)'));
-  if (!c || c.status !== 'OK') { card.append(el('p', c?.note || '미국 신용잔고·투매일 자료는 다음 자동 갱신 때 채워져요.', 'tr-help')); return card; }
+  if (!c || c.status !== 'OK') { card.append(el('p', c?.note || '미국 신용잔고·투매일 자료는 다음 자동 갱신 때 채워집니다.', 'tr-help')); return card; }
   const m = c.margin || {}, lf = c.lastFlush, mon = ym => `${+ym.slice(0, 4) % 100}년 ${+ym.slice(5, 7)}월`;
   const chips = el('div', null, 'cr-chips');
   const chip = (title, value, sub, cls = '') => { const d = el('div', null, `cr-chip ${cls}`); d.append(el('span', title), el('strong', value), el('small', sub)); chips.append(d); };
@@ -829,7 +829,7 @@ function creditCardUS(b) {
   const lg = el('div', null, 'pc-legend small');
   [['cr-key-credit', '신용융자 잔고 (월말, 조 달러, 오른쪽)'], ['cr-key-bar', 'S&P 500 하루 하락폭 (왼쪽)'], ['cr-key-spike', `투매일 (${c.dropPct}% 이하 + 거래량 20일 평균의 ${c.volRatio}배 이상)`], ['cr-key-kospi', 'S&P 500 (겹쳐 보기, 눈금 없음)']].forEach(([cls, t]) => { const k = el('span', null, `pc-key ${cls}`); k.append(el('i'), el('b', t)); lg.append(k); });
   card.append(tools, lg, holder, readout);
-  card.append(help('신용융자는 증권사에서 돈을 빌려 산 주식(빚투)의 잔고예요. 미국은 반대매매(빚을 못 갚아 증권사가 강제로 판 금액)를 공개하지 않아서, 지수가 하루 2% 넘게 빠지면서 거래량이 평소보다 크게 늘어난 날을 투매일로 표시했어요. 빚이 많이 쌓인 상태(1년 전보다 30% 넘게 증가)에서 투매일이 몰리면 강제 매도가 매도를 부르는 흐름을 조심해요.'));
+  card.append(help('신용융자는 증권사에서 돈을 빌려 산 주식(빚투)의 잔고입니다. 미국은 반대매매(빚을 못 갚아 증권사가 강제로 판 금액)를 공개하지 않아서, 지수가 하루 2% 넘게 빠지면서 거래량이 평소보다 크게 늘어난 날을 투매일로 표시했습니다. 빚이 많이 쌓인 상태(1년 전보다 30% 넘게 증가)에서 투매일이 몰리면 강제 매도가 매도를 부르는 흐름을 조심해야 합니다.'));
   card.append(el('p', `자료: ${c.source} · ${c.note}`, 'tr-help cr-source'));
   draw();
   return card;
@@ -861,9 +861,9 @@ function emptyBox(text) { return el('div', text, 'empty'); }
 
 function rsSection(b, openStock) {
   const r = b.rsLeaders || {}, wrap = el('div');
-  wrap.append(help((r.note || '') + ' 최근 5거래일 안에 RS선 신고가를 찍은 종목이고, 표시의 "오늘/며칠 전"이 그 날짜예요.'));
+  wrap.append(help((r.note || '') + ' 최근 5거래일 안에 RS선 신고가를 찍은 종목이고, 표시의 "오늘/며칠 전"이 그 날짜입니다.'));
   const items = r.items || [];
-  if (!items.length) return wrap.append(emptyBox('오늘은 RS선 신고가 종목이 없어요.')), wrap;
+  if (!items.length) return wrap.append(emptyBox('오늘은 RS선 신고가 종목이 없습니다.')), wrap;
   const list = el('div', null, 'tr-list');
   items.forEach(x => {
     const row = el('article', null, 'tr-row');
@@ -889,7 +889,7 @@ function sellSection(b, openStock, rerender) {
   [['HIGH', `강한 경고 ${s.highCount ?? 0}`], ['ALL', `전체 ${s.count ?? 0}`]].forEach(([k, t]) => filters.append(btn(t, sellFilter === k, () => { sellFilter = k; rerender(); })));
   wrap.append(filters);
   const items = (s.items || []).filter(x => sellFilter === 'ALL' || x.severity === 'HIGH');
-  if (!items.length) return wrap.append(emptyBox('조건에 맞는 경고가 없어요.')), wrap;
+  if (!items.length) return wrap.append(emptyBox('조건에 맞는 경고가 없습니다.')), wrap;
   const list = el('div', null, 'tr-list');
   items.forEach(x => {
     const row = el('article', null, `tr-row sev-${x.severity.toLowerCase()}`);
@@ -911,8 +911,8 @@ function earningsSection(b, openStock) {
   const e = b.earnings || {}, wrap = el('div');
   wrap.append(help(e.note || ''));
   const items = e.upcoming || [];
-  if (e.status !== 'OK') return wrap.append(emptyBox(e.note || '실적 일정 자료가 없어요.')), wrap;
-  if (!items.length) return wrap.append(emptyBox('앞으로 14일 안에 실적을 발표하는 화면 속 종목이 없어요.')), wrap;
+  if (e.status !== 'OK') return wrap.append(emptyBox(e.note || '실적 일정 자료가 없습니다.')), wrap;
+  if (!items.length) return wrap.append(emptyBox('앞으로 14일 안에 실적을 발표하는 화면 속 종목이 없습니다.')), wrap;
   const byDate = new Map();
   items.forEach(x => { if (!byDate.has(x.date)) byDate.set(x.date, []); byDate.get(x.date).push(x); });
   const list = el('div', null, 'tr-cal');
@@ -935,8 +935,8 @@ function earningsSection(b, openStock) {
 function scoreSection(b, openStock) {
   const sc = b.scorecard || {}, wrap = el('div');
   wrap.append(help(sc.note || ''));
-  if (sc.status !== 'OK') return wrap.append(emptyBox('아직 기록된 신호가 없어요. 매일 자동으로 쌓여요.')), wrap;
-  wrap.append(el('p', `${sc.since}부터 신호 ${sc.eventCount}건 기록 · 5·20·60거래일이 지나야 해당 칸이 채워져요.`, 'tr-sub'));
+  if (sc.status !== 'OK') return wrap.append(emptyBox('아직 기록된 신호가 없고, 신호는 매일 자동으로 쌓입니다.')), wrap;
+  wrap.append(el('p', `${sc.since}부터 신호 ${sc.eventCount}건 기록 · 5·20·60거래일이 지나야 해당 칸이 채워집니다.`, 'tr-sub'));
   const grid = el('div', null, 'tr-score-grid');
   Object.entries(sc.signals || {}).forEach(([key, s]) => {
     const card = el('article', null, `tr-card tr-score ${s.side}`);
@@ -971,7 +971,7 @@ export function renderTrend(content, market, { openStock, onSubtab }) {
   content.replaceChildren();
   const b = block(market);
   if (!b) {
-    content.append(emptyBox(failed ? '추세 자료를 불러오지 못했어요. 다음 자동 갱신 뒤 다시 확인해 주세요.' : '추세 자료를 불러오는 중이에요.'));
+    content.append(emptyBox(failed ? '추세 자료를 불러오지 못했습니다. 다음 자동 갱신 뒤 다시 확인해 주세요.' : '추세 자료를 불러오는 중입니다.'));
     return;
   }
   // The sub-navigation sticks to the top; switching only redraws the body below it.
@@ -1011,7 +1011,7 @@ export function renderTrend(content, market, { openStock, onSubtab }) {
   });
   content.append(anchor, seg, body);
   draw();
-  content.append(el('p', `${b.asOf} 종가 기준 · 계산 ${new Date(b.builtAt || data.generatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST · 지수 ${b.index?.source || '—'} · 대상 ${b.universe}종목 · 투자 권유가 아니라 확인용 신호예요.`, 'tr-foot'));
+  content.append(el('p', `${b.asOf} 종가 기준 · 계산 ${new Date(b.builtAt || data.generatedAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} KST · 지수 ${b.index?.source || '—'} · 대상 ${b.universe}종목 · 투자 권유가 아니라 확인용 신호입니다.`, 'tr-foot'));
 }
 
 // Read-only access for the separate FTD workspace.

@@ -104,7 +104,7 @@ nav.tabs.steps .nav-toggle { display: none; }
    정보는 그대로 두고 밀도만 높인다. 넓은 화면(761px 이상)은 바뀌지 않는다.
    - 지수 카드: 반 폭 카드 2열(미국 5개면 3줄) → 지수마다 한 줄(이름 · 종가 · 등락 · 작은 선).
    - AI 탭 집계 4칸: 2×2 → 한 줄 4칸.
-   - 데이터 범위 줄은 닫혀 있을 때 한 줄(끝은 …, 누르면 전부)로, 시장 흐름판 링크를 그 옆에, 색 안내·갱신 일정을 다음 한 줄에. */
+   - 데이터 범위 줄은 닫혀 있을 때 한 줄(끝은 …, 누르면 전부)로, 색 안내·갱신 일정을 다음 한 줄에. */
 @media (max-width: 760px) {
   .intro { margin: 8px 0 6px; }
   .intro h1 { font-size: 18px; line-height: 1.3; }
@@ -121,16 +121,15 @@ nav.tabs.steps .nav-toggle { display: none; }
   .bento .metric strong { font-size: 19px; }
   .bento .metric span { line-height: 1.25; }
   .meta-row { align-items: center; gap: 0 12px; margin: 4px 0 0; }
-  /* 첫 줄 = 데이터 범위(남는 폭 전부) + 시장 흐름판 링크. 색 안내·갱신 일정은 둘째 줄로 밀린다. */
-  .meta-row > .disclosure { order: 1; flex: 1 1 calc(100% - 120px); min-width: 0; }
-  .meta-row > .cross-link { order: 2; margin-left: 0; }
+  /* 첫 줄 = 데이터 범위(남는 폭 전부). 색 안내·갱신 일정은 둘째 줄로 밀린다. */
+  .meta-row > .disclosure { order: 1; flex: 1 1 100%; min-width: 0; }
   .meta-row > .color-legend { order: 3; }
   .meta-row > .schedule-wrap { order: 4; margin-left: auto; }
   .meta-row > .disclosure:not([open]) > summary { width: auto; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .meta-row > .disclosure[open], .meta-row > .schedule-wrap[open] { flex-basis: 100%; }
   .meta-row .color-legend { gap: 2px 4px; }
   .meta-row .color-legend .lg { margin-left: 2px; }
-  .meta-row .disclosure > summary, .meta-row .schedule-wrap > summary, .meta-row .cross-link { padding: 4px 0; }
+  .meta-row .disclosure > summary, .meta-row .schedule-wrap > summary { padding: 4px 0; }
 }
 @media (max-width: 380px) {
   /* 360px 폭: 다섯 자리 지수(나스닥 22,617)와 등락 사이가 붙지 않게 조금 더 줄인다. */
