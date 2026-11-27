@@ -116,7 +116,7 @@ class FTDTests(unittest.TestCase):
 
     def test_down_close_in_upper_half_after_new_low_is_day_one(self):
         rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
-        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=150)  # new low, closes 2/3 up the range
+        rows[-1].update(low=88.0, high=91.0, close=90.0, volume=150)  # new low, closes 2/3 up the range, 1.5x volume
         result = self.run_signal(rows)
         self.assertEqual(result['phase'], 'RALLY')
         self.assertEqual(result['rally']['day'], 1)
@@ -124,20 +124,23 @@ class FTDTests(unittest.TestCase):
         rows[-1].update(close=89.4)  # lower half: not a Day 1
         self.assertEqual(self.run_signal(rows)['phase'], 'CORRECTION')
 
-    def test_pink_day_one_needs_no_volume(self):
-        # O'Neil/IBD rule (2026-11-27 user decision): no volume condition on a pink Day 1.
-        # The old 1.5x rule (11/11) is kept only as a reference judgement in strictAlt.
+    def test_pink_day_one_needs_one_and_half_times_volume(self):
+        # 2026-11-11 rule, kept on 2026-11-27: a pink Day 1 needs 1.5x volume. The O'Neil/IBD wording
+        # (no volume test) is computed as pinkAlt and shown only when it changes the answer.
         rows = rows_for([100.0]*70 + [98, 96, 94, 92, 90])
         rows[-1].update(low=88.0, high=91.0, close=90.0, volume=102)
         result = self.run_signal(rows)
-        self.assertEqual(result['phase'], 'RALLY')
-        self.assertEqual(result['rally']['kind'], 'REVERSAL')
-        self.assertAlmostEqual(result['rally']['volumeRatio'], 1.02, places=2)
-        alt = result['strictAlt']
-        self.assertEqual(alt['phase'], 'CORRECTION')
-        self.assertEqual(alt['skipped']['date'], rows[-1]['date'])
+        self.assertEqual(result['phase'], 'CORRECTION')
+        skipped = [e for e in result['events'] if e['type']=='PINK_SKIPPED']
+        self.assertAlmostEqual(skipped[-1]['volumeRatio'], 1.02, places=2)
+        alt = result['pinkAlt']
+        self.assertEqual(alt['phase'], 'RALLY')
+        self.assertEqual(alt['rally']['kind'], 'REVERSAL')
+        self.assertEqual(alt['rally']['date'], rows[-1]['date'])
         rows[-1].update(volume=150)  # 1.5x: both rules agree, so no reference line
-        self.assertNotIn('strictAlt', self.run_signal(rows))
+        result = self.run_signal(rows)
+        self.assertEqual(result['rally']['kind'], 'REVERSAL')
+        self.assertNotIn('pinkAlt', result)
 
     def test_same_day_up_reversal_starts_new_day_one(self):
         rows = recovery(); rows[-2].update(low=89.6, close=91.3, high=91.6)
