@@ -11,10 +11,10 @@ const ask = (key) => helpButton(FTD_TERMS[key][0], key, true);
 const selected={KR:0,US:0,JP:0,TW:0};
 const EVENT_NAMES={WINDOW_EXPIRED:'판정 기간 종료 (예전 규칙)',LATE_WINDOW:'반등 Day 8 · 늦은 구간 진입',CORRECTION:'하락장 진입',NEW_CORRECTION:'새 하락장',RALLY:'반등 Day 1',RALLY_FAILED:'반등 무효 (Day 1 저가 이탈)',FTD:'FTD 나옴',FTD_FAILED:'FTD 무효 (Day 1 저가 이탈)',PINK_SKIPPED:'핑크 Day 1 후보 (거래량 부족)',RECOVERED:'FTD 없이 전고점 회복 · FTD 찾기 종료',UPTREND:'FTD 뒤 전고점 회복 · 상승 전환 완료'};
 const NOTE={EXPIRED:'예전 규칙(Day 8 이후 불인정)으로 계산한 결과입니다. 다음 자동 갱신에서 새 규칙으로 다시 계산합니다.',OUTSIDE:'지금은 하락장이 아니라서 FTD를 찾지 않습니다. 하락장이 오면 그때부터 반등 날짜를 셉니다.',
-  CORRECTION:'지수가 하락장에 들어왔습니다. 지수가 처음으로 반등하는 날(Day 1)을 기다립니다.',
+  CORRECTION:'지수가 하락장에 들어와 처음으로 반등하는 날(Day 1)을 기다립니다.',
   RALLY:'반등을 시도하는 중입니다. Day 1 장중 저가를 깨지 않고, Day 4 이후에 지수가 +1.7% 넘게 오르면서 거래량도 전날보다 많으면 FTD입니다.',
   LATE:'반등이 Day 8을 넘겼지만 아직 FTD가 없습니다. 지금부터 나오는 FTD는 "늦은 FTD"로 표시하고, 힘이 약하다고 봅니다.',
-  CONFIRMED:'하락장 뒤에 FTD가 나왔습니다. 시장이 다시 오르기 시작했을 수 있다는 신호입니다. Day 1 장중 저가를 깨면 무효가 됩니다. 지금은 총자금의 10% 이내에서만 시험 매수합니다.',
+  CONFIRMED:'하락장 뒤에 FTD가 나와 시장이 다시 오르기 시작했을 수 있습니다. Day 1 장중 저가를 깨면 무효가 되고, 지금은 총자금의 10% 이내에서만 시험 매수합니다.',
   PRESSURE:'FTD 뒤에 힘이 빠지는 경고가 나왔습니다. 아직 무효는 아니지만 비중을 10% 넘게 늘리지 않습니다.',
   UNAVAILABLE:'지수 가격·거래량·거래일 이력이 모두 확인될 때 판정합니다.'};
 // After a correction the index either completed an FTD-led uptrend or simply got back above its old high.
@@ -92,7 +92,7 @@ function check(labelNode,ok,detail){const item=n('div',null,`ftd-check ${ok===tr
 const FLOW=[['OUTSIDE','하락장 아님','FTD를 찾지 않는 평상시'],['CORRECTION','하락장','지수가 크게 떨어진 상태'],['RALLY','반등 시도','Day 1부터 날짜를 셈'],['CONFIRMED','FTD 확인','Day 4 이후 +1.7%·거래량 증가'],['UPTREND','상승 전환 완료','FTD 뒤 하락 전 고점 회복']];
 function flow(s,fresh){
   const wrap=n('section',null,'ftd-flow');
-  const head=n('div',null,'ftd-flow-head');head.append(n('h4','시장 상태 흐름'),n('span','지금 단계가 밝게 표시돼요','ftd-flow-hint'));wrap.append(head);
+  const head=n('div',null,'ftd-flow-head');head.append(n('h4','시장 상태 흐름'),n('span','지금 단계가 밝게 표시됩니다','ftd-flow-hint'));wrap.append(head);
   const now=!fresh?null:s.phase==='LATE'?'RALLY':s.phase==='PRESSURE'?'CONFIRMED':uptrendDone(s)?'UPTREND':s.phase;
   const ol=n('ol');
   FLOW.forEach(([key,label,meaning],i)=>{const li=n('li',null,key===now?'now':'');li.append(n('span',String(i+1),'ftd-flow-no'));const body=n('div');body.append(n('b',label),n('small',meaning));if(key===now){const extra=s.phase==='PRESSURE'?'경고 중':s.phase==='LATE'?'늦은 구간':'지금';body.append(n('em',extra));}li.append(body);ol.append(li);});
@@ -157,7 +157,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   const deck=n('div',null,'ftd-indexes');
   indexes.forEach((s,i)=>{const b=n('button',null,`ftd-index ${selected[market]===i?'selected':''}`);b.type='button';b.setAttribute('aria-pressed',String(selected[market]===i));
     const isFresh=freshIndex(s,expected)&&!failed;
-    b.append(n('span',s.label),badge(isFresh?(weakFtd(s)?'FTD 나옴 · 신뢰도 낮음':phaseName(s)):'판단 보류',isFresh?(weakFtd(s)?'PRESSURE':s.phase):'UNAVAILABLE'),n('small',isFresh?(uptrendDone(s)?'FTD 뒤 하락 전 고점을 되찾았어요.':weakFtd(s)?'FTD는 나왔지만 신뢰도가 낮아요. 시험 매수도 더 조심스럽게 봐요.':PHASE_MEANING[s.phase]||''):'자료 확인 전에는 판정하지 않아요.'),
+    b.append(n('span',s.label),badge(isFresh?(weakFtd(s)?'FTD 나옴 · 신뢰도 낮음':phaseName(s)):'판단 보류',isFresh?(weakFtd(s)?'PRESSURE':s.phase):'UNAVAILABLE'),n('small',isFresh?(uptrendDone(s)?'FTD 뒤 하락 전 고점을 되찾았습니다.':weakFtd(s)?'FTD는 나왔지만 신뢰도가 낮습니다. 시험 매수도 더 조심스럽게 봅니다.':PHASE_MEANING[s.phase]||''):'자료 확인 전에는 판정하지 않습니다.'),
       ...(isFresh&&(weakFtd(s)||(s.ftd&&s.ftd.date===s.asOf&&volEstimated(s)))?[n('small',[weakFtd(s)?`⚠ ${md(s.ftd.afterDayOneUndercut)} Day 1 저가 이탈 뒤 FTD · 신뢰도 낮음`:null,s.ftd.date===s.asOf&&volEstimated(s)?'거래량 확정 전(잠정)':null].filter(Boolean).join(' · '),'ftd-index-warn')]:[]),n('small',`${s.asOf||'—'} 종가${s.rally?` · 반등 Day ${s.rally.day}`:['CORRECTION'].includes(s.phase)?' · 반등 대기':''}`,'ftd-index-sub'));
     b.onclick=()=>{selected[market]=i;renderFTD(container,market,block,{expected,failed,openLeaders});};deck.append(b);
   });
@@ -167,7 +167,7 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
   const rule=n('div',null,`ftd-rule${active?' active':''}`);
   rule.append(n('strong','내 원칙 · FTD 뒤에는 총자금의 10% 이내로 발담그기만'),
     n('span','FTD는 "이제 사도 된다"가 아니라 "조금 시험해 봐도 된다"는 신호입니다. 처음에는 총자금의 10% 안에서만 삽니다. 비중을 더 늘릴지는 선도주가 실제로 신고가를 뚫고(선도주 출현), 시장이 계속 버텨 줄 때 따로 판단합니다.'));
-  if(active)rule.append(n('em','지금 FTD 신호가 켜져 있어요 · 10% 이내'));
+  if(active)rule.append(n('em','지금 FTD 신호가 켜져 있습니다 · 10% 이내'));
   container.append(rule);
   const intro=n('details',null,'intro-fold');const sum=n('summary');sum.append('FTD가 무엇인지 · 판정 방식 보기',badge('종가 기준 · 자체 규칙','OUTSIDE'));intro.append(sum);
   const p=n('p');p.append(term('ftd','FTD(Follow-Through Day)'),'는 하락장이 끝나고 다시 오르기 시작했는지 확인하는 신호입니다. 지수가 크게 떨어진 뒤 반등을 시작하고, Day 4 이후에 +1.7% 넘게 오르면서 거래량도 늘면 FTD로 봅니다. 밑줄 친 말을 누르면 뜻이 나옵니다.');intro.append(p);
@@ -183,8 +183,8 @@ export function renderFTD(container,market,block,{expected,failed=false,openLead
     if(s.ftd&&s.ftd.date===s.asOf&&volEstimated(s))c.append(n('p',`오늘 거래량은 아직 확정 전입니다. 지금 ${num(s.ftd.volumeRatio,2)}배는 추정값이라, 내일 거래량이 확정되면 FTD가 취소될 수 있습니다.`));
     panel.append(c);}
   if(fresh&&s.warnings?.length){const warn=n('div',null,'ftd-warnings');warn.append(n('strong','⚠ 지금 켜진 경고'));
-    s.warnings.forEach(w=>{const line=n('p');if(w.code==='BELOW_FTD_LOW'){line.append('종가가 ',term('ftdLow','FTD 저가'),` (${num(w.level,2)}) 아래로 내려갔어요. 힘이 빠졌다는 뜻이에요.`);}
-      else if(w.code==='DISTRIBUTION_CLUSTER'){line.append('FTD 뒤 10거래일 안에 ',term('distribution','분산일'),`이 ${w.count}번 나왔어요 (${(w.dates||[]).map(d=>d.slice(5).replace('-','/')).join(', ')}). 큰손이 팔고 있다는 경고예요.`);}
+    s.warnings.forEach(w=>{const line=n('p');if(w.code==='BELOW_FTD_LOW'){line.append('종가가 ',term('ftdLow','FTD 저가'),` (${num(w.level,2)}) 아래로 내려가 힘이 빠졌습니다.`);}
+      else if(w.code==='DISTRIBUTION_CLUSTER'){line.append('FTD 뒤 10거래일 안에 ',term('distribution','분산일'),`이 ${w.count}번 나왔습니다 (${(w.dates||[]).map(d=>d.slice(5).replace('-','/')).join(', ')}). 큰손이 팔고 있다는 경고입니다.`);}
       else line.append(w.code);warn.append(line);});panel.append(warn);}
   const latest=s.latest||{},grid=n('div',null,'ftd-grid');
   grid.append(metric(term('drawdown','63거래일 고점 대비'),typeof latest.drawdownPct==='number'?`-${num(latest.drawdownPct)}%`:'—',latest.belowMa50?'50일선 아래':'50일선 위 또는 확인 안 됨'),

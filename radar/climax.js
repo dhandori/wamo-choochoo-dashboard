@@ -24,11 +24,11 @@ export const KIND = {
 };
 // [짧은 이름, 색, 설명, 큰 글씨 한 줄, 아이콘]
 const STATE = {
-  TOP_WARNING: ['천장 경고', 'bad', '클라이맥스 런 뒤에 천장형 일중전환이 나왔어요. 상승이 끝났다고 가장 강하게 의심할 자리예요.', '천장 경고 · 클라이맥스 뒤 고점 찍고 밀림', '⚠'],
-  CLIMAX: ['클라이맥스 진행 중', 'warn', '짧은 기간에 지수가 가파르게 올랐어요. 아직 꺾이지는 않았지만 끝물 징후가 겹쳐 있어요.', '클라이맥스 런 진행 중 (끝물 급등)', '🔥'],
-  TOP: ['천장형 반전', 'warn', '최근 5거래일 안에 장중 고점을 새로 찍고 밀려 끝난 날이 있었어요.', '일중전환 있었음 · 천장형 (고점 찍고 밀림)', '▼'],
-  BOTTOM: ['바닥형 반전', 'lead', '최근 5거래일 안에 장중 저점을 깨고 말아 올린 날이 있었어요.', '일중전환 있었음 · 바닥형 (저점 깨고 말아 올림)', '▲'],
-  NONE: ['특이 신호 없음', 'none', '최근 10거래일 동안 클라이맥스 런이나 일중전환이 없었어요.', '일중전환 없었음', '—'],
+  TOP_WARNING: ['천장 경고', 'bad', '클라이맥스 런 뒤에 천장형 일중전환이 나왔습니다. 상승이 끝났다고 가장 강하게 의심할 자리입니다.', '천장 경고 · 클라이맥스 뒤 고점 찍고 밀림', '⚠'],
+  CLIMAX: ['클라이맥스 진행 중', 'warn', '짧은 기간에 지수가 가파르게 올랐습니다. 아직 꺾이지는 않았지만 끝물 징후가 겹쳐 있습니다.', '클라이맥스 런 진행 중 (끝물 급등)', '🔥'],
+  TOP: ['천장형 반전', 'warn', '최근 5거래일 안에 장중 고점을 새로 찍고 밀려 끝난 날이 있었습니다.', '일중전환 있었음 · 천장형 (고점 찍고 밀림)', '▼'],
+  BOTTOM: ['바닥형 반전', 'lead', '최근 5거래일 안에 장중 저점을 깨고 말아 올린 날이 있었습니다.', '일중전환 있었음 · 바닥형 (저점 깨고 말아 올림)', '▲'],
+  NONE: ['특이 신호 없음', 'none', '최근 10거래일 동안 클라이맥스 런이나 일중전환이 없었습니다.', '일중전환 없었음', '—'],
 };
 
 const TERMS = {
@@ -49,7 +49,7 @@ const term = (key, text) => helpButton(text || TERMS[key][0], key);
 // ------------------------------------------------------------ 지수 캔들 차트
 function indexChart(rep, market) {
   const cs = (rep.candles || []).filter(c => isNum(c.h) && isNum(c.l) && isNum(c.c));
-  if (cs.length < 20) return el('p', '차트 자료가 부족해요.', 'tr-help');
+  if (cs.length < 20) return el('p', '차트 자료가 부족합니다.', 'tr-help');
   const days = cs.length;
   const narrow = window.innerWidth < 700;
   // Volume panel under the candles (green = 양봉, red = 음봉), only when the index reports volume.
@@ -180,13 +180,13 @@ function volText(v) {
 function pointList(points, date) {
   const ul = el('ul', null, 'tr-reasons');
   (points || []).forEach(p => { const li = el('li'); li.append(el('b', p.label), el('span', p.detail)); ul.append(li); });
-  if (!ul.children.length) { const li = el('li'); li.append(el('b', '기본 조건만 충족'), el('span', `${date ? md(date) + ' ' : ''}추가로 붙은 강도 점수는 없어요.`)); ul.append(li); }
+  if (!ul.children.length) { const li = el('li'); li.append(el('b', '기본 조건만 충족'), el('span', `${date ? md(date) + ' ' : ''}추가로 붙은 강도 점수는 없습니다.`)); ul.append(li); }
   return ul;
 }
 
 function indexCard(rep, market, b) {
   const card = el('article', null, 'tr-card cx-index');
-  if (rep.status !== 'OK') { card.append(el('h3', rep.label), el('p', '지수 자료가 없어 계산하지 못했어요.')); return card; }
+  if (rep.status !== 'OK') { card.append(el('h3', rep.label), el('p', '지수 자료가 없어 계산하지 못했습니다.')); return card; }
   const [, cls, text, headline, icon] = STATE[rep.state] || STATE.NONE;
   const head = el('div', null, 'cx-index-head');
   head.append(el('h3', `${rep.label} · ${md(rep.asOf)} 종가`));
@@ -220,7 +220,7 @@ function indexCard(rep, market, b) {
   const tops = ev.filter(e => e.type === 'TOP_WARNING' && isNum(e.worst20));
   const hurt = tops.filter(e => e.worst20 <= -5).length;
   const box = el('details', null, 'cx-history');
-  box.append(el('summary', ev.length ? `지난 1년 신호 기록 ${ev.length}건${tops.length ? ` · 천장 경고 ${tops.length}번 중 ${hurt}번은 20거래일 안에 5% 넘게 빠졌어요` : ''}` : '지난 1년 신호 기록 없음'));
+  box.append(el('summary', ev.length ? `지난 1년 신호 기록 ${ev.length}건${tops.length ? ` · 천장 경고 ${tops.length}번 중 ${hurt}번은 20거래일 안에 5% 넘게 빠졌습니다` : ''}` : '지난 1년 신호 기록 없음'));
   if (ev.length) {
     const t = el('table', null, 'cx-table'), h = el('tr');
     ['날짜', '신호', '종가 위치', '5일 뒤', '20일 뒤', '20일 최저'].forEach(s => h.append(el('th', s)));
@@ -236,7 +236,7 @@ function indexCard(rep, market, b) {
       t.append(tr);
     });
     const scroll = el('div', null, 'cx-table-wrap'); scroll.append(t); box.append(scroll);
-    box.append(el('p', '줄에 마우스를 올리면 그날 어떤 조건이 겹쳤는지 보여요. 클라이맥스는 새 구간이 시작된 첫날만 적어요.', 'tr-help'));
+    box.append(el('p', '줄에 마우스를 올리면 그날 어떤 조건이 겹쳤는지 보입니다. 클라이맥스는 새 구간이 시작된 첫날만 적습니다.', 'tr-help'));
   }
   card.append(box);
   return card;
@@ -277,7 +277,7 @@ function stockSection(c, openStock, rerender) {
   head.append(seg);
   wrap.append(head);
   const items = (c.items || []).filter(x => (x.kinds || []).includes(filter));
-  if (!items.length) { wrap.append(el('div', `지금은 ${KIND[filter][0]} 종목이 없어요.`, 'empty')); return wrap; }
+  if (!items.length) { wrap.append(el('div', `지금은 ${KIND[filter][0]} 종목이 없습니다.`, 'empty')); return wrap; }
   const list = el('div', null, 'tr-list');
   items.forEach(x => {
     const row = el('article', null, `tr-row cx-row kind-${x.kind.toLowerCase()}`);
@@ -337,9 +337,9 @@ function guideIcon(kind) {
 function stockUse(b) {
   const sec = el('section', null, 'cx-guide-use');
   sec.append(el('h4', '종목에서 일중전환 쓰는 법'));
-  sec.append(el('p', '일중전환은 지수보다 종목에서 덜 맞아요. 종목은 하루 변동이 크고, 실적·뉴스 갭이 캔들 모양을 흐트러뜨리기 때문이에요. 그래서 종목에서는 일중전환 하나만 보고 팔지 않고, 아래 조건이 겹칠 때 더 무겁게 봐요.'));
+  sec.append(el('p', '종목은 하루 변동이 크고 실적·뉴스 갭이 캔들 모양을 흐트러뜨려서, 일중전환이 지수보다 덜 맞습니다. 그래서 종목에서는 일중전환 하나만 보고 팔지 않고, 아래 조건이 겹칠 때 더 무겁게 봅니다.'));
   const ol = el('ol', null, 'cx-guide-checks');
-  ['이미 많이 올랐어요 (클라이맥스 런)', '거래량이 평소보다 많아요', '종가가 그날 저가 근처에서 끝났어요', '다음 날 그 저가를 깨요'].forEach(t => ol.append(el('li', t)));
+  ['이미 많이 올랐습니다 (클라이맥스 런)', '거래량이 평소보다 많습니다', '종가가 그날 저가 근처에서 끝났습니다', '다음 날 그 저가를 깹니다'].forEach(t => ol.append(el('li', t)));
   sec.append(ol);
   const sig = b.scorecard?.signals || {}, stat = k => sig[k]?.stats?.['5'];
   const line = (name, st) => st?.n ? `${name} ${st.n}건 · 5거래일 뒤 떨어진 비율 ${fmt(st.hitRate, 0)}% · 지수보다 ${isNum(st.avgExcess) ? `${st.avgExcess > 0 ? '+' : ''}${fmt(st.avgExcess, 1)}%p` : '—'}` : null;
@@ -348,7 +348,7 @@ function stockUse(b) {
     const box = el('div', null, 'cx-guide-stats');
     box.append(el('b', `이 시장 종목 기록 · ${b.scorecard?.since ? `${b.scorecard.since.slice(2).replaceAll('-', '.')}부터` : ''}`));
     rows.forEach(t => box.append(el('p', t)));
-    box.append(el('small', '‘지수보다’가 마이너스면 같은 기간 지수보다 더 빠졌다는 뜻이에요. 기록이 짧아 방향만 참고하세요.'));
+    box.append(el('small', '‘지수보다’가 마이너스면 같은 기간 지수보다 더 빠졌다는 뜻입니다. 기록이 짧아 방향만 참고합니다.'));
     sec.append(box);
   }
   return sec;
@@ -360,13 +360,13 @@ function guide(b) {
   let closed = false; try { closed = localStorage.getItem('wamo.cxGuideClosed') === '1'; } catch (e) { /* storage off */ }
   box.open = !closed;
   box.addEventListener('toggle', () => { try { localStorage.setItem('wamo.cxGuideClosed', box.open ? '0' : '1'); } catch (e) { /* storage off */ } });
-  box.append(el('summary', '읽는 법 · 이 칸은 클라이맥스 런을 잡으려고 만든 곳이에요'));
-  box.append(el('p', '오르던 종목이나 지수가 마지막에 수직으로 치솟는 구간(클라이맥스 런)은 상승의 끝물인 경우가 많아요. 이 칸은 그 구간을 먼저 잡고, 그 뒤에 "고점을 찍고 밀린 날"이 나오는지 지켜보려고 만들었어요. 일중전환은 하루 안에 방향이 뒤집힌 날을 말해요. 장중에 새 고점(또는 새 저점)을 찍었다가 반대쪽으로 끝난 날이에요.', 'cx-guide-lead'));
+  box.append(el('summary', '읽는 법 · 이 칸은 클라이맥스 런을 잡으려고 만든 곳입니다'));
+  box.append(el('p', '오르던 종목이나 지수가 마지막에 수직으로 치솟는 구간(클라이맥스 런)은 상승의 끝물인 경우가 많습니다. 이 칸은 그 구간을 먼저 잡고, 그 뒤에 "고점을 찍고 밀린 날"이 나오는지 지켜보려고 만들었습니다. 일중전환은 하루 안에 방향이 뒤집힌 날로, 장중에 새 고점(또는 새 저점)을 찍었다가 반대쪽으로 끝난 날을 말합니다.', 'cx-guide-lead'));
   const rows = [
-    ['climax', 'warn', '🔥 클라이맥스 런', '끝물 급등', '짧은 기간에 수직으로 치솟은 구간이에요. 종목은 15거래일 안에 +25% 넘게(지수는 +12%) 오르고, 하루 최대 상승 · 쉬지 않는 상승 · 빈칸 갭 · 이동평균선과 크게 벌어짐 · 1년 최대 거래량 같은 끝물 징후가 겹친 경우예요.', '새로 사지 않고, 오를 때 조금씩 나눠 팔기 시작할 자리'],
-    ['top', 'warn', '▼ 천장형 반전 (일중전환)', '고점 찍고 밀린 날', '장중에는 최근 50거래일 최고가를 새로 넘었는데, 종가는 전날보다 낮고 그날 범위의 아래쪽 절반에서 끝난 날이에요. 파는 힘이 사려는 힘을 이겼다는 흔적이에요.', '혼자 나오면 약한 신호 · 클라이맥스 뒤에 나오면 강한 신호'],
-    ['warning', 'bad', '⚠ 천장 경고', '클라이맥스 + 고점 찍고 밀림', '클라이맥스 런이 나온 뒤 10거래일 안에 천장형 반전이 나온 경우예요. 두 신호가 겹쳐서 상승이 끝났다고 가장 강하게 의심할 자리예요.', '남은 물량 정리를 검토할 자리 (가장 강한 매도 경고)'],
-    ['bottom', 'lead', '▲ 바닥형 반전 (일중전환)', '저점 깨고 말아 올린 날', '장중에는 최근 20거래일 최저가를 깼는데, 종가는 전날보다 높고 그날 범위의 위쪽에서 끝난 날이에요. 파는 힘이 바닥났을 수 있다는 흔적이에요.', '하락이 끝나 가는지 확인하는 용도 · 이것만 보고 사지는 않기'],
+    ['climax', 'warn', '🔥 클라이맥스 런', '끝물 급등', '짧은 기간에 수직으로 치솟은 구간입니다. 종목은 15거래일 안에 +25% 넘게(지수는 +12%) 오르고, 하루 최대 상승, 쉬지 않는 상승, 빈칸 갭, 이동평균선과 크게 벌어짐, 1년 최대 거래량 같은 끝물 징후가 겹친 경우입니다.', '새로 사지 않고, 오를 때 조금씩 나눠 팔기 시작할 자리'],
+    ['top', 'warn', '▼ 천장형 반전 (일중전환)', '고점 찍고 밀린 날', '장중에는 최근 50거래일 최고가를 새로 넘었는데, 종가는 전날보다 낮고 그날 범위의 아래쪽 절반에서 끝난 날입니다. 파는 힘이 사려는 힘을 이겼다는 흔적입니다.', '혼자 나오면 약한 신호 · 클라이맥스 뒤에 나오면 강한 신호'],
+    ['warning', 'bad', '⚠ 천장 경고', '클라이맥스 + 고점 찍고 밀림', '클라이맥스 런이 나온 뒤 10거래일 안에 천장형 반전이 나온 경우입니다. 두 신호가 겹쳐서 상승이 끝났다고 가장 강하게 의심할 자리입니다.', '남은 물량 정리를 검토할 자리 (가장 강한 매도 경고)'],
+    ['bottom', 'lead', '▲ 바닥형 반전 (일중전환)', '저점 깨고 말아 올린 날', '장중에는 최근 20거래일 최저가를 깼는데, 종가는 전날보다 높고 그날 범위의 위쪽에서 끝난 날입니다. 파는 힘이 바닥났을 수 있다는 흔적입니다.', '하락이 끝나 가는지 확인하는 용도 · 이것만 보고 사지는 않기'],
   ];
   const grid = el('div', null, 'cx-guide-grid');
   rows.forEach(([icon, tone, name, short, text, act]) => {
@@ -385,7 +385,7 @@ function guide(b) {
 
 export function climaxSection(b, market, openStock, rerender) {
   const c = b.climax, wrap = el('div', null, 'cx');
-  if (!c || c.status !== 'OK') { wrap.append(el('div', c?.note || '천장 신호 자료는 다음 자동 갱신 때 채워져요.', 'empty')); return wrap; }
+  if (!c || c.status !== 'OK') { wrap.append(el('div', c?.note || '천장 신호 자료는 다음 자동 갱신 때 채워집니다.', 'empty')); return wrap; }
   wrap.append(guide(b));
   const grid = el('div', null, 'cx-index-grid');
   (c.indexes || []).forEach(rep => grid.append(indexCard(rep, market, b)));

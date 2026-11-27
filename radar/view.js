@@ -202,10 +202,10 @@ function changeBadges(s) {
 }
 // 소속 시장 배지(KOSPI·KOSDAQ / NASDAQ·NYSE). 자료에 없으면(일본·대만·옛 자료) 붙이지 않는다.
 // 종목의 Stage 1~4(추세 신호 계산, 시장 스테이지 분포와 같은 기준). 자료가 없으면 null.
-const STAGE_INFO = { 1: ['바닥권', 'Stage 2·3·4 어디에도 들지 않는 구간이에요. 하락 뒤 바닥을 다지거나 막 회복하는 중이라 200일선이 아직 오르지 않았어요. 주가가 많이 올랐어도 200일선이 위로 돌아서야 Stage 2가 돼요.'],
-  2: ['상승 추세', '주가 > 50일선 > 150일선 > 200일선이고 200일선이 한 달 전보다 높아요. 추세추종으로 사기 좋은 단계예요.'],
-  3: ['고점 횡보', '200일선은 아직 꺾이지 않았는데 주가가 50일선 아래로 내려왔거나 50일선이 150일선 아래예요. 오름세에 힘이 빠지는 단계예요.'],
-  4: ['하락 추세', '주가와 50일선이 200일선 아래이고 200일선도 내려가요. 새로 사지 않는 단계예요.'] };
+const STAGE_INFO = { 1: ['바닥권', 'Stage 2·3·4 어디에도 들지 않는 구간입니다. 하락 뒤 바닥을 다지거나 막 회복하는 중이라 200일선이 아직 오르지 않았고, 주가가 많이 올랐어도 200일선이 위로 돌아서야 Stage 2가 됩니다.'],
+  2: ['상승 추세', '주가 > 50일선 > 150일선 > 200일선이고 200일선이 한 달 전보다 높습니다. 추세추종으로 사기 좋은 단계입니다.'],
+  3: ['고점 횡보', '200일선은 아직 꺾이지 않았는데 주가가 50일선 아래로 내려왔거나 50일선이 150일선 아래에 있습니다. 오름세에 힘이 빠지는 단계입니다.'],
+  4: ['하락 추세', '주가와 50일선이 200일선 아래에 있고 200일선도 내려가고 있어서 새로 사지 않는 단계입니다.'] };
 function stageOf(s) { const n = trendBlock(s.market || state.market)?.stageById?.[s.id]; return STAGE_INFO[n] ? n : null; }
 function stageBadge(s) {
   const n = stageOf(s); if (!n) return null;
@@ -275,7 +275,7 @@ function flowSection(s) {
     row.append(cells); grid.append(row);
   });
   sec.append(grid);
-  sec.append(el('p', '순매수수량 × 당일 종가로 계산한 추정 금액이라 거래소 공식 결제 금액과 다를 수 있어요. 연기금·사모 같은 세부 수급은 자료가 없어 싣지 않아요. 수급은 스크리닝 후보 종목만 모아요.', 'flow-box-note'));
+  sec.append(el('p', '순매수수량 × 당일 종가로 계산한 추정 금액이라 거래소 공식 결제 금액과 다를 수 있습니다. 연기금·사모 같은 세부 수급은 자료가 없어 싣지 않고, 수급은 스크리닝 후보 종목만 모읍니다.', 'flow-box-note'));
   return sec;
 }
 // Wait briefly for the chart data so the drawer does not jump after opening.
@@ -382,14 +382,14 @@ function positionSection(s) {
 // 200일선 이격도(보조자료): 종가가 200일선보다 몇 % 위·아래인지. 차트 자료(종가 260일)로 계산해 늦으면 나중에 채운다.
 function gap200Row(series) {
   const c = series?.closes, n = c?.length || 0;
-  if (n < 200) return kvRow('200일선 이격도', '—', { sub: series ? '200거래일 기록이 모자라요' : '차트 자료가 오면 채워져요' });
+  if (n < 200) return kvRow('200일선 이격도', '—', { sub: series ? '200거래일 기록 부족' : '차트 자료가 오면 채워짐' });
   // 저장된 종가가 260거래일이라 이격도 기록은 최근 61거래일까지만 나온다. 그 범위 안에서 지금 자리를 함께 적는다.
   const gaps = []; let sum = 0, ma = null;
   for (let i = 0; i < n; i++) { sum += c[i]; if (i >= 200) sum -= c[i - 200]; if (i >= 199) { ma = sum / 200; gaps.push((c[i] / ma - 1) * 100); } }
   const gap = gaps[gaps.length - 1], past = gaps.slice(0, -1);
   const range = past.length >= 19 ? gapRangeText(Math.min(...gaps), Math.max(...gaps), past.filter(g => g < gap).length / past.length * 100, gaps.length) : null;
   return kvRow('200일선 이격도', `${gap > 0 ? '+' : ''}${fmt(gap)}%`, { sub: `200일선 ${fmt(ma, 2)}`,
-    note: `${range ? range + ' ' : ''}종가가 200일 이동평균선보다 몇 % 높거나 낮은지예요. 종목마다 평소 벌어지는 폭이 달라서 그 종목의 과거 범위와 비교해요. 참고용이에요.` });
+    note: `${range ? range + ' ' : ''}종가가 200일 이동평균선보다 몇 % 높거나 낮은지입니다. 종목마다 평소 벌어지는 폭이 달라서 그 종목의 과거 범위와 비교하고, 참고용으로만 씁니다.` });
 }
 function strengthSection(s, series) {
   return kvSection('강도·거래', [
@@ -397,7 +397,7 @@ function strengthSection(s, series) {
     kvRow('거래량 배수', volume(s), { bar: volBar(s) }),
     kvRow('추세 단계', stageOf(s) ? `Stage ${stageOf(s)} · ${STAGE_INFO[stageOf(s)][0]}` : '정보 없음', { cls: stageOf(s) === 2 ? 'good' : '', note: stageOf(s) ? STAGE_INFO[stageOf(s)][1] : null }),
     gap200Row(series),
-    kvRow('8조건', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '', note: '미너비니의 8가지 조건(이동평균선 정배열·52주 고점 근처·RS 등)을 모두 채웠는지예요. Stage 2보다 엄격해요.' }),
+    kvRow('8조건', s.stage2 === true ? '충족' : s.stage2 === false ? '미충족' : '정보 없음', { cls: s.stage2 === true ? 'good' : '', note: '미너비니의 8가지 조건(이동평균선 정배열, 52주 고점 근처, RS 등)을 모두 채웠는지 봅니다. Stage 2보다 엄격합니다.' }),
     kvRow('시가총액', marketCap(s, true)),
   ], 'strength-sec');
 }
@@ -407,20 +407,20 @@ const STOP_CAP = 8, ATR_MULT = 2, RISK_PCT = 2;
 function riskSection(series, s) {
   const [sym, , d] = CURRENCY[s.market || state.market] || CURRENCY.US, money = v => `${sym}${fmt(v, d)}`;
   const close = numeric(s.close) && s.close > 0 ? s.close : null, a = series?.atr, hasAtr = !!(a && numeric(a[0]) && numeric(a[1]));
-  const rows = [kvRow('ATR(14일)', hasAtr ? money(a[0]) : '—', { sub: hasAtr ? `하루 평균 ${fmt(a[1])}% 움직임` : '차트 자료가 오면 채워져요' }),
+  const rows = [kvRow('ATR(14일)', hasAtr ? money(a[0]) : '—', { sub: hasAtr ? `하루 평균 ${fmt(a[1])}% 움직임` : '차트 자료가 오면 채워짐' }),
     kvRow(`기준 손절 −${STOP_CAP}%`, close ? money(close * (1 - STOP_CAP / 100)) : '—', { sub: '어떤 종목이든 넘지 않는 한도' })];
   if (close && hasAtr) {
     const atrPct = a[1] * ATR_MULT, over = atrPct > STOP_CAP, used = Math.min(atrPct, STOP_CAP);
     rows.push(kvRow(`ATR 손절 (${ATR_MULT}×ATR)`, money(close - a[0] * ATR_MULT), { cls: over ? 'bad' : 'good', sub: `−${fmt(atrPct)}%`,
-      note: over ? `${STOP_CAP}%보다 넓어서 ${STOP_CAP}%에서 잘라요. 변동성이 큰 종목이라 비중을 줄이거나 더 좁은 자리에서만 사요.` : `${STOP_CAP}% 안이에요. 이 폭이면 평소 흔들림에는 안 털려요.` }));
+      note: over ? `${STOP_CAP}%보다 넓어서 ${STOP_CAP}%에서 자릅니다. 변동성이 큰 종목이라 비중을 줄이거나 더 좁은 자리에서만 삽니다.` : `${STOP_CAP}% 안이라 평소 흔들림에는 털리지 않습니다.` }));
     // 실제로 쓸 손절: 2×ATR과 8% 중 좁은 쪽(상황판 종목 상세와 같은 기준).
     rows.push(kvRow('적용 손절선', money(over ? close * (1 - STOP_CAP / 100) : close - a[0] * ATR_MULT), { cls: 'good', sub: `−${fmt(used)}%`,
-      note: over ? `${ATR_MULT}×ATR이 ${STOP_CAP}%보다 넓어서 ${STOP_CAP}% 한도로 잘랐어요.` : `${ATR_MULT}×ATR이 ${STOP_CAP}% 안이라 ATR 손절가를 그대로 써요.` }));
+      note: over ? `${ATR_MULT}×ATR이 ${STOP_CAP}%보다 넓어서 ${STOP_CAP}% 한도로 잘랐습니다.` : `${ATR_MULT}×ATR이 ${STOP_CAP}% 안이라 ATR 손절가를 그대로 씁니다.` }));
     // 8% 한도가 하루 평균 변동폭의 몇 배인지: 1.5배 미만이면 평소 흔들림에도 털리기 쉽다(변동성 경고).
     const capAtr = STOP_CAP / a[1], tight = capAtr < 1.5;
     rows.push(kvRow(`${STOP_CAP}% = 몇 ATR`, `${fmt(capAtr, 1)} ATR`, { cls: tight ? 'bad' : capAtr >= 2 ? 'good' : '',
-      note: tight ? `⚠️ 변동성 경고: ${STOP_CAP}%가 하루 평균 흔들림의 ${fmt(capAtr, 1)}배뿐이라 평소 움직임에도 털리기 쉬워요. 매수를 미루거나 비중을 줄여요.`
-        : capAtr >= 2 ? `${STOP_CAP}% 한도가 평소 흔들림보다 넉넉해요.` : `${STOP_CAP}% 한도가 빠듯한 편이에요.` }));
+      note: tight ? `⚠️ 변동성 경고: ${STOP_CAP}%가 하루 평균 흔들림의 ${fmt(capAtr, 1)}배뿐이라 평소 움직임에도 털리기 쉬워서, 매수를 미루거나 비중을 줄이는 편이 낫습니다.`
+        : capAtr >= 2 ? `${STOP_CAP}% 한도가 평소 흔들림보다 넉넉합니다.` : `${STOP_CAP}% 한도가 빠듯한 편입니다.` }));
     rows.push(kvRow(`계좌 위험 ${RISK_PCT}% 기준 비중`, `${fmt(RISK_PCT * 100 / used, 0)}%`, { sub: `손절 폭 ${fmt(used)}% 기준 최대 비중` }));
   }
   return kvSection('변동성·손절 (종가 = 매수가 가정)', rows, 'risk-sec');
@@ -440,7 +440,7 @@ function fillDetailChart(panel, s, ready) {
       [[60, '3개월'], [120, '6개월']].forEach(([n, label]) => toggle.append(button(label, chartDays === n, () => { chartDays = n; draw(); })));
       head.append(toggle);
       const body = [head, priceChart(series, { market, days: chartDays })];
-      if (chartDays > series.closes.length - 199) body.push(el('p', `저장된 가격 기록이 ${series.closes.length}거래일뿐이라 200일선은 최근 ${series.closes.length - 199}거래일만 그려져요.`, 'chart-note'));
+      if (chartDays > series.closes.length - 199) body.push(el('p', `저장된 가격 기록이 ${series.closes.length}거래일뿐이라 200일선은 최근 ${series.closes.length - 199}거래일만 그립니다.`, 'chart-note'));
       // 같은 기간의 소속 시장 지수: 종목 차트와 위아래로 비교해 RS를 눈으로 확인한다.
       const bench = benchChart(series, { days: chartDays });
       if (bench) body.push(bench);
@@ -616,7 +616,7 @@ function sortPanel(){
   // the selects already read as the order they apply in.
   const capRow=el('div',null,'sort-row sort-cap');capRow.append(el('span','시총','sort-step'));
   CAP_FLOORS[state.market].forEach(([v,label])=>capRow.append(button(label,state.minCap===v,()=>change('minCap',v))));
-  if(state.minCap>0)capRow.title='시총 자료가 없는 종목은 빠져요';
+  if(state.minCap>0)capRow.title='시총 자료가 없는 종목은 빠집니다';
   box.append(capRow);
   const pick=(key,title,includeNone)=>{const wrap=el('label',null,'sort-pick');wrap.append(el('span',title,'sort-step'));const sel=el('select');sel.setAttribute('aria-label',title);
     const opts=includeNone?[['none','2차 정렬 없음']]:[['default',`기본 · ${defaultSortLabel()}`]];
@@ -649,7 +649,7 @@ function industryList(m) {
   const head = el('div', null, 'ind-list-head');
   const seg = el('div', null, 'rail-seg'); seg.setAttribute('aria-label', '순위 기준 기간');
   Object.entries(RAIL_PERIODS).forEach(([key, [label]]) => { const b = button(`${label} 기준`, railPeriod === key, () => { railPeriod = key; try { localStorage.setItem(RAIL_STORE, key); } catch {} render(); }); b.setAttribute('aria-pressed', String(railPeriod === key)); seg.append(b); });
-  head.append(seg, el('span', '중앙값은 산업 안 종목 수익률을 줄 세웠을 때 가운데 값이라 대형주 하나에 휘둘리지 않아요', 'ind-list-note'));
+  head.append(seg, el('span', '중앙값은 산업 안 종목 수익률을 줄 세웠을 때 가운데 값이라 대형주 하나에 휘둘리지 않습니다', 'ind-list-note'));
   wrap.append(head);
   if (!shown.length) { wrap.append(el('div', '조건에 맞는 산업이 없습니다.', 'empty')); return wrap; }
   const table = el('div', null, 'ind-table'); table.setAttribute('role', 'table');
@@ -673,7 +673,7 @@ function industryList(m) {
     table.append(row);
   });
   wrap.append(table);
-  wrap.append(el('p', '동반 강세는 3종목 이상인 산업에서 오늘과 최근 5일 모두 여러 종목이 함께 오르고, 신고가권에 있거나 거래량이 늘어난 종목이 2개 이상인 경우예요. 신고가권은 52주 고점에서 10% 이내인 종목 수, 거래량↑는 거래량이 평소의 1.5배 이상인 종목 수예요.', 'ind-foot'));
+  wrap.append(el('p', '동반 강세는 3종목 이상인 산업에서 오늘과 최근 5일 모두 여러 종목이 함께 오르고, 신고가권에 있거나 거래량이 늘어난 종목이 2개 이상인 경우입니다. 신고가권은 52주 고점에서 10% 이내인 종목 수, 거래량↑는 거래량이 평소의 1.5배 이상인 종목 수입니다.', 'ind-foot'));
   return wrap;
 }
 function trendBar(g) {
@@ -713,7 +713,7 @@ function renderAI(m) {
   overview.groups=overview.groups.filter(g=>g.catalogCount>0);   // e.g. Taiwan has no AI software names
   const [period,key,countKey]=PERIODS[state.aiPeriod];
   const top=el('div',null,'ai-heading'),caption=el('div');
-  caption.append(el('h3','AI 분야별 흐름'),el('p','현재 시장의 AI 관련 종목 전체 기준 · 아래 종목 필터와는 따로 계산해요'));
+  caption.append(el('h3','AI 분야별 흐름'),el('p','현재 시장의 AI 관련 종목 전체 기준 · 아래 종목 필터와는 따로 계산'));
   const medianHelp=el('span',null,'ai-heading-help');medianHelp.append(helpLabel('중앙값'),helpLabel('추세 확산도'));caption.querySelector('h3').append(medianHelp);
   const modes=el('div',null,'view-switch');modes.setAttribute('aria-label','AI 보기 방식');
   [['cards','카드'],['compare','기간 비교']].forEach(([value,label])=>{const b=button(label,state.aiView===value,()=>change('aiView',value));b.setAttribute('aria-pressed',String(state.aiView===value));modes.append(b);});
@@ -723,9 +723,9 @@ function renderAI(m) {
   const groups=[{...t,id:'all',name:'AI 전체',description:'같은 기업은 한 번만 셉니다'},...overview.groups];
   if(state.aiView==='compare'){
     panel.append(heatmap(groups));
-    panel.append(el('p','칸을 누르면 그 분야·기간의 종목이 보여요 · 청록은 상승, 분홍은 하락 · 색 진하기는 같은 기간 안에서만 비교해요','heatmap-note'));
+    panel.append(el('p','칸을 누르면 그 분야·기간의 종목이 나옴 · 청록은 상승, 분홍은 하락 · 색 진하기는 같은 기간 안에서만 비교','heatmap-note'));
   } else {
-  const toolbar=el('div',null,'ai-toolbar');toolbar.append(toggles,el('span','수익률 높은 분야부터 · 카드를 누르면 종목이 보여요'));panel.append(toolbar);
+  const toolbar=el('div',null,'ai-toolbar');toolbar.append(toggles,el('span','수익률 높은 분야부터 · 카드를 누르면 종목이 나옴'));panel.append(toolbar);
   groups.splice(1,groups.length-1,...overview.groups.sort((a,b)=>(b[key]??-Infinity)-(a[key]??-Infinity)));
   const scale=Math.max(1,...groups.map(g=>Math.abs(g[key]||0))),grid=el('div',null,'ai-grid');
   groups.forEach(g=>{
@@ -848,13 +848,13 @@ function renderChanges(m) {
   if(panel.hidden)return;
   checkbox('newOnly','새로 들어온 종목만',filter);filter.querySelector('input').disabled=!hasComparison(m);
   if(!hasComparison(m)){
-    panel.append(el('summary','전일 변화 · 비교 자료 기다리는 중'),el('p',`직전 거래일 ${m.comparison?.expectedSession||'—'} 자료가 들어오면 보여 드려요. 자료가 없는 종목은 신규나 이탈로 세지 않아요.`));return;
+    panel.append(el('summary','전일 변화 · 비교 자료 기다리는 중'),el('p',`직전 거래일 ${m.comparison?.expectedSession||'—'} 자료가 들어오면 보여 드립니다. 자료가 없는 종목은 신규나 이탈로 세지 않습니다.`));return;
   }
   const universe=selectStocks(m,{tab:state.tab==='ai'?'ai':'all',aiSector:state.aiSector,industry:state.industry,query:state.query,sort:'name'});
   const rows=universe.map(s=>({stock:s,...changes(s)})),entered=rows.filter(r=>r.entered.length),exited=rows.filter(r=>r.exited.length);
   const summary=el('summary');summary.append(el('span','전일 변화'),el('span',`신규 ${entered.length}`,'change-count'),el('span',`이탈 ${exited.length}`,'exit-count'),el('span',`${m.comparison.asOf.slice(5)} → ${m.asOf.slice(5)}`,'change-dates'));panel.append(summary);
   const guide=el('div',null,'changes-guide');guide.append(helpLabel('전일 변화'),el('span',`${state.tab==='ai'?'선택 AI 분야':state.industry?'선택 산업':'현재 시장'} · 검색어 반영 · RS·Stage 2 같은 조건은 걸기 전 기준 · 같은 종목은 한 번만`));panel.append(guide);
-  panel.append(el('p',`비교할 수 있는 종목: 신고가권 ${rows.filter(r=>r.comparable.includes('near')).length} · RS ${rows.filter(r=>r.comparable.includes('rs')).length} · Stage 2 ${rows.filter(r=>r.comparable.includes('stage')).length}종목. 신고가권은 고점에서 ${state.tab==='near'?state.distance:10}% 이내 기준이에요. 새로 들어온 종목은 ‘새로 들어온 종목만’ 필터로 볼 수 있어요.`));
+  panel.append(el('p',`비교할 수 있는 종목: 신고가권 ${rows.filter(r=>r.comparable.includes('near')).length} · RS ${rows.filter(r=>r.comparable.includes('rs')).length} · Stage 2 ${rows.filter(r=>r.comparable.includes('stage')).length}종목. 신고가권은 고점에서 ${state.tab==='near'?state.distance:10}% 이내 기준이고, 새로 들어온 종목은 ‘새로 들어온 종목만’ 필터로 따로 볼 수 있습니다.`));
   const list=el('div',null,'exit-list');
   if(!exited.length)list.append(el('p','조건에서 빠진 종목이 없습니다.'));
   exited.forEach(({stock:s,exited:keys})=>{const b=button('',false,()=>detail(s));b.className='exit-item';b.append(el('strong',shortName(s)),el('span',keys.map(k=>EXIT_LABELS[k]).join(' · ')));list.append(b);});
@@ -876,7 +876,7 @@ function render() {
   }
   if (LITE.has(state.market) && LITE_OFF.has(state.tab)) state.tab = 'near';
   const m = snapshot.markets[state.market];
-  document.querySelectorAll('[data-tab]').forEach(b => { const off = LITE.has(state.market) && LITE_OFF.has(b.dataset.tab); b.disabled = off; b.classList.toggle('tab-off', off); b.title = off ? `${MARKET_NAMES[state.market]} 시장은 아직 이 탭이 없어요 (신고가권·당일 신고가·인더스트리 액션·특징주만 제공)` : b.title; });
+  document.querySelectorAll('[data-tab]').forEach(b => { const off = LITE.has(state.market) && LITE_OFF.has(b.dataset.tab); b.disabled = off; b.classList.toggle('tab-off', off); b.title = off ? `${MARKET_NAMES[state.market]} 시장은 아직 이 탭이 없습니다 (신고가권·당일 신고가·인더스트리 액션·특징주만 제공)` : b.title; });
   if (!m) {
     document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
     $('weather').hidden = true; if ($('index-strip')) $('index-strip').hidden = true; $('metrics').replaceChildren(); $('controls').replaceChildren(); $('industry-rail').hidden = true; $('pagination').replaceChildren(); $('result-summary').textContent = '';
@@ -885,7 +885,7 @@ function render() {
     $('section-title').textContent = `${MARKET_NAMES[state.market]} 시장`; $('section-description').textContent = '';
     // 패턴 셋업은 자료 유무와 관계없이 한국·미국만 판정한다. 자료 대기 안내보다 그 사실이 먼저다.
     if (state.tab === 'patterns') renderPatternsTab(null);
-    else $('content').replaceChildren(el('div', `${MARKET_NAMES[state.market]} 자료는 평일 오후 4시 40분 첫 자동 갱신 뒤부터 보여요. 그 전에는 다른 시장을 확인해 주세요.`, 'empty'));
+    else $('content').replaceChildren(el('div', `${MARKET_NAMES[state.market]} 자료는 평일 오후 4시 40분 첫 자동 갱신 뒤부터 나오고, 그 전에는 다른 시장만 볼 수 있습니다.`, 'empty'));
     paintSchedule(); return;
   }
   document.querySelectorAll('[data-market]').forEach(b => { b.classList.toggle('active', b.dataset.market === state.market); b.setAttribute('aria-pressed', String(b.dataset.market === state.market)); });
@@ -899,8 +899,8 @@ function render() {
   if (state.tab === 'patterns') { if ($('sp-movers')) $('sp-movers').hidden = true; renderPatternsTab(m); return; }
   renderControls(); renderRail(m);renderAI(m);renderChanges(m);
   renderSpMovers($('sp-movers'), { market: state.market, tab: state.tab, onPick: t => { const s = (m.stocks || []).find(x => x.ticker === t); if (s) detail(s); else window.open(`https://finance.yahoo.com/quote/${encodeURIComponent(t.replace('.', '-'))}`, '_blank', 'noopener'); } });
-  const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에서 봐요'], high: ['당일 신고가', '이 거래일에 52주 고점을 실제로 넘긴 종목'], high60: ['60일 신고가', '이 거래일에 최근 60거래일(약 3개월) 고점을 넘긴 종목 · 52주보다 기간이 짧아 조정 뒤 다시 오르는 종목을 일찍 잡지만 가짜 돌파도 많아요'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 보여요'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿔요'] };
-  $('section-title').textContent = state.industry ? industryName(state.industry) : labels[state.tab][0]; $('section-description').textContent = state.tab === 'movers' && state.mode === 'stable' ? '재무 기준을 통과한 중대형주 가운데 당일 상승률이 높은 30종목 · 옛 ‘상승률 TOP 30’ 화면을 옮겨 왔어요' : labels[state.tab][1];
+  const labels = { near: ['52주 신고가권', '52주(252거래일) 고점에 가까운 종목 · 오늘 고점을 새로 쓴 종목은 ‘당일 신고가’ 탭에 있음'], high: ['당일 신고가', '이 거래일에 52주 고점을 실제로 넘긴 종목'], high60: ['60일 신고가', '이 거래일에 최근 60거래일(약 3개월) 고점을 넘긴 종목 · 52주보다 기간이 짧아 조정 뒤 다시 오르는 종목을 일찍 잡지만 가짜 돌파도 많음'], industries: ['인더스트리 액션', '산업별 수익률 중앙값 순위 · 줄을 누르면 구성 종목이 나옴'], movers: ['특징주', '고점 위치와 관계없이 당일 변동과 거래량이 두드러진 종목'],ai:['AI 섹터','AI 공급망·서비스 종목의 흐름 · 오른 종목과 내린 종목 모두 표시 · 시장은 맨 위 버튼으로 바꿈'] };
+  $('section-title').textContent = state.industry ? industryName(state.industry) : labels[state.tab][0]; $('section-description').textContent = state.tab === 'movers' && state.mode === 'stable' ? '재무 기준을 통과한 중대형주 가운데 당일 상승률이 높은 30종목 · 옛 ‘상승률 TOP 30’ 화면을 옮겨 옴' : labels[state.tab][1];
   const content = $('content'), pagination = $('pagination'); content.replaceChildren(); pagination.replaceChildren();
   if (state.tab === 'industries' && !state.industry) {
     content.append(industryList(m));
@@ -976,7 +976,7 @@ document.querySelectorAll('[data-step-go]').forEach(b => b.onclick = () => {
 function openStockById(id) {
   const s = snapshot?.markets?.[state.market]?.stocks?.find(x => x.id === id);
   if (s) detail(s);
-  else { $('notice').hidden = false; $('notice').textContent = '이 종목은 오늘 레이더 목록에 없어 상세 화면을 열 수 없어요.'; }
+  else { $('notice').hidden = false; $('notice').textContent = '이 종목은 오늘 레이더 목록에 없어 상세 화면을 열 수 없습니다.'; }
 }
 // 패턴 셋업 탭. 표가 아니라 카드 목록이라 공통 컨트롤·산업 레일을 비우고 직접 그린다.
 function renderPatternsTab(m) {
@@ -987,7 +987,7 @@ function renderPatternsTab(m) {
   $('signal-filter')?.replaceChildren();
   $('result-summary').textContent = '';
   $('section-title').textContent = '패턴 셋업';
-  $('section-description').textContent = '추세추종 셋업북 패턴 10개 중 지금 만들어지는 중이거나 돌파한 종목 · 패턴 이름을 누르면 설명이 떠요';
+  $('section-description').textContent = '추세추종 셋업북 패턴 10개 중 지금 만들어지는 중이거나 돌파한 종목 · 패턴 이름을 누르면 설명이 뜸';
   renderPatterns($('content'), state.market, m, snapshot.patternMeta, {
     openStock: openStockById, query: state.query,
     // 셋업북 ①-1: 시장 방향이 먼저다. ① 시장 탭이 쓰는 것과 같은 판정을 넘긴다.
