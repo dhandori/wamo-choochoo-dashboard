@@ -428,8 +428,48 @@ function weatherDetail(b, market) {
   } else c4.append(el('p', '자료 없음'));
   c4.append(help('1년(252거래일) 중 가장 높은 가격을 새로 쓴 종목 수와 가장 낮은 가격을 새로 쓴 종목 수를 날짜별로 비교합니다.'));
   grid.append(c1, c2, c3, c4);
-  wrap.append(factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : market === 'US' ? [creditCardUS(b)] : []), grid, stageCard(w.stages));
+  wrap.append(breadthCard(w.marketBreadth), factors, liquidityCard(b, market), ...(market === 'KR' ? [creditCard(b)] : market === 'US' ? [creditCardUS(b)] : []), grid, stageCard(w.stages));
   return wrap;
+}
+
+// ------------------------------------------------------------ market breadth (2026-11-28)
+// 마켓 브레스: 지수가 오를 때 시장 속도 건강한지 52주 신고가 비율·ADL·200일선 위 종목 비율 세 가지로 짧게 본다.
+// 자료가 아직 없는 판(병합 직후)이면 칸을 만들지 않는다.
+const MB_MEAN = {
+  nh: ['1년 최고가를 새로 쓴 종목 비중. 높을수록 주도주가 많습니다.',
+    '52주 신고가 비율: 전체 종목 가운데 오늘 장중 고가가 지난 1년 최고가를 넘은 종목의 비중입니다. 지수가 신고가인데 이 비율이 줄면 오르는 종목이 몇 개로 좁아졌다는 뜻입니다.'],
+  adl: ['오른 종목 수 − 내린 종목 수를 날마다 더한 선. 오르면 많은 종목이 함께 오릅니다.',
+    'ADL(Advance-Decline Line, 등락주선): 날마다 오른 종목 수에서 내린 종목 수를 빼서 계속 더한 선입니다. 지수는 시가총액이 큰 몇 종목에 끌려가지만 ADL은 종목마다 한 표라 시장 전체 분위기를 보여 줍니다. 지수는 신고가인데 ADL이 꺾이면 대표적인 하락 전 경고로 봅니다. 숫자는 최근 20거래일 동안 ADL이 얼마나 움직였는지입니다.'],
+  a200: ['장기 상승 추세(200일선 위)에 있는 종목 비중. 50% 아래면 약한 시장입니다.',
+    '200일선 위 종목 비율: 종가가 200일 이동평균선 위에 있는 종목의 비중입니다. 큰 추세 안에 있는 종목이 얼마나 되는지 보여 주며, 지수가 오르는데 이 비율이 떨어지면 상승이 넓게 퍼지지 않은 것입니다.'],
+};
+const MB_TONE = { DIVERGENCE: 'bad', WEAK: 'bad', HEALTHY: 'good', POSITIVE: 'good', MIXED: 'mid', UNKNOWN: '' };
+function breadthCard(mb) {
+  if (!mb || mb.status !== 'OK') return document.createDocumentFragment();
+  const v = mb.verdict || {}, card = el('article', null, `tr-card tr-mb ${MB_TONE[v.key] || ''}`.trim());
+  const head = el('div', null, 'tr-mb-head');
+  head.append(el('h3', '마켓 브레스'), el('span', v.label || '—', 'tr-mb-tag'));
+  if (isNum(mb.indexChangePct)) head.append(el('small', `지수 ${mb.lookback}일 ${pct(mb.indexChangePct)}`));
+  card.append(head, el('p', v.text || '', 'tr-mb-text'));
+  const arrow = d => d > 0 ? '↗' : d < 0 ? '↘' : d === 0 ? '→' : '';
+  const rows = el('div', null, 'tr-mb-rows');
+  // 지표마다 한 줄 뜻(늘 보임)과 마우스를 올리면 뜨는 긴 풀이(title)
+  const row = (label, now, ago, dir, extra, [mean, tip]) => {
+    const r = el('div', null, `tr-mb-row ${dir > 0 ? 'up' : dir < 0 ? 'down' : ''}`);
+    r.title = tip; r.tabIndex = 0;
+    r.append(el('span', label), el('b', `${now} ${arrow(dir)}`.trim()), el('small', ago));
+    if (extra) r.append(extra);
+    r.append(el('em', mean, 'tr-mb-mean'));
+    rows.append(r);
+  };
+  row('52주 신고가 비율', isNum(mb.newHighPct) ? `${fmt(mb.newHighPct)}%` : '—', isNum(mb.newHighPctAgo) ? `${mb.lookback}일 전 ${fmt(mb.newHighPctAgo)}%` : '', mb.newHighDir, null, MB_MEAN.nh);
+  const a = mb.adl || {};
+  row('ADL', `${mb.lookback}일 ${a.change > 0 ? '+' : ''}${(a.change ?? 0).toLocaleString('ko-KR')}`, `오늘 오름 ${a.advances} · 내림 ${a.declines}`, a.dir, spark(a.series), MB_MEAN.adl);
+  row('200일선 위 종목', isNum(mb.above200Pct) ? `${fmt(mb.above200Pct, 0)}%` : '—', isNum(mb.above200PctAgo) ? `${mb.lookback}일 전 ${fmt(mb.above200PctAgo, 0)}%` : '', mb.above200Dir, null, MB_MEAN.a200);
+  // 휴대폰에서도 짧게: 핵심 문장 한 줄만 보이고, 자세한 풀이(note)는 칸에 마우스를 올리면 나온다.
+  card.title = mb.note || '';
+  card.append(rows, help(`지수가 올라도 시장이 건강하지 않을 수 있습니다. 지수는 오르는데 셋 가운데 둘 이상이 나빠지면 속이 빈 상승으로 봅니다. 종목 ${mb.denominator}개 기준입니다.`));
+  return card;
 }
 
 // ------------------------------------------------------------ market stage distribution (2026-11-17)

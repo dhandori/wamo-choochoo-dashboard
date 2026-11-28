@@ -735,3 +735,25 @@ dialog[open] ~ .to-top { display: none; }
 .pc-hit { cursor: crosshair; touch-action: pan-y; }
 .tr-stage-chg.good { color: var(--green); }
 .tr-stage-chg.bad { color: var(--bad); }
+
+/* 마켓 브레스(2026-11-28): 시장 날씨 자세히 맨 위의 짧은 칸 */
+.tr-mb { min-height: 0; margin-bottom: 12px; }
+.tr-mb.bad { border-color: var(--bad); }
+.tr-mb.good { border-color: var(--green); }
+.tr-mb-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.tr-mb-head h3 { margin: 0; }
+.tr-mb-head small { color: var(--muted); font-size: 12px; }
+.tr-mb-tag { padding: 1px 8px; border: 1px solid currentColor; border-radius: 999px; font-size: 12px; font-weight: 650; color: var(--muted); }
+.tr-mb.bad .tr-mb-tag { color: var(--bad); }
+.tr-mb.good .tr-mb-tag { color: var(--green); }
+.tr-mb-text { margin: 0; font-size: 13px; line-height: 1.5; }
+.tr-mb-rows { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tr-mb-row { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; }
+.tr-mb-row span, .tr-mb-row small { color: var(--muted); font-size: 12px; }
+.tr-mb-row b { font-size: 17px; font-variant-numeric: tabular-nums; }
+.tr-mb-row.up b { color: var(--green); }
+.tr-mb-row.down b { color: var(--bad); }
+.tr-mb-row .ix-spark { width: 100%; height: 22px; }
+.tr-mb-row { cursor: help; }
+.tr-mb-mean { flex-basis: 100%; color: var(--muted); font-size: 12px; font-style: normal; line-height: 1.4; }
+@media (max-width: 760px) { .tr-mb-rows { grid-template-columns: 1fr; } .tr-mb-row { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 6px; } .tr-mb-row .ix-spark { width: 64px; margin-left: auto; } }

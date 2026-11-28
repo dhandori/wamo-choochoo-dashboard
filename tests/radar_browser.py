@@ -384,6 +384,13 @@ with sync_playwright() as p:
                 go_tab(page,'trend')
                 expect(page.locator('#section-title')).to_have_text('추세 신호')
                 expect(page.locator('.tr-weather-detail')).to_be_visible()
+                # 2026-11-28 마켓 브레스: 판정 딱지와 세 지표(신고가 비율·ADL·200일선 위)가 시장 날씨 자세히 맨 위에 나온다.
+                mb=TREND['markets'][market]['weather'].get('marketBreadth') or {}
+                if mb.get('status')=='OK':
+                    expect(page.locator('.tr-mb .tr-mb-tag')).to_have_text(mb['verdict']['label'])
+                    expect(page.locator('.tr-mb .tr-mb-row')).to_have_count(3)
+                    expect(page.locator('.tr-mb')).to_contain_text('지수가 올라도 시장이 건강하지 않을 수 있습니다')
+                    page.locator('.tr-mb').screenshot(path=str(OUT/f'radar-breadth-{market}-{width}.png'))
                 # 2026-10-30 시장 구분: 지수별 날씨 표(KOSPI|KOSDAQ, S&P 500|나스닥)와 위쪽 띠의 지수별 판정.
                 by_index=TREND['markets'][market]['weather'].get('byIndex') or []
                 if len(by_index)>1:
