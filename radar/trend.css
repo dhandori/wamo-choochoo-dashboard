@@ -723,5 +723,15 @@ dialog[open] ~ .to-top { display: none; }
 :root[data-theme="light"] .cr-bar { fill: #7d93bb; }
 :root[data-theme="light"] .cr-readout b { color: #1d2a3a; }
 .cr-dot { fill: var(--blue); }
+/* 작은 선 차트: 판정 구간 색 띠·기준선·손가락을 댄 날의 값 (2026-11-16) */
+.pc-band.good { fill: rgba(64, 196, 150, 0.08); }
+.pc-band.bad { fill: rgba(240, 120, 90, 0.08); }
+.pc-ref { stroke-width: 1; stroke-dasharray: 4 3; }
+.pc-ref.good { stroke: #2f8f6c; } .pc-ref.bad { stroke: #b4583f; }
+.pc-ref-label { font-size: 11px; paint-order: stroke; stroke: var(--panel, #111a26); stroke-width: 3px; stroke-linejoin: round; }
+.pc-ref-label.good { fill: #4fc49a; } .pc-ref-label.bad { fill: #e08a6d; }
+.pc-cursor { stroke: #6f86a3; stroke-width: 1; }
+.pc-readout { fill: var(--ink-2); font-size: 12px; font-variant-numeric: tabular-nums; paint-order: stroke; stroke: var(--panel, #111a26); stroke-width: 4px; stroke-linejoin: round; }
+.pc-hit { cursor: crosshair; touch-action: pan-y; }
 .tr-stage-chg.good { color: var(--green); }
 .tr-stage-chg.bad { color: var(--bad); }

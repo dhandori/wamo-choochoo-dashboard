@@ -34,6 +34,16 @@ class FTDTests(unittest.TestCase):
     def run_signal(self, rows, **kwargs):
         return self.ftd.analyze(rows, asof=rows[-1]['date'], **kwargs)
 
+    def test_series_marks_distribution_days_for_the_chart(self):
+        # 0.2% 이상 하락 + 거래량 증가 = 분산일. 거래량이 줄어든 하락일은 표시하지 않는다.
+        rows = rows_for([100.0]*80)
+        rows[75].update(close=99.5, high=100.1, low=99.4, volume=150)
+        rows[77].update(close=99.0, high=99.6, low=98.9, volume=90)
+        series = {p['date']: p for p in self.run_signal(rows)['series']}
+        self.assertEqual(series[rows[75]['date']].get('dist'), 'HEAVY')
+        self.assertNotIn('dist', series[rows[77]['date']])
+        self.assertEqual(sum('dist' in p for p in series.values()), 1)
+
     def test_uptrend_big_gain_is_not_ftd(self):
         rows = rows_for([100+i*.1 for i in range(90)]+[112])
         rows[-1]['volume'] = 200

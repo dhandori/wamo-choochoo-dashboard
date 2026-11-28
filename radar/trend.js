@@ -407,12 +407,15 @@ function weatherDetail(b, market) {
   if (br.status === 'OK') {
     const big = el('div', null, 'tr-big'); big.append(el('b', `${fmt(br.above50Pct, 0)}%`), el('span', `5일 ${br.above50Change5d > 0 ? '+' : ''}${fmt(br.above50Change5d, 0)}%p`, tone(br.above50Change5d))); c3.append(big);
     const s = br.series || [];
-    c3.append(lineChart(s, { lines: [{ key: 'above50', label: '50일선 위', color: 'var(--green)' }, { key: 'above200', label: '200일선 위', color: '#9aacc3', dash: true }] }));
+    // 판정 기준(60% 넘으면 좋음, 40% 아래면 나쁨)을 차트에 그대로 그린다. 기준값은 wamo_trend.weather 와 같다.
+    c3.append(lineChart(s, { lines: [{ key: 'above50', label: '50일선 위', short: '50일', color: 'var(--green)' }, { key: 'above200', label: '200일선 위', short: '200일', color: '#9aacc3', dash: true }],
+      bands: [{ from: 60, to: 100, cls: 'good', label: '60% 이상 · 건강' }, { from: 0, to: 40, cls: 'bad', label: '40% 미만 · 약한 시장' }],
+      refs: [{ value: 60, cls: 'good', label: '60 건강' }, { value: 40, cls: 'bad', label: '40 약함' }] }));
     const lg = el('div', null, 'pc-legend small');
     [['var(--green)', `50일선 위 ${fmt(br.above50Pct, 0)}%`, ''], ['#9aacc3', `200일선 위 ${fmt(br.above200Pct, 0)}%`, 'dash']].forEach(([c, t, cls]) => { const k = el('span', null, `pc-key ${cls}`); const i = el('i'); i.style.background = c; k.append(i, el('b', t)); lg.append(k); });
     c3.append(lg);
   } else c3.append(el('p', '자료 없음'));
-  c3.append(help('60% 넘으면 건강, 40% 아래면 약한 시장입니다. 지수는 오르는데 이 비율이 떨어지면 소수 대형주만 끌고 가는 장입니다.'));
+  c3.append(help(`60% 넘으면 건강(초록 띠), 40% 아래면 약한 시장(붉은 띠)입니다. 지수는 오르는데 이 비율이 떨어지면 소수 대형주만 끌고 가는 장입니다. 최근 ${(br.series || []).length}거래일 기록이고, 차트에 손가락을 대면 그날 값이 나옵니다.`));
   // Highs vs lows
   const hl = w.highsLows || {}, c4 = el('article', null, 'tr-card');
   c4.append(el('h3', '신고가 vs 신저가'));
