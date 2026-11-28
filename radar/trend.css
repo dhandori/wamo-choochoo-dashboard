@@ -754,6 +754,8 @@ dialog[open] ~ .to-top { display: none; }
 .tr-mb-row.up b { color: var(--green); }
 .tr-mb-row.down b { color: var(--bad); }
 .tr-mb-row .ix-spark { width: 100%; height: 22px; }
-.tr-mb-row { cursor: help; }
 .tr-mb-mean { flex-basis: 100%; color: var(--muted); font-size: 12px; font-style: normal; line-height: 1.4; }
 @media (max-width: 760px) { .tr-mb-rows { grid-template-columns: 1fr; } .tr-mb-row { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 6px; } .tr-mb-row .ix-spark { width: 64px; margin-left: auto; } }
+
+.tr-mb-row .term-help { align-self: flex-start; font-size: 12px; }
+.tr-mb-head h3 .term-help-icon { margin-left: 2px; vertical-align: middle; }
