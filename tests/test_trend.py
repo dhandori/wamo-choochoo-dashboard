@@ -419,6 +419,43 @@ class AlertTests(unittest.TestCase):
             self.assertEqual(len(sent), 1)
 
 
+
+class MarketBreadthTests(unittest.TestCase):
+    """마켓 브레스(2026-11-28): 지수는 오르는데 종목 대부분이 빠지면 '속이 빈 상승'."""
+
+    def universe(self, n_up, n_down, n=300):
+        out = []
+        for k in range(n_up):
+            out.append(stock(f'U{k}', [100 + i * 0.3 for i in range(n)]))
+        for k in range(n_down):
+            # 1년 내내 오르다 마지막 15거래일 동안 빠지는 종목: 20거래일 전엔 신고가·200일선 위였는데 지금은 둘 다 잃었다
+            out.append(stock(f'D{k}', [100 + i * 0.3 if i < n - 15 else 100 + (n - 15) * 0.3 - (i - n + 15) * 6 for i in range(n)]))
+        return out
+
+    def bench(self, n=300):
+        return [{'date': d, 'close': 100 + i} for i, d in enumerate(sessions(n))]
+
+    def test_divergence_when_index_up_and_most_stocks_down(self):
+        uni = self.universe(2, 8)
+        mb = trend.market_breadth(uni, self.bench(), trend.breadth(uni, sessions=trend.BREADTH_CHART_SESSIONS))
+        self.assertEqual(mb['status'], 'OK')
+        self.assertGreater(mb['indexChangePct'], 0)
+        self.assertEqual(mb['verdict']['key'], 'DIVERGENCE')
+        self.assertEqual(mb['adl']['dir'], -1)
+        self.assertEqual(mb['above200Dir'], -1)
+        self.assertEqual(mb['adl']['declines'], 8)
+        self.assertIn('지수가 올라도 시장이 건강하지 않을 수 있습니다', mb['note'])
+
+    def test_healthy_when_everything_rises(self):
+        uni = self.universe(10, 0)
+        mb = trend.market_breadth(uni, self.bench(), trend.breadth(uni, sessions=trend.BREADTH_CHART_SESSIONS))
+        self.assertEqual(mb['adl']['dir'], 1)
+        self.assertNotEqual(mb['verdict']['key'], 'DIVERGENCE')
+        self.assertEqual(mb['newHighPct'], 100.0)
+
+    def test_unavailable_without_history(self):
+        self.assertEqual(trend.market_breadth([], [], {})['status'], 'UNAVAILABLE')
+
 if __name__ == '__main__':
     unittest.main()
 

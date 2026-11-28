@@ -39,7 +39,7 @@ EARNINGS_NOTE = {
     'JP': '일본은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
     'TW': '대만은 실적발표 예정일을 무료로 한곳에 모아 주는 공식 자료가 없어 아직 표시하지 않아요.',
 }
-TREND_VERSION = 29  # 2026-11-28 한국 FTD 데런식 기준(daren) 칸 추가
+TREND_VERSION = 30  # 2026-11-28 마켓 브레스(weather.marketBreadth) 칸 추가
 UA = 'Mozilla/5.0 (WAMO daily market dashboard)'
 HORIZONS = (5, 20, 60)
 SIGNALS = {
@@ -567,6 +567,108 @@ def highs_lows(universe, sessions=10):
     last = series[-1]
     return {'status': 'OK', 'newHighs': last['newHighs'], 'newLows': last['newLows'], 'denominator': last['n'],
             'series': series, 'note': '최근 252거래일 장중 고가·저가를 새로 넘은 종목 수입니다.'}
+
+
+# 마켓 브레스(2026-11-28 사용자 요청): 지수가 올라도 시장 속이 건강한지 세 가지로 본다.
+# 52주 신고가 비율, ADL(오른 종목 수 − 내린 종목 수 누적), 200일선 위 종목 비율. 지수와 같은 20거래일 동안 비교한다.
+# 시장 날씨 점수에는 넣지 않는다(신고가·시장 체력과 겹친다). 판정 문구와 짧은 칸에만 쓴다.
+BREADTH_LOOKBACK = 20
+BREADTH_ADL_SESSIONS = 60
+BREADTH_NOTE = ('지수가 올라도 시장이 건강하지 않을 수 있습니다. 소수 대형주가 지수를 끌어올리는 동안 나머지 종목은 빠질 수 있어서, '
+                '52주 신고가 비율, ADL(오른 종목 수에서 내린 종목 수를 뺀 값의 누적), 200일선 위 종목 비율을 같이 봐야 합니다. '
+                '지수는 오르는데 이 셋 가운데 둘 이상이 나빠지면 속이 빈 상승(다이버전스)으로 봅니다.')
+
+
+def market_breadth(universe, bench, br, sessions=BREADTH_ADL_SESSIONS, lookback=BREADTH_LOOKBACK):
+    adv, nh = {}, {}
+    for s in universe:
+        rows, closes = s['rows'], s['closes']
+        n = len(rows)
+        highs = [r.get('high') for r in rows]
+        for i in range(max(1, n - sessions), n):
+            c0, c1 = closes[i - 1], closes[i]
+            if c0 is None or c1 is None:
+                continue
+            slot = adv.setdefault(rows[i]['date'], [0, 0, 0])
+            slot[0] += c1 > c0
+            slot[1] += c1 < c0
+            slot[2] += 1
+        # 52주 신고가: 그날 장중 고가가 직전 251거래일 고가를 넘었는지(신고가·신저가 카드와 같은 기준)
+        for i in range(max(251, n - lookback - 1), n):
+            prior = [h for h in highs[i - 251:i] if h is not None]
+            if highs[i] is None or not prior:
+                continue
+            slot = nh.setdefault(rows[i]['date'], [0, 0])
+            slot[0] += highs[i] > max(prior)
+            slot[1] += 1
+    if not adv:
+        return {'status': 'UNAVAILABLE', 'note': BREADTH_NOTE}
+    top = max(v[2] for v in adv.values()) or 1
+    days = [(d, v) for d, v in sorted(adv.items()) if v[2] >= top * 0.8]
+    if len(days) < lookback + 1:
+        return {'status': 'UNAVAILABLE', 'note': BREADTH_NOTE}
+    line, total = [], 0
+    for d, v in days:
+        total += v[0] - v[1]
+        line.append({'date': d, 'adl': total})
+    asof = days[-1][0]
+    adl_chg = line[-1]['adl'] - line[-1 - lookback]['adl']
+    # ADL이 20일 전보다 오른 종목 수 기준으로 '늘었다'고 보려면 하루 평균 종목 수의 2% 이상 움직여야 한다
+    adl_band = max(1, round(days[-1][1][2] * 0.02))
+    adl_dir = 1 if adl_chg > adl_band else -1 if adl_chg < -adl_band else 0
+
+    ntop = max((v[1] for v in nh.values()), default=0)
+    nh_days = [(d, v) for d, v in sorted(nh.items()) if ntop and v[1] >= ntop * 0.8]
+    nh_now = nh_ago = None
+    if nh_days and nh_days[-1][0] == asof:
+        nh_now = nh_days[-1][1][0] / nh_days[-1][1][1] * 100
+        if len(nh_days) > lookback:
+            nh_ago = nh_days[-1 - lookback][1][0] / nh_days[-1 - lookback][1][1] * 100
+    nh_dir = None if nh_now is None or nh_ago is None else (1 if nh_now - nh_ago > 0.5 else -1 if nh_now - nh_ago < -0.5 else 0)
+
+    a200_now = a200_ago = None
+    bser = [p for p in (br or {}).get('series') or [] if p.get('above200') is not None]
+    if bser and bser[-1]['date'] == asof:
+        a200_now = bser[-1]['above200']
+        if len(bser) > lookback:
+            a200_ago = bser[-1 - lookback]['above200']
+    a200_dir = None if a200_now is None or a200_ago is None else (1 if a200_now - a200_ago > 2 else -1 if a200_now - a200_ago < -2 else 0)
+
+    closes = {r['date']: r['close'] for r in bench or [] if r.get('close')}
+    bdates = [d for d, _ in days if d in closes]
+    idx_chg = None
+    if len(bdates) > lookback and bdates[-1] == asof:
+        idx_chg = (closes[bdates[-1]] / closes[bdates[-1 - lookback]] - 1) * 100
+
+    dirs = [x for x in (nh_dir, adl_dir, a200_dir) if x is not None]
+    weak, strong = sum(x < 0 for x in dirs), sum(x > 0 for x in dirs)
+    if idx_chg is None or len(dirs) < 2:
+        key, label, text = 'UNKNOWN', '판단 보류', '지수나 종목 자료가 모자라 비교하지 않았습니다.'
+    elif idx_chg > 0 and weak >= 2:
+        key, label = 'DIVERGENCE', '속이 빈 상승'
+        text = (f'지수는 {lookback}거래일 동안 {idx_chg:+.1f}% 올랐는데 세 지표 가운데 {weak}개가 나빠졌습니다. '
+                '소수 종목이 지수를 끌고 가는 장이라, 새로 살 때는 주도주로 좁히는 편이 낫습니다.')
+    elif idx_chg > 0 and weak == 0 and strong >= 2:
+        key, label = 'HEALTHY', '고르게 오름'
+        text = f'지수가 {lookback}거래일 동안 {idx_chg:+.1f}% 오르면서 세 지표도 같이 좋아져, 많은 종목이 함께 오르는 건강한 상승입니다.'
+    elif idx_chg <= 0 and strong >= 2:
+        key, label = 'POSITIVE', '속은 버팀'
+        text = (f'지수는 {lookback}거래일 동안 {idx_chg:+.1f}%로 약한데 세 지표 가운데 {strong}개가 좋아졌습니다. '
+                '지수보다 종목들이 먼저 버티고 있어, 바닥을 다지는 신호일 수 있습니다.')
+    elif idx_chg <= 0 and weak >= 2:
+        key, label = 'WEAK', '같이 약함'
+        text = f'지수가 {lookback}거래일 동안 {idx_chg:+.1f}% 빠지면서 세 지표도 같이 나빠져, 시장 전체가 약합니다.'
+    else:
+        key, label = 'MIXED', '엇갈림'
+        text = f'지수는 {lookback}거래일 동안 {idx_chg:+.1f}%이고, 세 지표는 방향이 엇갈립니다. 한쪽으로 기울 때까지 지켜보는 편이 낫습니다.'
+    today = days[-1][1]
+    return {'status': 'OK', 'date': asof, 'lookback': lookback, 'verdict': {'key': key, 'label': label, 'text': text},
+            'indexChangePct': rnd(idx_chg),
+            'newHighPct': rnd(nh_now), 'newHighPctAgo': rnd(nh_ago), 'newHighDir': nh_dir,
+            'adl': {'advances': today[0], 'declines': today[1], 'change': adl_chg, 'dir': adl_dir,
+                    'series': [p['adl'] for p in line[-sessions:]]},
+            'above200Pct': rnd(a200_now, 1), 'above200PctAgo': rnd(a200_ago, 1), 'above200Dir': a200_dir,
+            'denominator': today[2], 'note': BREADTH_NOTE}
 
 
 # Slope of a moving average: its % change over a lookback, then a direction.
@@ -1487,7 +1589,7 @@ def build_block(root, market, asof, universe, log, earnings_cache, fetch_network
         'index': {'symbol': symbol, 'label': label if not synthetic else '종목 중앙값 지수', 'source': source,
                   'synthetic': synthetic, **idx},
         'weather': {**weather(idx, dist, br, hl, synthetic, secondary, liq), 'distribution': dist, 'breadth': br, 'highsLows': hl,
-                    'stages': sd,
+                    'stages': sd, 'marketBreadth': market_breadth(universe, bench, br),
                     'byIndex': weather_by_index(market, universe, {**idx, 'symbol': symbol}, dist, secondary, liq, synthetic)},
         'liquidity': liq,
         'credit': credit,
