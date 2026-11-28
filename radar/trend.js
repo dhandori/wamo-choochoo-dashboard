@@ -1,5 +1,6 @@
 import { loadChartData, stockSeries, priceChart, lineChart, mirrorBars, MA } from './chart.js';
 import { climaxSection, climaxCount } from './climax.js';
+import { helpButton, addTerms } from './help.js';
 // Trend-following view: market weather, RS-line leaders, sell warnings, climax/reversal tops,
 // earnings dates and the signal scorecard. Reads wamo_trend.json only.
 const LIGHT = { GREEN: '공격 가능', YELLOW: '조심', RED: '현금 비중 확대', UNKNOWN: '판단 보류' };
@@ -443,31 +444,37 @@ const MB_MEAN = {
   a200: ['장기 상승 추세(200일선 위)에 있는 종목 비중. 50% 아래면 약한 시장입니다.',
     '200일선 위 종목 비율: 종가가 200일 이동평균선 위에 있는 종목의 비중입니다. 큰 추세 안에 있는 종목이 얼마나 되는지 보여 주며, 지수가 오르는데 이 비율이 떨어지면 상승이 넓게 퍼지지 않은 것입니다.'],
 };
+// 누르거나(휴대폰) 마우스를 올리면(PC) 레이더 공통 용어 팝업으로 뜻이 나온다(2026-11-28 사용자 지적: title 말풍선은 눌러도 안 뜸)
+addTerms({
+  mbAll: ['마켓 브레스 · 시장 속 건강', '지수가 올라도 시장이 건강하지 않을 수 있습니다. 소수 대형주가 지수를 끌어올리는 동안 나머지 종목은 빠질 수 있어서, 52주 신고가 비율·ADL·200일선 위 종목 비율을 같이 봅니다. 지수는 20거래일 동안 올랐는데 셋 가운데 둘 이상이 나빠지면 속이 빈 상승(다이버전스), 셋이 같이 좋아지면 고르게 오름, 지수는 빠지는데 둘 이상이 좋아지면 속은 버팀, 같이 나빠지면 같이 약함, 나머지는 엇갈림입니다. 날씨 점수에는 넣지 않습니다.'],
+  mbNh: ['52주 신고가 비율', MB_MEAN.nh[1]],
+  mbAdl: ['ADL · 등락주선', MB_MEAN.adl[1]],
+  mbA200: ['200일선 위 종목 비율', MB_MEAN.a200[1]],
+});
 const MB_TONE = { DIVERGENCE: 'bad', WEAK: 'bad', HEALTHY: 'good', POSITIVE: 'good', MIXED: 'mid', UNKNOWN: '' };
 function breadthCard(mb) {
   if (!mb || mb.status !== 'OK') return document.createDocumentFragment();
   const v = mb.verdict || {}, card = el('article', null, `tr-card tr-mb ${MB_TONE[v.key] || ''}`.trim());
   const head = el('div', null, 'tr-mb-head');
-  head.append(el('h3', '마켓 브레스'), el('span', v.label || '—', 'tr-mb-tag'));
+  const h3 = el('h3', '마켓 브레스 '); h3.append(helpButton('마켓 브레스', 'mbAll', true));
+  head.append(h3, el('span', v.label || '—', 'tr-mb-tag'));
   if (isNum(mb.indexChangePct)) head.append(el('small', `지수 ${mb.lookback}일 ${pct(mb.indexChangePct)}`));
   card.append(head, el('p', v.text || '', 'tr-mb-text'));
   const arrow = d => d > 0 ? '↗' : d < 0 ? '↘' : d === 0 ? '→' : '';
   const rows = el('div', null, 'tr-mb-rows');
   // 지표마다 한 줄 뜻(늘 보임)과 마우스를 올리면 뜨는 긴 풀이(title)
-  const row = (label, now, ago, dir, extra, [mean, tip]) => {
+  const row = (label, now, ago, dir, extra, [mean], key) => {
     const r = el('div', null, `tr-mb-row ${dir > 0 ? 'up' : dir < 0 ? 'down' : ''}`);
-    r.title = tip; r.tabIndex = 0;
-    r.append(el('span', label), el('b', `${now} ${arrow(dir)}`.trim()), el('small', ago));
+    r.append(helpButton(label, key), el('b', `${now} ${arrow(dir)}`.trim()), el('small', ago));
     if (extra) r.append(extra);
     r.append(el('em', mean, 'tr-mb-mean'));
     rows.append(r);
   };
-  row('52주 신고가 비율', isNum(mb.newHighPct) ? `${fmt(mb.newHighPct)}%` : '—', isNum(mb.newHighPctAgo) ? `${mb.lookback}일 전 ${fmt(mb.newHighPctAgo)}%` : '', mb.newHighDir, null, MB_MEAN.nh);
+  row('52주 신고가 비율', isNum(mb.newHighPct) ? `${fmt(mb.newHighPct)}%` : '—', isNum(mb.newHighPctAgo) ? `${mb.lookback}일 전 ${fmt(mb.newHighPctAgo)}%` : '', mb.newHighDir, null, MB_MEAN.nh, 'mbNh');
   const a = mb.adl || {};
-  row('ADL', `${mb.lookback}일 ${a.change > 0 ? '+' : ''}${(a.change ?? 0).toLocaleString('ko-KR')}`, `오늘 오름 ${a.advances} · 내림 ${a.declines}`, a.dir, spark(a.series), MB_MEAN.adl);
-  row('200일선 위 종목', isNum(mb.above200Pct) ? `${fmt(mb.above200Pct, 0)}%` : '—', isNum(mb.above200PctAgo) ? `${mb.lookback}일 전 ${fmt(mb.above200PctAgo, 0)}%` : '', mb.above200Dir, null, MB_MEAN.a200);
+  row('ADL', `${mb.lookback}일 ${a.change > 0 ? '+' : ''}${(a.change ?? 0).toLocaleString('ko-KR')}`, `오늘 오름 ${a.advances} · 내림 ${a.declines}`, a.dir, spark(a.series), MB_MEAN.adl, 'mbAdl');
+  row('200일선 위 종목', isNum(mb.above200Pct) ? `${fmt(mb.above200Pct, 0)}%` : '—', isNum(mb.above200PctAgo) ? `${mb.lookback}일 전 ${fmt(mb.above200PctAgo, 0)}%` : '', mb.above200Dir, null, MB_MEAN.a200, 'mbA200');
   // 휴대폰에서도 짧게: 핵심 문장 한 줄만 보이고, 자세한 풀이(note)는 칸에 마우스를 올리면 나온다.
-  card.title = mb.note || '';
   card.append(rows, help(`지수가 올라도 시장이 건강하지 않을 수 있습니다. 지수는 오르는데 셋 가운데 둘 이상이 나빠지면 속이 빈 상승으로 봅니다. 종목 ${mb.denominator}개 기준입니다.`));
   return card;
 }

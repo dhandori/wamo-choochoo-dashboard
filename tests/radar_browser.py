@@ -391,6 +391,10 @@ with sync_playwright() as p:
                     expect(page.locator('.tr-mb .tr-mb-row')).to_have_count(3)
                     expect(page.locator('.tr-mb')).to_contain_text('지수가 올라도 시장이 건강하지 않을 수 있습니다')
                     page.locator('.tr-mb').screenshot(path=str(OUT/f'radar-breadth-{market}-{width}.png'))
+                    # 지표 이름을 누르면 공통 용어 팝업으로 뜻이 나온다(휴대폰에서도)
+                    page.locator('.tr-mb .term-help',has_text='ADL').click()
+                    expect(page.get_by_role('tooltip')).to_contain_text('등락주선')
+                    page.keyboard.press('Escape')
                 # 2026-10-30 시장 구분: 지수별 날씨 표(KOSPI|KOSDAQ, S&P 500|나스닥)와 위쪽 띠의 지수별 판정.
                 by_index=TREND['markets'][market]['weather'].get('byIndex') or []
                 if len(by_index)>1:
